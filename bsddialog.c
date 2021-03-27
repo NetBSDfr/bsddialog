@@ -145,42 +145,6 @@ int main(int argc, char *argv[argc])
 	wrefresh(popup);
 	window_handler(popup);
 	delwin(popup);
-	while(loop) {
-		input = getch();
-		switch(input) {
-		case 'Q':
-		case 'q':
-		case  27: /* Esc */
-			loop = false;
-			break;
-		case KEY_F(1):
-		case '?':
-		case 'H':
-		case 'h':
-			break;
-		case '\t': /* TAB */
-			break;
-		case KEY_END:
-		case KEY_HOME:
-			break;
-		case KEY_UP:
-			break;
-		case KEY_DOWN:
-			break;
-		case KEY_NPAGE:
-			break;
-		case KEY_PPAGE:
-			break;
-		case KEY_LEFT:
-			break;
-		case KEY_RIGHT:
-			break;
-		case KEY_RESIZE:
-		case 'r':
-		case 'R':
-			break;
-		}
-	}
 
 	endwin();
 	return 0;
@@ -320,10 +284,49 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 
 void window_handler(WINDOW* window)
 {
+	int input;
+	bool loop = true;
 
 	//wrefresh(window);
-	getch();
+	//getch();
 	//delwin(window);
+
+	while(loop) {
+		input = getch();
+		switch(input) {
+		case 'Q':
+		case 'q':
+		case  27: /* Esc */
+			loop = false;
+			break;
+		case KEY_F(1):
+		case '?':
+		case 'H':
+		case 'h':
+			break;
+		case '\t': /* TAB */
+			break;
+		case KEY_END:
+		case KEY_HOME:
+			break;
+		case KEY_UP:
+			break;
+		case KEY_DOWN:
+			break;
+		case KEY_NPAGE:
+			break;
+		case KEY_PPAGE:
+			break;
+		case KEY_LEFT:
+			break;
+		case KEY_RIGHT:
+			break;
+		case KEY_RESIZE:
+		case 'r':
+		case 'R':
+			break;
+		}
+	}
 }
 
 /*int select_device_popup(char *mixer)
