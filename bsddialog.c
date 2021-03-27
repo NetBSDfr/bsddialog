@@ -6,6 +6,7 @@
 
 #include <errno.h> //???
 #include <getopt.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -56,6 +57,7 @@ int main(int argc, char *argv[argc])
 	int input;
 	bool loop = true, enable_color = true;
 	char title[1024], msgbox[1024];
+	int row, cols;
 
 	int bflag, ch, fd, t, m;
 	int daggerset;
@@ -121,6 +123,21 @@ int main(int argc, char *argv[argc])
 	argc -= optind;
 	argv += optind;
 
+	if (argc > 0) {
+		/* todo window checks */
+		if (argc != 2) { /* msgbox */
+			usage();
+			return (1);
+		}
+	}
+
+	argc = 0;
+	//while (argv[argc]) {
+		row  = atoi(argv[argc]);
+		argc++;
+		cols = atoi(argv[argc]);
+    		argc++;
+	//}
 
 	if(init_view(enable_color) != 0) {
 		printf("Cannot init ncurses\n");
@@ -131,7 +148,7 @@ int main(int argc, char *argv[argc])
 	refresh();
 
 	int line = 1;
-	WINDOW *popup = new_popup(6, 25, title, BLACK_WHITE, false);
+	WINDOW *popup = new_popup(row, cols, title, BLACK_WHITE, false);
 	mvwaddstr(popup, 1, 1, msgbox);
 
 	wrefresh(popup);
