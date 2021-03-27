@@ -4,7 +4,6 @@
 #include <curses.h>
 #endif
 
-#include <errno.h> //???
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,30 +23,24 @@
 enum elevation { RAISED, LOWERED };
 
 void usage(void);
-/* View Layer */
 int  init_view(bool enable_color);
-void print_text(const char* text, int x, int y, bool bold, int color);
-int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
-/* Popup */
 WINDOW *
 new_window(int rows, int cols, const char *title, int color, enum elevation elev,
     bool scrolling);
 void window_handler(WINDOW *window);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-int  select_device_popup(char *mixer);
-void sysctl_popup(const char *title, const char *root);
+void print_text(const char* text, int x, int y, bool bold, int color);
+int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 
 void usage(void)
 {
 
-	printf("usage: mixertui [-c | -h | -v] [-d <unit>] [-m <mixer>] "\
-		"[-P <profile>] [-p <profile>] [-V playback|capture|all]\n");
+	printf("usage: dialog [-c | -h | -v]\n");
 }
 
 int main(int argc, char *argv[argc])
 {
-	int input;
-	bool loop = true, enable_color = true;
+	bool enable_color = true;
 	char title[1024], msgbox[1024];
 	int row, cols;
 
@@ -82,16 +75,10 @@ int main(int argc, char *argv[argc])
 		case 'h':
 			usage();
 			printf(" -c\t\t Disable color\n");
-			printf(" -d <unit>\t Open device with <unit> number\n");
 			printf(" -h\t\t Display this help\n");
-			printf(" -m <mixer>\t Use <mixer> to get devices\n");
-			printf(" -P <profile>\t Set <profile> and quit (EXPERIMENTAL)\n");
-			printf(" -p <profile>\t Load and set <profile> (EXPERIMENTAL)\n");
-			printf(" -V p|c|a\t Display mode playback|capture|all\n");
 			printf(" -v\t\t Show version\n");
 			printf("\n");
-			printf("Press F1 inside MixerTUI for runtime features.\n");
-			printf("See \'man mixertui\' for more information.\n");
+			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
 		case 'f':
 			/*if ((fd = open(optarg, O_RDONLY, 0)) == -1)
@@ -104,14 +91,13 @@ int main(int argc, char *argv[argc])
 			strcpy(title, optarg);
 			break;
 		case 'v':
-			printf("MixerTUI %s\n", VERSION);
+			printf("bsddialog %s\n", VERSION);
 			return 0;
 		default:
 			usage();
 			return 1;
 		}
 	}
-
 	argc -= optind;
 	argv += optind;
 
@@ -135,10 +121,8 @@ int main(int argc, char *argv[argc])
 		printf("Cannot init ncurses\n");
 		return 1;
 	}
-	//show_title_and_box();
 	refresh();
 
-	int line = 1;
 	WINDOW *popup = new_window(row, cols, title, BLACK_WHITE, RAISED, false);
 	mvwaddstr(popup, 1, 1, msgbox);
 
@@ -149,10 +133,6 @@ int main(int argc, char *argv[argc])
 	endwin();
 	return 0;
 }
-
-/*
- * View
- */
 
 int init_view(bool enable_color)
 {
