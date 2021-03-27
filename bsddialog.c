@@ -40,7 +40,9 @@ void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 void show_title_and_box(void);
 /* Popup */
-WINDOW *new_popup(int rows, int cols, const char *title, int color, bool scrolling);
+WINDOW *
+new_popup(int rows, int cols, const char *title, int color, enum elevation elev,
+    bool scrolling);
 void scrolling_popup(WINDOW *pad, int rows, int cols);
 void error_popup(int rows, int cols, const char *error, bool show_errno);
 void help_popup(void);
@@ -146,11 +148,10 @@ int main(int argc, char *argv[argc])
 		return 1;
 	}
 	//show_title_and_box();
-	//if (title )
 	refresh();
 
 	int line = 1;
-	WINDOW *popup = new_popup(row, cols, title, BLACK_WHITE, false);
+	WINDOW *popup = new_popup(row, cols, title, BLACK_WHITE, RAISED, false);
 	mvwaddstr(popup, 1, 1, msgbox);
 
 	wrefresh(popup);
@@ -168,21 +169,8 @@ int main(int argc, char *argv[argc])
 		case '?':
 		case 'H':
 		case 'h':
-			/*help_popup();
-			error_popup(30, 30, title, false);
-			refresh();
-			error_popup(30, 30, "CIAO", false);*/
 			break;
-		case 't': /* TAB */
-			refresh();
-			int line = 1;
-
-			WINDOW *popup = new_popup(6, 25, title, BLACK_WHITE, false);
-			mvwaddstr(popup, 1, 1, msgbox);
-
-			wrefresh(popup);
-			getch();
-			delwin(popup);
+		case '\t': /* TAB */
 			break;
 		case KEY_END:
 		case KEY_HOME:
@@ -293,7 +281,9 @@ void show_title_and_box(void)
 
 /* Popup */
 
-WINDOW *new_popup(int rows, int cols, const char *title, int color, bool scrolling)
+WINDOW *
+new_popup(int rows, int cols, const char *title, int color, enum elevation elev,
+    bool scrolling)
 {
 	WINDOW *popup;
 	int leftcolor, rightcolor;
@@ -306,7 +296,6 @@ WINDOW *new_popup(int rows, int cols, const char *title, int color, bool scrolli
 
 	wbkgd(popup, COLOR_PAIR(color));
 
-	enum elevation elev = RAISED; // delete
 	leftcolor  = elev == RAISED ? WHITE_WHITE : BLACK_WHITE;
 	rightcolor = elev == RAISED ? BLACK_WHITE : WHITE_WHITE;
 	wattron(popup, A_BOLD | COLOR_PAIR(leftcolor));
@@ -367,7 +356,7 @@ void error_popup(int rows, int cols, const char *error, bool show_errno)
 	char close[23] = "Press any key to close";
 	int line = 1;
 
-	popup = new_popup(rows, cols, " Error ", WHITE_RED, false);
+	popup = new_popup(rows, cols, " Error ", WHITE_RED, RAISED, false);
 
 	line += print_text_multiline(popup, line, 1, error, cols-2);
 	if(show_errno)
@@ -398,7 +387,7 @@ void help_popup(void)
 	int h = 32, w = 45;
 	const char *close="Press any key to close", *ver = "Version " VERSION;
 
-	helpwin = new_popup(h, w, " HELP ", WHITE_BLUE, true);
+	helpwin = new_popup(h, w, " HELP ", WHITE_BLUE, RAISED, true);
 
 	mvwaddstr(helpwin,  1, w/2 - strlen(ver)/2, ver);
 	mvwaddstr(helpwin,  2, 1, "Esc q Q    Exit");
@@ -462,7 +451,7 @@ void help_popup(void)
 
 	h = (h < ndevices + 2) ? h : ndevices + 2;
 
-	selectwin = new_popup(h, w, " Select Device ", WHITE_BLUE, false);
+	selectwin = new_popup(h, w, " Select Device ", WHITE_BLUE, RAISED, false);
 
 	menu = new_menu(devices);
 	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE) | A_REVERSE);
@@ -524,7 +513,7 @@ void help_popup(void)
 		return;
 	}
 
-	popup = new_popup(h, w, title, WHITE_BLUE, true);
+	popup = new_popup(h, w, title, WHITE_BLUE, RAISED, true);
 
 	line = 1;
 	SLIST_FOREACH(obj, list, object_link) {
