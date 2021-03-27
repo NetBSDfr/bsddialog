@@ -28,7 +28,6 @@ void usage(void);
 int  init_view(bool enable_color);
 void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
-void show_title_and_box(void);
 /* Popup */
 WINDOW *
 new_popup(int rows, int cols, const char *title, int color, enum elevation elev,
