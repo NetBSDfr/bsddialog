@@ -32,9 +32,8 @@ int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_l
 WINDOW *
 new_window(int rows, int cols, const char *title, int color, enum elevation elev,
     bool scrolling);
-void scrolling_popup(WINDOW *pad, int rows, int cols);
-void error_popup(int rows, int cols, const char *error, bool show_errno);
-void help_popup(void);
+void window_handler(WINDOW *window);
+void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 int  select_device_popup(char *mixer);
 void sysctl_popup(const char *title, const char *root);
 
@@ -144,7 +143,7 @@ int main(int argc, char *argv[argc])
 	mvwaddstr(popup, 1, 1, msgbox);
 
 	wrefresh(popup);
-	getch();
+	window_handler(popup);
 	delwin(popup);
 	while(loop) {
 		input = getch();
@@ -287,7 +286,7 @@ new_window(int rows, int cols, const char *title, int color, enum elevation elev
 	return popup;
 }
 
-void scrolling_popup(WINDOW *pad, int rows, int cols)
+void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 {
 	int input, cur_line = 0, shown_lines;
 	bool loop = true;
@@ -319,77 +318,12 @@ void scrolling_popup(WINDOW *pad, int rows, int cols)
 	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
 }
 
-void error_popup(int rows, int cols, const char *error, bool show_errno)
+void window_handler(WINDOW* window)
 {
-	WINDOW *popup;
-	char close[23] = "Press any key to close";
-	int line = 1;
 
-	popup = new_window(rows, cols, " Error ", WHITE_RED, RAISED, false);
-
-	line += print_text_multiline(popup, line, 1, error, cols-2);
-	if(show_errno)
-		mvwaddstr(popup, line+2, 1, strerror(errno)); 
-	mvwaddstr(popup, rows-2, cols/2 - strlen(close)/2, close);
-
-	wrefresh(popup);
+	//wrefresh(window);
 	getch();
-	delwin(popup);
-}
-
-/*void sysctlinfo_error_popup(void)
-{
-	int h = 10, w = 37;
-	char *msg="Make sure that you have loaded the "\
-		  "sysctlinfo kernel module, by doing:"\
-		  "     # kldload sysctlinfo          "\
-		  "or adding:                         "\
-		  "     sysctlinfo_load=\"YES\"         "\
-		  "to your /boot/loader.conf          ";
-
-	error_popup(h, w, msg, false);
-}*/
-
-void help_popup(void)
-{
-	WINDOW *helpwin;
-	int h = 32, w = 45;
-	const char *close="Press any key to close", *ver = "Version " VERSION;
-
-	helpwin = new_window(h, w, " HELP ", WHITE_BLUE, RAISED, true);
-
-	mvwaddstr(helpwin,  1, w/2 - strlen(ver)/2, ver);
-	mvwaddstr(helpwin,  2, 1, "Esc q Q    Exit");
-	mvwaddstr(helpwin,  3, 1, "F1 ? H h   Help");
-	mvwaddstr(helpwin,  4, 1, "F2         Sound System information");
-	mvwaddstr(helpwin,  5, 1, "F3         Show playback controls");
-	mvwaddstr(helpwin,  6, 1, "F4         Show capture controls");
-	mvwaddstr(helpwin,  7, 1, "F5         Show all controls");
-	mvwaddstr(helpwin,  8, 1, "Tab        Switch view F3/F4/F5");
-	mvwaddstr(helpwin,  9, 1, "F6         Select device");
-	mvwaddstr(helpwin, 10, 1, "F7         Device information");
-	mvwaddstr(helpwin, 11, 1, "F8         Set current device as default");
-	mvwaddstr(helpwin, 12, 1, "P p        Save profile (EXPERIMENTAL)");
-	mvwaddstr(helpwin, 13, 1, "R r        Refresh screen");
-	mvwaddstr(helpwin, 15, 1, "Left       Select previous control");
-	mvwaddstr(helpwin, 16, 1, "Right      Select next control");
-	mvwaddstr(helpwin, 17, 1, "Up/Down    Increment/Decrement volume");
-	mvwaddstr(helpwin, 18, 1, "+/-        Increment/Decrement volume");
-	mvwaddstr(helpwin, 19, 1, "Page UP    Increment volume in a big step");
-	mvwaddstr(helpwin, 20, 1, "Page DOWN  Decrement volume in a big step");
-	mvwaddstr(helpwin, 21, 1, "End        Set volume to 0%");
-	mvwaddstr(helpwin, 22, 1, "Home       Set volume to 100%");
-	mvwaddstr(helpwin, 23, 1, "0-9        Set volume to 0%-90%");
-	mvwaddstr(helpwin, 24, 1, "a/s/d      Increment left/both/right volume");
-	mvwaddstr(helpwin, 25, 1, "z/x/c      Decrement left/both/right volume");
-	mvwaddstr(helpwin, 26, 1, "B b        Balance left and right volume");
-	mvwaddstr(helpwin, 27, 1, "M m        Toggle mute");
-	mvwaddstr(helpwin, 28, 1, "</>        Toggle left/right mute");
-	mvwaddstr(helpwin, h-2, w/2 - strlen(close)/2, close);
-
-	scrolling_popup(helpwin, h, w);
-
-	delwin(helpwin);
+	//delwin(window);
 }
 
 /*int select_device_popup(char *mixer)
