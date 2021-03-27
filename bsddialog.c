@@ -12,24 +12,14 @@
 
 #define VERSION "0.1"
 
-/* Foreground_BLACK */
-#define WHITE		1
-#define YELLOW		2
-#define CYAN		3
-#define BLACK		4
 /* Foreground_Background */
-#define WHITE_BLUE	5
-#define GREEN_GREEN	6
-#define WHITE_WHITE	7 /* bsddialog */
-#define RED_RED		8
-#define WHITE_RED	9
-#define YELLOW_CYAN	10
-#define BLACK_CYAN	11
-#define CYAN_CYAN	12
-/* bsddialog */
-#define BLUE_BLUE	13
-#define BLACK_WHITE	14
-#define BLUE_WHITE	15
+#define WHITE_WHITE	1
+#define RED_RED		2 // to check
+#define WHITE_RED	3 // to check
+#define BLUE_BLUE	4
+#define BLACK_WHITE	5
+#define BLUE_WHITE	6
+#define WHITE_BLUE	7
 
 enum elevation { RAISED, LOWERED };
 
@@ -217,23 +207,14 @@ int init_view(bool enable_color)
 
 	if (enable_color) {
 		error += start_color();
-		error += init_pair(WHITE,  COLOR_WHITE,   COLOR_BLACK);
-		error += init_pair(YELLOW, COLOR_YELLOW,  COLOR_BLACK);
-		error += init_pair(CYAN,   COLOR_CYAN,    COLOR_BLACK);
-		error += init_pair(BLACK,  COLOR_BLACK,   COLOR_BLACK);
+		error += init_pair(WHITE_WHITE, COLOR_WHITE, COLOR_WHITE);
+		error += init_pair(WHITE_BLUE,  COLOR_WHITE, COLOR_BLUE);
+		error += init_pair(RED_RED,     COLOR_RED,   COLOR_RED);
+		error += init_pair(WHITE_RED,   COLOR_WHITE, COLOR_RED);
 
-		error += init_pair(WHITE_BLUE,  COLOR_WHITE,  COLOR_BLUE);
-		error += init_pair(GREEN_GREEN, COLOR_GREEN,  COLOR_GREEN);
-		error += init_pair(WHITE_WHITE, COLOR_WHITE,  COLOR_WHITE);
-		error += init_pair(RED_RED,     COLOR_RED,    COLOR_RED);
-		error += init_pair(WHITE_RED,   COLOR_WHITE,  COLOR_RED);
-		error += init_pair(YELLOW_CYAN, COLOR_YELLOW, COLOR_CYAN);
-		error += init_pair(BLACK_CYAN,  COLOR_BLACK,  COLOR_CYAN);
-		error += init_pair(CYAN_CYAN,   COLOR_CYAN,   COLOR_CYAN);
-
-		error += init_pair(BLUE_BLUE,   COLOR_BLUE,   COLOR_BLUE);
-		error += init_pair(BLACK_WHITE,   COLOR_BLACK,   COLOR_WHITE);
-		error += init_pair(BLUE_WHITE,   COLOR_BLUE,   COLOR_WHITE);
+		error += init_pair(BLUE_BLUE,   COLOR_BLUE,  COLOR_BLUE);
+		error += init_pair(BLACK_WHITE, COLOR_BLACK, COLOR_WHITE);
+		error += init_pair(BLUE_WHITE,  COLOR_BLUE,  COLOR_WHITE);
 	}
 
 	bkgd(COLOR_PAIR(BLUE_BLUE));
@@ -266,17 +247,6 @@ int print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_li
 	}
 	line = line > 0 ? line-1 : 0;
 	return line;
-}
-
-void show_title_and_box(void)
-{
-	const char *title = "  MixerTUI  ";
-
-	attron(COLOR_PAIR(CYAN));
-	box(stdscr, 0, 0);
-	attroff(COLOR_PAIR(CYAN));
-
-	print_text(title, 0, (COLS / 2) - (strlen(title) / 2), true, YELLOW);
 }
 
 /* Popup */
