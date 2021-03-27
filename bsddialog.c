@@ -30,7 +30,7 @@ void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 /* Popup */
 WINDOW *
-new_popup(int rows, int cols, const char *title, int color, enum elevation elev,
+new_window(int rows, int cols, const char *title, int color, enum elevation elev,
     bool scrolling);
 void scrolling_popup(WINDOW *pad, int rows, int cols);
 void error_popup(int rows, int cols, const char *error, bool show_errno);
@@ -140,7 +140,7 @@ int main(int argc, char *argv[argc])
 	refresh();
 
 	int line = 1;
-	WINDOW *popup = new_popup(row, cols, title, BLACK_WHITE, RAISED, false);
+	WINDOW *popup = new_window(row, cols, title, BLACK_WHITE, RAISED, false);
 	mvwaddstr(popup, 1, 1, msgbox);
 
 	wrefresh(popup);
@@ -251,7 +251,7 @@ int print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_li
 /* Popup */
 
 WINDOW *
-new_popup(int rows, int cols, const char *title, int color, enum elevation elev,
+new_window(int rows, int cols, const char *title, int color, enum elevation elev,
     bool scrolling)
 {
 	WINDOW *popup;
@@ -325,7 +325,7 @@ void error_popup(int rows, int cols, const char *error, bool show_errno)
 	char close[23] = "Press any key to close";
 	int line = 1;
 
-	popup = new_popup(rows, cols, " Error ", WHITE_RED, RAISED, false);
+	popup = new_window(rows, cols, " Error ", WHITE_RED, RAISED, false);
 
 	line += print_text_multiline(popup, line, 1, error, cols-2);
 	if(show_errno)
@@ -356,7 +356,7 @@ void help_popup(void)
 	int h = 32, w = 45;
 	const char *close="Press any key to close", *ver = "Version " VERSION;
 
-	helpwin = new_popup(h, w, " HELP ", WHITE_BLUE, RAISED, true);
+	helpwin = new_window(h, w, " HELP ", WHITE_BLUE, RAISED, true);
 
 	mvwaddstr(helpwin,  1, w/2 - strlen(ver)/2, ver);
 	mvwaddstr(helpwin,  2, 1, "Esc q Q    Exit");
@@ -420,7 +420,7 @@ void help_popup(void)
 
 	h = (h < ndevices + 2) ? h : ndevices + 2;
 
-	selectwin = new_popup(h, w, " Select Device ", WHITE_BLUE, RAISED, false);
+	selectwin = new_window(h, w, " Select Device ", WHITE_BLUE, RAISED, false);
 
 	menu = new_menu(devices);
 	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE) | A_REVERSE);
@@ -482,7 +482,7 @@ void help_popup(void)
 		return;
 	}
 
-	popup = new_popup(h, w, title, WHITE_BLUE, RAISED, true);
+	popup = new_window(h, w, title, WHITE_BLUE, RAISED, true);
 
 	line = 1;
 	SLIST_FOREACH(obj, list, object_link) {
