@@ -20,7 +20,7 @@
 /* Foreground_Background */
 #define WHITE_BLUE	5
 #define GREEN_GREEN	6
-#define WHITE_WHITE	7
+#define WHITE_WHITE	7 /* bsddialog */
 #define RED_RED		8
 #define WHITE_RED	9
 #define YELLOW_CYAN	10
@@ -30,6 +30,8 @@
 #define BLUE_BLUE	13
 #define BLACK_WHITE	14
 #define BLUE_WHITE	15
+
+enum elevation { RAISED, LOWERED };
 
 void usage(void);
 /* View Layer */
@@ -293,7 +295,8 @@ void show_title_and_box(void)
 
 WINDOW *new_popup(int rows, int cols, const char *title, int color, bool scrolling)
 {
-	WINDOW *popup; 
+	WINDOW *popup;
+	int leftcolor, rightcolor;
 
 	if (scrolling)
 		popup = newpad(rows, cols);
@@ -303,9 +306,20 @@ WINDOW *new_popup(int rows, int cols, const char *title, int color, bool scrolli
 
 	wbkgd(popup, COLOR_PAIR(color));
 
-	wattron(popup, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	enum elevation elev = RAISED; // delete
+	leftcolor  = elev == RAISED ? WHITE_WHITE : BLACK_WHITE;
+	rightcolor = elev == RAISED ? BLACK_WHITE : WHITE_WHITE;
+	wattron(popup, A_BOLD | COLOR_PAIR(leftcolor));
 	box(popup, 0, 0);
-	wattroff(popup, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	wattroff(popup, A_BOLD | COLOR_PAIR(leftcolor));
+
+	wattron(popup, A_BOLD | COLOR_PAIR(rightcolor));
+	mvwaddch(popup, 0, cols-1, ACS_URCORNER);
+	mvwvline(popup, 1, cols-1, ACS_VLINE, rows-2);
+	mvwaddch(popup, rows-1, cols-1, ACS_LRCORNER);
+	mvwhline(popup, rows-1, 1, ACS_HLINE, cols-2);
+	wattroff(popup, A_BOLD | COLOR_PAIR(rightcolor));
+
 
 	wattron(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
 	wmove(popup, 0, cols/2 - strlen(title)/2);
