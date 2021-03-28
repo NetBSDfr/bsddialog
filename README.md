@@ -1,19 +1,18 @@
-# mixertui 1.4.2
+# BSDDialog
 
-Audio Mixer with a Terminal User Interface built on the
-[FreeBSD](https://www.freebsd.org) sound system,
-[wiki.freebsd.org/Sound](https://wiki.freebsd.org/Sound).
+The **bsddialog** utility build UI Windgets in a terminal; the interface is
+inspired by the **dialog** project (https://invisible-island.net/dialog/),
+however **bsddialog** is released under the terms of the *BSD-2-Clause License*,
+see LICENSE.
 
 **Getting Started**
 
-To install the port [audio/mixertui](https://www.freshports.org/audio/mixertui):
-
-	# cd /usr/ports/audio/mixertui/ && make install clean
-
-To add the package:
-
-	# pkg install mixertui
-
+```
+% git clone https://gitlab.com/alfix/bsddialog.git
+% cc bsddialog.c -o bsddialog -lncurses
+% ./bsddialog --title BSD --msgbox "Hello World!" 6 24
+```
+Output:
 
 ![screenshot](screenshot.png)  
 
