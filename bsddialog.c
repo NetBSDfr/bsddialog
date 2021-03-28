@@ -529,6 +529,14 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
+	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	mvwaddch(key, 0, 0, ACS_LTEE);
+	wattroff(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+
+	wattron(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	mvwaddch(key, 0, cols-1, ACS_RTEE);
+	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+
 	wrefresh(widget);
 	wrefresh(key);
 	window_handler(widget);
