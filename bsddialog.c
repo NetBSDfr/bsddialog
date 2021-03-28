@@ -504,10 +504,11 @@ int
 infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget;
+	int line;
 
 	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
 	    RAISED, false);
-	mvwaddstr(widget, 1, 1, text);
+	print_text_multiline(widget, 1, 1, text, cols - 2);
 
 	wrefresh(widget);
 	window_handler(widget);
