@@ -325,6 +325,7 @@ int main(int argc, char *argv[argc])
 	return 0;
 }
 
+/* Widgets */
 int 
 infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
@@ -362,6 +363,7 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 	return 0;
 }
 
+/* View */
 int init_view(bool enable_color)
 {
 	int error = 0;
