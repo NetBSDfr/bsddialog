@@ -253,6 +253,7 @@ int main(int argc, char *argv[argc])
 
 	while ((input = getopt_long(argc, argv, "ch", longopts, NULL)) != -1) {
 		switch (input) {
+		/* Common options */
 		case 'c':
 			enable_color = false;
 			break;
