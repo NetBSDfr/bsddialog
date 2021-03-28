@@ -132,7 +132,6 @@ int  init_view(bool enable_color);
 WINDOW *
 new_window(int x, int y, int rows, int cols, const char *title, int color,
     enum elevation elev, bool scrolling);
-void window_handler(WINDOW *window);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
@@ -453,53 +452,6 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
 }
 
-void window_handler(WINDOW* window)
-{
-	int input;
-	bool loop = true;
-
-	//wrefresh(window);
-	//getch();
-	//delwin(window);
-
-	while(loop) {
-		input = getch();
-		switch(input) {
-		case 'Q':
-		case 'q':
-		case  27: /* Esc */
-			loop = false;
-			break;
-		case KEY_F(1):
-		case '?':
-		case 'H':
-		case 'h':
-			break;
-		case '\t': /* TAB */
-			break;
-		case KEY_END:
-		case KEY_HOME:
-			break;
-		case KEY_UP:
-			break;
-		case KEY_DOWN:
-			break;
-		case KEY_NPAGE:
-			break;
-		case KEY_PPAGE:
-			break;
-		case KEY_LEFT:
-			break;
-		case KEY_RIGHT:
-			break;
-		case KEY_RESIZE:
-		case 'r':
-		case 'R':
-			break;
-		}
-	}
-}
-
 /* Widgets */
 int 
 infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
@@ -512,7 +464,7 @@ infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char 
 	print_text_multiline(widget, 1, 1, text, cols - 2);
 
 	wrefresh(widget);
-	window_handler(widget);
+	getch();
 	delwin(widget);
 
 	return 0;
