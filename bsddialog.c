@@ -15,7 +15,6 @@
 #define BLUE_WHITE	6
 #define WHITE_BLUE	7
 
-
 /* Common options */
 #define ASCII_LINES	1 // ascii-lines
 #define ASPECT		2 // aspect
