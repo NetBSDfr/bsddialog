@@ -42,33 +42,94 @@ int main(int argc, char *argv[argc])
 {
 	bool enable_color = true;
 	char title[1024], msgbox[1024];
-	int row, cols;
-
-	int bflag, ch, fd, t, m;
-	int daggerset;
-
+	int input, row, cols;
 	/* options descriptor */
 	static struct option longopts[] = {
-		{ "buffy", no_argument, NULL, 'b' },
-		{ "fluoride", required_argument, NULL, 'f' },
-		{ "daggerset", no_argument, /*&daggerset*/ NULL, 1 },
-		{ "title", required_argument, /*&t*/ NULL, 't' },
-		{ "msgbox", required_argument, /*&m*/ NULL, 'm' },
-		{ NULL, 0, NULL, 0 }
+	    /* common options */
+	    { "ascii-lines", no_argument, NULL, 'X' },
+	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
+	    { "backtitle", required_argument, NULL /*backtitle*/, 'X' },
+	    { "begin", required_argument, NULL /*y x*/, 'X' },
+	    { "cancel-label", required_argument, NULL /*string*/, 'X' },
+	    { "clear", no_argument, NULL, 'X' },
+	    { "colors", no_argument, NULL, 'X' },
+	    { "column-separator", required_argument, NULL /*string*/, 'X' },
+	    { "cr-wrap", no_argument, NULL, 'X' },
+	    { "create-rc", required_argument, NULL /*file*/, 'X' },
+	    { "date-format", required_argument, NULL /*format*/, 'X' },
+	    { "defaultno", no_argument, NULL, 'X' },
+	    { "default-button", required_argument, NULL	/*string*/, 'X' },
+	    { "default-item", required_argument, NULL /*string*/, 'X' },
+	    { "exit-label", required_argument, NULL /*string*/, 'X' },
+	    { "extra-button", no_argument, NULL, 'X' },
+	    { "extra-label", required_argument, NULL /*string*/, 'X' },
+	    { "help", no_argument, NULL, 'X' },
+	    { "help-button", no_argument, NULL, 'X' },
+	    { "help-label", required_argument, NULL /*string*/, 'X' },
+	    { "help-status", no_argument, NULL, 'X' },
+	    { "help-tags", no_argument, NULL, 'X' },
+	    { "hfile", required_argument, NULL /*filename*/, 'X' },
+	    { "hline", required_argument, NULL /*string*/, 'X' },
+	    { "ignore", no_argument, NULL, 'X' },
+	    { "input-fd", required_argument, NULL /*fd*/, 'X' },
+	    { "insecure", no_argument, NULL, 'X' },
+	    { "item-help", no_argument, NULL, 'X' },
+	    { "keep-tite", no_argument, NULL, 'X' },
+	    { "keep-window", no_argument, NULL, 'X' },
+	    { "last-key", no_argument, NULL, 'X' },
+	    { "max-input", required_argument, NULL /*size*/, 'X' },
+	    { "no-cancel", no_argument, NULL, 'X' },
+	    { "nocancel", no_argument, NULL, 'X' },
+	    { "no-collapse", no_argument, NULL, 'X' },
+	    { "no-items", no_argument, NULL, 'X' },
+	    { "no-kill", no_argument, NULL, 'X' },
+	    { "no-label", required_argument, NULL /*string*/, 'X' },
+	    { "no-lines", no_argument, NULL, 'X' },
+	    { "no-mouse", no_argument, NULL, 'X' },
+	    { "no-nl-expand", no_argument, NULL, 'X' },
+	    { "no-ok", no_argument, NULL, 'X' },
+	    { "nook ", no_argument, NULL, 'X' },
+	    { "no-shadow", no_argument, NULL, 'X' },
+	    { "no-tags", no_argument, NULL, 'X' },
+	    { "ok-label", required_argument, NULL /*string*/, 'X' },
+	    { "output-fd", required_argument, NULL /*fd*/, 'X' },
+	    { "separator", required_argument, NULL /*string*/, 'X' },
+	    { "output-separatorstring", no_argument, NULL, 'X' },
+	    { "print-maxsize", no_argument, NULL, 'X' },
+	    { "print-size", no_argument, NULL, 'X' },
+	    { "print-version", no_argument, NULL, 'X' },
+	    { "quoted", no_argument, NULL, 'X' },
+	    { "scrollbar", no_argument, NULL, 'X' },
+	    { "separate-output", no_argument, NULL, 'X' },
+	    { "separate-widget", required_argument, NULL /*string*/, 'X' },
+	    { "shadow", no_argument, NULL, 'X' },
+	    { "single-quoted", no_argument, NULL, 'X' },
+	    { "size-err", no_argument, NULL, 'X' },
+	    { "sleep", required_argument, NULL /*secs*/, 'X' },
+	    { "stderr", no_argument, NULL, 'X' },
+	    { "stdout", no_argument, NULL, 'X' },
+	    { "tab-correct", no_argument, NULL, 'X' },
+	    { "tab-len", required_argument, NULL /*n*/, 'X' },
+	    { "time-format", required_argument, NULL /*format*/, 'X' },
+	    { "timeout", required_argument, NULL /*secs*/, 'X' },
+	    { "title", required_argument, /*&t*/ NULL, 't' },
+	    { "trace", required_argument, NULL /*filename*/, 'X' },
+	    { "trim", no_argument, NULL, 'X' },
+	    { "version", no_argument, NULL, 'X' },
+	    { "visit-items", no_argument, NULL, 'X' },
+	    { "yes-label", required_argument, NULL /*string*/, 'X' },
+	    /* Widgets */
+/*buildlist, calendar, checklist, dselect, editbox,	form, fselect,
+	      gauge, infobox, inputbox,	inputmenu, menu, mixedform,
+	      mixedgauge, msgbox (message), passwordbox, passwordform, pause,
+	      prgbox, programbox, progressbox, radiolist, rangebox, tailbox,
+	      tailboxbg, textbox, timebox, treeview, and yesno (yes/no).*/
+	    { "msgbox", required_argument, /*&m*/ NULL, 'm' },
+	    { NULL, 0, NULL, 0 }
 	};
 
-	bflag = 0;
-	while ((ch = getopt_long(argc, argv, "cbf:hm:t:v", longopts, NULL)) != -1) {
-		switch (ch) {
-		case 0:
-			if (daggerset) {
-			fprintf(stderr, "Buffy will use her dagger to "
-			    "apply fluoride to dracula's teeth\n");
-			}
-			break;
-		case 'b':
-			bflag = 1;
-			break;
+	while ((input = getopt_long(argc, argv, "cf:hm:t:v", longopts, NULL)) != -1) {
+		switch (input) {
 		case 'c':
 			enable_color = false;
 			break;
