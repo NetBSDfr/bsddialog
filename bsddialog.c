@@ -119,6 +119,12 @@
 #define TREEVIEW	100 // treeview
 #define YESNO		101 // yesno
 
+struct opts {
+	int x;
+	int y;
+	char *title;
+};
+
 enum elevation { RAISED, LOWERED };
 
 void usage(void);
@@ -130,6 +136,8 @@ void window_handler(WINDOW *window);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
+/* widgets */
+int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 
 void usage(void)
 {
@@ -140,8 +148,11 @@ void usage(void)
 int main(int argc, char *argv[argc])
 {
 	bool enable_color = true;
-	char title[1024], msgbox[1024];
-	int input, x, y, row, cols;
+	char title[1024], text[1024];
+	int input, x, y, rows, cols;
+	int (*widgetbuilder)(struct opts opt, char* text, int rows, int cols, int argc, char **argv) = NULL;
+	struct opts myopt;
+
 	/* options descriptor */
 	static struct option longopts[] = {
 	    /* common options */
@@ -232,7 +243,7 @@ int main(int argc, char *argv[argc])
 	    { "menu", no_argument, NULL, 'X' },
 	    { "mixedform", no_argument, NULL, 'X' },
 	    { "mixedgauge", no_argument, NULL, 'X' },
-	    { "msgbox", required_argument, NULL, MSGBOX },
+	    { "msgbox", no_argument, NULL, MSGBOX },
 	    { "passwordbox", no_argument, NULL, 'X' },
 	    { "passwordform", no_argument, NULL, 'X' },
 	    { "pause", no_argument, NULL, 'X' },
@@ -266,7 +277,8 @@ int main(int argc, char *argv[argc])
 			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
 		case TITLE:
-			strcpy(title, optarg);
+			//strcpy(title, optarg);
+			myopt.title = optarg;
 			break;
 		case PRINT_VERSION:
 		case VERSION:
@@ -274,7 +286,7 @@ int main(int argc, char *argv[argc])
 			return 0;
 		/* Widgets */
 		case MSGBOX:
-			strcpy(msgbox, optarg);
+			widgetbuilder = msgbox_builder;
 			break;
 		/* Error */
 		default:
@@ -285,21 +297,15 @@ int main(int argc, char *argv[argc])
 	argc -= optind;
 	argv += optind;
 
-	if (argc > 0) {
-		/* todo window checks */
-		if (argc != 2) { /* msgbox */
-			usage();
-			return (1);
-		}
+	if (argc != 3) {
+		usage();
+		return (1);
 	}
-
-	argc = 0;
-	//while (argv[argc]) {
-		row  = atoi(argv[argc]);
-		argc++;
-		cols = atoi(argv[argc]);
-    		argc++;
-	//}
+	strcpy(text, argv[0]);
+	rows = atoi(argv[1]);
+	cols = atoi(argv[2]);
+	argc -= 3;
+	argv += 3;
 
 	if(init_view(enable_color) != 0) {
 		printf("Cannot init ncurses\n");
@@ -307,25 +313,32 @@ int main(int argc, char *argv[argc])
 	}
 	refresh();
 
-	/* msgbox */
-	x = LINES/2 - row/2;
-	y = COLS/2 - cols/2;
-	WINDOW *popup = new_window(x, y, row, cols, title, BLACK_WHITE, RAISED,
-	    false);
-	mvwaddstr(popup, 1, 1, msgbox);
-
-	WINDOW *key = new_window(x+row -2, y, 3, cols, "", 
-	    BLACK_WHITE, RAISED, false);
-
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	wrefresh(popup);
-	wrefresh(key);
-	window_handler(popup);
-	delwin(key);
-	delwin(popup);
-	/* end msgbox */
+	myopt.x = LINES/2 - rows/2;
+	myopt.y = COLS/2 - cols/2;
+	widgetbuilder(myopt, text, rows, cols, argc /*unused*/, argv /*unused*/);
 
 	endwin();
+	return 0;
+}
+
+int 
+msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *key;
+
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	    false);
+
+	wrefresh(widget);
+	wrefresh(key);
+	window_handler(widget);
+	delwin(key);
+	delwin(widget);
+
 	return 0;
 }
 
