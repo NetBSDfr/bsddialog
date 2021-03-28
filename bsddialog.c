@@ -138,6 +138,7 @@ void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 /* widgets */
 int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
+int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 
 void usage(void)
 {
@@ -237,7 +238,7 @@ int main(int argc, char *argv[argc])
 	    { "form", no_argument, NULL, 'X' },
 	    { "fselect", no_argument, NULL, 'X' },
 	    { "gauge", no_argument, NULL, 'X' },
-	    { "infobox", no_argument, NULL, 'X' },
+	    { "infobox", no_argument, NULL, INFOBOX },
 	    { "inputbox", no_argument, NULL, 'X' },
 	    { "inputmenu", no_argument, NULL, 'X' },
 	    { "menu", no_argument, NULL, 'X' },
@@ -285,6 +286,9 @@ int main(int argc, char *argv[argc])
 			printf("bsddialog %s\n", BSDDIALOG_VERSION);
 			return 0;
 		/* Widgets */
+		case INFOBOX:
+			widgetbuilder = infobox_builder;
+			break;
 		case MSGBOX:
 			widgetbuilder = msgbox_builder;
 			break;
@@ -318,6 +322,22 @@ int main(int argc, char *argv[argc])
 	widgetbuilder(myopt, text, rows, cols, argc /*unused*/, argv /*unused*/);
 
 	endwin();
+	return 0;
+}
+
+int 
+infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget;
+
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
+
+	wrefresh(widget);
+	window_handler(widget);
+	delwin(widget);
+
 	return 0;
 }
 
