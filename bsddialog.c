@@ -124,8 +124,8 @@ enum elevation { RAISED, LOWERED };
 void usage(void);
 int  init_view(bool enable_color);
 WINDOW *
-new_window(int rows, int cols, const char *title, int color, enum elevation elev,
-    bool scrolling);
+new_window(int x, int y, int rows, int cols, const char *title, int color,
+    enum elevation elev, bool scrolling);
 void window_handler(WINDOW *window);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(const char* text, int x, int y, bool bold, int color);
@@ -307,12 +307,16 @@ int main(int argc, char *argv[argc])
 	}
 	refresh();
 
-	WINDOW *popup = new_window(row, cols, title, BLACK_WHITE, RAISED, false);
+	/* msgbox */
+	WINDOW *popup = new_window(LINES/2 - row/2, COLS/2 - cols/2, row, cols,
+	    title, BLACK_WHITE, RAISED, false);
 	mvwaddstr(popup, 1, 1, msgbox);
 
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	wrefresh(popup);
 	window_handler(popup);
 	delwin(popup);
+	/* end msgbox */
 
 	endwin();
 	return 0;
@@ -378,8 +382,8 @@ int print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_li
 /* Popup */
 
 WINDOW *
-new_window(int rows, int cols, const char *title, int color, enum elevation elev,
-    bool scrolling)
+new_window(int x, int y, int rows, int cols, const char *title, int color,
+    enum elevation elev, bool scrolling)
 {
 	WINDOW *popup;
 	int leftcolor, rightcolor;
@@ -388,7 +392,7 @@ new_window(int rows, int cols, const char *title, int color, enum elevation elev
 		popup = newpad(rows, cols);
 	else
 		//popup = newwin(rows, cols, 2, COLS/2 - cols/2);
-		popup = newwin(rows, cols, LINES/2 - rows/2, COLS/2 - cols/2);
+		popup = newwin(rows, cols, x, y);
 
 	wbkgd(popup, COLOR_PAIR(color));
 
