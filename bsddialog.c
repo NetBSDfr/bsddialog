@@ -325,44 +325,6 @@ int main(int argc, char *argv[argc])
 	return 0;
 }
 
-/* Widgets */
-int 
-infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
-{
-	WINDOW *widget;
-
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
-	    RAISED, false);
-	mvwaddstr(widget, 1, 1, text);
-
-	wrefresh(widget);
-	window_handler(widget);
-	delwin(widget);
-
-	return 0;
-}
-
-int 
-msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
-{
-	WINDOW *widget, *key;
-
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
-	    RAISED, false);
-	mvwaddstr(widget, 1, 1, text);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
-	    false);
-
-	wrefresh(widget);
-	wrefresh(key);
-	window_handler(widget);
-	delwin(key);
-	delwin(widget);
-
-	return 0;
-}
-
 /* View */
 int init_view(bool enable_color)
 {
@@ -420,8 +382,6 @@ int print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_li
 	line = line > 0 ? line-1 : 0;
 	return line;
 }
-
-/* Popup */
 
 WINDOW *
 new_window(int x, int y, int rows, int cols, const char *title, int color,
@@ -539,77 +499,40 @@ void window_handler(WINDOW* window)
 	}
 }
 
-/*int select_device_popup(char *mixer)
+/* Widgets */
+int 
+infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
-	int i, h = 20, w = 45, input, ndevices;
-	bool loop;
-	WINDOW *selectwin, *subwin;
-	MENU *menu;
-	ITEM *devices[MAXDEVICES];
-	int index = 0;
-	char oidname[DEV_NAME + 12];
-	char pcm[MAXDEVICES][DEV_NAME], desc[MAXDEVICES][DEV_DESC];
-	size_t desclen;
+	WINDOW *widget;
 
-	if((ndevices = get_ndevices(mixer)) < 0)
-		return - 1;
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
 
-	for(i=0; i < ndevices; i++)	{
-		snprintf(pcm[i], DEV_NAME, "pcm%d", i);
-		desclen = DEV_DESC;
-		sprintf(oidname, "dev.pcm.%d.%%desc", i);
-		sysctlbyname(oidname, desc[i], &desclen, NULL, 0);
-		desc[i][desclen] = '\0';
-		desc[i][w-4-strlen(pcm[i])] = '\0';
-		devices[i] = new_item(pcm[i], desc[i]);
-	}
-	devices[i] = (ITEM *)NULL;
+	wrefresh(widget);
+	window_handler(widget);
+	delwin(widget);
 
-	h = (h < ndevices + 2) ? h : ndevices + 2;
+	return 0;
+}
 
-	selectwin = new_window(h, w, " Select Device ", WHITE_BLUE, RAISED, false);
+int 
+msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *key;
 
-	menu = new_menu(devices);
-	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE) | A_REVERSE);
-	set_menu_back(menu, COLOR_PAIR(WHITE_BLUE));
-	set_menu_win( menu, selectwin);
-	set_menu_mark(menu, " ");
-	set_menu_format(menu, h, 0);
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	    false);
 
-	subwin = derwin(selectwin, h-2, w-2, 1, 1);
-	set_menu_sub( menu, subwin);
-	post_menu(menu);
+	wrefresh(widget);
+	wrefresh(key);
+	window_handler(widget);
+	delwin(key);
+	delwin(widget);
 
-	loop = true;
-	while(loop) {
-		wrefresh(selectwin);
-		input = getch();
-		switch(input) {
-		case KEY_UP:
-			menu_driver(menu, REQ_UP_ITEM);
-			index = index > 0 ? index-1 : index;
-			break;
-		case KEY_DOWN:
-			menu_driver(menu, REQ_DOWN_ITEM);
-			index = index < ndevices-1 ? index+1 : index;
-			break;
-		case 10: // Enter
-			loop = false;
-			break;
-		default:
-			index = - 1;
-			loop = false;
-		}
-	}
-
-	for(i=0; i < ndevices; i++)
-		free_item(devices[i]);
-	free_menu(menu);
-	delwin(subwin);
-	delwin(selectwin);
-
-	if(ndevices <= 0)
-		index = -1;
-
-	return index;
-}*/
+	return 0;
+}
