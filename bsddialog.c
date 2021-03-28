@@ -141,7 +141,7 @@ int main(int argc, char *argv[argc])
 {
 	bool enable_color = true;
 	char title[1024], msgbox[1024];
-	int input, row, cols;
+	int input, x, y, row, cols;
 	/* options descriptor */
 	static struct option longopts[] = {
 	    /* common options */
@@ -308,13 +308,20 @@ int main(int argc, char *argv[argc])
 	refresh();
 
 	/* msgbox */
-	WINDOW *popup = new_window(LINES/2 - row/2, COLS/2 - cols/2, row, cols,
-	    title, BLACK_WHITE, RAISED, false);
+	x = LINES/2 - row/2;
+	y = COLS/2 - cols/2;
+	WINDOW *popup = new_window(x, y, row, cols, title, BLACK_WHITE, RAISED,
+	    false);
 	mvwaddstr(popup, 1, 1, msgbox);
+
+	WINDOW *key = new_window(x+row -2, y, 3, cols, "", 
+	    BLACK_WHITE, RAISED, false);
 
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	wrefresh(popup);
+	wrefresh(key);
 	window_handler(popup);
+	delwin(key);
 	delwin(popup);
 	/* end msgbox */
 
