@@ -196,7 +196,7 @@ int main(int argc, char *argv[argc])
 	    { "output-separator", required_argument, NULL /*string*/, 'X' },
 	    { "print-maxsize", no_argument, NULL, 'X' },
 	    { "print-size", no_argument, NULL, 'X' },
-	    { "print-version", no_argument, NULL, 'X' },
+	    { "print-version", no_argument, NULL, PRINT_VERSION },
 	    { "quoted", no_argument, NULL, 'X' },
 	    { "scrollbar", no_argument, NULL, 'X' },
 	    { "separate-output", no_argument, NULL, 'X' },
@@ -214,7 +214,7 @@ int main(int argc, char *argv[argc])
 	    { "title", required_argument, NULL /*title*/, TITLE },
 	    { "trace", required_argument, NULL /*filename*/, 'X' },
 	    { "trim", no_argument, NULL, 'X' },
-	    { "version", no_argument, NULL, 'X' },
+	    { "version", no_argument, NULL, VERSION },
 	    { "visit-items", no_argument, NULL, 'X' },
 	    { "yes-label", required_argument, NULL /*string*/, 'X' },
 	    /* Widgets */
@@ -251,7 +251,7 @@ int main(int argc, char *argv[argc])
 	    { NULL, 0, NULL, 0 }
 	};
 
-	while ((input = getopt_long(argc, argv, "cf:hm:t:v", longopts, NULL)) != -1) {
+	while ((input = getopt_long(argc, argv, "cf:hm:t:", longopts, NULL)) != -1) {
 		switch (input) {
 		case 'c':
 			enable_color = false;
@@ -274,7 +274,8 @@ int main(int argc, char *argv[argc])
 		case TITLE:
 			strcpy(title, optarg);
 			break;
-		case 'v':
+		case PRINT_VERSION:
+		case VERSION:
 			printf("bsddialog %s\n", BSDDIALOG_VERSION);
 			return 0;
 		default:
