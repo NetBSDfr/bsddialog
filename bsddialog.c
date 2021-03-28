@@ -15,17 +15,6 @@
 #define BLUE_WHITE	6
 #define WHITE_BLUE	7
 
-enum elevation { RAISED, LOWERED };
-
-void usage(void);
-int  init_view(bool enable_color);
-WINDOW *
-new_window(int rows, int cols, const char *title, int color, enum elevation elev,
-    bool scrolling);
-void window_handler(WINDOW *window);
-void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-void print_text(const char* text, int x, int y, bool bold, int color);
-int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 
 /* Common options */
 #define ASCII_LINES	1 // ascii-lines
@@ -130,6 +119,18 @@ int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_l
 #define TIMEBOX		99 // timebox
 #define TREEVIEW	100 // treeview
 #define YESNO		101 // yesno
+
+enum elevation { RAISED, LOWERED };
+
+void usage(void);
+int  init_view(bool enable_color);
+WINDOW *
+new_window(int rows, int cols, const char *title, int color, enum elevation elev,
+    bool scrolling);
+void window_handler(WINDOW *window);
+void window_scrolling_handler(WINDOW *pad, int rows, int cols);
+void print_text(const char* text, int x, int y, bool bold, int color);
+int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 
 void usage(void)
 {
