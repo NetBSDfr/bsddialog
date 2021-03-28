@@ -251,7 +251,7 @@ int main(int argc, char *argv[argc])
 	    { NULL, 0, NULL, 0 }
 	};
 
-	while ((input = getopt_long(argc, argv, "cf:hm:t:", longopts, NULL)) != -1) {
+	while ((input = getopt_long(argc, argv, "ch", longopts, NULL)) != -1) {
 		switch (input) {
 		case 'c':
 			enable_color = false;
@@ -264,13 +264,6 @@ int main(int argc, char *argv[argc])
 			printf("\n");
 			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
-		case 'f':
-			/*if ((fd = open(optarg, O_RDONLY, 0)) == -1)
-			err(1, "unable to open %s", optarg);*/
-			break;
-		case MSGBOX:
-			strcpy(msgbox, optarg);
-			break;
 		case TITLE:
 			strcpy(title, optarg);
 			break;
@@ -278,6 +271,11 @@ int main(int argc, char *argv[argc])
 		case VERSION:
 			printf("bsddialog %s\n", BSDDIALOG_VERSION);
 			return 0;
+		/* Widgets */
+		case MSGBOX:
+			strcpy(msgbox, optarg);
+			break;
+		/* Error */
 		default:
 			usage();
 			return 1;
