@@ -1,9 +1,4 @@
-#ifdef PORTNCURSES
-#include <ncurses/curses.h>
-#else
 #include <curses.h>
-#endif
-
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
