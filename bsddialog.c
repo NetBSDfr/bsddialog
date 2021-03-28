@@ -9,7 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define VERSION "0.1"
+#define BSDDIALOG_VERSION "0.1"
 
 /* Foreground_Background */
 #define WHITE_WHITE	1
@@ -31,6 +31,110 @@ void window_handler(WINDOW *window);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
+
+/* Common options */
+#define ASCII_LINES	1 // ascii-lines
+#define ASPECT		2 // aspect
+#define BACKTITLE	3 // backtitle
+#define BEGIN		4 // begin
+#define CANCEL_LABEL	5 // cancel-label
+#define CLEAR		6 // clear
+#define COLORS		7 // colors
+#define COLUMN_SEPARATOR 8 // column-separator
+#define CR_WRAP		9 // cr-wrap
+#define CREATE_RC	10 // create-rc
+#define DATE_FORMAT	11 // date-format
+#define DEFAULTNO	12 // defaultno
+#define DEFAULT_BUTTON	13 // default-button
+#define DEFAULT_ITEM	14 // default-item
+#define EXIT_LABEL	15 // exit-label
+#define EXTRA_BUTTON	16 // extra-button
+#define EXTRA_LABEL	17 // extra-label
+#define HELP		18 // help
+#define HELP_BUTTON	19 // help-button
+#define HELP_LABEL	20 // help-label
+#define HELP_STATUS	21 // help-status
+#define HELP_TAGS	22 // help-tags
+#define HFILE		23 // hfile
+#define HLINE		24 // hline
+#define IGNORE		25 // ignore
+#define INPUT_FD	26 // input-fd
+#define INSECURE	27 // insecure
+#define ITEM_HELP	28 // item-help
+#define KEEP_TITE	29 // keep-tite
+#define KEEP_WINDOW	30 // keep-window
+#define LAST_KEY	31 // last-key
+#define MAX_INPUT	32 // max-input
+#define NO_CANCEL	33 // no-cancel
+#define NOCANCEL	34 // nocancel
+#define NO_COLLAPSE	35 // no-collapse
+#define NO_ITEMS	36 // no-items
+#define NO_KILL		37 // no-kill
+#define NO_LABEL	38 // no-label
+#define NO_LINES	39 // no-lines
+#define NO_MOUSE	40 // no-mouse
+#define NO_NL_EXPAND	41 // no-nl-expand
+#define NO_OK		42 // no-ok
+#define NOOK		43 // nook 
+#define NO_SHADOW	44 // no-shadow
+#define NO_TAGS		45 // no-tags
+#define OK_LABEL	46 // ok-label
+#define OUTPUT_FD	47 // output-fd
+#define SEPARATOR	48 // separator
+#define OUTPUT_SEPARATOR 49 // output-separator
+#define PRINT_MAXSIZE	50 // print-maxsize
+#define PRINT_SIZE	51 // print-size
+#define PRINT_VERSION	52 // print-version
+#define QUOTED		53 // quoted
+#define SCROLLBAR	54 // scrollbar
+#define SEPARATE_OUTPUT	55 // separate-output
+#define SEPARATE_WIDGET	56 // separate-widget
+#define SHADOW		57 // shadow
+#define SINGLE_QUOTED	58 // single-quoted
+#define SIZE_ERR	59 // size-err
+#define SLEEP		60 // sleep
+#define STRERR		61 // stderr
+#define STDOUT		62 // stdout
+#define TAB_CORRECT	63 // tab-correct
+#define TAB_LEN		64 // tab-len
+#define TIME_FORMAT	65 // time-format
+#define TIMEOUT		66 // timeout
+#define TITLE		67 // title
+#define TRACE		68 // trace
+#define TRIM		69 // trim
+#define VERSION		70 // version
+#define VISIT_ITEMS	71 // visit-items
+#define YES_LABEL	72 // yes-label
+/* Widgets */
+#define BUILDLIST	73 // buildlist
+#define CALENDAR	74 // calendar
+#define CHECKLIST	75 // checklist
+#define DSELECT		76 // dselect
+#define EDITBOX		77 // editbox
+#define FORM		78 // form
+#define FSELECT		79 // fselect
+#define GAUGE		80 // gauge
+#define INFOBOX		81 // infobox
+#define INPUTBOX	82 // inputbox
+#define INPUTMENU	83 // inputmenu
+#define MENU		84 // menu
+#define MIXEDFORM	85 // mixedform
+#define MIXEDGAUGE	86 // mixedgauge
+#define MSGBOX		87 // msgbox
+#define PASSWORD	88 // passwordbox
+#define PASSWORDBOX	89 // passwordform
+#define PAUSE		90 // pause
+#define PRGBOX		91 // prgbox
+#define PROGRAMBOX	92 // programbox
+#define PROGRESSBOX	93 // progressbox
+#define RADIOLIST	94 // radiolist
+#define RANGEBOX	95 // rangebox
+#define TAILBOX		96 // tailbox
+#define TAILBOXBG	97 // tailboxbg
+#define TEXTBOX		98 // textbox
+#define TIMEBOX		99 // timebox
+#define TREEVIEW	100 // treeview
+#define YESNO		101 // yesno
 
 void usage(void)
 {
@@ -94,7 +198,7 @@ int main(int argc, char *argv[argc])
 	    { "ok-label", required_argument, NULL /*string*/, 'X' },
 	    { "output-fd", required_argument, NULL /*fd*/, 'X' },
 	    { "separator", required_argument, NULL /*string*/, 'X' },
-	    { "output-separatorstring", no_argument, NULL, 'X' },
+	    { "output-separator", required_argument, NULL /*string*/, 'X' },
 	    { "print-maxsize", no_argument, NULL, 'X' },
 	    { "print-size", no_argument, NULL, 'X' },
 	    { "print-version", no_argument, NULL, 'X' },
@@ -112,19 +216,43 @@ int main(int argc, char *argv[argc])
 	    { "tab-len", required_argument, NULL /*n*/, 'X' },
 	    { "time-format", required_argument, NULL /*format*/, 'X' },
 	    { "timeout", required_argument, NULL /*secs*/, 'X' },
-	    { "title", required_argument, /*&t*/ NULL, 't' },
+	    { "title", required_argument, NULL /*title*/, TITLE },
 	    { "trace", required_argument, NULL /*filename*/, 'X' },
 	    { "trim", no_argument, NULL, 'X' },
 	    { "version", no_argument, NULL, 'X' },
 	    { "visit-items", no_argument, NULL, 'X' },
 	    { "yes-label", required_argument, NULL /*string*/, 'X' },
 	    /* Widgets */
-/*buildlist, calendar, checklist, dselect, editbox,	form, fselect,
-	      gauge, infobox, inputbox,	inputmenu, menu, mixedform,
-	      mixedgauge, msgbox (message), passwordbox, passwordform, pause,
-	      prgbox, programbox, progressbox, radiolist, rangebox, tailbox,
-	      tailboxbg, textbox, timebox, treeview, and yesno (yes/no).*/
-	    { "msgbox", required_argument, /*&m*/ NULL, 'm' },
+	    { "buildlist", no_argument, NULL, 'X' },
+	    { "calendar", no_argument, NULL, 'X' },
+	    { "checklist", no_argument, NULL, 'X' },
+	    { "dselect", no_argument, NULL, 'X' },
+	    { "editbox", no_argument, NULL, 'X' },
+	    { "form", no_argument, NULL, 'X' },
+	    { "fselect", no_argument, NULL, 'X' },
+	    { "gauge", no_argument, NULL, 'X' },
+	    { "infobox", no_argument, NULL, 'X' },
+	    { "inputbox", no_argument, NULL, 'X' },
+	    { "inputmenu", no_argument, NULL, 'X' },
+	    { "menu", no_argument, NULL, 'X' },
+	    { "mixedform", no_argument, NULL, 'X' },
+	    { "mixedgauge", no_argument, NULL, 'X' },
+	    { "msgbox", required_argument, NULL, MSGBOX },
+	    { "passwordbox", no_argument, NULL, 'X' },
+	    { "passwordform", no_argument, NULL, 'X' },
+	    { "pause", no_argument, NULL, 'X' },
+	    { "prgbox", no_argument, NULL, },
+	    { "programbox", no_argument, NULL, 'X' },
+	    { "progressbox", no_argument, NULL, 'X' },
+	    { "radiolist", no_argument, NULL, 'X' },
+	    { "rangebox", no_argument, NULL, 'X' },
+	    { "tailbox", no_argument, NULL, 'X' },
+	    { "tailboxbg", no_argument, NULL, 'X' },
+	    { "textbox", no_argument, NULL, 'X' },
+	    { "timebox", no_argument, NULL, 'X' },
+	    { "treeview", no_argument, NULL, 'X' },
+	    { "yesno", no_argument, NULL, 'X' },
+	    /* END */
 	    { NULL, 0, NULL, 0 }
 	};
 
@@ -145,14 +273,14 @@ int main(int argc, char *argv[argc])
 			/*if ((fd = open(optarg, O_RDONLY, 0)) == -1)
 			err(1, "unable to open %s", optarg);*/
 			break;
-		case 'm':
+		case MSGBOX:
 			strcpy(msgbox, optarg);
 			break;
-		case 't':
+		case TITLE:
 			strcpy(title, optarg);
 			break;
 		case 'v':
-			printf("bsddialog %s\n", VERSION);
+			printf("bsddialog %s\n", BSDDIALOG_VERSION);
 			return 0;
 		default:
 			usage();
