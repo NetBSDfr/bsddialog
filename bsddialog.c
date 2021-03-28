@@ -307,6 +307,7 @@ int main(int argc, char *argv[argc])
 	}
 	strcpy(text, argv[0]);
 	rows = atoi(argv[1]);
+	rows--;
 	cols = atoi(argv[2]);
 	argc -= 3;
 	argv += 3;
@@ -521,6 +522,8 @@ int
 msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *key;
+	int input;
+	bool loop = true;
 
 	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
 	    RAISED, false);
@@ -539,7 +542,18 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 
 	wrefresh(widget);
 	wrefresh(key);
-	window_handler(widget);
+
+	while(loop) {
+		input = getch();
+		switch(input) {
+		case 10: /* Enter */
+		case 'O':
+		case 'o':
+			loop = false;
+			break;
+		}
+	}
+
 	delwin(key);
 	delwin(widget);
 
