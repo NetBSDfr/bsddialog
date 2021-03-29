@@ -521,7 +521,7 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
 
 	wrefresh(widget);
-	draw_button(key, (cols-2)/2 - SIZEBUTTON/2, "OK", true); 
+	draw_button(key, (cols)/2 - SIZEBUTTON/2, "OK", true);
 	wrefresh(key);
 
 	while(loop) {
