@@ -119,6 +119,8 @@
 #define TREEVIEW	100 // treeview
 #define YESNO		101 // yesno
 
+#define SIZEBUTTON	8
+
 struct opts {
 	int x;
 	int y;
@@ -135,6 +137,7 @@ new_window(int x, int y, int rows, int cols, const char *title, int color,
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
+void draw_button(WINDOW *window, int y, char *text, bool selected);
 /* widgets */
 int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
@@ -451,6 +454,32 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
 }
 
+void draw_button(WINDOW *window, int start_y, char *text, bool selected)
+{
+	int i, y, color_arrows, color_first_char, color_tail_chars;
+
+	color_arrows = selected ? WHITE_BLUE : BLACK_WHITE ;
+	color_first_char = selected ? WHITE_BLUE : RED_WHITE;
+	color_tail_chars = selected ? YELLOW_BLUE : RED_WHITE;
+
+	wattron(window, A_BOLD | COLOR_PAIR(color_arrows));
+	mvwaddch(window, 1, start_y, '<');
+	for(i = 1; i < SIZEBUTTON - 1; i++)
+		mvwaddch(window, 1, start_y + i, ' ');
+	mvwaddch(window, 1, start_y + i, '>');
+	wattroff(window, A_BOLD | COLOR_PAIR(color_arrows));
+
+	y = start_y + 1 + ((SIZEBUTTON - 2 - strlen(text))/2);
+
+	wattron(window, A_BOLD |COLOR_PAIR(color_tail_chars));
+	mvwaddstr(window, 1, y, text);
+	wattroff(window, A_BOLD | COLOR_PAIR(color_tail_chars));
+
+	wattron(window, A_BOLD | COLOR_PAIR(color_first_char));
+	mvwaddch(window, 1, y, text[0]);
+	wattroff(window, A_BOLD | COLOR_PAIR(color_first_char));
+}
+
 /* Widgets */
 int 
 infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
@@ -492,6 +521,7 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
 
 	wrefresh(widget);
+	draw_button(key, (cols-2)/2 - SIZEBUTTON/2, "OK", true); 
 	wrefresh(key);
 
 	while(loop) {
