@@ -123,9 +123,79 @@
 #define SIZEBUTTON	8
 
 struct opts {
-	int x;
-	int y;
+	bool ascii_lines;
+	int aspect;	// aspect ratio
+	char *backtitle;
+	int x;		// BEGIN
+	int y;		// BEGIN
+	char *cancel_label;
+	bool clear;	// useful?
+	bool colors;
+	char *colums_separator;
+	bool cr_wrap;
+	char *create_rc;// useful?
+	char *date_format;
+	bool defaultno;
+	char *default_button;
+	char *default_item;
+	char *exit_label;
+	bool extra_button;
+	char *extra_label;
+	bool help;	//useful?
+	bool help_button;
+	char *help_label;
+	bool help_status;
+	bool help_tags;
+	char *hfile;
+	char *hline;
+	bool ignore;
+	int input_fd;
+	bool insecure;
+	bool item_help;
+	bool keep_tite;
+	bool keep_window;
+	bool last_key;
+	int max_input;
+	bool no_cancel;	// alias
+	bool nocancel;	// alias useful?
+	bool no_collapse;
+	bool no_items;
+	bool no_kill;
+	char *no_label;
+	bool no_lines;
+	bool no_mouse;
+	bool no_nl_expand;
+	bool no_ok;	// alias
+	bool nook;	// alias useful?
+	bool no_shadow;
+	bool no_tags;
+	char *ok_label;
+	int oputput_fd;
+	char *separator;
+	char *output_separator;
+	bool print_maxsize; // useful?
+	bool print_size; // useful?
+	bool print_version; //useful?
+	bool quoted;
+	bool scrollbar;
+	bool separate_output;
+	char *separate_witget;
+	bool shadow;
+	bool single_quoted;
+	bool size_err;
+	int sleep; // useful?
+	bool stderr_; 
+	bool stdout_;
+	bool tab_correct;
+	int tab_len;
+	char *time_format;
+	int timeout;
 	char *title;
+	char *trace;
+	bool trim;
+	bool version; // alias? useful?
+	bool visit_items;
+	char *yes_label;
 };
 
 enum elevation { RAISED, LOWERED };
@@ -470,26 +540,32 @@ void draw_button(WINDOW *window, int start_y, char *text, bool selected)
 {
 	int i, y, color_arrows, color_first_char, color_tail_chars;
 
-	color_arrows = selected ? WHITE_BLUE : BLACK_WHITE ;
-	color_first_char = selected ? WHITE_BLUE : RED_WHITE;
-	color_tail_chars = selected ? YELLOW_BLUE : RED_WHITE;
+	if (selected) {
+		color_arrows = A_BOLD | COLOR_PAIR(WHITE_BLUE);
+		color_first_char = A_BOLD | COLOR_PAIR(WHITE_BLUE);
+		color_tail_chars = A_BOLD | COLOR_PAIR(YELLOW_BLUE);
+	} else {
+		color_arrows = COLOR_PAIR(BLACK_WHITE);
+		color_first_char = A_BOLD | COLOR_PAIR(RED_WHITE);
+		color_tail_chars = A_BOLD | COLOR_PAIR(BLACK_WHITE);
+	}
 
-	wattron(window, A_BOLD | COLOR_PAIR(color_arrows));
+	wattron(window, color_arrows);
 	mvwaddch(window, 1, start_y, '<');
 	for(i = 1; i < SIZEBUTTON - 1; i++)
 		mvwaddch(window, 1, start_y + i, ' ');
 	mvwaddch(window, 1, start_y + i, '>');
-	wattroff(window, A_BOLD | COLOR_PAIR(color_arrows));
+	wattroff(window, color_arrows);
 
 	y = start_y + 1 + ((SIZEBUTTON - 2 - strlen(text))/2);
 
-	wattron(window, A_BOLD |COLOR_PAIR(color_tail_chars));
+	wattron(window, color_tail_chars);
 	mvwaddstr(window, 1, y, text);
-	wattroff(window, A_BOLD | COLOR_PAIR(color_tail_chars));
+	wattroff(window, color_tail_chars);
 
-	wattron(window, A_BOLD | COLOR_PAIR(color_first_char));
+	wattron(window, color_first_char);
 	mvwaddch(window, 1, y, text[0]);
-	wattroff(window, A_BOLD | COLOR_PAIR(color_first_char));
+	wattroff(window, color_first_char);
 }
 
 /* Widgets */
