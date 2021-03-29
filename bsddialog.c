@@ -229,7 +229,7 @@ int main(int argc, char *argv[argc])
 	struct opts myopt;
 
 	/* options descriptor */
-	static struct option longopts[] = {
+	struct option longopts[] = {
 	    /* common options */
 	    { "ascii-lines", no_argument, NULL, 'X' },
 	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
