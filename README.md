@@ -70,7 +70,7 @@ Output:
 | --output-separator *string*  |             |                                 |
 | --print-maxsize              |             |                                 |
 | --print-size                 |             |                                 |
-| --print-version              |             |                                 |
+| --print-version              | In progress |                                 |
 | --quoted                     |             |                                 |
 | --scrollbar                  |             |                                 |
 | --separate-output            |             |                                 |
@@ -85,10 +85,10 @@ Output:
 | --tab-len *n*                |             |                                 |
 | --time-format *format*       |             |                                 |
 | --timeout *secs*             |             |                                 |
-| --title *title*              |             |                                 |
+| --title *title*              | In progress |                                 |
 | --trace *filename*           |             |                                 |
 | --trim                       |             |                                 |
-| --version                    |             |                                 |
+| --version                    | In progress |                                 |
 | --visit-items                |             |                                 |
 | --yes-label *string*         |             |                                 |
 
@@ -103,13 +103,13 @@ Output:
 | form         |             |                                                 |
 | fselect      |             |                                                 |
 | gauge        |             |                                                 |
-| infobox      |             |                                                 |
+| infobox      | In progress |                                                 |
 | inputbox     |             |                                                 |
 | inputmenu    |             |                                                 |
 | menu         |             |                                                 |
 | mixedform    |             |                                                 |
 | mixedgauge   |             |                                                 |
-| msgbox       |             |                                                 |
+| msgbox       | In progress |                                                 |
 | passwordbox  |             |                                                 |
 | passwordform |             |                                                 |
 | pause        |             |                                                 |
@@ -123,5 +123,5 @@ Output:
 | textbox      |             |                                                 |
 | timebox      |             |                                                 |
 | treeview     |             |                                                 |
-| yesno        |             |                                                 |
+| yesno        | In progress |                                                 |
 
