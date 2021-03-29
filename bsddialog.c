@@ -175,7 +175,7 @@ struct opts {
 	char *output_separator;
 	bool print_maxsize; // useful?
 	bool print_size; // useful?
-	bool print_version; //useful?
+	bool print_version;
 	bool quoted;
 	bool scrollbar;
 	bool separate_output;
@@ -193,7 +193,7 @@ struct opts {
 	char *title;
 	char *trace;
 	bool trim;
-	bool version; // alias? useful?
+	bool version;
 	bool visit_items;
 	char *yes_label;
 };
@@ -356,8 +356,10 @@ int main(int argc, char *argv[argc])
 			myopt.title = optarg;
 			break;
 		case PRINT_VERSION:
+			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
+			break;
 		case VERSION:
-			printf("bsddialog %s\n", BSDDIALOG_VERSION);
+			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			return 0;
 		/* Widgets */
 		case INFOBOX:

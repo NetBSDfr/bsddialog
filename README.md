@@ -70,7 +70,7 @@ Output:
 | --output-separator *string*  |             |                                 |
 | --print-maxsize              |             |                                 |
 | --print-size                 |             |                                 |
-| --print-version              | In progress |                                 |
+| --print-version              | Completed   |                                 |
 | --quoted                     |             |                                 |
 | --scrollbar                  |             |                                 |
 | --separate-output            |             |                                 |
