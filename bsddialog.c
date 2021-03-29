@@ -321,7 +321,7 @@ int main(int argc, char *argv[argc])
 	}
 	refresh();
 
-	myopt.x = LINES/2 - rows/2;
+	myopt.x = LINES/2 - rows/2 - 1;
 	myopt.y = COLS/2 - cols/2;
 
 	WINDOW *shadow = newwin(rows +1, cols+1, myopt.x+1, myopt.y+1);
