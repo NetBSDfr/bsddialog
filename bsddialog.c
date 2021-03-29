@@ -404,7 +404,6 @@ new_window(int x, int y, int rows, int cols, const char *title, int color,
 	if (scrolling)
 		popup = newpad(rows, cols);
 	else
-		//popup = newwin(rows, cols, 2, COLS/2 - cols/2);
 		popup = newwin(rows, cols, x, y);
 
 	wbkgd(popup, COLOR_PAIR(color));
