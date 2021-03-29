@@ -14,6 +14,7 @@
 #define RED_WHITE	5 // key
 #define WHITE_BLUE	6 // key
 #define YELLOW_BLUE	7 // key
+#define BLACK_BLACK	8 // shadow
 
 /* Common options */
 #define ASCII_LINES	1 // ascii-lines
@@ -322,9 +323,16 @@ int main(int argc, char *argv[argc])
 
 	myopt.x = LINES/2 - rows/2;
 	myopt.y = COLS/2 - cols/2;
+
+	WINDOW *shadow = newwin(rows +1, cols+1, myopt.x+1, myopt.y+1);
+	wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+	wrefresh(shadow);
+
 	widgetbuilder(myopt, text, rows, cols, argc /*unused*/, argv /*unused*/);
 
+	delwin(shadow);
 	endwin();
+
 	return 0;
 }
 
@@ -351,6 +359,7 @@ int init_view(bool enable_color)
 		error += init_pair(RED_WHITE,   COLOR_RED,    COLOR_WHITE);
 		error += init_pair(WHITE_BLUE,  COLOR_WHITE,  COLOR_BLUE);
 		error += init_pair(YELLOW_BLUE, COLOR_YELLOW, COLOR_BLUE);
+		error += init_pair(BLACK_BLACK, COLOR_BLACK,  COLOR_BLACK);
 	}
 
 	bkgd(COLOR_PAIR(BLUE_BLUE));
