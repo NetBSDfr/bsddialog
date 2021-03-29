@@ -22,7 +22,7 @@ Output:
 | --ascii-lines                |             |                                 |
 | --aspect *ratio*             |             |                                 |
 | --backtitle *backtitle*      |             |                                 |
-| --begin y x                  |             |                                 |
+| --begin y x                  | In progress |                                 |
 | --cancel-label *string*      |             |                                 |
 | --clear                      |             |                                 |
 | --colors                     |             |                                 |

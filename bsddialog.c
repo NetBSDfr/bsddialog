@@ -228,13 +228,17 @@ int main(int argc, char *argv[argc])
 	int (*widgetbuilder)(struct opts opt, char* text, int rows, int cols, int argc, char **argv) = NULL;
 	struct opts myopt;
 
+	memset(&myopt, '0', sizeof(struct opts));
+	myopt.x = -1;
+	myopt.y = -1;
+
 	/* options descriptor */
 	struct option longopts[] = {
 	    /* common options */
 	    { "ascii-lines", no_argument, NULL, 'X' },
 	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
 	    { "backtitle", required_argument, NULL /*backtitle*/, 'X' },
-	    { "begin", required_argument, NULL /*y x*/, 'X' },
+	    { "begin", required_argument, NULL /*y x*/, BEGIN },
 	    { "cancel-label", required_argument, NULL /*string*/, 'X' },
 	    { "clear", no_argument, NULL, 'X' },
 	    { "colors", no_argument, NULL, 'X' },
@@ -351,6 +355,16 @@ int main(int argc, char *argv[argc])
 			printf("\n");
 			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
+		case BEGIN:
+			myopt.x = atoi(optarg);
+			myopt.y = atoi(argv[optind]);
+			if (myopt.x < 0 || myopt.y < 0) {
+				printf("Can't make new window at (%d,%d).",
+				    myopt.x, myopt.y);
+				return 1;
+			}
+			optind++;
+			break;
 		case TITLE:
 			//strcpy(title, optarg);
 			myopt.title = optarg;
@@ -397,8 +411,8 @@ int main(int argc, char *argv[argc])
 	}
 	refresh();
 
-	myopt.x = LINES/2 - rows/2 - 1;
-	myopt.y = COLS/2 - cols/2;
+	myopt.x = myopt.x < 0 ? (LINES/2 - rows/2 - 1) : myopt.x;
+	myopt.y = myopt.y < 0 ? (COLS/2 - cols/2) : myopt.y;
 
 	WINDOW *shadow = newwin(rows +1, cols+1, myopt.x+1, myopt.y+1);
 	wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
