@@ -142,6 +142,7 @@ void draw_button(WINDOW *window, int y, char *text, bool selected);
 /* widgets */
 int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
+int yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 
 void usage(void)
 {
@@ -261,7 +262,7 @@ int main(int argc, char *argv[argc])
 	    { "textbox", no_argument, NULL, 'X' },
 	    { "timebox", no_argument, NULL, 'X' },
 	    { "treeview", no_argument, NULL, 'X' },
-	    { "yesno", no_argument, NULL, 'X' },
+	    { "yesno", no_argument, NULL, YESNO },
 	    /* END */
 	    { NULL, 0, NULL, 0 }
 	};
@@ -294,6 +295,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case MSGBOX:
 			widgetbuilder = msgbox_builder;
+			break;
+		case YESNO:
+			widgetbuilder = yesno_builder;
 			break;
 		/* Error */
 		default:
@@ -540,6 +544,74 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 		case 'o':
 			loop = false;
 			break;
+		}
+	}
+
+	delwin(key);
+	delwin(widget);
+
+	return 0;
+}
+
+int
+yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *key;
+	int input;
+	bool loop = true, isyes = true, flop = false;
+
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	    false);
+
+	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	mvwaddch(key, 0, 0, ACS_LTEE);
+	wattroff(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+
+	wattron(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	mvwaddch(key, 0, cols-1, ACS_RTEE);
+	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+
+	wrefresh(widget);
+	draw_button(key, (cols)/2 - 2 - SIZEBUTTON, "YES", true);
+	draw_button(key, (cols)/2 + 2, "NO", false);
+	wrefresh(key);
+
+	while(loop) {
+		input = getch();
+		switch(input) {
+		case 10: /* Enter */
+			loop = false;
+			break;
+		case KEY_LEFT:
+			if (!isyes)
+				flop = true;
+			break;
+		case KEY_RIGHT:
+			if (isyes)
+				flop = true;
+			break;
+		case 'N':
+		case 'n':
+			loop = false;
+			break;
+		case '\t': /* TAB */
+			flop = true;
+			break;
+		case 'Y':
+		case 'y':
+			loop = false;
+			break;
+		}
+		if(flop) {
+			isyes = isyes ? false : true;
+			draw_button(key, (cols)/2 - 2 - SIZEBUTTON, "YES", isyes);
+			draw_button(key, (cols)/2 + 2, "NO", !isyes);
+			flop = false;
+			wrefresh(key);
 		}
 	}
 
