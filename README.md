@@ -36,7 +36,7 @@ Output:
 | --exit-label *string*        |             |                                 |
 | --extra-button               |             |                                 |
 | --extra-label *string*       |             |                                 |
-| --help                       |             |                                 |
+| --help                       | In progress |                                 |
 | --help-button                |             |                                 |
 | --help-label *string*        |             |                                 |
 | --help-status                |             |                                 |

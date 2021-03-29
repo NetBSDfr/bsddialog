@@ -217,7 +217,9 @@ int yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, cha
 void usage(void)
 {
 
-	printf("usage: dialog [-c | -h | -v]\n");
+	printf("usage: bsddialog --help | -- version\n"\
+	       "       bsddialog [common-opts] widget <text> <height> <width> "\
+	       "[widget-opts]\n");
 }
 
 int main(int argc, char *argv[argc])
@@ -252,7 +254,7 @@ int main(int argc, char *argv[argc])
 	    { "exit-label", required_argument, NULL /*string*/, 'X' },
 	    { "extra-button", no_argument, NULL, 'X' },
 	    { "extra-label", required_argument, NULL /*string*/, 'X' },
-	    { "help", no_argument, NULL, 'X' },
+	    { "help", no_argument, NULL, HELP },
 	    { "help-button", no_argument, NULL, 'X' },
 	    { "help-label", required_argument, NULL /*string*/, 'X' },
 	    { "help-status", no_argument, NULL, 'X' },
@@ -347,11 +349,8 @@ int main(int argc, char *argv[argc])
 		case 'c':
 			enable_color = false;
 			break;
-		case 'h':
+		case HELP:
 			usage();
-			printf(" -c\t\t Disable color\n");
-			printf(" -h\t\t Display this help\n");
-			printf(" -v\t\t Show version\n");
 			printf("\n");
 			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
