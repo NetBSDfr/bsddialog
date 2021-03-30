@@ -211,12 +211,13 @@ WINDOW *
 new_window(int x, int y, int rows, int cols, const char *title, int color,
     enum elevation elev, bool scrolling);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-void print_text(WINDOW *window, char* text, int x, int y, bool bold, int color);
+void print_text(WINDOW *window, int x, int y, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
 /* widgets */
 int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
+int inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 
 void usage(void)
@@ -331,7 +332,7 @@ int main(int argc, char *argv[argc])
 	    { "fselect", no_argument, NULL, 'X' },
 	    { "gauge", no_argument, NULL, 'X' },
 	    { "infobox", no_argument, NULL, INFOBOX },
-	    { "inputbox", no_argument, NULL, 'X' },
+	    { "inputbox", no_argument, NULL, INPUTBOX },
 	    { "inputmenu", no_argument, NULL, 'X' },
 	    { "menu", no_argument, NULL, 'X' },
 	    { "mixedform", no_argument, NULL, 'X' },
@@ -413,6 +414,9 @@ int main(int argc, char *argv[argc])
 		/* Widgets */
 		case INFOBOX:
 			widgetbuilder = infobox_builder;
+			break;
+		case INPUTBOX:
+			widgetbuilder = inputbox_builder;
 			break;
 		case MSGBOX:
 			widgetbuilder = msgbox_builder;
@@ -499,7 +503,7 @@ int init_view(bool enable_color)
 	return error;
 }
 
-void print_text(WINDOW *window, char* text, int x, int y, bool bold, int color)
+void print_text(WINDOW *window, int x, int y, char* text, bool bold, int color)
 {
 
 	attron(COLOR_PAIR(color) | (bold ? A_BOLD : 0));
@@ -684,6 +688,81 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 	}
 
 	delwin(key);
+	delwin(widget);
+
+	return 0;
+}
+
+int
+inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *key, *entry;
+	int input, size;
+	bool loop = true, isok = true, flop = false;
+
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	entry = new_window(opt.x + rows - 5, opt.y +1, 3, cols-2, "", BLACK_WHITE,
+	    LOWERED, false);
+	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	    false);
+
+	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	mvwaddch(key, 0, 0, ACS_LTEE);
+	wattroff(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+
+	wattron(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	mvwaddch(key, 0, cols-1, ACS_RTEE);
+	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+
+	size = MAX(SIZEBUTTON-2, strlen(opt.yes_label));
+	size = MAX(size, strlen(opt.cancel_label));
+	size += 2;
+	wrefresh(widget);
+	wrefresh(entry);
+	draw_button(key, (cols)/2 - 2 - size, size, opt.ok_label, true);
+	draw_button(key, (cols)/2 + 2, size, opt.cancel_label, false);
+	wrefresh(key);
+
+	while(loop) {
+		input = getch();
+		switch(input) {
+		case 10: /* Enter */
+			loop = false;
+			break;
+		case KEY_LEFT:
+			if (!isok)
+				flop = true;
+			break;
+		case KEY_RIGHT:
+			if (isok)
+				flop = true;
+			break;
+		case 'N':
+		case 'n':
+			loop = false;
+			break;
+		case '\t': /* TAB */
+			flop = true;
+			break;
+		case 'Y':
+		case 'y':
+			loop = false;
+			break;
+		}
+		if(flop) {
+			isok = isok ? false : true;
+			draw_button(key, (cols)/2 - 2 - size, size, opt.ok_label, isok);
+			draw_button(key, (cols)/2 + 2, size, opt.cancel_label, !isok);
+			flop = false;
+			wrefresh(key);
+		}
+	}
+
+	delwin(key);
+	delwin(entry);
 	delwin(widget);
 
 	return 0;
