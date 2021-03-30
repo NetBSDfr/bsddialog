@@ -23,7 +23,7 @@ Output:
 | --aspect *ratio*             |             |                                 |
 | --backtitle *backtitle*      | In progress |                                 |
 | --begin y x                  | In progress |                                 |
-| --cancel-label *string*      |             |                                 |
+| --cancel-label *string*      | In progress |                                 |
 | --clear                      |             |                                 |
 | --colors                     |             |                                 |
 | --column-separator *string*  |             |                                 |
@@ -33,12 +33,12 @@ Output:
 | --defaultno                  |             |                                 |
 | --default-button *string*    |             |                                 |
 | --default-item *string*      |             |                                 |
-| --exit-label *string*        |             |                                 |
+| --exit-label *string*        | In progress |                                 |
 | --extra-button               |             |                                 |
-| --extra-label *string*       |             |                                 |
+| --extra-label *string*       | In progress |                                 |
 | --help                       | In progress |                                 |
 | --help-button                |             |                                 |
-| --help-label *string*        |             |                                 |
+| --help-label *string*        | In progress |                                 |
 | --help-status                |             |                                 |
 | --help-tags                  |             |                                 |
 | --hfile *filename*           |             |                                 |
@@ -56,7 +56,7 @@ Output:
 | --no-collapse                |             |                                 |
 | --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
-| --no-label *string*          |             |                                 |
+| --no-label *string*          | In progress |                                 |
 | --no-lines                   |             |                                 |
 | --no-mouse                   |             |                                 |
 | --no-nl-expand               |             |                                 |
@@ -64,7 +64,7 @@ Output:
 | --nook                       |             |                                 |
 | --no-shadow                  |             |                                 |
 | --no-tags                    |             |                                 |
-| --ok-label *string*          |             |                                 |
+| --ok-label *string*          | In progress |                                 |
 | --output-fd *fd*             |             |                                 |
 | --separator *string*         |             |                                 |
 | --output-separator *string*  |             |                                 |
@@ -90,7 +90,7 @@ Output:
 | --trim                       |             |                                 |
 | --version                    | In progress |                                 |
 | --visit-items                |             |                                 |
-| --yes-label *string*         |             |                                 |
+| --yes-label *string*         | In progress |                                 |
 
 
 | Windget      | Status      | Note                                            |

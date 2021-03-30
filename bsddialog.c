@@ -1,3 +1,5 @@
+//#include <sys/param.h> // only for MAX
+
 #include <curses.h>
 #include <getopt.h>
 #include <stdlib.h>
@@ -5,6 +7,8 @@
 #include <unistd.h>
 
 #define BSDDIALOG_VERSION "0.1"
+
+#define MAX(a,b) (((a)>(b))?(a):(b))
 
 /* Foreground_Background */
 #define BLUE_BLUE	1 // main background
@@ -209,7 +213,7 @@ new_window(int x, int y, int rows, int cols, const char *title, int color,
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(const char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
-void draw_button(WINDOW *window, int y, char *text, bool selected);
+void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
 /* widgets */
 int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
@@ -234,6 +238,13 @@ int main(int argc, char *argv[argc])
 	memset(&myopt, '0', sizeof(struct opts));
 	myopt.x = -1;
 	myopt.y = -1;
+	myopt.cancel_label = "Cancel";
+	myopt.exit_label = "EXIT";
+	myopt.extra_label = "Extra";
+	myopt.help_label = "Help";
+	myopt.no_label = "No";
+	myopt.ok_label = "OK";
+	myopt.yes_label = "Yes";
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -242,7 +253,7 @@ int main(int argc, char *argv[argc])
 	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
 	    { "backtitle", required_argument, NULL /*backtitle*/, BACKTITLE },
 	    { "begin", required_argument, NULL /*y x*/, BEGIN },
-	    { "cancel-label", required_argument, NULL /*string*/, 'X' },
+	    { "cancel-label", required_argument, NULL /*string*/, CANCEL_LABEL },
 	    { "clear", no_argument, NULL, 'X' },
 	    { "colors", no_argument, NULL, 'X' },
 	    { "column-separator", required_argument, NULL /*string*/, 'X' },
@@ -252,12 +263,12 @@ int main(int argc, char *argv[argc])
 	    { "defaultno", no_argument, NULL, 'X' },
 	    { "default-button", required_argument, NULL	/*string*/, 'X' },
 	    { "default-item", required_argument, NULL /*string*/, 'X' },
-	    { "exit-label", required_argument, NULL /*string*/, 'X' },
+	    { "exit-label", required_argument, NULL /*string*/, EXIT_LABEL },
 	    { "extra-button", no_argument, NULL, 'X' },
-	    { "extra-label", required_argument, NULL /*string*/, 'X' },
+	    { "extra-label", required_argument, NULL /*string*/, EXTRA_LABEL },
 	    { "help", no_argument, NULL, HELP },
 	    { "help-button", no_argument, NULL, 'X' },
-	    { "help-label", required_argument, NULL /*string*/, 'X' },
+	    { "help-label", required_argument, NULL /*string*/, HELP_LABEL },
 	    { "help-status", no_argument, NULL, 'X' },
 	    { "help-tags", no_argument, NULL, 'X' },
 	    { "hfile", required_argument, NULL /*filename*/, 'X' },
@@ -275,7 +286,7 @@ int main(int argc, char *argv[argc])
 	    { "no-collapse", no_argument, NULL, 'X' },
 	    { "no-items", no_argument, NULL, 'X' },
 	    { "no-kill", no_argument, NULL, 'X' },
-	    { "no-label", required_argument, NULL /*string*/, 'X' },
+	    { "no-label", required_argument, NULL /*string*/, NO_LABEL },
 	    { "no-lines", no_argument, NULL, 'X' },
 	    { "no-mouse", no_argument, NULL, 'X' },
 	    { "no-nl-expand", no_argument, NULL, 'X' },
@@ -283,7 +294,7 @@ int main(int argc, char *argv[argc])
 	    { "nook ", no_argument, NULL, 'X' },
 	    { "no-shadow", no_argument, NULL, 'X' },
 	    { "no-tags", no_argument, NULL, 'X' },
-	    { "ok-label", required_argument, NULL /*string*/, 'X' },
+	    { "ok-label", required_argument, NULL /*string*/, OK_LABEL },
 	    { "output-fd", required_argument, NULL /*fd*/, 'X' },
 	    { "separator", required_argument, NULL /*string*/, 'X' },
 	    { "output-separator", required_argument, NULL /*string*/, 'X' },
@@ -309,7 +320,7 @@ int main(int argc, char *argv[argc])
 	    { "trim", no_argument, NULL, 'X' },
 	    { "version", no_argument, NULL, VERSION },
 	    { "visit-items", no_argument, NULL, 'X' },
-	    { "yes-label", required_argument, NULL /*string*/, 'X' },
+	    { "yes-label", required_argument, NULL /*string*/, YES_LABEL },
 	    /* Widgets */
 	    { "buildlist", no_argument, NULL, 'X' },
 	    { "calendar", no_argument, NULL, 'X' },
@@ -353,11 +364,6 @@ int main(int argc, char *argv[argc])
 		case BACKTITLE:
 			backtitle = optarg;
 			break;
-		case HELP:
-			usage();
-			printf("\n");
-			printf("See \'man 1 bsddialog\' for more information.\n");
-			return 0;
 		case BEGIN:
 			myopt.x = atoi(optarg);
 			myopt.y = atoi(argv[optind]);
@@ -368,16 +374,42 @@ int main(int argc, char *argv[argc])
 			}
 			optind++;
 			break;
-		case TITLE:
-			//strcpy(title, optarg);
-			myopt.title = optarg;
+		case CANCEL_LABEL:
+			myopt.cancel_label = optarg;
+			break;
+		case EXIT_LABEL:
+			myopt.exit_label = optarg;
+			break;
+		case EXTRA_LABEL:
+			myopt.extra_label = optarg;
+			break;
+		case HELP:
+			usage();
+			printf("\n");
+			printf("See \'man 1 bsddialog\' for more information.\n");
+			return 0;
+		case HELP_LABEL:
+			myopt.help_label = optarg;
+			break;
+		case NO_LABEL:
+			myopt.no_label = optarg;
+			break;
+		case OK_LABEL:
+			myopt.ok_label = optarg;
 			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			break;
+		case TITLE:
+			//strcpy(title, optarg);
+			myopt.title = optarg;
+			break;
 		case VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			return 0;
+		case YES_LABEL:
+			myopt.yes_label = optarg;
+			break;
 		/* Widgets */
 		case INFOBOX:
 			widgetbuilder = infobox_builder;
@@ -562,7 +594,7 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
 }
 
-void draw_button(WINDOW *window, int start_y, char *text, bool selected)
+void draw_button(WINDOW *window, int start_y, int size, char *text, bool selected)
 {
 	int i, y, color_arrows, color_first_char, color_tail_chars;
 
@@ -578,12 +610,12 @@ void draw_button(WINDOW *window, int start_y, char *text, bool selected)
 
 	wattron(window, color_arrows);
 	mvwaddch(window, 1, start_y, '<');
-	for(i = 1; i < SIZEBUTTON - 1; i++)
+	for(i = 1; i < size - 1; i++)
 		mvwaddch(window, 1, start_y + i, ' ');
 	mvwaddch(window, 1, start_y + i, '>');
 	wattroff(window, color_arrows);
 
-	y = start_y + 1 + ((SIZEBUTTON - 2 - strlen(text))/2);
+	y = start_y + 1 + ((size - 2 - strlen(text))/2);
 
 	wattron(window, color_tail_chars);
 	mvwaddstr(window, 1, y, text);
@@ -616,7 +648,7 @@ int
 msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *key;
-	int input;
+	int input, size;
 	bool loop = true;
 
 	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
@@ -634,8 +666,10 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 	mvwaddch(key, 0, cols-1, ACS_RTEE);
 	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
 
+	size = MAX(SIZEBUTTON-2, strlen(opt.ok_label));
+	size += 2;
 	wrefresh(widget);
-	draw_button(key, (cols)/2 - SIZEBUTTON/2, "OK", true);
+	draw_button(key, (cols)/2 - size/2, size, opt.ok_label, true);
 	wrefresh(key);
 
 	while(loop) {
@@ -659,7 +693,7 @@ int
 yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *key;
-	int input;
+	int input, size;
 	bool loop = true, isyes = true, flop = false;
 
 	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
@@ -677,9 +711,12 @@ yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **
 	mvwaddch(key, 0, cols-1, ACS_RTEE);
 	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
 
+	size = MAX(SIZEBUTTON-2, strlen(opt.yes_label));
+	size = MAX(size, strlen(opt.no_label));
+	size += 2;
 	wrefresh(widget);
-	draw_button(key, (cols)/2 - 2 - SIZEBUTTON, "YES", true);
-	draw_button(key, (cols)/2 + 2, "NO", false);
+	draw_button(key, (cols)/2 - 2 - size, size, opt.yes_label, true);
+	draw_button(key, (cols)/2 + 2, size, opt.no_label, false);
 	wrefresh(key);
 
 	while(loop) {
@@ -710,8 +747,8 @@ yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **
 		}
 		if(flop) {
 			isyes = isyes ? false : true;
-			draw_button(key, (cols)/2 - 2 - SIZEBUTTON, "YES", isyes);
-			draw_button(key, (cols)/2 + 2, "NO", !isyes);
+			draw_button(key, (cols)/2 - 2 - size, size, opt.yes_label, isyes);
+			draw_button(key, (cols)/2 + 2, size, opt.no_label, !isyes);
 			flop = false;
 			wrefresh(key);
 		}
