@@ -15,6 +15,7 @@
 #define WHITE_BLUE	6 // key
 #define YELLOW_BLUE	7 // key
 #define BLACK_BLACK	8 // shadow
+#define CYAN_BLUE	9 // backtitle
 
 /* Common options */
 #define ASCII_LINES	1 // ascii-lines
@@ -125,7 +126,7 @@
 struct opts {
 	bool ascii_lines;
 	int aspect;	// aspect ratio
-	char *backtitle;
+	//char *backtitle;
 	int x;		// BEGIN
 	int y;		// BEGIN
 	char *cancel_label;
@@ -225,7 +226,7 @@ void usage(void)
 int main(int argc, char *argv[argc])
 {
 	bool enable_color = true;
-	char title[1024], text[1024];
+	char title[1024], text[1024], *backtitle = NULL;
 	int input, x, y, rows, cols;
 	int (*widgetbuilder)(struct opts opt, char* text, int rows, int cols, int argc, char **argv) = NULL;
 	struct opts myopt;
@@ -239,7 +240,7 @@ int main(int argc, char *argv[argc])
 	    /* common options */
 	    { "ascii-lines", no_argument, NULL, 'X' },
 	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
-	    { "backtitle", required_argument, NULL /*backtitle*/, 'X' },
+	    { "backtitle", required_argument, NULL /*backtitle*/, BACKTITLE },
 	    { "begin", required_argument, NULL /*y x*/, BEGIN },
 	    { "cancel-label", required_argument, NULL /*string*/, 'X' },
 	    { "clear", no_argument, NULL, 'X' },
@@ -349,6 +350,9 @@ int main(int argc, char *argv[argc])
 		case 'c':
 			enable_color = false;
 			break;
+		case BACKTITLE:
+			backtitle = optarg;
+			break;
 		case HELP:
 			usage();
 			printf("\n");
@@ -408,6 +412,12 @@ int main(int argc, char *argv[argc])
 		printf("Cannot init ncurses\n");
 		return 1;
 	}
+	if (backtitle != NULL) {
+		attron(COLOR_PAIR(CYAN_BLUE) | A_BOLD );
+		mvaddstr(0, 1, backtitle);
+		mvhline(1, 1, ACS_HLINE, COLS-2);
+		attroff(COLOR_PAIR(CYAN_BLUE) | A_BOLD);
+	}
 	refresh();
 
 	myopt.x = myopt.x < 0 ? (LINES/2 - rows/2 - 1) : myopt.x;
@@ -449,6 +459,7 @@ int init_view(bool enable_color)
 		error += init_pair(WHITE_BLUE,  COLOR_WHITE,  COLOR_BLUE);
 		error += init_pair(YELLOW_BLUE, COLOR_YELLOW, COLOR_BLUE);
 		error += init_pair(BLACK_BLACK, COLOR_BLACK,  COLOR_BLACK);
+		error += init_pair(CYAN_BLUE,   COLOR_CYAN,   COLOR_BLUE);
 	}
 
 	bkgd(COLOR_PAIR(BLUE_BLUE));

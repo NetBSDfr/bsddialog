@@ -21,7 +21,7 @@ Output:
 | ---------------------------- | ----------- | ------------------------------- |
 | --ascii-lines                |             |                                 |
 | --aspect *ratio*             |             |                                 |
-| --backtitle *backtitle*      |             |                                 |
+| --backtitle *backtitle*      | In progress |                                 |
 | --begin y x                  | In progress |                                 |
 | --cancel-label *string*      |             |                                 |
 | --clear                      |             |                                 |
