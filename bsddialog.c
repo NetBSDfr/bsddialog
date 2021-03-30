@@ -175,7 +175,7 @@ struct opts {
 	char *output_separator;
 	bool print_maxsize; // useful?
 	bool print_size; // useful?
-	bool print_version;
+	//bool print_version; utility
 	bool quoted;
 	bool scrollbar;
 	bool separate_output;
@@ -193,7 +193,7 @@ struct opts {
 	char *title;
 	char *trace;
 	bool trim;
-	bool version;
+	//bool version; utility
 	bool visit_items;
 	char *yes_label;
 };
