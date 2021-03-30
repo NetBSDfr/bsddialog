@@ -211,7 +211,7 @@ WINDOW *
 new_window(int x, int y, int rows, int cols, const char *title, int color,
     enum elevation elev, bool scrolling);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-void print_text(const char* text, int x, int y, bool bold, int color);
+void print_text(WINDOW *window, char* text, int x, int y, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
 /* widgets */
@@ -499,11 +499,11 @@ int init_view(bool enable_color)
 	return error;
 }
 
-void print_text(const char* text, int x, int y, bool bold, int color)
+void print_text(WINDOW *window, char* text, int x, int y, bool bold, int color)
 {
 
 	attron(COLOR_PAIR(color) | (bold ? A_BOLD : 0));
-	mvaddstr(x, y, text);
+	mvwaddstr(window, x, y, text);
 	attroff(COLOR_PAIR(color) | (bold ? A_BOLD : 0));
 }
 
