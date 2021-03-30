@@ -439,7 +439,6 @@ int main(int argc, char *argv[argc])
 	}
 	strcpy(text, argv[0]);
 	rows = atoi(argv[1]);
-	rows--;
 	cols = atoi(argv[2]);
 	argc -= 3;
 	argv += 3;
@@ -459,7 +458,7 @@ int main(int argc, char *argv[argc])
 	myopt.x = myopt.x < 0 ? (LINES/2 - rows/2 - 1) : myopt.x;
 	myopt.y = myopt.y < 0 ? (COLS/2 - cols/2) : myopt.y;
 
-	WINDOW *shadow = newwin(rows +1, cols+1, myopt.x+1, myopt.y+1);
+	WINDOW *shadow = newwin(rows, cols+1, myopt.x+1, myopt.y+1);
 	wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
 	wrefresh(shadow);
 
@@ -659,7 +658,7 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	key = new_window(opt.x+rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -704,9 +703,9 @@ inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(opt.x + rows - 5, opt.y +1, 3, cols-2, "", BLACK_WHITE,
+	entry = new_window(opt.x + rows - 6, opt.y +1, 3, cols-2, "", BLACK_WHITE,
 	    LOWERED, false);
-	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	key = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -779,7 +778,7 @@ yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	key = new_window(opt.x+rows -2, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	key = new_window(opt.x+rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
