@@ -655,25 +655,61 @@ int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     char **values, int selected, bool shortkey, int fd)
 {
-	bool loop = true;
-	int size, input;
+	bool loop = true, update;
+	int i, y, start_y, size, input;
+#define BUTTONSPACE 3
 
 	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
+	for (i=1; i < nbuttons; i++)
+		size = MAX(size, strlen(buttons[i]));
 	size += 2;
 
-	draw_button(window, (cols)/2 - size/2, size, buttons[0], true);
+	start_y = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
+	start_y = cols/2 - start_y/2;
+
+	y = start_y;
+	for (i = 0; i < nbuttons; i++) {
+		y = y + i * (size + BUTTONSPACE);
+		draw_button(window, y, size, buttons[i], i == selected);
+	}
 
 	while(loop) {
 		wrefresh(window);
 		input = getch();
-		switch(input) {
-		case 10: /* Enter */
-		case 'O':
-		case 'o':
+		if (input == 10 ) { /* Enter */
+			// print values[selected];
 			loop = false;
-			break;
+		} else if (input == '\t') { /* TAB */
+			/* future */
+		} else if (input == KEY_LEFT) {
+			if (selected > 0) {
+				selected--;
+				update = true;
+			}
+		} else if (input == KEY_RIGHT) {
+			if (selected < nbuttons) {
+				selected++;
+				update = true;
+			}
+		} else if (shortkey) {
+			for (i = 0; i < nbuttons; i++)
+				if (input == (buttons[i])[0]) {
+					// print values[i];
+					loop = false;
+				}
+		}
+			
+
+		if (update) {
+			y = start_y;
+			for (i = 0; i < nbuttons; i++) {
+				y = y + i * (size + BUTTONSPACE);
+				draw_button(window, y, size, buttons[i], i == selected);
+			}
+			update = false;
 		}
 	}
+
 	return 0;
 }
 
@@ -710,9 +746,9 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 int
 inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
-	WINDOW *widget, *key, *entry;
-	int input, size;
-	bool loop = true, isok = true, flop = false;
+	WINDOW *widget, *button, *entry;
+	char *buttons[2] = {opt.ok_label, opt.cancel_label};
+	char *values[2] = {opt.ok_label, opt.cancel_label};
 
 	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
 	    RAISED, false);
@@ -720,62 +756,23 @@ inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(opt.x + rows - 6, opt.y +1, 3, cols-2, "", BLACK_WHITE,
 	    LOWERED, false);
-	key = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	button = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
-	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-	mvwaddch(key, 0, 0, ACS_LTEE);
-	wattroff(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	mvwaddch(button, 0, 0, ACS_LTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 
-	wattron(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
-	mvwaddch(key, 0, cols-1, ACS_RTEE);
-	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	mvwaddch(button, 0, cols-1, ACS_RTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
 
-	size = MAX(SIZEBUTTON-2, strlen(opt.yes_label));
-	size = MAX(size, strlen(opt.cancel_label));
-	size += 2;
 	wrefresh(widget);
 	wrefresh(entry);
-	draw_button(key, (cols)/2 - 2 - size, size, opt.ok_label, true);
-	draw_button(key, (cols)/2 + 2, size, opt.cancel_label, false);
-	wrefresh(key);
 
-	while(loop) {
-		input = getch();
-		switch(input) {
-		case 10: /* Enter */
-			loop = false;
-			break;
-		case KEY_LEFT:
-			if (!isok)
-				flop = true;
-			break;
-		case KEY_RIGHT:
-			if (isok)
-				flop = true;
-			break;
-		case 'N':
-		case 'n':
-			loop = false;
-			break;
-		case '\t': /* TAB */
-			flop = true;
-			break;
-		case 'Y':
-		case 'y':
-			loop = false;
-			break;
-		}
-		if(flop) {
-			isok = isok ? false : true;
-			draw_button(key, (cols)/2 - 2 - size, size, opt.ok_label, isok);
-			draw_button(key, (cols)/2 + 2, size, opt.cancel_label, !isok);
-			flop = false;
-			wrefresh(key);
-		}
-	}
+	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
 
-	delwin(key);
+	delwin(button);
 	delwin(entry);
 	delwin(widget);
 
@@ -785,69 +782,30 @@ inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char
 int
 yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
-	WINDOW *widget, *key;
-	int input, size;
-	bool loop = true, isyes = true, flop = false;
+	WINDOW *widget, *button;
+	char *buttons[2] = {opt.yes_label, opt.no_label};
+	char *values[2] = {opt.yes_label, opt.no_label};
 
 	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	key = new_window(opt.x+rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	button = new_window(opt.x+rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
-	wattron(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-	mvwaddch(key, 0, 0, ACS_LTEE);
-	wattroff(key, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	mvwaddch(button, 0, 0, ACS_LTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 
-	wattron(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
-	mvwaddch(key, 0, cols-1, ACS_RTEE);
-	wattroff(key, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	mvwaddch(button, 0, cols-1, ACS_RTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
 
-	size = MAX(SIZEBUTTON-2, strlen(opt.yes_label));
-	size = MAX(size, strlen(opt.no_label));
-	size += 2;
 	wrefresh(widget);
-	draw_button(key, (cols)/2 - 2 - size, size, opt.yes_label, true);
-	draw_button(key, (cols)/2 + 2, size, opt.no_label, false);
-	wrefresh(key);
 
-	while(loop) {
-		input = getch();
-		switch(input) {
-		case 10: /* Enter */
-			loop = false;
-			break;
-		case KEY_LEFT:
-			if (!isyes)
-				flop = true;
-			break;
-		case KEY_RIGHT:
-			if (isyes)
-				flop = true;
-			break;
-		case 'N':
-		case 'n':
-			loop = false;
-			break;
-		case '\t': /* TAB */
-			flop = true;
-			break;
-		case 'Y':
-		case 'y':
-			loop = false;
-			break;
-		}
-		if(flop) {
-			isyes = isyes ? false : true;
-			draw_button(key, (cols)/2 - 2 - size, size, opt.yes_label, isyes);
-			draw_button(key, (cols)/2 + 2, size, opt.no_label, !isyes);
-			flop = false;
-			wrefresh(key);
-		}
-	}
+	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
 
-	delwin(key);
+	delwin(button);
 	delwin(widget);
 
 	return 0;
