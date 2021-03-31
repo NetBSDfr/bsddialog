@@ -71,7 +71,7 @@ Examples:
 | --no-nl-expand               |             |                                 |
 | --no-ok                      |             |                                 |
 | --nook                       |             |                                 |
-| --no-shadow                  |             |                                 |
+| --no-shadow                  | In progress |                                 |
 | --no-tags                    |             |                                 |
 | --ok-label *string*          | In progress |                                 |
 | --output-fd *fd*             |             |                                 |
@@ -84,7 +84,7 @@ Examples:
 | --scrollbar                  |             |                                 |
 | --separate-output            |             |                                 |
 | --separate-widget *string*   |             |                                 |
-| --shadow                     |             |                                 |
+| --shadow                     | In progress |                                 |
 | --single-quoted              |             |                                 |
 | --size-err                   |             |                                 |
 | --sleep *secs*               |             |                                 |
@@ -113,7 +113,7 @@ Examples:
 | fselect      |             |                                                 |
 | gauge        |             |                                                 |
 | infobox      | In progress |                                                 |
-| inputbox     |             |                                                 |
+| inputbox     | In progress |                                                 |
 | inputmenu    |             |                                                 |
 | menu         |             |                                                 |
 | mixedform    |             |                                                 |
