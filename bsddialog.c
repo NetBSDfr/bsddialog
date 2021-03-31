@@ -1,5 +1,3 @@
-//#include <sys/param.h> // only for MAX
-
 #include <curses.h>
 #include <getopt.h>
 #include <stdlib.h>
@@ -172,7 +170,7 @@ struct opts {
 	bool no_nl_expand;
 	bool no_ok;	// alias
 	bool nook;	// alias useful?
-	bool no_shadow;
+	//bool no_shadow; utility (.shadow for lib)
 	bool no_tags;
 	char *ok_label;
 	int oputput_fd;
@@ -238,6 +236,7 @@ int main(int argc, char *argv[argc])
 	char title[1024], text[1024], *backtitle = NULL;
 	int input, x, y, rows, cols;
 	int (*widgetbuilder)(struct opts opt, char* text, int rows, int cols, int argc, char **argv) = NULL;
+	WINDOW *shadow;
 	struct opts myopt;
 
 	memset(&myopt, '0', sizeof(struct opts));
@@ -250,6 +249,7 @@ int main(int argc, char *argv[argc])
 	myopt.no_label = "No";
 	myopt.ok_label = "OK";
 	myopt.yes_label = "Yes";
+	myopt.shadow = true;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -297,7 +297,7 @@ int main(int argc, char *argv[argc])
 	    { "no-nl-expand", no_argument, NULL, 'X' },
 	    { "no-ok", no_argument, NULL, 'X' },
 	    { "nook ", no_argument, NULL, 'X' },
-	    { "no-shadow", no_argument, NULL, 'X' },
+	    { "no-shadow", no_argument, NULL, NO_SHADOW },
 	    { "no-tags", no_argument, NULL, 'X' },
 	    { "ok-label", required_argument, NULL /*string*/, OK_LABEL },
 	    { "output-fd", required_argument, NULL /*fd*/, 'X' },
@@ -310,7 +310,7 @@ int main(int argc, char *argv[argc])
 	    { "scrollbar", no_argument, NULL, 'X' },
 	    { "separate-output", no_argument, NULL, 'X' },
 	    { "separate-widget", required_argument, NULL /*string*/, 'X' },
-	    { "shadow", no_argument, NULL, 'X' },
+	    { "shadow", no_argument, NULL, SHADOW },
 	    { "single-quoted", no_argument, NULL, 'X' },
 	    { "size-err", no_argument, NULL, 'X' },
 	    { "sleep", required_argument, NULL /*secs*/, 'X' },
@@ -399,11 +399,17 @@ int main(int argc, char *argv[argc])
 		case NO_LABEL:
 			myopt.no_label = optarg;
 			break;
+		case NO_SHADOW:
+			myopt.shadow = false;
+			break;
 		case OK_LABEL:
 			myopt.ok_label = optarg;
 			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
+			break;
+		case SHADOW:
+			myopt.shadow = true;
 			break;
 		case TITLE:
 			//strcpy(title, optarg);
@@ -462,13 +468,16 @@ int main(int argc, char *argv[argc])
 	myopt.x = myopt.x < 0 ? (LINES/2 - rows/2 - 1) : myopt.x;
 	myopt.y = myopt.y < 0 ? (COLS/2 - cols/2) : myopt.y;
 
-	WINDOW *shadow = newwin(rows, cols+1, myopt.x+1, myopt.y+1);
-	wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-	wrefresh(shadow);
+	if (myopt.shadow) {
+		shadow = newwin(rows, cols+1, myopt.x+1, myopt.y+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
 
 	widgetbuilder(myopt, text, rows, cols, argc /*unused*/, argv /*unused*/);
 
-	delwin(shadow);
+	if (myopt.shadow)
+		delwin(shadow);
 	endwin();
 
 	return 0;
