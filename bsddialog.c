@@ -698,7 +698,6 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 					loop = false;
 				}
 		}
-			
 
 		if (update) {
 			y = start_y;
