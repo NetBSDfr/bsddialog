@@ -250,6 +250,7 @@ int main(int argc, char *argv[argc])
 	myopt.no_label = "No";
 	myopt.ok_label = "OK";
 	myopt.yes_label = "Yes";
+	myopt.title = "";
 	myopt.shadow = true;
 
 	/* options descriptor */

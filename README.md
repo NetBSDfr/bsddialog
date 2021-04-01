@@ -94,7 +94,7 @@ Examples:
 | --tab-len *n*                |             |                                 |
 | --time-format *format*       |             |                                 |
 | --timeout *secs*             |             |                                 |
-| --title *title*              | In progress |                                 |
+| --title *title*              | Completed   |                                 |
 | --trace *filename*           |             |                                 |
 | --trim                       |             |                                 |
 | --version                    | In progress |                                 |
