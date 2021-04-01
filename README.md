@@ -106,7 +106,7 @@ Examples:
 |------------- | ----------- | ----------------------------------------------- |
 | buildlist    |             |                                                 |
 | calendar     |             |                                                 |
-| checklist    |             |                                                 |
+| checklist    | In progress |                                                 |
 | dselect      |             |                                                 |
 | editbox      |             |                                                 |
 | form         |             |                                                 |

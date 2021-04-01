@@ -213,6 +213,7 @@ void print_text(WINDOW *window, int x, int y, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
 /* widgets */
+int checklist_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
@@ -331,7 +332,7 @@ int main(int argc, char *argv[argc])
 	    /* Widgets */
 	    { "buildlist", no_argument, NULL, 'X' },
 	    { "calendar", no_argument, NULL, 'X' },
-	    { "checklist", no_argument, NULL, 'X' },
+	    { "checklist", no_argument, NULL, CHECKLIST },
 	    { "dselect", no_argument, NULL, 'X' },
 	    { "editbox", no_argument, NULL, 'X' },
 	    { "form", no_argument, NULL, 'X' },
@@ -424,6 +425,9 @@ int main(int argc, char *argv[argc])
 			myopt.yes_label = optarg;
 			break;
 		/* Widgets */
+		case CHECKLIST:
+			widgetbuilder = checklist_builder;
+			break;
 		case INFOBOX:
 			widgetbuilder = infobox_builder;
 			break;
@@ -709,6 +713,42 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 }
 
 /* Widgets */
+int
+checklist_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *button, *entry;
+	char *buttons[2] = {opt.ok_label, opt.cancel_label};
+	char *values[2] = {opt.ok_label, opt.cancel_label};
+
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	entry = new_window(opt.x + rows - 6, opt.y +1, 3, cols-2, "", BLACK_WHITE,
+	    LOWERED, false);
+	button = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	    false);
+
+	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	mvwaddch(button, 0, 0, ACS_LTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+
+	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	mvwaddch(button, 0, cols-1, ACS_RTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+
+	wrefresh(widget);
+	wrefresh(entry);
+
+	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
+
+	delwin(button);
+	delwin(entry);
+	delwin(widget);
+
+	return 0;
+}
+
 int 
 infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
 {
