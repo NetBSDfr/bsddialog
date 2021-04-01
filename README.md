@@ -121,7 +121,7 @@ Examples:
 | msgbox       | In progress |                                                 |
 | passwordbox  |             |                                                 |
 | passwordform |             |                                                 |
-| pause        |             |                                                 |
+| pause        | In progress |                                                 |
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |
 | progressbox  |             |                                                 |

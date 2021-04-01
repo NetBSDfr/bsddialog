@@ -216,6 +216,7 @@ void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
 int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
+int pause_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 int yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
 
 int
@@ -344,7 +345,7 @@ int main(int argc, char *argv[argc])
 	    { "msgbox", no_argument, NULL, MSGBOX },
 	    { "passwordbox", no_argument, NULL, 'X' },
 	    { "passwordform", no_argument, NULL, 'X' },
-	    { "pause", no_argument, NULL, 'X' },
+	    { "pause", no_argument, NULL, PAUSE },
 	    { "prgbox", no_argument, NULL, },
 	    { "programbox", no_argument, NULL, 'X' },
 	    { "progressbox", no_argument, NULL, 'X' },
@@ -360,12 +361,12 @@ int main(int argc, char *argv[argc])
 	    { NULL, 0, NULL, 0 }
 	};
 
-	while ((input = getopt_long(argc, argv, "ch", longopts, NULL)) != -1) {
+	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
 		/* Common options */
-		case 'c':
+		/*case 'c':
 			enable_color = false;
-			break;
+			break;*/
 		case BACKTITLE:
 			backtitle = optarg;
 			break;
@@ -430,6 +431,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case MSGBOX:
 			widgetbuilder = msgbox_builder;
+			break;
+		case PAUSE:
+			widgetbuilder = pause_builder;
 			break;
 		case YESNO:
 			widgetbuilder = yesno_builder;
@@ -764,6 +768,42 @@ inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(opt.x + rows - 6, opt.y +1, 3, cols-2, "", BLACK_WHITE,
 	    LOWERED, false);
+	button = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	    false);
+
+	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	mvwaddch(button, 0, 0, ACS_LTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+
+	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	mvwaddch(button, 0, cols-1, ACS_RTEE);
+	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+
+	wrefresh(widget);
+	wrefresh(entry);
+
+	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
+
+	delwin(button);
+	delwin(entry);
+	delwin(widget);
+
+	return 0;
+}
+
+int
+pause_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *button, *entry;
+	char *buttons[2] = {opt.ok_label, opt.cancel_label};
+	char *values[2] = {opt.ok_label, opt.cancel_label};
+
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	mvwaddstr(widget, 1, 1, text);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	entry = new_window(opt.x + rows - 6, opt.y +2, 3, cols-4, "", BLACK_WHITE,
+	    RAISED, false);
 	button = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
