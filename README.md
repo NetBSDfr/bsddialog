@@ -66,7 +66,7 @@ Examples:
 | --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
 | --no-label *string*          | In progress |                                 |
-| --no-lines                   |             |                                 |
+| --no-lines                   | In progress |                                 |
 | --no-mouse                   |             |                                 |
 | --no-nl-expand               |             |                                 |
 | --no-ok                      |             |                                 |
