@@ -253,7 +253,7 @@ int main(int argc, char *argv[argc])
 	conf.yes_label = "Yes";
 	conf.title = "";
 	conf.shadow = true;
-	//conf.no_lines = false;
+	conf.no_lines = false; // for linux
 
 	/* options descriptor */
 	struct option longopts[] = {
