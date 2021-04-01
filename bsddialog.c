@@ -125,7 +125,7 @@
 
 #define SIZEBUTTON	8
 
-struct opts {
+struct config {
 	bool ascii_lines;
 	int aspect;	// aspect ratio
 	//char *backtitle;
@@ -213,12 +213,12 @@ void print_text(WINDOW *window, int x, int y, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
 /* widgets */
-int checklist_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
-int msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
-int infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
-int inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
-int pause_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
-int yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv);
+int checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
@@ -237,22 +237,22 @@ int main(int argc, char *argv[argc])
 	bool enable_color = true;
 	char title[1024], text[1024], *backtitle = NULL;
 	int input, x, y, rows, cols;
-	int (*widgetbuilder)(struct opts opt, char* text, int rows, int cols, int argc, char **argv) = NULL;
+	int (*widgetbuilder)(struct config conf, char* text, int rows, int cols, int argc, char **argv) = NULL;
 	WINDOW *shadow;
-	struct opts myopt;
+	struct config conf;
 
-	memset(&myopt, '0', sizeof(struct opts));
-	myopt.x = -1;
-	myopt.y = -1;
-	myopt.cancel_label = "Cancel";
-	myopt.exit_label = "EXIT";
-	myopt.extra_label = "Extra";
-	myopt.help_label = "Help";
-	myopt.no_label = "No";
-	myopt.ok_label = "OK";
-	myopt.yes_label = "Yes";
-	myopt.title = "";
-	myopt.shadow = true;
+	memset(&conf, '0', sizeof(struct config));
+	conf.x = -1;
+	conf.y = -1;
+	conf.cancel_label = "Cancel";
+	conf.exit_label = "EXIT";
+	conf.extra_label = "Extra";
+	conf.help_label = "Help";
+	conf.no_label = "No";
+	conf.ok_label = "OK";
+	conf.yes_label = "Yes";
+	conf.title = "";
+	conf.shadow = true;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -373,23 +373,23 @@ int main(int argc, char *argv[argc])
 			backtitle = optarg;
 			break;
 		case BEGIN:
-			myopt.x = atoi(optarg);
-			myopt.y = atoi(argv[optind]);
-			if (myopt.x < 0 || myopt.y < 0) {
+			conf.x = atoi(optarg);
+			conf.y = atoi(argv[optind]);
+			if (conf.x < 0 || conf.y < 0) {
 				printf("Can't make new window at (%d,%d).",
-				    myopt.x, myopt.y);
+				    conf.x, conf.y);
 				return 1;
 			}
 			optind++;
 			break;
 		case CANCEL_LABEL:
-			myopt.cancel_label = optarg;
+			conf.cancel_label = optarg;
 			break;
 		case EXIT_LABEL:
-			myopt.exit_label = optarg;
+			conf.exit_label = optarg;
 			break;
 		case EXTRA_LABEL:
-			myopt.extra_label = optarg;
+			conf.extra_label = optarg;
 			break;
 		case HELP:
 			usage();
@@ -397,32 +397,32 @@ int main(int argc, char *argv[argc])
 			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
 		case HELP_LABEL:
-			myopt.help_label = optarg;
+			conf.help_label = optarg;
 			break;
 		case NO_LABEL:
-			myopt.no_label = optarg;
+			conf.no_label = optarg;
 			break;
 		case NO_SHADOW:
-			myopt.shadow = false;
+			conf.shadow = false;
 			break;
 		case OK_LABEL:
-			myopt.ok_label = optarg;
+			conf.ok_label = optarg;
 			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			break;
 		case SHADOW:
-			myopt.shadow = true;
+			conf.shadow = true;
 			break;
 		case TITLE:
 			//strcpy(title, optarg);
-			myopt.title = optarg;
+			conf.title = optarg;
 			break;
 		case VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			return 0;
 		case YES_LABEL:
-			myopt.yes_label = optarg;
+			conf.yes_label = optarg;
 			break;
 		/* Widgets */
 		case CHECKLIST:
@@ -474,18 +474,18 @@ int main(int argc, char *argv[argc])
 	}
 	refresh();
 
-	myopt.x = myopt.x < 0 ? (LINES/2 - rows/2 - 1) : myopt.x;
-	myopt.y = myopt.y < 0 ? (COLS/2 - cols/2) : myopt.y;
+	conf.x = conf.x < 0 ? (LINES/2 - rows/2 - 1) : conf.x;
+	conf.y = conf.y < 0 ? (COLS/2 - cols/2) : conf.y;
 
-	if (myopt.shadow) {
-		shadow = newwin(rows, cols+1, myopt.x+1, myopt.y+1);
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.x+1, conf.y+1);
 		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
 		wrefresh(shadow);
 	}
 
-	widgetbuilder(myopt, text, rows, cols, argc /*unused*/, argv /*unused*/);
+	widgetbuilder(conf, text, rows, cols, argc /*unused*/, argv /*unused*/);
 
-	if (myopt.shadow)
+	if (conf.shadow)
 		delwin(shadow);
 	endwin();
 
@@ -714,19 +714,19 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 
 /* Widgets */
 int
-checklist_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry;
-	char *buttons[2] = {opt.ok_label, opt.cancel_label};
-	char *values[2] = {opt.ok_label, opt.cancel_label};
+	char *buttons[2] = {conf.ok_label, conf.cancel_label};
+	char *values[2] = {conf.ok_label, conf.cancel_label};
 
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(opt.x + rows - 6, opt.y +1, 3, cols-2, "", BLACK_WHITE,
+	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", BLACK_WHITE,
 	    LOWERED, false);
-	button = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -750,12 +750,12 @@ checklist_builder(struct opts opt, char* text, int rows, int cols, int argc, cha
 }
 
 int 
-infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget;
 	int line;
 
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    RAISED, false);
 	print_text_multiline(widget, 1, 1, text, cols - 2);
 
@@ -767,15 +767,15 @@ infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char 
 }
 
 int 
-msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button;
 
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(opt.x+rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -788,7 +788,7 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 
 	wrefresh(widget);
 
-	buttons_handler(button, cols, 1, &(opt.ok_label), &(opt.ok_label), 0, true, /*fd*/ 0);
+	buttons_handler(button, cols, 1, &(conf.ok_label), &(conf.ok_label), 0, true, /*fd*/ 0);
 
 	delwin(button);
 	delwin(widget);
@@ -797,19 +797,19 @@ msgbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char *
 }
 
 int
-inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry;
-	char *buttons[2] = {opt.ok_label, opt.cancel_label};
-	char *values[2] = {opt.ok_label, opt.cancel_label};
+	char *buttons[2] = {conf.ok_label, conf.cancel_label};
+	char *values[2] = {conf.ok_label, conf.cancel_label};
 
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(opt.x + rows - 6, opt.y +1, 3, cols-2, "", BLACK_WHITE,
+	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", BLACK_WHITE,
 	    LOWERED, false);
-	button = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -833,19 +833,19 @@ inputbox_builder(struct opts opt, char* text, int rows, int cols, int argc, char
 }
 
 int
-pause_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry;
-	char *buttons[2] = {opt.ok_label, opt.cancel_label};
-	char *values[2] = {opt.ok_label, opt.cancel_label};
+	char *buttons[2] = {conf.ok_label, conf.cancel_label};
+	char *values[2] = {conf.ok_label, conf.cancel_label};
 
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(opt.x + rows - 6, opt.y +2, 3, cols-4, "", BLACK_WHITE,
+	entry = new_window(conf.x + rows - 6, conf.y +2, 3, cols-4, "", BLACK_WHITE,
 	    RAISED, false);
-	button = new_window(opt.x + rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -869,17 +869,17 @@ pause_builder(struct opts opt, char* text, int rows, int cols, int argc, char **
 }
 
 int
-yesno_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button;
-	char *buttons[2] = {opt.yes_label, opt.no_label};
-	char *values[2] = {opt.yes_label, opt.no_label};
+	char *buttons[2] = {conf.yes_label, conf.no_label};
+	char *values[2] = {conf.yes_label, conf.no_label};
 
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(opt.x+rows -3, opt.y, 3, cols, "", BLACK_WHITE, RAISED,
+	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
 	    false);
 
 	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
