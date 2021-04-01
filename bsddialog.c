@@ -647,24 +647,6 @@ void draw_button(WINDOW *window, int start_y, int size, char *text, bool selecte
 	wattroff(window, color_first_char);
 }
 
-/* Widgets */
-int 
-infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
-{
-	WINDOW *widget;
-	int line;
-
-	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
-	    RAISED, false);
-	print_text_multiline(widget, 1, 1, text, cols - 2);
-
-	wrefresh(widget);
-	getch();
-	delwin(widget);
-
-	return 0;
-}
-
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     char **values, int selected, bool shortkey, int fd)
@@ -722,6 +704,24 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 			update = false;
 		}
 	}
+
+	return 0;
+}
+
+/* Widgets */
+int 
+infobox_builder(struct opts opt, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget;
+	int line;
+
+	widget = new_window(opt.x, opt.y, rows, cols, opt.title, BLACK_WHITE,
+	    RAISED, false);
+	print_text_multiline(widget, 1, 1, text, cols - 2);
+
+	wrefresh(widget);
+	getch();
+	delwin(widget);
 
 	return 0;
 }
