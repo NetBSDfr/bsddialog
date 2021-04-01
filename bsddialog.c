@@ -201,7 +201,7 @@ struct config {
 	char *yes_label;
 };
 
-enum elevation { RAISED, LOWERED };
+enum elevation { RAISED, LOWERED, NOLINES };
 
 void usage(void);
 int  init_view(bool enable_color);
@@ -253,6 +253,7 @@ int main(int argc, char *argv[argc])
 	conf.yes_label = "Yes";
 	conf.title = "";
 	conf.shadow = true;
+	//conf.no_lines = false;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -295,7 +296,7 @@ int main(int argc, char *argv[argc])
 	    { "no-items", no_argument, NULL, 'X' },
 	    { "no-kill", no_argument, NULL, 'X' },
 	    { "no-label", required_argument, NULL /*string*/, NO_LABEL },
-	    { "no-lines", no_argument, NULL, 'X' },
+	    { "no-lines", no_argument, NULL, NO_LINES },
 	    { "no-mouse", no_argument, NULL, 'X' },
 	    { "no-nl-expand", no_argument, NULL, 'X' },
 	    { "no-ok", no_argument, NULL, 'X' },
@@ -402,6 +403,9 @@ int main(int argc, char *argv[argc])
 		case NO_LABEL:
 			conf.no_label = optarg;
 			break;
+		case NO_LINES:
+			conf.no_lines = true;
+			break;
 		case NO_SHADOW:
 			conf.shadow = false;
 			break;
@@ -469,7 +473,8 @@ int main(int argc, char *argv[argc])
 	if (backtitle != NULL) {
 		attron(COLOR_PAIR(CYAN_BLUE) | A_BOLD );
 		mvaddstr(0, 1, backtitle);
-		mvhline(1, 1, ACS_HLINE, COLS-2);
+		if (conf.no_lines != true)
+			mvhline(1, 1, ACS_HLINE, COLS-2);
 		attroff(COLOR_PAIR(CYAN_BLUE) | A_BOLD);
 	}
 	refresh();
@@ -565,19 +570,20 @@ new_window(int x, int y, int rows, int cols, const char *title, int color,
 
 	wbkgd(popup, COLOR_PAIR(color));
 
-	leftcolor  = elev == RAISED ? WHITE_WHITE : BLACK_WHITE;
-	rightcolor = elev == RAISED ? BLACK_WHITE : WHITE_WHITE;
-	wattron(popup, A_BOLD | COLOR_PAIR(leftcolor));
-	box(popup, 0, 0);
-	wattroff(popup, A_BOLD | COLOR_PAIR(leftcolor));
+	if (elev != NOLINES) {
+		leftcolor  = elev == RAISED ? WHITE_WHITE : BLACK_WHITE;
+		rightcolor = elev == RAISED ? BLACK_WHITE : WHITE_WHITE;
+		wattron(popup, A_BOLD | COLOR_PAIR(leftcolor));
+		box(popup, 0, 0);
+		wattroff(popup, A_BOLD | COLOR_PAIR(leftcolor));
 
-	wattron(popup, A_BOLD | COLOR_PAIR(rightcolor));
-	mvwaddch(popup, 0, cols-1, ACS_URCORNER);
-	mvwvline(popup, 1, cols-1, ACS_VLINE, rows-2);
-	mvwaddch(popup, rows-1, cols-1, ACS_LRCORNER);
-	mvwhline(popup, rows-1, 1, ACS_HLINE, cols-2);
-	wattroff(popup, A_BOLD | COLOR_PAIR(rightcolor));
-
+		wattron(popup, A_BOLD | COLOR_PAIR(rightcolor));
+		mvwaddch(popup, 0, cols-1, ACS_URCORNER);
+		mvwvline(popup, 1, cols-1, ACS_VLINE, rows-2);
+		mvwaddch(popup, rows-1, cols-1, ACS_LRCORNER);
+		mvwhline(popup, rows-1, 1, ACS_HLINE, cols-2);
+		wattroff(popup, A_BOLD | COLOR_PAIR(rightcolor));
+	}
 
 	wattron(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
 	wmove(popup, 0, cols/2 - strlen(title)/2);
@@ -721,21 +727,23 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	char *values[2] = {conf.ok_label, conf.cancel_label};
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
-	    RAISED, false);
+	    conf.no_lines ? NOLINES : RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", BLACK_WHITE,
-	    LOWERED, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
-	    false);
+	    conf.no_lines ? NOLINES : LOWERED, false);
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, false);
 
-	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-	mvwaddch(button, 0, 0, ACS_LTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	if (conf.no_lines == false) {
+		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+		mvwaddch(button, 0, 0, ACS_LTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 
-	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
-	mvwaddch(button, 0, cols-1, ACS_RTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		mvwaddch(button, 0, cols-1, ACS_RTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	}
 
 	wrefresh(widget);
 	wrefresh(entry);
@@ -756,7 +764,7 @@ infobox_builder(struct config conf, char* text, int rows, int cols, int argc, ch
 	int line;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
-	    RAISED, false);
+	    conf.no_lines ? NOLINES : RAISED, false);
 	print_text_multiline(widget, 1, 1, text, cols - 2);
 
 	wrefresh(widget);
@@ -772,19 +780,21 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 	WINDOW *widget, *button;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
-	    RAISED, false);
+	    conf.no_lines ? NOLINES : RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
-	    false);
+	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE, 
+	    conf.no_lines ? NOLINES : RAISED, false);
 
-	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-	mvwaddch(button, 0, 0, ACS_LTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	if (conf.no_lines != NOLINES) {
+		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+		mvwaddch(button, 0, 0, ACS_LTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 
-	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
-	mvwaddch(button, 0, cols-1, ACS_RTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		mvwaddch(button, 0, cols-1, ACS_RTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	}
 
 	wrefresh(widget);
 
@@ -804,21 +814,23 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	char *values[2] = {conf.ok_label, conf.cancel_label};
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
-	    RAISED, false);
+	    conf.no_lines ? NOLINES : RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", BLACK_WHITE,
-	    LOWERED, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
-	    false);
+	    conf.no_lines ? NOLINES : LOWERED, false);
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, false);
 
-	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-	mvwaddch(button, 0, 0, ACS_LTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	if (conf.no_lines != NOLINES) {
+		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+		mvwaddch(button, 0, 0, ACS_LTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 
-	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
-	mvwaddch(button, 0, cols-1, ACS_RTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		mvwaddch(button, 0, cols-1, ACS_RTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	}
 
 	wrefresh(widget);
 	wrefresh(entry);
@@ -840,21 +852,23 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	char *values[2] = {conf.ok_label, conf.cancel_label};
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
-	    RAISED, false);
+	    conf.no_lines ? NOLINES : RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.x + rows - 6, conf.y +2, 3, cols-4, "", BLACK_WHITE,
-	    RAISED, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
-	    false);
+	    conf.no_lines ? NOLINES : RAISED, false);
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, false);
 
-	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-	mvwaddch(button, 0, 0, ACS_LTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	if (conf.no_lines != NOLINES) {
+		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+		mvwaddch(button, 0, 0, ACS_LTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 
-	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
-	mvwaddch(button, 0, cols-1, ACS_RTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		mvwaddch(button, 0, cols-1, ACS_RTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	}
 
 	wrefresh(widget);
 	wrefresh(entry);
@@ -876,19 +890,21 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	char *values[2] = {conf.yes_label, conf.no_label};
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
-	    RAISED, false);
+	    conf.no_lines ? NOLINES : RAISED, false);
 	mvwaddstr(widget, 1, 1, text);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE, RAISED,
-	    false);
+	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, false);
 
-	wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-	mvwaddch(button, 0, 0, ACS_LTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+	if (conf.no_lines != NOLINES) {
+		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+		mvwaddch(button, 0, 0, ACS_LTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 
-	wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
-	mvwaddch(button, 0, cols-1, ACS_RTEE);
-	wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		wattron(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		mvwaddch(button, 0, cols-1, ACS_RTEE);
+		wattroff(button, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+	}
 
 	wrefresh(widget);
 
