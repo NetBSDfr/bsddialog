@@ -786,7 +786,7 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE, 
 	    conf.no_lines ? NOLINES : RAISED, false);
 
-	if (conf.no_lines != NOLINES) {
+	if (conf.no_lines == false) {
 		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 		mvwaddch(button, 0, 0, ACS_LTEE);
 		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -822,7 +822,7 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false);
 
-	if (conf.no_lines != NOLINES) {
+	if (conf.no_lines == false) {
 		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 		mvwaddch(button, 0, 0, ACS_LTEE);
 		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -860,7 +860,7 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false);
 
-	if (conf.no_lines != NOLINES) {
+	if (conf.no_lines == false) {
 		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 		mvwaddch(button, 0, 0, ACS_LTEE);
 		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
@@ -896,7 +896,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false);
 
-	if (conf.no_lines != NOLINES) {
+	if (conf.no_lines == false) {
 		wattron(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 		mvwaddch(button, 0, 0, ACS_LTEE);
 		wattroff(button, A_BOLD | COLOR_PAIR(WHITE_WHITE));

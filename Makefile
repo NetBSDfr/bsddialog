@@ -15,7 +15,7 @@ LDFLAGS= -L/usr/lib -lmenu -lncurses -ltinfo -L/usr/local/lib
 .if defined(PORTNCURSES)
 CFLAGS += -DPORTNCURSES
 LDFLAGS = -L/usr/local/lib -lmenu -lncurses -ltinfo
-#.endif
+.endif
 
 BINDIR= /usr/local/sbin
 
