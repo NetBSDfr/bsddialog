@@ -235,8 +235,8 @@ void usage(void)
 int main(int argc, char *argv[argc])
 {
 	bool enable_color = true;
-	char title[1024], text[1024], *backtitle = NULL;
-	int input, x, y, rows, cols;
+	char text[1024], *backtitle = NULL;
+	int input, rows, cols;
 	int (*widgetbuilder)(struct config conf, char* text, int rows, int cols, int argc, char **argv) = NULL;
 	WINDOW *shadow;
 	struct config conf;
@@ -761,7 +761,6 @@ int
 infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget;
-	int line;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false);
