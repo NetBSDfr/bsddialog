@@ -241,7 +241,7 @@ int main(int argc, char *argv[argc])
 	WINDOW *shadow;
 	struct config conf;
 
-	memset(&conf, '0', sizeof(struct config));
+	memset(&conf, 0, sizeof(struct config));
 	conf.x = -1;
 	conf.y = -1;
 	conf.cancel_label = "Cancel";
@@ -253,7 +253,6 @@ int main(int argc, char *argv[argc])
 	conf.yes_label = "Yes";
 	conf.title = "";
 	conf.shadow = true;
-	conf.no_lines = false; // for linux
 
 	/* options descriptor */
 	struct option longopts[] = {
