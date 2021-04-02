@@ -74,7 +74,7 @@ Examples:
 | --no-shadow                  | In progress |                                 |
 | --no-tags                    |             |                                 |
 | --ok-label *string*          | In progress |                                 |
-| --output-fd *fd*             |             |                                 |
+| --output-fd *fd*             | In progress |                                 |
 | --separator *string*         |             |                                 |
 | --output-separator *string*  |             |                                 |
 | --print-maxsize              |             |                                 |
@@ -88,8 +88,8 @@ Examples:
 | --single-quoted              |             |                                 |
 | --size-err                   |             |                                 |
 | --sleep *secs*               | Completed   |                                 |
-| --stderr                     |             |                                 |
-| --stdout                     |             |                                 |
+| --stderr                     | In progress |                                 |
+| --stdout                     | In progress |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
 | --time-format *format*       |             |                                 |

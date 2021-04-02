@@ -8,6 +8,14 @@
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+/* Exit */
+#define BSDDIALOG_YESOK		 0 // YES or OK buttons
+#define BSDDIALOG_NOCANCEL	 1 // No or Cancel buttons
+#define BSDDIALOG_HELP		 2 // Help button
+#define BSDDIALOG_EXTRA		 3 // Extra button
+#define BSDDIALOG_ITEM_HELP	 4 // UNIMPLEMENTED comp with dialog
+#define BSDDIALOG_ERROR		-1 // generic error or ESC key
+
 /* Foreground_Background */
 #define BLUE_BLUE	1 // main background
 #define BLUE_WHITE	2 // widget title
@@ -303,7 +311,7 @@ int main(int argc, char *argv[argc])
 	    { "no-shadow", no_argument, NULL, NO_SHADOW },
 	    { "no-tags", no_argument, NULL, 'X' },
 	    { "ok-label", required_argument, NULL /*string*/, OK_LABEL },
-	    { "output-fd", required_argument, NULL /*fd*/, 'X' },
+	    { "output-fd", required_argument, NULL /*fd*/, OUTPUT_FD },
 	    { "separator", required_argument, NULL /*string*/, 'X' },
 	    { "output-separator", required_argument, NULL /*string*/, 'X' },
 	    { "print-maxsize", no_argument, NULL, 'X' },
@@ -317,8 +325,8 @@ int main(int argc, char *argv[argc])
 	    { "single-quoted", no_argument, NULL, 'X' },
 	    { "size-err", no_argument, NULL, 'X' },
 	    { "sleep", required_argument, NULL /*secs*/, SLEEP },
-	    { "stderr", no_argument, NULL, 'X' },
-	    { "stdout", no_argument, NULL, 'X' },
+	    { "stderr", no_argument, NULL, STDERR },
+	    { "stdout", no_argument, NULL, STDOUT },
 	    { "tab-correct", no_argument, NULL, 'X' },
 	    { "tab-len", required_argument, NULL /*n*/, 'X' },
 	    { "time-format", required_argument, NULL /*format*/, 'X' },
@@ -411,6 +419,9 @@ int main(int argc, char *argv[argc])
 		case OK_LABEL:
 			conf.ok_label = optarg;
 			break;
+		case OUTPUT_FD:
+			conf.output_fd = atoi(optarg);
+			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			break;
@@ -419,6 +430,12 @@ int main(int argc, char *argv[argc])
 			break;
 		case SLEEP:
 			conf.sleep = atoi(optarg);
+			break;
+		case STDERR:
+			conf.stderr_=true;
+			break;
+		case STDOUT:
+			conf.stdout_=true;
 			break;
 		case TITLE:
 			conf.title = optarg;
