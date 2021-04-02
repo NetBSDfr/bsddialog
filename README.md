@@ -28,7 +28,7 @@ Examples:
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
-| --ascii-lines                |             |                                 |
+| --ascii-lines                | Completed   |                                 |
 | --aspect *ratio*             |             |                                 |
 | --backtitle *backtitle*      | In progress |                                 |
 | --begin y x                  | In progress |                                 |
