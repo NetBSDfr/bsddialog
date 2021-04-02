@@ -87,7 +87,7 @@ Examples:
 | --shadow                     | In progress |                                 |
 | --single-quoted              |             |                                 |
 | --size-err                   |             |                                 |
-| --sleep *secs*               |             |                                 |
+| --sleep *secs*               | Completed   |                                 |
 | --stderr                     |             |                                 |
 | --stdout                     |             |                                 |
 | --tab-correct                |             |                                 |

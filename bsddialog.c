@@ -186,7 +186,7 @@ struct config {
 	bool shadow;
 	bool single_quoted;
 	bool size_err;
-	int sleep; // useful?
+	int sleep;
 	bool stderr_; 
 	bool stdout_;
 	bool tab_correct;
@@ -222,7 +222,7 @@ int yesno_builder(struct config conf, char* text, int rows, int cols, int argc, 
 
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    char **values, int selected, bool shortkey, int fd);
+    char **values, int selected, bool shortkey, int sleep, int fd);
 
 void usage(void)
 {
@@ -316,7 +316,7 @@ int main(int argc, char *argv[argc])
 	    { "shadow", no_argument, NULL, SHADOW },
 	    { "single-quoted", no_argument, NULL, 'X' },
 	    { "size-err", no_argument, NULL, 'X' },
-	    { "sleep", required_argument, NULL /*secs*/, 'X' },
+	    { "sleep", required_argument, NULL /*secs*/, SLEEP },
 	    { "stderr", no_argument, NULL, 'X' },
 	    { "stdout", no_argument, NULL, 'X' },
 	    { "tab-correct", no_argument, NULL, 'X' },
@@ -416,6 +416,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case SHADOW:
 			conf.shadow = true;
+			break;
+		case SLEEP:
+			conf.sleep = atoi(optarg);
 			break;
 		case TITLE:
 			conf.title = optarg;
@@ -677,7 +680,7 @@ void draw_button(WINDOW *window, int start_y, int size, char *text, bool selecte
 
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    char **values, int selected, bool shortkey, int fd)
+    char **values, int selected, bool shortkey, int sleeptime, int fd)
 {
 	bool loop = true, update;
 	int i, y, start_y, size, input;
@@ -733,6 +736,8 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		}
 	}
 
+	sleep(sleeptime);
+
 	return 0;
 }
 
@@ -756,7 +761,7 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	wrefresh(widget);
 	wrefresh(entry);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
+	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(entry);
@@ -795,7 +800,7 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 
 	wrefresh(widget);
 
-	buttons_handler(button, cols, 1, &(conf.ok_label), &(conf.ok_label), 0, true, /*fd*/ 0);
+	buttons_handler(button, cols, 1, &(conf.ok_label), &(conf.ok_label), 0, true, conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(widget);
@@ -822,7 +827,7 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	wrefresh(widget);
 	wrefresh(entry);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
+	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(entry);
@@ -850,7 +855,7 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	wrefresh(widget);
 	wrefresh(entry);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
+	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(entry);
@@ -875,7 +880,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 	wrefresh(widget);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, /*fd*/ 0);
+	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(widget);
