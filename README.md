@@ -19,10 +19,10 @@ Output:
 
 Examples:
 ```
-% bsddialog --backtitle "BSD-2-Clause License" --title infobox --infobox "Hello World!" 5 30
-% bsddialog --backtitle "BSD-2-Clause License" --title inputbox --inputbox "Hello World!" 8 30
-% bsddialog --backtitle "BSD-2-Clause License" --title msgbox --msgbox "Hello World!" 5 30
-% bsddialog --backtitle "BSD-2-Clause License" --title yesno --yesno "Hello World!" 5 30
+% bsddialog --title infobox --infobox "Hello World!" 5 30
+% bsddialog --title inputbox --inputbox "Hello World!" 8 30
+% bsddialog --title msgbox --msgbox "Hello World!" 5 30
+% bsddialog --title yesno --yesno "Hello World!" 5 30
 ```
 
 
