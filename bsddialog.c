@@ -415,7 +415,6 @@ int main(int argc, char *argv[argc])
 			conf.shadow = true;
 			break;
 		case TITLE:
-			//strcpy(title, optarg);
 			conf.title = optarg;
 			break;
 		case VERSION:
