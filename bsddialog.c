@@ -567,15 +567,10 @@ new_window(int x, int y, int rows, int cols, const char *title, int color,
 	tr = ACS_URCORNER;
 	bl = ACS_LLCORNER;
 	br = ACS_LRCORNER;
-
 	ltee = ACS_LTEE;
 	rtee = ACS_RTEE;
 
-	if (scrolling)
-		popup = newpad(rows, cols);
-	else
-		popup = newwin(rows, cols, x, y);
-
+	popup = scrolling ? newpad(rows, cols) : newwin(rows, cols, x, y);
 	wbkgd(popup, COLOR_PAIR(color));
 
 	if (elev != NOLINES) {
