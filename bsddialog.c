@@ -730,7 +730,7 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false, false);
-	mvwaddstr(widget, 1, 1, text);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, false, false);
@@ -756,7 +756,7 @@ infobox_builder(struct config conf, char* text, int rows, int cols, int argc, ch
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false, false);
-	print_text_multiline(widget, 1, 1, text, cols - 2);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
 
 	wrefresh(widget);
 	getch();
@@ -772,7 +772,7 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false, false);
-	mvwaddstr(widget, 1, 1, text);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE, 
 	    conf.no_lines ? NOLINES : RAISED, true, false);
@@ -796,7 +796,7 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false, false);
-	mvwaddstr(widget, 1, 1, text);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, false, false);
@@ -824,7 +824,7 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false, false);
-	mvwaddstr(widget, 1, 1, text);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.x + rows - 6, conf.y +2, 3, cols-4, "", BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false, false);
@@ -852,7 +852,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, false, false);
-	mvwaddstr(widget, 1, 1, text);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, true, false);
