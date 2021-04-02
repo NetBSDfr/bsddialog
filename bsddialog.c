@@ -204,7 +204,7 @@ struct config {
 enum elevation { RAISED, LOWERED, NOLINES };
 
 void usage(void);
-int  init_view(bool enable_color);
+int  bsddialog_init(void);
 WINDOW *
 new_window(int x, int y, int rows, int cols, const char *title, int color,
     enum elevation elev, bool subwindowborders, bool scrolling);
@@ -366,9 +366,6 @@ int main(int argc, char *argv[argc])
 	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
 		/* Common options */
-		/*case 'c':
-			enable_color = false;
-			break;*/
 		case BACKTITLE:
 			backtitle = optarg;
 			break;
@@ -465,7 +462,7 @@ int main(int argc, char *argv[argc])
 	argc -= 3;
 	argv += 3;
 
-	if(init_view(enable_color) != 0) {
+	if(bsddialog_init() != 0) {
 		printf("Cannot init ncurses\n");
 		return 1;
 	}
@@ -496,8 +493,7 @@ int main(int argc, char *argv[argc])
 	return 0;
 }
 
-/* View */
-int init_view(bool enable_color)
+int bsddialog_init(void)
 {
 	int error = 0;
 
@@ -510,18 +506,16 @@ int init_view(bool enable_color)
 	error += noecho();
 	curs_set(0);
 
-	if (enable_color) {
-		error += start_color();
-		error += init_pair(BLUE_BLUE,   COLOR_BLUE,   COLOR_BLUE);
-		error += init_pair(BLUE_WHITE,  COLOR_BLUE,   COLOR_WHITE);
-		error += init_pair(WHITE_WHITE, COLOR_WHITE,  COLOR_WHITE);
-		error += init_pair(BLACK_WHITE, COLOR_BLACK,  COLOR_WHITE);
-		error += init_pair(RED_WHITE,   COLOR_RED,    COLOR_WHITE);
-		error += init_pair(WHITE_BLUE,  COLOR_WHITE,  COLOR_BLUE);
-		error += init_pair(YELLOW_BLUE, COLOR_YELLOW, COLOR_BLUE);
-		error += init_pair(BLACK_BLACK, COLOR_BLACK,  COLOR_BLACK);
-		error += init_pair(CYAN_BLUE,   COLOR_CYAN,   COLOR_BLUE);
-	}
+	error += start_color();
+	error += init_pair(BLUE_BLUE,   COLOR_BLUE,   COLOR_BLUE);
+	error += init_pair(BLUE_WHITE,  COLOR_BLUE,   COLOR_WHITE);
+	error += init_pair(WHITE_WHITE, COLOR_WHITE,  COLOR_WHITE);
+	error += init_pair(BLACK_WHITE, COLOR_BLACK,  COLOR_WHITE);
+	error += init_pair(RED_WHITE,   COLOR_RED,    COLOR_WHITE);
+	error += init_pair(WHITE_BLUE,  COLOR_WHITE,  COLOR_BLUE);
+	error += init_pair(YELLOW_BLUE, COLOR_YELLOW, COLOR_BLUE);
+	error += init_pair(BLACK_BLACK, COLOR_BLACK,  COLOR_BLACK);
+	error += init_pair(CYAN_BLUE,   COLOR_CYAN,   COLOR_BLUE);
 
 	bkgd(COLOR_PAIR(BLUE_BLUE));
 
