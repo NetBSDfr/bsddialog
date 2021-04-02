@@ -251,7 +251,7 @@ int main(int argc, char *argv[argc])
 	conf.no_label = "No";
 	conf.ok_label = "OK";
 	conf.yes_label = "Yes";
-	conf.title = "";
+	//conf.title = "";
 	conf.shadow = true;
 
 	/* options descriptor */
