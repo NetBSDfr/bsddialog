@@ -513,6 +513,8 @@ int main(int argc, char *argv[argc])
 		delwin(shadow);
 	endwin();
 
+	// debug
+	printf("output: %d\n", output);
 	return output;
 }
 
@@ -701,6 +703,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 {
 	bool loop = true, update;
 	int i, y, start_y, size, input;
+	int output;
 #define BUTTONSPACE 3
 
 	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
@@ -720,10 +723,13 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	while(loop) {
 		wrefresh(window);
 		input = getch();
-		if (input == 10 ) { /* Enter */
-			// print values[selected];
+		if (input == 10 ) { // Enter
+			output = selected; // the caller knows the value
 			loop = false;
-		} else if (input == '\t') { /* TAB */
+		} else if (input == 27) { // Esc
+			output = BSDDIALOG_ERROR;
+			loop = false;
+		} else if (input == '\t') { // TAB
 			/* future */
 		} else if (input == KEY_LEFT) {
 			if (selected > 0) {
@@ -738,7 +744,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		} else if (shortkey) {
 			for (i = 0; i < nbuttons; i++)
 				if (input == (buttons[i])[0]) {
-					// print values[i];
+					output = selected; // like Esc
 					loop = false;
 				}
 		}
@@ -755,7 +761,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 
 	sleep(sleeptime);
 
-	return 0;
+	return output;
 }
 
 /* Widgets */
