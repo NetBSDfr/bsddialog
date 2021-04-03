@@ -24,6 +24,11 @@ Examples:
 % bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 ```
 
+**TODO**
+
+ - Split dialog.c: dialog.c, dialog.h, libdialog.c
+
+ - Common Options:
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
@@ -101,7 +106,9 @@ Examples:
 | --yes-label *string*         | Completed   |                                 |
 
 
-| Windget      | Status      | Note                                            |
+ - Widgets:
+
+| Widget       | Status      | Note                                            |
 |------------- | ----------- | ----------------------------------------------- |
 | buildlist    |             |                                                 |
 | calendar     |             |                                                 |
