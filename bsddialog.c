@@ -88,7 +88,7 @@
 #define SINGLE_QUOTED	58 // single-quoted
 #define SIZE_ERR	59 // size-err
 #define SLEEP		60 // sleep
-#define STRERR		61 // stderr
+#define STDERR		61 // stderr
 #define STDOUT		62 // stdout
 #define TAB_CORRECT	63 // tab-correct
 #define TAB_LEN		64 // tab-len
@@ -181,7 +181,7 @@ struct config {
 	//bool no_shadow; utility (.shadow for lib)
 	bool no_tags;
 	char *ok_label;
-	int oputput_fd;
+	int output_fd;
 	char *separator;
 	char *output_separator;
 	bool print_maxsize; // useful?
@@ -244,7 +244,7 @@ int main(int argc, char *argv[argc])
 {
 	bool enable_color = true;
 	char text[1024], *backtitle = NULL;
-	int input, rows, cols;
+	int input, rows, cols, output;
 	int (*widgetbuilder)(struct config conf, char* text, int rows, int cols, int argc, char **argv) = NULL;
 	WINDOW *shadow;
 	struct config conf;
@@ -507,13 +507,13 @@ int main(int argc, char *argv[argc])
 		wrefresh(shadow);
 	}
 
-	widgetbuilder(conf, text, rows, cols, argc /*unused*/, argv /*unused*/);
+	output = widgetbuilder(conf, text, rows, cols, argc, argv);
 
 	if (conf.shadow)
 		delwin(shadow);
 	endwin();
 
-	return 0;
+	return output;
 }
 
 int bsddialog_init(void)
@@ -765,6 +765,7 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	WINDOW *widget, *button, *entry;
 	char *buttons[2] = {conf.ok_label, conf.cancel_label};
 	char *values[2] = {conf.ok_label, conf.cancel_label};
+	int output;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -778,13 +779,14 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	wrefresh(widget);
 	wrefresh(entry);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
+	output = buttons_handler(button, cols, 2, buttons, values, 0, true,
+	    conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(entry);
 	delwin(widget);
 
-	return 0;
+	return output;
 }
 
 int 
@@ -800,13 +802,14 @@ infobox_builder(struct config conf, char* text, int rows, int cols, int argc, ch
 	getch();
 	delwin(widget);
 
-	return 0;
+	return (BSDDIALOG_YESOK);
 }
 
 int 
 msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button;
+	int output;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -817,12 +820,13 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 
 	wrefresh(widget);
 
-	buttons_handler(button, cols, 1, &(conf.ok_label), &(conf.ok_label), 0, true, conf.sleep, /*fd*/ 0);
+	output = buttons_handler(button, cols, 1, &(conf.ok_label),
+	    &(conf.ok_label), 0, true, conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(widget);
 
-	return 0;
+	return output;
 }
 
 int
@@ -831,6 +835,7 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	WINDOW *widget, *button, *entry;
 	char *buttons[2] = {conf.ok_label, conf.cancel_label};
 	char *values[2] = {conf.ok_label, conf.cancel_label};
+	int output;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -844,13 +849,14 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	wrefresh(widget);
 	wrefresh(entry);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
+	output = buttons_handler(button, cols, 2, buttons, values, 0, true,
+	    conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(entry);
 	delwin(widget);
 
-	return 0;
+	return output;
 }
 
 int
@@ -859,6 +865,7 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	WINDOW *widget, *button, *entry;
 	char *buttons[2] = {conf.ok_label, conf.cancel_label};
 	char *values[2] = {conf.ok_label, conf.cancel_label};
+	int output;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -872,13 +879,14 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	wrefresh(widget);
 	wrefresh(entry);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
+	output = buttons_handler(button, cols, 2, buttons, values, 0, true,
+	    conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(entry);
 	delwin(widget);
 
-	return 0;
+	return output;
 }
 
 int
@@ -887,6 +895,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	WINDOW *widget, *button;
 	char *buttons[2] = {conf.yes_label, conf.no_label};
 	char *values[2] = {conf.yes_label, conf.no_label};
+	int output;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -897,10 +906,11 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 	wrefresh(widget);
 
-	buttons_handler(button, cols, 2, buttons, values, 0, true, conf.sleep, /*fd*/ 0);
+	output = buttons_handler(button, cols, 2, buttons, values, 0, true,
+	    conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(widget);
 
-	return 0;
+	return output;
 }
