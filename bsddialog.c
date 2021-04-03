@@ -260,7 +260,6 @@ int main(int argc, char *argv[argc])
 	conf.no_label = "No";
 	conf.ok_label = "OK";
 	conf.yes_label = "Yes";
-	conf.title = "";
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;
 
@@ -631,10 +630,12 @@ new_window(int x, int y, int rows, int cols, char *title, char *bottomtitle,
 		}
 	}
 
-	wattron(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
-	wmove(popup, 0, cols/2 - strlen(title)/2);
-	waddstr(popup, title);
-	wattroff(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+	if (title != NULL) {
+		wattron(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+		wmove(popup, 0, cols/2 - strlen(title)/2);
+		waddstr(popup, title);
+		wattroff(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+	}
 
 	if (bottomtitle != NULL) {
 		wattron(popup, A_BOLD | COLOR_PAIR(BLACK_WHITE));
@@ -793,9 +794,9 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", NULL, BLACK_WHITE,
+	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", conf.hline, BLACK_WHITE,
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -837,7 +838,7 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", conf.hline, BLACK_WHITE, 
+	button = new_window(conf.x+rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE, 
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -863,9 +864,9 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, "", NULL, BLACK_WHITE,
+	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", conf.hline, BLACK_WHITE,
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -893,9 +894,9 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +2, 3, cols-4, "", NULL, BLACK_WHITE,
+	entry = new_window(conf.x + rows - 6, conf.y +2, 3, cols-4, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, "", conf.hline, BLACK_WHITE,
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -923,7 +924,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(conf.x+rows -3, conf.y, 3, cols, "", conf.hline, BLACK_WHITE,
+	button = new_window(conf.x+rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
