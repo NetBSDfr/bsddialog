@@ -26,8 +26,8 @@ Examples:
 
 **TODO**
 
- - Split dialog.c: dialog.c, dialog.h, libdialog.c
-
+ - Split bsddialog.c: bsddialog.c - bsddialog.h - libbsddialog.c
+ - bsddialog.1 and bsddialog.3
  - Common Options:
 
 |  Option                      | Status      | Note                            |
