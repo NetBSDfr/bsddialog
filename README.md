@@ -43,7 +43,7 @@ Examples:
 | --cr-wrap                    |             |                                 |
 | --create-rc *file*           |             |                                 |
 | --date-format *format*       |             |                                 |
-| --defaultno                  |             |                                 |
+| --defaultno                  | In progress |                                 |
 | --default-button *string*    |             |                                 |
 | --default-item *string*      |             |                                 |
 | --exit-label *string*        | In progress |                                 |
@@ -64,8 +64,8 @@ Examples:
 | --keep-window                |             |                                 |
 | --last-key                   |             |                                 |
 | --max-input *size*           |             |                                 |
-| --no-cancel                  |             |                                 |
-| --nocancel                   |             |                                 |
+| --no-cancel                  | In progress |                                 |
+| --nocancel                   | In progress |                                 |
 | --no-collapse                |             |                                 |
 | --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
@@ -73,8 +73,8 @@ Examples:
 | --no-lines                   | Completed   |                                 |
 | --no-mouse                   |             |                                 |
 | --no-nl-expand               |             |                                 |
-| --no-ok                      |             |                                 |
-| --nook                       |             |                                 |
+| --no-ok                      | In progress |                                 |
+| --nook                       | In progress |                                 |
 | --no-shadow                  | Completed   |                                 |
 | --no-tags                    |             |                                 |
 | --ok-label *string*          | Completed   |                                 |

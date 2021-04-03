@@ -169,8 +169,8 @@ struct config {
 	bool keep_window;
 	bool last_key;
 	int max_input;
-	bool no_cancel;	// alias
-	bool nocancel;	// alias useful?
+	bool no_cancel;  // alias
+	//bool nocancel; // alias
 	bool no_collapse;
 	bool no_items;
 	bool no_kill;
@@ -178,8 +178,8 @@ struct config {
 	bool no_lines;
 	bool no_mouse;
 	bool no_nl_expand;
-	bool no_ok;	// alias
-	bool nook;	// alias useful?
+	bool no_ok;  // alias
+	//bool nook; // alias
 	//bool no_shadow; utility (.shadow for lib)
 	bool no_tags;
 	char *ok_label;
@@ -233,7 +233,7 @@ int yesno_builder(struct config conf, char* text, int rows, int cols, int argc, 
 
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    char **values, int selected, bool shortkey, int sleep, int fd);
+    int *values, int selected, bool shortkey, int sleep, int fd);
 
 void usage(void)
 {
@@ -280,7 +280,7 @@ int main(int argc, char *argv[argc])
 	    { "cr-wrap", no_argument, NULL, 'X' },
 	    { "create-rc", required_argument, NULL /*file*/, 'X' },
 	    { "date-format", required_argument, NULL /*format*/, 'X' },
-	    { "defaultno", no_argument, NULL, 'X' },
+	    { "defaultno", no_argument, NULL, DEFAULTNO },
 	    { "default-button", required_argument, NULL	/*string*/, 'X' },
 	    { "default-item", required_argument, NULL /*string*/, 'X' },
 	    { "exit-label", required_argument, NULL /*string*/, EXIT_LABEL },
@@ -301,8 +301,8 @@ int main(int argc, char *argv[argc])
 	    { "keep-window", no_argument, NULL, 'X' },
 	    { "last-key", no_argument, NULL, 'X' },
 	    { "max-input", required_argument, NULL /*size*/, 'X' },
-	    { "no-cancel", no_argument, NULL, 'X' },
-	    { "nocancel", no_argument, NULL, 'X' },
+	    { "no-cancel", no_argument, NULL, NO_CANCEL },
+	    { "nocancel", no_argument, NULL, NOCANCEL },
 	    { "no-collapse", no_argument, NULL, 'X' },
 	    { "no-items", no_argument, NULL, 'X' },
 	    { "no-kill", no_argument, NULL, 'X' },
@@ -310,8 +310,8 @@ int main(int argc, char *argv[argc])
 	    { "no-lines", no_argument, NULL, NO_LINES },
 	    { "no-mouse", no_argument, NULL, 'X' },
 	    { "no-nl-expand", no_argument, NULL, 'X' },
-	    { "no-ok", no_argument, NULL, 'X' },
-	    { "nook ", no_argument, NULL, 'X' },
+	    { "no-ok", no_argument, NULL, NO_OK },
+	    { "nook ", no_argument, NULL, NOOK },
 	    { "no-shadow", no_argument, NULL, NO_SHADOW },
 	    { "no-tags", no_argument, NULL, 'X' },
 	    { "ok-label", required_argument, NULL /*string*/, OK_LABEL },
@@ -397,6 +397,9 @@ int main(int argc, char *argv[argc])
 		case CANCEL_LABEL:
 			conf.cancel_label = optarg;
 			break;
+		case DEFAULTNO:
+			conf.defaultno = true;
+			break;
 		case EXIT_LABEL:
 			conf.exit_label = optarg;
 			break;
@@ -414,11 +417,19 @@ int main(int argc, char *argv[argc])
 		case HLINE:
 			conf.hline = optarg;
 			break;
+		case NOCANCEL:
+		case NO_CANCEL:
+			conf.no_cancel = true;
+			break;
 		case NO_LABEL:
 			conf.no_label = optarg;
 			break;
 		case NO_LINES:
 			conf.no_lines = true;
+			break;
+		case NOOK:
+		case NO_OK:
+			conf.no_ok = true;
 			break;
 		case NO_SHADOW:
 			conf.shadow = false;
@@ -730,7 +741,7 @@ void draw_button(WINDOW *window, int start_y, int size, char *text, bool selecte
 
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    char **values, int selected, bool shortkey, int sleeptime, int fd)
+    int *values, int selected, bool shortkey, int sleeptime, int fd)
 {
 	bool loop = true, update;
 	int i, y, start_y, size, input;
@@ -802,8 +813,8 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 {
 	WINDOW *widget, *button, *entry;
 	char *buttons[2] = {conf.ok_label, conf.cancel_label};
-	char *values[2] = {conf.ok_label, conf.cancel_label};
-	int output;
+	int values[2] = {BSDDIALOG_YESOK, BSDDIALOG_NOCANCEL};
+	int output, nbuttons = 2, defbutton = 0;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -817,8 +828,19 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	wrefresh(widget);
 	wrefresh(entry);
 
-	output = buttons_handler(button, cols, 2, buttons, values, 0, true,
-	    conf.sleep, /*fd*/ 0);
+
+	if (conf.no_cancel) {
+		conf.no_ok = false; // like dialog
+		conf.defaultno = false;
+		nbuttons--;
+	} else if (conf.no_ok) {
+		nbuttons--;
+		buttons[0] = conf.cancel_label;
+		values[0] = BSDDIALOG_NOCANCEL;
+	} else if (conf.defaultno)
+		defbutton = 1;
+	output = buttons_handler(button, cols, nbuttons, buttons, values,
+	    defbutton, true, conf.sleep, /* fd */ 0);
 
 	delwin(button);
 	delwin(entry);
@@ -865,7 +887,7 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 	wrefresh(widget);
 
 	output = buttons_handler(button, cols, 1, &(conf.ok_label),
-	    &(conf.ok_label), 0, true, conf.sleep, /*fd*/ 0);
+	    BSDDIALOG_YESOK, 0, true, conf.sleep, /*fd*/ 0);
 
 	delwin(button);
 	delwin(widget);
@@ -881,8 +903,8 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 {
 	WINDOW *widget, *button, *entry;
 	char *buttons[2] = {conf.ok_label, conf.cancel_label};
-	char *values[2] = {conf.ok_label, conf.cancel_label};
-	int output;
+	int values[2] = {BSDDIALOG_YESOK, BSDDIALOG_NOCANCEL};
+	int output, nbuttons = 2, defbutton = 0;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -896,6 +918,16 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	wrefresh(widget);
 	wrefresh(entry);
 
+	if (conf.no_cancel) {
+		conf.no_ok = false; // like dialog
+		conf.defaultno = false;
+		nbuttons--;
+	} else if (conf.no_ok) {
+		nbuttons--;
+		buttons[0] = conf.cancel_label;
+		values[0] = BSDDIALOG_NOCANCEL;
+	} else if (conf.defaultno)
+		defbutton = 1;
 	output = buttons_handler(button, cols, 2, buttons, values, 0, true,
 	    conf.sleep, /*fd*/ 0);
 
@@ -914,8 +946,8 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 {
 	WINDOW *widget, *button, *entry;
 	char *buttons[2] = {conf.ok_label, conf.cancel_label};
-	char *values[2] = {conf.ok_label, conf.cancel_label};
-	int output;
+	int values[2] = {BSDDIALOG_YESOK, BSDDIALOG_NOCANCEL};
+	int output, nbuttons = 2, defbutton = 0;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -929,6 +961,16 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	wrefresh(widget);
 	wrefresh(entry);
 
+	if (conf.no_cancel) {
+		conf.no_ok = false; // like dialog
+		conf.defaultno = false;
+		nbuttons--;
+	} else if (conf.no_ok) {
+		nbuttons--;
+		buttons[0] = conf.cancel_label;
+		values[0] = BSDDIALOG_NOCANCEL;
+	} else if (conf.defaultno)
+		defbutton = 1;	
 	output = buttons_handler(button, cols, 2, buttons, values, 0, true,
 	    conf.sleep, /*fd*/ 0);
 
@@ -947,8 +989,8 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 {
 	WINDOW *widget, *button;
 	char *buttons[2] = {conf.yes_label, conf.no_label};
-	char *values[2] = {conf.yes_label, conf.no_label};
-	int output;
+	int values[2] = {BSDDIALOG_YESOK, BSDDIALOG_NOCANCEL};
+	int output, nbuttons = 2, defbutton = 0;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
