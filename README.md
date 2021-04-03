@@ -21,6 +21,7 @@ Examples:
 ```
 % bsddialog --title msgbox --msgbox "Hello World!" 5 30
 % bsddialog --title yesno --yesno "Hello World!" 5 30
+% bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 ```
 
 
