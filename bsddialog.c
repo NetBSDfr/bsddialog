@@ -730,7 +730,8 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 			output = BSDDIALOG_ERROR;
 			loop = false;
 		} else if (input == '\t') { // TAB
-			/* future */
+			selected = (selected + 1) % nbuttons;
+			update = true;
 		} else if (input == KEY_LEFT) {
 			if (selected > 0) {
 				selected--;
