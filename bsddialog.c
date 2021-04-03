@@ -737,7 +737,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 				update = true;
 			}
 		} else if (input == KEY_RIGHT) {
-			if (selected < nbuttons) {
+			if (selected < nbuttons - 1) {
 				selected++;
 				update = true;
 			}
