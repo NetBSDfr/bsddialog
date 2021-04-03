@@ -1,3 +1,5 @@
+#include <sys/ioctl.h>
+
 #include <curses.h>
 #include <getopt.h>
 #include <stdlib.h>
@@ -248,6 +250,7 @@ int main(int argc, char *argv[argc])
 	int input, rows, cols, output;
 	int (*widgetbuilder)(struct config conf, char* text, int rows, int cols, int argc, char **argv) = NULL;
 	WINDOW *shadow;
+	struct winsize ws;
 	struct config conf;
 
 	memset(&conf, 0, sizeof(struct config));
@@ -315,8 +318,8 @@ int main(int argc, char *argv[argc])
 	    { "output-fd", required_argument, NULL /*fd*/, OUTPUT_FD },
 	    { "separator", required_argument, NULL /*string*/, 'X' },
 	    { "output-separator", required_argument, NULL /*string*/, 'X' },
-	    { "print-maxsize", no_argument, NULL, 'X' },
-	    { "print-size", no_argument, NULL, 'X' },
+	    { "print-maxsize", no_argument, NULL, PRINT_MAXSIZE },
+	    { "print-size", no_argument, NULL, PRINT_SIZE },
 	    { "print-version", no_argument, NULL, PRINT_VERSION },
 	    { "quoted", no_argument, NULL, 'X' },
 	    { "scrollbar", no_argument, NULL, 'X' },
@@ -426,6 +429,12 @@ int main(int argc, char *argv[argc])
 		case OUTPUT_FD:
 			conf.output_fd = atoi(optarg);
 			break;
+		case PRINT_MAXSIZE:
+			conf.print_maxsize = true;
+			break;
+		case PRINT_SIZE:
+			conf.print_size = true;
+			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			break;
@@ -477,6 +486,12 @@ int main(int argc, char *argv[argc])
 	}
 	argc -= optind;
 	argv += optind;
+
+	if (conf.print_maxsize) {
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
+		dprintf(conf.output_fd, "Terminal size: %d, %d\n",
+		    ws.ws_row, ws.ws_col);
+	}
 
 	if (argc != 3) {
 		usage();
@@ -809,6 +824,9 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	delwin(entry);
 	delwin(widget);
 
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Checklist size: %d, %d\n", rows, cols);
+
 	return output;
 }
 
@@ -824,6 +842,9 @@ infobox_builder(struct config conf, char* text, int rows, int cols, int argc, ch
 	wrefresh(widget);
 	getch();
 	delwin(widget);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Infobox size: %d, %d\n", rows, cols);
 
 	return (BSDDIALOG_YESOK);
 }
@@ -848,6 +869,9 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 
 	delwin(button);
 	delwin(widget);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Msgbox size: %d, %d\n", rows, cols);
 
 	return output;
 }
@@ -879,6 +903,9 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	delwin(entry);
 	delwin(widget);
 
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
+
 	return output;
 }
 
@@ -909,6 +936,9 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	delwin(entry);
 	delwin(widget);
 
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Pause size: %d, %d\n", rows, cols);
+
 	return output;
 }
 
@@ -934,6 +964,9 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 	delwin(button);
 	delwin(widget);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Yesno size: %d, %d\n", rows, cols);
 
 	return output;
 }

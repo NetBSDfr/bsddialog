@@ -76,8 +76,8 @@ Examples:
 | --output-fd *fd*             | In progress |                                 |
 | --separator *string*         |             |                                 |
 | --output-separator *string*  |             |                                 |
-| --print-maxsize              |             |                                 |
-| --print-size                 |             |                                 |
+| --print-maxsize              | In progress |                                 |
+| --print-size                 | In progress |                                 |
 | --print-version              | Completed   |                                 |
 | --quoted                     |             |                                 |
 | --scrollbar                  |             |                                 |
