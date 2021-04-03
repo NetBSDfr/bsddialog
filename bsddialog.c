@@ -195,8 +195,8 @@ struct config {
 	bool single_quoted;
 	bool size_err;
 	int sleep;
-	bool stderr_; 
-	bool stdout_;
+	//bool stderr_; utility, use .output_fd
+	//bool stdout_; utility, use .output_fd
 	bool tab_correct;
 	int tab_len;
 	char *time_format;
@@ -261,6 +261,7 @@ int main(int argc, char *argv[argc])
 	conf.yes_label = "Yes";
 	conf.title = "";
 	conf.shadow = true;
+	conf.output_fd = STDERR_FILENO;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -432,10 +433,10 @@ int main(int argc, char *argv[argc])
 			conf.sleep = atoi(optarg);
 			break;
 		case STDERR:
-			conf.stderr_=true;
+			conf.output_fd = STDERR_FILENO;
 			break;
 		case STDOUT:
-			conf.stdout_=true;
+			conf.output_fd = STDOUT_FILENO;
 			break;
 		case TITLE:
 			conf.title = optarg;
