@@ -19,8 +19,6 @@ Output:
 
 Examples:
 ```
-% bsddialog --title infobox --infobox "Hello World!" 5 30
-% bsddialog --title inputbox --inputbox "Hello World!" 8 30
 % bsddialog --title msgbox --msgbox "Hello World!" 5 30
 % bsddialog --title yesno --yesno "Hello World!" 5 30
 ```
@@ -51,7 +49,7 @@ Examples:
 | --help-status                |             |                                 |
 | --help-tags                  |             |                                 |
 | --hfile *filename*           |             |                                 |
-| --hline *string*             |             |                                 |
+| --hline *string*             | Completed   |                                 |
 | --ignore                     |             |                                 |
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
