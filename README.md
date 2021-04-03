@@ -112,7 +112,7 @@ Examples:
 | form         |             |                                                 |
 | fselect      |             |                                                 |
 | gauge        |             |                                                 |
-| infobox      | In progress |                                                 |
+| infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress |                                                 |
 | inputmenu    |             |                                                 |
 | menu         |             |                                                 |
