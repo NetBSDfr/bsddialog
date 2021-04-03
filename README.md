@@ -47,10 +47,10 @@ Examples:
 | --default-button *string*    |             |                                 |
 | --default-item *string*      |             |                                 |
 | --exit-label *string*        | In progress |                                 |
-| --extra-button               |             |                                 |
+| --extra-button               | In progress |                                 |
 | --extra-label *string*       | In progress |                                 |
 | --help                       | In progress |                                 |
-| --help-button                |             |                                 |
+| --help-button                | In progress |                                 |
 | --help-label *string*        | In progress |                                 |
 | --help-status                |             |                                 |
 | --help-tags                  |             |                                 |

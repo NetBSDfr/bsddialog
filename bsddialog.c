@@ -284,10 +284,10 @@ int main(int argc, char *argv[argc])
 	    { "default-button", required_argument, NULL	/*string*/, 'X' },
 	    { "default-item", required_argument, NULL /*string*/, 'X' },
 	    { "exit-label", required_argument, NULL /*string*/, EXIT_LABEL },
-	    { "extra-button", no_argument, NULL, 'X' },
+	    { "extra-button", no_argument, NULL, EXTRA_BUTTON },
 	    { "extra-label", required_argument, NULL /*string*/, EXTRA_LABEL },
 	    { "help", no_argument, NULL, HELP },
-	    { "help-button", no_argument, NULL, 'X' },
+	    { "help-button", no_argument, NULL, HELP_BUTTON },
 	    { "help-label", required_argument, NULL /*string*/, HELP_LABEL },
 	    { "help-status", no_argument, NULL, 'X' },
 	    { "help-tags", no_argument, NULL, 'X' },
@@ -403,6 +403,9 @@ int main(int argc, char *argv[argc])
 		case EXIT_LABEL:
 			conf.exit_label = optarg;
 			break;
+		case EXTRA_BUTTON:
+			conf.extra_button = true;
+			break;
 		case EXTRA_LABEL:
 			conf.extra_label = optarg;
 			break;
@@ -411,6 +414,9 @@ int main(int argc, char *argv[argc])
 			printf("\n");
 			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
+		case HELP_BUTTON:
+			conf.help_button = true;
+			break;
 		case HELP_LABEL:
 			conf.help_label = optarg;
 			break;
