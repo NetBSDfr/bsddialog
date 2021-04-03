@@ -772,7 +772,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		wrefresh(window);
 		input = getch();
 		if (input == 10 ) { // Enter
-			output = selected; // the caller knows the value
+			output = values[selected]; // the caller knows the value
 			loop = false;
 		} else if (input == 27) { // Esc
 			output = BSDDIALOG_ERROR;
@@ -793,7 +793,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		} else if (shortkey) {
 			for (i = 0; i < nbuttons; i++)
 				if (input == (buttons[i])[0]) {
-					output = selected; // like Esc
+					output = values[selected]; // like Esc
 					loop = false;
 				}
 		}
