@@ -9,7 +9,7 @@ see LICENSE.
 
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
-% cc bsddialog.c -o bsddialog -lncurses
+% make -D PORTNCURSES
 % ./bsddialog --title BSD --msgbox "Hello World!" 6 24
 ```
 Output:
@@ -30,9 +30,9 @@ Examples:
 | ---------------------------- | ----------- | ------------------------------- |
 | --ascii-lines                | Completed   |                                 |
 | --aspect *ratio*             |             |                                 |
-| --backtitle *backtitle*      | In progress |                                 |
-| --begin y x                  | In progress |                                 |
-| --cancel-label *string*      | In progress |                                 |
+| --backtitle *backtitle*      | Completed   |                                 |
+| --begin y x                  | Completed   |                                 |
+| --cancel-label *string*      | Completed   |                                 |
 | --clear                      |             |                                 |
 | --colors                     |             |                                 |
 | --column-separator *string*  |             |                                 |
@@ -65,15 +65,15 @@ Examples:
 | --no-collapse                |             |                                 |
 | --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
-| --no-label *string*          | In progress |                                 |
-| --no-lines                   | In progress |                                 |
+| --no-label *string*          | Completed   |                                 |
+| --no-lines                   | Completed   |                                 |
 | --no-mouse                   |             |                                 |
 | --no-nl-expand               |             |                                 |
 | --no-ok                      |             |                                 |
 | --nook                       |             |                                 |
-| --no-shadow                  | In progress |                                 |
+| --no-shadow                  | Completed   |                                 |
 | --no-tags                    |             |                                 |
-| --ok-label *string*          | In progress |                                 |
+| --ok-label *string*          | Completed   |                                 |
 | --output-fd *fd*             | In progress |                                 |
 | --separator *string*         |             |                                 |
 | --output-separator *string*  |             |                                 |
@@ -84,7 +84,7 @@ Examples:
 | --scrollbar                  |             |                                 |
 | --separate-output            |             |                                 |
 | --separate-widget *string*   |             |                                 |
-| --shadow                     | In progress |                                 |
+| --shadow                     | Completed   |                                 |
 | --single-quoted              |             |                                 |
 | --size-err                   |             |                                 |
 | --sleep *secs*               | Completed   |                                 |
@@ -97,9 +97,9 @@ Examples:
 | --title *title*              | Completed   |                                 |
 | --trace *filename*           |             |                                 |
 | --trim                       |             |                                 |
-| --version                    | In progress |                                 |
+| --version                    | Completed   |                                 |
 | --visit-items                |             |                                 |
-| --yes-label *string*         | In progress |                                 |
+| --yes-label *string*         | Completed   |                                 |
 
 
 | Windget      | Status      | Note                                            |
