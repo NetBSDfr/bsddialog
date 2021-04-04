@@ -15,7 +15,7 @@
 #define BSDDIALOG_NOCANCEL	 1 // No or Cancel buttons
 #define BSDDIALOG_HELP		 2 // Help button
 #define BSDDIALOG_EXTRA		 3 // Extra button
-#define BSDDIALOG_ITEM_HELP	 4 // UNIMPLEMENTED comp with dialog
+#define BSDDIALOG_ITEM_HELP	 4
 #define BSDDIALOG_ERROR		-1 // generic error or ESC key
 
 /* Foreground_Background */
@@ -549,7 +549,7 @@ int main(int argc, char *argv[argc])
 	endwin();
 
 	// debug
-	printf("output: %d\n", output);
+	printf("Exist status: %d\n", output);
 	return output;
 }
 
