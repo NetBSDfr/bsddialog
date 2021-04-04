@@ -917,8 +917,8 @@ int
 msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
+	char *buttons[3];
+	int values[3], output, nbuttons, defbutton;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -931,7 +931,7 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	conf.extra_button, conf.extra_label, false, NULL,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	conf.help_button, conf.help_label, false, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
 	    true, conf.sleep, /*fd*/ 0);
