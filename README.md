@@ -138,5 +138,5 @@ Examples:
 | textbox      |             |                                                 |
 | timebox      |             |                                                 |
 | treeview     |             |                                                 |
-| yesno        | In progress |                                                 |
+| yesno        | In progress | dialof rename yes/no -> ok/cancel with --extra-button --help-button                              g                 |
 
