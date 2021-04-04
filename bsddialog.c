@@ -549,7 +549,7 @@ int main(int argc, char *argv[argc])
 	endwin();
 
 	// debug
-	printf("Exist status: %d\n", output);
+	printf("Exit status: %d\n", output);
 	return output;
 }
 
