@@ -8,12 +8,12 @@ SOURCES= bsddialog.c
 OBJECTS= ${SOURCES:.c=.o}
 
 # BASE ncurses
-CFLAGS= -Wall -I/usr/local/include
+CFLAGS= -Wall
 LDFLAGS= -L/usr/lib -lmenu -lncurses -ltinfo -L/usr/local/lib
 
 # PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
 .if defined(PORTNCURSES)
-CFLAGS += -DPORTNCURSES
+CFLAGS += -DPORTNCURSES -I/usr/local/include
 LDFLAGS = -L/usr/local/lib -lmenu -lncurses -ltinfo
 .endif
 
