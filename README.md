@@ -46,15 +46,15 @@ Examples:
 | --cr-wrap                    |             |                                 |
 | --create-rc *file*           |             |                                 |
 | --date-format *format*       |             |                                 |
-| --defaultno                  | In progress |                                 |
+| --defaultno                  | Completed   |                                 |
 | --default-button *string*    |             |                                 |
 | --default-item *string*      |             |                                 |
-| --exit-label *string*        | In progress |                                 |
-| --extra-button               | In progress |                                 |
-| --extra-label *string*       | In progress |                                 |
+| --exit-label *string*        | Completed   |                                 |
+| --extra-button               | Completed   |                                 |
+| --extra-label *string*       | Completed   |                                 |
 | --help                       | In progress |                                 |
-| --help-button                | In progress |                                 |
-| --help-label *string*        | In progress |                                 |
+| --help-button                | Completed   |                                 |
+| --help-label *string*        | Completed   |                                 |
 | --help-status                |             |                                 |
 | --help-tags                  |             |                                 |
 | --hfile *filename*           |             |                                 |
@@ -67,8 +67,8 @@ Examples:
 | --keep-window                |             |                                 |
 | --last-key                   |             |                                 |
 | --max-input *size*           |             |                                 |
-| --no-cancel                  | In progress |                                 |
-| --nocancel                   | In progress |                                 |
+| --no-cancel                  | Completed   |                                 |
+| --nocancel                   | Completed   |                                 |
 | --no-collapse                |             |                                 |
 | --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
@@ -76,8 +76,8 @@ Examples:
 | --no-lines                   | Completed   |                                 |
 | --no-mouse                   |             |                                 |
 | --no-nl-expand               |             |                                 |
-| --no-ok                      | In progress |                                 |
-| --nook                       | In progress |                                 |
+| --no-ok                      | Completed   |                                 |
+| --nook                       | Completed   |                                 |
 | --no-shadow                  | Completed   |                                 |
 | --no-tags                    |             |                                 |
 | --ok-label *string*          | Completed   |                                 |
