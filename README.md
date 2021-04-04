@@ -24,6 +24,7 @@ Examples:
 % bsddialog --title msgbox --msgbox "Hello World!" 5 30
 % bsddialog --title yesno --yesno "Hello World!" 5 30
 % bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
+% bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
 ```
 
 **TODO**
