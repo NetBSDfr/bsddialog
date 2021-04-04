@@ -223,6 +223,10 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(WINDOW *window, int x, int y, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
 void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
+void get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
+    char* yesoklabel, bool extra, char *extralabel, bool nocancel,
+    char *nocancellabel, bool help, char *helplabel, bool defaultno,
+    int *defbutton);
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleep, int fd);
@@ -810,13 +814,56 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	return output;
 }
 
+void
+get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok, 
+    char *yesoklabel, bool extra, char *extralabel, bool nocancel,
+    char *nocancellabel, bool help, char *helplabel, bool defaultno,
+    int *defbutton)
+{
+
+	*nbuttons = 0;
+	*defbutton = 0;
+
+	if (yesok) {
+		buttons[0] = yesoklabel;
+		values[0] = BSDDIALOG_YESOK;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (extra) {
+		buttons[*nbuttons] = extralabel;
+		values[*nbuttons] = BSDDIALOG_EXTRA;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (nocancel) {
+		buttons[*nbuttons] = nocancellabel;
+		values[*nbuttons] = BSDDIALOG_NOCANCEL;
+		if (defaultno)
+			*defbutton = *nbuttons;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (help) {
+		buttons[*nbuttons] = helplabel;
+		values[*nbuttons] = BSDDIALOG_HELP;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (*nbuttons == 0) {
+		buttons[0] = yesoklabel;
+		values[0] = BSDDIALOG_YESOK;
+		*nbuttons = 1;
+	}
+}
+
 /* Widgets */
 int
 checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry;
 	char *buttons[4];
-	int values[4], output, nbuttons = 0, defbutton = 0;
+	int values[4], output, nbuttons, defbutton;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -830,37 +877,9 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	wrefresh(widget);
 	wrefresh(entry);
 
-	if (conf.no_ok == false) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons++;
-	}
-
-	if (conf.extra_button) {
-		buttons[nbuttons] = conf.extra_label;
-		values[nbuttons] = BSDDIALOG_EXTRA;
-		nbuttons++;
-	}
-
-	if (conf.no_cancel == false) {
-		buttons[nbuttons] = conf.cancel_label;
-		values[nbuttons] = BSDDIALOG_NOCANCEL;
-		if (conf.defaultno)
-			defbutton = nbuttons;
-		nbuttons++;
-	}
-
-	if (conf.help_button) {
-		buttons[nbuttons] = conf.help_label;
-		values[nbuttons] = BSDDIALOG_HELP;
-		nbuttons++;
-	}
-
-	if (nbuttons == 0) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons = 1;
-	}
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, conf.sleep, /* fd */ 0);
@@ -898,8 +917,8 @@ int
 msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button;
-	char *buttons[3];
-	int values[3], output, nbuttons = 0, defbutton = 0;
+	char *buttons[4];
+	int values[4], output, nbuttons, defbutton;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -910,29 +929,9 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 
 	wrefresh(widget);
 
-	if (conf.no_ok == false) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons++;
-	}
-
-	if (conf.extra_button) {
-		buttons[nbuttons] = conf.extra_label;
-		values[nbuttons] = BSDDIALOG_EXTRA;
-		nbuttons++;
-	}
-
-	if (conf.help_button) {
-		buttons[nbuttons] = conf.help_label;
-		values[nbuttons] = BSDDIALOG_HELP;
-		nbuttons++;
-	}
-
-	if (nbuttons == 0) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons = 1;
-	}
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, false, NULL,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
 	    true, conf.sleep, /*fd*/ 0);
@@ -951,7 +950,7 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 {
 	WINDOW *widget, *button, *entry;
 	char *buttons[4];
-	int values[4], output, nbuttons = 0, defbutton = 0;
+	int values[4], output, nbuttons, defbutton;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -965,37 +964,9 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	wrefresh(widget);
 	wrefresh(entry);
 
-	if (conf.no_ok == false) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons++;
-	}
-
-	if (conf.extra_button) {
-		buttons[nbuttons] = conf.extra_label;
-		values[nbuttons] = BSDDIALOG_EXTRA;
-		nbuttons++;
-	}
-
-	if (conf.no_cancel == false) {
-		buttons[nbuttons] = conf.cancel_label;
-		values[nbuttons] = BSDDIALOG_NOCANCEL;
-		if (conf.defaultno)
-			defbutton = nbuttons;
-		nbuttons++;
-	}
-
-	if (conf.help_button) {
-		buttons[nbuttons] = conf.help_label;
-		values[nbuttons] = BSDDIALOG_HELP;
-		nbuttons++;
-	}
-
-	if (nbuttons == 0) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons = 1;
-	}
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, conf.sleep, /*fd*/ 0);
@@ -1015,7 +986,7 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 {
 	WINDOW *widget, *button, *entry;
 	char *buttons[4];
-	int values[4], output, nbuttons = 0, defbutton = 0;
+	int values[4], output, nbuttons, defbutton;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -1029,37 +1000,9 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	wrefresh(widget);
 	wrefresh(entry);
 
-	if (conf.no_ok == false) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons++;
-	}
-
-	if (conf.extra_button) {
-		buttons[nbuttons] = conf.extra_label;
-		values[nbuttons] = BSDDIALOG_EXTRA;
-		nbuttons++;
-	}
-
-	if (conf.no_cancel == false) {
-		buttons[nbuttons] = conf.cancel_label;
-		values[nbuttons] = BSDDIALOG_NOCANCEL;
-		if (conf.defaultno)
-			defbutton = nbuttons;
-		nbuttons++;
-	}
-
-	if (conf.help_button) {
-		buttons[nbuttons] = conf.help_label;
-		values[nbuttons] = BSDDIALOG_HELP;
-		nbuttons++;
-	}
-
-	if (nbuttons == 0) {
-		buttons[0] = conf.ok_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons = 1;
-	}
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, conf.sleep, /*fd*/ 0);
@@ -1079,7 +1022,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 {
 	WINDOW *widget, *button;
 	char *buttons[4];
-	int values[4], output, nbuttons = 0, defbutton = 0;
+	int values[4], output, nbuttons, defbutton;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -1090,37 +1033,9 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 	wrefresh(widget);
 
-	if (conf.no_ok == false) {
-		buttons[0] = conf.yes_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons++;
-	}
-
-	if (conf.extra_button) {
-		buttons[nbuttons] = conf.extra_label;
-		values[nbuttons] = BSDDIALOG_EXTRA;
-		nbuttons++;
-	}
-
-	if (conf.no_cancel == false) {
-		buttons[nbuttons] = conf.no_label;
-		values[nbuttons] = BSDDIALOG_NOCANCEL;
-		if (conf.defaultno)
-			defbutton = nbuttons;
-		nbuttons++;
-	}
-
-	if (conf.help_button) {
-		buttons[nbuttons] = conf.help_label;
-		values[nbuttons] = BSDDIALOG_HELP;
-		nbuttons++;
-	}
-
-	if (nbuttons == 0) {
-		buttons[0] = conf.yes_label;
-		values[0] = BSDDIALOG_YESOK;
-		nbuttons = 1;
-	}
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.yes_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.no_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, conf.sleep, /*fd*/ 0);
