@@ -748,6 +748,49 @@ void draw_button(WINDOW *window, int start_y, int size, char *text, bool selecte
 	wattroff(window, color_first_char);
 }
 
+void
+get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok, 
+    char *yesoklabel, bool extra, char *extralabel, bool nocancel,
+    char *nocancellabel, bool help, char *helplabel, bool defaultno,
+    int *defbutton)
+{
+
+	*nbuttons = 0;
+	*defbutton = 0;
+
+	if (yesok) {
+		buttons[0] = yesoklabel;
+		values[0] = BSDDIALOG_YESOK;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (extra) {
+		buttons[*nbuttons] = extralabel;
+		values[*nbuttons] = BSDDIALOG_EXTRA;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (nocancel) {
+		buttons[*nbuttons] = nocancellabel;
+		values[*nbuttons] = BSDDIALOG_NOCANCEL;
+		if (defaultno)
+			*defbutton = *nbuttons;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (help) {
+		buttons[*nbuttons] = helplabel;
+		values[*nbuttons] = BSDDIALOG_HELP;
+		*nbuttons = *nbuttons + 1;
+	}
+
+	if (*nbuttons == 0) {
+		buttons[0] = yesoklabel;
+		values[0] = BSDDIALOG_YESOK;
+		*nbuttons = 1;
+	}
+}
+
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleeptime, int fd)
@@ -812,49 +855,6 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	sleep(sleeptime);
 
 	return output;
-}
-
-void
-get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok, 
-    char *yesoklabel, bool extra, char *extralabel, bool nocancel,
-    char *nocancellabel, bool help, char *helplabel, bool defaultno,
-    int *defbutton)
-{
-
-	*nbuttons = 0;
-	*defbutton = 0;
-
-	if (yesok) {
-		buttons[0] = yesoklabel;
-		values[0] = BSDDIALOG_YESOK;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (extra) {
-		buttons[*nbuttons] = extralabel;
-		values[*nbuttons] = BSDDIALOG_EXTRA;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (nocancel) {
-		buttons[*nbuttons] = nocancellabel;
-		values[*nbuttons] = BSDDIALOG_NOCANCEL;
-		if (defaultno)
-			*defbutton = *nbuttons;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (help) {
-		buttons[*nbuttons] = helplabel;
-		values[*nbuttons] = BSDDIALOG_HELP;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (*nbuttons == 0) {
-		buttons[0] = yesoklabel;
-		values[0] = BSDDIALOG_YESOK;
-		*nbuttons = 1;
-	}
 }
 
 /* Widgets */
