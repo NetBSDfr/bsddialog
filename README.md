@@ -11,6 +11,7 @@ see LICENSE.
 
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
+% cd bsddialog
 % make -D PORTNCURSES
 % ./bsddialog --title BSD --msgbox "Hello World!" 6 24
 ```
