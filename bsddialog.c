@@ -113,7 +113,7 @@
 #define CHECKLIST	75 // checklist
 #define DSELECT		76 // dselect
 #define EDITBOX		77 // editbox
-#define FORM		78 // form
+#define FORM_		78 // form, ncurses has FORM
 #define FSELECT		79 // fselect
 #define GAUGE		80 // gauge
 #define INFOBOX		81 // infobox
@@ -361,7 +361,7 @@ int main(int argc, char *argv[argc])
 	    { "checklist", no_argument, NULL, CHECKLIST },
 	    { "dselect", no_argument, NULL, 'X' },
 	    { "editbox", no_argument, NULL, 'X' },
-	    { "form", no_argument, NULL, FORM },
+	    { "form", no_argument, NULL, FORM_ },
 	    { "fselect", no_argument, NULL, 'X' },
 	    { "gauge", no_argument, NULL, 'X' },
 	    { "infobox", no_argument, NULL, INFOBOX },
@@ -494,7 +494,7 @@ int main(int argc, char *argv[argc])
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
-		case FORM:
+		case FORM_:
 			widgetbuilder = form_builder;
 			break;
 		case INFOBOX:
@@ -1051,10 +1051,6 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	WINDOW *widget, *button, *entry;
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
-	FIELD *field[2];
-
-	field[0] = new_field(1, 10, 6, 18, 0, 0);
-	field[1] = NULL;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
