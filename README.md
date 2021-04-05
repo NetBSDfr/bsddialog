@@ -119,18 +119,18 @@ Examples:
 | checklist    | In progress |                                                 |
 | dselect      |             |                                                 |
 | editbox      |             |                                                 |
-| form         |             |                                                 |
+| form         | In progress |                                                 |
 | fselect      |             |                                                 |
 | gauge        |             |                                                 |
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress |                                                 |
-| inputmenu    |             |                                                 |
+| inputmenu    | In progress |                                                 |
 | menu         |             |                                                 |
-| mixedform    |             |                                                 |
+| mixedform    | In progress |                                                 |
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
-| passwordbox  |             |                                                 |
-| passwordform |             |                                                 |
+| passwordbox  | In progress |                                                 |
+| passwordform | In progress |                                                 |
 | pause        | In progress |                                                 |
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |

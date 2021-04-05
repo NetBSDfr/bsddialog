@@ -5,6 +5,7 @@
 #else
 #include <curses.h>
 #endif
+#include <form.h>
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
@@ -122,8 +123,8 @@
 #define MIXEDFORM	85 // mixedform
 #define MIXEDGAUGE	86 // mixedgauge
 #define MSGBOX		87 // msgbox
-#define PASSWORD	88 // passwordbox
-#define PASSWORDBOX	89 // passwordform
+#define PASSWORDBOX	88 // passwordbox
+#define PASSWORDFORM	89 // passwordform
 #define PAUSE		90 // pause
 #define PRGBOX		91 // prgbox
 #define PROGRAMBOX	92 // programbox
@@ -238,9 +239,15 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 int checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+/* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
+int form_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int inputmenu_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int passwordform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 
 void usage(void)
 {
@@ -354,18 +361,18 @@ int main(int argc, char *argv[argc])
 	    { "checklist", no_argument, NULL, CHECKLIST },
 	    { "dselect", no_argument, NULL, 'X' },
 	    { "editbox", no_argument, NULL, 'X' },
-	    { "form", no_argument, NULL, 'X' },
+	    { "form", no_argument, NULL, FORM },
 	    { "fselect", no_argument, NULL, 'X' },
 	    { "gauge", no_argument, NULL, 'X' },
 	    { "infobox", no_argument, NULL, INFOBOX },
 	    { "inputbox", no_argument, NULL, INPUTBOX },
-	    { "inputmenu", no_argument, NULL, 'X' },
+	    { "inputmenu", no_argument, NULL, INPUTMENU },
 	    { "menu", no_argument, NULL, 'X' },
-	    { "mixedform", no_argument, NULL, 'X' },
+	    { "mixedform", no_argument, NULL, MIXEDFORM },
 	    { "mixedgauge", no_argument, NULL, 'X' },
 	    { "msgbox", no_argument, NULL, MSGBOX },
-	    { "passwordbox", no_argument, NULL, 'X' },
-	    { "passwordform", no_argument, NULL, 'X' },
+	    { "passwordbox", no_argument, NULL, PASSWORDBOX },
+	    { "passwordform", no_argument, NULL, PASSWORDFORM },
 	    { "pause", no_argument, NULL, PAUSE },
 	    { "prgbox", no_argument, NULL, },
 	    { "programbox", no_argument, NULL, 'X' },
@@ -487,17 +494,32 @@ int main(int argc, char *argv[argc])
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
+		case FORM:
+			widgetbuilder = form_builder;
+			break;
 		case INFOBOX:
 			widgetbuilder = infobox_builder;
 			break;
 		case INPUTBOX:
 			widgetbuilder = inputbox_builder;
 			break;
+		case INPUTMENU:
+			widgetbuilder = inputmenu_builder;
+			break;
+		case MIXEDFORM:
+			widgetbuilder = mixedform_builder;
+			break;
 		case MSGBOX:
 			widgetbuilder = msgbox_builder;
 			break;
 		case PAUSE:
 			widgetbuilder = pause_builder;
+			break;
+		case PASSWORDBOX:
+			widgetbuilder = passwordbox_builder;
+			break;
+		case PASSWORDFORM:
+			widgetbuilder = passwordform_builder;
 			break;
 		case YESNO:
 			widgetbuilder = yesno_builder;
@@ -950,42 +972,6 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 }
 
 int
-inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
-{
-	WINDOW *widget, *button, *entry;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
-
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
-
-	wrefresh(widget);
-	wrefresh(entry);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
-
-	output = buttons_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, conf.sleep, /*fd*/ 0);
-
-	delwin(button);
-	delwin(entry);
-	delwin(widget);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
-
-	return output;
-}
-
-int
 pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry;
@@ -1051,4 +1037,71 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 		dprintf(conf.output_fd, "Yesno size: %d, %d\n", rows, cols);
 
 	return output;
+}
+
+/* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
+int form_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
+}
+
+int
+inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *button, *entry;
+	char *buttons[4];
+	int values[4], output, nbuttons, defbutton;
+	FIELD *field[2];
+
+	field[0] = new_field(1, 10, 6, 18, 0, 0);
+	field[1] = NULL;
+
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
+
+	wrefresh(widget);
+	wrefresh(entry);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+
+	output = buttons_handler(button, cols, nbuttons, buttons, values,
+	    defbutton, true, conf.sleep, /*fd*/ 0);
+
+	delwin(button);
+	delwin(entry);
+	delwin(widget);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
+
+	return output;
+}
+
+
+int inputmenu_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
+}
+
+int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
+}
+
+int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
+}
+
+int passwordform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
 }
