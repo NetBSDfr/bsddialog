@@ -11,7 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define BSDDIALOG_VERSION "0.1"
+#define BSDDIALOG_VERSION "0.1 devel"
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
