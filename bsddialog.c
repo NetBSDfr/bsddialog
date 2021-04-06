@@ -1064,7 +1064,7 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	}
 
 	while(loop) {
-		wrefresh(entry);
+		//wrefresh(entry);
 		wrefresh(window);
 		input = getch();
 		if (input == 10 ) { // Enter
@@ -1132,6 +1132,8 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	WINDOW *widget, *button, *entry;
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
+	FIELD *field[2];
+	FORM *form;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -1142,15 +1144,36 @@ inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
+	field[0] = new_field(1, cols-4, conf.x + rows - 5, conf.y +2, 0, 0);
+	field[1] = NULL;
+
+	/* Set field options */
+	//set_field_back(field[0], A_UNDERLINE);
+	//field_opts_off(field[0], O_AUTOSKIP);
+
+	/* Create the form and post it */
+	form = new_form(field);
+	set_form_win(form, entry);
+	//set_form_sub(form, derwin(entry, /*rows*/ 1 , /*cols*/ 5, 2, 2));
+	post_form(form);
+	refresh();
+
 	wrefresh(widget);
 	wrefresh(entry);
+
+	//refresh();
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	output = buttons_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, conf.sleep, /*fd*/ 0);
+	output = forms_handler(button, cols, nbuttons, buttons, values,
+	    defbutton, true, entry, form, conf.sleep, /*fd*/ 0);
+
+	/* Un post form and free the memory */
+	unpost_form(form);
+	free_form(form);
+	free_field(field[0]);
 
 	delwin(button);
 	delwin(entry);
