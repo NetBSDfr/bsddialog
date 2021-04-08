@@ -1073,7 +1073,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			loop = false;
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			dprintf(fd, "\"%s\"\n", field_buffer(field[0], 0));
+			dprintf(fd, field_buffer(field[0], 0));
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
