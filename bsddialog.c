@@ -1144,14 +1144,11 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 	/* Initialize the fields */
 	//field[0] = new_field(1, 10, 4, 18, 0, 0);
 	field[0] = new_field(1, cols-4, conf.x + rows - 5, conf.y + 2, 0, 0);
-	//field[1] = new_field(1, 10, 6, 18, 0, 0);
 	field[1] = NULL;
 
-	/* Set field options */
 	//set_field_back(field[0], A_UNDERLINE);
 	field_opts_off(field[0], O_AUTOSKIP);
 
-	/* Create the form and post it */
 	form = new_form(field);
 	post_form(form);
 	refresh();
@@ -1162,7 +1159,6 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 	output = forms_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, /*entry,*/ form, conf.sleep, /*fd*/ 0);
 
-	/* Un post form and free the memory */
 	unpost_form(form);
 	free_form(form);
 	free_field(field[0]);
