@@ -1045,7 +1045,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, FORM *form, FIELD **field,
     int sleeptime, int fd)
 {
-	bool loop = true, update, inentry = true;
+	bool loop = true, buttupdate, inentry = true;
 	int i, y, start_y, size, input, output;
 #define BUTTONSPACE 3
 
@@ -1081,7 +1081,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case '\t': // TAB
 			selected = (selected + 1) % nbuttons;
-			update = true;
+			buttupdate = true;
 			break;
 		case KEY_LEFT:
 			if (inentry) {
@@ -1089,7 +1089,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			} else {
 				if (selected > 0) {
 					selected--;
-					update = true;
+					buttupdate = true;
 				}
 			}
 			break;
@@ -1099,7 +1099,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			} else {
 				if (selected < nbuttons - 1) {
 					selected++;
-					update = true;
+					buttupdate = true;
 				}
 			}
 			break;
@@ -1124,12 +1124,12 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		}
 
-		if (update) {
+		if (buttupdate) {
 			for (i = 0; i < nbuttons; i++) {
 				y = i * (size + BUTTONSPACE);
 				draw_button(buttwin, start_y + y, size, buttons[i], i == selected);
 			}
-			update = false;
+			buttupdate = false;
 		}
 	}
 
