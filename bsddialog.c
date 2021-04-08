@@ -1046,7 +1046,8 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int sleeptime, int fd)
 {
 	bool loop = true, buttupdate, inentry = true;
-	int i, y, start_y, size, input, output;
+	int i, y, start_y, size, input, output, buflen = 0, pos = 0;
+	char *bufp;
 #define BUTTONSPACE 3
 
 	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
@@ -1073,7 +1074,9 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			loop = false;
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			dprintf(fd, field_buffer(field[0], 0));
+			bufp = field_buffer(field[0], 0);
+			bufp[buflen] = '\0';
+			dprintf(fd, bufp);
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -1086,6 +1089,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		case KEY_LEFT:
 			if (inentry) {
 				form_driver(form, REQ_PREV_CHAR);
+				pos = pos > 0 ? pos - 1 : 0;
 			} else {
 				if (selected > 0) {
 					selected--;
@@ -1095,7 +1099,10 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case KEY_RIGHT:
 			if (inentry) {
-				form_driver(form, REQ_NEXT_CHAR);
+				if (pos < buflen) {
+					form_driver(form, REQ_NEXT_CHAR);
+					pos++;
+				}
 			} else {
 				if (selected < nbuttons - 1) {
 					selected++;
@@ -1114,13 +1121,19 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
+			buflen = buflen > 0 ? buflen - 1 : 0;
+			pos = pos > 0 ? pos - 1 : 0;
 			break;
 		case KEY_DC:
 			form_driver(form, REQ_DEL_CHAR);
+			buflen = buflen > 0 ? buflen - 1 : 0;
 			break;
 		default:
-			if (inentry)
+			if (inentry) {
 				form_driver(form, input);
+				buflen++;
+				pos++;
+			}
 			break;
 		}
 
