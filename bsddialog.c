@@ -1042,7 +1042,8 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int
 forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, FORM *form, int sleeptime, int fd)
+    int *values, int selected, bool shortkey, FORM *form, FIELD **field,
+    int sleeptime, int fd)
 {
 	bool loop = true, update, inentry = true;
 	int i, y, start_y, size, input, output;
@@ -1070,6 +1071,9 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		case 10: // Enter
 			output = values[selected]; // values -> outputs
 			loop = false;
+			form_driver(form, REQ_NEXT_FIELD);
+			form_driver(form, REQ_PREV_FIELD);
+			dprintf(fd, "\"%s\"\n", field_buffer(field[0], 0));
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -1176,7 +1180,7 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 	wrefresh(entry);
 
 	output = forms_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, /*entry,*/ form, conf.sleep, /*fd*/ 0);
+	    defbutton, true, /*entry,*/ form, field, conf.sleep, conf.output_fd);
 
 	unpost_form(form);
 	free_form(form);
