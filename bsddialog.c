@@ -1200,7 +1200,7 @@ int
 newentry_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, FORM *form, int sleeptime, int fd)
 {
-	bool loop = true, update;
+	bool loop = true, update, inentry = true;
 	int i, y, start_y, size, input;
 	int output;
 #define BUTTONSPACE 3
@@ -1221,34 +1221,41 @@ newentry_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	while(loop) {
 		wrefresh(window);
 		input = getch();
-		if (input == 10 ) { // Enter
-			output = values[selected]; // the caller knows the value
+		switch(input) {
+		case 10: // Enter
+			output = values[selected]; // values -> outputs
 			loop = false;
-		} else if (input == 27) { // Esc
+			break;
+		case 27: // Esc
 			output = BSDDIALOG_ERROR;
 			loop = false;
-		} else if (input == '\t') { // TAB
+			break;
+		case '\t': // TAB
 			selected = (selected + 1) % nbuttons;
 			update = true;
-		} else if (input == KEY_LEFT) {
-			if (selected > 0) {
+			break;
+		case KEY_LEFT:
+			if (inentry == false && selected > 0) {
 				selected--;
 				update = true;
 			}
-		} else if (input == KEY_RIGHT) {
-			if (selected < nbuttons - 1) {
+			break;
+		case KEY_RIGHT:
+			if (inentry == false && selected < nbuttons - 1) {
 				selected++;
 				update = true;
 			}
-		/*} else if (shortkey) {
-			for (i = 0; i < nbuttons; i++)
-				if (input == (buttons[i])[0]) {
-					output = values[selected]; // like Esc
-					loop = false;
-				}
-		}*/
-		} else {
-			form_driver(form, input);
+			break;
+		case KEY_UP:
+			inentry = true;
+			break;
+		case KEY_DOWN:
+			inentry = false;
+			break;
+		default:
+			if (inentry)
+				form_driver(form, input);
+			break;
 		}
 
 		if (update) {
