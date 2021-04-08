@@ -1041,7 +1041,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int
-forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
+forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, FORM *form, int sleeptime, int fd)
 {
 	bool loop = true, update, inentry = true;
@@ -1058,13 +1058,13 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 
 	for (i = 0; i < nbuttons; i++) {
 		y = i * (size + BUTTONSPACE);
-		draw_button(window, start_y + y, size, buttons[i], i == selected);
+		draw_button(buttwin, start_y + y, size, buttons[i], i == selected);
 	}
 
 	curs_set(2);
 	pos_form_cursor(form);
 	while(loop) {
-		wrefresh(window);
+		wrefresh(buttwin);
 		input = getch();
 		switch(input) {
 		case 10: // Enter
@@ -1117,7 +1117,7 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		if (update) {
 			for (i = 0; i < nbuttons; i++) {
 				y = i * (size + BUTTONSPACE);
-				draw_button(window, start_y + y, size, buttons[i], i == selected);
+				draw_button(buttwin, start_y + y, size, buttons[i], i == selected);
 			}
 			update = false;
 		}
