@@ -1045,8 +1045,7 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, FORM *form, int sleeptime, int fd)
 {
 	bool loop = true, update, inentry = true;
-	int i, y, start_y, size, input;
-	int output;
+	int i, y, start_y, size, input, output;
 #define BUTTONSPACE 3
 
 	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
