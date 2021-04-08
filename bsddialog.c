@@ -1156,8 +1156,6 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	/* Initialize the fields */
-	//field[0] = new_field(1, 10, 4, 18, 0, 0);
 	field[0] = new_field(1, cols-4, conf.x + rows - 5, conf.y + 2, 0, 0);
 	field[1] = NULL;
 
