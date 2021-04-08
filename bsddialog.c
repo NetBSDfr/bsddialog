@@ -1061,6 +1061,8 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		draw_button(window, start_y + y, size, buttons[i], i == selected);
 	}
 
+	curs_set(2);
+	pos_form_cursor(form);
 	while(loop) {
 		wrefresh(window);
 		input = getch();
@@ -1091,9 +1093,12 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 			break;
 		case KEY_UP:
 			inentry = true;
+			curs_set(2);
+			pos_form_cursor(form);
 			break;
 		case KEY_DOWN:
 			inentry = false;
+			curs_set(0);
 			break;
 		default:
 			if (inentry)
@@ -1111,6 +1116,8 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	}
 
 	sleep(sleeptime);
+
+	curs_set(0);
 
 	return output;
 }
