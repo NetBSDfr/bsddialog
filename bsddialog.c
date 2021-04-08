@@ -1196,9 +1196,105 @@ int mixedform_builder(struct config conf, char* text, int rows, int cols, int ar
 	return 0;
 }
 
+int
+newentry_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
+    int *values, int selected, bool shortkey, int sleeptime, int fd)
+{
+	bool loop = true, update;
+	int i, y, start_y, size, input;
+	int output;
+#define BUTTONSPACE 3
+
+	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
+	for (i=1; i < nbuttons; i++)
+		size = MAX(size, strlen(buttons[i]));
+	size += 2;
+
+	start_y = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
+	start_y = cols/2 - start_y/2;
+
+	for (i = 0; i < nbuttons; i++) {
+		y = i * (size + BUTTONSPACE);
+		draw_button(window, start_y + y, size, buttons[i], i == selected);
+	}
+
+	while(loop) {
+		wrefresh(window);
+		input = getch();
+		if (input == 10 ) { // Enter
+			output = values[selected]; // the caller knows the value
+			loop = false;
+		} else if (input == 27) { // Esc
+			output = BSDDIALOG_ERROR;
+			loop = false;
+		} else if (input == '\t') { // TAB
+			selected = (selected + 1) % nbuttons;
+			update = true;
+		} else if (input == KEY_LEFT) {
+			if (selected > 0) {
+				selected--;
+				update = true;
+			}
+		} else if (input == KEY_RIGHT) {
+			if (selected < nbuttons - 1) {
+				selected++;
+				update = true;
+			}
+		} else if (shortkey) {
+			for (i = 0; i < nbuttons; i++)
+				if (input == (buttons[i])[0]) {
+					output = values[selected]; // like Esc
+					loop = false;
+				}
+		}
+
+		if (update) {
+			for (i = 0; i < nbuttons; i++) {
+				y = i * (size + BUTTONSPACE);
+				draw_button(window, start_y + y, size, buttons[i], i == selected);
+			}
+			update = false;
+		}
+	}
+
+	sleep(sleeptime);
+
+	return output;
+}
+
 int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
-	return 0;
+	WINDOW *widget, *button, *entry;
+	char *buttons[4];
+	int values[4], output, nbuttons, defbutton;
+
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
+	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+
+	wrefresh(widget);
+	wrefresh(entry);
+
+	output = newentry_handler(button, cols, nbuttons, buttons, values,
+	    defbutton, true, /*entry, form,*/ conf.sleep, /*fd*/ 0);
+
+	delwin(button);
+	delwin(entry);
+	delwin(widget);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
+
+	return output;
 }
 
 int passwordform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
