@@ -1042,162 +1042,6 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int
 forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW * entry, FORM* form,
-    int sleeptime, int fd)
-{
-	bool loop = true, update;
-	int i, y, start_y, size, input;
-	int output;
-#define BUTTONSPACE 3
-
-	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
-	for (i=1; i < nbuttons; i++)
-		size = MAX(size, strlen(buttons[i]));
-	size += 2;
-
-	start_y = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
-	start_y = cols/2 - start_y/2;
-
-	for (i = 0; i < nbuttons; i++) {
-		y = i * (size + BUTTONSPACE);
-		draw_button(window, start_y + y, size, buttons[i], i == selected);
-	}
-
-	while(loop) {
-		//wrefresh(entry);
-		wrefresh(window);
-		input = getch();
-		if (input == 10 ) { // Enter
-			output = values[selected]; // the caller knows the value
-			loop = false;
-		} else if (input == 27) { // Esc
-			output = BSDDIALOG_ERROR;
-			loop = false;
-		} else if (input == '\t') { // TAB
-			selected = (selected + 1) % nbuttons;
-			update = true;
-		} else if (input == KEY_LEFT) {
-			if (selected > 0) {
-				selected--;
-				update = true;
-			}
-		} else if (input == KEY_RIGHT) {
-			if (selected < nbuttons - 1) {
-				selected++;
-				update = true;
-			}
-		/*} else if (shortkey) {
-			for (i = 0; i < nbuttons; i++)
-				if (input == (buttons[i])[0]) {
-					output = values[selected]; // like Esc
-					loop = false;
-				}
-		}*/
-		} else if (input == KEY_DOWN) {
-			/* Go to next field */
-			form_driver(form, REQ_NEXT_FIELD);
-			/* Go to the end of the present buffer */
-			/* Leaves nicely at the last character */
-			form_driver(form, REQ_END_LINE);
-		} else if (input == KEY_UP) {
-			/* Go to previous field */
-			form_driver(form, REQ_PREV_FIELD);
-			form_driver(form, REQ_END_LINE);
-		} else { /* input for the entry */
-			form_driver(form, input);
-		}
-
-		if (update) {
-			for (i = 0; i < nbuttons; i++) {
-				y = i * (size + BUTTONSPACE);
-				draw_button(window, start_y + y, size, buttons[i], i == selected);
-			}
-			update = false;
-		}
-	}
-
-	sleep(sleeptime);
-
-	return output;
-}
-
-int form_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
-{
-	return 0;
-}
-
-int
-inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
-{
-	WINDOW *widget, *button, *entry;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
-	FIELD *field[2];
-	FORM *form;
-
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
-
-	field[0] = new_field(1, cols-4, conf.x + rows - 5, conf.y +2, 0, 0);
-	field[1] = NULL;
-
-	/* Set field options */
-	//set_field_back(field[0], A_UNDERLINE);
-	//field_opts_off(field[0], O_AUTOSKIP);
-
-	/* Create the form and post it */
-	form = new_form(field);
-	set_form_win(form, entry);
-	//set_form_sub(form, derwin(entry, /*rows*/ 1 , /*cols*/ 5, 2, 2));
-	post_form(form);
-	refresh();
-
-	wrefresh(widget);
-	wrefresh(entry);
-
-	//refresh();
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
-
-	output = forms_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, entry, form, conf.sleep, /*fd*/ 0);
-
-	/* Un post form and free the memory */
-	unpost_form(form);
-	free_form(form);
-	free_field(field[0]);
-
-	delwin(button);
-	delwin(entry);
-	delwin(widget);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
-
-	return output;
-}
-
-
-int inputmenu_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
-{
-	return 0;
-}
-
-int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
-{
-	return 0;
-}
-
-int
-newentry_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, FORM *form, int sleeptime, int fd)
 {
 	bool loop = true, update, inentry = true;
@@ -1272,7 +1116,12 @@ newentry_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	return output;
 }
 
-int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int form_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
+}
+
+int inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry;
 	char *buttons[4];
@@ -1311,7 +1160,7 @@ int passwordbox_builder(struct config conf, char* text, int rows, int cols, int 
 	wrefresh(widget);
 	wrefresh(entry);
 
-	output = newentry_handler(button, cols, nbuttons, buttons, values,
+	output = forms_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, /*entry,*/ form, conf.sleep, /*fd*/ 0);
 
 	/* Un post form and free the memory */
@@ -1327,6 +1176,22 @@ int passwordbox_builder(struct config conf, char* text, int rows, int cols, int 
 		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
 
 	return output;
+}
+
+
+int inputmenu_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
+}
+
+int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
+}
+
+int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	return 0;
 }
 
 int passwordform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
