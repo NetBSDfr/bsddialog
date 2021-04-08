@@ -1080,15 +1080,23 @@ forms_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 			update = true;
 			break;
 		case KEY_LEFT:
-			if (inentry == false && selected > 0) {
-				selected--;
-				update = true;
+			if (inentry) {
+				form_driver(form, REQ_PREV_CHAR);
+			} else {
+				if (selected > 0) {
+					selected--;
+					update = true;
+				}
 			}
 			break;
 		case KEY_RIGHT:
-			if (inentry == false && selected < nbuttons - 1) {
-				selected++;
-				update = true;
+			if (inentry) {
+				form_driver(form, REQ_NEXT_CHAR);
+			} else {
+				if (selected < nbuttons - 1) {
+					selected++;
+					update = true;
+				}
 			}
 			break;
 		case KEY_UP:
