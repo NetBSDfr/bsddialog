@@ -1108,6 +1108,12 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			inentry = false;
 			curs_set(0);
 			break;
+		case KEY_BACKSPACE:
+			form_driver(form, REQ_DEL_PREV);
+			break;
+		case KEY_DC:
+			form_driver(form, REQ_DEL_CHAR);
+			break;
 		default:
 			if (inentry)
 				form_driver(form, input);
