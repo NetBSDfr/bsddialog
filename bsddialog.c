@@ -1198,7 +1198,7 @@ int mixedform_builder(struct config conf, char* text, int rows, int cols, int ar
 
 int
 newentry_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, int sleeptime, int fd)
+    int *values, int selected, bool shortkey, FORM *form, int sleeptime, int fd)
 {
 	bool loop = true, update;
 	int i, y, start_y, size, input;
@@ -1240,12 +1240,15 @@ newentry_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 				selected++;
 				update = true;
 			}
-		} else if (shortkey) {
+		/*} else if (shortkey) {
 			for (i = 0; i < nbuttons; i++)
 				if (input == (buttons[i])[0]) {
 					output = values[selected]; // like Esc
 					loop = false;
 				}
+		}*/
+		} else {
+			form_driver(form, input);
 		}
 
 		if (update) {
@@ -1267,6 +1270,8 @@ int passwordbox_builder(struct config conf, char* text, int rows, int cols, int 
 	WINDOW *widget, *button, *entry;
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
+	FIELD *field[2];
+	FORM *form;
 
 	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -1281,11 +1286,31 @@ int passwordbox_builder(struct config conf, char* text, int rows, int cols, int 
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
+	/* Initialize the fields */
+	//field[0] = new_field(1, 10, 4, 18, 0, 0);
+	field[0] = new_field(1, cols-4, conf.x + rows - 5, conf.y + 2, 0, 0);
+	//field[1] = new_field(1, 10, 6, 18, 0, 0);
+	field[1] = NULL;
+
+	/* Set field options */
+	//set_field_back(field[0], A_UNDERLINE);
+	field_opts_off(field[0], O_AUTOSKIP);
+
+	/* Create the form and post it */
+	form = new_form(field);
+	post_form(form);
+	refresh();
+
 	wrefresh(widget);
 	wrefresh(entry);
 
 	output = newentry_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, /*entry, form,*/ conf.sleep, /*fd*/ 0);
+	    defbutton, true, /*entry,*/ form, conf.sleep, /*fd*/ 0);
+
+	/* Un post form and free the memory */
+	unpost_form(form);
+	free_form(form);
+	free_field(field[0]);
 
 	delwin(button);
 	delwin(entry);
