@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _BSDDIALOg_H_
+#ifndef _BSDDIALOG_H_
 #define _BSDDIALOG_H_
 
 #include <stdbool.h>
