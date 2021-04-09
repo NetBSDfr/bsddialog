@@ -1234,6 +1234,7 @@ int passwordform_builder(struct config conf, char* text, int rows, int cols, int
 	return 0;
 }
 
+ /* Gauge */
 int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *bar;
