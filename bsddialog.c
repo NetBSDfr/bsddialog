@@ -1237,8 +1237,9 @@ int passwordform_builder(struct config conf, char* text, int rows, int cols, int
 int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *bar;
-	char *buttons[3], percstr[5];
+	char *buttons[3], percstr[5], input[2048];
 	int i, blue_x, perc, color;
+	bool mainloop = true;
 
 	perc = argc > 0 ? atoi (argv[0]) : 0;
 	perc = perc < 0 ? 0 : perc;
@@ -1256,7 +1257,7 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	wrefresh(widget);
 	wrefresh(bar);
 
-	//while () {
+	while (mainloop) {
 		for (i = 0; i < cols - 8; i++) {
 			if  (i <= blue_x) {
 				wattron(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
@@ -1280,9 +1281,38 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 			wattroff(bar, A_BOLD | COLOR_PAIR(color));
 		}
 
-	//}
-	wrefresh(bar);
-	getch();
+		wrefresh(widget);
+		wrefresh(bar);
+
+		while (true) {
+			scanf("%s", input);
+			if (strcmp(input,"EOF") == 0) {
+				mainloop = false;
+				break;
+			}
+			if (strcmp(input,"XXX") == 0)
+				break;
+		}
+		scanf("%d", &perc);
+		perc = perc < 0 ? 0 : perc;
+		perc = perc > 100 ? 100 : perc;
+		blue_x = (int)((perc*(cols-8))/100);
+		i=2;
+		wmove(widget, 1, 1);
+		wclrtoeol(widget);
+		while (true) {
+			scanf("%s", input);
+			if (strcmp(input,"EOF") == 0) {
+				mainloop = false;
+				break;
+			}
+			if (strcmp(input,"XXX") == 0)
+				break;
+			print_text_multiline(widget, 1, i, input, cols - 4);
+			i = i + strlen(input) + 1;
+			wrefresh(widget);
+		}
+	}
 
 	delwin(bar);
 	delwin(widget);
