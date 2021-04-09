@@ -423,7 +423,13 @@ bsddialog_checklist(struct config conf, char* text, int rows, int cols)
 int 
 bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget;
+	WINDOW *widget, *shadow;
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
 
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -432,6 +438,8 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 	wrefresh(widget);
 	getch();
 	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Infobox size: %d, %d\n", rows, cols);
@@ -442,9 +450,15 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 int 
 bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *button;
+	WINDOW *widget, *button, *shadow;
 	char *buttons[3];
 	int values[3], output, nbuttons, defbutton;
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
 
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -464,6 +478,8 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 
 	delwin(button);
 	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Msgbox size: %d, %d\n", rows, cols);
@@ -474,9 +490,15 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 int
 bsddialog_pause(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *button, *entry;
+	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
 
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -500,6 +522,8 @@ bsddialog_pause(struct config conf, char* text, int rows, int cols)
 	delwin(button);
 	delwin(entry);
 	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Pause size: %d, %d\n", rows, cols);
@@ -510,9 +534,15 @@ bsddialog_pause(struct config conf, char* text, int rows, int cols)
 int
 bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *button;
+	WINDOW *widget, *button, *shadow;
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
 
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -532,6 +562,8 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 
 	delwin(button);
 	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Yesno size: %d, %d\n", rows, cols);
@@ -660,11 +692,17 @@ int bsddialog_form(struct config conf, char* text, int rows, int cols)
 
 int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *button, *entry;
+	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
 	FIELD *field[2];
 	FORM *form;
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
 
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -704,6 +742,8 @@ int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 	delwin(button);
 	delwin(entry);
 	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
@@ -735,12 +775,18 @@ int bsddialog_passwordform(struct config conf, char* text, int rows, int cols)
  /* Gauge */
 int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc)
 {
-	WINDOW *widget, *bar;
+	WINDOW *widget, *bar, *shadow;
 	char percstr[5], input[2048];
 	int i, blue_x, color;
 	bool mainloop = true;
 
 	blue_x = (int)((perc*(cols-8))/100);
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
 
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
@@ -811,6 +857,8 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 
 	delwin(bar);
 	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
 
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
