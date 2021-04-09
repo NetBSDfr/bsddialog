@@ -221,12 +221,12 @@ enum elevation { RAISED, LOWERED, NOLINES };
 void usage(void);
 int  bsddialog_init(void);
 WINDOW *
-new_window(int x, int y, int rows, int cols, char *title, char *bottomtitle, 
+new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
     int color, enum elevation elev, bool asciilines, bool subwindowborders,
     bool scrolling);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-void print_text(WINDOW *window, int x, int y, char* text, bool bold, int color);
-int  print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line);
+void print_text(WINDOW *window, int y, int x, char* text, bool bold, int color);
+int  print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
 void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
 void get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
     char* yesoklabel, bool extra, char *extralabel, bool nocancel,
@@ -400,11 +400,11 @@ int main(int argc, char *argv[argc])
 			backtitle = optarg;
 			break;
 		case BEGIN:
-			conf.x = atoi(optarg);
-			conf.y = atoi(argv[optind]);
-			if (conf.x < 0 || conf.y < 0) {
-				printf("Can't make new window at (%d,%d).",
-				    conf.x, conf.y);
+			conf.y = atoi(optarg);
+			conf.x = atoi(argv[optind]);
+			if (conf.y < 0 || conf.x < 0) {
+				printf("Can't make new window at (y:%d, x:%d).",
+				    conf.y, conf.x);
 				return 1;
 			}
 			optind++;
@@ -567,11 +567,11 @@ int main(int argc, char *argv[argc])
 	}
 	refresh();
 
-	conf.x = conf.x < 0 ? (LINES/2 - rows/2 - 1) : conf.x;
-	conf.y = conf.y < 0 ? (COLS/2 - cols/2) : conf.y;
+	conf.y = conf.y < 0 ? (LINES/2 - rows/2 - 1) : conf.y;
+	conf.x = conf.x < 0 ? (COLS/2 - cols/2) : conf.x;
 
 	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.x+1, conf.y+1);
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
 		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
 		wrefresh(shadow);
 	}
@@ -616,22 +616,22 @@ int bsddialog_init(void)
 	return error;
 }
 
-void print_text(WINDOW *window, int x, int y, char* text, bool bold, int color)
+void print_text(WINDOW *window, int y, int x, char* text, bool bold, int color)
 {
 
 	attron(COLOR_PAIR(color) | (bold ? A_BOLD : 0));
-	mvwaddstr(window, x, y, text);
+	mvwaddstr(window, y, x, text);
 	attroff(COLOR_PAIR(color) | (bold ? A_BOLD : 0));
 }
 
-int print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_line)
+int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line)
 {
 	char fmtstr[8];
 	int line = 0;
 	
 	sprintf(fmtstr, "%%.%ds", size_line);
 	while(strlen(str) > 0) {
-		mvwprintw(win, x + line, y, fmtstr, str);
+		mvwprintw(win, y + line, x, fmtstr, str);
 		if((int)strlen(str) > size_line)
 			str += size_line;
 		else
@@ -644,7 +644,7 @@ int print_text_multiline(WINDOW *win, int x, int y, const char *str, int size_li
 }
 
 WINDOW *
-new_window(int x, int y, int rows, int cols, char *title, char *bottomtitle,
+new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
     int color, enum elevation elev, bool asciilines, bool subwindowborders,
     bool scrolling)
 {
@@ -662,7 +662,7 @@ new_window(int x, int y, int rows, int cols, char *title, char *bottomtitle,
 	ltee = ACS_LTEE;
 	rtee = ACS_RTEE;
 
-	popup = scrolling ? newpad(rows, cols) : newwin(rows, cols, x, y);
+	popup = scrolling ? newpad(rows, cols) : newwin(rows, cols, y, x);
 	wbkgd(popup, COLOR_PAIR(color));
 
 	if (elev != NOLINES) {
@@ -718,7 +718,7 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 {
 	int input, cur_line = 0, shown_lines;
 	bool loop = true;
-	int x = 2, y = COLS/2 - cols/2;
+	int x = 2, y = COLS/2 - cols/2; /* tofix x & y*/
 
 	shown_lines = rows > (LINES - x - 1) ? (LINES - x - 1) : rows;
 	wattron(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
@@ -746,9 +746,9 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
 }
 
-void draw_button(WINDOW *window, int start_y, int size, char *text, bool selected)
+void draw_button(WINDOW *window, int start_x, int size, char *text, bool selected)
 {
-	int i, y, color_arrows, color_first_char, color_tail_chars;
+	int i, x, color_arrows, color_first_char, color_tail_chars;
 
 	if (selected) {
 		color_arrows = A_BOLD | COLOR_PAIR(WHITE_BLUE);
@@ -761,20 +761,20 @@ void draw_button(WINDOW *window, int start_y, int size, char *text, bool selecte
 	}
 
 	wattron(window, color_arrows);
-	mvwaddch(window, 1, start_y, '<');
+	mvwaddch(window, 1, start_x, '<');
 	for(i = 1; i < size - 1; i++)
-		mvwaddch(window, 1, start_y + i, ' ');
-	mvwaddch(window, 1, start_y + i, '>');
+		mvwaddch(window, 1, start_x + i, ' ');
+	mvwaddch(window, 1, start_x + i, '>');
 	wattroff(window, color_arrows);
 
-	y = start_y + 1 + ((size - 2 - strlen(text))/2);
+	x = start_x + 1 + ((size - 2 - strlen(text))/2);
 
 	wattron(window, color_tail_chars);
-	mvwaddstr(window, 1, y, text);
+	mvwaddstr(window, 1, x, text);
 	wattroff(window, color_tail_chars);
 
 	wattron(window, color_first_char);
-	mvwaddch(window, 1, y, text[0]);
+	mvwaddch(window, 1, x, text[0]);
 	wattroff(window, color_first_char);
 }
 
@@ -826,7 +826,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleeptime, int fd)
 {
 	bool loop = true, update;
-	int i, y, start_y, size, input;
+	int i, x, start_x, size, input;
 	int output;
 #define BUTTONSPACE 3
 
@@ -835,12 +835,12 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		size = MAX(size, strlen(buttons[i]));
 	size += 2;
 
-	start_y = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
-	start_y = cols/2 - start_y/2;
+	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
+	start_x = cols/2 - start_x/2;
 
 	for (i = 0; i < nbuttons; i++) {
-		y = i * (size + BUTTONSPACE);
-		draw_button(window, start_y + y, size, buttons[i], i == selected);
+		x = i * (size + BUTTONSPACE);
+		draw_button(window, start_x + x, size, buttons[i], i == selected);
 	}
 
 	while(loop) {
@@ -875,8 +875,8 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 
 		if (update) {
 			for (i = 0; i < nbuttons; i++) {
-				y = i * (size + BUTTONSPACE);
-				draw_button(window, start_y + y, size, buttons[i], i == selected);
+				x = i * (size + BUTTONSPACE);
+				draw_button(window, start_x + x, size, buttons[i], i == selected);
 			}
 			update = false;
 		}
@@ -895,13 +895,13 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
 
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
+	entry = new_window(conf.y + rows - 6, conf.x + 1, 3, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -929,7 +929,7 @@ infobox_builder(struct config conf, char* text, int rows, int cols, int argc, ch
 {
 	WINDOW *widget;
 
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, conf.hline, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 
@@ -950,11 +950,11 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 	char *buttons[3];
 	int values[3], output, nbuttons, defbutton;
 
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(conf.x+rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE, 
+	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -982,13 +982,13 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
 
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +2, 3, cols-4, NULL, NULL, BLACK_WHITE,
+	entry = new_window(conf.y + rows - 6, conf.x + 2, 3, cols-4, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -1018,11 +1018,11 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
 
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	button = new_window(conf.x+rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	wrefresh(widget);
@@ -1050,7 +1050,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int sleeptime, int fd)
 {
 	bool loop = true, buttupdate, inentry = true;
-	int i, y, start_y, size, input, output, buflen = 0, pos = 0;
+	int i, x, start_x, size, input, output, buflen = 0, pos = 0;
 	char *bufp;
 #define BUTTONSPACE 3
 
@@ -1059,12 +1059,12 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		size = MAX(size, strlen(buttons[i]));
 	size += 2;
 
-	start_y = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
-	start_y = cols/2 - start_y/2;
+	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
+	start_x = cols/2 - start_x/2;
 
 	for (i = 0; i < nbuttons; i++) {
-		y = i * (size + BUTTONSPACE);
-		draw_button(buttwin, start_y + y, size, buttons[i], i == selected);
+		x = i * (size + BUTTONSPACE);
+		draw_button(buttwin, start_x + x, size, buttons[i], i == selected);
 	}
 
 	curs_set(2);
@@ -1143,8 +1143,8 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 
 		if (buttupdate) {
 			for (i = 0; i < nbuttons; i++) {
-				y = i * (size + BUTTONSPACE);
-				draw_button(buttwin, start_y + y, size, buttons[i], i == selected);
+				x = i * (size + BUTTONSPACE);
+				draw_button(buttwin, start_x + x, size, buttons[i], i == selected);
 			}
 			buttupdate = false;
 		}
@@ -1170,20 +1170,20 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 	FIELD *field[2];
 	FORM *form;
 
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	entry = new_window(conf.x + rows - 6, conf.y +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
+	entry = new_window(conf.y + rows - 6, conf.x +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
-	button = new_window(conf.x + rows -3, conf.y, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	field[0] = new_field(1, cols-4, conf.x + rows - 5, conf.y + 2, 0, 0);
+	field[0] = new_field(1, cols-4, conf.y + rows - 5, conf.x + 2, 0, 0);
 	field[1] = NULL;
 
 	//set_field_back(field[0], A_UNDERLINE);
@@ -1250,11 +1250,11 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 
 	blue_x = (int)((perc*(cols-8))/100);
 
-	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
-	bar = new_window(conf.x+rows -4, conf.y+3, 3, cols-6, NULL, conf.hline, BLACK_WHITE, 
+	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline, BLACK_WHITE, 
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 
 	wrefresh(widget);
