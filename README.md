@@ -121,9 +121,9 @@ Examples:
 | editbox      |             |                                                 |
 | form         | In progress |                                                 |
 | fselect      |             |                                                 |
-| gauge        | In progress | dialog does not centre the title                |
+| gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
-| inputbox     | In progress |                                                 |
+| inputbox     | In progress | dialog does not centre buttons and title        |
 | inputmenu    | In progress |                                                 |
 | menu         |             |                                                 |
 | mixedform    | In progress |                                                 |
