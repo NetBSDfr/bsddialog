@@ -1317,6 +1317,9 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	delwin(bar);
 	delwin(widget);
 
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
+
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Gauge size: %d, %d\n", rows, cols);
 
