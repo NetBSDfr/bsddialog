@@ -1188,6 +1188,8 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 
 	//set_field_back(field[0], A_UNDERLINE);
 	field_opts_off(field[0], O_AUTOSKIP);
+	set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
+	set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
 
 	form = new_form(field);
 	post_form(form);
