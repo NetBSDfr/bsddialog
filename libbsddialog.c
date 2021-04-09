@@ -576,7 +576,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			form_driver(form, REQ_PREV_FIELD);
 			bufp = field_buffer(field[0], 0);
 			bufp[buflen] = '\0';
-			dprintf(fd, bufp);
+			dprintf(fd, "%s", bufp);
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -736,7 +736,7 @@ int bsddialog_passwordform(struct config conf, char* text, int rows, int cols)
 int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc)
 {
 	WINDOW *widget, *bar;
-	char *buttons[3], percstr[5], input[2048];
+	char percstr[5], input[2048];
 	int i, blue_x, color;
 	bool mainloop = true;
 

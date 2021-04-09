@@ -140,7 +140,6 @@ void usage(void)
 
 int main(int argc, char *argv[argc])
 {
-	bool enable_color = true;
 	char text[1024], *backtitle = NULL;
 	int input, rows, cols, output;
 	int (*widgetbuilder)(struct config conf, char* text, int rows, int cols, int argc, char **argv) = NULL;
