@@ -136,7 +136,7 @@ Examples:
 | programbox   |             |                                                 |
 | progressbox  |             |                                                 |
 | radiolist    |             |                                                 |
-| rangebox     |             |                                                 |
+| rangebox     |             | the manual is wrong                             |
 | tailbox      |             |                                                 |
 | tailboxbg    |             |                                                 |
 | textbox      |             |                                                 |
