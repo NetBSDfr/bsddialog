@@ -1237,7 +1237,7 @@ int passwordform_builder(struct config conf, char* text, int rows, int cols, int
 int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	WINDOW *widget, *bar;
-	char *buttons[3];
+	char *buttons[3], percstr[5];
 	int i, blue_x, perc, color;
 
 	perc = argc > 0 ? atoi (argv[0]) : 0;
@@ -1269,13 +1269,17 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 				wattroff(bar, A_BOLD | COLOR_PAIR(WHITE_WHITE));
 			}
 		}
-		color = ( blue_x < ((cols-6)/2 - 2) ) ?
-		    BLUE_WHITE : WHITE_BLUE;
-		wattron(bar, A_BOLD | COLOR_PAIR(color));
-		//wmove(bar, 0, cols/2 - strlen(title)/2);
-		//waddstr(bar, title);
-		mvwprintw(bar, 1, (cols-6)/2 - 2, "%3d%%", perc);
-		wattroff(bar, A_BOLD | COLOR_PAIR(color));
+
+		sprintf(percstr, "%3d%%", perc);
+		wmove(bar, 1, ((cols-6)/2 - 2) );
+		for (i=0; i<4; i++) {
+			color = ( (blue_x + 1) < ((cols-6)/2 - 2 + i) ) ?
+			    BLUE_WHITE : WHITE_BLUE;
+			wattron(bar, A_BOLD | COLOR_PAIR(color));
+			waddch(bar, percstr[i]);
+			wattroff(bar, A_BOLD | COLOR_PAIR(color));
+		}
+
 	//}
 	wrefresh(bar);
 	getch();
