@@ -121,7 +121,7 @@ Examples:
 | editbox      |             |                                                 |
 | form         | In progress |                                                 |
 | fselect      |             |                                                 |
-| gauge        |             |                                                 |
+| gauge        | In progress | dialog does not centre the title                |
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress |                                                 |
 | inputmenu    | In progress |                                                 |

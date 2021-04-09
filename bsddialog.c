@@ -237,8 +237,9 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleep, int fd);
 /* widgets */
 int checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
@@ -363,7 +364,7 @@ int main(int argc, char *argv[argc])
 	    { "editbox", no_argument, NULL, 'X' },
 	    { "form", no_argument, NULL, FORM_ },
 	    { "fselect", no_argument, NULL, 'X' },
-	    { "gauge", no_argument, NULL, 'X' },
+	    { "gauge", no_argument, NULL, GAUGE },
 	    { "infobox", no_argument, NULL, INFOBOX },
 	    { "inputbox", no_argument, NULL, INPUTBOX },
 	    { "inputmenu", no_argument, NULL, INPUTMENU },
@@ -497,6 +498,9 @@ int main(int argc, char *argv[argc])
 		case FORM_:
 			widgetbuilder = form_builder;
 			break;
+		case GAUGE:
+			widgetbuilder = gauge_builder;
+			break;
 		case INFOBOX:
 			widgetbuilder = infobox_builder;
 			break;
@@ -539,7 +543,7 @@ int main(int argc, char *argv[argc])
 		    ws.ws_row, ws.ws_col);
 	}
 
-	if (argc != 3) {
+	if (argc < 3) {
 		usage();
 		return (1);
 	}
@@ -1228,4 +1232,59 @@ int passwordbox_builder(struct config conf, char* text, int rows, int cols, int 
 int passwordform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	return 0;
+}
+
+int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	WINDOW *widget, *bar;
+	char *buttons[3];
+	int i, blue_x, perc, color;
+
+	perc = argc > 0 ? atoi (argv[0]) : 0;
+	perc = perc < 0 ? 0 : perc;
+	perc = perc > 100 ? 100 : perc;
+
+	blue_x = (int)((perc*(cols-8))/100);
+
+	widget = new_window(conf.x, conf.y, rows, cols, conf.title, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
+	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
+	bar = new_window(conf.x+rows -4, conf.y+3, 3, cols-6, NULL, conf.hline, BLACK_WHITE, 
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+
+	wrefresh(widget);
+	wrefresh(bar);
+
+	//while () {
+		for (i = 0; i < cols - 8; i++) {
+			if  (i <= blue_x) {
+				wattron(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
+				mvwaddch(bar, 1, i + 1, ' ');
+				wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
+			}
+			else {
+				wattron(bar, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+				mvwaddch(bar, 1, i, ' ');
+				wattroff(bar, A_BOLD | COLOR_PAIR(WHITE_WHITE));
+			}
+		}
+		color = ( blue_x < ((cols-6)/2 - 2) ) ?
+		    BLUE_WHITE : WHITE_BLUE;
+		wattron(bar, A_BOLD | COLOR_PAIR(color));
+		//wmove(bar, 0, cols/2 - strlen(title)/2);
+		//waddstr(bar, title);
+		mvwprintw(bar, 1, (cols-6)/2 - 2, "%3d%%", perc);
+		wattroff(bar, A_BOLD | COLOR_PAIR(color));
+	//}
+	wrefresh(bar);
+	getch();
+
+	delwin(bar);
+	delwin(widget);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Msgbox size: %d, %d\n", rows, cols);
+
+	return BSDDIALOG_YESOK;
 }
