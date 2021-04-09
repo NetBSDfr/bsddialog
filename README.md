@@ -30,7 +30,6 @@ Examples:
 
 **TODO**
 
- - Split bsddialog.c: bsddialog.c - bsddialog.h - libbsddialog.c
  - bsddialog.1 and bsddialog.3
  - Common Options:
 

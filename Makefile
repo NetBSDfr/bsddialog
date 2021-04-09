@@ -4,7 +4,7 @@
 # Written by Alfonso Sabato Siciliano <https://alfonsosiciliano.gitlab.io>
 
 OUTPUT=  bsddialog
-SOURCES= bsddialog.c
+SOURCES= libbsddialog.c bsddialog.c
 OBJECTS= ${SOURCES:.c=.o}
 
 # BASE ncurses
