@@ -1288,7 +1288,7 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	delwin(widget);
 
 	if (conf.print_size)
-		dprintf(conf.output_fd, "Msgbox size: %d, %d\n", rows, cols);
+		dprintf(conf.output_fd, "Gauge size: %d, %d\n", rows, cols);
 
 	return BSDDIALOG_YESOK;
 }
