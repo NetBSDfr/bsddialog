@@ -574,7 +574,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int
 forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, FORM *form, FIELD **field,
+    int *values, int selected, bool shortkey, WINDOW *entry, FORM *form, FIELD **field,
     int sleeptime, int fd)
 {
 	bool loop = true, buttupdate, inentry = true;
@@ -598,6 +598,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	curs_set(2);
 	pos_form_cursor(form);
 	while(loop) {
+		wrefresh(entry);
 		wrefresh(buttwin);
 		input = getch();
 		switch(input) {
@@ -717,23 +718,25 @@ int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	field[0] = new_field(1, cols-4, conf.y + rows - 5, conf.x + 2, 0, 0);
+	field[0] = new_field(1, cols-4, 0, 0, 0, 0);
 	field[1] = NULL;
 
 	//set_field_back(field[0], A_UNDERLINE);
 	field_opts_off(field[0], O_AUTOSKIP);
+	field_opts_off(field[0], O_STATIC);
 	set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
 	set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
 
 	form = new_form(field);
+	set_form_win(form, entry);
+	set_form_sub(form, derwin(entry, 1, cols-4, 1, 1));
 	post_form(form);
-	refresh();
 
 	wrefresh(widget);
 	wrefresh(entry);
 
 	output = forms_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, /*entry,*/ form, field, conf.sleep, conf.output_fd);
+	    defbutton, true, entry, form, field, conf.sleep, conf.output_fd);
 
 	unpost_form(form);
 	free_form(form);
