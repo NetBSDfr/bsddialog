@@ -1,13 +1,12 @@
+#include <string.h>
+#include <unistd.h>
+
 #ifdef PORTNCURSES
 #include <ncurses/curses.h>
 #else
 #include <curses.h>
 #endif
 #include <form.h>
-#include <getopt.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 #include "bsddialog.h"
 
