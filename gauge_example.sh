@@ -16,5 +16,5 @@ do
                 echo EOF
         fi
         curr=`expr $curr + 1`
-done | ./bsddialog --title gauge --gauge "Starting... [0/$total] " 10 70 0
+done | ./bsddialog --title gauge --gauge "[0/$total] Starting..." 10 70 0
 
