@@ -24,6 +24,7 @@ Examples:
 ```
 % bsddialog --title msgbox --msgbox "Hello World!" 5 30
 % bsddialog --title yesno --yesno "Hello World!" 5 30
+% bsddialog --inputbox "Hello World!" 10 30 2>input.txt; cat input.txt; rm input.txt
 % bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
 ```
@@ -123,14 +124,14 @@ Examples:
 | gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress | dialog does not centre buttons and title        |
-| inputmenu    | In progress |                                                 |
+| inputmenu    |             |                                                 |
 | menu         |             |                                                 |
-| mixedform    | In progress |                                                 |
+| mixedform    |             |                                                 |
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
-| passwordbox  | In progress |                                                 |
-| passwordform | In progress |                                                 |
-| pause        | In progress |                                                 |
+| passwordbox  |             |                                                 |
+| passwordform |             |                                                 |
+| pause        |             |                                                 |
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |
 | progressbox  |             |                                                 |
