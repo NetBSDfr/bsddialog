@@ -598,8 +598,8 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	curs_set(2);
 	pos_form_cursor(form);
 	while(loop) {
-		wrefresh(entry);
 		wrefresh(buttwin);
+		wrefresh(entry);
 		input = getch();
 		switch(input) {
 		case 10: // Enter
