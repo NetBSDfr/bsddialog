@@ -122,7 +122,7 @@ Examples:
 | fselect      |             |                                                 |
 | gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
-| inputbox     | In progress | dialog does not centre buttons and title        |
+| inputbox     | In progress | dialog does not centre buttons and title, fix cursor |
 | inputmenu    | In progress |                                                 |
 | menu         |             |                                                 |
 | mixedform    | In progress |                                                 |
