@@ -470,14 +470,14 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 int 
 infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
-	int output;
+	int output; /* always BSDDIALOG_YESOK */
 
 	output = bsddialog_infobox(conf, text, rows, cols);
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Infobox size: %d, %d\n", rows, cols);
 
-	return (BSDDIALOG_YESOK);
+	return output;
 }
 
 int 
@@ -560,7 +560,7 @@ int passwordform_builder(struct config conf, char* text, int rows, int cols, int
  /* Gauge */
 int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
-	int output, perc;
+	int output /* always BSDDIALOG_YESOK */, perc;
 
 	perc = argc > 0 ? atoi (argv[0]) : 0;
 	perc = perc < 0 ? 0 : perc;
@@ -571,5 +571,5 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Gauge size: %d, %d\n", rows, cols);
 
-	return BSDDIALOG_YESOK;
+	return (output);
 }
