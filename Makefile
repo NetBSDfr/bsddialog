@@ -1,7 +1,7 @@
-# Any copyright is dedicated to the Public Domain:
+# Any copyright is dedicated to the Public Domain, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>
 #
-# Written by Alfonso Sabato Siciliano <https://alfonsosiciliano.gitlab.io>
+# Written in 2021 by Alfonso Sabato Siciliano
 
 OUTPUT=  bsddialog
 SOURCES= libbsddialog.c bsddialog.c
