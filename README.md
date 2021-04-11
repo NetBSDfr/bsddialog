@@ -126,7 +126,7 @@ Examples:
 | inputbox     | In progress | dialog does not centre buttons and title        |
 | inputmenu    |             |                                                 |
 | menu         |             |                                                 |
-| mixedform    |             |                                                 |
+| mixedform    |             | manual dialog(3) is wrong                       |
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
 | passwordbox  | In progress |                                                 |
