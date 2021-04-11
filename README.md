@@ -129,7 +129,7 @@ Examples:
 | mixedform    |             |                                                 |
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
-| passwordbox  |             |                                                 |
+| passwordbox  | In progress |                                                 |
 | passwordform |             |                                                 |
 | pause        |             |                                                 |
 | prgbox       |             |                                                 |

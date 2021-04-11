@@ -574,8 +574,8 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int
 forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *entry, FORM *form, FIELD **field,
-    int sleeptime, int fd)
+    int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
+    FIELD **field, bool showinput, int sleeptime, int fd)
 {
 	bool loop = true, buttupdate, inentry = true;
 	int i, x, start_x, size, input, output, buflen = 0, pos = 0;
@@ -595,7 +595,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		draw_button(buttwin, start_x + x, size, buttons[i], i == selected);
 	}
 
-	curs_set(2);
+	curs_set(showinput ? 2 : 0);
 	pos_form_cursor(form);
 	while(loop) {
 		wrefresh(buttwin);
@@ -645,7 +645,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case KEY_UP:
 			inentry = true;
-			curs_set(2);
+			curs_set(showinput ? 2 : 0);
 			pos_form_cursor(form);
 			break;
 		case KEY_DOWN:
@@ -686,12 +686,7 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	return output;
 }
 
-int bsddialog_form(struct config conf, char* text, int rows, int cols)
-{
-	return 0;
-}
-
-int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
+int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
@@ -724,6 +719,8 @@ int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 	//set_field_back(field[0], A_UNDERLINE);
 	field_opts_off(field[0], O_AUTOSKIP);
 	field_opts_off(field[0], O_STATIC);
+	if (showinput == false)
+		field_opts_off(field[0], O_PUBLIC);
 	set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
 	set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
 
@@ -736,7 +733,8 @@ int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 	wrefresh(entry);
 
 	output = forms_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, entry, form, field, conf.sleep, conf.output_fd);
+	    defbutton, true, entry, form, field, showinput, conf.sleep,
+	    conf.output_fd);
 
 	unpost_form(form);
 	free_form(form);
@@ -754,6 +752,20 @@ int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 	return output;
 }
 
+int bsddialog_form(struct config conf, char* text, int rows, int cols)
+{
+	return 0;
+}
+
+int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
+{
+	int output;
+
+	output = do_forms(conf, text, rows, cols, true);
+
+	return output;
+}
+
 
 int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
 {
@@ -767,7 +779,11 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 
 int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols)
 {
-	return 0;
+	int output;
+
+	output = do_forms(conf, text, rows, cols, false);
+
+	return output;
 }
 
 int bsddialog_passwordform(struct config conf, char* text, int rows, int cols)
