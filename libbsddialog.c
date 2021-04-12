@@ -879,7 +879,8 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int max, int def, int sleeptime, int fd)
 {
 	bool loop, buttupdate, barupdate;
-	int i, input, x, start_x, size, currvalue, output, unitxpos, pos, color;
+	int i, input, x, start_x, size, currvalue, output, pos, color;
+	float unitxpos;
 	char valuestr[128];
 #define BUTTONSPACE 3
 
@@ -891,21 +892,22 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
 	start_x = cols/2 - start_x/2;
 
-	unitxpos = (int)((max - min + 1)/sizebar);
 	currvalue = def;
+	sizebar = sizebar - 2;
+	unitxpos = ((float)(max - min + 1))/sizebar;
 
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
-			pos = (int)((currvalue - min) / unitxpos);
+			pos = (int)( ((float)(currvalue - min)) / unitxpos);
 			for (i = 0; i < sizebar; i++) {
-				color = i < pos ? BLUE_BLUE : WHITE_WHITE;
+				color = i <= pos ? BLUE_BLUE : WHITE_WHITE;
 				wattron(bar, A_BOLD | COLOR_PAIR(color));
 				mvwaddch(bar, 1, i + 1, ' ');
 				wattroff(bar, A_BOLD | COLOR_PAIR(color));
 			}
 			sprintf(valuestr, "%d", currvalue);
-			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2);
+			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2 + 1);
 			for (i=0; i<strlen(valuestr); i++) {
 				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
 				    BLUE_WHITE : WHITE_BLUE;
@@ -1000,7 +1002,7 @@ int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int m
 	wrefresh(widget);
 
 	bar_handler(button, cols, nbuttons, buttons, values, defbutton, true,
-	    bar, cols-16, min, max, def, conf.sleep, conf.output_fd);
+	    bar, cols-14, min, max, def, conf.sleep, conf.output_fd);
 
 	delwin(button);
 	delwin(bar);
