@@ -17,7 +17,7 @@
 /* Foreground_Background */
 #define BLUE_BLUE	1 // main background
 #define BLUE_WHITE	2 // widget title
-#define WHITE_WHITE	3 // widgets background and border
+#define WHITE_WHITE	3 // widget background and border
 #define BLACK_WHITE	4 // widget border and key
 #define RED_WHITE	5 // key
 #define WHITE_BLUE	6 // key
