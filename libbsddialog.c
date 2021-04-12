@@ -34,14 +34,26 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(WINDOW *window, int y, int x, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
 void
-draw_button(WINDOW *window, int x, int size, char *text, bool selected, bool shortkey);
-void get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
+draw_button(WINDOW *window, int x, int size, char *text, bool selected,
+    bool shortkey);
+void
+get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
     char* yesoklabel, bool extra, char *extralabel, bool nocancel,
     char *nocancellabel, bool help, char *helplabel, bool defaultno,
     int *defbutton);
+
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleep, int fd);
+int
+bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons, int *values,
+    int selected, bool shortkey, WINDOW *bar, int sizebar, int min, int max,
+    int def, int sleeptime, int fd);
+int
+forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
+    int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
+    FIELD **field, bool showinput, int sleeptime, int fd);
+
 
 int bsddialog_init(void)
 {
