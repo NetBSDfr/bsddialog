@@ -234,9 +234,9 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
 }
 
-void draw_button(WINDOW *window, int start_x, int size, char *text, bool selected)
+void draw_button(WINDOW *window, int x, int size, char *text, bool selected)
 {
-	int i, x, color_arrows, color_first_char, color_tail_chars;
+	int i, color_arrows, color_first_char, color_tail_chars;
 
 	if (selected) {
 		color_arrows = A_BOLD | COLOR_PAIR(WHITE_BLUE);
@@ -249,18 +249,16 @@ void draw_button(WINDOW *window, int start_x, int size, char *text, bool selecte
 	}
 
 	wattron(window, color_arrows);
-	mvwaddch(window, 1, start_x, '<');
+	mvwaddch(window, 1, x, '<');
 	for(i = 1; i < size - 1; i++)
-		mvwaddch(window, 1, start_x + i, ' ');
-	mvwaddch(window, 1, start_x + i, '>');
+		mvwaddch(window, 1, x + i, ' ');
+	mvwaddch(window, 1, x + i, '>');
 	wattroff(window, color_arrows);
 
-	x = start_x + 1 + ((size - 2 - strlen(text))/2);
-
+	x = x + 1 + ((size - 2 - strlen(text))/2);
 	wattron(window, color_tail_chars);
 	mvwaddstr(window, 1, x, text);
 	wattroff(window, color_tail_chars);
-
 	wattron(window, color_first_char);
 	mvwaddch(window, 1, x, text[0]);
 	wattroff(window, color_first_char);
