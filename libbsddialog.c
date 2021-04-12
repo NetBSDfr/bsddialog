@@ -392,7 +392,6 @@ bsddialog_checklist(struct config conf, char* text, int rows, int cols)
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.y + rows - 6, conf.x + 1, 3, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
 	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
@@ -463,7 +462,6 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
@@ -503,7 +501,6 @@ bsddialog_pause(struct config conf, char* text, int rows, int cols)
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.y + rows - 6, conf.x + 2, 3, cols-4, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
@@ -547,7 +544,6 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
@@ -703,7 +699,6 @@ int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	entry = new_window(conf.y + rows - 6, conf.x +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
 	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
@@ -716,7 +711,6 @@ int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 	field[0] = new_field(1, cols-4, 0, 0, 0, 0);
 	field[1] = NULL;
 
-	//set_field_back(field[0], A_UNDERLINE);
 	field_opts_off(field[0], O_AUTOSKIP);
 	field_opts_off(field[0], O_STATIC);
 	if (showinput == false)
@@ -810,7 +804,6 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline, BLACK_WHITE, 
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 
@@ -1008,7 +1001,6 @@ int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int m
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	//WINDOW *subwin(WINDOW *orig, int nlines, int ncols, int begin_y, int begin_x);
 	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
