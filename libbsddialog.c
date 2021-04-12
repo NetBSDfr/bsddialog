@@ -12,7 +12,6 @@
 #include "bsddialog.h"
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
-#define SIZEBUTTON	8
 
 /* Foreground_Background */
 #define BLUE_BLUE	1 // main background
@@ -34,7 +33,8 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(WINDOW *window, int y, int x, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
-void draw_button(WINDOW *window, int y, int size, char *text, bool selected);
+void
+draw_button(WINDOW *window, int x, int size, char *text, bool selected, bool shortkey);
 void get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
     char* yesoklabel, bool extra, char *extralabel, bool nocancel,
     char *nocancellabel, bool help, char *helplabel, bool defaultno,
@@ -234,7 +234,9 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
 }
 
-void draw_button(WINDOW *window, int x, int size, char *text, bool selected)
+void
+draw_button(WINDOW *window, int x, int size, char *text, bool selected,
+    bool shortkey)
 {
 	int i, color_arrows, color_first_char, color_tail_chars;
 
@@ -256,12 +258,39 @@ void draw_button(WINDOW *window, int x, int size, char *text, bool selected)
 	wattroff(window, color_arrows);
 
 	x = x + 1 + ((size - 2 - strlen(text))/2);
+
 	wattron(window, color_tail_chars);
 	mvwaddstr(window, 1, x, text);
 	wattroff(window, color_tail_chars);
-	wattron(window, color_first_char);
-	mvwaddch(window, 1, x, text[0]);
-	wattroff(window, color_first_char);
+
+	if (shortkey) {
+		wattron(window, color_first_char);
+		mvwaddch(window, 1, x, text[0]);
+		wattroff(window, color_first_char);
+	}
+}
+
+void
+draw_buttons(WINDOW *window, int cols, int nbuttons, char **buttons,
+    int selected, bool shortkey)
+{
+	int i, x, start_x, size;
+#define SIZEBUTTON  8
+#define BUTTONSPACE 3
+
+	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
+	for (i=1; i < nbuttons; i++)
+		size = MAX(size, strlen(buttons[i]));
+	size += 2;
+
+	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
+	start_x = cols/2 - start_x/2;
+
+	for (i = 0; i < nbuttons; i++) {
+		x = i * (size + BUTTONSPACE);
+		draw_button(window, start_x + x, size, buttons[i],
+		    i == selected, shortkey);
+	}
 }
 
 void
@@ -312,25 +341,14 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleeptime, int fd)
 {
 	bool loop, update;
-	int i, x, start_x, size, input;
+	int i, input;
 	int output;
-#define BUTTONSPACE 3
-
-	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
-	for (i=1; i < nbuttons; i++)
-		size = MAX(size, strlen(buttons[i]));
-	size += 2;
-
-	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
-	start_x = cols/2 - start_x/2;
 
 	loop = update = true;
 	while(loop) {
 		if (update) {
-			for (i = 0; i < nbuttons; i++) {
-				x = i * (size + BUTTONSPACE);
-				draw_button(window, start_x + x, size, buttons[i], i == selected);
-			}
+			draw_buttons(window, cols, nbuttons, buttons, selected,
+			    shortkey);
 			update = false;
 		}
 		wrefresh(window);
@@ -567,26 +585,18 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     FIELD **field, bool showinput, int sleeptime, int fd)
 {
 	bool loop = true, buttupdate, inentry = true;
-	int i, x, start_x, size, input, output, buflen = 0, pos = 0;
+	int input, output, buflen = 0, pos = 0;
 	char *bufp;
-#define BUTTONSPACE 3
-
-	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
-	for (i=1; i < nbuttons; i++)
-		size = MAX(size, strlen(buttons[i]));
-	size += 2;
-
-	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
-	start_x = cols/2 - start_x/2;
-
-	for (i = 0; i < nbuttons; i++) {
-		x = i * (size + BUTTONSPACE);
-		draw_button(buttwin, start_x + x, size, buttons[i], i == selected);
-	}
 
 	curs_set(showinput ? 2 : 0);
 	pos_form_cursor(form);
+	loop = buttupdate = true;
 	while(loop) {
+		if (buttupdate) {
+			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
+			    shortkey);
+			buttupdate = false;
+		}
 		wrefresh(buttwin);
 		wrefresh(entry);
 		input = getch();
@@ -657,14 +667,6 @@ forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 				pos++;
 			}
 			break;
-		}
-
-		if (buttupdate) {
-			for (i = 0; i < nbuttons; i++) {
-				x = i * (size + BUTTONSPACE);
-				draw_button(buttwin, start_x + x, size, buttons[i], i == selected);
-			}
-			buttupdate = false;
 		}
 	}
 
@@ -879,18 +881,9 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int max, int def, int sleeptime, int fd)
 {
 	bool loop, buttupdate, barupdate;
-	int i, input, x, start_x, size, currvalue, output, pos, color;
+	int i, input, currvalue, output, pos, color;
 	float unitxpos;
 	char valuestr[128];
-#define BUTTONSPACE 3
-
-	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
-	for (i=1; i < nbuttons; i++)
-		size = MAX(size, strlen(buttons[i]));
-	size += 2;
-
-	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
-	start_x = cols/2 - start_x/2;
 
 	currvalue = def;
 	sizebar = sizebar - 2;
@@ -920,12 +913,10 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		}
 
 		if (buttupdate) {
-			for (i = 0; i < nbuttons; i++) {
-				x = i * (size + BUTTONSPACE);
-				draw_button(buttwin, start_x + x, size, buttons[i], i == selected);
-			}
-			buttupdate = false;
+			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
+			    shortkey);
 			wrefresh(buttwin);
+			buttupdate = false;
 		}
 
 		input = getch();
