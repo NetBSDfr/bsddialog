@@ -311,7 +311,7 @@ int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleeptime, int fd)
 {
-	bool loop = true, update;
+	bool loop, update;
 	int i, x, start_x, size, input;
 	int output;
 #define BUTTONSPACE 3
@@ -324,12 +324,15 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
 	start_x = cols/2 - start_x/2;
 
-	for (i = 0; i < nbuttons; i++) {
-		x = i * (size + BUTTONSPACE);
-		draw_button(window, start_x + x, size, buttons[i], i == selected);
-	}
-
+	loop = update = true;
 	while(loop) {
+		if (update) {
+			for (i = 0; i < nbuttons; i++) {
+				x = i * (size + BUTTONSPACE);
+				draw_button(window, start_x + x, size, buttons[i], i == selected);
+			}
+			update = false;
+		}
 		wrefresh(window);
 		input = getch();
 		if (input == 10 ) { // Enter
@@ -357,14 +360,6 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 					output = values[selected]; // like Esc
 					loop = false;
 				}
-		}
-
-		if (update) {
-			for (i = 0; i < nbuttons; i++) {
-				x = i * (size + BUTTONSPACE);
-				draw_button(window, start_x + x, size, buttons[i], i == selected);
-			}
-			update = false;
 		}
 	}
 
