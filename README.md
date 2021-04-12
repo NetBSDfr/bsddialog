@@ -124,13 +124,13 @@ Examples:
 | gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress | dialog does not centre buttons and title        |
-| inputmenu    |             |                                                 |
+| inputmenu    | In progress |                                                 |
 | menu         |             |                                                 |
-| mixedform    |             | manual dialog(3) is wrong                       |
+| mixedform    | In progress | manual dialog(3) is wrong                       |
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
 | passwordbox  | In progress |                                                 |
-| passwordform |             |                                                 |
+| passwordform | In progres  |                                                 |
 | pause        |             |                                                 |
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |
