@@ -601,7 +601,7 @@ int rangebox_builder(struct config conf, char* text, int rows, int cols, int arg
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, def);
 
 	if (conf.print_size)
-		dprintf(conf.output_fd, "Rnagebox size: %d, %d\n", rows, cols);
+		dprintf(conf.output_fd, "Rangebox size: %d, %d\n", rows, cols);
 
 	return (output);
 }
