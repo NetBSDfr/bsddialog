@@ -904,23 +904,17 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
-			pos = (currvalue - min) / unitxpos;
-			for (i = 1; i < sizebar; i++) {
-				if  (i < pos) {
-					wattron(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-					mvwaddch(bar, 1, i + 1, ' ');
-					wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-				}
-				else {
-					wattron(bar, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-					mvwaddch(bar, 1, i, ' ');
-					wattroff(bar, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-				}
+			pos = (int)((currvalue - min) / unitxpos);
+			for (i = 0; i < sizebar; i++) {
+				color = i < pos ? BLUE_BLUE : WHITE_WHITE;
+				wattron(bar, A_BOLD | COLOR_PAIR(color));
+				mvwaddch(bar, 1, i + 1, ' ');
+				wattroff(bar, A_BOLD | COLOR_PAIR(color));
 			}
 			sprintf(valuestr, "%d", currvalue);
 			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2);
 			for (i=0; i<strlen(valuestr); i++) {
-				color = ( (pos) < sizebar/2 - strlen(valuestr)/2 + i) ?
+				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
 				    BLUE_WHITE : WHITE_BLUE;
 				wattron(bar, A_BOLD | COLOR_PAIR(color));
 				waddch(bar, valuestr[i]);
