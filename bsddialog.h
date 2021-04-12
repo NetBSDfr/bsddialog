@@ -124,6 +124,7 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 int bsddialog_infobox(struct config conf, char* text, int rows, int cols);
 int bsddialog_msgbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_pause(struct config conf, char* text, int rows, int cols);
+int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min, int max, int def);
 int bsddialog_yesno(struct config conf, char* text, int rows, int cols);
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int bsddialog_form(struct config conf, char* text, int rows, int cols);

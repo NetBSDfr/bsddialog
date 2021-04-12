@@ -121,6 +121,7 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 int infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+int rangebox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 int yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int form_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
@@ -257,7 +258,7 @@ int main(int argc, char *argv[argc])
 	    { "programbox", no_argument, NULL, 'X' },
 	    { "progressbox", no_argument, NULL, 'X' },
 	    { "radiolist", no_argument, NULL, 'X' },
-	    { "rangebox", no_argument, NULL, 'X' },
+	    { "rangebox", no_argument, NULL, RANGEBOX },
 	    { "tailbox", no_argument, NULL, 'X' },
 	    { "tailboxbg", no_argument, NULL, 'X' },
 	    { "textbox", no_argument, NULL, 'X' },
@@ -402,6 +403,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case PASSWORDFORM:
 			widgetbuilder = passwordform_builder;
+			break;
+		case RANGEBOX:
+			widgetbuilder = rangebox_builder;
 			break;
 		case YESNO:
 			widgetbuilder = yesno_builder;
@@ -564,7 +568,7 @@ int passwordform_builder(struct config conf, char* text, int rows, int cols, int
 	return 0;
 }
 
- /* Gauge */
+ /* Gauge, rangebox */
 int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
 	int output /* always BSDDIALOG_YESOK */, perc;
@@ -577,6 +581,27 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "Gauge size: %d, %d\n", rows, cols);
+
+	return (output);
+}
+
+int rangebox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+{
+	int output /* always BSDDIALOG_YESOK */, min, max, def;
+
+	if (argc != 3)
+		return (-1);
+
+	min = atoi(argv[0]);
+	max = atoi(argv[1]);
+	def = atoi(argv[2]);
+	def = def < min ? min : def;
+	def = def > max ? max : def;
+
+	output = bsddialog_rangebox(conf, text, rows, cols, min, max, def);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Rnagebox size: %d, %d\n", rows, cols);
 
 	return (output);
 }
