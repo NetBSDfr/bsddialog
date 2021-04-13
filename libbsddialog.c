@@ -919,6 +919,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
 		field[i] = new_field(1, items[i].itemlen, items[i].yitem-1, items[i].xitem-1, 0, 0);
+		set_field_buffer(fields[i], 0, items[i].item);
 		field_opts_off(field[i], O_AUTOSKIP);
 		if (ISITEMHIDDEN(items[i]))
 			field_opts_off(field[0], O_PUBLIC);
