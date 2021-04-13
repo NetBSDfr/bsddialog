@@ -33,9 +33,13 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(WINDOW *window, int y, int x, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
+
 void
 draw_button(WINDOW *window, int x, int size, char *text, bool selected,
     bool shortkey);
+void
+draw_buttons(WINDOW *window, int cols, int nbuttons, char **buttons,
+    int selected, bool shortkey);
 void
 get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
     char* yesoklabel, bool extra, char *extralabel, bool nocancel,
