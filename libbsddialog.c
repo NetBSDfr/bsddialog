@@ -15,15 +15,17 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 /* Foreground_Background */
-#define BLUE_BLUE	1 // main background
-#define BLUE_WHITE	2 // widget title
-#define WHITE_WHITE	3 // widget background and border
-#define BLACK_WHITE	4 // widget border and key
-#define RED_WHITE	5 // key
-#define WHITE_BLUE	6 // key
-#define YELLOW_BLUE	7 // key
-#define BLACK_BLACK	8 // shadow
-#define CYAN_BLUE	9 // backtitle
+#define BLUE_BLUE	 1 // main background
+#define BLUE_WHITE	 2 // widget title
+#define WHITE_WHITE	 3 // widget background and border
+#define BLACK_WHITE	 4 // widget border and key
+#define RED_WHITE	 5 // key
+#define WHITE_BLUE	 6 // key
+#define YELLOW_BLUE	 7 // key
+#define BLACK_BLACK	 8 // shadow
+#define CYAN_BLUE	 9 // backtitle
+#define WHITE_CYAN	10 // mixedform (editable not selected)
+#define CYAN_WHITE	11 // mixedform (not editable)
 
 enum elevation { RAISED, LOWERED, NOLINES };
 
@@ -83,6 +85,8 @@ int bsddialog_init(void)
 	error += init_pair(YELLOW_BLUE, COLOR_YELLOW, COLOR_BLUE);
 	error += init_pair(BLACK_BLACK, COLOR_BLACK,  COLOR_BLACK);
 	error += init_pair(CYAN_BLUE,   COLOR_CYAN,   COLOR_BLUE);
+	error += init_pair(WHITE_CYAN,  COLOR_WHITE,  COLOR_CYAN);
+	error += init_pair(CYAN_WHITE,  COLOR_CYAN,   COLOR_WHITE);
 
 	bkgd(COLOR_PAIR(BLUE_BLUE));
 
@@ -925,13 +929,13 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 			field_opts_off(field[i], O_PUBLIC);
 		if (ISITEMREADONLY(items[i])) {
 			field_opts_off(field[i], O_EDIT);
-			color = BLACK_WHITE;
+			color = CYAN_WHITE;
 		} else {
-			color = CYAN_BLUE;
+			color = i == 0 ? WHITE_BLUE : WHITE_CYAN;
 		}
 		//field_opts_off(field[0], O_STATIC);
-		set_field_fore(field[i], COLOR_PAIR(color));
-		set_field_back(field[i], COLOR_PAIR(color));
+		set_field_fore(field[i], A_BOLD | COLOR_PAIR(color));
+		set_field_back(field[i], A_BOLD | COLOR_PAIR(color));
 	}
 	field[i] = NULL;
 
