@@ -457,7 +457,6 @@ int main(int argc, char *argv[argc])
 	return output;
 }
 
-/* Widgets */
 int
 checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
