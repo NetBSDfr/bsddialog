@@ -801,7 +801,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
     FIELD **field, int nitems, struct formitem *items, int sleeptime, int fd)
 {
-	bool loop = true, buttupdate, inentry = true;
+	bool loop, buttupdate, inentry = true;
 	int input, output, buflen = 0, pos = 0;
 	char *bufp;
 
