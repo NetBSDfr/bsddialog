@@ -970,18 +970,28 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	return output;
 }
 
-int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
+int bsddialog_mixedform(struct config conf, char* text, int rows, int cols, int formheight, int argc, char **argv)
 {
-	int output;
-	struct formitem items[5] = {
-		{"L1:", 1, 1, "Item1", 1, 5, 10, 15, 0},
-		{"L2:", 2, 1, "Item2", 2, 5, 10, 15, 1},
-		{"L3:", 3, 1, "Item3", 3, 5, 10, 15, 2},
-		{"L4:", 4, 1, "Item4", 4, 5, 10, 15, 3},
-		{"L5:", 5, 1, "Item5", 5, 5, 10, 15, 4}
-	};
+	int i, output, nitems;
+	struct formitem items[128];
 
-	output = do_mixedform(conf, text, rows, cols, /*formheight*/6, 5, items);
+	if ((argc % 9) != 0)
+		return (-1);
+
+	nitems = argc / 9;
+	for (i=0; i<nitems; i++) {
+		items[i].label	   = argv[9*i];
+		items[i].ylabel	   = atoi(argv[9*i+1]);
+		items[i].xlabel	   = atoi(argv[9*i+2]);
+		items[i].item	   = argv[9*i+3];
+		items[i].yitem	   = atoi(argv[9*i+4]);
+		items[i].xitem	   = atoi(argv[9*i+5]);
+		items[i].itemlen   = atoi(argv[9*i+6]);
+		items[i].inputlen  = atoi(argv[9*i+7]);
+		items[i].itemflags = atoi(argv[9*i+8]);
+	}
+
+	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
 
 	return output;
 }

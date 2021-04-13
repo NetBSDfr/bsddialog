@@ -529,9 +529,17 @@ int inputmenu_builder(struct config conf, char* text, int rows, int cols, int ar
 
 int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
-	int output;
+	int output, formheight;
 
-	output = bsddialog_mixedform(conf, text, rows, cols);
+	if (argc < 1 || (((argc-1) % 9) != 0) ) {
+		usage();
+		return (-1);
+	}
+
+	formheight = atoi(argv[0]);
+
+	output = bsddialog_mixedform(conf, text, rows, cols, formheight, argc-1,
+	    argv + 1);
 
 	return output;
 }

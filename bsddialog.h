@@ -130,7 +130,7 @@ int bsddialog_yesno(struct config conf, char* text, int rows, int cols);
 int bsddialog_form(struct config conf, char* text, int rows, int cols);
 int bsddialog_inputbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols);
-int bsddialog_mixedform(struct config conf, char* text, int rows, int cols);
+int bsddialog_mixedform(struct config conf, char* text, int rows, int cols, int formheight, int argc, char **argv);
 int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_passwordform(struct config conf, char* text, int rows, int cols);
 
