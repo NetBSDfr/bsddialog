@@ -889,7 +889,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	return output;
 }
 
-int do_mixedform(struct config conf, char* text, int rows, int cols, bool showinput)
+int do_mixedform(struct config conf, char* text, int rows, int cols, int nitems, struct formitem *items)
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
@@ -920,8 +920,8 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, bool showin
 
 	field_opts_off(field[0], O_AUTOSKIP);
 	field_opts_off(field[0], O_STATIC);
-	if (showinput == false)
-		field_opts_off(field[0], O_PUBLIC);
+	//if (showinput == false)
+	//	field_opts_off(field[0], O_PUBLIC);
 	set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
 	set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
 
@@ -933,10 +933,10 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, bool showin
 	wrefresh(widget);
 	wrefresh(entry);
 
-	output = mixedform_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, entry, form, field, showinput, conf.sleep,
-	    conf.output_fd);
-
+	//output = mixedform_handler(button, cols, nbuttons, buttons, values,
+	//    defbutton, true, entry, form, field, showinput, conf.sleep,
+	//    conf.output_fd);
+getch();
 	unpost_form(form);
 	free_form(form);
 	free_field(field[0]);
@@ -963,7 +963,7 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 		{"L4:", 3, 0, "Item4", 3, 5, 10, 15, 3}
 	};
 
-	output = do_mixedform(conf, text, rows, cols, true);
+	output = do_mixedform(conf, text, rows, cols, 4, items);
 
 	return output;
 }
