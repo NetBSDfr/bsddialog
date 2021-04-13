@@ -919,11 +919,12 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
 		field[i] = new_field(1, items[i].itemlen, items[i].yitem-1, items[i].xitem-1, 0, 0);
+		set_field_buffer(field[i], 0, items[i].item);
 		field_opts_off(field[i], O_AUTOSKIP);
 		if (ISITEMHIDDEN(items[i]))
-			field_opts_off(field[0], O_PUBLIC);
+			field_opts_off(field[i], O_PUBLIC);
 		if (ISITEMREADONLY(items[i])) {
-			//disable edit
+			field_opts_off(field[i], O_EDIT);
 			color = BLACK_WHITE;
 		} else {
 			color = CYAN_BLUE;
@@ -968,14 +969,15 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 {
 	int output;
-	struct formitem items[4] = {
+	struct formitem items[5] = {
 		{"L1:", 1, 1, "Item1", 1, 5, 10, 15, 0},
 		{"L2:", 2, 1, "Item2", 2, 5, 10, 15, 1},
 		{"L3:", 3, 1, "Item3", 3, 5, 10, 15, 2},
-		{"L4:", 4, 1, "Item4", 4, 5, 10, 15, 3}
+		{"L4:", 4, 1, "Item4", 4, 5, 10, 15, 3},
+		{"L5:", 5, 1, "Item5", 5, 5, 10, 15, 4}
 	};
 
-	output = do_mixedform(conf, text, rows, cols, /*formheight*/6, 4, items);
+	output = do_mixedform(conf, text, rows, cols, /*formheight*/6, 5, items);
 
 	return output;
 }
