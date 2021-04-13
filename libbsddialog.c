@@ -812,9 +812,9 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		if (buttupdate) {
 			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
 			    shortkey);
+			wrefresh(buttwin);
 			buttupdate = false;
 		}
-		wrefresh(buttwin);
 		wrefresh(entry);
 		input = getch();
 		switch(input) {
