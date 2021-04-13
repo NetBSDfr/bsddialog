@@ -453,7 +453,7 @@ int main(int argc, char *argv[argc])
 	bsddialog_end();
 
 	// debug
-	printf("Exit status: %d\n", output);
+	printf("[Debug] Exit status: %d\n", output);
 	return output;
 }
 
