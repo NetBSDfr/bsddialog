@@ -548,7 +548,14 @@ int inputmenu_builder(struct config conf, char* text, int rows, int cols, int ar
 
 int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
 {
-	return 0;
+	int output;
+
+	output = bsddialog_mixedform(conf, text, rows, cols);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Mixedform size: %d, %d\n", rows, cols);
+
+	return output;
 }
 
 int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
