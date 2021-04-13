@@ -777,6 +777,20 @@ int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
 	return 0;
 }
 
+#define ISITEMHIDDEN (item) (item->itemflags & 0x1)
+#define ISITEMWRITABLE (item) (item->itemflags & 0x2)
+struct formitem {
+	char *label;
+	unsigned int ylabel;
+	unsigned int xlabel;
+	char *item;
+	unsigned int yitem;
+	unsigned int xitem;
+	int itemlen;
+	unsigned int inputlen;
+	unsigned int itemflags;
+};
+
 int
 mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
@@ -942,6 +956,12 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, bool showin
 int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 {
 	int output;
+	struct formitem items[4] = {
+		{"L1:", 0, 0, "Item1", 0, 5, 10, 15, 0},
+		{"L2:", 1, 0, "Item2", 1, 5, 10, 15, 1},
+		{"L3:", 2, 0, "Item3", 2, 5, 10, 15, 2},
+		{"L4:", 3, 0, "Item4", 3, 5, 10, 15, 3}
+	};
 
 	output = do_mixedform(conf, text, rows, cols, true);
 
