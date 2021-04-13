@@ -907,7 +907,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	entry = new_window(conf.y + rows - 6 - nitems, conf.x +1, nitems+2, cols-2, NULL, NULL, BLACK_WHITE,
+	entry = new_window(conf.y + rows - 3 - formheight -2, conf.x +1, formheight+2, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
 	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
@@ -972,7 +972,7 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 		{"L4:", 3, 0, "Item4", 3, 5, 10, 15, 3}
 	};
 
-	output = do_mixedform(conf, text, rows, cols, /*formheight*/4, 4, items);
+	output = do_mixedform(conf, text, rows, cols, /*formheight*/6, 4, items);
 
 	return output;
 }
