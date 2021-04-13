@@ -28,13 +28,14 @@
 .Sh NAME
 .Nm bsddialog
 .Nd Text User Interface Widgets
-.\" .Sh LIBRARY
-.\" For sections 2, 3, and 9 only.
-.\" Not used in OpenBSD.
 .Sh SYNOPSIS
-.Nm progname
-.Op Fl options
-.Ar
+.Nm bsddialog
+.Op Fl -common-options
+.Ar Fl -widget
+.Ar text
+.Ar height
+.Ar weight
+.Op Ar widget-options
 .Sh DESCRIPTION
 The
 .Nm
