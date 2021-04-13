@@ -923,6 +923,8 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
 		field[i] = new_field(1, items[i].itemlen, items[i].yitem-1, items[i].xitem-1, 0, 0);
+		field_opts_off(field[i], O_STATIC);
+		set_max_field(field[i], items[i].inputlen);
 		set_field_buffer(field[i], 0, items[i].item);
 		field_opts_off(field[i], O_AUTOSKIP);
 		if (ISITEMHIDDEN(items[i]))
@@ -933,7 +935,6 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 		} else {
 			color = i == 0 ? WHITE_BLUE : WHITE_CYAN;
 		}
-		//field_opts_off(field[0], O_STATIC);
 		set_field_fore(field[i], A_BOLD | COLOR_PAIR(color));
 		set_field_back(field[i], A_BOLD | COLOR_PAIR(color));
 	}
