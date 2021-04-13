@@ -464,9 +464,6 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 
 	output = bsddialog_checklist(conf, text, rows, cols);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Checklist size: %d, %d\n", rows, cols);
-
 	return output;
 }
 
@@ -476,9 +473,6 @@ infobox_builder(struct config conf, char* text, int rows, int cols, int argc, ch
 	int output; /* always BSDDIALOG_YESOK */
 
 	output = bsddialog_infobox(conf, text, rows, cols);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Infobox size: %d, %d\n", rows, cols);
 
 	return output;
 }
@@ -490,9 +484,6 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 
 	output = bsddialog_msgbox(conf, text, rows, cols);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Msgbox size: %d, %d\n", rows, cols);
-
 	return output;
 }
 
@@ -503,9 +494,6 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 
 	output = bsddialog_pause(conf, text, rows, cols);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Pause size: %d, %d\n", rows, cols);
-
 	return output;
 }
 
@@ -515,9 +503,6 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	int output;
 
 	output = bsddialog_yesno(conf, text, rows, cols);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Yesno size: %d, %d\n", rows, cols);
 
 	return output;
 }
@@ -532,9 +517,6 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 	int output;
 
 	output = bsddialog_inputbox(conf, text, rows, cols);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
 
 	return output;
 }
@@ -551,9 +533,6 @@ int mixedform_builder(struct config conf, char* text, int rows, int cols, int ar
 
 	output = bsddialog_mixedform(conf, text, rows, cols);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Mixedform size: %d, %d\n", rows, cols);
-
 	return output;
 }
 
@@ -562,9 +541,6 @@ int passwordbox_builder(struct config conf, char* text, int rows, int cols, int 
 	int output;
 
 	output = bsddialog_passwordbox(conf, text, rows, cols);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "PasswordBox size: %d, %d\n", rows, cols);
 
 	return output;
 }
@@ -585,9 +561,6 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 
 	output = bsddialog_gauge(conf, text, rows, cols, perc);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Gauge size: %d, %d\n", rows, cols);
-
 	return (output);
 }
 
@@ -605,9 +578,6 @@ int rangebox_builder(struct config conf, char* text, int rows, int cols, int arg
 	def = def > max ? max : def;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, def);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Rangebox size: %d, %d\n", rows, cols);
 
 	return (output);
 }
