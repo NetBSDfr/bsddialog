@@ -779,7 +779,7 @@ int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
 }
 
 #define ISITEMHIDDEN(item) (item.itemflags & 0x1)
-#define ISITEMWRITABLE(item) (item.itemflags & 0x2)
+#define ISITEMREADONLY(item) (item.itemflags & 0x2)
 struct formitem {
 	char *label;
 	unsigned int ylabel;
@@ -894,7 +894,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
-	int i, values[4], output, nbuttons, defbutton;
+	int i, values[4], output, nbuttons, defbutton, color;
 	FIELD **field;
 	FORM *form;
 
@@ -919,15 +919,18 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
 		field[i] = new_field(1, items[i].itemlen, items[i].yitem, items[i].xitem, 0, 0);
+		field_opts_off(field[i], O_AUTOSKIP);
 		if (ISITEMHIDDEN(items[i]))
 			field_opts_off(field[0], O_PUBLIC);
-		field_opts_off(field[i], O_AUTOSKIP);
-		field_opts_off(field[0], O_STATIC);
-		//set_field_fore(field[i], COLOR_PAIR(BLACK_WHITE));
-		//set_field_back(field[i], COLOR_PAIR(BLACK_WHITE));
-		set_field_fore(field[i], COLOR_PAIR(CYAN_BLUE));
-		set_field_back(field[i], COLOR_PAIR(CYAN_BLUE));
-		//mvwaddstr(entry, items[i].ylabel, items[i].xlabel, items[i].label);
+		if (ISITEMREADONLY(items[i])) {
+			//disable edit
+			color = BLACK_WHITE;
+		} else {
+			color = CYAN_BLUE;
+		}
+		//field_opts_off(field[0], O_STATIC);
+		set_field_fore(field[i], COLOR_PAIR(color));
+		set_field_back(field[i], COLOR_PAIR(color));
 	}
 	field[i] = NULL;
 
