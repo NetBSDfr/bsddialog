@@ -970,7 +970,7 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 	int output;
 	struct formitem items[4] = {
 		{"L1:", 0, 0, "Item1", 0, 5, 10, 15, 0},
-		{"L2:", 1, 0, "Item2", 1, 7, 10, 15, 1},
+		{"L2:", 1, 0, "Item2", 1, 5, 10, 15, 1},
 		{"L3:", 2, 0, "Item3", 2, 5, 10, 15, 2},
 		{"L4:", 3, 0, "Item4", 3, 5, 10, 15, 3}
 	};
