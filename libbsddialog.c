@@ -918,7 +918,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
-		field[i] = new_field(1, items[i].itemlen, items[i].yitem, items[i].xitem, 0, 0);
+		field[i] = new_field(1, items[i].itemlen, items[i].yitem-1, items[i].xitem-1, 0, 0);
 		field_opts_off(field[i], O_AUTOSKIP);
 		if (ISITEMHIDDEN(items[i]))
 			field_opts_off(field[0], O_PUBLIC);
@@ -940,7 +940,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	post_form(form);
 
 	for (i=0; i < nitems; i++)
-		mvwaddstr(entry, items[i].ylabel+1, items[i].xlabel+1, items[i].label);
+		mvwaddstr(entry, items[i].ylabel, items[i].xlabel, items[i].label);
 
 	wrefresh(widget);
 	wrefresh(entry);
@@ -969,10 +969,10 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 {
 	int output;
 	struct formitem items[4] = {
-		{"L1:", 0, 0, "Item1", 0, 5, 10, 15, 0},
-		{"L2:", 1, 0, "Item2", 1, 5, 10, 15, 1},
-		{"L3:", 2, 0, "Item3", 2, 5, 10, 15, 2},
-		{"L4:", 3, 0, "Item4", 3, 5, 10, 15, 3}
+		{"L1:", 1, 1, "Item1", 1, 5, 10, 15, 0},
+		{"L2:", 2, 1, "Item2", 2, 5, 10, 15, 1},
+		{"L3:", 3, 1, "Item3", 3, 5, 10, 15, 2},
+		{"L4:", 4, 1, "Item4", 4, 5, 10, 15, 3}
 	};
 
 	output = do_mixedform(conf, text, rows, cols, /*formheight*/6, 4, items);
