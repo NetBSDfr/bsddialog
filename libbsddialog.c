@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -777,8 +778,8 @@ int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
 	return 0;
 }
 
-#define ISITEMHIDDEN (item) (item->itemflags & 0x1)
-#define ISITEMWRITABLE (item) (item->itemflags & 0x2)
+#define ISITEMHIDDEN(item) (item.itemflags & 0x1)
+#define ISITEMWRITABLE(item) (item.itemflags & 0x2)
 struct formitem {
 	char *label;
 	unsigned int ylabel;
@@ -794,13 +795,13 @@ struct formitem {
 int
 mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
-    FIELD **field, bool showinput, int sleeptime, int fd)
+    FIELD **field, int nitems, struct formitem *items, int sleeptime, int fd)
 {
 	bool loop = true, buttupdate, inentry = true;
 	int input, output, buflen = 0, pos = 0;
 	char *bufp;
 
-	curs_set(showinput ? 2 : 0);
+	curs_set(2);
 	pos_form_cursor(form);
 	loop = buttupdate = true;
 	while(loop) {
@@ -856,7 +857,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case KEY_UP:
 			inentry = true;
-			curs_set(showinput ? 2 : 0);
+			curs_set(2);
 			pos_form_cursor(form);
 			break;
 		case KEY_DOWN:
@@ -889,12 +890,12 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	return output;
 }
 
-int do_mixedform(struct config conf, char* text, int rows, int cols, bool showinput)
+int do_mixedform(struct config conf, char* text, int rows, int cols, int formheight, int nitems, struct formitem *items)
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
-	FIELD *field[2];
+	int i, values[4], output, nbuttons, defbutton;
+	FIELD **field;
 	FORM *form;
 
 	if (conf.shadow) {
@@ -906,7 +907,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, bool showin
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	entry = new_window(conf.y + rows - 6, conf.x +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
+	entry = new_window(conf.y + rows - 6 - nitems, conf.x +1, nitems+2, cols-2, NULL, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
 	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
@@ -915,26 +916,34 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, bool showin
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	field[0] = new_field(1, cols-4, 0, 0, 0, 0);
-	field[1] = NULL;
-
-	field_opts_off(field[0], O_AUTOSKIP);
-	field_opts_off(field[0], O_STATIC);
-	if (showinput == false)
-		field_opts_off(field[0], O_PUBLIC);
-	set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
-	set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
+	field = calloc(nitems + 1, sizeof(FIELD*));
+	for (i=0; i < nitems; i++) {
+		field[i] = new_field(1, items[i].itemlen, items[i].yitem, items[i].xitem, 0, 0);
+		if (ISITEMHIDDEN(items[i]))
+			field_opts_off(field[0], O_PUBLIC);
+		field_opts_off(field[i], O_AUTOSKIP);
+		field_opts_off(field[0], O_STATIC);
+		//set_field_fore(field[i], COLOR_PAIR(BLACK_WHITE));
+		//set_field_back(field[i], COLOR_PAIR(BLACK_WHITE));
+		set_field_fore(field[i], COLOR_PAIR(CYAN_BLUE));
+		set_field_back(field[i], COLOR_PAIR(CYAN_BLUE));
+		//mvwaddstr(entry, items[i].ylabel, items[i].xlabel, items[i].label);
+	}
+	field[i] = NULL;
 
 	form = new_form(field);
 	set_form_win(form, entry);
-	set_form_sub(form, derwin(entry, 1, cols-4, 1, 1));
+	set_form_sub(form, derwin(entry, nitems, cols-4, 1, 1));
 	post_form(form);
+
+	for (i=0; i < nitems; i++)
+		mvwaddstr(entry, items[i].ylabel+1, items[i].xlabel+1, items[i].label);
 
 	wrefresh(widget);
 	wrefresh(entry);
 
 	output = mixedform_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, entry, form, field, showinput, conf.sleep,
+	    defbutton, true, entry, form, field, nitems, items, conf.sleep,
 	    conf.output_fd);
 
 	unpost_form(form);
@@ -948,7 +957,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, bool showin
 		delwin(shadow);
 
 	if (conf.print_size)
-		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
+		dprintf(conf.output_fd, "Mixedform size: %d, %d\n", rows, cols);
 
 	return output;
 }
@@ -963,7 +972,7 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols)
 		{"L4:", 3, 0, "Item4", 3, 5, 10, 15, 3}
 	};
 
-	output = do_mixedform(conf, text, rows, cols, true);
+	output = do_mixedform(conf, text, rows, cols, /*formheight*/4, 4, items);
 
 	return output;
 }
