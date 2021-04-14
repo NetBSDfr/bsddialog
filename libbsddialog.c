@@ -1038,16 +1038,10 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 
 	while (mainloop) {
 		for (i = 0; i < cols - 8; i++) {
-			if  (i <= blue_x) {
-				wattron(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-				mvwaddch(bar, 1, i + 1, ' ');
-				wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-			}
-			else {
-				wattron(bar, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-				mvwaddch(bar, 1, i, ' ');
-				wattroff(bar, A_BOLD | COLOR_PAIR(WHITE_WHITE));
-			}
+			color = i <= blue_x ? BLUE_BLUE : WHITE_WHITE;
+			wattron(bar, A_BOLD | COLOR_PAIR(color));
+			mvwaddch(bar, 1, i + 1, ' ');
+			wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
 		}
 
 		sprintf(percstr, "%3d%%", perc);
