@@ -972,6 +972,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	delwin(button);
 	delwin(entry);
 	delwin(widget);
+	free(field);
 	if (conf.shadow)
 		delwin(shadow);
 
