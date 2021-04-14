@@ -357,6 +357,85 @@ get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
 	}
 }
 
+/*
+ * No handler: infobox
+ */
+int 
+bsddialog_infobox(struct config conf, char* text, int rows, int cols)
+{
+	WINDOW *widget, *shadow;
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
+
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, conf.hline, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
+
+	wrefresh(widget);
+	getch();
+	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Infobox size: %d, %d\n", rows, cols);
+
+	return (BSDDIALOG_YESOK);
+}
+
+/*
+ * checklist handler TODO: Checklist
+ */
+int
+bsddialog_checklist(struct config conf, char* text, int rows, int cols)
+{
+	WINDOW *widget, *button, *entry, *shadow;
+	char *buttons[4];
+	int values[4], output, nbuttons, defbutton;
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
+
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
+	entry = new_window(conf.y + rows - 6, conf.x + 1, 3, cols-2, NULL, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
+
+	wrefresh(widget);
+	wrefresh(entry);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+
+	output = buttons_handler(button, cols, nbuttons, buttons, values,
+	    defbutton, true, conf.sleep, /* fd */ 0);
+
+	delwin(button);
+	delwin(entry);
+	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Checklist size: %d, %d\n", rows, cols);
+
+	return output;
+}
+
+/*
+ * Buttons handler: msgbox, yesno
+ */
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleeptime, int fd)
@@ -405,77 +484,6 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	sleep(sleeptime);
 
 	return output;
-}
-
-/* Widgets */
-int
-bsddialog_checklist(struct config conf, char* text, int rows, int cols)
-{
-	WINDOW *widget, *button, *entry, *shadow;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
-
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
-
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	entry = new_window(conf.y + rows - 6, conf.x + 1, 3, cols-2, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
-
-	wrefresh(widget);
-	wrefresh(entry);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
-
-	output = buttons_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, conf.sleep, /* fd */ 0);
-
-	delwin(button);
-	delwin(entry);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Checklist size: %d, %d\n", rows, cols);
-
-	return output;
-}
-
-int 
-bsddialog_infobox(struct config conf, char* text, int rows, int cols)
-{
-	WINDOW *widget, *shadow;
-
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
-
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, conf.hline, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-
-	wrefresh(widget);
-	getch();
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Infobox size: %d, %d\n", rows, cols);
-
-	return (BSDDIALOG_YESOK);
 }
 
 int 
@@ -1013,7 +1021,9 @@ int bsddialog_passwordform(struct config conf, char* text, int rows, int cols)
 	return 0;
 }
 
- /* Gauge and rangebox */
+/*
+ * Bar: Gauge and rangebox
+ */
 int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc)
 {
 	WINDOW *widget, *bar, *shadow;
