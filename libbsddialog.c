@@ -819,7 +819,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[selected]; // values -> outputs
+			output = values[selected]; // values -> buttvalues
 			loop = false;
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
