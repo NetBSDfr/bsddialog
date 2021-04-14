@@ -816,6 +816,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	curs_set(2);
 	pos_form_cursor(form);
 	loop = buttupdate = true;
+	selected = -1;
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
@@ -827,20 +828,33 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
+			if (inentry)
+				break;
 			output = values[selected]; // values -> buttvalues
-			loop = false;
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			bufp = field_buffer(field[0], 0);
 			bufp[buflen] = '\0';
 			dprintf(fd, "%s", bufp);
+			loop = false;
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
 			loop = false;
 			break;
 		case '\t': // TAB
-			selected = (selected + 1) % nbuttons;
+			if (inentry) {
+				selected = 0;
+				inentry = false;
+				curs_set(0);
+			} else {
+				selected++;
+				inentry = selected >= nbuttons ? true : false;
+				if (inentry) {
+					curs_set(2);
+					pos_form_cursor(form);
+				}
+			}
 			buttupdate = true;
 			break;
 		case KEY_LEFT:
@@ -868,13 +882,12 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			}
 			break;
 		case KEY_UP:
-			inentry = true;
-			curs_set(2);
-			pos_form_cursor(form);
+			form_driver(form, REQ_PREV_FIELD);
+			form_driver(form, REQ_END_LINE);
 			break;
 		case KEY_DOWN:
-			inentry = false;
-			curs_set(0);
+			form_driver(form, REQ_NEXT_FIELD);
+			form_driver(form, REQ_END_LINE);
 			break;
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
