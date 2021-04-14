@@ -927,8 +927,10 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 		set_max_field(field[i], items[i].inputlen);
 		set_field_buffer(field[i], 0, items[i].item);
 		field_opts_off(field[i], O_AUTOSKIP);
+
 		if (ISITEMHIDDEN(items[i]))
 			field_opts_off(field[i], O_PUBLIC);
+
 		if (ISITEMREADONLY(items[i])) {
 			field_opts_off(field[i], O_EDIT);
 			color = CYAN_WHITE;
