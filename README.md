@@ -33,7 +33,6 @@ Examples:
 
 **TODO**
 
- - bsddialog.1 and bsddialog.3
  - Common Options:
 
 |  Option                      | Status      | Note                            |
@@ -118,7 +117,7 @@ Examples:
 |------------- | ----------- | ----------------------------------------------- |
 | buildlist    |             |                                                 |
 | calendar     |             |                                                 |
-| checklist    | In progress |                                                 |
+| checklist    |             |                                                 |
 | dselect      |             |                                                 |
 | editbox      |             |                                                 |
 | form         | In progress |                                                 |
