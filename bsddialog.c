@@ -116,20 +116,39 @@
 
 void usage(void);
 /* widgets */
-int checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int rangebox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-/* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
-int form_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int inputmenu_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
-int passwordform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv);
+#define BUILDER_ARGS struct config conf, char* text, int rows, int cols, \
+	int argc, char **argv
+//int buildlist_builder(BUILDER_ARGS);
+//int calendar_builder(BUILDER_ARGS);
+int checklist_builder(BUILDER_ARGS);
+//int dselect_builder(BUILDER_ARGS);
+//int editbox_builder(BUILDER_ARGS);
+int form_builder(BUILDER_ARGS);
+//int fselect_builder(BUILDER_ARGS);
+int gauge_builder(BUILDER_ARGS);
+int infobox_builder(BUILDER_ARGS);
+int inputbox_builder(BUILDER_ARGS);
+int inputmenu_builder(BUILDER_ARGS);
+//int menu_builder(BUILDER_ARGS);
+int mixedform_builder(BUILDER_ARGS);
+//int mixedgauge_builder(BUILDER_ARGS);
+int msgbox_builder(BUILDER_ARGS);
+int passwordbox_builder(BUILDER_ARGS);
+int passwordform_builder(BUILDER_ARGS);
+int pause_builder(BUILDER_ARGS);
+//int prgbox_builder(BUILDER_ARGS);
+//int programbox_builder(BUILDER_ARGS);
+//int progressbox_builder(BUILDER_ARGS);
+//int radiolist_builder(BUILDER_ARGS);
+int rangebox_builder(BUILDER_ARGS);
+//int tailbox_builder(BUILDER_ARGS);
+//int tailboxbg_builder(BUILDER_ARGS);
+//int textbox_builder(BUILDER_ARGS);
+//int timebox_builder(BUILDER_ARGS);
+//int treeview_builder(BUILDER_ARGS);
+int yesno_builder(BUILDER_ARGS);
+
+
 
 void usage(void)
 {
@@ -143,7 +162,7 @@ int main(int argc, char *argv[argc])
 {
 	char text[1024], *backtitle = NULL;
 	int input, rows, cols, output;
-	int (*widgetbuilder)(struct config conf, char* text, int rows, int cols, int argc, char **argv) = NULL;
+	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
 	struct winsize ws;
 	struct config conf;
 
@@ -457,8 +476,7 @@ int main(int argc, char *argv[argc])
 	return output;
 }
 
-int
-checklist_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int checklist_builder(BUILDER_ARGS)
 {
 	int output;
 
@@ -467,8 +485,7 @@ checklist_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	return output;
 }
 
-int 
-infobox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int infobox_builder(BUILDER_ARGS)
 {
 	int output; /* always BSDDIALOG_YESOK */
 
@@ -477,8 +494,7 @@ infobox_builder(struct config conf, char* text, int rows, int cols, int argc, ch
 	return output;
 }
 
-int 
-msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int msgbox_builder(BUILDER_ARGS)
 {
 	int output;
 
@@ -487,8 +503,7 @@ msgbox_builder(struct config conf, char* text, int rows, int cols, int argc, cha
 	return output;
 }
 
-int
-pause_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int pause_builder(BUILDER_ARGS)
 {
 	int output;
 
@@ -497,8 +512,7 @@ pause_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	return output;
 }
 
-int
-yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int yesno_builder(BUILDER_ARGS)
 {
 	int output;
 
@@ -507,7 +521,7 @@ yesno_builder(struct config conf, char* text, int rows, int cols, int argc, char
 	return output;
 }
 
-int form_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int form_builder(BUILDER_ARGS)
 {
 	int output, formheight;
 
@@ -524,7 +538,7 @@ int form_builder(struct config conf, char* text, int rows, int cols, int argc, c
 	return output;
 }
 
-int inputbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int inputbox_builder(BUILDER_ARGS)
 {
 	int output;
 
@@ -534,12 +548,12 @@ int inputbox_builder(struct config conf, char* text, int rows, int cols, int arg
 }
 
 
-int inputmenu_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int inputmenu_builder(BUILDER_ARGS)
 {
 	return 0;
 }
 
-int mixedform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int mixedform_builder(BUILDER_ARGS)
 {
 	int output, formheight;
 
@@ -556,7 +570,7 @@ int mixedform_builder(struct config conf, char* text, int rows, int cols, int ar
 	return output;
 }
 
-int passwordbox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int passwordbox_builder(BUILDER_ARGS)
 {
 	int output;
 
@@ -565,7 +579,7 @@ int passwordbox_builder(struct config conf, char* text, int rows, int cols, int 
 	return output;
 }
 
-int passwordform_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int passwordform_builder(BUILDER_ARGS)
 {
 	int output, formheight;
 
@@ -583,7 +597,7 @@ int passwordform_builder(struct config conf, char* text, int rows, int cols, int
 }
 
  /* Gauge, rangebox */
-int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int gauge_builder(BUILDER_ARGS)
 {
 	int output /* always BSDDIALOG_YESOK */, perc;
 
@@ -596,7 +610,7 @@ int gauge_builder(struct config conf, char* text, int rows, int cols, int argc, 
 	return (output);
 }
 
-int rangebox_builder(struct config conf, char* text, int rows, int cols, int argc, char **argv)
+int rangebox_builder(BUILDER_ARGS)
 {
 	int output /* always BSDDIALOG_YESOK */, min, max, def;
 
