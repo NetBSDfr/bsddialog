@@ -815,7 +815,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     FIELD **field, int nitems, struct formitem *items, int sleeptime, int fd)
 {
 	bool loop, buttupdate, inentry = true;
-	int input, output, buflen = 0, pos = 0;
+	int i, input, output, buflen = 0, pos = 0;
 	char *bufp;
 
 	curs_set(2);
@@ -838,9 +838,11 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			output = values[selected]; // values -> buttvalues
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			bufp = field_buffer(field[0], 0);
-			bufp[buflen] = '\0';
-			dprintf(fd, "%s", bufp);
+			for (i=0; i<nitems; i++) {
+				bufp = field_buffer(field[i], 0);
+				//bufp[buflen] = '\0';
+				dprintf(fd, "\n%s", bufp);
+			}
 			loop = false;
 			break;
 		case 27: // Esc
