@@ -770,11 +770,6 @@ int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 	return output;
 }
 
-int bsddialog_form(struct config conf, char* text, int rows, int cols)
-{
-	return 0;
-}
-
 int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 {
 	int output;
@@ -784,13 +779,23 @@ int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 	return output;
 }
 
+int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols)
+{
+	int output;
+
+	output = do_forms(conf, text, rows, cols, false);
+
+	return output;
+}
 
 int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
 {
 	return 0;
 }
 
+#define ITEMHIDDEN 0x1
 #define ISITEMHIDDEN(item) (item.itemflags & 0x1)
+#define ITEMREADONLY 0x2
 #define ISITEMREADONLY(item) (item.itemflags & 0x2)
 struct formitem {
 	char *label;
@@ -1021,18 +1026,70 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols, int 
 	return output;
 }
 
-int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_form(struct config conf, char* text, int rows, int cols, int formheight, int argc, char **argv)
 {
-	int output;
+	int i, output, nitems, itemlen, inputlen;
+	unsigned int flags = 0;
+	struct formitem items[128];
 
-	output = do_forms(conf, text, rows, cols, false);
+	if ((argc % 8) != 0)
+		return (-1);
+
+	nitems = argc / 8;
+	for (i=0; i<nitems; i++) {
+		items[i].label	   = argv[8*i];
+		items[i].ylabel	   = atoi(argv[8*i+1]);
+		items[i].xlabel	   = atoi(argv[8*i+2]);
+		items[i].item	   = argv[8*i+3];
+		items[i].yitem	   = atoi(argv[8*i+4]);
+		items[i].xitem	   = atoi(argv[8*i+5]);
+
+		itemlen = atoi(argv[8*i+6]);
+		items[i].itemlen   = abs(itemlen);
+
+		inputlen = atoi(argv[8*i+7]);
+		items[i].inputlen = inputlen == 0 ? abs(itemlen) : inputlen;
+
+		flags = flags | (itemlen < 0 ? ITEMREADONLY : 0);
+		items[i].itemflags = flags;
+	}
+
+	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
 
 	return output;
 }
 
-int bsddialog_passwordform(struct config conf, char* text, int rows, int cols)
+int bsddialog_passwordform(struct config conf, char* text, int rows, int cols, int formheight, int argc, char **argv)
 {
-	return 0;
+	int i, output, nitems, itemlen, inputlen;
+	unsigned int flags = ITEMHIDDEN;
+	struct formitem items[128];
+
+	if ((argc % 8) != 0)
+		return (-1);
+
+	nitems = argc / 8;
+	for (i=0; i<nitems; i++) {
+		items[i].label	   = argv[8*i];
+		items[i].ylabel	   = atoi(argv[8*i+1]);
+		items[i].xlabel	   = atoi(argv[8*i+2]);
+		items[i].item	   = argv[8*i+3];
+		items[i].yitem	   = atoi(argv[8*i+4]);
+		items[i].xitem	   = atoi(argv[8*i+5]);
+
+		itemlen = atoi(argv[8*i+6]);
+		items[i].itemlen   = abs(itemlen);
+
+		inputlen = atoi(argv[8*i+7]);
+		items[i].inputlen = inputlen == 0 ? abs(itemlen) : inputlen;
+
+		flags = flags | (itemlen < 0 ? ITEMREADONLY : 0);
+		items[i].itemflags = flags;
+	}
+
+	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
+
+	return output;
 }
 
 /*

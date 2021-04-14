@@ -120,7 +120,7 @@ Examples:
 | checklist    |             |                                                 |
 | dselect      |             |                                                 |
 | editbox      |             |                                                 |
-| form         | In progress |                                                 |
+| form         | In progress | implemented via --mixedform                     |
 | fselect      |             |                                                 |
 | gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
@@ -131,7 +131,7 @@ Examples:
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
 | passwordbox  | In progress |                                                 |
-| passwordform | In progress |                                                 |
+| passwordform | In progress | implemented via --mixedform                     |
 | pause        |             |                                                 |
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |
