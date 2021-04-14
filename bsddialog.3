@@ -59,9 +59,71 @@
 .Sh LIBRARY
 .Lb libbsddialog
 .Sh SYNOPSIS
-.Nm bsddialog
-.Op Fl options
-.Ar
+.In bsddialog.h
+.Fd #define BSDDIALOG_YESOK
+.Fd #define BSDDIALOG_NOCANCEL
+.Fd #define BSDDIALOG_HELP
+.Fd #define BSDDIALOG_EXTRA
+.Fd #define BSDDIALOG_ITEM_HELP
+.Fd #define BSDDIALOG_ERROR
+.Ft "int"
+.Fn bsddialog_buildlist "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_calendar "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_checklist "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_dselect "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_editbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_form "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_fselect "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_gauge "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_infobox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_inputbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_inputmenu "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_menu "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_mixedform "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_mixedgauge "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_msgbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_passwordbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_passwordform "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_pause "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_prgbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_programbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_progressbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_radiolist "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_rangebox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_tailbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_tailboxbg "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_textbox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_timebox "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_treeview "char *text" "int height" "int width"
+.Ft "int"
+.Fn bsddialog_yesno "char *text" "int height" "int width"
 .Sh DESCRIPTION
 The
 .Nm bsddialog
