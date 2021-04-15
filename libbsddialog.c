@@ -987,12 +987,13 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 
 	unpost_form(form);
 	free_form(form);
-	free_field(field[0]);
+	for (i=0; i < nitems; i++)
+		free_field(field[i]);
+	free(field);
 
 	delwin(button);
 	delwin(entry);
 	delwin(widget);
-	free(field);
 	if (conf.shadow)
 		delwin(shadow);
 
