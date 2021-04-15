@@ -815,7 +815,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     FIELD **field, int nitems, struct formitem *items, int sleeptime, int fd)
 {
 	bool loop, buttupdate, inentry = true;
-	int i, input, output, buflen = 0, pos = 0;
+	int i, input, output;
 	char *bufp;
 
 	curs_set(2);
@@ -840,7 +840,6 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nitems; i++) {
 				bufp = field_buffer(field[i], 0);
-				//bufp[buflen] = '\0';
 				dprintf(fd, "\n%s", bufp);
 			}
 			loop = false;
@@ -867,7 +866,6 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		case KEY_LEFT:
 			if (inentry) {
 				form_driver(form, REQ_PREV_CHAR);
-				pos = pos > 0 ? pos - 1 : 0;
 			} else {
 				if (selected > 0) {
 					selected--;
@@ -877,10 +875,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case KEY_RIGHT:
 			if (inentry) {
-				if (pos < buflen) {
-					form_driver(form, REQ_NEXT_CHAR);
-					pos++;
-				}
+				form_driver(form, REQ_NEXT_CHAR);
 			} else {
 				if (selected < nbuttons - 1) {
 					selected++;
@@ -906,18 +901,13 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
-			buflen = buflen > 0 ? buflen - 1 : 0;
-			pos = pos > 0 ? pos - 1 : 0;
 			break;
 		case KEY_DC:
 			form_driver(form, REQ_DEL_CHAR);
-			buflen = buflen > 0 ? buflen - 1 : 0;
 			break;
 		default:
 			if (inentry) {
 				form_driver(form, input);
-				buflen++;
-				pos++;
 			}
 			break;
 		}
