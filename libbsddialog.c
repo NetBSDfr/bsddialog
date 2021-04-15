@@ -961,6 +961,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 
 		if (ISITEMREADONLY(items[i])) {
 			field_opts_off(field[i], O_EDIT);
+			field_opts_off(field[i], O_ACTIVE);
 			color = CYAN_WHITE;
 		} else {
 			color = i == 0 ? WHITE_BLUE : WHITE_CYAN;
