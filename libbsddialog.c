@@ -840,7 +840,9 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nitems; i++) {
 				bufp = field_buffer(field[i], 0);
-				dprintf(fd, "\n%s", bufp);
+				dprintf(fd, "\n+%s", bufp);
+				bufp = field_buffer(field[i], 1);
+				dprintf(fd, "-%s+", bufp);
 			}
 			loop = false;
 			break;
@@ -948,10 +950,11 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
-		field[i] = new_field(1, items[i].itemlen, items[i].yitem-1, items[i].xitem-1, 0, 0);
+		field[i] = new_field(1, items[i].itemlen, items[i].yitem-1, items[i].xitem-1, 0, 1);
 		field_opts_off(field[i], O_STATIC);
 		set_max_field(field[i], items[i].inputlen);
 		set_field_buffer(field[i], 0, items[i].item);
+		set_field_buffer(field[i], 1, items[i].item);
 		field_opts_off(field[i], O_AUTOSKIP);
 		field_opts_off(field[i], O_BLANK);
 		//field_opts_off(field[i], O_BS_OVERLOAD);
