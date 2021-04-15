@@ -889,12 +889,20 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			}
 			break;
 		case KEY_UP:
+			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
+			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
 			form_driver(form, REQ_PREV_FIELD);
 			form_driver(form, REQ_END_LINE);
+			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
+			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
 			break;
 		case KEY_DOWN:
+			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
+			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_END_LINE);
+			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
+			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
 			break;
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
@@ -956,6 +964,7 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 		set_field_buffer(field[i], 0, items[i].item);
 		field_opts_off(field[i], O_AUTOSKIP);
 		field_opts_off(field[i], O_BLANK);
+		//field_opts_off(field[i], O_BS_OVERLOAD);
 
 		if (ISITEMHIDDEN(items[i]))
 			field_opts_off(field[i], O_PUBLIC);
