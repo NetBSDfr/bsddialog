@@ -141,7 +141,7 @@ Examples:
 | tailbox      |             |                                                 |
 | tailboxbg    |             |                                                 |
 | textbox      |             |                                                 |
-| timebox      |             |                                                 |
+| timebox      | In progress |                                                 |
 | treeview     |             |                                                 |
 | yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
 

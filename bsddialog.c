@@ -171,7 +171,7 @@ int rangebox_builder(BUILDER_ARGS);
 //int tailbox_builder(BUILDER_ARGS);
 //int tailboxbg_builder(BUILDER_ARGS);
 //int textbox_builder(BUILDER_ARGS);
-//int timebox_builder(BUILDER_ARGS);
+int timebox_builder(BUILDER_ARGS);
 //int treeview_builder(BUILDER_ARGS);
 int yesno_builder(BUILDER_ARGS);
 
@@ -308,7 +308,7 @@ int main(int argc, char *argv[argc])
 	    { "tailbox", no_argument, NULL, 'X' },
 	    { "tailboxbg", no_argument, NULL, 'X' },
 	    { "textbox", no_argument, NULL, 'X' },
-	    { "timebox", no_argument, NULL, 'X' },
+	    { "timebox", no_argument, NULL, TIMEBOX },
 	    { "treeview", no_argument, NULL, 'X' },
 	    { "yesno", no_argument, NULL, YESNO },
 	    /* END */
@@ -452,6 +452,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case RANGEBOX:
 			widgetbuilder = rangebox_builder;
+			break;
+		case TIMEBOX:
+			widgetbuilder = timebox_builder;
 			break;
 		case YESNO:
 			widgetbuilder = yesno_builder;
@@ -651,6 +654,31 @@ int rangebox_builder(BUILDER_ARGS)
 	def = def > max ? max : def;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, def);
+
+	return (output);
+}
+
+int timebox_builder(BUILDER_ARGS)
+{
+	int output;
+	unsigned int hh, mm, ss;
+
+	if (argc > 0) {
+		hh = atoi(argv[0]);
+		hh = hh > 23 ? 23 : hh;
+	}
+
+	if (argc > 1) {
+		mm = atoi(argv[1]);
+		mm = mm > 60 ? 60 : mm;
+	}
+
+	if (argc > 2) {
+		ss = atoi(argv[2]);
+		ss = ss > 60 ? 60 : ss;
+	}
+
+	output = bsddialog_timebox(conf, text, rows, cols, hh, mm, ss);
 
 	return (output);
 }
