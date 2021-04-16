@@ -397,7 +397,7 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
  */
 int
 bsddialog_checklist(struct config conf, char* text, int rows, int cols,
-    int argc, char **argv)
+    unsigned int menurows, int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
@@ -441,14 +441,14 @@ bsddialog_checklist(struct config conf, char* text, int rows, int cols,
 
 int
 bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
-    int argc, char **argv)
+    unsigned int menurows, int argc, char **argv)
 {
 	return -1;
 }
 
 int
 bsddialog_menu(struct config conf, char* text, int rows, int cols,
-    int argc, char **argv)
+    unsigned int menurows, int argc, char **argv)
 {
 	return -1;
 }

@@ -515,27 +515,51 @@ int main(int argc, char *argv[argc])
 
 int checklist_builder(BUILDER_ARGS)
 {
-	int output;
+	int output, menurows;
 
-	output = bsddialog_checklist(conf, text, rows, cols, argc, argv);
+	if (argc < 1 || (((argc-1) % 3) != 0)) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = bsddialog_checklist(conf, text, rows, cols, menurows, argc-1,
+	    argv + 1);
 
 	return output;
 }
 
 int menu_builder(BUILDER_ARGS)
 {
-	int output;
+	int output, menurows;
 
-	output = bsddialog_menu(conf, text, rows, cols, argc, argv);
+	if (argc < 1 || (((argc-1) % 2) != 0)) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = bsddialog_menu(conf, text, rows, cols, menurows, argc-1,
+	    argv + 1);
 
 	return output;
 }
 
 int radiolist_builder(BUILDER_ARGS)
 {
-	int output;
+	int output, menurows;
 
-	output = bsddialog_radiolist(conf, text, rows, cols, argc, argv);
+	if (argc < 1 || (((argc-1) % 3) != 0)) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, argc-1,
+	    argv + 1);
 
 	return output;
 }
