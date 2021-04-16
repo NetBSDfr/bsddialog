@@ -393,10 +393,11 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 }
 
 /*
- * checklist handler TODO: Checklist
+ * Menu handler: Checklist, Menu, Radiolist
  */
 int
-bsddialog_checklist(struct config conf, char* text, int rows, int cols)
+bsddialog_checklist(struct config conf, char* text, int rows, int cols,
+    int argc, char **argv)
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
@@ -436,6 +437,20 @@ bsddialog_checklist(struct config conf, char* text, int rows, int cols)
 		dprintf(conf.output_fd, "Checklist size: %d, %d\n", rows, cols);
 
 	return output;
+}
+
+int
+bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
+    int argc, char **argv)
+{
+	return -1;
+}
+
+int
+bsddialog_menu(struct config conf, char* text, int rows, int cols,
+    int argc, char **argv)
+{
+	return -1;
 }
 
 /*

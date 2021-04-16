@@ -117,7 +117,7 @@ Examples:
 |------------- | ----------- | ----------------------------------------------- |
 | buildlist    |             |                                                 |
 | calendar     |             |                                                 |
-| checklist    |             |                                                 |
+| checklist    | In Progress |                                                 |
 | dselect      |             |                                                 |
 | editbox      |             |                                                 |
 | form         | In progress | implemented via --mixedform                     |
@@ -126,7 +126,7 @@ Examples:
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress | dialog does not centre buttons and title        |
 | inputmenu    | In progress |                                                 |
-| menu         |             |                                                 |
+| menu         | In Progress |                                                 |
 | mixedform    | In progress | manual dialog(3) is wrong                       |
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
@@ -136,7 +136,7 @@ Examples:
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |
 | progressbox  |             |                                                 |
-| radiolist    |             |                                                 |
+| radiolist    | In Progress |                                                 |
 | rangebox     | In progress | the manual is wrong                             |
 | tailbox      |             |                                                 |
 | tailboxbg    |             |                                                 |

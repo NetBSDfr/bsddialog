@@ -123,7 +123,7 @@
 #define INFOBOX		81 // infobox
 #define INPUTBOX	82 // inputbox
 #define INPUTMENU	83 // inputmenu
-#define MENU		84 // menu
+#define MENU_		84 // menu, ncurses has MENU
 #define MIXEDFORM	85 // mixedform
 #define MIXEDGAUGE	86 // mixedgauge
 #define MSGBOX		87 // msgbox
@@ -157,7 +157,7 @@ int gauge_builder(BUILDER_ARGS);
 int infobox_builder(BUILDER_ARGS);
 int inputbox_builder(BUILDER_ARGS);
 int inputmenu_builder(BUILDER_ARGS);
-//int menu_builder(BUILDER_ARGS);
+int menu_builder(BUILDER_ARGS);
 int mixedform_builder(BUILDER_ARGS);
 //int mixedgauge_builder(BUILDER_ARGS);
 int msgbox_builder(BUILDER_ARGS);
@@ -167,7 +167,7 @@ int pause_builder(BUILDER_ARGS);
 //int prgbox_builder(BUILDER_ARGS);
 //int programbox_builder(BUILDER_ARGS);
 //int progressbox_builder(BUILDER_ARGS);
-//int radiolist_builder(BUILDER_ARGS);
+int radiolist_builder(BUILDER_ARGS);
 int rangebox_builder(BUILDER_ARGS);
 //int tailbox_builder(BUILDER_ARGS);
 //int tailboxbg_builder(BUILDER_ARGS);
@@ -294,7 +294,7 @@ int main(int argc, char *argv[argc])
 	    { "infobox", no_argument, NULL, INFOBOX },
 	    { "inputbox", no_argument, NULL, INPUTBOX },
 	    { "inputmenu", no_argument, NULL, INPUTMENU },
-	    { "menu", no_argument, NULL, 'X' },
+	    { "menu", no_argument, NULL, MENU_ },
 	    { "mixedform", no_argument, NULL, MIXEDFORM },
 	    { "mixedgauge", no_argument, NULL, 'X' },
 	    { "msgbox", no_argument, NULL, MSGBOX },
@@ -304,7 +304,7 @@ int main(int argc, char *argv[argc])
 	    { "prgbox", no_argument, NULL, },
 	    { "programbox", no_argument, NULL, 'X' },
 	    { "progressbox", no_argument, NULL, 'X' },
-	    { "radiolist", no_argument, NULL, 'X' },
+	    { "radiolist", no_argument, NULL, RADIOLIST },
 	    { "rangebox", no_argument, NULL, RANGEBOX },
 	    { "tailbox", no_argument, NULL, 'X' },
 	    { "tailboxbg", no_argument, NULL, 'X' },
@@ -436,6 +436,9 @@ int main(int argc, char *argv[argc])
 		case INPUTMENU:
 			widgetbuilder = inputmenu_builder;
 			break;
+		case MENU_:
+			widgetbuilder = menu_builder;
+			break;
 		case MIXEDFORM:
 			widgetbuilder = mixedform_builder;
 			break;
@@ -450,6 +453,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case PASSWORDFORM:
 			widgetbuilder = passwordform_builder;
+			break;
+		case RADIOLIST:
+			widgetbuilder = radiolist_builder;
 			break;
 		case RANGEBOX:
 			widgetbuilder = rangebox_builder;
@@ -511,7 +517,25 @@ int checklist_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_checklist(conf, text, rows, cols);
+	output = bsddialog_checklist(conf, text, rows, cols, argc, argv);
+
+	return output;
+}
+
+int menu_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_menu(conf, text, rows, cols, argc, argv);
+
+	return output;
+}
+
+int radiolist_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_radiolist(conf, text, rows, cols, argc, argv);
 
 	return output;
 }

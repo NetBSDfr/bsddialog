@@ -121,7 +121,8 @@ void bsddialog_centreyx(int rows, int cols, int *y, int *x);
 /* widgets */
 //int bsddialog_buildlist(struct config conf, char* text, int rows, int cols);
 //int bsddialog_calendar(struct config conf, char* text, int rows, int cols);
-int bsddialog_checklist(struct config conf, char* text, int rows, int cols);
+int bsddialog_checklist(struct config conf, char* text, int rows, int cols,
+    int argc, char **argv);
 //int bsddialog_dselect(struct config conf, char* text, int rows, int cols);
 //int bsddialog_editbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_form(struct config conf, char* text, int rows, int cols,
@@ -131,7 +132,8 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 int bsddialog_infobox(struct config conf, char* text, int rows, int cols);
 int bsddialog_inputbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols);
-//int bsddialog_menu(struct config conf, char* text, int rows, int cols);
+int bsddialog_menu(struct config conf, char* text, int rows, int cols,
+    int argc, char **argv);
 int bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
 //int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols);
@@ -143,7 +145,8 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols);
 //int bsddialog_prgbox(struct config conf, char* text, int rows, int cols);
 //int bsddialog_programbox(struct config conf, char* text, int rows, int cols);
 //int bsddialog_progressbox(struct config conf, char* text, int rows, int cols);
-//int bsddialog_radiolist(struct config conf, char* text, int rows, int cols);
+int bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
+    int argc, char **argv);
 int bsddialog_rangebox(struct config conf, char* text, int rows, int cols,
     int min, int max, int def);
 //int bsddialog_tailbox(struct config conf, char* text, int rows, int cols);
