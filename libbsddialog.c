@@ -60,6 +60,11 @@ int
 forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
     FIELD **field, bool showinput, int sleeptime, int fd);
+int
+timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
+    int *values, int selected, bool shortkey, WINDOW *hhwin, unsigned int hh,
+    WINDOW *mmwin, unsigned int mm, WINDOW *sswin, unsigned int ss,
+    int sleeptime, int fd);
 
 
 int bsddialog_init(void)
@@ -1334,21 +1339,29 @@ int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	bool loop, buttupdate, inhh, inmm, inss;
 	int input, output;
 
+	curs_set(2);
 	inmm = inss = false;
 	loop = buttupdate = inhh = true;
 	while(loop) {
-		mvwprintw(hhwin, 1, 1, "%2d", hh);
-		mvwprintw(mmwin, 1, 1, "%2d", mm);
-		mvwprintw(sswin, 1, 1, "%2d", ss);
-		wrefresh(hhwin);
-		wrefresh(mmwin);
-		wrefresh(sswin);
-
 		if (buttupdate) {
 			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
 			    shortkey);
 			wrefresh(buttwin);
 			buttupdate = false;
+		}
+
+		if (inhh) {
+			mvwprintw(hhwin, 1, 1, "%2d", hh);
+			wmove(hhwin, 1, 2);
+			wrefresh(hhwin);
+		} else if (inmm) {
+			mvwprintw(mmwin, 1, 1, "%2d", mm);
+			wmove(mmwin, 1, 2);
+			wrefresh(mmwin);
+		} else { //inss
+			mvwprintw(sswin, 1, 1, "%2d", ss);
+			wmove(sswin, 1, 2);
+			wrefresh(sswin);
 		}
 
 		input = getch();
@@ -1366,10 +1379,13 @@ int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			if (inhh) {
 				inhh = false;
 				inmm = true;
-				wmove(mmwin, 1, 3);
+			} else if (inmm) {
+				inmm = false;
+				inss = true;
+			} else { //inss
+				inss = false;
+				inhh = true;
 			}
-			selected = (selected + 1) % nbuttons;
-			buttupdate = true;
 			break;
 		case KEY_LEFT:
 			if (selected > 0) {
@@ -1384,13 +1400,29 @@ int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			}
 			break;
 		case KEY_UP:
+			if (inhh) {
+				hh = hh < 24 ? hh + 1 : 0;
+			} else if (inmm) {
+				mm = mm < 60 ? mm + 1 : 0;
+			} else { //inss
+				ss = ss < 60 ? ss + 1 : 0;
+			}
 			break;
 		case KEY_DOWN:
+			if (inhh) {
+				hh = hh > 0 ? hh - 1 : 24;
+			} else if (inmm) {
+				mm = mm > 0 ? mm - 1 : 0;
+			} else { //inss
+				ss = ss > 0 ? ss - 1 : 0;
+			}
 			break;
 		}
 	}
 
 	sleep(sleeptime);
+
+	curs_set(0);
 
 	return output;
 }
@@ -1429,6 +1461,13 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	wrefresh(widget);
+
+	mvwprintw(hhwin, 1, 1, "%2d", hh);
+	wrefresh(hhwin);
+	mvwprintw(mmwin, 1, 1, "%2d", mm);
+	wrefresh(mmwin);
+	mvwprintw(sswin, 1, 1, "%2d", ss);
+	wrefresh(sswin);
 
 	output = timebox_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, hhwin, hh, mmwin, mm, sswin, ss, conf.sleep,
