@@ -31,6 +31,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "bsddialog.h"
@@ -662,6 +663,14 @@ int timebox_builder(BUILDER_ARGS)
 {
 	int output;
 	unsigned int hh, mm, ss;
+	time_t clock;
+	struct tm *localtm;
+
+	time(&clock);
+	localtm = localtime(&clock);
+	hh = localtm->tm_hour;
+	mm = localtm->tm_min;
+	ss = localtm->tm_sec;
 
 	if (argc > 0) {
 		hh = atoi(argv[0]);
