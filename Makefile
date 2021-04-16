@@ -9,7 +9,7 @@ OBJECTS= ${SOURCES:.c=.o}
 
 # BASE ncurses
 CFLAGS= -Wall
-LDFLAGS= -L/usr/lib -lform -lncurses -ltinfo -L/usr/local/lib
+LDFLAGS= -L/usr/lib -lform -lmenu -lncurses -ltinfo
 
 # PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
 .if defined(PORTNCURSES)
