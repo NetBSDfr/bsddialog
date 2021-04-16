@@ -422,6 +422,7 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			wrefresh(buttwin);
 			buttupdate = false;
 		}
+		wrefresh(menuwin);
 		input = getch();
 		switch(input) {
 		case 10: // Enter
@@ -450,14 +451,13 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			}
 			break;
 		case KEY_UP:
+			menu_driver(menu, REQ_UP_ITEM);
 			break;
 		case KEY_DOWN:
+			menu_driver(menu, REQ_DOWN_ITEM);
 			break;
-		case KEY_BACKSPACE:
-			
-			break;
-		case KEY_DC:
-			
+		case ' ': /* Space */
+			menu_driver(menu, REQ_DOWN_ITEM);
 			break;
 		default:
 			
