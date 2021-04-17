@@ -60,12 +60,6 @@
 .Lb libbsddialog
 .Sh SYNOPSIS
 .In bsddialog.h
-.Fd #define BSDDIALOG_YESOK
-.Fd #define BSDDIALOG_NOCANCEL
-.Fd #define BSDDIALOG_HELP
-.Fd #define BSDDIALOG_EXTRA
-.Fd #define BSDDIALOG_ITEM_HELP
-.Fd #define BSDDIALOG_ERROR
 .Ft "int"
 .Fn bsddialog_buildlist "struct config conf" "char *text" "int height" "int width"
 .Ft "int"
@@ -130,8 +124,13 @@ The
 library builds Text User Interface Widgets.
 .\" .Sh IMPLEMENTATION NOTES
 .\" Not used in OpenBSD.
-.\" .Sh RETURN VALUES
-.\" For sections 2, 3, and 9 function return values only.
+.Sh RETURN VALUES
+.Fd #define BSDDIALOG_YESOK
+.Fd #define BSDDIALOG_NOCANCEL
+.Fd #define BSDDIALOG_HELP
+.Fd #define BSDDIALOG_EXTRA
+.Fd #define BSDDIALOG_ITEM_HELP
+.Fd #define BSDDIALOG_ERROR
 .\" .Sh FILES
 .\" .Sh EXAMPLES
 .\" .Sh ERRORS
