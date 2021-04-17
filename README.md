@@ -1,6 +1,6 @@
 # BSDDialog
 
-**Under development!**
+**Work In Progress!**
 
 This project provides **bsddialog** and **libbsddialog**, an utility and a
 library to build scripts and/or tools with *Text User Interface Widgets*, the
