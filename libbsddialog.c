@@ -398,9 +398,9 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
  * Menu handler: Checklist, Menu, Radiolist
  */
 struct menuitem {
-	char *tag;
-	char *item;
-	bool on;
+	char *name;
+	char *desc;
+	bool selected;
 };
 
 enum formmode { CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
@@ -497,7 +497,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
 
 	for(i=0; i < nitems; i++) {
-		mi[i] = new_item(items[i].tag, items[i].item);
+		mi[i] = new_item(items[i].name, items[i].desc);
 	}
 	mi[i] = (ITEM *)NULL;
 
@@ -548,9 +548,9 @@ bsddialog_checklist(struct config conf, char* text, int rows, int cols,
 
 	nitems = argc / 3;
 	for (i=0; i<nitems; i++) {
-		items[i].tag  = argv[3*i];
-		items[i].item = argv[3*i+1];
-		items[i].on   = strcmp(argv[3*i+2], "on") == 0 ? true : false;
+		items[i].name = argv[3*i];
+		items[i].desc = argv[3*i+1];
+		items[i].selected = strcmp(argv[3*i+2], "on") == 0 ? true : false;
 	}
 
 	output = do_menu(conf, text, rows, cols, menurows, CHECKLISTMODE,
@@ -565,20 +565,20 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 {
 	int i, output, nitems;
 	struct menuitem items[128];
-	bool onflag = false;
+	bool on = false;
 
 	if ((argc % 3) != 0)
 		return (-1);
 
 	nitems = argc / 3;
 	for (i=0; i<nitems; i++) {
-		items[i].tag  = argv[3*i];
-		items[i].item = argv[3*i+1];
-		if (onflag == false && (strcmp(argv[3*i+2], "on") != 0)) {
-			items[i].on = true;
-			onflag = true;
+		items[i].name = argv[3*i];
+		items[i].desc = argv[3*i+1];
+		if (on == false && (strcmp(argv[3*i+2], "on") != 0)) {
+			items[i].selected = true;
+			on = true;
 		} else
-			items[i].on = true;
+			items[i].selected = true;
 	}
 
 	output = do_menu(conf, text, rows, cols, menurows, RADIOLISTMODE,
@@ -599,8 +599,8 @@ bsddialog_menu(struct config conf, char* text, int rows, int cols,
 
 	nitems = argc / 2;
 	for (i=0; i<nitems; i++) {
-		items[i].tag  = argv[2*i];
-		items[i].item = argv[2*i+1];
+		items[i].name = argv[2*i];
+		items[i].desc = argv[2*i+1];
 	}
 
 	output = do_menu(conf, text, rows, cols, menurows, MENUMODE, nitems, items);
