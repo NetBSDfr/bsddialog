@@ -457,7 +457,7 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			menu_driver(menu, REQ_DOWN_ITEM);
 			break;
 		case ' ': /* Space */
-			menu_driver(menu, REQ_DOWN_ITEM);
+			menu_driver(menu, REQ_TOGGLE_ITEM);
 			break;
 		default:
 			
