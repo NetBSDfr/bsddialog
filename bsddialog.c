@@ -584,9 +584,15 @@ int msgbox_builder(BUILDER_ARGS)
 
 int pause_builder(BUILDER_ARGS)
 {
-	int output;
+	int output, sec;
 
-	output = bsddialog_pause(conf, text, rows, cols);
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	sec = atoi(argv[0]);
+	output = bsddialog_pause(conf, text, rows, cols, sec);
 
 	return output;
 }

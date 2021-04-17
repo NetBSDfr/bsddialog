@@ -29,6 +29,7 @@ Examples:
 % bsddialog --inputbox "Hello World!" 10 30 2>input.txt; cat input.txt; rm input.txt
 % bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
+% ./bsddialog --pause "Hello World!" 8 50 3
 ```
 
 **TODO**
@@ -117,7 +118,7 @@ Examples:
 |------------- | ----------- | ----------------------------------------------- |
 | buildlist    |             |                                                 |
 | calendar     |             |                                                 |
-| checklist    | In Progress |                                                 |
+| checklist    | In progress |                                                 |
 | dselect      |             |                                                 |
 | editbox      |             |                                                 |
 | form         | In progress | implemented via --mixedform                     |
@@ -126,17 +127,17 @@ Examples:
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress | dialog does not centre buttons and title        |
 | inputmenu    | In progress |                                                 |
-| menu         | In Progress |                                                 |
+| menu         | In progress |                                                 |
 | mixedform    | In progress | manual dialog(3) is wrong                       |
 | mixedgauge   |             |                                                 |
 | msgbox       | In progress |                                                 |
 | passwordbox  | In progress |                                                 |
 | passwordform | In progress | implemented via --mixedform                     |
-| pause        |             |                                                 |
+| pause        | In progress |                                                 |
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |
 | progressbox  |             |                                                 |
-| radiolist    | In Progress |                                                 |
+| radiolist    | In progress |                                                 |
 | rangebox     | In progress | the manual is wrong                             |
 | tailbox      |             |                                                 |
 | tailboxbg    |             |                                                 |
