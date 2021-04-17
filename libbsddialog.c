@@ -504,7 +504,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE) | A_REVERSE);
 	set_menu_back(menu, COLOR_PAIR(WHITE_BLUE));
 	set_menu_win(menu, menuwin);
-	set_menu_mark(menu, "X");
+	set_menu_mark(menu, " ");
 	set_menu_format(menu, 0, 0);
 
 	submenuwin = derwin(menuwin, menurows, cols-4, 1, 1);
