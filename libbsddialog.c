@@ -412,7 +412,6 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 {
 	bool loop, buttupdate;
 	int input, output;
-	char *bufp;
 
 	loop = buttupdate = true;
 	while(loop) {
@@ -428,7 +427,7 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		case 10: // Enter
 			output = values[selected]; // values -> outputs
 			loop = false;
-			dprintf(fd, "%s", bufp);
+			dprintf(fd, "%s", item_name(current_item(menu)));
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
