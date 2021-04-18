@@ -159,7 +159,7 @@ int inputbox_builder(BUILDER_ARGS);
 int inputmenu_builder(BUILDER_ARGS);
 int menu_builder(BUILDER_ARGS);
 int mixedform_builder(BUILDER_ARGS);
-//int mixedgauge_builder(BUILDER_ARGS);
+int mixedgauge_builder(BUILDER_ARGS);
 int msgbox_builder(BUILDER_ARGS);
 int passwordbox_builder(BUILDER_ARGS);
 int passwordform_builder(BUILDER_ARGS);
@@ -296,7 +296,7 @@ int main(int argc, char *argv[argc])
 	    { "inputmenu", no_argument, NULL, INPUTMENU },
 	    { "menu", no_argument, NULL, MENU_ },
 	    { "mixedform", no_argument, NULL, MIXEDFORM },
-	    { "mixedgauge", no_argument, NULL, 'X' },
+	    { "mixedgauge", no_argument, NULL, MIXEDGAUGE },
 	    { "msgbox", no_argument, NULL, MSGBOX },
 	    { "passwordbox", no_argument, NULL, PASSWORDBOX },
 	    { "passwordform", no_argument, NULL, PASSWORDFORM },
@@ -441,6 +441,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case MIXEDFORM:
 			widgetbuilder = mixedform_builder;
+			break;
+		case MIXEDGAUGE:
+			widgetbuilder = mixedgauge_builder;
 			break;
 		case MSGBOX:
 			widgetbuilder = msgbox_builder;
@@ -709,6 +712,25 @@ int rangebox_builder(BUILDER_ARGS)
 	def = def > max ? max : def;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, def);
+
+	return (output);
+}
+
+int mixedgauge_builder(BUILDER_ARGS)
+{
+	int output /* always BSDDIALOG_YESOK */, perc;
+
+	if (argc < 1 || (((argc-1) % 2) != 0) ) {
+		usage();
+		return (-1);
+	}
+
+	perc = atoi(argv[0]);
+	perc = perc < 0 ? 0 : perc;
+	perc = perc > 100 ? 100 : perc;
+
+	output = bsddialog_mixedgauge(conf, text, rows, cols, perc,
+	    argc-1, argv + 1);
 
 	return (output);
 }
