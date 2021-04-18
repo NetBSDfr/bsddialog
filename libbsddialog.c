@@ -783,8 +783,6 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	wrefresh(widget);
-
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.yes_label,
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.no_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
