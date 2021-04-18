@@ -533,82 +533,6 @@ int checklist_builder(BUILDER_ARGS)
 	return output;
 }
 
-int menu_builder(BUILDER_ARGS)
-{
-	int output, menurows;
-
-	if (argc < 1 || (((argc-1) % 2) != 0)) {
-		usage();
-		return (-1);
-	}
-
-	menurows = atoi(argv[0]);
-
-	output = bsddialog_menu(conf, text, rows, cols, menurows, argc-1,
-	    argv + 1);
-
-	return output;
-}
-
-int radiolist_builder(BUILDER_ARGS)
-{
-	int output, menurows;
-
-	if (argc < 1 || (((argc-1) % 3) != 0)) {
-		usage();
-		return (-1);
-	}
-
-	menurows = atoi(argv[0]);
-
-	output = bsddialog_radiolist(conf, text, rows, cols, menurows, argc-1,
-	    argv + 1);
-
-	return output;
-}
-
-int infobox_builder(BUILDER_ARGS)
-{
-	int output; /* always BSDDIALOG_YESOK */
-
-	output = bsddialog_infobox(conf, text, rows, cols);
-
-	return output;
-}
-
-int msgbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_msgbox(conf, text, rows, cols);
-
-	return output;
-}
-
-int pause_builder(BUILDER_ARGS)
-{
-	int output, sec;
-
-	if (argc < 1) {
-		usage();
-		return (-1);
-	}
-
-	sec = atoi(argv[0]);
-	output = bsddialog_pause(conf, text, rows, cols, sec);
-
-	return output;
-}
-
-int yesno_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_yesno(conf, text, rows, cols);
-
-	return output;
-}
-
 int form_builder(BUILDER_ARGS)
 {
 	int output, formheight;
@@ -622,6 +546,28 @@ int form_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, argc-1,
 	    argv + 1);
+
+	return output;
+}
+
+int gauge_builder(BUILDER_ARGS)
+{
+	int output /* always BSDDIALOG_YESOK */, perc;
+
+	perc = argc > 0 ? atoi (argv[0]) : 0;
+	perc = perc < 0 ? 0 : perc;
+	perc = perc > 100 ? 100 : perc;
+
+	output = bsddialog_gauge(conf, text, rows, cols, perc);
+
+	return (output);
+}
+
+int infobox_builder(BUILDER_ARGS)
+{
+	int output; /* always BSDDIALOG_YESOK */
+
+	output = bsddialog_infobox(conf, text, rows, cols);
 
 	return output;
 }
@@ -641,6 +587,23 @@ int inputmenu_builder(BUILDER_ARGS)
 	return 0;
 }
 
+int menu_builder(BUILDER_ARGS)
+{
+	int output, menurows;
+
+	if (argc < 1 || (((argc-1) % 2) != 0)) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = bsddialog_menu(conf, text, rows, cols, menurows, argc-1,
+	    argv + 1);
+
+	return output;
+}
+
 int mixedform_builder(BUILDER_ARGS)
 {
 	int output, formheight;
@@ -654,6 +617,34 @@ int mixedform_builder(BUILDER_ARGS)
 
 	output = bsddialog_mixedform(conf, text, rows, cols, formheight, argc-1,
 	    argv + 1);
+
+	return output;
+}
+
+int mixedgauge_builder(BUILDER_ARGS)
+{
+	int output /* always BSDDIALOG_YESOK */, perc;
+
+	if (argc < 1 || (((argc-1) % 2) != 0) ) {
+		usage();
+		return (-1);
+	}
+
+	perc = atoi(argv[0]);
+	perc = perc < 0 ? 0 : perc;
+	perc = perc > 100 ? 100 : perc;
+
+	output = bsddialog_mixedgauge(conf, text, rows, cols, perc,
+	    argc-1, argv + 1);
+
+	return (output);
+}
+
+int msgbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_msgbox(conf, text, rows, cols);
 
 	return output;
 }
@@ -684,18 +675,36 @@ int passwordform_builder(BUILDER_ARGS)
 	return output;
 }
 
- /* Gauge, rangebox */
-int gauge_builder(BUILDER_ARGS)
+int pause_builder(BUILDER_ARGS)
 {
-	int output /* always BSDDIALOG_YESOK */, perc;
+	int output, sec;
 
-	perc = argc > 0 ? atoi (argv[0]) : 0;
-	perc = perc < 0 ? 0 : perc;
-	perc = perc > 100 ? 100 : perc;
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
 
-	output = bsddialog_gauge(conf, text, rows, cols, perc);
+	sec = atoi(argv[0]);
+	output = bsddialog_pause(conf, text, rows, cols, sec);
 
-	return (output);
+	return output;
+}
+
+int radiolist_builder(BUILDER_ARGS)
+{
+	int output, menurows;
+
+	if (argc < 1 || (((argc-1) % 3) != 0)) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, argc-1,
+	    argv + 1);
+
+	return output;
 }
 
 int rangebox_builder(BUILDER_ARGS)
@@ -712,25 +721,6 @@ int rangebox_builder(BUILDER_ARGS)
 	def = def > max ? max : def;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, def);
-
-	return (output);
-}
-
-int mixedgauge_builder(BUILDER_ARGS)
-{
-	int output /* always BSDDIALOG_YESOK */, perc;
-
-	if (argc < 1 || (((argc-1) % 2) != 0) ) {
-		usage();
-		return (-1);
-	}
-
-	perc = atoi(argv[0]);
-	perc = perc < 0 ? 0 : perc;
-	perc = perc > 100 ? 100 : perc;
-
-	output = bsddialog_mixedgauge(conf, text, rows, cols, perc,
-	    argc-1, argv + 1);
 
 	return (output);
 }
@@ -766,4 +756,13 @@ int timebox_builder(BUILDER_ARGS)
 	output = bsddialog_timebox(conf, text, rows, cols, hh, mm, ss);
 
 	return (output);
+}
+
+int yesno_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_yesno(conf, text, rows, cols);
+
+	return output;
 }
