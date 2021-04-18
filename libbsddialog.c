@@ -1730,20 +1730,17 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 {
 	WINDOW *widget, *button, *bar, *shadow;
 	char*buttons[4];
-	int output, nbuttons, defbutton, values[4];
+	int output, nbuttons, defbutton, values[4], y, x;
 
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
+	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -1751,22 +1748,12 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	    conf.cancel_label, conf.help_button, conf.help_label,
 	    conf.defaultno, &defbutton);
 
-	wrefresh(widget);
-
 	output = pause_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, bar, cols-14, sec, conf.sleep);
 
 	delwin(button);
 	delwin(bar);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Pause size: %d, %d\n", rows, cols);
+	widget_end(conf, "Pause", widget, rows, cols, shadow);
 
 	return output;
 }
