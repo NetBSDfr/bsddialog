@@ -655,31 +655,39 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		}
 		wrefresh(window);
 		input = getch();
-		if (input == 10 ) { // Enter
-			output = values[selected]; // the caller knows the value
+		switch (input) {
+		case 10: /* Enter */
+			output = values[selected];
 			loop = false;
-		} else if (input == 27) { // Esc
+			break;
+		case 27: /* Esc */
 			output = BSDDIALOG_ERROR;
 			loop = false;
-		} else if (input == '\t') { // TAB
+			break;
+		case '\t': /* TAB */
 			selected = (selected + 1) % nbuttons;
 			update = true;
-		} else if (input == KEY_LEFT) {
+			break;
+		case KEY_LEFT:
 			if (selected > 0) {
 				selected--;
 				update = true;
 			}
-		} else if (input == KEY_RIGHT) {
+			break;
+		case KEY_RIGHT:
 			if (selected < nbuttons - 1) {
 				selected++;
 				update = true;
 			}
-		} else if (shortkey) {
-			for (i = 0; i < nbuttons; i++)
-				if (input == (buttons[i])[0]) {
-					output = values[selected]; // like Esc
-					loop = false;
+			break;
+		default:
+			if (shortkey) {
+				for (i = 0; i < nbuttons; i++)
+					if (input == (buttons[i])[0]) {
+						output = values[selected];
+						loop = false;
 				}
+			}
 		}
 	}
 
