@@ -1108,23 +1108,20 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
-	int i, values[4], output, nbuttons, defbutton, color;
+	int i, values[4], output, nbuttons, defbutton, color, y, x;
 	FIELD **field;
 	FORM *form;
 
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	entry = new_window(conf.y + rows - 3 - formheight -2, conf.x +1,
+	entry = new_window(y + rows - 3 - formheight -2, x +1,
 	    formheight+2, cols-2, NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
 	    conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -1165,7 +1162,6 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	for (i=0; i < nitems; i++)
 		mvwaddstr(entry, items[i].ylabel, items[i].xlabel, items[i].label);
 
-	wrefresh(widget);
 	wrefresh(entry);
 
 	output = mixedform_handler(button, cols, nbuttons, buttons, values,
@@ -1180,12 +1176,7 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 
 	delwin(button);
 	delwin(entry);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Mixedform size: %d, %d\n", rows, cols);
+	widget_end(conf, "Mixedform", widget, rows, cols, shadow);
 
 	return output;
 }
