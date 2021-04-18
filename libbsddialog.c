@@ -1854,9 +1854,9 @@ int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			if (inhh) {
 				hh = hh > 0 ? hh - 1 : 24;
 			} else if (inmm) {
-				mm = mm > 0 ? mm - 1 : 0;
+				mm = mm > 0 ? mm - 1 : 60;
 			} else { //inss
-				ss = ss > 0 ? ss - 1 : 0;
+				ss = ss > 0 ? ss - 1 : 60;
 			}
 			break;
 		}
