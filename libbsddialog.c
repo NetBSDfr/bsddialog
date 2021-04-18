@@ -1411,7 +1411,7 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 				wattron(widget, A_BOLD | COLOR_PAIR(color));
 				mvwaddch(widget, i+1, x + 1 + cols-2-15, ' ');
 				wattroff(widget, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-			}//mvwprintw(widget, i+1, cols-2-15, "[           %d]", blue_x);
+			}
 
 			sprintf(percstr, "%3d%%", miniperc);
 			wmove(widget, i+1, (cols-2-15) + 6 );
