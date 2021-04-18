@@ -890,22 +890,19 @@ int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
+	int values[4], output, nbuttons, defbutton, y, x;
 	FIELD *field[2];
 	FORM *form;
 
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	entry = new_window(conf.y + rows - 6, conf.x +1, 3, cols-2, NULL, NULL,
+	entry = new_window(y + rows - 6, x +1, 3, cols-2, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -927,7 +924,6 @@ int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 	set_form_sub(form, derwin(entry, 1, cols-4, 1, 1));
 	post_form(form);
 
-	wrefresh(widget);
 	wrefresh(entry);
 
 	output = forms_handler(button, cols, nbuttons, buttons, values,
@@ -940,12 +936,7 @@ int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 
 	delwin(button);
 	delwin(entry);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Inputbox size: %d, %d\n", rows, cols);
+	widget_end(conf, "FormsToFix", widget, rows, cols, shadow);//tofix
 
 	return output;
 }
