@@ -1081,7 +1081,9 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	return output;
 }
 
-int do_mixedform(struct config conf, char* text, int rows, int cols, int formheight, int nitems, struct formitem *items)
+int
+do_mixedform(struct config conf, char* text, int rows, int cols,
+    int formheight, int nitems, struct formitem *items)
 {
 	WINDOW *widget, *button, *entry, *shadow;
 	char *buttons[4];
@@ -1167,7 +1169,9 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 	return output;
 }
 
-int bsddialog_mixedform(struct config conf, char* text, int rows, int cols, int formheight, int argc, char **argv)
+int
+bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
+    int formheight, int argc, char **argv)
 {
 	int i, output, nitems;
 	struct formitem items[128];
@@ -1226,7 +1230,9 @@ int bsddialog_form(struct config conf, char* text, int rows, int cols, int formh
 	return output;
 }
 
-int bsddialog_passwordform(struct config conf, char* text, int rows, int cols, int formheight, int argc, char **argv)
+int
+bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
+    int formheight, int argc, char **argv)
 {
 	int i, output, nitems, itemlen, inputlen;
 	unsigned int flags = ITEMHIDDEN;
@@ -1571,8 +1577,9 @@ int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int m
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &defbutton);
 
 	wrefresh(widget);
 
@@ -1708,8 +1715,9 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &defbutton);
 
 	wrefresh(widget);
 
@@ -1859,8 +1867,9 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &defbutton);
 
 	wrefresh(widget);
 
