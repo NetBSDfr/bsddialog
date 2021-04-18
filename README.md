@@ -129,7 +129,7 @@ Examples:
 | inputmenu    | In progress |                                                 |
 | menu         | In progress |                                                 |
 | mixedform    | In progress | manual dialog(3) is wrong                       |
-| mixedgauge   |             |                                                 |
+| mixedgauge   | In progress |                                                 |
 | msgbox       | In progress |                                                 |
 | passwordbox  | In progress |                                                 |
 | passwordform | In progress | implemented via --mixedform                     |

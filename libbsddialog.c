@@ -1338,11 +1338,20 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
     unsigned int perc, int argc, char **argv)
 {
 	WINDOW *widget, *bar, *shadow;
-	char percstr[5], input[2048];
-	int i, blue_x, color;
-	bool mainloop = true;
-
-	blue_x = (int)((perc*(cols-8))/100);
+	char percstr[5];
+	int i, x, blue_x, color, miniperc;
+	char states[11][16] = {
+	    "[  Succeeded  ]",
+	    "[   Failed    ]",
+	    "[   Passed    ]",
+	    "[  Completed  ]",
+	    "[   Checked   ]",
+	    "[    Done     ]",
+	    "[   Skipped   ]",
+	    "[ In Progress ]",
+	    "!!!  BLANK  !!!",
+	    "[     N/A     ]",
+	    "[   UNKNOWN   ]",};
 
 	if (conf.shadow) {
 		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
@@ -1352,63 +1361,73 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 
 	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
+	print_text_multiline(widget, rows -6, 2, text, cols - 4);
 	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline, BLACK_WHITE, 
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+
+	/* mini bars */
+	for (i=0; i < (argc/2); i++) {
+		miniperc = atol(argv[i*2 + 1]);
+		if (miniperc == 8)
+			continue;
+		mvwaddstr(widget, i+1, 2, argv[i*2]);
+		if (miniperc > 9)
+			mvwaddstr(widget, i+1, cols-2-15, states[10]);
+		else if (miniperc >= 0 && miniperc <= 9)
+			mvwaddstr(widget, i+1, cols-2-15, states[miniperc]);
+		else { //miniperc < 0
+			miniperc = abs(miniperc);
+			mvwaddstr(widget, i+1, cols-2-15, "[             ]");
+			blue_x = (int)((miniperc*13)/100);
+			for (x = 0; x < 13; x++) {
+				color = (x < blue_x) ? BLUE_BLUE : WHITE_WHITE;
+				wattron(widget, A_BOLD | COLOR_PAIR(color));
+				mvwaddch(widget, i+1, x + 1 + cols-2-15, ' ');
+				wattroff(widget, A_BOLD | COLOR_PAIR(BLUE_BLUE));
+			}//mvwprintw(widget, i+1, cols-2-15, "[           %d]", blue_x);
+
+			sprintf(percstr, "%3d%%", miniperc);
+			wmove(widget, i+1, (cols-2-15) + 6 );
+			int c;
+			for (c=0; c<4; c++) {
+				color = ( (blue_x + 1) < ((cols-2-15) + 6) ) ?
+				    BLUE_WHITE : WHITE_BLUE;
+				wattron(widget, A_BOLD | COLOR_PAIR(color));
+				waddch(widget, percstr[c]);
+				wattroff(widget, A_BOLD | COLOR_PAIR(color));
+			}
+		}
+	}
+
+	/* main bar */
+
+	blue_x = (int)((perc*(cols-8))/100);
+
+	for (i = 0; i < cols - 8; i++) {
+		color = i <= blue_x ? BLUE_BLUE : WHITE_WHITE;
+		wattron(bar, A_BOLD | COLOR_PAIR(color));
+		mvwaddch(bar, 1, i + 1, ' ');
+		wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
+	}
+
+	sprintf(percstr, "%3d%%", perc);
+	wmove(bar, 1, ((cols-6)/2 - 2) );
+	for (i=0; i<4; i++) {
+		color = ( (blue_x + 1) < ((cols-6)/2 - 2 + i) ) ?
+		    BLUE_WHITE : WHITE_BLUE;
+		wattron(bar, A_BOLD | COLOR_PAIR(color));
+		waddch(bar, percstr[i]);
+		wattroff(bar, A_BOLD | COLOR_PAIR(color));
+	}
+
+	wattron(bar, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+	mvwaddstr(bar, 0, 2, "Overall Progress");
+	wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_WHITE));
 
 	wrefresh(widget);
 	wrefresh(bar);
 
-	while (mainloop) {
-		for (i = 0; i < cols - 8; i++) {
-			color = i <= blue_x ? BLUE_BLUE : WHITE_WHITE;
-			wattron(bar, A_BOLD | COLOR_PAIR(color));
-			mvwaddch(bar, 1, i + 1, ' ');
-			wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-		}
-
-		sprintf(percstr, "%3d%%", perc);
-		wmove(bar, 1, ((cols-6)/2 - 2) );
-		for (i=0; i<4; i++) {
-			color = ( (blue_x + 1) < ((cols-6)/2 - 2 + i) ) ?
-			    BLUE_WHITE : WHITE_BLUE;
-			wattron(bar, A_BOLD | COLOR_PAIR(color));
-			waddch(bar, percstr[i]);
-			wattroff(bar, A_BOLD | COLOR_PAIR(color));
-		}
-
-		wrefresh(widget);
-		wrefresh(bar);
-
-		while (true) {
-			scanf("%s", input);
-			if (strcmp(input,"EOF") == 0) {
-				mainloop = false;
-				break;
-			}
-			if (strcmp(input,"XXX") == 0)
-				break;
-		}
-		scanf("%d", &perc);
-		perc = perc < 0 ? 0 : perc;
-		perc = perc > 100 ? 100 : perc;
-		blue_x = (int)((perc*(cols-8))/100);
-		i=2;
-		wmove(widget, 1, 1);
-		wclrtoeol(widget);
-		while (true) {
-			scanf("%s", input);
-			if (strcmp(input,"EOF") == 0) {
-				mainloop = false;
-				break;
-			}
-			if (strcmp(input,"XXX") == 0)
-				break;
-			print_text_multiline(widget, 1, i, input, cols - 4);
-			i = i + strlen(input) + 1;
-			wrefresh(widget);
-		}
-	}
+	getch();
 
 	delwin(bar);
 	delwin(widget);
