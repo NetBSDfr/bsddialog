@@ -1899,8 +1899,6 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	    conf.cancel_label, conf.help_button, conf.help_label,
 	    conf.defaultno, &defbutton);
 
-	wrefresh(widget);
-
 	mvwprintw(hhwin, 1, 1, "%2d", hh);
 	wrefresh(hhwin);
 	mvwprintw(mmwin, 1, 1, "%2d", mm);
