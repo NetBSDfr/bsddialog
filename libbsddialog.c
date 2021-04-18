@@ -1874,17 +1874,13 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 {
 	WINDOW *widget, *button, *hhwin, *mmwin, *sswin, *shadow;
 	char*buttons[4];
-	int output, nbuttons, defbutton, values[4];
+	int output, nbuttons, defbutton, values[4], y, x;
 
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
-
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
 
 	hhwin = new_window(conf.y + rows - 6, conf.x + cols/2 - 7, 3, 4, NULL,
 	    NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
@@ -1920,15 +1916,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	delwin(hhwin);
 	delwin(mmwin);
 	delwin(sswin);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Timebox size: %d, %d\n", rows, cols);
+	widget_end(conf, "Timebox", widget, rows, cols, shadow);
 
 	return output;
 }
