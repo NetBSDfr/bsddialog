@@ -581,7 +581,6 @@ int inputbox_builder(BUILDER_ARGS)
 	return output;
 }
 
-
 int inputmenu_builder(BUILDER_ARGS)
 {
 	return 0;
