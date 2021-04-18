@@ -28,9 +28,9 @@
 #include <sys/ioctl.h>
 
 #include <getopt.h>
-#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 #include <unistd.h>
 
