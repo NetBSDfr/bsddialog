@@ -1882,16 +1882,16 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
 		return -1;
 
-	hhwin = new_window(conf.y + rows - 6, conf.x + cols/2 - 7, 3, 4, NULL,
+	hhwin = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL,
 	    NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
-	mmwin = new_window(conf.y + rows - 6, conf.x + cols/2 - 2, 3, 4, NULL,
+	mmwin = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL,
 	    NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
-	sswin = new_window(conf.y + rows - 6, conf.x + cols/2 + 3, 3, 4, NULL,
+	sswin = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL,
 	    NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
