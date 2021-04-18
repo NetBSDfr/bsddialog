@@ -533,24 +533,21 @@ do_menu(struct config conf, char* text, int rows, int cols,
 {
 	WINDOW *widget, *button, *menuwin, *submenuwin, *shadow;
 	char *buttons[4];
-	int i, values[4], output, nbuttons, defbutton;
+	int i, values[4], output, nbuttons, defbutton, y, x;
 	MENU *menu;
 	ITEM *mi[128];
 	struct menuitem mmii[128];
 
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	menuwin = new_window(conf.y + rows - 5 - menurows, conf.x + 1,
+	menuwin = new_window(y + rows - 5 - menurows, x + 1,
 	    menurows+2, cols-2, NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
 	    conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	for(i=0; i < nitems; i++) {
@@ -569,7 +566,6 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	set_menu_sub(menu, submenuwin);
 	post_menu(menu);
 
-	wrefresh(widget);
 	wrefresh(menuwin);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -583,12 +579,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	delwin(button);
 	delwin(submenuwin);
 	delwin(menuwin);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.print_size) //tofix
-		dprintf(conf.output_fd, "Checklist size: %d, %d\n", rows, cols);
+	widget_end(conf, "MenuToFix", widget, rows, cols, shadow); // tofix name
 
 	return output;
 }
