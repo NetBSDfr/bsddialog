@@ -63,7 +63,6 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
     int color, enum elevation elev, bool asciilines, bool subwindowborders,
     bool scrolling);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-void print_text(WINDOW *window, int y, int x, char* text, bool bold, int color);
 int  print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
 
 void
@@ -157,14 +156,6 @@ int bsddialog_backtitle(struct config conf, char *backtitle)
 	refresh();
 
 	return 0;
-}
-
-void print_text(WINDOW *window, int y, int x, char* text, bool bold, int color)
-{
-
-	attron(COLOR_PAIR(color) | (bold ? A_BOLD : 0));
-	mvwaddstr(window, y, x, text);
-	attroff(COLOR_PAIR(color) | (bold ? A_BOLD : 0));
 }
 
 int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line)
