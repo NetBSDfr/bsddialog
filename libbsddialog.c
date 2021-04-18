@@ -1758,22 +1758,52 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 
 /* timebox and calendar-todo */
 
-int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *hhwin, unsigned int hh,
-    WINDOW *mmwin, unsigned int mm, WINDOW *sswin, unsigned int ss,
-    int sleeptime, int fd)
+int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
+    unsigned int hh, unsigned int mm, unsigned int ss)
 {
+	WINDOW *widget, *button, *hhwin, *mmwin, *sswin, *shadow;
+	char*buttons[4];
+	int input, output, nbuttons, selbutton, values[4], y, x;
 	bool loop, buttupdate, inhh, inmm, inss;
-	int input, output;
+
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
+
+	hhwin = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
+	mmwin = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
+	sswin = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &selbutton);
+
+	mvwprintw(hhwin, 1, 1, "%2d", hh);
+	wrefresh(hhwin);
+	mvwprintw(mmwin, 1, 1, "%2d", mm);
+	wrefresh(mmwin);
+	mvwprintw(sswin, 1, 1, "%2d", ss);
+	wrefresh(sswin);
 
 	curs_set(2);
 	inmm = inss = false;
 	loop = buttupdate = inhh = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
-			    shortkey);
-			wrefresh(buttwin);
+			draw_buttons(button, cols, nbuttons, buttons, selbutton,
+			    true);
+			wrefresh(button);
 			buttupdate = false;
 		}
 
@@ -1794,9 +1824,9 @@ int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[selected]; // values -> outputs
+			output = values[selbutton]; // values -> outputs
 			loop = false;
-			dprintf(fd, "%u:%u:%u", hh, mm, ss);
+			dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -1815,14 +1845,14 @@ int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			}
 			break;
 		case KEY_LEFT:
-			if (selected > 0) {
-				selected--;
+			if (selbutton > 0) {
+				selbutton--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (selected < nbuttons - 1) {
-				selected++;
+			if (selbutton < nbuttons - 1) {
+				selbutton++;
 				buttupdate = true;
 			}
 			break;
@@ -1847,53 +1877,10 @@ int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		}
 	}
 
-	sleep(sleeptime);
-
 	curs_set(0);
 
-	return output;
-}
-
-int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
-    unsigned int hh, unsigned int mm, unsigned int ss)
-{
-	WINDOW *widget, *button, *hhwin, *mmwin, *sswin, *shadow;
-	char*buttons[4];
-	int output, nbuttons, defbutton, values[4], y, x;
-
-	y = conf.y;
-	x = conf.x;
-	widget = shadow = NULL;
-	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
-		return -1;
-
-	hhwin = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
-	mmwin = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
-	sswin = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
-	    conf.defaultno, &defbutton);
-
-	mvwprintw(hhwin, 1, 1, "%2d", hh);
-	wrefresh(hhwin);
-	mvwprintw(mmwin, 1, 1, "%2d", mm);
-	wrefresh(mmwin);
-	mvwprintw(sswin, 1, 1, "%2d", ss);
-	wrefresh(sswin);
-
-	output = timebox_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, hhwin, hh, mmwin, mm, sswin, ss, conf.sleep,
-	    conf.output_fd);
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
 
 	delwin(button);
 	delwin(hhwin);
