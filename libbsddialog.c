@@ -60,7 +60,7 @@ enum elevation { RAISED, LOWERED, NOLINES };
 
 WINDOW *
 new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
-    int color, enum elevation elev, bool asciilines, bool subwindowborders);
+    enum elevation elev, bool asciilines, bool subwindowborders);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 int  print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
 
@@ -178,7 +178,7 @@ int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_li
 
 WINDOW *
 new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
-    int color, enum elevation elev, bool asciilines, bool subwindowborders)
+    enum elevation elev, bool asciilines, bool subwindowborders)
 {
 	WINDOW *popup;
 	int leftcolor, rightcolor;
@@ -195,7 +195,7 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 	rtee = ACS_RTEE;
 
 	popup = newwin(rows, cols, y, x);
-	wbkgd(popup, COLOR_PAIR(color));
+	wbkgd(popup, COLOR_PAIR(BLACK_WHITE));
 
 	if (elev != NOLINES) {
 		if (asciilines) {
@@ -394,7 +394,7 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, conf.hline, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 
@@ -502,13 +502,13 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 	menuwin = new_window(conf.y + rows - 5 - menurows, conf.x + 1,
-	    menurows+2, cols-2, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	    menurows+2, cols-2, NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
+	    conf.ascii_lines, false);
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	for(i=0; i < nitems; i++) {
@@ -701,10 +701,10 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	wrefresh(widget);
@@ -740,10 +740,10 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y+rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	wrefresh(widget);
@@ -879,12 +879,12 @@ int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	entry = new_window(conf.y + rows - 6, conf.x +1, 3, cols-2, NULL, NULL, BLACK_WHITE,
+	entry = new_window(conf.y + rows - 6, conf.x +1, 3, cols-2, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -1095,12 +1095,13 @@ int do_mixedform(struct config conf, char* text, int rows, int cols, int formhei
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	entry = new_window(conf.y + rows - 3 - formheight -2, conf.x +1, formheight+2, cols-2, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	entry = new_window(conf.y + rows - 3 - formheight -2, conf.x +1,
+	    formheight+2, cols-2, NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
+	    conf.ascii_lines, false);
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -1276,10 +1277,10 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline, BLACK_WHITE, 
+	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 
 	wrefresh(widget);
@@ -1375,10 +1376,10 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, rows -6, 2, text, cols - 4);
-	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline, BLACK_WHITE, 
+	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 
 	/* mini bars */
@@ -1561,12 +1562,12 @@ int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int m
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL, BLACK_WHITE,
+	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -1698,12 +1699,12 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
-	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL, BLACK_WHITE,
+	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
@@ -1841,20 +1842,20 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 		wrefresh(shadow);
 	}
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 	print_text_multiline(widget, 1, 2, text, cols - 4);
 
-	hhwin = new_window(conf.y + rows - 6, conf.x + cols/2 - 7, 3, 4, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	hhwin = new_window(conf.y + rows - 6, conf.x + cols/2 - 7, 3, 4, NULL,
+	    NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
-	mmwin = new_window(conf.y + rows - 6, conf.x + cols/2 - 2, 3, 4, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	mmwin = new_window(conf.y + rows - 6, conf.x + cols/2 - 2, 3, 4, NULL,
+	    NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
-	sswin = new_window(conf.y + rows - 6, conf.x + cols/2 + 3, 3, 4, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	sswin = new_window(conf.y + rows - 6, conf.x + cols/2 + 3, 3, 4, NULL,
+	    NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
