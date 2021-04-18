@@ -711,143 +711,6 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	return output;
 }
 
-int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *bar, int sizebar, int sec,
-    int sleeptime)
-{
-	bool loop, buttupdate, barupdate;
-	int i, input, currvalue, output, pos, color;
-	float unitxpos;
-	char valuestr[128];
-
-	currvalue = sec;
-	sizebar = sizebar - 2;
-	unitxpos = ((float)sizebar) / sec;
-
-	nodelay(stdscr, TRUE);
-	timeout(1000);
-	//wtimeout(buttwin, 2);
-	loop = buttupdate = barupdate = true;
-	while(loop) {
-		if (barupdate) {
-			pos = (int)(currvalue * unitxpos);
-			for (i = 0; i < sizebar; i++) {
-				color = i <= pos ? BLUE_BLUE : WHITE_WHITE;
-				wattron(bar, A_BOLD | COLOR_PAIR(color));
-				mvwaddch(bar, 1, i + 1, ' ');
-				wattroff(bar, A_BOLD | COLOR_PAIR(color));
-			}
-			sprintf(valuestr, "%d", currvalue);
-			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2 + 1);
-			for (i=0; i<strlen(valuestr); i++) {
-				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
-				    BLUE_WHITE : WHITE_BLUE;
-				wattron(bar, A_BOLD | COLOR_PAIR(color));
-				waddch(bar, valuestr[i]);
-				wattroff(bar, A_BOLD | COLOR_PAIR(color));
-			}
-			barupdate = false;
-			wrefresh(bar);
-		}
-
-		if (buttupdate) {
-			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
-			    shortkey);
-			wrefresh(buttwin);
-			buttupdate = false;
-		}
-
-		input = getch();
-		if(input < 0) {
-			currvalue--;
-			if (currvalue < 0) {
-				output = BSDDIALOG_ERROR;
-				break;
-			}
-			else {
-				barupdate = true;
-				continue;
-			}
-		}
-		switch(input) {
-		case 10: // Enter
-			output = values[selected]; // values -> outputs
-			loop = false;
-			break;
-		case 27: // Esc
-			output = BSDDIALOG_ERROR;
-			loop = false;
-			break;
-		case '\t': // TAB
-			selected = (selected + 1) % nbuttons;
-			buttupdate = true;
-			break;
-		case KEY_LEFT:
-			if (selected > 0) {
-				selected--;
-				buttupdate = true;
-			}
-			break;
-		case KEY_RIGHT:
-			if (selected < nbuttons - 1) {
-				selected++;
-				buttupdate = true;
-			}
-			break;
-		}
-	}
-
-	nodelay(stdscr, FALSE);
-
-	sleep(sleeptime);
-
-	return output;
-}
-
-int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
-{
-	WINDOW *widget, *button, *bar, *shadow;
-	char*buttons[4];
-	int output, nbuttons, defbutton, values[4];
-
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
-
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
-	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
-
-	wrefresh(widget);
-
-	output = pause_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, bar, cols-14, sec, conf.sleep);
-
-	delwin(button);
-	delwin(bar);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
-
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Pause size: %d, %d\n", rows, cols);
-
-	return output;
-}
-
 int
 bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 {
@@ -1380,7 +1243,7 @@ int bsddialog_passwordform(struct config conf, char* text, int rows, int cols, i
 }
 
 /*
- * Bar: Gauge and rangebox
+ * Bar: gauge, rangebox and pause
  */
 int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc)
 {
@@ -1605,7 +1468,145 @@ int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int m
 	return BSDDIALOG_YESOK;
 }
 
-/* time */
+int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
+    int *values, int selected, bool shortkey, WINDOW *bar, int sizebar, int sec,
+    int sleeptime)
+{
+	bool loop, buttupdate, barupdate;
+	int i, input, currvalue, output, pos, color;
+	float unitxpos;
+	char valuestr[128];
+
+	currvalue = sec;
+	sizebar = sizebar - 2;
+	unitxpos = ((float)sizebar) / sec;
+
+	nodelay(stdscr, TRUE);
+	timeout(1000);
+	//wtimeout(buttwin, 2);
+	loop = buttupdate = barupdate = true;
+	while(loop) {
+		if (barupdate) {
+			pos = (int)(currvalue * unitxpos);
+			for (i = 0; i < sizebar; i++) {
+				color = i <= pos ? BLUE_BLUE : WHITE_WHITE;
+				wattron(bar, A_BOLD | COLOR_PAIR(color));
+				mvwaddch(bar, 1, i + 1, ' ');
+				wattroff(bar, A_BOLD | COLOR_PAIR(color));
+			}
+			sprintf(valuestr, "%d", currvalue);
+			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2 + 1);
+			for (i=0; i<strlen(valuestr); i++) {
+				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
+				    BLUE_WHITE : WHITE_BLUE;
+				wattron(bar, A_BOLD | COLOR_PAIR(color));
+				waddch(bar, valuestr[i]);
+				wattroff(bar, A_BOLD | COLOR_PAIR(color));
+			}
+			barupdate = false;
+			wrefresh(bar);
+		}
+
+		if (buttupdate) {
+			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
+			    shortkey);
+			wrefresh(buttwin);
+			buttupdate = false;
+		}
+
+		input = getch();
+		if(input < 0) {
+			currvalue--;
+			if (currvalue < 0) {
+				output = BSDDIALOG_ERROR;
+				break;
+			}
+			else {
+				barupdate = true;
+				continue;
+			}
+		}
+		switch(input) {
+		case 10: // Enter
+			output = values[selected]; // values -> outputs
+			loop = false;
+			break;
+		case 27: // Esc
+			output = BSDDIALOG_ERROR;
+			loop = false;
+			break;
+		case '\t': // TAB
+			selected = (selected + 1) % nbuttons;
+			buttupdate = true;
+			break;
+		case KEY_LEFT:
+			if (selected > 0) {
+				selected--;
+				buttupdate = true;
+			}
+			break;
+		case KEY_RIGHT:
+			if (selected < nbuttons - 1) {
+				selected++;
+				buttupdate = true;
+			}
+			break;
+		}
+	}
+
+	nodelay(stdscr, FALSE);
+
+	sleep(sleeptime);
+
+	return output;
+}
+
+int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
+{
+	WINDOW *widget, *button, *bar, *shadow;
+	char*buttons[4];
+	int output, nbuttons, defbutton, values[4];
+
+	if (conf.shadow) {
+		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
+		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
+		wrefresh(shadow);
+	}
+
+	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+	print_text_multiline(widget, 1, 2, text, cols - 4);
+	bar = new_window(conf.y + rows - 6, conf.x +7, 3, cols-14, NULL, NULL, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false, false);
+	button = new_window(conf.y + rows -3, conf.x, 3, cols, NULL, conf.hline, BLACK_WHITE,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true, false);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+
+	wrefresh(widget);
+
+	output = pause_handler(button, cols, nbuttons, buttons, values,
+	    defbutton, true, bar, cols-14, sec, conf.sleep);
+
+	delwin(button);
+	delwin(bar);
+	delwin(widget);
+	if (conf.shadow)
+		delwin(shadow);
+
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
+
+	if (conf.print_size)
+		dprintf(conf.output_fd, "Pause size: %d, %d\n", rows, cols);
+
+	return output;
+}
+
+/* timebox and calendar-todo */
+
 int timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, WINDOW *hhwin, unsigned int hh,
     WINDOW *mmwin, unsigned int mm, WINDOW *sswin, unsigned int ss,
