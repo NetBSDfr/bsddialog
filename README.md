@@ -14,7 +14,7 @@ and the *"features synchronization"* with **dialog** is not a priority.
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
 % make -D PORTNCURSES
-% ./bsddialog --title BSD --msgbox "Hello World!" 6 24
+% ./bsddialog --title BSD --msgbox "Hello World!" 5 24
 ```
 Output:
 
