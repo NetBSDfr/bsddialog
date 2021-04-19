@@ -539,8 +539,8 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
 		return -1;
 
-	menuwin = new_window(y + rows - 5 - menurows, x + 1,
-	    menurows+2, cols-2, NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
+	menuwin = new_window(y + rows - 5 - menurows, x + 2, menurows+2, cols-4,
+	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
 	    conf.ascii_lines, false);
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
@@ -554,10 +554,11 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE) | A_REVERSE);
 	set_menu_back(menu, COLOR_PAIR(WHITE_BLUE));
 	set_menu_win(menu, menuwin);
-	set_menu_mark(menu, " ");
+	set_menu_mark(menu, "");
 	set_menu_format(menu, 0, 0);
 
-	submenuwin = derwin(menuwin, menurows, cols-4, 1, 1);
+	//submenuwin = derwin(menuwin, menurows, cols-6, 1, 1); // justify left
+	submenuwin = derwin(menuwin, menurows, line, 1, 1 + (cols-6)/2 - line/2);
 	set_menu_sub(menu, submenuwin);
 	post_menu(menu);
 
@@ -596,7 +597,7 @@ bsddialog_menu(struct config conf, char* text, int rows, int cols,
 		items[i].desc = argv[2*i+1];
 		line = MAX(strlen(items[i].name) + strlen(items[i].desc) + 1,
 		    line);
-	} printf("line: %d\n", line);
+	}
 
 	output = do_menu(conf, text, rows, cols, menurows, line, MENUMODE,
 	    nitems, items);
