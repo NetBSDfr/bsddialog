@@ -580,6 +580,31 @@ do_menu(struct config conf, char* text, int rows, int cols,
 }
 
 int
+bsddialog_menu(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int argc, char **argv)
+{
+	int i, output, nitems, line;
+	struct menuitem items[128];
+
+	if ((argc % 2) != 0)
+		return (-1);
+
+	line = 0;
+	nitems = argc / 2;
+	for (i=0; i<nitems; i++) {
+		items[i].name = argv[2*i];
+		items[i].desc = argv[2*i+1];
+		line = MAX(strlen(items[i].name) + strlen(items[i].desc) + 1,
+		    line);
+	} printf("line: %d\n", line);
+
+	output = do_menu(conf, text, rows, cols, menurows, line, MENUMODE,
+	    nitems, items);
+
+	return output;
+}
+
+int
 bsddialog_checklist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
@@ -633,31 +658,6 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 	}
 
 	output = do_menu(conf, text, rows, cols, menurows, line, RADIOLISTMODE,
-	    nitems, items);
-
-	return output;
-}
-
-int
-bsddialog_menu(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int argc, char **argv)
-{
-	int i, output, nitems, line;
-	struct menuitem items[128];
-
-	if ((argc % 2) != 0)
-		return (-1);
-
-	line = 0;
-	nitems = argc / 2;
-	for (i=0; i<nitems; i++) {
-		items[i].name = argv[2*i];
-		items[i].desc = argv[2*i+1];
-		line = MAX(strlen(items[i].name) + strlen(items[i].desc) + 1,
-		    line);
-	}
-
-	output = do_menu(conf, text, rows, cols, menurows, line, MENUMODE,
 	    nitems, items);
 
 	return output;
