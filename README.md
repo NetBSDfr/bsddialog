@@ -125,8 +125,8 @@ Examples:
 | fselect      |             |                                                 |
 | gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
-| inputbox     | In progress | dialog does not centre buttons and title        |
-| inputmenu    | In progress | implemented via --mixedform                     |
+| inputbox     | In progress | implemented via --mixedform, dialog does not centre buttons and title |
+| inputmenu    |             |                                                 |
 | menu         | In progress |                                                 |
 | mixedform    | In progress | manual dialog(3) is wrong                       |
 | mixedgauge   | In progress |                                                 |
