@@ -1,6 +1,6 @@
 #!/bin/sh
 
-./bsddialog --title menu --menu "Hello World!" 18 30 8 \
+./bsddialog --title menu --menu "Hello World!" 14 28 6 \
 	"Tag 1"	"DESC 1 xyz" \
 	"Tag 2"	"DESC 2 xyz" \
 	"Tag 3"	"DESC 3 xyz" \
