@@ -1285,7 +1285,7 @@ void draw_perc_bar(WINDOW *win, int y, int x, int size, int perc)
 	sprintf(percstr, "%3d%%", perc);
 	wmove(win, y, x + size/2 - 2);
 	for (i=0; i<4; i++) {
-		color = ( (blue_x + 1) < (size/2 - 2 + i) ) ?
+		color = ( (blue_x + 1) <= (size/2 - 2 + i) ) ?
 		    BLUE_WHITE : WHITE_BLUE;
 		wattron(win, A_BOLD | COLOR_PAIR(color));
 		waddch(win, percstr[i]);
