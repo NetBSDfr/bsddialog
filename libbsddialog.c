@@ -1302,19 +1302,16 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 {
 	WINDOW *widget, *bar, *shadow;
 	char input[2048];
-	int i;
+	int i, y, x;
 	bool mainloop = true;
 
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	print_text_multiline(widget, 1, 2, text, cols - 4);
-	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline,
+	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 
 	wrefresh(widget);
@@ -1355,16 +1352,11 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 		}
 	}
 
-	delwin(bar);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Gauge size: %d, %d\n", rows, cols);
+	delwin(bar);
+	widget_end(conf, "Gauge", widget, rows, cols, shadow);
 
 	return BSDDIALOG_YESOK;
 }
@@ -1373,8 +1365,7 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
     unsigned int perc, int argc, char **argv)
 {
 	WINDOW *widget, *bar, *shadow;
-	char percstr[5];
-	int i, x, blue_x, color, miniperc;
+	int i, miniperc, y, x;
 	char states[11][16] = {
 	    "[  Succeeded  ]",
 	    "[   Failed    ]",
@@ -1388,16 +1379,13 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 	    "[     N/A     ]",
 	    "[   UNKNOWN   ]",};
 
-	if (conf.shadow) {
-		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
-		wbkgd(shadow, COLOR_PAIR(BLACK_BLACK));
-		wrefresh(shadow);
-	}
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
 
-	widget = new_window(conf.y, conf.x, rows, cols, conf.title, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	print_text_multiline(widget, rows -6, 2, text, cols - 4);
-	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline,
+	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 
 	/* mini bars */
@@ -1429,16 +1417,11 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 
 	getch();
 
-	delwin(bar);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Mixedgauge size: %d, %d\n", rows, cols);
+	delwin(bar);
+	widget_end(conf, "Mixedgauge", widget, rows, cols, shadow);
 
 	return BSDDIALOG_YESOK;
 }
