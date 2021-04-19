@@ -551,8 +551,8 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	mi[i] = (ITEM *)NULL;
 
 	menu = new_menu(mi);
-	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE) | A_REVERSE);
-	set_menu_back(menu, COLOR_PAIR(WHITE_BLUE));
+	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE));
+	set_menu_back(menu, COLOR_PAIR(BLACK_WHITE));
 	set_menu_win(menu, menuwin);
 	set_menu_mark(menu, "");
 	set_menu_format(menu, 0, 0);
