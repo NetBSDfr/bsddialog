@@ -783,177 +783,6 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 }
 
 /* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
-int
-forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
-    FIELD **field, bool showinput, int sleeptime, int fd)
-{
-	bool loop, buttupdate, inentry = true;
-	int input, output, buflen = 0, pos = 0;
-	char *bufp;
-
-	curs_set(showinput ? 2 : 0);
-	pos_form_cursor(form);
-	loop = buttupdate = true;
-	while(loop) {
-		if (buttupdate) {
-			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
-			    shortkey);
-			buttupdate = false;
-		}
-		wrefresh(buttwin);
-		wrefresh(entry);
-		input = getch();
-		switch(input) {
-		case 10: // Enter
-			output = values[selected]; // values -> outputs
-			loop = false;
-			form_driver(form, REQ_NEXT_FIELD);
-			form_driver(form, REQ_PREV_FIELD);
-			bufp = field_buffer(field[0], 0);
-			bufp[buflen] = '\0';
-			dprintf(fd, "%s", bufp);
-			break;
-		case 27: // Esc
-			output = BSDDIALOG_ERROR;
-			loop = false;
-			break;
-		case '\t': // TAB
-			selected = (selected + 1) % nbuttons;
-			buttupdate = true;
-			break;
-		case KEY_LEFT:
-			if (inentry) {
-				form_driver(form, REQ_PREV_CHAR);
-				pos = pos > 0 ? pos - 1 : 0;
-			} else {
-				if (selected > 0) {
-					selected--;
-					buttupdate = true;
-				}
-			}
-			break;
-		case KEY_RIGHT:
-			if (inentry) {
-				if (pos < buflen) {
-					form_driver(form, REQ_NEXT_CHAR);
-					pos++;
-				}
-			} else {
-				if (selected < nbuttons - 1) {
-					selected++;
-					buttupdate = true;
-				}
-			}
-			break;
-		case KEY_UP:
-			inentry = true;
-			curs_set(showinput ? 2 : 0);
-			pos_form_cursor(form);
-			break;
-		case KEY_DOWN:
-			inentry = false;
-			curs_set(0);
-			break;
-		case KEY_BACKSPACE:
-			form_driver(form, REQ_DEL_PREV);
-			buflen = buflen > 0 ? buflen - 1 : 0;
-			pos = pos > 0 ? pos - 1 : 0;
-			break;
-		case KEY_DC:
-			form_driver(form, REQ_DEL_CHAR);
-			buflen = buflen > 0 ? buflen - 1 : 0;
-			break;
-		default:
-			if (inentry) {
-				form_driver(form, input);
-				buflen++;
-				pos++;
-			}
-			break;
-		}
-	}
-
-	sleep(sleeptime);
-
-	curs_set(0);
-
-	return output;
-}
-
-int do_forms(struct config conf, char* text, int rows, int cols, bool showinput)
-{
-	WINDOW *widget, *button, *entry, *shadow;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton, y, x;
-	FIELD *field[2];
-	FORM *form;
-
-	y = conf.y;
-	x = conf.x;
-	widget = shadow = NULL;
-	if (widget_init(conf, widget, &y, &x, text, &rows, &cols, shadow) < 0)
-		return -1;
-
-	entry = new_window(y + rows - 6, x +1, 3, cols-2, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
-
-	field[0] = new_field(1, cols-4, 0, 0, 0, 0);
-	field[1] = NULL;
-
-	field_opts_off(field[0], O_AUTOSKIP);
-	field_opts_off(field[0], O_STATIC);
-	if (showinput == false)
-		field_opts_off(field[0], O_PUBLIC);
-	set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
-	set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
-
-	form = new_form(field);
-	set_form_win(form, entry);
-	set_form_sub(form, derwin(entry, 1, cols-4, 1, 1));
-	post_form(form);
-
-	wrefresh(entry);
-
-	output = forms_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, entry, form, field, showinput, conf.sleep,
-	    conf.output_fd);
-
-	unpost_form(form);
-	free_form(form);
-	free_field(field[0]);
-
-	delwin(button);
-	delwin(entry);
-	widget_end(conf, "FormsToFix", widget, rows, cols, shadow);//tofix
-
-	return output;
-}
-
-int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
-{
-	int output;
-
-	output = do_forms(conf, text, rows, cols, true);
-
-	return output;
-}
-
-int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols)
-{
-	int output;
-
-	output = do_forms(conf, text, rows, cols, false);
-
-	return output;
-}
-
 int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
 {
 	return 0;
@@ -1052,6 +881,8 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			}
 			break;
 		case KEY_UP:
+			if (nitems < 2)
+				break;
 			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
 			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
 			form_driver(form, REQ_PREV_FIELD);
@@ -1060,6 +891,8 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
 			break;
 		case KEY_DOWN:
+			if (nitems < 2)
+				break;
 			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
 			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
 			form_driver(form, REQ_NEXT_FIELD);
@@ -1140,6 +973,11 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	}
 	field[i] = NULL;
 
+	if (nitems == 1) {// inputbox or passwordbox
+		set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
+		set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
+	}
+
 	form = new_form(field);
 	set_form_win(form, entry);
 	set_form_sub(form, derwin(entry, nitems, cols-4, 1, 1));
@@ -1163,6 +1001,46 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	delwin(button);
 	delwin(entry);
 	widget_end(conf, "Mixedform", widget, rows, cols, shadow);
+
+	return output;
+}
+
+int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
+{
+	int output;
+	struct formitem item;
+
+	item.label	= "";
+	item.ylabel	= 0;
+	item.xlabel	= 0;
+	item.item	= ""; // TODO add argv
+	item.yitem	= 1;
+	item.xitem	= 1;
+	item.itemlen	= cols-4;
+	item.inputlen	= 2048; // todo conf.sizeinput
+	item.itemflags	= 0;
+
+	output = do_mixedform(conf, text, rows, cols, 1, 1, &item);
+
+	return output;
+}
+
+int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols)
+{
+	int output;
+	struct formitem item;
+
+	item.label	= "";
+	item.ylabel	= 0;
+	item.xlabel	= 0;
+	item.item	= ""; // TODO add argv
+	item.yitem	= 1;
+	item.xitem	= 1;
+	item.itemlen	= cols-4;
+	item.inputlen	= 2048; // todo conf.sizeinput
+	item.itemflags	= ITEMHIDDEN;
+
+	output = do_mixedform(conf, text, rows, cols, 1, 1, &item);
 
 	return output;
 }

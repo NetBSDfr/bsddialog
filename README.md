@@ -126,12 +126,12 @@ Examples:
 | gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress | dialog does not centre buttons and title        |
-| inputmenu    | In progress |                                                 |
+| inputmenu    | In progress | implemented via --mixedform                     |
 | menu         | In progress |                                                 |
 | mixedform    | In progress | manual dialog(3) is wrong                       |
 | mixedgauge   | In progress |                                                 |
 | msgbox       | In progress |                                                 |
-| passwordbox  | In progress |                                                 |
+| passwordbox  | In progress | implemented via --mixedform                     |
 | passwordform | In progress | implemented via --mixedform                     |
 | pause        | In progress |                                                 |
 | prgbox       |             |                                                 |
