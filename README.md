@@ -138,7 +138,7 @@ Examples:
 | programbox   |             |                                                 |
 | progressbox  |             |                                                 |
 | radiolist    | In progress |                                                 |
-| rangebox     | In progress | the manual is wrong                             |
+| rangebox     | In progress | the manual is wrong, add PAGE-UP/PAGE-DOWN/HOME/END keys |
 | tailbox      |             |                                                 |
 | tailboxbg    |             |                                                 |
 | textbox      |             |                                                 |
