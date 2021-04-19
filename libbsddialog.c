@@ -510,6 +510,7 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case ' ': /* Space */
 			menu_driver(menu, REQ_TOGGLE_ITEM);
+			(item_name(current_item(menu)))[1] = 'X';
 			break;
 		default:
 			
