@@ -62,7 +62,7 @@ WINDOW *
 new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
     enum elevation elev, bool asciilines, bool subwindowborders);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-int  print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
+int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
 
 void
 draw_button(WINDOW *window, int x, int size, char *text, bool selected,
@@ -1073,7 +1073,9 @@ bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
 	return output;
 }
 
-int bsddialog_form(struct config conf, char* text, int rows, int cols, int formheight, int argc, char **argv)
+int
+bsddialog_form(struct config conf, char* text, int rows, int cols,
+    int formheight, int argc, char **argv)
 {
 	int i, output, nitems, itemlen, inputlen;
 	unsigned int flags = 0;
@@ -1565,7 +1567,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
 {
 	WINDOW *widget, *button, *hhwin, *mmwin, *sswin, *shadow;
-	char*buttons[4];
+	char *buttons[4];
 	int input, output, nbuttons, selbutton, values[4], y, x;
 	bool loop, buttupdate, inhh, inmm, inss;
 
