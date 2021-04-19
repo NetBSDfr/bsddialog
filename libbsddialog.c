@@ -1271,14 +1271,39 @@ bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
 /*
  * Bar: gauge, mixedgauge, rangebox and pause
  */
+
+void draw_perc_bar(WINDOW *win, int y, int x, int size, int perc)
+{
+	char percstr[5];
+	int i, blue_x, color;
+
+	blue_x = (int)((perc*(size))/100);
+
+	wmove(win, y, x);
+	for (i = 0; i < size; i++) {
+		color = (i <= blue_x) ? BLUE_BLUE : WHITE_WHITE;
+		wattron(win, A_BOLD | COLOR_PAIR(color));
+		waddch(win, ' ');
+		wattroff(win, A_BOLD | COLOR_PAIR(BLUE_BLUE));
+	}
+
+	sprintf(percstr, "%3d%%", perc);
+	wmove(win, 1, size/2 - 2);
+	for (i=0; i<4; i++) {
+		color = ( (blue_x + 1) < (size/2 - 2 + i) ) ?
+		    BLUE_WHITE : WHITE_BLUE;
+		wattron(win, A_BOLD | COLOR_PAIR(color));
+		waddch(win, percstr[i]);
+		wattroff(win, A_BOLD | COLOR_PAIR(color));
+	}
+}
+
 int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc)
 {
 	WINDOW *widget, *bar, *shadow;
-	char percstr[5], input[2048];
-	int i, blue_x, color;
+	char input[2048];
+	int i;
 	bool mainloop = true;
-
-	blue_x = (int)((perc*(cols-8))/100);
 
 	if (conf.shadow) {
 		shadow = newwin(rows, cols+1, conf.y+1, conf.x+1);
@@ -1296,22 +1321,7 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 	wrefresh(bar);
 
 	while (mainloop) {
-		for (i = 0; i < cols - 8; i++) {
-			color = i <= blue_x ? BLUE_BLUE : WHITE_WHITE;
-			wattron(bar, A_BOLD | COLOR_PAIR(color));
-			mvwaddch(bar, 1, i + 1, ' ');
-			wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-		}
-
-		sprintf(percstr, "%3d%%", perc);
-		wmove(bar, 1, ((cols-6)/2 - 2) );
-		for (i=0; i<4; i++) {
-			color = ( (blue_x + 1) < ((cols-6)/2 - 2 + i) ) ?
-			    BLUE_WHITE : WHITE_BLUE;
-			wattron(bar, A_BOLD | COLOR_PAIR(color));
-			waddch(bar, percstr[i]);
-			wattroff(bar, A_BOLD | COLOR_PAIR(color));
-		}
+		draw_perc_bar(bar, 1, 1, cols-8, perc);
 
 		wrefresh(widget);
 		wrefresh(bar);
@@ -1328,8 +1338,7 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 		scanf("%d", &perc);
 		perc = perc < 0 ? 0 : perc;
 		perc = perc > 100 ? 100 : perc;
-		blue_x = (int)((perc*(cols-8))/100);
-		i=2;
+		i = 2;
 		wmove(widget, 1, 1);
 		wclrtoeol(widget);
 		while (true) {
