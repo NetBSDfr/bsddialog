@@ -87,11 +87,6 @@ int
 forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
     FIELD **field, bool showinput, int sleeptime, int fd);
-int
-timebox_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *hhwin, unsigned int hh,
-    WINDOW *mmwin, unsigned int mm, WINDOW *sswin, unsigned int ss,
-    int sleeptime, int fd);
 
 
 int bsddialog_init(void)
