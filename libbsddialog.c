@@ -1288,7 +1288,7 @@ void draw_perc_bar(WINDOW *win, int y, int x, int size, int perc)
 	}
 
 	sprintf(percstr, "%3d%%", perc);
-	wmove(win, 1, size/2 - 2);
+	wmove(win, y, x + size/2 - 2);
 	for (i=0; i<4; i++) {
 		color = ( (blue_x + 1) < (size/2 - 2 + i) ) ?
 		    BLUE_WHITE : WHITE_BLUE;
@@ -1413,47 +1413,12 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 		else { //miniperc < 0
 			miniperc = abs(miniperc);
 			mvwaddstr(widget, i+1, cols-2-15, "[             ]");
-			blue_x = (int)((miniperc*13)/100);
-			for (x = 0; x < 13; x++) {
-				color = (x < blue_x) ? BLUE_BLUE : WHITE_WHITE;
-				wattron(widget, A_BOLD | COLOR_PAIR(color));
-				mvwaddch(widget, i+1, x + 1 + cols-2-15, ' ');
-				wattroff(widget, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-			}
-
-			sprintf(percstr, "%3d%%", miniperc);
-			wmove(widget, i+1, (cols-2-15) + 6 );
-			int c;
-			for (c=0; c<4; c++) {
-				color = ( (blue_x + 1) < ((cols-2-15) + 6) ) ?
-				    BLUE_WHITE : WHITE_BLUE;
-				wattron(widget, A_BOLD | COLOR_PAIR(color));
-				waddch(widget, percstr[c]);
-				wattroff(widget, A_BOLD | COLOR_PAIR(color));
-			}
+			draw_perc_bar(widget, i+1, 1+cols-2-15, 13, miniperc);
 		}
 	}
 
 	/* main bar */
-
-	blue_x = (int)((perc*(cols-8))/100);
-
-	for (i = 0; i < cols - 8; i++) {
-		color = i <= blue_x ? BLUE_BLUE : WHITE_WHITE;
-		wattron(bar, A_BOLD | COLOR_PAIR(color));
-		mvwaddch(bar, 1, i + 1, ' ');
-		wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_BLUE));
-	}
-
-	sprintf(percstr, "%3d%%", perc);
-	wmove(bar, 1, ((cols-6)/2 - 2) );
-	for (i=0; i<4; i++) {
-		color = ( (blue_x + 1) < ((cols-6)/2 - 2 + i) ) ?
-		    BLUE_WHITE : WHITE_BLUE;
-		wattron(bar, A_BOLD | COLOR_PAIR(color));
-		waddch(bar, percstr[i]);
-		wattroff(bar, A_BOLD | COLOR_PAIR(color));
-	}
+	draw_perc_bar(bar, 1, 1, cols-8, perc);
 
 	wattron(bar, A_BOLD | COLOR_PAIR(BLUE_WHITE));
 	mvwaddstr(bar, 0, 2, "Overall Progress");
