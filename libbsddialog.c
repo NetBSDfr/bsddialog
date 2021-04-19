@@ -1415,16 +1415,11 @@ WINDOW *widget, *bar, *shadow;
 
 	getch();
 
-	delwin(bar);
-	delwin(widget);
-	if (conf.shadow)
-		delwin(shadow);
-
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "Mixedgauge size: %d, %d\n", rows, cols);
+	delwin(bar);
+	widget_end(conf, "Mixedgaugebox", widget, rows, cols, shadow);
 
 	return BSDDIALOG_YESOK;
 }
