@@ -446,22 +446,12 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 }
 
 /*
- * Menu handler: Checklist, Menu, Radiolist
+ * Checklist, Menu, Radiolist
  */
 struct myitem {
 	char *name;
 	char *desc;
 	bool on;
-};
-
-struct mymenu {
-	struct myitem *items;
-	int nitems;
-	int selected;
-	int ys;
-	int ye;
-	int xs;
-	int xe;
 };
 
 enum menumode { CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
@@ -482,94 +472,14 @@ void draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode, boo
 }
 
 int
-menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *padmenu, struct mymenu menu,
-    int sleeptime, int fd)
-{
-	bool loop, buttupdate;
-	int input, output, curr;
-
-	enum menumode mode = CHECKLISTMODE; // tofix delete!
-	curr = 0;
-	loop = buttupdate = true;
-	while(loop) {
-		if (buttupdate) {
-			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
-			    shortkey);
-			wrefresh(buttwin);
-			buttupdate = false;
-		}
-		//wrefresh(menuwin);
-		prefresh(padmenu, 0, 0, menu.ys, menu.xs, menu.ye, menu.xe);
-
-		input = getch();
-		switch(input) {
-		case 10: // Enter
-			output = values[selected]; // -> buttvalues[selbutton]
-			loop = false;
-			//dprintf(fd, "%s", item_name(current_item(menu)));
-			break;
-		case 27: // Esc
-			output = BSDDIALOG_ERROR;
-			loop = false;
-			break;
-		case '\t': // TAB
-			selected = (selected + 1) % nbuttons;
-			buttupdate = true;
-			break;
-		case KEY_LEFT:
-			if (selected > 0) {
-				selected--;
-				buttupdate = true;
-			}
-			break;
-		case KEY_RIGHT:
-			if (selected < nbuttons - 1) {
-				selected++;
-				buttupdate = true;
-			}
-			break;
-		}
-
-		if (menu.nitems <= 0)
-			continue;
-
-		switch(input) {
-		case KEY_UP:
-			draw_myitem(padmenu, curr, menu.items[curr], mode, false);
-			curr = (curr > 0) ? curr - 1 : 0;
-			draw_myitem(padmenu, curr, menu.items[curr], mode, true);
-			break;
-		case KEY_DOWN:
-			draw_myitem(padmenu, curr, menu.items[curr], mode, false);
-			curr = (curr < menu.nitems-1) ? curr +1 : menu.nitems-1;
-			draw_myitem(padmenu, curr, menu.items[curr], mode, true);
-			break;
-		case ' ': /* Space */
-			//menu_driver(menu, REQ_TOGGLE_ITEM);
-			menu.items[curr].on = ! menu.items[curr].on;
-			mvwaddch(padmenu, curr, 1, menu.items[curr].on ? 'X' : ' ');
-			break;
-		default:
-			
-			break;
-		}
-	}
-
-	sleep(sleeptime);
-
-	return output;
-}
-
-int
 do_menu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int line, enum menumode mode, int nitems, struct myitem *items)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
 	char *buttons[4];
-	int i, values[4], output, nbuttons, defbutton, y, x;
+	int i, values[4], output, nbuttons, defbutton, y, x, input, curr;
 	int ys, ye, xs, xe;
-	struct mymenu menu;
+	bool loop, buttupdate;
 
 	y = conf.y;
 	x = conf.x;
@@ -586,7 +496,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	menupad = newpad(nitems, line);
 
 	for (i=0; i<nitems; i++) {
-		draw_myitem(menupad, i, items[i], mode, i==0);
+		draw_myitem(menupad, i, items[i], mode, i == 0);
 	}
 
 	ys = y + rows - 5 - menurows + 1;
@@ -594,23 +504,81 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	xs = x + 2 + 1;
 	xe = xs + cols - 4 -1;
 
-	menu.items = items;
-	menu.nitems = nitems;
-	menu.selected = nitems != 0 ? 0 : -1;
-	menu.ys = ys;
-	menu.ye = ye;
-	menu.xs = xs;
-	menu.xe = xe;
-
-	wrefresh(menuwin);
-	prefresh(menupad, 0, 0, ys, xs, ye, xe);
-
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	output = menu_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, menupad, menu, conf.sleep, conf.output_fd);
+	wrefresh(menuwin);
+	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
+
+	curr = 0;
+	loop = buttupdate = true;
+	while(loop) {
+		if (buttupdate) {
+			draw_buttons(button, cols, nbuttons, buttons, defbutton,
+			    true);
+			wrefresh(button);
+			buttupdate = false;
+		}
+		//wrefresh(menuwin);
+		prefresh(menupad, 0, 0, ys, xs, ye, xe);
+
+		input = getch();
+		switch(input) {
+		case 10: // Enter
+			output = values[defbutton]; // -> buttvalues[selbutton]
+			loop = false;
+			//dprintf(fd, "%s", item_name(current_item(menu)));
+			break;
+		case 27: // Esc
+			output = BSDDIALOG_ERROR;
+			loop = false;
+			break;
+		case '\t': // TAB
+			defbutton = (defbutton + 1) % nbuttons;
+			buttupdate = true;
+			break;
+		case KEY_LEFT:
+			if (defbutton > 0) {
+				defbutton--;
+				buttupdate = true;
+			}
+			break;
+		case KEY_RIGHT:
+			if (defbutton < nbuttons - 1) {
+				defbutton++;
+				buttupdate = true;
+			}
+			break;
+		}
+
+		if (nitems <= 0)
+			continue;
+
+		switch(input) {
+		case KEY_UP:
+			draw_myitem(menupad, curr, items[curr], mode, false);
+			curr = (curr > 0) ? curr - 1 : 0;
+			draw_myitem(menupad, curr, items[curr], mode, true);
+			break;
+		case KEY_DOWN:
+			draw_myitem(menupad, curr, items[curr], mode, false);
+			curr = (curr < nitems-1) ? curr +1 : nitems-1;
+			draw_myitem(menupad, curr, items[curr], mode, true);
+			break;
+		case ' ': /* Space */
+			//menu_driver(menu, REQ_TOGGLE_ITEM);
+			items[curr].on = ! items[curr].on;
+			mvwaddch(menupad, curr, 1, items[curr].on ? 'X' : ' ');
+			break;
+		default:
+			
+			break;
+		}
+	}
+
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
 
 	delwin(button);
 	delwin(menupad);
