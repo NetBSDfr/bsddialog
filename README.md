@@ -124,20 +124,20 @@ Examples:
 | fselect      |             |                                                 |
 | gauge        | In progress | dialog does not centre title                    |
 | infobox      | In progress | Do not clear the screen                         |
-| inputbox     | In progress | implemented via --mixedform, add \<init\>, dialog does not centre buttons and title |
+| inputbox     | In progress | implemented via --mixedform, todo \<init\>, dialog does not centre buttons and title |
 | inputmenu    |             |                                                 |
-| menu         | In progress |                                                 |
+| menu         | In progress | todo scrolling                                  |
 | mixedform    | In progress | manual dialog(3) is wrong                       |
 | mixedgauge   | In progress |                                                 |
 | msgbox       | In progress |                                                 |
-| passwordbox  | In progress | implemented via --mixedform, add \<init\>       |
+| passwordbox  | In progress | implemented via --mixedform, todo \<init\>      |
 | passwordform | In progress | implemented via --mixedform                     |
 | pause        | In progress |                                                 |
 | prgbox       |             |                                                 |
 | programbox   |             |                                                 |
 | progressbox  |             |                                                 |
 | radiolist    | In progress |                                                 |
-| rangebox     | In progress | the manual is wrong, add PAGE-UP/PAGE-DOWN/HOME/END keys |
+| rangebox     | In progress | the manual is wrong, todo PAGE-UP/PAGE-DOWN/HOME/END keys |
 | tailbox      |             |                                                 |
 | tailboxbg    |             |                                                 |
 | textbox      |             |                                                 |
