@@ -32,11 +32,9 @@
 #ifdef PORTNCURSES
 #include <ncurses/curses.h>
 #include <ncurses/form.h>
-#include <ncurses/menu.h>
 #else
 #include <curses.h>
 #include <form.h>
-#include <menu.h>
 #endif
 
 #include "bsddialog.h"

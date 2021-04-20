@@ -123,7 +123,7 @@
 #define INFOBOX		81 // infobox
 #define INPUTBOX	82 // inputbox
 #define INPUTMENU	83 // inputmenu
-#define MENU_		84 // menu, ncurses has MENU
+#define MENU		84 // menu
 #define MIXEDFORM	85 // mixedform
 #define MIXEDGAUGE	86 // mixedgauge
 #define MSGBOX		87 // msgbox
@@ -294,7 +294,7 @@ int main(int argc, char *argv[argc])
 	    { "infobox", no_argument, NULL, INFOBOX },
 	    { "inputbox", no_argument, NULL, INPUTBOX },
 	    { "inputmenu", no_argument, NULL, INPUTMENU },
-	    { "menu", no_argument, NULL, MENU_ },
+	    { "menu", no_argument, NULL, MENU },
 	    { "mixedform", no_argument, NULL, MIXEDFORM },
 	    { "mixedgauge", no_argument, NULL, MIXEDGAUGE },
 	    { "msgbox", no_argument, NULL, MSGBOX },
@@ -436,7 +436,7 @@ int main(int argc, char *argv[argc])
 		case INPUTMENU:
 			widgetbuilder = inputmenu_builder;
 			break;
-		case MENU_:
+		case MENU:
 			widgetbuilder = menu_builder;
 			break;
 		case MIXEDFORM:

@@ -9,12 +9,12 @@ OBJECTS= ${SOURCES:.c=.o}
 
 # BASE ncurses
 CFLAGS= -Wall
-LDFLAGS= -L/usr/lib -lform -lmenu -lncurses -ltinfo
+LDFLAGS= -L/usr/lib -lform -lncurses -ltinfo
 
 # PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
 .if defined(PORTNCURSES)
 CFLAGS += -DPORTNCURSES -I/usr/local/include
-LDFLAGS = -L/usr/local/lib -lmenu -lform -lncurses -ltinfo
+LDFLAGS = -L/usr/local/lib -lform -lncurses -ltinfo
 .endif
 
 BINDIR= /usr/local/sbin
