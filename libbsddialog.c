@@ -505,8 +505,8 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	xe = xs + cols - 4 -1;
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
+	    conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
