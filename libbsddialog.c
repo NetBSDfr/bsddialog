@@ -450,22 +450,49 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 /*
  * Menu handler: Checklist, Menu, Radiolist
  */
-struct menuitem {
+struct myitem {
 	char *name;
 	char *desc;
-	bool selected;
+	bool on;
 };
 
-enum formmode { CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
+struct mymenu {
+	struct myitem *items;
+	int nitems;
+	int selected;
+	int ys;
+	int ye;
+	int xs;
+	int xe;
+};
+
+enum menumode { CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
+
+void draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode, bool iscurr)
+{
+	int color;
+
+	color = iscurr ? (COLOR_PAIR(WHITE_BLUE) | A_BOLD) : (COLOR_PAIR(BLACK_WHITE) | A_BOLD);
+	wmove(pad, y, 0);
+	wattron(pad, color);
+	if (mode == CHECKLISTMODE)
+		wprintw(pad, "[%c] ", item.on ? 'X' : ' ');
+	if (mode == RADIOLISTMODE)
+		wprintw(pad, "(%c) ", item.on ? '*' : ' ');
+	wprintw(pad, "%s %s", item.name, item.desc);
+	wattron(pad, color);
+}
 
 int
 menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *menuwin, MENU *menu,
-    int nitems, struct menuitem *mi, int sleeptime, int fd)
+    int *values, int selected, bool shortkey, WINDOW *padmenu, struct mymenu menu,
+    int sleeptime, int fd)
 {
 	bool loop, buttupdate;
-	int input, output;
+	int input, output, curr;
 
+	enum menumode mode = CHECKLISTMODE; // tofix delete!
+	curr = 0;
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
@@ -474,13 +501,15 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			wrefresh(buttwin);
 			buttupdate = false;
 		}
-		wrefresh(menuwin);
+		//wrefresh(menuwin);
+		prefresh(padmenu, 0, 0, menu.ys, menu.xs, menu.ye, menu.xe);
+
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[selected]; // values -> outputs
+			output = values[selected]; // -> buttvalues[selbutton]
 			loop = false;
-			dprintf(fd, "%s", item_name(current_item(menu)));
+			//dprintf(fd, "%s", item_name(current_item(menu)));
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -502,14 +531,26 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 				buttupdate = true;
 			}
 			break;
+		}
+
+		if (menu.nitems <= 0)
+			continue;
+
+		switch(input) {
 		case KEY_UP:
-			menu_driver(menu, REQ_UP_ITEM);
+			draw_myitem(padmenu, curr, menu.items[curr], mode, false);
+			curr = (curr > 0) ? curr - 1 : 0;
+			draw_myitem(padmenu, curr, menu.items[curr], mode, true);
 			break;
 		case KEY_DOWN:
-			menu_driver(menu, REQ_DOWN_ITEM);
+			draw_myitem(padmenu, curr, menu.items[curr], mode, false);
+			curr = (curr < menu.nitems-1) ? curr +1 : menu.nitems-1;
+			draw_myitem(padmenu, curr, menu.items[curr], mode, true);
 			break;
 		case ' ': /* Space */
-			menu_driver(menu, REQ_TOGGLE_ITEM);
+			//menu_driver(menu, REQ_TOGGLE_ITEM);
+			menu.items[curr].on = ! menu.items[curr].on;
+			mvwaddch(padmenu, curr, 1, menu.items[curr].on ? 'X' : ' ');
 			break;
 		default:
 			
@@ -524,14 +565,13 @@ menu_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 
 int
 do_menu(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int line, enum formmode fm, int nitems, struct menuitem *items)
+    unsigned int menurows, int line, enum menumode mode, int nitems, struct myitem *items)
 {
-	WINDOW *widget, *button, *menuwin, *submenuwin, *shadow;
+	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
 	char *buttons[4];
 	int i, values[4], output, nbuttons, defbutton, y, x;
-	MENU *menu;
-	ITEM *mi[128];
-	struct menuitem mmii[128];
+	int ys, ye, xs, xe;
+	struct mymenu menu;
 
 	y = conf.y;
 	x = conf.x;
@@ -545,37 +585,66 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	for(i=0; i < nitems; i++) {
-		mi[i] = new_item(items[i].name, items[i].desc);
+	menupad = newpad(nitems, line);
+
+	for (i=0; i<nitems; i++) {
+		draw_myitem(menupad, i, items[i], mode, i==0);
 	}
-	mi[i] = (ITEM *)NULL;
 
-	menu = new_menu(mi);
-	set_menu_fore(menu, COLOR_PAIR(WHITE_BLUE));
-	set_menu_back(menu, COLOR_PAIR(BLACK_WHITE));
-	set_menu_win(menu, menuwin);
-	set_menu_mark(menu, "");
-	set_menu_format(menu, 0, 0);
+	ys = y + rows - 5 - menurows + 1;
+	ye = ys + menurows + 2 -1;
+	xs = x + 2 + 1;
+	xe = xs + cols - 4 -1;
 
-	//submenuwin = derwin(menuwin, menurows, cols-6, 1, 1); // justify left
-	submenuwin = derwin(menuwin, menurows, line, 1, 1 + (cols-6)/2 - line/2);
-	set_menu_sub(menu, submenuwin);
-	post_menu(menu);
+	menu.items = items;
+	menu.nitems = nitems;
+	menu.selected = nitems != 0 ? 0 : -1;
+	menu.ys = ys;
+	menu.ye = ye;
+	menu.xs = xs;
+	menu.xe = xe;
 
 	wrefresh(menuwin);
+	prefresh(menupad, 0, 0, ys, xs, ye, xe);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	output = menu_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, menuwin, menu, nitems, mmii, conf.sleep,
-	    conf.output_fd);
+	    defbutton, true, menupad, menu, conf.sleep, conf.output_fd);
 
 	delwin(button);
-	delwin(submenuwin);
+	delwin(menupad);
 	delwin(menuwin);
 	widget_end(conf, "MenuToFix", widget, rows, cols, shadow); // tofix name
+
+	return output;
+}
+
+int
+bsddialog_checklist(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int argc, char **argv)
+{
+	int i, output, nitems, line;
+	struct myitem items[128];
+
+	if ((argc % 3) != 0)
+		return (-1);
+
+	line = 0;
+	nitems = argc / 3;
+	for (i=0; i<nitems; i++) {
+		items[i].name = argv[3*i];
+		items[i].desc = argv[3*i+1];
+		items[i].on = strcmp(argv[3*i+2], "on") == 0 ? true : false;
+
+		line = MAX(strlen(items[i].name) + strlen(items[i].desc) + 5,
+		    line);
+	}
+
+	output = do_menu(conf, text, rows, cols, menurows, line, CHECKLISTMODE,
+	    nitems, items);
 
 	return output;
 }
@@ -585,7 +654,7 @@ bsddialog_menu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
 	int i, output, nitems, line;
-	struct menuitem items[128];
+	struct myitem items[128];
 
 	if ((argc % 2) != 0)
 		return (-1);
@@ -606,38 +675,11 @@ bsddialog_menu(struct config conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_checklist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int argc, char **argv)
-{
-	int i, output, nitems, line;
-	struct menuitem items[128];
-
-	if ((argc % 3) != 0)
-		return (-1);
-
-	line = 0;
-	nitems = argc / 3;
-	for (i=0; i<nitems; i++) {
-		items[i].name = argv[3*i];
-		items[i].desc = argv[3*i+1];
-		items[i].selected = strcmp(argv[3*i+2], "on") == 0 ? true : false;
-
-		line = MAX(strlen(items[i].name) + strlen(items[i].desc) + 5,
-		    line);
-	}
-
-	output = do_menu(conf, text, rows, cols, menurows, line, CHECKLISTMODE,
-	    nitems, items);
-
-	return output;
-}
-
-int
 bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
 	int i, output, nitems, line;
-	struct menuitem items[128];
+	struct myitem items[128];
 	bool on = false;
 
 	if ((argc % 3) != 0)
@@ -649,10 +691,10 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 		items[i].name = argv[3*i];
 		items[i].desc = argv[3*i+1];
 		if (on == false && (strcmp(argv[3*i+2], "on") != 0)) {
-			items[i].selected = true;
+			items[i].on = true;
 			on = true;
 		} else
-			items[i].selected = true;
+			items[i].on = true;
 
 		line = MAX(strlen(items[i].name) + strlen(items[i].desc) + 5,
 		    line);
