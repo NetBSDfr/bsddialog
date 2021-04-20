@@ -117,7 +117,7 @@
 #define CHECKLIST	75 // checklist
 #define DSELECT		76 // dselect
 #define EDITBOX		77 // editbox
-#define FORM_		78 // form, ncurses has FORM
+#define FORM		78 // form
 #define FSELECT		79 // fselect
 #define GAUGE		80 // gauge
 #define INFOBOX		81 // infobox
@@ -288,7 +288,7 @@ int main(int argc, char *argv[argc])
 	    { "checklist", no_argument, NULL, CHECKLIST },
 	    { "dselect", no_argument, NULL, 'X' },
 	    { "editbox", no_argument, NULL, 'X' },
-	    { "form", no_argument, NULL, FORM_ },
+	    { "form", no_argument, NULL, FORM },
 	    { "fselect", no_argument, NULL, 'X' },
 	    { "gauge", no_argument, NULL, GAUGE },
 	    { "infobox", no_argument, NULL, INFOBOX },
@@ -421,7 +421,7 @@ int main(int argc, char *argv[argc])
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
-		case FORM_:
+		case FORM:
 			widgetbuilder = form_builder;
 			break;
 		case GAUGE:
