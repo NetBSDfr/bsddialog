@@ -479,7 +479,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	char *buttons[4];
 	int i, values[4], output, nbuttons, defbutton, y, x, input, curr;
 	int ys, ye, xs, xe;
-	bool loop, buttupdate;
+	bool loop, buttupdate, sep;
 
 	y = conf.y;
 	x = conf.x;
@@ -528,7 +528,6 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		case 10: // Enter
 			output = values[defbutton]; // -> buttvalues[selbutton]
 			loop = false;
-			//dprintf(fd, "%s", item_name(current_item(menu)));
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -592,6 +591,21 @@ do_menu(struct config conf, char* text, int rows, int cols,
 
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
+
+	if (output == BSDDIALOG_YESOK && nitems > 0) {
+		if (mode == MENUMODE)
+			dprintf(conf.output_fd, "%s", items[curr].name);
+		else { /* CHECKLIST or RADIOLIST */
+			sep = false;
+			for (i=0; i<nitems; i++)
+				if (items[i].on == true) {
+					dprintf(conf.output_fd, "%s",items[i].name);
+					if (sep == true)
+					    dprintf(conf.output_fd, " ");
+					sep = true;
+				}
+		}
+	}
 
 	delwin(button);
 	delwin(menupad);
