@@ -567,9 +567,22 @@ do_menu(struct config conf, char* text, int rows, int cols,
 			draw_myitem(menupad, curr, items[curr], mode, true);
 			break;
 		case ' ': /* Space */
-			//menu_driver(menu, REQ_TOGGLE_ITEM);
-			items[curr].on = ! items[curr].on;
-			mvwaddch(menupad, curr, 1, items[curr].on ? 'X' : ' ');
+			if (mode == MENUMODE)
+				break;
+			else if (mode == CHECKLISTMODE)
+				items[curr].on = ! items[curr].on;
+			else { //RADIOLISTMODE
+				if (items[curr].on == true)
+					break;
+				for (i=0; i<nitems; i++)
+					if (items[i].on == true) {
+						items[i].on = false;
+						draw_myitem(menupad, i,
+						    items[i], mode, false);
+					}
+				items[curr].on = true;
+			}
+			draw_myitem(menupad, curr, items[curr], mode, true);
 			break;
 		default:
 			
