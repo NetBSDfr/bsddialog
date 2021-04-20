@@ -668,7 +668,7 @@ bsddialog_menu(struct config conf, char* text, int rows, int cols,
 	if ((argc % 2) != 0)
 		return (-1);
 
-	line = 0;
+	line = maxname = maxdesc = 0;
 	nitems = argc / 2;
 	for (i=0; i<nitems; i++) {
 		items[i].name = argv[2*i];
@@ -696,7 +696,7 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 	if ((argc % 3) != 0)
 		return (-1);
 
-	line = 0;
+	line = maxname = maxdesc = 0;
 	nitems = argc / 3;
 	for (i=0; i<nitems; i++) {
 		items[i].name = argv[3*i];
