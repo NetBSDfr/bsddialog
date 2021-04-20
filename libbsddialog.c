@@ -456,11 +456,11 @@ struct myitem {
 
 enum menumode { CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
 
-void draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode, bool iscurr)
+void draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode, bool selected)
 {
 	int color;
 
-	color = iscurr ? (COLOR_PAIR(WHITE_BLUE) | A_BOLD) : (COLOR_PAIR(BLACK_WHITE) | A_BOLD);
+	color = selected ? (COLOR_PAIR(WHITE_BLUE) | A_BOLD) : (COLOR_PAIR(BLACK_WHITE) | A_BOLD);
 	wmove(pad, y, 0);
 	wattron(pad, color);
 	if (mode == CHECKLISTMODE)
@@ -656,11 +656,11 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 	for (i=0; i<nitems; i++) {
 		items[i].name = argv[3*i];
 		items[i].desc = argv[3*i+1];
-		if (on == false && (strcmp(argv[3*i+2], "on") != 0)) {
+		if (on == false && (strcmp(argv[3*i+2], "on") == 0)) {
 			items[i].on = true;
 			on = true;
 		} else
-			items[i].on = true;
+			items[i].on = false;
 
 		line = MAX(strlen(items[i].name) + strlen(items[i].desc) + 5,
 		    line);
