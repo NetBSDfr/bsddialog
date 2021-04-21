@@ -123,15 +123,6 @@ void bsddialog_end(void)
 	endwin();
 }
 
-void bsddialog_centreyx(int rows, int cols, int *y, int *x)
-{
-	if (y != NULL)
-		*y = LINES/2 - rows/2 - 1;
-
-	if (x != NULL)
-		*x = COLS/2 - cols/2;
-}
-
 int bsddialog_backtitle(struct config conf, char *backtitle)
 {
 

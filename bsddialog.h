@@ -117,7 +117,6 @@ struct config {
 int  bsddialog_init(void);
 void bsddialog_end(void);
 int  bsddialog_backtitle(struct config conf, char *backtitle);
-void bsddialog_centreyx(int rows, int cols, int *y, int *x);
 /* widgets */
 //int bsddialog_buildlist(struct config conf, char* text, int rows, int cols);
 //int bsddialog_calendar(struct config conf, char* text, int rows, int cols);

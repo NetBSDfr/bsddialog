@@ -195,8 +195,7 @@ int main(int argc, char *argv[argc])
 	struct config conf;
 
 	memset(&conf, 0, sizeof(struct config));
-	conf.x = -1;
-	conf.y = -1;
+	conf.y = conf.x = -1;
 	conf.cancel_label = "Cancel";
 	conf.exit_label = "EXIT";
 	conf.extra_label = "Extra";
@@ -510,11 +509,6 @@ int main(int argc, char *argv[argc])
 
 	if (backtitle != NULL)
 		bsddialog_backtitle(conf, backtitle);
-
-	if (conf.y < 0)
-		bsddialog_centreyx(rows, cols, &conf.y, NULL);
-	if (conf.x < 0)
-		bsddialog_centreyx(rows, cols, NULL, &conf.x);
 
 	output = widgetbuilder(conf, text, rows, cols, argc, argv);
 
