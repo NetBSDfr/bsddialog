@@ -164,9 +164,9 @@ int msgbox_builder(BUILDER_ARGS);
 int passwordbox_builder(BUILDER_ARGS);
 int passwordform_builder(BUILDER_ARGS);
 int pause_builder(BUILDER_ARGS);
-//int prgbox_builder(BUILDER_ARGS);
-//int programbox_builder(BUILDER_ARGS);
-//int progressbox_builder(BUILDER_ARGS);
+int prgbox_builder(BUILDER_ARGS);
+int programbox_builder(BUILDER_ARGS);
+int progressbox_builder(BUILDER_ARGS);
 int radiolist_builder(BUILDER_ARGS);
 int rangebox_builder(BUILDER_ARGS);
 //int tailbox_builder(BUILDER_ARGS);
@@ -301,9 +301,9 @@ int main(int argc, char *argv[argc])
 	    { "passwordbox", no_argument, NULL, PASSWORDBOX },
 	    { "passwordform", no_argument, NULL, PASSWORDFORM },
 	    { "pause", no_argument, NULL, PAUSE },
-	    { "prgbox", no_argument, NULL, },
-	    { "programbox", no_argument, NULL, 'X' },
-	    { "progressbox", no_argument, NULL, 'X' },
+	    { "prgbox", no_argument, NULL, PRGBOX },
+	    { "programbox", no_argument, NULL, PROGRAMBOX },
+	    { "progressbox", no_argument, NULL, PROGRESSBOX },
 	    { "radiolist", no_argument, NULL, RADIOLIST },
 	    { "rangebox", no_argument, NULL, RANGEBOX },
 	    { "tailbox", no_argument, NULL, 'X' },
@@ -456,6 +456,15 @@ int main(int argc, char *argv[argc])
 			break;
 		case PASSWORDFORM:
 			widgetbuilder = passwordform_builder;
+			break;
+		case PRGBOX:
+			widgetbuilder = prgbox_builder;
+			break;
+		case PROGRAMBOX:
+			widgetbuilder = programbox_builder;
+			break;
+		case PROGRESSBOX:
+			widgetbuilder = progressbox_builder;
 			break;
 		case RADIOLIST:
 			widgetbuilder = radiolist_builder;
@@ -685,6 +694,39 @@ int pause_builder(BUILDER_ARGS)
 
 	sec = atoi(argv[0]);
 	output = bsddialog_pause(conf, text, rows, cols, sec);
+
+	return output;
+}
+
+int prgbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	output = bsddialog_prgbox(conf, strlen(text) == 0 ? NULL : text, rows,
+	    cols, argv[0]);
+
+	return output;
+}
+
+int programbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_programbox(conf, strlen(text) == 0 ? NULL : text, rows, cols);
+
+	return output;
+}
+
+int progressbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_progressbox(conf, strlen(text) == 0 ? NULL : text, rows, cols);
 
 	return output;
 }

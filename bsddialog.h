@@ -143,9 +143,10 @@ int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
 int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec);
-//int bsddialog_prgbox(struct config conf, char* text, int rows, int cols);
-//int bsddialog_programbox(struct config conf, char* text, int rows, int cols);
-//int bsddialog_progressbox(struct config conf, char* text, int rows, int cols);
+int bsddialog_prgbox(struct config conf, char* text, int rows, int cols,
+    char *command);
+int bsddialog_programbox(struct config conf, char* text, int rows, int cols);
+int bsddialog_progressbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv);
 int bsddialog_rangebox(struct config conf, char* text, int rows, int cols,

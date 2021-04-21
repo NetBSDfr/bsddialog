@@ -1750,3 +1750,24 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 
 	return output;
 }
+
+/*
+ * prgbox, programbox and progressbox
+ */
+
+int
+bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *command)
+{
+	return 0;
+}
+
+int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
+{
+	return 0;
+}
+
+int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
+{
+	return 0;
+}
+
