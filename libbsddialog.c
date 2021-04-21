@@ -397,7 +397,7 @@ widget_init(struct config conf, WINDOW *widget, int *y, int *x, char *text,
 		return -1;
 	}
 
-	if (text != NULL)
+	if (text != NULL) /* programbox etc */
 		print_text_multiline(widget, 1, 2, text, *w - 4);
 
 	wrefresh(widget);
@@ -1759,6 +1759,39 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 
 int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 {
+	/*char line[MAXINPUT];
+	WINDOW *widget, *pad, *button, *shadow;
+	//char *buttons[4];
+	//int input, output, nbuttons, selbutton, values[4], y, x;
+	int y, x;
+
+	y = conf.y;
+	x = conf.x;
+	widget = shadow = NULL;
+	if (widget_init2(conf, &widget, &y, &x, text, &rows, &cols, shadow) < 0)
+		return -1;
+
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+*/
+	/*get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &selbutton);*/
+/*
+	refresh();
+	wrefresh(widget);
+	if (text != NULL && conf.no_lines == false) {
+		mvwhline(widget, 2, 3, conf.ascii_lines ? '-' : ACS_HLINE, 2);
+	}
+
+	//pad = newpad(rows - 4 - (), cols-2);
+
+	do {
+		fgets(line, MAXINPUT, stdin);
+		printf("%s", line);
+	} while (feof(stdin) == 0);
+*/
 	return 0;
 }
 
