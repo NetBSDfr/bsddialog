@@ -134,7 +134,7 @@ Examples:
 | passwordform | In progress | implemented via --mixedform                     |
 | pause        | In progress |                                                 |
 | prgbox       |             |                                                 |
-| programbox   |             |                                                 |
+| programbox   | Coding      |                                                 |
 | progressbox  |             |                                                 |
 | radiolist    | In progress |                                                 |
 | rangebox     | In progress | the manual is wrong, todo PAGE-UP/PAGE-DOWN/HOME/END keys |

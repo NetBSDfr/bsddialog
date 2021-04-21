@@ -40,6 +40,7 @@
 #include "bsddialog.h"
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
+#define MAXINPUT 2048
 
 /* Foreground_Background */
 #define BLUE_BLUE	 1 // main background
@@ -1746,40 +1747,52 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 
 int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 {
-	/*char line[MAXINPUT];
+	char line[MAXINPUT];
 	WINDOW *widget, *pad, *button, *shadow;
-	//char *buttons[4];
-	//int input, output, nbuttons, selbutton, values[4], y, x;
-	int y, x;
+	int i, y, x, padrows, padcols, ys, ye, xs, xe;
+	char *buttons[4];
+	int values[4], output, nbuttons, defbutton;
 
 	y = conf.y;
 	x = conf.x;
 	widget = shadow = NULL;
-	if (widget_init2(conf, &widget, &y, &x, text, &rows, &cols, shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
+	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
-*/
-	/*get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
 	    conf.cancel_label, conf.help_button, conf.help_label,
-	    conf.defaultno, &selbutton);*/
-/*
-	refresh();
-	wrefresh(widget);
+	    conf.defaultno, &defbutton);
+
 	if (text != NULL && conf.no_lines == false) {
-		mvwhline(widget, 2, 3, conf.ascii_lines ? '-' : ACS_HLINE, 2);
+		mvwhline(widget, 2, 2, conf.ascii_lines ? '-' : ACS_HLINE, cols -4);
+		wrefresh(widget);
 	}
 
-	//pad = newpad(rows - 4 - (), cols-2);
+	padrows = text == NULL ? rows - 4 : rows - 6;
+	padcols = cols - 2;
+	ys = text == NULL ? y + 1 : y + 3;
+	xs = x + 1;
+	ye = ys + padrows;
+	xe = xs + padcols;
 
-	do {
-		fgets(line, MAXINPUT, stdin);
-		printf("%s", line);
-	} while (feof(stdin) == 0);
-*/
-	return 0;
+	pad = newpad(padrows, padcols);
+
+	i = 0;
+	//while (fgets(line, MAXINPUT, stdin) != NULL) {
+	while(getstr(line) != ERR){
+		mvwaddstr(pad, i, 0, line);
+		prefresh(pad, 0, 0, ys, xs, ye, xe);
+		i++;
+	}
+	
+	output = buttons_handler(button, cols, nbuttons, buttons, values, defbutton,
+	    true, conf.sleep, /*fd*/ 0);
+
+	return output;
 }
 
 int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
