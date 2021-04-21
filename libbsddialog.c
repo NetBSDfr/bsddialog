@@ -81,10 +81,6 @@ int
 bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons, int *values,
     int selected, bool shortkey, WINDOW *bar, int sizebar, int min, int max,
     int def, int sleeptime, int fd);
-int
-forms_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
-    FIELD **field, bool showinput, int sleeptime, int fd);
 
 
 int bsddialog_init(void)
