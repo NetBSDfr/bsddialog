@@ -94,7 +94,7 @@ int bsddialog_init(void)
 			c++;
 	}
 
-	set_theme(/*DEFAULT*/ EIGHTCOLORS /*WHIPTAILPURPLE*/ /*WHIPTAIL*/, &t);
+	set_theme(DEFAULT, &t); /* EIGHTCOLORS WHIPTAILPURPLE WHIPTAIL */
 
 	bkgd(t.backgroundcolor);
 
