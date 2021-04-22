@@ -122,12 +122,12 @@ Examples:
 | editbox      |             |                                                 |
 | form         | In progress | implemented via --mixedform                     |
 | fselect      |             |                                                 |
-| gauge        | In progress | dialog does not centre title                    |
+| gauge        | In progress |                                                 |
 | infobox      | In progress | Do not clear the screen                         |
-| inputbox     | In progress | implemented via --mixedform, todo \<init\>, dialog does not centre buttons and title |
+| inputbox     | In progress | implemented via --mixedform, todo \<init\>      |
 | inputmenu    |             |                                                 |
 | menu         | In progress | todo scrolling                                  |
-| mixedform    | In progress | manual dialog(3) is wrong                       |
+| mixedform    | In progress |                                                 |
 | mixedgauge   | In progress |                                                 |
 | msgbox       | In progress |                                                 |
 | passwordbox  | In progress | implemented via --mixedform, todo \<init\>      |
@@ -137,7 +137,7 @@ Examples:
 | programbox   | Coding      |                                                 |
 | progressbox  | Coding      |                                                 |
 | radiolist    | In progress |                                                 |
-| rangebox     | In progress | the manual is wrong, todo PAGE-UP/PAGE-DOWN/HOME/END keys |
+| rangebox     | In progress | todo PAGE-UP/PAGE-DOWN/HOME/END keys            |
 | tailbox      |             |                                                 |
 | tailboxbg    |             |                                                 |
 | textbox      |             |                                                 |
