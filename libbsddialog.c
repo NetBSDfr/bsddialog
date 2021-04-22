@@ -412,7 +412,6 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -475,7 +474,6 @@ do_menu(struct config conf, char* text, int rows, int cols,
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -766,7 +764,6 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -795,7 +792,6 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -966,7 +962,6 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1215,7 +1210,6 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1289,7 +1283,6 @@ WINDOW *widget, *bar, *shadow;
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1434,7 +1427,6 @@ int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int m
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1559,7 +1551,6 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1595,7 +1586,6 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1738,7 +1728,6 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 
 	y = conf.y;
 	x = conf.x;
-	widget = shadow = NULL;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
