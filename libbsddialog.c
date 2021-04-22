@@ -68,10 +68,6 @@ get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int sleep, int fd);
-int
-bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons, int *values,
-    int selected, bool shortkey, WINDOW *bar, int sizebar, int min, int max,
-    int def, int sleeptime, int fd);
 
 
 int bsddialog_init(void)
@@ -1329,17 +1325,35 @@ WINDOW *widget, *bar, *shadow;
 	return BSDDIALOG_YESOK;
 }
 
-int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *bar, int sizebar, int min,
-    int max, int def, int sleeptime, int fd)
+int
+bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
+    int max, int def)
 {
+	WINDOW *widget, *button, *bar, *shadow;
+	char*buttons[4];
+	int nbuttons, defbutton, values[4], y, x;
 	bool loop, buttupdate, barupdate;
-	int i, input, currvalue, output, pos, color;
+	int i, input, currvalue, output, sizebar, pos, color;
 	float unitxpos;
 	char valuestr[128];
 
+	y = conf.y;
+	x = conf.x;
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+		return -1;
+
+	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &defbutton);
+
 	currvalue = def;
-	sizebar = sizebar - 2;
+	sizebar = cols - 16;
 	unitxpos = ((float)(max - min + 1))/sizebar;
 
 	loop = buttupdate = barupdate = true;
@@ -1366,36 +1380,36 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		}
 
 		if (buttupdate) {
-			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
-			    shortkey);
-			wrefresh(buttwin);
+			draw_buttons(button, cols, nbuttons, buttons, defbutton,
+			    true);
+			wrefresh(button);
 			buttupdate = false;
 		}
 
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[selected]; // values -> outputs
+			output = values[defbutton]; // values -> outputs
 			loop = false;
-			dprintf(fd, "%d", currvalue);
+			dprintf(conf.output_fd, "%d", currvalue);
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
 			loop = false;
 			break;
 		case '\t': // TAB
-			selected = (selected + 1) % nbuttons;
+			defbutton = (defbutton + 1) % nbuttons;
 			buttupdate = true;
 			break;
 		case KEY_LEFT:
-			if (selected > 0) {
-				selected--;
+			if (defbutton > 0) {
+				defbutton--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (selected < nbuttons - 1) {
-				selected++;
+			if (defbutton < nbuttons - 1) {
+				defbutton++;
 				buttupdate = true;
 			}
 			break;
@@ -1414,16 +1428,25 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		}
 	}
 
-	sleep(sleeptime);
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
+
+	delwin(button);
+	delwin(bar);
+	widget_end(conf, "Rangebox", widget, rows, cols, shadow);
 
 	return output;
 }
 
-int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min, int max, int def)
+int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 {
 	WINDOW *widget, *button, *bar, *shadow;
 	char*buttons[4];
-	int nbuttons, defbutton, values[4], y, x;
+	int output, nbuttons, defbutton, values[4], y, x;
+	bool loop, buttupdate, barupdate;
+	int i, input, currvalue, pos, color, sizebar;
+	float unitxpos;
+	char valuestr[128];
 
 	y = conf.y;
 	x = conf.x;
@@ -1440,27 +1463,8 @@ int bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int m
 	    conf.cancel_label, conf.help_button, conf.help_label,
 	    conf.defaultno, &defbutton);
 
-	bar_handler(button, cols, nbuttons, buttons, values, defbutton, true,
-	    bar, cols-14, min, max, def, conf.sleep, conf.output_fd);
-
-	delwin(button);
-	delwin(bar);
-	widget_end(conf, "Rangebox", widget, rows, cols, shadow);
-
-	return BSDDIALOG_YESOK;
-}
-
-int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *bar, int sizebar, int sec,
-    int sleeptime)
-{
-	bool loop, buttupdate, barupdate;
-	int i, input, currvalue, output, pos, color;
-	float unitxpos;
-	char valuestr[128];
-
 	currvalue = sec;
-	sizebar = sizebar - 2;
+	sizebar = cols-16;
 	unitxpos = ((float)sizebar) / sec;
 
 	nodelay(stdscr, TRUE);
@@ -1490,9 +1494,9 @@ int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		}
 
 		if (buttupdate) {
-			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
-			    shortkey);
-			wrefresh(buttwin);
+			draw_buttons(button, cols, nbuttons, buttons, defbutton,
+			    true);
+			wrefresh(button);
 			buttupdate = false;
 		}
 
@@ -1510,7 +1514,7 @@ int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		}
 		switch(input) {
 		case 10: // Enter
-			output = values[selected]; // values -> outputs
+			output = values[defbutton]; // values -> outputs
 			loop = false;
 			break;
 		case 27: // Esc
@@ -1518,18 +1522,18 @@ int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			loop = false;
 			break;
 		case '\t': // TAB
-			selected = (selected + 1) % nbuttons;
+			defbutton = (defbutton + 1) % nbuttons;
 			buttupdate = true;
 			break;
 		case KEY_LEFT:
-			if (selected > 0) {
-				selected--;
+			if (defbutton > 0) {
+				defbutton--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (selected < nbuttons - 1) {
-				selected++;
+			if (defbutton< nbuttons - 1) {
+				defbutton++;
 				buttupdate = true;
 			}
 			break;
@@ -1538,34 +1542,8 @@ int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 
 	nodelay(stdscr, FALSE);
 
-	sleep(sleeptime);
-
-	return output;
-}
-
-int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
-{
-	WINDOW *widget, *button, *bar, *shadow;
-	char*buttons[4];
-	int output, nbuttons, defbutton, values[4], y, x;
-
-	y = conf.y;
-	x = conf.x;
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
-		return -1;
-
-	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
-	    conf.defaultno, &defbutton);
-
-	output = pause_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, bar, cols-14, sec, conf.sleep);
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
 
 	delwin(button);
 	delwin(bar);
