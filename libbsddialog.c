@@ -42,18 +42,30 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define MAXINPUT 2048
 
-/* Foreground_Background */
-#define BLUE_BLUE	 1 // main background
-#define BLUE_WHITE	 2 // widget title
-#define WHITE_WHITE	 3 // widget background and border
-#define BLACK_WHITE	 4 // widget border and key
-#define RED_WHITE	 5 // key
-#define WHITE_BLUE	 6 // key
-#define YELLOW_BLUE	 7 // key
-#define BLACK_BLACK	 8 // shadow
-#define CYAN_BLUE	 9 // backtitle
-#define WHITE_CYAN	10 // mixedform (editable not selected)
-#define CYAN_WHITE	11 // mixedform (not editable)
+#define BSD_COLOR(BACKGROUND, FOREGROUND) (BACKGROUND * 8 + FOREGROUND +1)
+
+int shadowcolor;
+int backgroundcolor;
+int widgetcolor;
+int currbuttoncolor;
+int buttoncolor;
+int currshortkeycolor;
+int shortkeycolor;
+int curritemcolor;
+int itemcolor;
+int currbarcolor;
+int barcolor;
+int currtagcolor;
+int tagcolor;
+int titlecolor;
+int lineraisecolor;
+int linelowercolor;
+int bottomtitlecolor;
+int currfieldcolor;
+int fieldreadonlycolor;
+int fieldcolor;
+int tofixcolor;
+
 
 enum elevation { RAISED, LOWERED, NOLINES };
 
@@ -86,7 +98,7 @@ bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons, int *values
 
 int bsddialog_init(void)
 {
-	int error = 0;
+	int i, j, c = 1, error = 0;
 
 	if(initscr() == NULL)
 		return -1;
@@ -98,19 +110,41 @@ int bsddialog_init(void)
 	curs_set(0);
 
 	error += start_color();
-	error += init_pair(BLUE_BLUE,   COLOR_BLUE,   COLOR_BLUE);
-	error += init_pair(BLUE_WHITE,  COLOR_BLUE,   COLOR_WHITE);
-	error += init_pair(WHITE_WHITE, COLOR_WHITE,  COLOR_WHITE);
-	error += init_pair(BLACK_WHITE, COLOR_BLACK,  COLOR_WHITE);
-	error += init_pair(RED_WHITE,   COLOR_RED,    COLOR_WHITE);
-	error += init_pair(WHITE_BLUE,  COLOR_WHITE,  COLOR_BLUE);
-	error += init_pair(YELLOW_BLUE, COLOR_YELLOW, COLOR_BLUE);
-	error += init_pair(BLACK_BLACK, COLOR_BLACK,  COLOR_BLACK);
-	error += init_pair(CYAN_BLUE,   COLOR_CYAN,   COLOR_BLUE);
-	error += init_pair(WHITE_CYAN,  COLOR_WHITE,  COLOR_CYAN);
-	error += init_pair(CYAN_WHITE,  COLOR_CYAN,   COLOR_WHITE);
+	for (i=0; i< 8; i++)
+		for(j=0; j<8; j++) {
+			error += init_pair(c, i, j);
+			c++;
+	}
 
-	bkgd(COLOR_PAIR(BLUE_BLUE));
+	backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,  COLOR_BLUE)) | A_BOLD;
+
+	shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK));
+	titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
+	lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_WHITE)) | A_BOLD;
+	linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
+	widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+
+	curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD;
+	itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
+	currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD;
+	tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
+
+	currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD;
+	fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD;
+	fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE))| A_BOLD;
+
+	currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD;
+	barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
+
+	currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, COLOR_BLUE))  | A_BOLD;
+	buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE));
+	currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_BLUE))  | A_BOLD;
+	shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_RED,    COLOR_WHITE)) | A_BOLD;
+
+	bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE))  | A_BOLD;
+	tofixcolor      = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_BLACK));
+
+	bkgd(backgroundcolor);
 
 	refresh();
 
@@ -126,12 +160,9 @@ void bsddialog_end(void)
 int bsddialog_backtitle(struct config conf, char *backtitle)
 {
 
-	attron(COLOR_PAIR(CYAN_BLUE) | A_BOLD );
 	mvaddstr(0, 1, backtitle);
 	if (conf.no_lines != true)
 		mvhline(1, 1, conf.ascii_lines ? '-' : ACS_HLINE, COLS-2);
-
-	attroff(COLOR_PAIR(CYAN_BLUE) | A_BOLD);
 
 	refresh();
 
@@ -176,7 +207,7 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 	rtee = ACS_RTEE;
 
 	popup = newwin(rows, cols, y, x);
-	wbkgd(popup, COLOR_PAIR(BLACK_WHITE));
+	wbkgd(popup, widgetcolor);
 
 	if (elev != NOLINES) {
 		if (asciilines) {
@@ -184,44 +215,44 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 			ts = bs = '-';
 			tl = tr = bl = br = ltee = rtee = '+';
 		}
-		leftcolor  = elev == RAISED ? WHITE_WHITE : BLACK_WHITE;
-		rightcolor = elev == RAISED ? BLACK_WHITE : WHITE_WHITE;
-		wattron(popup, A_BOLD | COLOR_PAIR(leftcolor));
+		leftcolor  = elev == RAISED ? lineraisecolor : linelowercolor;
+		rightcolor = elev == RAISED ? linelowercolor : lineraisecolor;
+		wattron(popup, leftcolor);
 		wborder(popup, ls, rs, ts, bs, tl, tr, bl, br);
-		wattroff(popup, A_BOLD | COLOR_PAIR(leftcolor));
+		wattroff(popup, leftcolor);
 
-		wattron(popup, A_BOLD | COLOR_PAIR(rightcolor));
+		wattron(popup, rightcolor);
 		mvwaddch(popup, 0, cols-1, tr);
 		mvwvline(popup, 1, cols-1, rs, rows-2);
 		mvwaddch(popup, rows-1, cols-1, br);
 		mvwhline(popup, rows-1, 1, bs, cols-2);
-		wattroff(popup, A_BOLD | COLOR_PAIR(rightcolor));
+		wattroff(popup, rightcolor);
 
 		if (subwindowborders) {
-			wattron(popup, A_BOLD | COLOR_PAIR(leftcolor));
+			wattron(popup, leftcolor);
 			mvwaddch(popup, 0, 0, ltee);
-			wattroff(popup, A_BOLD | COLOR_PAIR(leftcolor));
+			wattroff(popup, leftcolor);
 
-			wattron(popup, A_BOLD | COLOR_PAIR(rightcolor));
+			wattron(popup, rightcolor);
 			mvwaddch(popup, 0, cols-1, rtee);
-			wattroff(popup, A_BOLD | COLOR_PAIR(rightcolor));
+			wattroff(popup, rightcolor);
 		}
 	}
 
 	if (title != NULL) {
-		wattron(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+		wattron(popup, titlecolor);
 		wmove(popup, 0, cols/2 - strlen(title)/2);
 		waddstr(popup, title);
-		wattroff(popup, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+		wattroff(popup, titlecolor);
 	}
 
 	if (bottomtitle != NULL) {
-		wattron(popup, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		wattron(popup, bottomtitlecolor);
 		wmove(popup, rows - 1, cols/2 - strlen(bottomtitle)/2 - 1);
 		waddch(popup, '[');
 		waddstr(popup, bottomtitle);
 		waddch(popup, ']');
-		wattroff(popup, A_BOLD | COLOR_PAIR(BLACK_WHITE));
+		wattroff(popup, bottomtitlecolor);
 	}
 
 	return popup;
@@ -234,7 +265,7 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	int x = 2, y = COLS/2 - cols/2; /* tofix x & y*/
 
 	shown_lines = rows > (LINES - x - 1) ? (LINES - x - 1) : rows;
-	wattron(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
+	wattron(pad, tofixcolor);
 	while(loop) {
 		mvwvline(pad, 1, cols-1, ACS_VLINE, rows-2);
 		if(cur_line > 0)
@@ -256,23 +287,23 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 			loop = false;
 		}
 	}
-	wattroff(pad, COLOR_PAIR(WHITE_BLUE) | A_BOLD);
+	wattroff(pad, tofixcolor);
 }
 
 void
 draw_button(WINDOW *window, int x, int size, char *text, bool selected,
     bool shortkey)
 {
-	int i, color_arrows, color_first_char, color_tail_chars;
+	int i, color_arrows, color_shortkey, color_button;
 
 	if (selected) {
-		color_arrows = A_BOLD | COLOR_PAIR(WHITE_BLUE);
-		color_first_char = A_BOLD | COLOR_PAIR(WHITE_BLUE);
-		color_tail_chars = A_BOLD | COLOR_PAIR(YELLOW_BLUE);
+		color_arrows = currshortkeycolor;
+		color_shortkey = currshortkeycolor;
+		color_button = currbuttoncolor;
 	} else {
-		color_arrows = COLOR_PAIR(BLACK_WHITE);
-		color_first_char = A_BOLD | COLOR_PAIR(RED_WHITE);
-		color_tail_chars = A_BOLD | COLOR_PAIR(BLACK_WHITE);
+		color_arrows = buttoncolor;
+		color_shortkey = shortkeycolor;
+		color_button = buttoncolor;
 	}
 
 	wattron(window, color_arrows);
@@ -284,14 +315,14 @@ draw_button(WINDOW *window, int x, int size, char *text, bool selected,
 
 	x = x + 1 + ((size - 2 - strlen(text))/2);
 
-	wattron(window, color_tail_chars);
+	wattron(window, color_button);
 	mvwaddstr(window, 1, x, text);
-	wattroff(window, color_tail_chars);
+	wattroff(window, color_button);
 
 	if (shortkey) {
-		wattron(window, color_first_char);
+		wattron(window, color_shortkey);
 		mvwaddch(window, 1, x, text[0]);
-		wattroff(window, color_first_char);
+		wattroff(window, color_shortkey);
 	}
 }
 
@@ -378,7 +409,7 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 	if (conf.shadow) {
 		if ((*shadow = newwin(*h, *w+1, *y+1, *x+1)) == NULL)
 			return -1;
-		wbkgd(*shadow, COLOR_PAIR(BLACK_BLACK));
+		wbkgd(*shadow, shadowcolor);
 		wrefresh(*shadow);
 	}
 
@@ -450,26 +481,26 @@ draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode,
 {
 	int color, colorname;
 
-	color = selected ? WHITE_BLUE : BLACK_WHITE;
-	colorname = selected ? YELLOW_BLUE : BLUE_WHITE;
+	color = selected ? curritemcolor : itemcolor;
+	colorname = selected ? currtagcolor : tagcolor;
 
 	wmove(pad, y, 0);
-	wattron(pad, COLOR_PAIR(color) | A_BOLD);
+	wattron(pad, color);
 	if (mode == CHECKLISTMODE)
 		wprintw(pad, "[%c]", item.on ? 'X' : ' ');
 	if (mode == RADIOLISTMODE)
 		wprintw(pad, "(%c)", item.on ? '*' : ' ');
-	wattron(pad, COLOR_PAIR(color) | A_BOLD);
+	wattron(pad, color);
 
-	wattron(pad, COLOR_PAIR(colorname) | A_BOLD);
+	wattron(pad, colorname);
 	if (mode != MENUMODE)
 		wmove(pad, y, 4);
 	waddstr(pad, item.name);
-	wattron(pad, COLOR_PAIR(colorname) | A_BOLD);
+	wattron(pad, colorname);
 
-	wattron(pad, COLOR_PAIR(color) | A_BOLD);
+	wattron(pad, color);
 	mvwaddstr(pad, y, xdesc + (mode==MENUMODE ? 0 : 4), item.desc);
-	wattron(pad, COLOR_PAIR(color) | A_BOLD);
+	wattron(pad, color);
 }
 
 int
@@ -496,7 +527,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	menupad = newpad(nitems, line);
-	wbkgd(menupad, COLOR_PAIR(BLACK_WHITE));
+	wbkgd(menupad, widgetcolor);
 
 	for (i=0; i<nitems; i++) {
 		draw_myitem(menupad, i, items[i], mode, xdesc, i == 0);
@@ -926,22 +957,22 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		case KEY_UP:
 			if (nitems < 2)
 				break;
-			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
-			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
+			set_field_fore(current_field(form), fieldcolor);
+			set_field_back(current_field(form), fieldcolor);
 			form_driver(form, REQ_PREV_FIELD);
 			form_driver(form, REQ_END_LINE);
-			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
-			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
+			set_field_fore(current_field(form), currfieldcolor);
+			set_field_back(current_field(form), currfieldcolor);
 			break;
 		case KEY_DOWN:
 			if (nitems < 2)
 				break;
-			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
-			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_CYAN));
+			set_field_fore(current_field(form), fieldcolor);
+			set_field_back(current_field(form), fieldcolor);
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_END_LINE);
-			set_field_fore(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
-			set_field_back(current_field(form), A_BOLD | COLOR_PAIR(WHITE_BLUE));
+			set_field_fore(current_field(form), currfieldcolor);
+			set_field_back(current_field(form), currfieldcolor);
 			break;
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
@@ -1007,18 +1038,18 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 		if (ISITEMREADONLY(items[i])) {
 			field_opts_off(field[i], O_EDIT);
 			field_opts_off(field[i], O_ACTIVE);
-			color = CYAN_WHITE;
+			color = fieldreadonlycolor;
 		} else {
-			color = i == 0 ? WHITE_BLUE : WHITE_CYAN;
+			color = i == 0 ? currfieldcolor : fieldcolor;
 		}
-		set_field_fore(field[i], A_BOLD | COLOR_PAIR(color));
-		set_field_back(field[i], A_BOLD | COLOR_PAIR(color));
+		set_field_fore(field[i], color);
+		set_field_back(field[i], color);
 	}
 	field[i] = NULL;
 
 	if (nitems == 1) {// inputbox or passwordbox
-		set_field_fore(field[0], COLOR_PAIR(BLACK_WHITE));
-		set_field_back(field[0], COLOR_PAIR(BLACK_WHITE));
+		set_field_fore(field[0], widgetcolor);
+		set_field_back(field[0], widgetcolor);
 	}
 
 	form = new_form(field);
@@ -1199,20 +1230,20 @@ void draw_perc_bar(WINDOW *win, int y, int x, int size, int perc)
 
 	wmove(win, y, x);
 	for (i = 0; i < size; i++) {
-		color = (i <= blue_x) ? BLUE_BLUE : WHITE_WHITE;
-		wattron(win, A_BOLD | COLOR_PAIR(color));
+		color = (i <= blue_x) ? currbarcolor : barcolor;
+		wattron(win, color);
 		waddch(win, ' ');
-		wattroff(win, A_BOLD | COLOR_PAIR(BLUE_BLUE));
+		wattroff(win, color);
 	}
 
 	sprintf(percstr, "%3d%%", perc);
 	wmove(win, y, x + size/2 - 2);
 	for (i=0; i<4; i++) {
 		color = ( (blue_x + 1) <= (size/2 - 2 + i) ) ?
-		    BLUE_WHITE : WHITE_BLUE;
-		wattron(win, A_BOLD | COLOR_PAIR(color));
+		    barcolor : currbarcolor;
+		wattron(win, color);
 		waddch(win, percstr[i]);
-		wattroff(win, A_BOLD | COLOR_PAIR(color));
+		wattroff(win, color);
 	}
 }
 
@@ -1300,10 +1331,10 @@ WINDOW *widget, *bar, *shadow;
 	y = conf.y;
 	x = conf.x;
 	widget = shadow = NULL;
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow) < 0)
 		return -1;
 
-	bar = new_window(conf.y+rows -4, conf.x+3, 3, cols-6, NULL, conf.hline,
+	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 
 	/* mini bars */
@@ -1323,12 +1354,14 @@ WINDOW *widget, *bar, *shadow;
 		}
 	}
 
+	print_text_multiline(widget, rows -6, 2, text, cols - 4);
+
 	/* main bar */
 	draw_perc_bar(bar, 1, 1, cols-8, perc);
 
-	wattron(bar, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+	wattron(bar, barcolor);
 	mvwaddstr(bar, 0, 2, "Overall Progress");
-	wattroff(bar, A_BOLD | COLOR_PAIR(BLUE_WHITE));
+	wattroff(bar, barcolor);
 
 	wrefresh(widget);
 	wrefresh(bar);
@@ -1362,19 +1395,19 @@ int bar_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		if (barupdate) {
 			pos = (int)( ((float)(currvalue - min)) / unitxpos);
 			for (i = 0; i < sizebar; i++) {
-				color = i <= pos ? BLUE_BLUE : WHITE_WHITE;
-				wattron(bar, A_BOLD | COLOR_PAIR(color));
+				color = i <= pos ? currbarcolor : barcolor;
+				wattron(bar, color);
 				mvwaddch(bar, 1, i + 1, ' ');
-				wattroff(bar, A_BOLD | COLOR_PAIR(color));
+				wattroff(bar, color);
 			}
 			sprintf(valuestr, "%d", currvalue);
 			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2 + 1);
 			for (i=0; i<strlen(valuestr); i++) {
 				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
-				    BLUE_WHITE : WHITE_BLUE;
-				wattron(bar, A_BOLD | COLOR_PAIR(color));
+				    barcolor : currbarcolor;
+				wattron(bar, color);
 				waddch(bar, valuestr[i]);
-				wattroff(bar, A_BOLD | COLOR_PAIR(color));
+				wattroff(bar, color);
 			}
 			barupdate = false;
 			wrefresh(bar);
@@ -1487,19 +1520,19 @@ int pause_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		if (barupdate) {
 			pos = (int)(currvalue * unitxpos);
 			for (i = 0; i < sizebar; i++) {
-				color = i <= pos ? BLUE_BLUE : WHITE_WHITE;
-				wattron(bar, A_BOLD | COLOR_PAIR(color));
+				color = i <= pos ? currbarcolor : barcolor;
+				wattron(bar, color);
 				mvwaddch(bar, 1, i + 1, ' ');
-				wattroff(bar, A_BOLD | COLOR_PAIR(color));
+				wattroff(bar, color);
 			}
 			sprintf(valuestr, "%d", currvalue);
 			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2 + 1);
 			for (i=0; i<strlen(valuestr); i++) {
 				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
-				    BLUE_WHITE : WHITE_BLUE;
-				wattron(bar, A_BOLD | COLOR_PAIR(color));
+				    barcolor : currbarcolor;
+				wattron(bar, color);
 				waddch(bar, valuestr[i]);
-				wattroff(bar, A_BOLD | COLOR_PAIR(color));
+				wattroff(bar, color);
 			}
 			barupdate = false;
 			wrefresh(bar);
