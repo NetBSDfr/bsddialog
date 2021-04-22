@@ -1677,7 +1677,77 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 int
 bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *command)
 {
-	return 0;
+	char line[MAXINPUT];
+	WINDOW *widget, *pad, *button, *shadow;
+	int i, y, x, padrows, padcols, ys, ye, xs, xe;
+	char *buttons[4];
+	int values[4], output, nbuttons, defbutton;
+
+	y = conf.y;
+	x = conf.x;
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+		return -1;
+
+	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &defbutton);
+
+	if (text != NULL && conf.no_lines == false) {
+		mvwhline(widget, 2, 2, conf.ascii_lines ? '-' : ACS_HLINE, cols -4);
+		wrefresh(widget);
+	}
+
+	padrows = text == NULL ? rows - 4 : rows - 6;
+	padcols = cols - 2;
+	ys = text == NULL ? y + 1 : y + 3;
+	xs = x + 1;
+	ye = ys + padrows;
+	xe = xs + padcols;
+
+	pad = newpad(padrows, padcols);
+	wbkgd(pad, t.widgetcolor);
+
+	int pipefd[2];
+	pipe(pipefd);
+	char buffer[1024];
+
+	memset(buffer, 0, 1024);
+
+	if (fork() == 0)
+	{
+		close(pipefd[0]);    // close reading
+
+		dup2(pipefd[1], 1);  // send stdout to the pipe
+		dup2(pipefd[1], 2);  // send stderr to the pipe
+
+		close(pipefd[1]);    // this descriptor is no longer needed
+
+		const char *ls="/bin/ls";
+		execl(ls, ls, NULL);
+		return 0;
+	}
+	else
+	{
+		close(pipefd[1]);  // close write
+
+		i = 0;
+		//while (fgets(line, MAXINPUT, stdin) != NULL) {
+		//while(getstr(line) != ERR){
+		while (read(pipefd[0], buffer, 1024) != 0) {
+			mvwaddstr(pad, i, 0, line);
+			prefresh(pad, 0, 0, ys, xs, ye, xe);
+			i++;
+		}
+	}
+
+	output = buttons_handler(button, cols, nbuttons, buttons, values, defbutton,
+	    true, conf.sleep, /*fd*/ 0);
+
+	return output;
 }
 
 int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
