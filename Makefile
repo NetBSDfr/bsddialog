@@ -4,7 +4,7 @@
 # Written in 2021 by Alfonso Sabato Siciliano
 
 OUTPUT=  bsddialog
-SOURCES= libbsddialog.c bsddialog.c
+SOURCES= theme.c libbsddialog.c bsddialog.c
 OBJECTS= ${SOURCES:.c=.o}
 
 # BASE ncurses
