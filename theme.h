@@ -28,7 +28,7 @@
 #ifndef _BSDDIALOG_THEME_H_
 #define _BSDDIALOG_THEME_H_
 
-enum bsddialog_theme { DEFAULT, DIALOG };
+enum bsddialog_theme { DEFAULT, EIGHTCOLORS, DIALOG, WHIPTAILPURPLE, WHIPTAIL };
 
 struct bsddialogtheme {
 	int shadowcolor;
@@ -44,6 +44,7 @@ struct bsddialogtheme {
 	int barcolor;
 	int currtagcolor;
 	int tagcolor;
+	bool surroundtitle;
 	int titlecolor;
 	int lineraisecolor;
 	int linelowercolor;

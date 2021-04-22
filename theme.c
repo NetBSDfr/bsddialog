@@ -37,9 +37,9 @@
 
 static void set_dialog_theme(struct bsddialogtheme *s)
 {
-	s->backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,  COLOR_BLUE))  | A_BOLD;
-
 	s->shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK));
+	s->backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,  COLOR_BLUE))  | A_BOLD;	
+	s->surroundtitle   = false;
 	s->titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
 	s->lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_WHITE)) | A_BOLD;
 	s->linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
@@ -65,12 +65,108 @@ static void set_dialog_theme(struct bsddialogtheme *s)
 	s->bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
 }
 
+static void set_eightcolors_theme(struct bsddialogtheme *s)
+{
+	s->shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK));
+	s->backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE));
+	s->surroundtitle   = false;
+	s->titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE));
+	s->lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+	s->linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+	s->widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+
+	s->curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE));
+	s->itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+	s->currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE));
+	s->tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE));
+
+	s->currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE));
+	s->fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN));
+	s->fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE));
+
+	s->currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE));
+	s->barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE));
+
+	s->currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,   COLOR_BLUE));
+	s->buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,   COLOR_WHITE));
+	s->currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE));
+	s->shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,   COLOR_WHITE));
+
+	s->bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+}
+
+static void set_whiptailpurple_theme(struct bsddialogtheme *s)
+{
+	s->shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK));
+	s->backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_MAGENTA))| A_BOLD;
+	s->surroundtitle   = true;
+	s->titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_WHITE));
+	s->lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+	s->linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+	s->widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+
+	s->curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD;
+	s->itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
+	s->currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD;
+	s->tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
+
+	s->currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD;
+	s->fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD;
+	s->fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE))| A_BOLD;
+
+	s->currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD;
+	s->barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
+
+	s->currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED));
+	s->buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE));
+	s->currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_RED));
+	s->shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE));
+
+	s->bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
+}
+
+static void set_whiptail_theme(struct bsddialogtheme *s)
+{
+	s->shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK));
+	s->backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD;
+	s->surroundtitle   = true;
+	s->titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_WHITE));
+	s->lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+	s->linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE));
+	s->widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
+
+	s->curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD;
+	s->itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
+	s->currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD;
+	s->tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
+
+	s->currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD;
+	s->fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD;
+	s->fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE))| A_BOLD;
+
+	s->currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD;
+	s->barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD;
+
+	s->currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED));
+	s->buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE));
+	s->currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_RED));
+	s->shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE));
+
+	s->bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD;
+}
+
 int set_theme(enum bsddialog_theme t, struct bsddialogtheme *s)
 {
 	int error = 0;
 
 	if (t == DIALOG || t == DEFAULT)
 		set_dialog_theme(s);
+	else if (t == WHIPTAILPURPLE)
+		set_whiptailpurple_theme(s);
+	else if (t == WHIPTAIL)
+		set_whiptail_theme(s);
+	else if (t == EIGHTCOLORS)
+		set_eightcolors_theme(s);
 	else
 		error = -1;
 

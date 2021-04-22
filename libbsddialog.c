@@ -94,7 +94,7 @@ int bsddialog_init(void)
 			c++;
 	}
 
-	set_theme(DEFAULT, &s);
+	set_theme(/*DEFAULT*/ EIGHTCOLORS /*WHIPTAILPURPLE*/ /*WHIPTAIL*/, &s);
 
 	bkgd(s.backgroundcolor);
 
@@ -192,6 +192,13 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 	}
 
 	if (title != NULL) {
+		if (s.surroundtitle && elev != NOLINES) {
+			wattron(popup, rightcolor);
+			mvwaddch(popup, 0, cols/2 - strlen(title)/2 - 1, rtee);
+			mvwaddch(popup, 0, cols/2 + strlen(title)/2 + 1, ltee);
+			wattroff(popup, leftcolor);
+		}
+
 		wattron(popup, s.titlecolor);
 		wmove(popup, 0, cols/2 - strlen(title)/2);
 		waddstr(popup, title);
