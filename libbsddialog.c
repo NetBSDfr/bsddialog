@@ -398,7 +398,18 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
 }
 
 /*
- * No handler: infobox
+ * SECTIONS
+ *  1) "Info"    infobox
+ *  2) "Button"  msgbox - yesno
+ *  3) "Menu"    checklist - menu - radiolist
+ *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
+ *  5) "Bar"     gauge - mixedgauge - rangebox - pause
+ *  6) "Time"    timebox - calendar(todo)
+ *  7) "Command" prgbox(todo) - programbox(todo) - progressbox(todo)
+ */
+
+/*
+ * SECTION 1 "Info": infobox
  */
 int
 bsddialog_infobox(struct config conf, char* text, int rows, int cols)
@@ -419,7 +430,124 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 }
 
 /*
- * Checklist, Menu, Radiolist
+ * SECTION 2 "Button": msgbox - yesno
+ */
+int
+buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
+    int *values, int selected, bool shortkey, int sleeptime, int fd)
+{
+	bool loop, update;
+	int i, input;
+	int output;
+
+	loop = update = true;
+	while(loop) {
+		if (update) {
+			draw_buttons(window, cols, nbuttons, buttons, selected,
+			    shortkey);
+			update = false;
+		}
+		wrefresh(window);
+		input = getch();
+		switch (input) {
+		case 10: /* Enter */
+			output = values[selected];
+			loop = false;
+			break;
+		case 27: /* Esc */
+			output = BSDDIALOG_ERROR;
+			loop = false;
+			break;
+		case '\t': /* TAB */
+			selected = (selected + 1) % nbuttons;
+			update = true;
+			break;
+		case KEY_LEFT:
+			if (selected > 0) {
+				selected--;
+				update = true;
+			}
+			break;
+		case KEY_RIGHT:
+			if (selected < nbuttons - 1) {
+				selected++;
+				update = true;
+			}
+			break;
+		default:
+			if (shortkey) {
+				for (i = 0; i < nbuttons; i++)
+					if (input == (buttons[i])[0]) {
+						output = values[selected];
+						loop = false;
+				}
+			}
+		}
+	}
+
+	sleep(sleeptime);
+
+	return output;
+}
+
+int
+bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
+{
+	WINDOW *widget, *button, *shadow;
+	char *buttons[3];
+	int values[3], output, nbuttons, defbutton, y, x;
+
+	y = conf.y;
+	x = conf.x;
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+		return -1;
+
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	conf.extra_button, conf.extra_label, false, NULL,
+	conf.help_button, conf.help_label, false, &defbutton);
+
+	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
+	    true, conf.sleep, /*fd*/ 0);
+
+	delwin(button);
+	widget_end(conf, "Msgbox", widget, rows, cols, shadow);
+
+	return output;
+}
+
+int
+bsddialog_yesno(struct config conf, char* text, int rows, int cols)
+{
+	WINDOW *widget, *button, *shadow;
+	char *buttons[4];
+	int values[4], output, nbuttons, defbutton, y, x;
+
+	y = conf.y;
+	x = conf.x;
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+		return -1;
+
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.yes_label,
+	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.no_label,
+	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+
+	output = buttons_handler(button, cols, nbuttons, buttons, values,
+	    defbutton, true, conf.sleep, /*fd*/ 0);
+
+	delwin(button);
+	widget_end(conf, "Yesno", widget, rows, cols, shadow);
+
+	return output;
+}
+
+/*
+ * SECTION 3 "Menu": checklist - menu - radiolist
  */
 struct myitem {
 	char *name;
@@ -691,123 +819,8 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 }
 
 /*
- * Buttons handler: msgbox, yesno
+ * SECTIONS 4 "Form": inputbox - passwordbox - form - passwordform - mixedform
  */
-int
-buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, int sleeptime, int fd)
-{
-	bool loop, update;
-	int i, input;
-	int output;
-
-	loop = update = true;
-	while(loop) {
-		if (update) {
-			draw_buttons(window, cols, nbuttons, buttons, selected,
-			    shortkey);
-			update = false;
-		}
-		wrefresh(window);
-		input = getch();
-		switch (input) {
-		case 10: /* Enter */
-			output = values[selected];
-			loop = false;
-			break;
-		case 27: /* Esc */
-			output = BSDDIALOG_ERROR;
-			loop = false;
-			break;
-		case '\t': /* TAB */
-			selected = (selected + 1) % nbuttons;
-			update = true;
-			break;
-		case KEY_LEFT:
-			if (selected > 0) {
-				selected--;
-				update = true;
-			}
-			break;
-		case KEY_RIGHT:
-			if (selected < nbuttons - 1) {
-				selected++;
-				update = true;
-			}
-			break;
-		default:
-			if (shortkey) {
-				for (i = 0; i < nbuttons; i++)
-					if (input == (buttons[i])[0]) {
-						output = values[selected];
-						loop = false;
-				}
-			}
-		}
-	}
-
-	sleep(sleeptime);
-
-	return output;
-}
-
-int
-bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
-{
-	WINDOW *widget, *button, *shadow;
-	char *buttons[3];
-	int values[3], output, nbuttons, defbutton, y, x;
-
-	y = conf.y;
-	x = conf.x;
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
-		return -1;
-
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, false, NULL,
-	conf.help_button, conf.help_label, false, &defbutton);
-
-	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
-	    true, conf.sleep, /*fd*/ 0);
-
-	delwin(button);
-	widget_end(conf, "Msgbox", widget, rows, cols, shadow);
-
-	return output;
-}
-
-int
-bsddialog_yesno(struct config conf, char* text, int rows, int cols)
-{
-	WINDOW *widget, *button, *shadow;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton, y, x;
-
-	y = conf.y;
-	x = conf.x;
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
-		return -1;
-
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
-
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.yes_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.no_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
-
-	output = buttons_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, conf.sleep, /*fd*/ 0);
-
-	delwin(button);
-	widget_end(conf, "Yesno", widget, rows, cols, shadow);
-
-	return output;
-}
-
-/* Forms: Form, Inputbox, Inputmenu, Mixedform, Password, Passwordform */
 int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
 {
 	return 0;
@@ -1168,9 +1181,8 @@ bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
 }
 
 /*
- * Bar: gauge, mixedgauge, rangebox and pause
+ * SECTION 5 "Bar": gauge - mixedgauge - rangebox - pause
  */
-
 void draw_perc_bar(WINDOW *win, int y, int x, int size, int perc)
 {
 	char percstr[5];
@@ -1552,8 +1564,9 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	return output;
 }
 
-/* timebox and calendar-todo */
-
+/*
+ * SECTION 6 "Time": timebox - calendar(todo)
+ */
 int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
 {
@@ -1687,9 +1700,8 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 }
 
 /*
- * prgbox, programbox and progressbox
+ * SECTION 7 "Command": prgbox(todo) - programbox(todo) - progressbox(todo)
  */
-
 int
 bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *command)
 {
