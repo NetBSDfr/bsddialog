@@ -133,7 +133,7 @@ Examples:
 | passwordbox  | In progress | implemented via --mixedform, todo \<init\>      |
 | passwordform | In progress | implemented via --mixedform                     |
 | pause        | In progress |                                                 |
-| prgbox       | Coding      |                                                 |
+| prgbox       | In progress | add command opts                                |
 | programbox   | Coding      |                                                 |
 | progressbox  | Coding      |                                                 |
 | radiolist    | In progress |                                                 |

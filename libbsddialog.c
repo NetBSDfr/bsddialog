@@ -506,8 +506,8 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, false, NULL,
-	conf.help_button, conf.help_label, false, &defbutton);
+	    conf.extra_button, conf.extra_label, false, NULL, conf.help_button,
+	    conf.help_label, false, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
 	    true, conf.sleep, /*fd*/ 0);
@@ -1682,21 +1682,22 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	int i, y, x, padrows, padcols, ys, ye, xs, xe;
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
+	int pipefd[2];
 
 	y = conf.y;
 	x = conf.x;
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, /*text*/NULL, &rows, &cols, &shadow) < 0)
 		return -1;
 
 	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
-	    conf.defaultno, &defbutton);
+	    conf.extra_button, conf.extra_label, false, NULL, conf.help_button,
+	    conf.help_label, false, &defbutton);
 
 	if (text != NULL && conf.no_lines == false) {
+		print_text_multiline(widget, 1, 2, /*text*/command, cols - 4);
 		mvwhline(widget, 2, 2, conf.ascii_lines ? '-' : ACS_HLINE, cols -4);
 		wrefresh(widget);
 	}
@@ -1711,12 +1712,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	pad = newpad(padrows, padcols);
 	wbkgd(pad, t.widgetcolor);
 
-	int pipefd[2];
 	pipe(pipefd);
-	char buffer[1024];
-
-	memset(buffer, 0, 1024);
-
 	if (fork() == 0)
 	{
 		close(pipefd[0]);    // close reading
@@ -1726,8 +1722,8 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 
 		close(pipefd[1]);    // this descriptor is no longer needed
 
-		const char *ls="/bin/ls";
-		execl(ls, ls, NULL);
+		//const char *ls="/bin/ls";
+		execl(command, command, NULL);
 		return 0;
 	}
 	else
@@ -1735,9 +1731,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 		close(pipefd[1]);  // close write
 
 		i = 0;
-		//while (fgets(line, MAXINPUT, stdin) != NULL) {
-		//while(getstr(line) != ERR){
-		while (read(pipefd[0], buffer, 1024) != 0) {
+		while (read(pipefd[0], line, MAXINPUT) != 0) {
 			mvwaddstr(pad, i, 0, line);
 			prefresh(pad, 0, 0, ys, xs, ye, xe);
 			i++;
