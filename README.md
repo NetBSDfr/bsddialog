@@ -133,9 +133,9 @@ Examples:
 | passwordbox  | In progress | implemented via --mixedform, todo \<init\>      |
 | passwordform | In progress | implemented via --mixedform                     |
 | pause        | In progress |                                                 |
-| prgbox       |             |                                                 |
+| prgbox       | Coding      |                                                 |
 | programbox   | Coding      |                                                 |
-| progressbox  |             |                                                 |
+| progressbox  | Coding      |                                                 |
 | radiolist    | In progress |                                                 |
 | rangebox     | In progress | the manual is wrong, todo PAGE-UP/PAGE-DOWN/HOME/END keys |
 | tailbox      |             |                                                 |
