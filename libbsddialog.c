@@ -1183,9 +1183,10 @@ bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
 /*
  * SECTION 5 "Bar": gauge - mixedgauge - rangebox - pause
  */
-void draw_perc_bar(WINDOW *win, int y, int x, int size, int perc)
+void
+draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, int label)
 {
-	char percstr[5];
+	char labelstr[128];
 	int i, blue_x, color;
 
 	blue_x = (int)((perc*(size))/100);
@@ -1198,13 +1199,16 @@ void draw_perc_bar(WINDOW *win, int y, int x, int size, int perc)
 		wattroff(win, color);
 	}
 
-	sprintf(percstr, "%3d%%", perc);
+	if (withlabel)
+		sprintf(labelstr, "%d", label);
+	else
+		sprintf(labelstr, "%3d%%", perc);
 	wmove(win, y, x + size/2 - 2);
-	for (i=0; i<4; i++) {
-		color = ( (blue_x + 1) <= (size/2 - 2 + i) ) ?
+	for (i=0; i<strlen(labelstr); i++) {
+		color = ( (blue_x + 1) <= (size/2 - strlen(labelstr)/2 + i) ) ?
 		    t.barcolor : t.currbarcolor;
 		wattron(win, color);
-		waddch(win, percstr[i]);
+		waddch(win, labelstr[i]);
 		wattroff(win, color);
 	}
 }
@@ -1228,7 +1232,7 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 	wrefresh(bar);
 
 	while (mainloop) {
-		draw_perc_bar(bar, 1, 1, cols-8, perc);
+		draw_perc_bar(bar, 1, 1, cols-8, perc, false, -1 /*unused*/);
 
 		wrefresh(widget);
 		wrefresh(bar);
@@ -1310,14 +1314,15 @@ WINDOW *widget, *bar, *shadow;
 		else { //miniperc < 0
 			miniperc = abs(miniperc);
 			mvwaddstr(widget, i+1, cols-2-15, "[             ]");
-			draw_perc_bar(widget, i+1, 1+cols-2-15, 13, miniperc);
+			draw_perc_bar(widget, i+1, 1+cols-2-15, 13, miniperc,
+			    false, -1 /*unused*/);
 		}
 	}
 
 	print_text_multiline(widget, rows -6, 2, text, cols - 4);
 
 	/* main bar */
-	draw_perc_bar(bar, 1, 1, cols-8, perc);
+	draw_perc_bar(bar, 1, 1, cols-8, perc, false, -1 /*unused*/);
 
 	wattron(bar, t.barcolor);
 	mvwaddstr(bar, 0, 2, "Overall Progress");
@@ -1345,9 +1350,9 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 	char*buttons[4];
 	int nbuttons, defbutton, values[4], y, x;
 	bool loop, buttupdate, barupdate;
-	int i, input, currvalue, output, sizebar, pos, color;
-	float unitxpos;
-	char valuestr[128];
+	int input, currvalue, output, sizebar;
+	float perc;
+	int positions = max - min + 1;
 
 	y = conf.y;
 	x = conf.x;
@@ -1366,27 +1371,11 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 
 	currvalue = def;
 	sizebar = cols - 16;
-	unitxpos = ((float)(max - min + 1))/sizebar;
-
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
-			pos = (int)( ((float)(currvalue - min)) / unitxpos);
-			for (i = 0; i < sizebar; i++) {
-				color = i <= pos ? t.currbarcolor : t.barcolor;
-				wattron(bar, color);
-				mvwaddch(bar, 1, i + 1, ' ');
-				wattroff(bar, color);
-			}
-			sprintf(valuestr, "%d", currvalue);
-			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2 + 1);
-			for (i=0; i<strlen(valuestr); i++) {
-				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
-				    t.barcolor : t.currbarcolor;
-				wattron(bar, color);
-				waddch(bar, valuestr[i]);
-				wattroff(bar, color);
-			}
+			perc = ((float)(currvalue - min)*100) / ((float)positions-1);
+			draw_perc_bar(bar, 1, 1, sizebar, perc, true, currvalue);
 			barupdate = false;
 			wrefresh(bar);
 		}
@@ -1456,9 +1445,8 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	char*buttons[4];
 	int output, nbuttons, defbutton, values[4], y, x;
 	bool loop, buttupdate, barupdate;
-	int i, input, currvalue, pos, color, sizebar;
-	float unitxpos;
-	char valuestr[128];
+	int input, currvalue, sizebar;
+	float perc;
 
 	y = conf.y;
 	x = conf.x;
@@ -1477,30 +1465,14 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 
 	currvalue = sec;
 	sizebar = cols-16;
-	unitxpos = ((float)sizebar) / sec;
-
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	//wtimeout(buttwin, 2);
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
-			pos = (int)(currvalue * unitxpos);
-			for (i = 0; i < sizebar; i++) {
-				color = i <= pos ? t.currbarcolor : t.barcolor;
-				wattron(bar, color);
-				mvwaddch(bar, 1, i + 1, ' ');
-				wattroff(bar, color);
-			}
-			sprintf(valuestr, "%d", currvalue);
-			wmove(bar, 1, sizebar/2 - strlen(valuestr)/2 + 1);
-			for (i=0; i<strlen(valuestr); i++) {
-				color = (pos < sizebar/2 - strlen(valuestr)/2 + i) ?
-				    t.barcolor : t.currbarcolor;
-				wattron(bar, color);
-				waddch(bar, valuestr[i]);
-				wattroff(bar, color);
-			}
+			perc = ((float)(currvalue*100)) / ((float)sec);
+			draw_perc_bar(bar, 1, 1, sizebar, perc, true, currvalue);
 			barupdate = false;
 			wrefresh(bar);
 		}
