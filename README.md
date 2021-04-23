@@ -95,7 +95,7 @@ Examples:
 | --quoted                     |             | bsddialog (all tags) != dialog  |
 | --reorder                    |             |                                 |
 | --scrollbar                  |             |                                 |
-| --separate-output            |             | rename --separate-menu-out-nl?  |
+| --separate-output            |             | for buildlist, checklist and treeview, rename --separate-out-nl?  |
 | --separate-widget *string*   |             |                                 |
 | --shadow                     | Completed   | useful?                         |
 | --single-quoted              |             | add --quote-string *string*?    |
