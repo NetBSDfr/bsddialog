@@ -47,7 +47,7 @@ Examples:
 | --column-separator *string*  |             |                                 |
 | --cr-wrap                    |             |                                 |
 | --create-rc *file*           |             |                                 |
-| --date-format *format*       |             |                                 |
+| --date-format *format*       | Completed   |                                 |
 | --defaultno                  | Completed   |                                 |
 | --default-button *string*    |             |                                 |
 | --default-item *string*      |             |                                 |

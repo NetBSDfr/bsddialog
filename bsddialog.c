@@ -219,7 +219,7 @@ int main(int argc, char *argv[argc])
 	    { "column-separator", required_argument, NULL /*string*/, 'X' },
 	    { "cr-wrap", no_argument, NULL, 'X' },
 	    { "create-rc", required_argument, NULL /*file*/, 'X' },
-	    { "date-format", required_argument, NULL /*format*/, 'X' },
+	    { "date-format", required_argument, NULL /*format*/, DATE_FORMAT },
 	    { "defaultno", no_argument, NULL, DEFAULTNO },
 	    { "default-button", required_argument, NULL	/*string*/, 'X' },
 	    { "default-item", required_argument, NULL /*string*/, 'X' },
@@ -336,6 +336,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case CANCEL_LABEL:
 			conf.cancel_label = optarg;
+			break;
+		case DATE_FORMAT:
+			conf.date_format = optarg;
 			break;
 		case DEFAULTNO:
 			conf.defaultno = true;
