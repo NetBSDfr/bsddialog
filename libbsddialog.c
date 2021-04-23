@@ -1666,7 +1666,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	    conf.help_label, false, &defbutton);
 
 	if (text != NULL && conf.no_lines == false) {
-		print_text_multiline(widget, 1, 2, /*text*/command, cols - 4);
+		print_text_multiline(widget, 1, 2, text, cols - 4);
 		mvwhline(widget, 2, 2, conf.ascii_lines ? '-' : ACS_HLINE, cols -4);
 		wrefresh(widget);
 	}
