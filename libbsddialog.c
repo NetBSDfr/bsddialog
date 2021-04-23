@@ -1542,9 +1542,9 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
 {
-	WINDOW *widget, *button, *hhwin, *mmwin, *sswin, *shadow;
+	WINDOW *widget, *button, *shadow;
 	char *buttons[4];
-	int input, output, nbuttons, selbutton, values[4], y, x, sel;
+	int i, input, output, nbuttons, selbutton, values[4], y, x, sel;
 	bool loop, buttupdate;
 	struct clock {
 		unsigned int max;
@@ -1557,13 +1557,13 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
-	c[0].win = hhwin = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
+	c[0].win = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
-	c[1].win = mmwin = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
+	c[1].win = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
-	c[2].win = sswin = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
+	c[2].win = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
@@ -1573,13 +1573,6 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
 	    conf.cancel_label, conf.help_button, conf.help_label,
 	    conf.defaultno, &selbutton);
-
-	mvwprintw(hhwin, 1, 1, "%2d", hh);
-	wrefresh(hhwin);
-	mvwprintw(mmwin, 1, 1, "%2d", mm);
-	wrefresh(mmwin);
-	mvwprintw(sswin, 1, 1, "%2d", ss);
-	wrefresh(sswin);
 
 	sel=0;
 	curs_set(2);
@@ -1592,7 +1585,10 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 			buttupdate = false;
 		}
 
-		mvwprintw(c[sel].win, 1, 1, "%2d", c[sel].curr);
+		for (i=0; i<3; i++) {
+			mvwprintw(c[i].win, 1, 1, "%2d", c[i].curr);
+			wrefresh(c[i].win);
+		}
 		wmove(c[sel].win, 1, 2);
 		wrefresh(c[sel].win);
 
@@ -1637,9 +1633,8 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 		sleep(conf.sleep);
 
 	delwin(button);
-	delwin(hhwin);
-	delwin(mmwin);
-	delwin(sswin);
+	for (i=0; i<3; i++)
+		delwin(c[i].win);
 	widget_end(conf, "Timebox", widget, rows, cols, shadow);
 
 	return output;
