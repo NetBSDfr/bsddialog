@@ -58,7 +58,7 @@ Examples:
 | --help-button                | Completed   |                                 |
 | --help-label *string*        | Completed   |                                 |
 | --help-status                | Completed   |                                 |
-| --help-tags                  |             |                                 |
+| --help-tags                  |             | example?                        |
 | --hfile *filename*           |             |                                 |
 | --hline *string*             | Completed   |                                 |
 | --ignore                     |             |                                 |
