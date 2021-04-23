@@ -229,7 +229,7 @@ int main(int argc, char *argv[argc])
 	    { "help", no_argument, NULL, HELP },
 	    { "help-button", no_argument, NULL, HELP_BUTTON },
 	    { "help-label", required_argument, NULL /*string*/, HELP_LABEL },
-	    { "help-status", no_argument, NULL, 'X' },
+	    { "help-status", no_argument, NULL, HELP_STATUS },
 	    { "help-tags", no_argument, NULL, 'X' },
 	    { "hfile", required_argument, NULL /*filename*/, 'X' },
 	    { "hline", required_argument, NULL /*string*/, HLINE },
@@ -365,6 +365,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case HELP_LABEL:
 			conf.help_label = optarg;
+			break;
+		case HELP_STATUS:
+			conf.help_status = true;
 			break;
 		case HLINE:
 			conf.hline = optarg;

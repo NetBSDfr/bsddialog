@@ -57,7 +57,7 @@ Examples:
 | --help                       | In progress |                                 |
 | --help-button                | Completed   |                                 |
 | --help-label *string*        | Completed   |                                 |
-| --help-status                |             |                                 |
+| --help-status                | Completed   |                                 |
 | --help-tags                  |             |                                 |
 | --hfile *filename*           |             |                                 |
 | --hline *string*             | Completed   |                                 |

@@ -712,17 +712,23 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
 
-	if (output == BSDDIALOG_YESOK && nitems > 0) {
+	sep = false;
+
+	if (output == BSDDIALOG_HELP && nitems >0) {
+		dprintf(conf.output_fd, "HELP %s", items[curr].name);
+		sep = true;
+	}
+
+	if ((output == BSDDIALOG_YESOK || conf.help_status == true) && nitems > 0) {
 		if (mode == MENUMODE)
 			dprintf(conf.output_fd, "%s", items[curr].name);
 		else { /* CHECKLIST or RADIOLIST */
-			sep = false;
 			for (i=0; i<nitems; i++)
 				if (items[i].on == true) {
-					dprintf(conf.output_fd, "%s",items[i].name);
 					if (sep == true)
 					    dprintf(conf.output_fd, " ");
 					sep = true;
+					dprintf(conf.output_fd, "%s",items[i].name);
 				}
 		}
 	}
