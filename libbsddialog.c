@@ -404,7 +404,7 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
  *  3) "Menu"    checklist - menu - radiolist
  *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
  *  5) "Bar"     gauge - mixedgauge - rangebox - pause
- *  6) "Time"    timebox - calendar(todo)
+ *  6) "Time"    timebox - calendar
  *  7) "Command" prgbox(todo) - programbox(todo) - progressbox(todo)
  */
 
@@ -1519,7 +1519,7 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 }
 
 /*
- * SECTION 6 "Time": timebox - calendar(todo)
+ * SECTION 6 "Time": timebox - calendar
  */
 int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
@@ -1621,7 +1621,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 }
 
 int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
-    unsigned int hh, unsigned int mm, unsigned int ss)
+    unsigned int yy, unsigned int mm, unsigned int dd)
 {
 	WINDOW *widget, *button, *shadow;
 	char *buttons[4];
@@ -1631,19 +1631,30 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 		unsigned int max;
 		unsigned int curr;
 		WINDOW *win;
-	} c[3] = { {23, hh, NULL}, {59, mm, NULL}, {59, ss, NULL} };
+		unsigned int x;
+	} c[3] = {{9999, yy, NULL, 4 }, {12, mm, NULL, 9 }, {31, dd, NULL, 2 }};
+	struct month {
+		char *name;
+		unsigned int days;
+	} m[12] = {
+	    { "January", 30 }, { "February", 30 }, { "March",     30 },
+	    { "April",   30 }, { "May",      30 }, { "June",      30 },
+	    { "July",    30 }, { "August",   30 }, { "September", 30 },
+	    { "October", 30 }, { "November", 30 }, { "December",  30 }
+	};
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
+	c[0].win = new_window(y + rows - 6, x + cols/2 - 12, 3, 6, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	mvwaddch(widget, rows - 5, cols/2 - 6, '/');
+	c[1].win = new_window(y + rows - 6, x + cols/2 - 5, 3, 11, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	mvwaddch(widget, rows - 5, cols/2 + 6, '/');
+	c[2].win = new_window(y + rows - 6, x + cols/2 + 7, 3, 4, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 
-	c[0].win = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
-	c[1].win = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
-	c[2].win = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	wrefresh(widget);
 
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
@@ -1653,7 +1664,7 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 	    conf.cancel_label, conf.help_button, conf.help_label,
 	    conf.defaultno, &selbutton);
 
-	sel=0;
+	sel=2;
 	curs_set(2);
 	loop = buttupdate = true;
 	while(loop) {
@@ -1664,11 +1675,13 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 			buttupdate = false;
 		}
 
+		mvwprintw(c[0].win, 1, 1, "%4d", c[0].curr);
+		mvwprintw(c[1].win, 1, 1, "%9s", m[c[1].curr-1].name);
+		mvwprintw(c[2].win, 1, 1, "%2d", c[2].curr);
 		for (i=0; i<3; i++) {
-			mvwprintw(c[i].win, 1, 1, "%2d", c[i].curr);
 			wrefresh(c[i].win);
 		}
-		wmove(c[sel].win, 1, 2);
+		wmove(c[sel].win, 1, c[sel].x);
 		wrefresh(c[sel].win);
 
 		input = getch();
@@ -1676,7 +1689,8 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 		case 10: // Enter
 			output = values[selbutton]; // values -> outputs
 			loop = false;
-			dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
+			dprintf(conf.output_fd, "%u/%u/%u",
+			    c[0].curr, c[1].curr, c[2].curr);
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -1698,10 +1712,10 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 			}
 			break;
 		case KEY_UP:
-			c[sel].curr = c[sel].curr < c[sel].max ? c[sel].curr + 1 : 0;
+			c[sel].curr = c[sel].curr < c[sel].max ? c[sel].curr + 1 : 1;
 			break;
 		case KEY_DOWN:
-			c[sel].curr = c[sel].curr > 0 ? c[sel].curr - 1 : c[sel].max;
+			c[sel].curr = c[sel].curr > 1 ? c[sel].curr - 1 : c[sel].max;
 			break;
 		}
 	}

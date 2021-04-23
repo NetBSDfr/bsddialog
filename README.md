@@ -116,7 +116,7 @@ Examples:
 | Widget       | Status      | Note                                            |
 |------------- | ----------- | ----------------------------------------------- |
 | buildlist    |             |                                                 |
-| calendar     |             |                                                 |
+| calendar     | In progress | add leap year, year <=0, month days             |
 | checklist    | In progress |                                                 |
 | dselect      |             |                                                 |
 | editbox      |             |                                                 |

@@ -525,32 +525,32 @@ int main(int argc, char *argv[argc])
 int calendar_builder(BUILDER_ARGS)
 {
 	int output;
-	unsigned int hh, mm, ss;
-	time_t clock;
-	struct tm *localtm;
+	unsigned int yy, mm, dd;
+	time_t cal;
+	struct tm *dt;
 
-	time(&clock);
-	localtm = localtime(&clock);
-	hh = localtm->tm_hour;
-	mm = localtm->tm_min;
-	ss = localtm->tm_sec;
+	time(&cal);
+	dt = localtime(&cal);
+	yy = dt->tm_year + 1900;
+	mm = dt->tm_mon;
+	dd = dt->tm_mday;
 
 	if (argc > 0) {
-		hh = atoi(argv[0]);
-		hh = hh > 23 ? 23 : hh;
+		yy = atoi(argv[0]) + 1900;
+		yy = yy > 9999 ? 9999 : yy;
 	}
 
 	if (argc > 1) {
 		mm = atoi(argv[1]);
-		mm = mm > 60 ? 60 : mm;
+		mm = mm > 12 ? 12 : mm;
 	}
 
 	if (argc > 2) {
-		ss = atoi(argv[2]);
-		ss = ss > 60 ? 60 : ss;
+		dd = atoi(argv[2]);
+		dd = dd > 31 ? 31 : dd;
 	}
 
-	output = bsddialog_calendar(conf, text, rows, cols, hh, mm, ss);
+	output = bsddialog_calendar(conf, text, rows, cols, yy, mm, dd);
 
 	return (output);
 }
