@@ -358,8 +358,8 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 	if (*w <= 0)
 		; /* todo */
 
-	*y = (*y < 0) ? (LINES/2 - *h/2 - 1) : conf.y;
-	*x = (*x < 0) ? (COLS/2 - *w/2) : conf.x;
+	*y = (conf.y < 0) ? (LINES/2 - *h/2 - 1) : conf.y;
+	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
 
 	if (conf.shadow) {
 		if ((*shadow = newwin(*h, *w+1, *y+1, *x+1)) == NULL)
@@ -417,8 +417,6 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 	WINDOW *widget, *shadow;
 	int y, x;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -497,8 +495,6 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	char *buttons[3];
 	int values[3], output, nbuttons, defbutton, y, x;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -525,8 +521,6 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton, y, x;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -596,8 +590,6 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	int ys, ye, xs, xe;
 	bool loop, buttupdate, sep;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -969,8 +961,6 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	FIELD **field;
 	FORM *form;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1220,8 +1210,6 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 	int i, y, x;
 	bool mainloop = true;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1293,8 +1281,6 @@ WINDOW *widget, *bar, *shadow;
 	    "[     N/A     ]",
 	    "[   UNKNOWN   ]",};
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1354,8 +1340,6 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 	float perc;
 	int positions = max - min + 1;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1448,8 +1432,6 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	int input, currvalue, sizebar;
 	float perc;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1552,8 +1534,6 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 		WINDOW *win;
 	} c[3] = { {23, hh, NULL}, {59, mm, NULL}, {59, ss, NULL} };
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1653,8 +1633,6 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	int values[4], output, nbuttons, defbutton;
 	int pipefd[2];
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, /*text*/NULL, &rows, &cols, &shadow) < 0)
 		return -1;
 
@@ -1721,8 +1699,6 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
 
-	y = conf.y;
-	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
