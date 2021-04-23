@@ -40,7 +40,7 @@ Examples:
 | --ascii-lines                | Completed   |                                 |
 | --aspect *ratio*             |             |                                 |
 | --backtitle *backtitle*      | Completed   |                                 |
-| --begin *y x*                | In progress | maybe --starty --startx         |
+| --begin *y x*                | Completed   | add --starty --startx?          |
 | --cancel-label *string*      | Completed   |                                 |
 | --clear                      |             |                                 |
 | --colors                     |             |                                 |
@@ -73,7 +73,7 @@ Examples:
 | --no-cancel                  | Completed   |                                 |
 | --nocancel                   | Completed   |                                 |
 | --no-collapse                |             |                                 |
-| --no-items                   |             |                                 |
+| --no-items                   |             | useful?                         |
 | --no-kill                    |             |                                 |
 | --no-label *string*          | Completed   |                                 |
 | --no-lines                   | Completed   |                                 |
@@ -82,7 +82,7 @@ Examples:
 | --no-ok                      | Completed   |                                 |
 | --nook                       | Completed   |                                 |
 | --no-shadow                  | Completed   |                                 |
-| --no-tags                    |             |                                 |
+| --no-tags                    |             | useful?                         |
 | --ok-label *string*          | Completed   |                                 |
 | --output-fd *fd*             | In progress |                                 |
 | --separator *string*         |             |                                 |
@@ -92,13 +92,13 @@ Examples:
 | --print-text-only *str h w*  |             | useful?                         |
 | --print-text-size *str h w*  |             | useful?                         |
 | --print-version              | Completed   |                                 |
-| --quoted                     |             |                                 |
+| --quoted                     |             | bsddialog (all tags) != dialog  |
 | --reorder                    |             |                                 |
 | --scrollbar                  |             |                                 |
-| --separate-output            |             |                                 |
+| --separate-output            |             | rename --separate-menu-out-nl?  |
 | --separate-widget *string*   |             |                                 |
-| --shadow                     | Completed   |                                 |
-| --single-quoted              |             |                                 |
+| --shadow                     | Completed   | useful?                         |
+| --single-quoted              |             | add --quote-string *string*?    |
 | --size-err                   |             |                                 |
 | --sleep *secs*               | Completed   |                                 |
 | --stderr                     | In progress |                                 |
