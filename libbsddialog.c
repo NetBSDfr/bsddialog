@@ -405,7 +405,7 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
  *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
  *  5) "Bar"     gauge - mixedgauge - rangebox - pause
  *  6) "Time"    timebox - calendar
- *  7) "Command" prgbox(todo) - programbox(todo) - progressbox(todo)
+ *  7) "Command" prgbox - programbox(todo) - progressbox(todo)
  */
 
 /*
@@ -1734,7 +1734,7 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 }
 
 /*
- * SECTION 7 "Command": prgbox(todo) - programbox(todo) - progressbox(todo)
+ * SECTION 7 "Command": prgbox - programbox(todo) - progressbox(todo)
  */
 int
 bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *command)
