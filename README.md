@@ -50,7 +50,7 @@ Examples:
 | --date-format *format*       | Completed   |                                 |
 | --defaultno                  | Completed   |                                 |
 | --default-button *string*    |             |                                 |
-| --default-item *string*      |             |                                 |
+| --default-item *string*      | Completed   |                                 |
 | --exit-label *string*        | Completed   |                                 |
 | --extra-button               | Completed   |                                 |
 | --extra-label *string*       | Completed   |                                 |

@@ -603,8 +603,21 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	menupad = newpad(nitems, line);
 	wbkgd(menupad, t.widgetcolor);
 
+	curr = -1;
+	if (conf.default_item != NULL) {
+		for (i=0; i<nitems; i++) {
+			if (strcmp(items[i].name, conf.default_item) == 0) {
+				curr = i;
+				break;
+			}
+		}
+	}
+	curr = curr < 0 ? 0 : curr;
 	for (i=0; i<nitems; i++) {
-		draw_myitem(menupad, i, items[i], mode, xdesc, i == 0);
+		if (conf.default_item != NULL)
+			if (strcmp(items[i].name, conf.default_item) == 0)
+				curr = i;
+		draw_myitem(menupad, i, items[i], mode, xdesc, i == curr);
 	}
 
 	ys = y + rows - 5 - menurows + 1;
@@ -619,7 +632,6 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
 
-	curr = 0;
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {

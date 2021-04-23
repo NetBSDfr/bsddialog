@@ -222,7 +222,7 @@ int main(int argc, char *argv[argc])
 	    { "date-format", required_argument, NULL /*format*/, DATE_FORMAT },
 	    { "defaultno", no_argument, NULL, DEFAULTNO },
 	    { "default-button", required_argument, NULL	/*string*/, 'X' },
-	    { "default-item", required_argument, NULL /*string*/, 'X' },
+	    { "default-item", required_argument, NULL /*string*/, DEFAULT_ITEM },
 	    { "exit-label", required_argument, NULL /*string*/, EXIT_LABEL },
 	    { "extra-button", no_argument, NULL, EXTRA_BUTTON },
 	    { "extra-label", required_argument, NULL /*string*/, EXTRA_LABEL },
@@ -339,6 +339,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case DATE_FORMAT:
 			conf.date_format = optarg;
+			break;
+		case DEFAULT_ITEM:
+			conf.default_item = optarg;
 			break;
 		case DEFAULTNO:
 			conf.defaultno = true;
