@@ -40,7 +40,7 @@ Examples:
 | --ascii-lines                | Completed   |                                 |
 | --aspect *ratio*             |             |                                 |
 | --backtitle *backtitle*      | Completed   |                                 |
-| --begin y x                  | Completed   |                                 |
+| --begin *y x*                | In progress | maybe --starty --startx         |
 | --cancel-label *string*      | Completed   |                                 |
 | --clear                      |             |                                 |
 | --colors                     |             |                                 |
