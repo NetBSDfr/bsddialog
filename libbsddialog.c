@@ -1620,6 +1620,105 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	return output;
 }
 
+int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
+    unsigned int hh, unsigned int mm, unsigned int ss)
+{
+	WINDOW *widget, *button, *shadow;
+	char *buttons[4];
+	int i, input, output, nbuttons, selbutton, values[4], y, x, sel;
+	bool loop, buttupdate;
+	struct clock {
+		unsigned int max;
+		unsigned int curr;
+		WINDOW *win;
+	} c[3] = { {23, hh, NULL}, {59, mm, NULL}, {59, ss, NULL} };
+
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+		return -1;
+
+	c[0].win = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
+	c[1].win = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
+	c[2].win = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+
+	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
+	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
+	    conf.cancel_label, conf.help_button, conf.help_label,
+	    conf.defaultno, &selbutton);
+
+	sel=0;
+	curs_set(2);
+	loop = buttupdate = true;
+	while(loop) {
+		if (buttupdate) {
+			draw_buttons(button, cols, nbuttons, buttons, selbutton,
+			    true);
+			wrefresh(button);
+			buttupdate = false;
+		}
+
+		for (i=0; i<3; i++) {
+			mvwprintw(c[i].win, 1, 1, "%2d", c[i].curr);
+			wrefresh(c[i].win);
+		}
+		wmove(c[sel].win, 1, 2);
+		wrefresh(c[sel].win);
+
+		input = getch();
+		switch(input) {
+		case 10: // Enter
+			output = values[selbutton]; // values -> outputs
+			loop = false;
+			dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
+			break;
+		case 27: // Esc
+			output = BSDDIALOG_ERROR;
+			loop = false;
+			break;
+		case '\t': // TAB
+			sel = (sel + 1) % 3;
+			break;
+		case KEY_LEFT:
+			if (selbutton > 0) {
+				selbutton--;
+				buttupdate = true;
+			}
+			break;
+		case KEY_RIGHT:
+			if (selbutton < nbuttons - 1) {
+				selbutton++;
+				buttupdate = true;
+			}
+			break;
+		case KEY_UP:
+			c[sel].curr = c[sel].curr < c[sel].max ? c[sel].curr + 1 : 0;
+			break;
+		case KEY_DOWN:
+			c[sel].curr = c[sel].curr > 0 ? c[sel].curr - 1 : c[sel].max;
+			break;
+		}
+	}
+
+	curs_set(0);
+
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
+
+	delwin(button);
+	for (i=0; i<3; i++)
+		delwin(c[i].win);
+	widget_end(conf, "Timebox", widget, rows, cols, shadow);
+
+	return output;
+}
+
 /*
  * SECTION 7 "Command": prgbox(todo) - programbox(todo) - progressbox(todo)
  */

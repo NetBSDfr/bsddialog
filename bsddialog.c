@@ -147,7 +147,7 @@ void usage(void);
 #define BUILDER_ARGS struct config conf, char* text, int rows, int cols, \
 	int argc, char **argv
 //int buildlist_builder(BUILDER_ARGS);
-//int calendar_builder(BUILDER_ARGS);
+int calendar_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
 //int dselect_builder(BUILDER_ARGS);
 //int editbox_builder(BUILDER_ARGS);
@@ -283,7 +283,7 @@ int main(int argc, char *argv[argc])
 	    { "yes-label", required_argument, NULL /*string*/, YES_LABEL },
 	    /* Widgets */
 	    { "buildlist", no_argument, NULL, 'X' },
-	    { "calendar", no_argument, NULL, 'X' },
+	    { "calendar", no_argument, NULL, CALENDAR },
 	    { "checklist", no_argument, NULL, CHECKLIST },
 	    { "dselect", no_argument, NULL, 'X' },
 	    { "editbox", no_argument, NULL, 'X' },
@@ -417,6 +417,9 @@ int main(int argc, char *argv[argc])
 			conf.yes_label = optarg;
 			break;
 		/* Widgets */
+		case CALENDAR:
+			widgetbuilder = calendar_builder;
+			break;
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
@@ -517,6 +520,39 @@ int main(int argc, char *argv[argc])
 	// debug
 	printf("[Debug] Exit status: %d\n", output);
 	return output;
+}
+
+int calendar_builder(BUILDER_ARGS)
+{
+	int output;
+	unsigned int hh, mm, ss;
+	time_t clock;
+	struct tm *localtm;
+
+	time(&clock);
+	localtm = localtime(&clock);
+	hh = localtm->tm_hour;
+	mm = localtm->tm_min;
+	ss = localtm->tm_sec;
+
+	if (argc > 0) {
+		hh = atoi(argv[0]);
+		hh = hh > 23 ? 23 : hh;
+	}
+
+	if (argc > 1) {
+		mm = atoi(argv[1]);
+		mm = mm > 60 ? 60 : mm;
+	}
+
+	if (argc > 2) {
+		ss = atoi(argv[2]);
+		ss = ss > 60 ? 60 : ss;
+	}
+
+	output = bsddialog_calendar(conf, text, rows, cols, hh, mm, ss);
+
+	return (output);
 }
 
 int checklist_builder(BUILDER_ARGS)

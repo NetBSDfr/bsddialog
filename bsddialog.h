@@ -119,7 +119,8 @@ void bsddialog_end(void);
 int  bsddialog_backtitle(struct config conf, char *backtitle);
 /* widgets */
 //int bsddialog_buildlist(struct config conf, char* text, int rows, int cols);
-//int bsddialog_calendar(struct config conf, char* text, int rows, int cols);
+int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
+    unsigned int yy, unsigned int mm, unsigned int dd);
 int bsddialog_checklist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv);
 //int bsddialog_dselect(struct config conf, char* text, int rows, int cols);
