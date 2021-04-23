@@ -64,6 +64,7 @@ Examples:
 | --ignore                     |             |                                 |
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
+| --iso-week                   |             |                                 |
 | --item-help                  |             |                                 |
 | --keep-tite                  |             |                                 |
 | --keep-window                |             |                                 |
@@ -88,8 +89,11 @@ Examples:
 | --output-separator *string*  |             |                                 |
 | --print-maxsize              | In progress |                                 |
 | --print-size                 | In progress |                                 |
+| --print-text-only *str h w*  |             |                                 |
+| --print-text-size *str h w*  |             |                                 |
 | --print-version              | Completed   |                                 |
 | --quoted                     |             |                                 |
+| --reorder                    |             |                                 |
 | --scrollbar                  |             |                                 |
 | --separate-output            |             |                                 |
 | --separate-widget *string*   |             |                                 |
@@ -105,6 +109,7 @@ Examples:
 | --timeout *secs*             |             |                                 |
 | --title *title*              | Completed   |                                 |
 | --trace *filename*           |             |                                 |
+| --week-start *day*           |             |                                 |
 | --trim                       |             |                                 |
 | --version                    | Completed   |                                 |
 | --visit-items                |             |                                 |
