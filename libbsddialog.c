@@ -1544,21 +1544,26 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 {
 	WINDOW *widget, *button, *hhwin, *mmwin, *sswin, *shadow;
 	char *buttons[4];
-	int input, output, nbuttons, selbutton, values[4], y, x;
-	bool loop, buttupdate, inhh, inmm, inss;
+	int input, output, nbuttons, selbutton, values[4], y, x, sel;
+	bool loop, buttupdate;
+	struct clock {
+		unsigned int max;
+		unsigned int curr;
+		WINDOW *win;
+	} c[3] = { {23, hh, NULL}, {59, mm, NULL}, {59, ss, NULL} };
 
 	y = conf.y;
 	x = conf.x;
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
-	hhwin = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
+	c[0].win = hhwin = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
-	mmwin = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
+	c[1].win = mmwin = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
-	sswin = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
+	c[2].win = sswin = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
@@ -1576,9 +1581,9 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	mvwprintw(sswin, 1, 1, "%2d", ss);
 	wrefresh(sswin);
 
+	sel=0;
 	curs_set(2);
-	inmm = inss = false;
-	loop = buttupdate = inhh = true;
+	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(button, cols, nbuttons, buttons, selbutton,
@@ -1587,19 +1592,9 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 			buttupdate = false;
 		}
 
-		if (inhh) {
-			mvwprintw(hhwin, 1, 1, "%2d", hh);
-			wmove(hhwin, 1, 2);
-			wrefresh(hhwin);
-		} else if (inmm) {
-			mvwprintw(mmwin, 1, 1, "%2d", mm);
-			wmove(mmwin, 1, 2);
-			wrefresh(mmwin);
-		} else { //inss
-			mvwprintw(sswin, 1, 1, "%2d", ss);
-			wmove(sswin, 1, 2);
-			wrefresh(sswin);
-		}
+		mvwprintw(c[sel].win, 1, 1, "%2d", c[sel].curr);
+		wmove(c[sel].win, 1, 2);
+		wrefresh(c[sel].win);
 
 		input = getch();
 		switch(input) {
@@ -1613,16 +1608,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 			loop = false;
 			break;
 		case '\t': // TAB
-			if (inhh) {
-				inhh = false;
-				inmm = true;
-			} else if (inmm) {
-				inmm = false;
-				inss = true;
-			} else { //inss
-				inss = false;
-				inhh = true;
-			}
+			sel = (sel + 1) % 3;
 			break;
 		case KEY_LEFT:
 			if (selbutton > 0) {
@@ -1637,22 +1623,10 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 			}
 			break;
 		case KEY_UP:
-			if (inhh) {
-				hh = hh < 24 ? hh + 1 : 0;
-			} else if (inmm) {
-				mm = mm < 60 ? mm + 1 : 0;
-			} else { //inss
-				ss = ss < 60 ? ss + 1 : 0;
-			}
+			c[sel].curr = c[sel].curr < c[sel].max ? c[sel].curr + 1 : 0;
 			break;
 		case KEY_DOWN:
-			if (inhh) {
-				hh = hh > 0 ? hh - 1 : 24;
-			} else if (inmm) {
-				mm = mm > 0 ? mm - 1 : 60;
-			} else { //inss
-				ss = ss > 0 ? ss - 1 : 60;
-			}
+			c[sel].curr = c[sel].curr > 0 ? c[sel].curr - 1 : c[sel].max;
 			break;
 		}
 	}
