@@ -59,7 +59,7 @@ Examples:
 | --help-label *string*        | Completed   |                                 |
 | --help-status                | Completed   |                                 |
 | --help-tags                  |             | example?                        |
-| --hfile *filename*           |             |                                 |
+| --hfile *filename*           |             | todo via textbox                |
 | --hline *string*             | Completed   |                                 |
 | --ignore                     |             |                                 |
 | --input-fd *fd*              |             |                                 |
@@ -89,8 +89,8 @@ Examples:
 | --output-separator *string*  |             |                                 |
 | --print-maxsize              | In progress |                                 |
 | --print-size                 | In progress |                                 |
-| --print-text-only *str h w*  |             |                                 |
-| --print-text-size *str h w*  |             |                                 |
+| --print-text-only *str h w*  |             | useful?                         |
+| --print-text-size *str h w*  |             | useful?                         |
 | --print-version              | Completed   |                                 |
 | --quoted                     |             |                                 |
 | --reorder                    |             |                                 |
