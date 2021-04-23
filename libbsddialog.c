@@ -586,7 +586,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
     int nitems, struct myitem *items)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
-	char *buttons[4];
+	char *buttons[4], *sepstr;
 	int i, values[4], output, nbuttons, defbutton, y, x, input, curr;
 	int ys, ye, xs, xe;
 	bool loop, buttupdate, sep;
@@ -719,6 +719,8 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		sep = true;
 	}
 
+	sepstr = conf.separate_output ? "\n" : " ";
+
 	if ((output == BSDDIALOG_YESOK || conf.help_status == true) && nitems > 0) {
 		if (mode == MENUMODE)
 			dprintf(conf.output_fd, "%s", items[curr].name);
@@ -726,7 +728,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 			for (i=0; i<nitems; i++)
 				if (items[i].on == true) {
 					if (sep == true)
-					    dprintf(conf.output_fd, " ");
+					    dprintf(conf.output_fd, "%s", sepstr);
 					sep = true;
 					dprintf(conf.output_fd, "%s",items[i].name);
 				}

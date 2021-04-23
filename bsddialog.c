@@ -263,7 +263,7 @@ int main(int argc, char *argv[argc])
 	    { "print-version", no_argument, NULL, PRINT_VERSION },
 	    { "quoted", no_argument, NULL, 'X' },
 	    { "scrollbar", no_argument, NULL, 'X' },
-	    { "separate-output", no_argument, NULL, 'X' },
+	    { "separate-output", no_argument, NULL, SEPARATE_OUTPUT },
 	    { "separate-widget", required_argument, NULL /*string*/, 'X' },
 	    { "shadow", no_argument, NULL, SHADOW },
 	    { "single-quoted", no_argument, NULL, 'X' },
@@ -403,6 +403,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
+			break;
+		case SEPARATE_OUTPUT:
+			conf.separate_output = true;
 			break;
 		case SHADOW:
 			conf.shadow = true;
