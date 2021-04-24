@@ -68,7 +68,7 @@ get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
 
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, int sleep, int fd);
+    int *values, int selected, bool shortkey, int fd);
 
 
 int bsddialog_init(void)
@@ -389,9 +389,12 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow)
 {
 
+	if (conf.sleep > 0)
+		sleep(conf.sleep);
+
 	delwin(window);
 
-	if(conf.shadow)
+	if (conf.shadow)
 		delwin(shadow);
 
 	if (conf.print_size)
@@ -433,7 +436,7 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
  */
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, int sleeptime, int fd)
+    int *values, int selected, bool shortkey, int fd)
 {
 	bool loop, update;
 	int i, input;
@@ -484,8 +487,6 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		}
 	}
 
-	sleep(sleeptime);
-
 	return output;
 }
 
@@ -507,7 +508,7 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	    conf.help_label, false, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
-	    true, conf.sleep, /*fd*/ 0);
+	    true, /*fd*/ 0);
 
 	delwin(button);
 	widget_end(conf, "Msgbox", widget, rows, cols, shadow);
@@ -533,7 +534,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, conf.sleep, /*fd*/ 0);
+	    defbutton, true, /*fd*/ 0);
 
 	delwin(button);
 	widget_end(conf, "Yesno", widget, rows, cols, shadow);
@@ -718,9 +719,6 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		}
 	}
 
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
-
 	sep = false;
 	quotech = conf.single_quoted ? '\'' : '"';
 
@@ -880,7 +878,7 @@ struct formitem {
 int
 mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
-    FIELD **field, int nitems, struct formitem *items, int sleeptime, int fd)
+    FIELD **field, int nitems, struct formitem *items, int fd)
 {
 	bool loop, buttupdate, inentry = true;
 	int i, input, output;
@@ -987,8 +985,6 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		}
 	}
 
-	sleep(sleeptime);
-
 	curs_set(0);
 
 	return output;
@@ -1059,8 +1055,7 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	wrefresh(entry);
 
 	output = mixedform_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, entry, form, field, nitems, items, conf.sleep,
-	    conf.output_fd);
+	    defbutton, true, entry, form, field, nitems, items, conf.output_fd);
 
 	unpost_form(form);
 	free_form(form);
@@ -1297,9 +1292,6 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 		}
 	}
 
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
-
 	delwin(bar);
 	widget_end(conf, "Gauge", widget, rows, cols, shadow);
 
@@ -1361,9 +1353,6 @@ WINDOW *widget, *bar, *shadow;
 	wrefresh(bar);
 
 	getch();
-
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
 
 	delwin(bar);
 	widget_end(conf, "Mixedgaugebox", widget, rows, cols, shadow);
@@ -1456,9 +1445,6 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 		}
 	}
 
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
-
 	delwin(button);
 	delwin(bar);
 	widget_end(conf, "Rangebox", widget, rows, cols, shadow);
@@ -1550,9 +1536,6 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	}
 
 	nodelay(stdscr, FALSE);
-
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
 
 	delwin(button);
 	delwin(bar);
@@ -1665,9 +1648,6 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	}
 
 	curs_set(0);
-
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
 
 	delwin(button);
 	for (i=0; i<3; i++)
@@ -1793,9 +1773,6 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 
 	curs_set(0);
 
-	if (conf.sleep > 0)
-		sleep(conf.sleep);
-
 	delwin(button);
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
@@ -1870,7 +1847,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	}
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values, defbutton,
-	    true, conf.sleep, /*fd*/ 0);
+	    true, /*fd*/ 0);
 
 	return output;
 }
@@ -1917,7 +1894,7 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 	}
 	
 	output = buttons_handler(button, cols, nbuttons, buttons, values, defbutton,
-	    true, conf.sleep, /*fd*/ 0);
+	    true, /*fd*/ 0);
 
 	return output;
 }
