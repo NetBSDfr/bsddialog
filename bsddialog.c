@@ -191,6 +191,7 @@ int main(int argc, char *argv[argc])
 	char text[1024], *backtitle = NULL;
 	int input, rows, cols, output;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
+	bool ignore = false;
 	struct winsize ws;
 	struct config conf;
 
@@ -233,7 +234,7 @@ int main(int argc, char *argv[argc])
 	    { "help-tags", no_argument, NULL, 'X' },
 	    { "hfile", required_argument, NULL /*filename*/, 'X' },
 	    { "hline", required_argument, NULL /*string*/, HLINE },
-	    { "ignore", no_argument, NULL, 'X' },
+	    { "ignore", no_argument, NULL, IGNORE },
 	    { "input-fd", required_argument, NULL /*fd*/, 'X' },
 	    { "insecure", no_argument, NULL, 'X' },
 	    { "item-help", no_argument, NULL, 'X' },
@@ -372,6 +373,9 @@ int main(int argc, char *argv[argc])
 		case HLINE:
 			conf.hline = optarg;
 			break;
+		case IGNORE:
+			ignore = true;
+			break;
 		case NOCANCEL:
 		case NO_CANCEL:
 			conf.no_cancel = true;
@@ -503,8 +507,10 @@ int main(int argc, char *argv[argc])
 			break;
 		/* Error */
 		default:
-			usage();
-			return 1;
+			if (ignore == false) {
+				usage();
+				return 1;
+			}
 		}
 	}
 	argc -= optind;

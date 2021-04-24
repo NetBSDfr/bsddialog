@@ -64,7 +64,7 @@ struct config {
 	bool help_tags;
 	char *hfile;
 	char *hline;
-	bool ignore;
+	//bool ignore; utility
 	int input_fd;
 	bool insecure;
 	bool item_help;

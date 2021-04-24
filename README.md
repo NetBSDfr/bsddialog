@@ -61,7 +61,7 @@ Examples:
 | --help-tags                  |             | example?                        |
 | --hfile *filename*           |             | todo via textbox                |
 | --hline *string*             | Completed   |                                 |
-| --ignore                     |             |                                 |
+| --ignore                     | In progress | todo --ignore -error            |
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
 | --iso-week                   |             |                                 |
