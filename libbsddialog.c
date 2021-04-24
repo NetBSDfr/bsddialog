@@ -1547,10 +1547,12 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
 {
 	WINDOW *widget, *button, *shadow;
-	char *buttons[4];
+	char *buttons[4], stringtime[1024];
 	int i, input, output, nbuttons, selbutton, values[4], y, x, sel;
 	bool loop, buttupdate;
-	struct clock {
+	time_t clock;
+	struct tm *localtm;
+	struct myclockstruct {
 		unsigned int max;
 		unsigned int curr;
 		WINDOW *win;
@@ -1599,7 +1601,19 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 		case 10: // Enter
 			output = values[selbutton]; // values -> outputs
 			loop = false;
-			dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
+			if (conf.time_format == NULL) {
+				dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
+			} else {
+				time(&clock);
+				localtm = localtime(&clock);
+				localtm->tm_hour = c[0].curr;
+				localtm->tm_min  = c[1].curr;
+				localtm->tm_sec  = c[2].curr;
+				clock = mktime(localtm);
+				localtm = localtime(&clock);
+				strftime(stringtime, 1024, conf.time_format, localtm);
+				dprintf(conf.output_fd, "%s", stringtime);
+			}
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;

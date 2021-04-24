@@ -105,7 +105,7 @@ Examples:
 | --stdout                     | In progress |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
-| --time-format *format*       |             |                                 |
+| --time-format *format*       | Completed   |                                 |
 | --timeout *secs*             |             |                                 |
 | --title *title*              | Completed   |                                 |
 | --trace *filename*           |             |                                 |

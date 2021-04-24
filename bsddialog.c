@@ -273,7 +273,7 @@ int main(int argc, char *argv[argc])
 	    { "stdout", no_argument, NULL, STDOUT },
 	    { "tab-correct", no_argument, NULL, 'X' },
 	    { "tab-len", required_argument, NULL /*n*/, 'X' },
-	    { "time-format", required_argument, NULL /*format*/, 'X' },
+	    { "time-format", required_argument, NULL /*format*/, TIME_FORMAT },
 	    { "timeout", required_argument, NULL /*secs*/, 'X' },
 	    { "title", required_argument, NULL /*title*/, TITLE },
 	    { "trace", required_argument, NULL /*filename*/, 'X' },
@@ -424,6 +424,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case STDOUT:
 			conf.output_fd = STDOUT_FILENO;
+			break;
+		case TIME_FORMAT:
+			conf.time_format = optarg;
 			break;
 		case TITLE:
 			conf.title = optarg;
