@@ -143,9 +143,9 @@ Examples:
 | progressbox  | Coding      |                                                 |
 | radiolist    | In progress |                                                 |
 | rangebox     | In progress | todo PAGE-UP/PAGE-DOWN/HOME/END keys            |
-| tailbox      |             |                                                 |
+| tailbox      | Coding      | todo via --textbox or fseek?                    |
 | tailboxbg    |             |                                                 |
-| textbox      |             |                                                 |
+| textbox      | In progress | todo navigation keys                            |
 | timebox      | In progress |                                                 |
 | treeview     |             |                                                 |
 | yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |

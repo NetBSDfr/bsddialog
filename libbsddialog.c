@@ -410,6 +410,7 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
  *  5) "Bar"     gauge - mixedgauge - rangebox - pause
  *  6) "Time"    timebox - calendar
  *  7) "Command" prgbox - programbox(todo) - progressbox(todo)
+ *  8) "Text"    tailbox - tailboxbg(todo) - textbox
  */
 
 /*
@@ -1904,3 +1905,103 @@ int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
 	return 0;
 }
 
+/*
+ * SECTION 8 "Text": tailbox - tailboxbg(todo) - textbox
+ */
+enum textmode { TAILMODE, TEXTMODE};
+
+int
+do_text(enum textmode mode, struct config conf, char* path, int rows, int cols)
+{
+	WINDOW *widget, *pad, *button, *shadow;
+	int i, input, y, x, padrows, padcols, ypad, xpad, ys, ye, xs, xe, nlines, s;
+	char buf[BUFSIZ], *line, *exitbutt ="EXIT";
+	FILE *fp;
+	bool loop;
+
+	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow) < 0)
+		return -1;
+
+	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
+
+	exitbutt = conf.exit_label == NULL ? exitbutt : conf.exit_label;
+	draw_button(button, (cols-2)/2 - strlen(exitbutt)/2, strlen(exitbutt)+2,
+	    exitbutt, true, true);
+
+	wrefresh(button);
+
+	padrows = rows - 4;
+	padcols = cols - 2;
+	pad = newpad(padrows, padcols);
+	wbkgd(pad, t.widgetcolor);
+
+	fp = fopen(path, "r");
+	/*if (mode == TAILMODE) {
+		fseek (fp, 0, SEEK_END);
+		i = nlines = 0;
+		while (i < padrows) {
+			line = ;
+		}
+		for (i=padrows-1; i--; i>=0) {
+		}
+	}*/
+	i = 0;
+	while(fgets(buf, BUFSIZ, fp) != NULL) {
+		if (strlen(buf) > padcols) {
+			padcols = strlen(buf);
+			wresize(pad, padrows, padcols);
+		}
+		if (i > padrows-1) {
+			padrows++;
+			wresize(pad, padrows, padcols);
+		}
+		mvwaddstr(pad, i, 0, buf);
+		i++;
+	}
+
+	ys = y + 1;
+	xs = x + 1;
+	ye = ys + rows-5;
+	xe = xs + cols-3;
+	ypad = xpad = 0;
+	loop = true;
+	while(loop) {
+		prefresh(pad, ypad, xpad, ys, xs, ye, xe);
+		input = getch();
+		switch(input) {
+		case 10: // Enter
+			loop = false;
+			break;
+		case 27: // Esc
+			loop = false;
+			break;
+		case KEY_LEFT:
+			xpad = xpad > 0 ? xpad - 1 : 0;
+			break;
+		case KEY_RIGHT:
+			xpad = (xpad + cols-2) < padcols-1 ? xpad + 1 : xpad;
+			break;
+		case KEY_UP:
+			ypad = ypad > 0 ? ypad - 1 : 0;
+			break;
+		case KEY_DOWN:
+			ypad = (ypad + rows-4) <= padrows ? ypad + 1 : ypad;
+			break;
+		}
+	}
+
+	return (BSDDIALOG_ERROR);
+}
+
+int bsddialog_tailbox(struct config conf, char* text, int rows, int cols)
+{
+
+	return (do_text(TAILMODE, conf, text, rows, cols));
+}
+
+int bsddialog_textbox(struct config conf, char* text, int rows, int cols)
+{
+
+	return (do_text(TEXTMODE, conf, text, rows, cols));
+}

@@ -169,9 +169,9 @@ int programbox_builder(BUILDER_ARGS);
 int progressbox_builder(BUILDER_ARGS);
 int radiolist_builder(BUILDER_ARGS);
 int rangebox_builder(BUILDER_ARGS);
-//int tailbox_builder(BUILDER_ARGS);
+int tailbox_builder(BUILDER_ARGS);
 //int tailboxbg_builder(BUILDER_ARGS);
-//int textbox_builder(BUILDER_ARGS);
+int textbox_builder(BUILDER_ARGS);
 int timebox_builder(BUILDER_ARGS);
 //int treeview_builder(BUILDER_ARGS);
 int yesno_builder(BUILDER_ARGS);
@@ -306,9 +306,9 @@ int main(int argc, char *argv[argc])
 	    { "progressbox", no_argument, NULL, PROGRESSBOX },
 	    { "radiolist", no_argument, NULL, RADIOLIST },
 	    { "rangebox", no_argument, NULL, RANGEBOX },
-	    { "tailbox", no_argument, NULL, 'X' },
+	    { "tailbox", no_argument, NULL, TAILBOX },
 	    { "tailboxbg", no_argument, NULL, 'X' },
-	    { "textbox", no_argument, NULL, 'X' },
+	    { "textbox", no_argument, NULL, TEXTBOX },
 	    { "timebox", no_argument, NULL, TIMEBOX },
 	    { "treeview", no_argument, NULL, 'X' },
 	    { "yesno", no_argument, NULL, YESNO },
@@ -501,6 +501,12 @@ int main(int argc, char *argv[argc])
 			break;
 		case RANGEBOX:
 			widgetbuilder = rangebox_builder;
+			break;
+		case TAILBOX:
+			widgetbuilder = tailbox_builder;
+			break;
+		case TEXTBOX:
+			widgetbuilder = textbox_builder;
 			break;
 		case TIMEBOX:
 			widgetbuilder = timebox_builder;
@@ -832,6 +838,24 @@ int rangebox_builder(BUILDER_ARGS)
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, def);
 
 	return (output);
+}
+
+int tailbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_tailbox(conf, text, rows, cols);
+
+	return output;
+}
+
+int textbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_textbox(conf, text, rows, cols);
+
+	return output;
 }
 
 int timebox_builder(BUILDER_ARGS)
