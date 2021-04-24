@@ -92,13 +92,13 @@ Examples:
 | --print-text-only *str h w*  |             | useful?                         |
 | --print-text-size *str h w*  |             | useful?                         |
 | --print-version              | Completed   |                                 |
-| --quoted                     |             | bsddialog (all tags) != dialog  |
+| --quoted                     | Coding      | bsddialog (all tags) != dialog  |
 | --reorder                    |             |                                 |
 | --scrollbar                  |             |                                 |
 | --separate-output            | In progress | for buildlist, checklist and treeview, rename --separate-out-nl?  |
 | --separate-widget *string*   |             |                                 |
 | --shadow                     | Completed   | useful?                         |
-| --single-quoted              |             | add --quote-string *string*?    |
+| --single-quoted              | Coding      | add --quote-string *string*?    |
 | --size-err                   |             |                                 |
 | --sleep *secs*               | Completed   |                                 |
 | --stderr                     | In progress |                                 |

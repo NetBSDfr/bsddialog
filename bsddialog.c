@@ -261,12 +261,12 @@ int main(int argc, char *argv[argc])
 	    { "print-maxsize", no_argument, NULL, PRINT_MAXSIZE },
 	    { "print-size", no_argument, NULL, PRINT_SIZE },
 	    { "print-version", no_argument, NULL, PRINT_VERSION },
-	    { "quoted", no_argument, NULL, 'X' },
+	    { "quoted", no_argument, NULL, QUOTED },
 	    { "scrollbar", no_argument, NULL, 'X' },
 	    { "separate-output", no_argument, NULL, SEPARATE_OUTPUT },
 	    { "separate-widget", required_argument, NULL /*string*/, 'X' },
 	    { "shadow", no_argument, NULL, SHADOW },
-	    { "single-quoted", no_argument, NULL, 'X' },
+	    { "single-quoted", no_argument, NULL, SINGLE_QUOTED },
 	    { "size-err", no_argument, NULL, 'X' },
 	    { "sleep", required_argument, NULL /*secs*/, SLEEP },
 	    { "stderr", no_argument, NULL, STDERR },
@@ -395,6 +395,9 @@ int main(int argc, char *argv[argc])
 		case OUTPUT_FD:
 			conf.output_fd = atoi(optarg);
 			break;
+		case QUOTED:
+			conf.quoted = true;
+			break;
 		case PRINT_MAXSIZE:
 			conf.print_maxsize = true;
 			break;
@@ -409,6 +412,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case SHADOW:
 			conf.shadow = true;
+			break;
+		case SINGLE_QUOTED:
+			conf.single_quoted = true;
 			break;
 		case SLEEP:
 			conf.sleep = atoi(optarg);

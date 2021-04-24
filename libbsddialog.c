@@ -586,7 +586,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
     int nitems, struct myitem *items)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
-	char *buttons[4], *sepstr;
+	char *buttons[4], *sepstr, quotech;
 	int i, values[4], output, nbuttons, defbutton, y, x, input, curr;
 	int ys, ye, xs, xe;
 	bool loop, buttupdate, sep;
@@ -713,6 +713,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		sleep(conf.sleep);
 
 	sep = false;
+	quotech = conf.single_quoted ? '\'' : '"';
 
 	if (output == BSDDIALOG_HELP && nitems >0) {
 		dprintf(conf.output_fd, "HELP %s", items[curr].name);
