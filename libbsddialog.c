@@ -1914,8 +1914,8 @@ int
 do_text(enum textmode mode, struct config conf, char* path, int rows, int cols)
 {
 	WINDOW *widget, *pad, *button, *shadow;
-	int i, input, y, x, padrows, padcols, ypad, xpad, ys, ye, xs, xe, nlines, s;
-	char buf[BUFSIZ], *line, *exitbutt ="EXIT";
+	int i, input, y, x, padrows, padcols, ypad, xpad, ys, ye, xs, xe;
+	char buf[BUFSIZ], *exitbutt ="EXIT";
 	FILE *fp;
 	bool loop;
 
