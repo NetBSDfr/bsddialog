@@ -237,7 +237,7 @@ int main(int argc, char *argv[argc])
 	    { "ignore", no_argument, NULL, IGNORE },
 	    { "input-fd", required_argument, NULL /*fd*/, 'X' },
 	    { "insecure", no_argument, NULL, 'X' },
-	    { "item-help", no_argument, NULL, 'X' },
+	    { "item-help", no_argument, NULL, ITEM_HELP },
 	    { "keep-tite", no_argument, NULL, 'X' },
 	    { "keep-window", no_argument, NULL, 'X' },
 	    { "last-key", no_argument, NULL, 'X' },
@@ -375,6 +375,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case IGNORE:
 			ignore = true;
+			break;
+		case ITEM_HELP:
+			conf.item_help = true;
 			break;
 		case NOCANCEL:
 		case NO_CANCEL:
@@ -586,9 +589,11 @@ int calendar_builder(BUILDER_ARGS)
 
 int checklist_builder(BUILDER_ARGS)
 {
-	int output, menurows;
+	int output, menurows, sizeitem;
 
-	if (argc < 1 || (((argc-1) % 3) != 0)) {
+	sizeitem = conf.item_help ? 4 : 3;
+
+	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
 		usage();
 		return (-1);
 	}
@@ -656,9 +661,11 @@ int inputmenu_builder(BUILDER_ARGS)
 
 int menu_builder(BUILDER_ARGS)
 {
-	int output, menurows;
+	int output, menurows, sizeitem;
 
-	if (argc < 1 || (((argc-1) % 2) != 0)) {
+	sizeitem = conf.item_help ? 3 : 2;
+
+	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
 		usage();
 		return (-1);
 	}
@@ -792,9 +799,11 @@ int progressbox_builder(BUILDER_ARGS)
 
 int radiolist_builder(BUILDER_ARGS)
 {
-	int output, menurows;
+	int output, menurows, sizeitem;
 
-	if (argc < 1 || (((argc-1) % 3) != 0)) {
+	sizeitem = conf.item_help ? 4 : 3;
+
+	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
 		usage();
 		return (-1);
 	}

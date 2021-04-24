@@ -65,7 +65,7 @@ Examples:
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
 | --iso-week                   |             |                                 |
-| --item-help                  |             |                                 |
+| --item-help                  | Coding      |                                 |
 | --keep-tite                  |             |                                 |
 | --keep-window                |             |                                 |
 | --last-key                   |             |                                 |
