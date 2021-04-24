@@ -534,7 +534,9 @@ int main(int argc, char *argv[argc])
 	if (backtitle != NULL)
 		bsddialog_backtitle(conf, backtitle);
 
-	output = widgetbuilder(conf, text, rows, cols, argc, argv);
+	output = -1;
+	if (widgetbuilder != NULL)
+		output = widgetbuilder(conf, text, rows, cols, argc, argv);
 
 	bsddialog_end();
 
