@@ -722,9 +722,10 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	sepstr = conf.separate_output ? "\n" : " ";
 
 	if ((output == BSDDIALOG_YESOK || conf.help_status == true) && nitems > 0) {
-		if (mode == MENUMODE)
+		if (mode == MENUMODE) {
 			dprintf(conf.output_fd, "%s", items[curr].name);
-		else { /* CHECKLIST or RADIOLIST */
+			items[curr].on = true; // for library
+		} else { /* CHECKLIST or RADIOLIST */
 			for (i=0; i<nitems; i++)
 				if (items[i].on == true) {
 					if (sep == true)
