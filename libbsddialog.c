@@ -567,14 +567,19 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		wprintw(pad, "(%c)", item.on ? '*' : ' ');
 	wattron(pad, color);
 
-	wattron(pad, colorname);
-	if (mode != MENUMODE)
-		wmove(pad, y, 4);
-	waddstr(pad, item.name);
-	wattron(pad, colorname);
+	if (mode != BUILDLISTMODE) {
+		wattron(pad, colorname);
+		if (mode != MENUMODE)
+			wmove(pad, y, 4);
+		waddstr(pad, item.name);
+		wattron(pad, colorname);
+	}
 
 	wattron(pad, color);
-	mvwaddstr(pad, y, xdesc + (mode==MENUMODE ? 0 : 4), item.desc);
+	if (mode == CHECKLISTMODE || mode == RADIOLISTMODE)
+		xdesc +=4;
+
+	mvwaddstr(pad, y, xdesc, item.desc);
 	wattron(pad, color);
 
 	if (selected && bottomdesc == true) {
@@ -935,12 +940,11 @@ int
 bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
-	int i, output, line, maxname, maxdesc;
+	int i, output, line;
 
-	line = maxname = maxdesc = 0;
-	for (i=0; i<nitems; i++) {
-		line = MAX(line, maxname + maxdesc + 4);
-	}
+	line = 0;
+	for (i=0; i<nitems; i++)
+		line = MAX(line, strlen(items[i].desc));
 
 	output = do_buildlist(conf, text, rows, cols, menurows, line, nitems, items);
 
