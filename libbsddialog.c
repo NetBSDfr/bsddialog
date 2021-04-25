@@ -747,7 +747,7 @@ int
 bsddialog_checklist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
-	int i, output, line, maxname, maxdesc, sizeitem;
+	int i, output, line, maxname, maxdesc;
 
 	line = maxname = maxdesc = 0;
 	for (i=0; i<nitems; i++) {
@@ -764,27 +764,15 @@ bsddialog_checklist(struct config conf, char* text, int rows, int cols,
 
 int
 bsddialog_menu(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int argc, char **argv)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
-	int i, output, nitems, line, maxname, maxdesc, sizeitem;
-	struct bsddialog_menuitem items[128];
-
-	sizeitem = conf.item_help ? 3 : 2;
-	if ((argc % sizeitem) != 0)
-		return (-1);
+	int i, output, line, maxname, maxdesc;
 
 	line = maxname = maxdesc = 0;
-	nitems = argc / sizeitem;
 	for (i=0; i<nitems; i++) {
-		items[i].name = argv[sizeitem*i];
-		items[i].desc = argv[sizeitem*i+1];
-
 		maxname = MAX(maxname, strlen(items[i].name) + 1);
 		maxdesc = MAX(maxdesc, strlen(items[i].desc));
 		line = MAX(line, maxname + maxdesc);
-
-		if (conf.item_help == true)
-			items[i].bottomdesc = argv[sizeitem*i+2];
 	}
 
 	output = do_menu(conf, text, rows, cols, menurows, line, maxname,
@@ -795,33 +783,22 @@ bsddialog_menu(struct config conf, char* text, int rows, int cols,
 
 int
 bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int argc, char **argv)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
-	int i, output, nitems, line, maxname, maxdesc, sizeitem;
-	struct bsddialog_menuitem items[128];
+	int i, output, line, maxname, maxdesc;
 	bool on = false;
 
-	sizeitem = conf.item_help ? 4 : 3;
-	if ((argc % sizeitem) != 0)
-		return (-1);
-
 	line = maxname = maxdesc = 0;
-	nitems = argc / sizeitem;
 	for (i=0; i<nitems; i++) {
-		items[i].name = argv[sizeitem*i];
-		items[i].desc = argv[sizeitem*i+1];
-		if (on == false && (strcmp(argv[sizeitem*i+2], "on") == 0)) {
-			items[i].on = true;
-			on = true;
-		} else
+		if (on == true)
 			items[i].on = false;
+
+		if (items[i].on == true)
+			on = true;
 
 		maxname = MAX(maxname, strlen(items[i].name) + 1);
 		maxdesc = MAX(maxdesc, strlen(items[i].desc));
 		line = MAX(line, maxname + maxdesc + 4);
-
-		if (conf.item_help == true)
-			items[i].bottomdesc = argv[sizeitem*i+3];
 	}
 
 	output = do_menu(conf, text, rows, cols, menurows, line, maxname,
@@ -955,26 +932,13 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 
 int
 bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int argc, char **argv)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
-	int i, output, nitems, line, sizeitem;
-	struct bsddialog_menuitem items[128];
+	int i, output, line, maxname, maxdesc;
 
-	sizeitem = conf.item_help ? 4 : 3;
-	if ((argc % sizeitem) != 0)
-		return (-1);
-
-	line = 0;
-	nitems = argc / sizeitem;
+	line = maxname = maxdesc = 0;
 	for (i=0; i<nitems; i++) {
-		items[i].name = argv[sizeitem*i];
-		items[i].desc = argv[sizeitem*i+1];
-		items[i].on = strcmp(argv[sizeitem*i+2], "on") == 0 ? true : false;
-
-		line = MAX(line, strlen(items[i].desc));
-
-		if (conf.item_help == true)
-			items[i].bottomdesc = argv[sizeitem*i+3];
+		line = MAX(line, maxname + maxdesc + 4);
 	}
 
 	output = do_buildlist(conf, text, rows, cols, menurows, line, nitems, items);

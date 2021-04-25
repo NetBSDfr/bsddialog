@@ -606,19 +606,21 @@ int main(int argc, char *argv[argc])
 
 int buildlist_builder(BUILDER_ARGS)
 {
-	int output, menurows, sizeitem;
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
 
-	sizeitem = conf.item_help ? 4 : 3;
-
-	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
+	if (argc < 1) {
 		usage();
 		return (-1);
 	}
 
 	menurows = atoi(argv[0]);
 
-	output = bsddialog_buildlist(conf, text, rows, cols, menurows, argc-1,
-	    argv + 1);
+	output = get_menu_items(conf, argc-1, argv+1, &nitems, items, true);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems, items);
 
 	return output;
 }
@@ -759,19 +761,21 @@ int inputmenu_builder(BUILDER_ARGS)
 
 int menu_builder(BUILDER_ARGS)
 {
-	int output, menurows, sizeitem;
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
 
-	sizeitem = conf.item_help ? 3 : 2;
-
-	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
+	if (argc < 1) {
 		usage();
 		return (-1);
 	}
 
 	menurows = atoi(argv[0]);
 
-	output = bsddialog_menu(conf, text, rows, cols, menurows, argc-1,
-	    argv + 1);
+	output = get_menu_items(conf, argc-1, argv+1, &nitems, items, false);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems, items);
 
 	return output;
 }
@@ -897,19 +901,21 @@ int progressbox_builder(BUILDER_ARGS)
 
 int radiolist_builder(BUILDER_ARGS)
 {
-	int output, menurows, sizeitem;
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
 
-	sizeitem = conf.item_help ? 4 : 3;
-
-	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
+	if (argc < 1) {
 		usage();
 		return (-1);
 	}
 
 	menurows = atoi(argv[0]);
 
-	output = bsddialog_radiolist(conf, text, rows, cols, menurows, argc-1,
-	    argv + 1);
+	output = get_menu_items(conf, argc-1, argv+1, &nitems, items, true);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems, items);
 
 	return output;
 }
