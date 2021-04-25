@@ -578,7 +578,6 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 	wattron(pad, color);
 	if (mode == CHECKLISTMODE || mode == RADIOLISTMODE)
 		xdesc +=4;
-
 	mvwaddstr(pad, y, xdesc, item.desc);
 	wattron(pad, color);
 
