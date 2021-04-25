@@ -8,8 +8,10 @@
  *   <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-#include <dialog.h>
 #include <stdio.h>
+#include <string.h>
+
+#include "../bsddialog.h"
 
 /* cc ../theme.c ../libdialog checklist.c -o checklist -lform -lncurses */
 int main()
@@ -22,22 +24,26 @@ int main()
 	    {"Name 3", "Desc 3", false, "Bottom Desc 3"},
 	    {"Name 4", "Desc 4", false, "Bottom Desc 4"},
 	    {"Name 5", "Desc 5", false, "Bottom Desc 5"}
-	}
+	};
 
 	memset(&conf, 0, sizeof(struct config));
+	conf.y = conf.x = -1;
+	conf.shadow = true;
+	conf.item_help = true;
+	conf.cancel_label = "Quit";
+	conf.ok_label = "Submit";
 	conf.title = "checklist";
 	
-	if (bsddialog_init(conf) < 0)
+	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_checklist(conf, "Checklist Example", 20, 40, 5, 5,
-	    &items, true);
+	output = bsddialog_checklist(conf, "Example", 15, 30, 5, 5, items);
 
 	bsddialog_end();
 
 	printf("Checklist:\n");
 	for (i=0; i<5; i++)
-		printf(" [%c] %s\n", items[i] = items[i].on ? 'X' : ' ', items[i].name);
+		printf(" [%c] %s\n", items[i].on ? 'X' : ' ', items[i].name);
 		
 	
 	return output;
