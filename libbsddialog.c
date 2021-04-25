@@ -555,7 +555,7 @@ struct myitem {
 	char *bottomdesc;
 };
 
-enum menumode { CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
+enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
 
 void
 draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode,
@@ -856,59 +856,52 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 
 int
 do_buildlist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int line, int xdesc, int nitems, struct myitem *items)
+    unsigned int menurows, int line, int nitems, struct myitem *items)
 {
 	WINDOW *widget, *button, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
-	char *buttons[4], *sepstr, quotech;
-	int i, values[4], output, nbuttons, defbutton, y, x, input, curr;
-	int ys, ye, xs, xe;
-	bool loop, buttupdate, sep;
+	char *buttons[4];
+	int i, lefty, righty, leftx, rightx, values[4], output, nbuttons, defbutton, y, x, input, curr;
+	int ys, ye;
+	bool loop, buttupdate;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
-	leftwin = new_window(y + rows - 5 - menurows, x + 2, menurows+2, (cols-5)/2,
+	leftx = x+1;
+	leftwin = new_window(y + rows - 5 - menurows, leftx, menurows+2, (cols-5)/2,
 	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	rightwin = new_window(y + rows - 5 - menurows, x + cols - 2-(cols-5)/2, menurows+2, (cols-5)/2,
+	rightx = x + cols - 2-(cols-5)/2;
+	rightwin = new_window(y + rows - 5 - menurows, rightx, menurows+2, (cols-5)/2,
 	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	wrefresh(leftwin);
 	wrefresh(rightwin);
-	getch();
-/*
-	menupad = newpad(nitems, line);
-	//wbkgd(menupad, t.widgetcolor);
 
-	curr = -1;
-	if (conf.default_item != NULL) {
-		for (i=0; i<nitems; i++) {
-			if (strcmp(items[i].name, conf.default_item) == 0) {
-				curr = i;
-				break;
-			}
+	leftpad  = newpad(nitems, line);
+	rightpad = newpad(nitems, line);
+	//wbkgd(leftpad, t.widgetcolor);
+	//wbkgd(rightpad, t.widgetcolor);
+
+	lefty = righty = 0;
+	curr = 0;
+	for (i=0; i<nitems; i++) {
+		if (items[i].on == true) {
+			draw_myitem(leftpad, lefty, items[i], BUILDLISTMODE, 0, i == 0, conf.item_help);
+			lefty++;
+		} else {
+			draw_myitem(rightpad, righty, items[i], BUILDLISTMODE, 0, i == 0, conf.item_help);
+			righty++;
 		}
 	}
-	curr = curr < 0 ? 0 : curr;
-	for (i=0; i<nitems; i++) {
-		if (conf.default_item != NULL)
-			if (strcmp(items[i].name, conf.default_item) == 0)
-				curr = i;
-		draw_myitem(menupad, i, items[i], mode, xdesc, i == curr, conf.item_help);
-	}
-
-	ys = y + rows - 5 - menurows + 1;
-	ye = ys + menurows + 2 -1;
-	xs = (line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - line/2;
-	xe = (line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	    conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	    conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	wrefresh(menuwin);
-	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
+	ys = y + rows - 5 - menurows + 1;
+	ye = ys + menurows + 2 -1;
 
 	loop = buttupdate = true;
 	while(loop) {
@@ -918,8 +911,11 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 			wrefresh(button);
 			buttupdate = false;
 		}
-		//wrefresh(menuwin);
-		prefresh(menupad, 0, 0, ys, xs, ye, xe);
+
+		//xs = (line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - line/2;
+		//xe = (line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
+		prefresh(leftpad, 0, 0, ys, leftx+1, ye, leftx + 1 + (cols-5)/2 - 2);//delete?
+		prefresh(rightpad, 0, 0, ys, rightx+1, ye, rightx + 1 + (cols-5)/2 -2);//delete?
 
 		input = getch();
 		switch(input) {
@@ -953,7 +949,7 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 			continue;
 
 		switch(input) {
-		case KEY_UP:
+		/*case KEY_UP:
 			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
 			curr = (curr > 0) ? curr - 1 : 0;
 			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
@@ -962,24 +958,8 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
 			curr = (curr < nitems-1) ? curr +1 : nitems-1;
 			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
-			break;
+			break;*/
 		case ' ': // Space
-			if (mode == MENUMODE)
-				break;
-			else if (mode == CHECKLISTMODE)
-				items[curr].on = ! items[curr].on;
-			else { //RADIOLISTMODE
-				if (items[curr].on == true)
-					break;
-				for (i=0; i<nitems; i++)
-					if (items[i].on == true) {
-						items[i].on = false;
-						draw_myitem(menupad, i, items[i],
-						    mode, xdesc, false, conf.item_help);
-					}
-				items[curr].on = true;
-			}
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
 			break;
 		default:
 
@@ -987,30 +967,6 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 		}
 	}
 
-	sep = false;
-	quotech = conf.single_quoted ? '\'' : '"';
-
-	if (output == BSDDIALOG_HELP && nitems >0) {
-		dprintf(conf.output_fd, "HELP %s", items[curr].name);
-		sep = true;
-	}
-
-	sepstr = conf.separate_output ? "\n" : " ";
-
-	if ((output == BSDDIALOG_YESOK || conf.help_status == true) && nitems > 0) {
-		if (mode == MENUMODE)
-			dprintf(conf.output_fd, "%s", items[curr].name);
-		else { // CHECKLIST or RADIOLIST
-			for (i=0; i<nitems; i++)
-				if (items[i].on == true) {
-					if (sep == true)
-					    dprintf(conf.output_fd, "%s", sepstr);
-					sep = true;
-					dprintf(conf.output_fd, "%s",items[i].name);
-				}
-		}
-	}
-*/
 	delwin(button);
 	delwin(leftpad);
 	delwin(leftwin);
@@ -1025,30 +981,27 @@ int
 bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
-	int i, output, nitems, line, maxname, maxdesc, sizeitem;
+	int i, output, nitems, line, sizeitem;
 	struct myitem items[128];
 
 	sizeitem = conf.item_help ? 4 : 3;
 	if ((argc % sizeitem) != 0)
 		return (-1);
 
-	line = maxname = maxdesc = 0;
+	line = 0;
 	nitems = argc / sizeitem;
 	for (i=0; i<nitems; i++) {
 		items[i].name = argv[sizeitem*i];
 		items[i].desc = argv[sizeitem*i+1];
 		items[i].on = strcmp(argv[sizeitem*i+2], "on") == 0 ? true : false;
 
-		maxname = MAX(maxname, strlen(items[i].name) + 1);
-		maxdesc = MAX(maxdesc, strlen(items[i].desc));
-		line = MAX(line, maxname + maxdesc + 4);
+		line = MAX(line, strlen(items[i].desc));
 
 		if (conf.item_help == true)
 			items[i].bottomdesc = argv[sizeitem*i+3];
 	}
 
-	output = do_buildlist(conf, text, rows, cols, menurows, line, maxname,
-	    nitems, items);
+	output = do_buildlist(conf, text, rows, cols, menurows, line, nitems, items);
 
 	return output;
 }
