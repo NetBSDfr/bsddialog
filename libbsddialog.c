@@ -619,12 +619,8 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		}
 	}
 	curr = curr < 0 ? 0 : curr;
-	for (i=0; i<nitems; i++) {
-		if (conf.default_item != NULL)
-			if (strcmp(items[i].name, conf.default_item) == 0)
-				curr = i;
+	for (i=0; i<nitems; i++)
 		draw_myitem(menupad, i, items[i], mode, xdesc, i == curr, conf.item_help);
-	}
 
 	ys = y + rows - 5 - menurows + 1;
 	ye = ys + menurows + 2 -1;
