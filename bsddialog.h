@@ -114,6 +114,13 @@ struct config {
 	char *yes_label;
 };
 
+struct bsddialog_menuitem {
+	char *name;
+	char *desc;
+	bool on;
+	char *bottomdesc;
+};
+
 int  bsddialog_init(void);
 void bsddialog_end(void);
 int  bsddialog_backtitle(struct config conf, char *backtitle);

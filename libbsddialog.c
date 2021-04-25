@@ -548,17 +548,10 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 /*
  * SECTION 3 "Menu": checklist - menu - radiolist - treeview(todo) - buildlist(todo)
  */
-struct myitem {
-	char *name;
-	char *desc;
-	bool on;
-	char *bottomdesc;
-};
-
 enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
 
 void
-draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode,
+draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mode,
     int xdesc, bool selected, bool bottomdesc)
 {
 	int color, colorname;
@@ -596,7 +589,7 @@ draw_myitem(WINDOW *pad, int y, struct myitem item, enum menumode mode,
 int
 do_menu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int line, int xdesc, enum menumode mode,
-    int nitems, struct myitem *items)
+    int nitems, struct bsddialog_menuitem *items)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
 	char *buttons[4], *sepstr, quotech;
@@ -759,7 +752,7 @@ bsddialog_checklist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
 	int i, output, nitems, line, maxname, maxdesc, sizeitem;
-	struct myitem items[128];
+	struct bsddialog_menuitem items[128];
 
 	sizeitem = conf.item_help ? 4 : 3;
 	if ((argc % sizeitem) != 0)
@@ -791,7 +784,7 @@ bsddialog_menu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
 	int i, output, nitems, line, maxname, maxdesc, sizeitem;
-	struct myitem items[128];
+	struct bsddialog_menuitem items[128];
 
 	sizeitem = conf.item_help ? 3 : 2;
 	if ((argc % sizeitem) != 0)
@@ -822,7 +815,7 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
 	int i, output, nitems, line, maxname, maxdesc, sizeitem;
-	struct myitem items[128];
+	struct bsddialog_menuitem items[128];
 	bool on = false;
 
 	sizeitem = conf.item_help ? 4 : 3;
@@ -856,7 +849,7 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 
 int
 do_buildlist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int line, int nitems, struct myitem *items)
+    unsigned int menurows, int line, int nitems, struct bsddialog_menuitem *items)
 {
 	WINDOW *widget, *button, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
 	char *buttons[4];
@@ -982,7 +975,7 @@ bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv)
 {
 	int i, output, nitems, line, sizeitem;
-	struct myitem items[128];
+	struct bsddialog_menuitem items[128];
 
 	sizeitem = conf.item_help ? 4 : 3;
 	if ((argc % sizeitem) != 0)
