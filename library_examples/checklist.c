@@ -15,7 +15,7 @@
 int main()
 {
 	int i, output;
-	struct bsddialog_config conf;
+	struct config conf; //bsddialog_config conf;
 	struct bsddialog_menuitem items[5] = {
 	    {"Name 1", "Desc 1", false, "Bottom Desc 1"},
 	    {"Name 2", "Desc 2", false, "Bottom Desc 2"},
