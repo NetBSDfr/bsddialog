@@ -120,17 +120,17 @@ Examples:
 
 | Widget       | Status      | Note                                            |
 |------------- | ----------- | ----------------------------------------------- |
-| buildlist    |             | useful? (checklist)                             |
+| buildlist    |             |                                                 |
 | calendar     | In progress | add leap year, year <=0, month days             |
 | checklist    | In progress |                                                 |
-| dselect      |             | useful?                                         |
-| editbox      |             | useful?                                         |
+| dselect      |             |                                                 |
+| editbox      |             |                                                 |
 | form         | In progress | implemented via --mixedform                     |
-| fselect      |             | useful?                                         |
+| fselect      |             |                                                 |
 | gauge        | In progress |                                                 |
 | infobox      | In progress | Do not clear the screen                         |
 | inputbox     | In progress | implemented via --mixedform, todo \<init\>      |
-| inputmenu    |             | usefu?                                          |
+| inputmenu    |             |                                                 |
 | menu         | In progress | todo scrolling                                  |
 | mixedform    | In progress |                                                 |
 | mixedgauge   | In progress |                                                 |
@@ -144,9 +144,9 @@ Examples:
 | radiolist    | In progress |                                                 |
 | rangebox     | In progress | todo PAGE-UP/PAGE-DOWN/HOME/END keys            |
 | tailbox      | Coding      | todo via --textbox or fseek?                    |
-| tailboxbg    |             | useful?                                         |
+| tailboxbg    |             |                                                 |
 | textbox      | In progress | todo navigation keys                            |
 | timebox      | In progress |                                                 |
-| treeview     |             | useful? (radiolist)                             |
+| treeview     |             |                                                 |
 | yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
 
