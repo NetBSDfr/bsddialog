@@ -149,10 +149,10 @@ void usage(void);
 int buildlist_builder(BUILDER_ARGS);
 int calendar_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
-//int dselect_builder(BUILDER_ARGS);
-//int editbox_builder(BUILDER_ARGS);
+int dselect_builder(BUILDER_ARGS);
+int editbox_builder(BUILDER_ARGS);
 int form_builder(BUILDER_ARGS);
-//int fselect_builder(BUILDER_ARGS);
+int fselect_builder(BUILDER_ARGS);
 int gauge_builder(BUILDER_ARGS);
 int infobox_builder(BUILDER_ARGS);
 int inputbox_builder(BUILDER_ARGS);
@@ -286,10 +286,10 @@ int main(int argc, char *argv[argc])
 	    { "buildlist", no_argument, NULL, BUILDLIST },
 	    { "calendar", no_argument, NULL, CALENDAR },
 	    { "checklist", no_argument, NULL, CHECKLIST },
-	    { "dselect", no_argument, NULL, 'X' },
-	    { "editbox", no_argument, NULL, 'X' },
+	    { "dselect", no_argument, NULL, DSELECT },
+	    { "editbox", no_argument, NULL, EDITBOX },
 	    { "form", no_argument, NULL, FORM },
-	    { "fselect", no_argument, NULL, 'X' },
+	    { "fselect", no_argument, NULL, FSELECT },
 	    { "gauge", no_argument, NULL, GAUGE },
 	    { "infobox", no_argument, NULL, INFOBOX },
 	    { "inputbox", no_argument, NULL, INPUTBOX },
@@ -454,8 +454,17 @@ int main(int argc, char *argv[argc])
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
+		case DSELECT:
+			widgetbuilder = dselect_builder;
+			break;
+		case EDITBOX:
+			widgetbuilder = editbox_builder;
+			break;
 		case FORM:
 			widgetbuilder = form_builder;
+			break;
+		case FSELECT:
+			widgetbuilder = fselect_builder;
 			break;
 		case GAUGE:
 			widgetbuilder = gauge_builder;
@@ -630,6 +639,24 @@ int checklist_builder(BUILDER_ARGS)
 	return output;
 }
 
+int dselect_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_dselect(conf, text, rows, cols);
+
+	return output;
+}
+
+int editbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_editbox(conf, text, rows, cols);
+
+	return output;
+}
+
 int form_builder(BUILDER_ARGS)
 {
 	int output, formheight;
@@ -643,6 +670,15 @@ int form_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, argc-1,
 	    argv + 1);
+
+	return output;
+}
+
+int fselect_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_fselect(conf, text, rows, cols);
 
 	return output;
 }

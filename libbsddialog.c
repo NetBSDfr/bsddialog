@@ -407,10 +407,12 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
  *  2) "Button"  msgbox - yesno
  *  3) "Menu"    buildlist(todo) - checklist - menu - radiolist - treeview(todo)
  *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
- *  5) "Bar"     gauge - mixedgauge - rangebox - pause
- *  6) "Time"    timebox - calendar
- *  7) "Command" prgbox - programbox(todo) - progressbox(todo)
- *  8) "Text"    tailbox - tailboxbg(todo) - textbox
+ *  5) "Editor"  editbox(todo)
+ *  6) "Bar"     gauge - mixedgauge - rangebox - pause
+ *  7) "Time"    timebox - calendar
+ *  8) "Command" prgbox - programbox(todo) - progressbox(todo)
+ *  9) "Text"    tailbox - tailboxbg(todo) - textbox
+ * 10) "File"    dselect(todo) - fselect(todo)
  */
 
 /*
@@ -1222,7 +1224,16 @@ bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
 }
 
 /*
- * SECTION 5 "Bar": gauge - mixedgauge - rangebox - pause
+ * SECTION 5 "Editor":  editbox(todo)
+ */
+int bsddialog_editbox(struct config conf, char* text, int rows, int cols)
+{
+
+	return (BSDDIALOG_ERROR);
+}
+
+/*
+ * SECTION 6 "Bar": gauge - mixedgauge - rangebox - pause
  */
 void
 draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, int label)
@@ -1558,7 +1569,7 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 }
 
 /*
- * SECTION 6 "Time": timebox - calendar
+ * SECTION 7 "Time": timebox - calendar
  */
 int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
@@ -1795,7 +1806,7 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 }
 
 /*
- * SECTION 7 "Command": prgbox - programbox(todo) - progressbox(todo)
+ * SECTION 8 "Command": prgbox - programbox(todo) - progressbox(todo)
  */
 int
 bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *command)
@@ -1918,7 +1929,7 @@ int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
 }
 
 /*
- * SECTION 8 "Text": tailbox - tailboxbg(todo) - textbox
+ * SECTION 9 "Text": tailbox - tailboxbg(todo) - textbox
  */
 enum textmode { TAILMODE, TAILBGMODE, TEXTMODE};
 
@@ -2023,4 +2034,19 @@ int bsddialog_textbox(struct config conf, char* text, int rows, int cols)
 {
 
 	return (do_text(TEXTMODE, conf, text, rows, cols));
+}
+
+/*
+ * SECTION 10 "File": dselect(todo) - fselect(todo)
+ */
+int bsddialog_dselect(struct config conf, char* text, int rows, int cols)
+{
+
+	return (BSDDIALOG_ERROR);
+}
+
+int bsddialog_fselect(struct config conf, char* text, int rows, int cols)
+{
+
+	return (BSDDIALOG_ERROR);
 }

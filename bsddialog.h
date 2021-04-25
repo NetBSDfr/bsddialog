@@ -123,11 +123,11 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
     unsigned int yy, unsigned int mm, unsigned int dd);
 int bsddialog_checklist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int argc, char **argv);
-//int bsddialog_dselect(struct config conf, char* text, int rows, int cols);
-//int bsddialog_editbox(struct config conf, char* text, int rows, int cols);
+int bsddialog_dselect(struct config conf, char* text, int rows, int cols);
+int bsddialog_editbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_form(struct config conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
-//int bsddialog_fselect(struct config conf, char* text, int rows, int cols);
+int bsddialog_fselect(struct config conf, char* text, int rows, int cols);
 int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc);
 int bsddialog_infobox(struct config conf, char* text, int rows, int cols);
 int bsddialog_inputbox(struct config conf, char* text, int rows, int cols);
