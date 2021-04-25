@@ -854,10 +854,36 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 	return output;
 }
 
-int bsddialog_buildlist(struct config conf, char* text, int rows, int cols)
+int
+bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int argc, char **argv)
 {
+	int i, output, nitems, line, maxname, maxdesc, sizeitem;
+	struct myitem items[128];
 
-	return (BSDDIALOG_ERROR);
+	sizeitem = conf.item_help ? 4 : 3;
+	if ((argc % sizeitem) != 0)
+		return (-1);
+
+	line = maxname = maxdesc = 0;
+	nitems = argc / sizeitem;
+	for (i=0; i<nitems; i++) {
+		items[i].name = argv[sizeitem*i];
+		items[i].desc = argv[sizeitem*i+1];
+		items[i].on = strcmp(argv[sizeitem*i+2], "on") == 0 ? true : false;
+
+		maxname = MAX(maxname, strlen(items[i].name) + 1);
+		maxdesc = MAX(maxdesc, strlen(items[i].desc));
+		line = MAX(line, maxname + maxdesc + 4);
+
+		if (conf.item_help == true)
+			items[i].bottomdesc = argv[sizeitem*i+3];
+	}
+
+	output = do_menu(conf, text, rows, cols, menurows, line, maxname,
+	    CHECKLISTMODE, nitems, items);
+
+	return output;
 }
 
 int bsddialog_treeview(struct config conf, char* text, int rows, int cols)

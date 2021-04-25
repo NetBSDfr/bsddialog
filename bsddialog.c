@@ -580,9 +580,19 @@ int main(int argc, char *argv[argc])
 
 int buildlist_builder(BUILDER_ARGS)
 {
-	int output;
+	int output, menurows, sizeitem;
 
-	output = bsddialog_buildlist(conf, text, rows, cols);
+	sizeitem = conf.item_help ? 4 : 3;
+
+	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = bsddialog_buildlist(conf, text, rows, cols, menurows, argc-1,
+	    argv + 1);
 
 	return output;
 }
