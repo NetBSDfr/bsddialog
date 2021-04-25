@@ -620,7 +620,7 @@ int buildlist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return output;
 
-	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems, items);
+	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems, items);
 
 	return output;
 }
