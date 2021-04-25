@@ -24,6 +24,7 @@ int main()
 	    {"Name 5", "Desc 5", false, "Bottom Desc 5"}
 	}
 
+	memset(&conf, 0, sizeof(struct config));
 	conf.title = "checklist";
 	
 	if (bsddialog_init(conf) < 0)
