@@ -152,7 +152,7 @@ int bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 int bsddialog_rangebox(struct config conf, char* text, int rows, int cols,
     int min, int max, int def);
 int bsddialog_tailbox(struct config conf, char* text, int rows, int cols);
-//int bsddialog_tailboxbg(struct config conf, char* text, int rows, int cols);
+int bsddialog_tailboxbg(struct config conf, char* text, int rows, int cols);
 int bsddialog_textbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss);

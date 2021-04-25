@@ -1908,7 +1908,7 @@ int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
 /*
  * SECTION 8 "Text": tailbox - tailboxbg(todo) - textbox
  */
-enum textmode { TAILMODE, TEXTMODE};
+enum textmode { TAILMODE, TAILBGMODE, TEXTMODE};
 
 int
 do_text(enum textmode mode, struct config conf, char* path, int rows, int cols)
@@ -1999,6 +1999,13 @@ int bsddialog_tailbox(struct config conf, char* text, int rows, int cols)
 
 	return (do_text(TAILMODE, conf, text, rows, cols));
 }
+
+int bsddialog_tailboxbg(struct config conf, char* text, int rows, int cols)
+{
+
+	return (do_text(TAILBGMODE, conf, text, rows, cols));
+}
+
 
 int bsddialog_textbox(struct config conf, char* text, int rows, int cols)
 {
