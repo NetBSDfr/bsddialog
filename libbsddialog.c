@@ -405,7 +405,7 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
  * SECTIONS
  *  1) "Info"    infobox
  *  2) "Button"  msgbox - yesno
- *  3) "Menu"    checklist - menu - radiolist
+ *  3) "Menu"    buildlist(todo) - checklist - menu - radiolist - treeview(todo)
  *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
  *  5) "Bar"     gauge - mixedgauge - rangebox - pause
  *  6) "Time"    timebox - calendar
@@ -544,7 +544,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 }
 
 /*
- * SECTION 3 "Menu": checklist - menu - radiolist
+ * SECTION 3 "Menu": checklist - menu - radiolist - treeview(todo) - buildlist(todo)
  */
 struct myitem {
 	char *name;
@@ -850,6 +850,18 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 	    RADIOLISTMODE, nitems, items);
 
 	return output;
+}
+
+int bsddialog_buildlist(struct config conf, char* text, int rows, int cols)
+{
+
+	return (BSDDIALOG_ERROR);
+}
+
+int bsddialog_treeview(struct config conf, char* text, int rows, int cols)
+{
+
+	return (BSDDIALOG_ERROR);
 }
 
 /*

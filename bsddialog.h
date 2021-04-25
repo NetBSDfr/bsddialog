@@ -118,7 +118,7 @@ int  bsddialog_init(void);
 void bsddialog_end(void);
 int  bsddialog_backtitle(struct config conf, char *backtitle);
 /* widgets */
-//int bsddialog_buildlist(struct config conf, char* text, int rows, int cols);
+int bsddialog_buildlist(struct config conf, char* text, int rows, int cols);
 int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
     unsigned int yy, unsigned int mm, unsigned int dd);
 int bsddialog_checklist(struct config conf, char* text, int rows, int cols,
@@ -156,7 +156,7 @@ int bsddialog_tailboxbg(struct config conf, char* text, int rows, int cols);
 int bsddialog_textbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss);
-//int bsddialog_treeview(struct config conf, char* text, int rows, int cols);
+int bsddialog_treeview(struct config conf, char* text, int rows, int cols);
 int bsddialog_yesno(struct config conf, char* text, int rows, int cols);
 
 #endif

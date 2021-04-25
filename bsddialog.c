@@ -146,7 +146,7 @@ void usage(void);
 /* widgets */
 #define BUILDER_ARGS struct config conf, char* text, int rows, int cols, \
 	int argc, char **argv
-//int buildlist_builder(BUILDER_ARGS);
+int buildlist_builder(BUILDER_ARGS);
 int calendar_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
 //int dselect_builder(BUILDER_ARGS);
@@ -173,7 +173,7 @@ int tailbox_builder(BUILDER_ARGS);
 int tailboxbg_builder(BUILDER_ARGS);
 int textbox_builder(BUILDER_ARGS);
 int timebox_builder(BUILDER_ARGS);
-//int treeview_builder(BUILDER_ARGS);
+int treeview_builder(BUILDER_ARGS);
 int yesno_builder(BUILDER_ARGS);
 
 
@@ -283,7 +283,7 @@ int main(int argc, char *argv[argc])
 	    { "visit-items", no_argument, NULL, 'X' },
 	    { "yes-label", required_argument, NULL /*string*/, YES_LABEL },
 	    /* Widgets */
-	    { "buildlist", no_argument, NULL, 'X' },
+	    { "buildlist", no_argument, NULL, BUILDLIST },
 	    { "calendar", no_argument, NULL, CALENDAR },
 	    { "checklist", no_argument, NULL, CHECKLIST },
 	    { "dselect", no_argument, NULL, 'X' },
@@ -310,7 +310,7 @@ int main(int argc, char *argv[argc])
 	    { "tailboxbg", no_argument, NULL, TAILBOXBG },
 	    { "textbox", no_argument, NULL, TEXTBOX },
 	    { "timebox", no_argument, NULL, TIMEBOX },
-	    { "treeview", no_argument, NULL, 'X' },
+	    { "treeview", no_argument, NULL, TREEVIEW },
 	    { "yesno", no_argument, NULL, YESNO },
 	    /* END */
 	    { NULL, 0, NULL, 0 }
@@ -445,6 +445,9 @@ int main(int argc, char *argv[argc])
 			conf.yes_label = optarg;
 			break;
 		/* Widgets */
+		case BUILDLIST:
+			widgetbuilder = buildlist_builder;
+			break;
 		case CALENDAR:
 			widgetbuilder = calendar_builder;
 			break;
@@ -514,6 +517,9 @@ int main(int argc, char *argv[argc])
 		case TIMEBOX:
 			widgetbuilder = timebox_builder;
 			break;
+		case TREEVIEW:
+			widgetbuilder = treeview_builder;
+			break;
 		case YESNO:
 			widgetbuilder = yesno_builder;
 			break;
@@ -560,6 +566,15 @@ int main(int argc, char *argv[argc])
 
 	// debug
 	printf("[Debug] Exit status: %d\n", output);
+	return output;
+}
+
+int buildlist_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_buildlist(conf, text, rows, cols);
+
 	return output;
 }
 
@@ -901,6 +916,15 @@ int timebox_builder(BUILDER_ARGS)
 	output = bsddialog_timebox(conf, text, rows, cols, hh, mm, ss);
 
 	return (output);
+}
+
+int treeview_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_treeview(conf, text, rows, cols);
+
+	return output;
 }
 
 int yesno_builder(BUILDER_ARGS)
