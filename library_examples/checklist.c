@@ -24,7 +24,7 @@ int main()
 	    {"Name 5", "Desc 5", false, "Bottom Desc 5"}
 	}
 
-	conf.title = "chacklist";
+	conf.title = "checklist";
 	
 	if (bsddialog_init(conf) < 0)
 		return -1;
