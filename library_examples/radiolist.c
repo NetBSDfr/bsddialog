@@ -21,7 +21,7 @@ int main()
 	struct bsddialog_menuitem items[5] = {
 	    {"Name 1", "Desc 1", false, "Bottom Desc 1"},
 	    {"Name 2", "Desc 2", false, "Bottom Desc 2"},
-	    {"Name 3", "Desc 3", true, "Bottom Desc 3"},
+	    {"Name 3", "Desc 3", true,  "Bottom Desc 3"},
 	    {"Name 4", "Desc 4", false, "Bottom Desc 4"},
 	    {"Name 5", "Desc 5", false, "Bottom Desc 5"}
 	};
