@@ -860,6 +860,8 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 
 	ys = y + rows - 5 - menurows + 1;
 	ye = ys + menurows + 2 -1;
+	//xs = (line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - line/2; to centre
+	//xe = (line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1; to centre
 
 	loop = buttupdate = true;
 	while(loop) {
