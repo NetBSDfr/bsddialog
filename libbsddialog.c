@@ -732,13 +732,14 @@ do_menu(struct config conf, char* text, int rows, int cols,
 			dprintf(conf.output_fd, "%s", items[curr].name);
 			items[curr].on = true; // for library
 		} else { /* CHECKLIST or RADIOLIST */
-			for (i=0; i<nitems; i++)
+			for (i=0; i<nitems; i++) {
 				if (items[i].on == true) {
 					if (sep == true)
 					    dprintf(conf.output_fd, "%s", sepstr);
 					sep = true;
 					dprintf(conf.output_fd, "%s",items[i].name);
 				}
+			}
 		}
 	}
 
