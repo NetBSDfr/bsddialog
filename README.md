@@ -120,7 +120,7 @@ Examples:
 
 | Widget       | Status      | Note                                            |
 |------------- | ----------- | ----------------------------------------------- |
-| buildlist    | Coding      |                                                 |
+| buildlist    | In progress |                                                 |
 | calendar     | In progress | add leap year, year <=0, month days             |
 | checklist    | In progress |                                                 |
 | dselect      |             |                                                 |

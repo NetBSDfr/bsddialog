@@ -821,7 +821,7 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton, i, x, y, input;
 	bool loop, buttupdate, padsupdate;
-	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols;
+	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols, curr;
 	enum side {LEFT, RIGHT} currV;
 	int currH;
 
@@ -844,8 +844,8 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	padscols = (cols-5)/2 - 2;
 	leftpad  = newpad(nitems, line);
 	rightpad = newpad(nitems, line);
-	//wbkgd(leftpad, t.widgetcolor);
-	//wbkgd(rightpad, t.widgetcolor);
+	wbkgd(leftpad, t.widgetcolor);
+	wbkgd(rightpad, t.widgetcolor);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	    conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
@@ -863,17 +863,22 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 		}
 
 		if (padsupdate) {
+			werase(leftpad);
+			werase(rightpad);
+			curr = -1;
 			nlefts = nrights = 0;
 			for (i=0; i<nitems; i++) {
 				if (items[i].on == false) {
+					if (currV == LEFT && currH == nlefts)
+						curr = i;
 					draw_myitem(leftpad, nlefts, items[i],
-					    BUILDLISTMODE, 0, currV == LEFT && currH == nlefts,
-					    conf.item_help);
+					    BUILDLISTMODE, 0, curr == i, conf.item_help);
 					nlefts++;
 				} else {
+					if (currV == RIGHT && currH == nrights)
+						curr = i;
 					draw_myitem(rightpad, nrights, items[i],
-					    BUILDLISTMODE, 0, currV == RIGHT && currH == nrights,
-					    conf.item_help);
+					    BUILDLISTMODE, 0, curr == i, conf.item_help);
 					nrights++;
 				}
 			}
@@ -906,25 +911,45 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 			if (currV == RIGHT && nrights > 0) {
 				currV = LEFT;
 				currH = 0;
+				padsupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
 			if (currV == LEFT && nrights > 0) {
 				currV = RIGHT;
 				currH = 0;
+				padsupdate = true;
 			}
 			break;
-		/*case KEY_UP:
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
-			curr = (curr > 0) ? curr - 1 : 0;
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
+		case KEY_UP:
+			currH = (currH > 0) ? currH - 1 : 0;
+			padsupdate = true;
 			break;
 		case KEY_DOWN:
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
-			curr = (curr < nitems-1) ? curr +1 : nitems-1;
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
-			break;*/
+			if (currV == LEFT)
+				currH = (currH < nlefts-1) ? currH +1 : currH;
+			else
+				currH = (currH < nrights-1)? currH +1 : currH;
+			padsupdate = true;
+			break;
 		case ' ': // Space
+			items[curr].on = ! items[curr].on;
+			if (currV == LEFT) {
+				if (nlefts > 1)
+					currH = currH > 0 ? currH-1 : 0;
+				else {
+					currH = 0;
+					currV = RIGHT;
+				}
+			} else {
+				if (nrights > 1)
+					currH = currH > 0 ? currH-1 : 0;
+				else {
+					currH = 0;
+					currV = LEFT;
+				}
+			}
+			padsupdate = true;
 			break;
 		default:
 
