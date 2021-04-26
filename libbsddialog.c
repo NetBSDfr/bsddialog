@@ -45,6 +45,7 @@ struct bsddialogtheme t;
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define MAXINPUT 2048
+#define TREESPACE 4
 
 enum elevation { RAISED, LOWERED, NOLINES };
 
@@ -548,7 +549,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 /*
  * SECTION 3 "Menu": checklist - menu - radiolist - treeview - buildlist
  */
-enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
+enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE, TREEVIEWMODE };
 
 void
 draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mode,
@@ -563,11 +564,11 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 	wattron(pad, color);
 	if (mode == CHECKLISTMODE)
 		wprintw(pad, "[%c]", item.on ? 'X' : ' ');
-	if (mode == RADIOLISTMODE)
+	if (mode == RADIOLISTMODE || mode == TREEVIEWMODE)
 		wprintw(pad, "(%c)", item.on ? '*' : ' ');
 	wattron(pad, color);
 
-	if (mode != BUILDLISTMODE) {
+	if (mode != BUILDLISTMODE && mode != TREEVIEWMODE) {
 		wattron(pad, colorname);
 		if (mode != MENUMODE)
 			wmove(pad, y, 4);
@@ -575,11 +576,13 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		wattron(pad, colorname);
 	}
 
-	if (mode == BUILDLISTMODE && selected == false)
+	if ((mode == BUILDLISTMODE || mode == TREEVIEWMODE) && selected == false)
 		color = item.on ? t.tagcolor : t.itemcolor;
 	wattron(pad, color);
-	if (mode == CHECKLISTMODE || mode == RADIOLISTMODE)
+	if (mode == CHECKLISTMODE || mode == RADIOLISTMODE || mode == TREEVIEWMODE)
 		xdesc +=4;
+	if (mode == TREEVIEWMODE)
+		xdesc = xdesc + item.depth * TREESPACE;
 	mvwaddstr(pad, y, xdesc, item.desc);
 	wattron(pad, color);
 
@@ -632,6 +635,8 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	ye = ys + menurows + 2 -1;
 	xs = (line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - line/2;
 	xe = (line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
+	if (mode == TREEVIEWMODE)
+		xs = x + 2 + 1;
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	    conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
@@ -698,7 +703,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 				break;
 			else if (mode == CHECKLISTMODE)
 				items[curr].on = ! items[curr].on;
-			else { //RADIOLISTMODE
+			else { //RADIOLISTMODE and TREEVIEWMODE
 				if (items[curr].on == true)
 					break;
 				for (i=0; i<nitems; i++)
@@ -819,8 +824,24 @@ int
 bsddialog_treeview(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
+	int i, output, line, maxdesc;
+	bool on = false;
 
-	return (BSDDIALOG_ERROR);
+	line = maxdesc = 0;
+	for (i=0; i<nitems; i++) {
+		if (on == true)
+			items[i].on = false;
+
+		if (items[i].on == true)
+			on = true;
+		maxdesc = MAX(maxdesc, strlen(items[i].desc));
+		line = MAX(line, maxdesc + 4 + items[i].depth * TREESPACE);
+	}
+
+	output = do_menu(conf, text, rows, cols, menurows, line, 0,
+	    TREEVIEWMODE, nitems, items);
+
+	return output;
 }
 
 int

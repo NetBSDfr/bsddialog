@@ -152,6 +152,6 @@ Examples:
 | tailboxbg    |             |                                                 |
 | textbox      | In progress | todo navigation keys                            |
 | timebox      | In progress |                                                 |
-| treeview     | Coding      |                                                 |
+| treeview     | In progress |                                                 |
 | yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
 
