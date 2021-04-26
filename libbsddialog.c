@@ -405,7 +405,7 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
  * SECTIONS
  *  1) "Info"    infobox
  *  2) "Button"  msgbox - yesno
- *  3) "Menu"    buildlist(todo) - checklist - menu - radiolist - treeview(todo)
+ *  3) "Menu"    buildlist - checklist - menu - radiolist - treeview(todo)
  *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
  *  5) "Editor"  editbox(todo)
  *  6) "Bar"     gauge - mixedgauge - rangebox - pause
@@ -546,7 +546,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 }
 
 /*
- * SECTION 3 "Menu": checklist - menu - radiolist - treeview(todo) - buildlist(todo)
+ * SECTION 3 "Menu": checklist - menu - radiolist - treeview(todo) - buildlist
  */
 enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
 
