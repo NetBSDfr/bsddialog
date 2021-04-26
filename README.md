@@ -33,9 +33,9 @@ Examples:
 
 **TODO**
 
- - [ ] KEY\_RESIZE
- - [ ] Scrollable *text*
- - [ ] Automanic *height* and *width* (% bsddialog text 0 0)
+ * [ ] KEY\_RESIZE
+ * [ ] Scrollable *text*
+ * [ ] Automanic *height* and *width* (% bsddialog text 0 0)
 
 
  - Common Options:
