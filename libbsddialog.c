@@ -142,7 +142,7 @@ WINDOW *
 new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
     enum elevation elev, bool asciilines, bool subwindowborders)
 {
-	WINDOW *popup;
+	WINDOW *win;
 	int leftcolor, rightcolor;
 	int ls, rs, ts, bs, tl, tr, bl, br;
 	int ltee, rtee;
@@ -156,8 +156,8 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 	ltee = ACS_LTEE;
 	rtee = ACS_RTEE;
 
-	popup = newwin(rows, cols, y, x);
-	wbkgd(popup, t.widgetcolor);
+	win = newwin(rows, cols, y, x);
+	wbkgd(win, t.widgetcolor);
 
 	if (elev != NOLINES) {
 		if (asciilines) {
@@ -167,52 +167,52 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 		}
 		leftcolor  = elev == RAISED ? t.lineraisecolor : t.linelowercolor;
 		rightcolor = elev == RAISED ? t.linelowercolor : t.lineraisecolor;
-		wattron(popup, leftcolor);
-		wborder(popup, ls, rs, ts, bs, tl, tr, bl, br);
-		wattroff(popup, leftcolor);
+		wattron(win, leftcolor);
+		wborder(win, ls, rs, ts, bs, tl, tr, bl, br);
+		wattroff(win, leftcolor);
 
-		wattron(popup, rightcolor);
-		mvwaddch(popup, 0, cols-1, tr);
-		mvwvline(popup, 1, cols-1, rs, rows-2);
-		mvwaddch(popup, rows-1, cols-1, br);
-		mvwhline(popup, rows-1, 1, bs, cols-2);
-		wattroff(popup, rightcolor);
+		wattron(win, rightcolor);
+		mvwaddch(win, 0, cols-1, tr);
+		mvwvline(win, 1, cols-1, rs, rows-2);
+		mvwaddch(win, rows-1, cols-1, br);
+		mvwhline(win, rows-1, 1, bs, cols-2);
+		wattroff(win, rightcolor);
 
 		if (subwindowborders) {
-			wattron(popup, leftcolor);
-			mvwaddch(popup, 0, 0, ltee);
-			wattroff(popup, leftcolor);
+			wattron(win, leftcolor);
+			mvwaddch(win, 0, 0, ltee);
+			wattroff(win, leftcolor);
 
-			wattron(popup, rightcolor);
-			mvwaddch(popup, 0, cols-1, rtee);
-			wattroff(popup, rightcolor);
+			wattron(win, rightcolor);
+			mvwaddch(win, 0, cols-1, rtee);
+			wattroff(win, rightcolor);
 		}
 	}
 
 	if (title != NULL) {
 		if (t.surroundtitle && elev != NOLINES) {
-			wattron(popup, rightcolor);
-			mvwaddch(popup, 0, cols/2 - strlen(title)/2 - 1, rtee);
-			mvwaddch(popup, 0, cols/2 + strlen(title)/2 + 1, ltee);
-			wattroff(popup, leftcolor);
+			wattron(win, rightcolor);
+			mvwaddch(win, 0, cols/2 - strlen(title)/2 - 1, rtee);
+			mvwaddch(win, 0, cols/2 + strlen(title)/2 + 1, ltee);
+			wattroff(win, leftcolor);
 		}
 
-		wattron(popup, t.titlecolor);
-		wmove(popup, 0, cols/2 - strlen(title)/2);
-		waddstr(popup, title);
-		wattroff(popup, t.titlecolor);
+		wattron(win, t.titlecolor);
+		wmove(win, 0, cols/2 - strlen(title)/2);
+		waddstr(win, title);
+		wattroff(win, t.titlecolor);
 	}
 
 	if (bottomtitle != NULL) {
-		wattron(popup, t.bottomtitlecolor);
-		wmove(popup, rows - 1, cols/2 - strlen(bottomtitle)/2 - 1);
-		waddch(popup, '[');
-		waddstr(popup, bottomtitle);
-		waddch(popup, ']');
-		wattroff(popup, t.bottomtitlecolor);
+		wattron(win, t.bottomtitlecolor);
+		wmove(win, rows - 1, cols/2 - strlen(bottomtitle)/2 - 1);
+		waddch(win, '[');
+		waddstr(win, bottomtitle);
+		waddch(win, ']');
+		wattroff(win, t.bottomtitlecolor);
 	}
 
-	return popup;
+	return win;
 }
 
 void window_scrolling_handler(WINDOW *pad, int rows, int cols)
