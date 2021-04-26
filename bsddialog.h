@@ -116,7 +116,7 @@ struct config {
 
 struct bsddialog_menuitem {
 	bool on;
-	unsigned int depth;
+	int depth;
 	char *name;
 	char *desc;
 	char *bottomdesc;
@@ -165,7 +165,8 @@ int bsddialog_tailboxbg(struct config conf, char* text, int rows, int cols);
 int bsddialog_textbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss);
-int bsddialog_treeview(struct config conf, char* text, int rows, int cols);
+int bsddialog_treeview(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
 int bsddialog_yesno(struct config conf, char* text, int rows, int cols);
 
 #endif

@@ -176,29 +176,36 @@ int timebox_builder(BUILDER_ARGS);
 int treeview_builder(BUILDER_ARGS);
 int yesno_builder(BUILDER_ARGS);
 
-int get_menu_items(struct config conf, int argc, char **argv, int *nitems,
-    struct bsddialog_menuitem *items, bool setstatus)
+int get_menu_items(int argc, char **argv, bool setname, bool setdesc,
+    bool setstatus, bool setdepth, bool sethelp, int *nitems,
+    struct bsddialog_menuitem *items)
 {
 	int i, sizeitem, token;
 
-	sizeitem = conf.item_help ? 4 : 3;
-	sizeitem = setstatus ? sizeitem : sizeitem -1;
+	sizeitem = 0;
+	if (setname)   sizeitem++;
+	if (setdesc)   sizeitem++;
+	if (setstatus) sizeitem++;
+	if (setdepth)  sizeitem++;
+	if (sethelp)   sizeitem++;
 	if ((argc % sizeitem) != 0)
 		return (-1);
 
 	*nitems = argc / sizeitem;
 	for (i=0; i<*nitems; i++) {
-		items[i].name = argv[sizeitem*i];
-		items[i].desc = argv[sizeitem*i+1];
-		token = 2;
+		token = 0;
+		if (setname) { items[i].name = argv[sizeitem*i]; token++; }
+		if (setdesc) { items[i].desc = argv[sizeitem*i+token]; token++; }
 		if (setstatus) {
-			items[i].on = strcmp(argv[sizeitem * i + 2], "on") == 0 ?
+			items[i].on = strcmp(argv[sizeitem * i + token], "on") == 0 ?
 			    true : false;
 			token++;
 		}
-
-		if (conf.item_help == true)
-			items[i].bottomdesc = argv[sizeitem *i + token];
+		if (setdepth) {
+			items[i].depth = atoi(argv[sizeitem *i + token]);
+			token++;
+		}
+		if (sethelp) items[i].bottomdesc = argv[sizeitem *i + token];
 	}
 
 	return 0;
@@ -616,7 +623,8 @@ int buildlist_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(conf, argc-1, argv+1, &nitems, items, true);
+	output = get_menu_items(argc-1, argv+1, true, true, true, false,
+	    conf.item_help, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -670,7 +678,8 @@ int checklist_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(conf, argc-1, argv+1, &nitems, items, true);
+	output = get_menu_items(argc-1, argv+1, true, true, true, false,
+	    conf.item_help, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -771,7 +780,8 @@ int menu_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(conf, argc-1, argv+1, &nitems, items, false);
+	output = get_menu_items(argc-1, argv+1, true, true, false, false,
+	    conf.item_help, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -911,7 +921,8 @@ int radiolist_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(conf, argc-1, argv+1, &nitems, items, true);
+	output = get_menu_items(argc-1, argv+1, true, true, true, false,
+	    conf.item_help, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1000,9 +1011,22 @@ int timebox_builder(BUILDER_ARGS)
 
 int treeview_builder(BUILDER_ARGS)
 {
-	int output;
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
 
-	output = bsddialog_treeview(conf, text, rows, cols);
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = get_menu_items(argc-1, argv+1, true, true, true, true,
+	    conf.item_help, &nitems, items);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_treeview(conf, text, rows, cols, menurows, nitems, items);
 
 	return output;
 }

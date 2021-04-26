@@ -405,7 +405,7 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
  * SECTIONS
  *  1) "Info"    infobox
  *  2) "Button"  msgbox - yesno
- *  3) "Menu"    buildlist - checklist - menu - radiolist - treeview(todo)
+ *  3) "Menu"    buildlist - checklist - menu - radiolist - treeview
  *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
  *  5) "Editor"  editbox(todo)
  *  6) "Bar"     gauge - mixedgauge - rangebox - pause
@@ -546,7 +546,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 }
 
 /*
- * SECTION 3 "Menu": checklist - menu - radiolist - treeview(todo) - buildlist
+ * SECTION 3 "Menu": checklist - menu - radiolist - treeview - buildlist
  */
 enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE };
 
@@ -815,6 +815,14 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 }
 
 int
+bsddialog_treeview(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
+{
+
+	return (BSDDIALOG_ERROR);
+}
+
+int
 do_buildlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int line, int nitems, struct bsddialog_menuitem *items,
     bool startleft)
@@ -987,12 +995,6 @@ bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
 	    items, startleft);
 
 	return output;
-}
-
-int bsddialog_treeview(struct config conf, char* text, int rows, int cols)
-{
-
-	return (BSDDIALOG_ERROR);
 }
 
 /*
