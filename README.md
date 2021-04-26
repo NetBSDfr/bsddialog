@@ -18,7 +18,7 @@ and the *"features synchronization"* with **dialog** is not a priority.
 ```
 Output:
 
-![screenshot](screenshot.png)  
+![screenshot](screenshot.png)
 
 
 Examples:
@@ -32,6 +32,11 @@ Examples:
 ```
 
 **TODO**
+
+ - [ ] KEY\_RESIZE
+ - [ ] Scrollable *text*
+ - [ ] Automanic *height* and *width* (% bsddialog text 0 0)
+
 
  - Common Options:
 
@@ -147,6 +152,6 @@ Examples:
 | tailboxbg    |             |                                                 |
 | textbox      | In progress | todo navigation keys                            |
 | timebox      | In progress |                                                 |
-| treeview     |             |                                                 |
+| treeview     |             | todo via --radiolist                            |
 | yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
 
