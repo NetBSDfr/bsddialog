@@ -115,9 +115,10 @@ struct config {
 };
 
 struct bsddialog_menuitem {
+	bool on;
+	unsigned int depth;
 	char *name;
 	char *desc;
-	bool on;
 	char *bottomdesc;
 };
 
