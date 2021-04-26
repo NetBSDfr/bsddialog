@@ -814,56 +814,46 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
 
 int
 do_buildlist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int line, int nitems, struct bsddialog_menuitem *items)
+    unsigned int menurows, int line, int nitems, struct bsddialog_menuitem *items,
+    bool startleft)
 {
 	WINDOW *widget, *button, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
 	char *buttons[4];
-	int i, lefty, righty, leftx, rightx, values[4], output, nbuttons, defbutton, y, x, input, curr;
-	int ys, ye;
-	bool loop, buttupdate;
+	int values[4], output, nbuttons, defbutton, i, x, y, input;
+	bool loop, buttupdate, padsupdate;
+	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols;
+	enum side {LEFT, RIGHT} currV;
+	int currH;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
 		return -1;
 
-	leftx = x+1;
-	leftwin = new_window(y + rows - 5 - menurows, leftx, menurows+2, (cols-5)/2,
-	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	rightx = x + cols - 2-(cols-5)/2;
-	rightwin = new_window(y + rows - 5 - menurows, rightx, menurows+2, (cols-5)/2,
-	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	winsy = y + rows - 5 - menurows;
+	leftwinx = x+2;
+	leftwin = new_window(winsy, leftwinx, menurows+2, (cols-5)/2, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	rightwinx = x + cols - 2 -(cols-5)/2;
+	rightwin = new_window(winsy, rightwinx, menurows+2, (cols-5)/2, NULL, NULL,
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	wrefresh(leftwin);
 	wrefresh(rightwin);
 
+	padscols = (cols-5)/2 - 2;
 	leftpad  = newpad(nitems, line);
 	rightpad = newpad(nitems, line);
 	//wbkgd(leftpad, t.widgetcolor);
 	//wbkgd(rightpad, t.widgetcolor);
 
-	lefty = righty = 0;
-	curr = 0;
-	for (i=0; i<nitems; i++) {
-		if (items[i].on == true) {
-			draw_myitem(leftpad, lefty, items[i], BUILDLISTMODE, 0, i == 0, conf.item_help);
-			lefty++;
-		} else {
-			draw_myitem(rightpad, righty, items[i], BUILDLISTMODE, 0, i == 0, conf.item_help);
-			righty++;
-		}
-	}
-
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
 	    conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
 	    conf.help_button, conf.help_label, conf.defaultno, &defbutton);
 
-	ys = y + rows - 5 - menurows + 1;
-	ye = ys + menurows + 2 -1;
-	//xs = (line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - line/2; to centre
-	//xe = (line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1; to centre
-
-	loop = buttupdate = true;
+	currH = 0;
+	currV = startleft ? LEFT : RIGHT;
+	loop = buttupdate = padsupdate = true;
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(button, cols, nbuttons, buttons, defbutton,
@@ -872,10 +862,25 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 			buttupdate = false;
 		}
 
-		//xs = (line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - line/2;
-		//xe = (line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
-		prefresh(leftpad, 0, 0, ys, leftx+1, ye, leftx + 1 + (cols-5)/2 - 2);//delete?
-		prefresh(rightpad, 0, 0, ys, rightx+1, ye, rightx + 1 + (cols-5)/2 -2);//delete?
+		if (padsupdate) {
+			nlefts = nrights = 0;
+			for (i=0; i<nitems; i++) {
+				if (items[i].on == false) {
+					draw_myitem(leftpad, nlefts, items[i],
+					    BUILDLISTMODE, 0, currV == LEFT && currH == nlefts,
+					    conf.item_help);
+					nlefts++;
+				} else {
+					draw_myitem(rightpad, nrights, items[i],
+					    BUILDLISTMODE, 0, currV == RIGHT && currH == nrights,
+					    conf.item_help);
+					nrights++;
+				}
+			}
+			prefresh(leftpad, 0, 0, winsy+1, leftwinx+1, winsy+1+menurows, leftwinx + 1 + padscols);
+			prefresh(rightpad, 0, 0, winsy+1, rightwinx+1, winsy+1+menurows, rightwinx + 1 + padscols);
+			padsupdate = false;
+		}
 
 		input = getch();
 		switch(input) {
@@ -891,24 +896,24 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 			defbutton = (defbutton + 1) % nbuttons;
 			buttupdate = true;
 			break;
-		case KEY_LEFT:
-			if (defbutton > 0) {
-				defbutton--;
-				buttupdate = true;
-			}
-			break;
-		case KEY_RIGHT:
-			if (defbutton < nbuttons - 1) {
-				defbutton++;
-				buttupdate = true;
-			}
-			break;
 		}
 
 		if (nitems <= 0)
 			continue;
 
 		switch(input) {
+		case KEY_LEFT:
+			if (currV == RIGHT && nrights > 0) {
+				currV = LEFT;
+				currH = 0;
+			}
+			break;
+		case KEY_RIGHT:
+			if (currV == LEFT && nrights > 0) {
+				currV = RIGHT;
+				currH = 0;
+			}
+			break;
 		/*case KEY_UP:
 			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
 			curr = (curr > 0) ? curr - 1 : 0;
@@ -942,12 +947,17 @@ bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
 	int i, output, line;
+	bool startleft = false;
 
 	line = 0;
-	for (i=0; i<nitems; i++)
+	for (i=0; i<nitems; i++) {
 		line = MAX(line, strlen(items[i].desc));
+		if (items[i].on == false)
+			startleft = true;
+	}
 
-	output = do_buildlist(conf, text, rows, cols, menurows, line, nitems, items);
+	output = do_buildlist(conf, text, rows, cols, menurows, line, nitems,
+	    items, startleft);
 
 	return output;
 }
