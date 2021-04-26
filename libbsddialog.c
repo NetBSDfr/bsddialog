@@ -575,6 +575,8 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		wattron(pad, colorname);
 	}
 
+	if (mode == BUILDLISTMODE && selected == false)
+		color = item.on ? t.tagcolor : t.itemcolor;
 	wattron(pad, color);
 	if (mode == CHECKLISTMODE || mode == RADIOLISTMODE)
 		xdesc +=4;
