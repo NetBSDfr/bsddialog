@@ -844,6 +844,13 @@ bsddialog_treeview(struct config conf, char* text, int rows, int cols,
 	return output;
 }
 
+int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
+{
+
+	return BSDDIALOG_ERROR;
+}
+
 int
 do_buildlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int line, int nitems, struct bsddialog_menuitem *items,

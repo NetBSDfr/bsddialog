@@ -122,6 +122,13 @@ struct bsddialog_menuitem {
 	char *bottomdesc;
 };
 
+enum bsddialog_grouptype { CHECKLIST, RADIO, SEPARATOR };
+struct bsddialog_menugroup {
+	enum bsddialog_grouptype type;
+	unsigned int nitems;
+	struct bsddialog_menuitem *items;
+};
+
 int  bsddialog_init(void);
 void bsddialog_end(void);
 int  bsddialog_backtitle(struct config conf, char *backtitle);
@@ -147,6 +154,8 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
 int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
     unsigned int perc, int argc, char **argv);
+int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups);
 int bsddialog_msgbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
