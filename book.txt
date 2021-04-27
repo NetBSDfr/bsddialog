@@ -1,0 +1,67 @@
+BSDDialog Library
+
+1) "Intro"
+
+cc
+Hello World
+struct config
+
+2) "Info"
+
+infobox
+
+3) "Button"
+
+msgbox
+yesno
+
+4) "Menu"
+
+buildlist
+checklist
+menu
+radiolist
+treeview
+
+5) "Form"
+
+inputbox
+passwordbox 
+form
+passwordform
+mixedform
+
+6) "Editor"
+
+editbox(todo)
+
+7) "Bar"
+
+gauge
+mixedgauge
+rangebox
+pause
+
+8) "Time"
+
+timebox
+calendar
+
+9) "Command" 
+
+prgbox
+programbox(todo)
+progressbox(todo)
+
+10) "Text"
+
+tailbox
+tailboxbg(todo)
+textbox
+
+11) "File"
+
+dselect(todo)
+fselect(todo)
+
+12)Style
