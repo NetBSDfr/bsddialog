@@ -1494,7 +1494,7 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
     unsigned int perc, int argc, char **argv)
 {
-WINDOW *widget, *bar, *shadow;
+	WINDOW *widget, *bar, *shadow;
 	int i, miniperc, y, x;
 	char states[11][16] = {
 	    "[  Succeeded  ]",
