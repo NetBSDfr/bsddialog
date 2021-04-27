@@ -30,8 +30,6 @@ int main()
 	conf.y = conf.x = -1;
 	conf.shadow = true;
 	conf.item_help = true;
-	conf.cancel_label = "Quit";
-	conf.ok_label = "Submit";
 	conf.title = "checklist";
 	
 	if (bsddialog_init() < 0)

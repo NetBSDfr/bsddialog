@@ -47,6 +47,15 @@ struct bsddialogtheme t;
 #define MAXINPUT 2048
 #define TREESPACE 4
 
+#define LABEL_cancel_label "Cancel"
+#define LABEL_exit_label   "EXIT"
+#define LABEL_extra_label  "Extra"
+#define LABEL_help_label   "Help"
+#define LABEL_no_label     "No"
+#define LABEL_ok_label     "OK"
+#define LABEL_yes_label    "Yes"
+#define BUTTONLABEL(l) (conf.l != NULL ? conf.l : LABEL_ ##l)
+
 enum elevation { RAISED, LOWERED, NOLINES };
 
 WINDOW *
@@ -507,9 +516,9 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, false, NULL, conf.help_button,
-	    conf.help_label, false, &defbutton);
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), false, NULL, conf.help_button,
+	    BUTTONLABEL(help_label), false, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
 	    true, /*fd*/ 0);
@@ -533,9 +542,9 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.yes_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.no_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(yes_label),
+	conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(no_label),
+	conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, /*fd*/ 0);
@@ -638,9 +647,9 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	if (mode == TREEVIEWMODE)
 		xs = x + 2 + 1;
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	    conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
 
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
@@ -886,9 +895,9 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	wbkgd(leftpad, t.widgetcolor);
 	wbkgd(rightpad, t.widgetcolor);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	    conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
 
 	currH = 0;
 	currV = startleft ? LEFT : RIGHT;
@@ -1184,9 +1193,9 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	conf.extra_button, conf.extra_label, ! conf.no_cancel, conf.cancel_label,
-	conf.help_button, conf.help_label, conf.defaultno, &defbutton);
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(cancel_label),
+	conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
 
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
@@ -1564,9 +1573,9 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
+	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
 	    conf.defaultno, &defbutton);
 
 	currvalue = def;
@@ -1653,9 +1662,9 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
+	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
 	    conf.defaultno, &defbutton);
 
 	currvalue = sec;
@@ -1761,9 +1770,9 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
+	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
 	    conf.defaultno, &selbutton);
 
 	sel=0;
@@ -1882,9 +1891,9 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
+	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
 	    conf.defaultno, &selbutton);
 
 	sel=2;
@@ -1984,9 +1993,9 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, false, NULL, conf.help_button,
-	    conf.help_label, false, &defbutton);
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), false, NULL, conf.help_button,
+	    BUTTONLABEL(help_label), false, &defbutton);
 
 	if (text != NULL && conf.no_lines == false) {
 		print_text_multiline(widget, 1, 2, text, cols - 4);
@@ -2050,9 +2059,9 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, conf.ok_label,
-	    conf.extra_button, conf.extra_label, ! conf.no_cancel,
-	    conf.cancel_label, conf.help_button, conf.help_label,
+	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
+	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
+	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
 	    conf.defaultno, &defbutton);
 
 	if (text != NULL && conf.no_lines == false) {

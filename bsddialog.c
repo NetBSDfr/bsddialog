@@ -230,13 +230,6 @@ int main(int argc, char *argv[argc])
 
 	memset(&conf, 0, sizeof(struct config));
 	conf.y = conf.x = -1;
-	conf.cancel_label = "Cancel";
-	conf.exit_label = "EXIT";
-	conf.extra_label = "Extra";
-	conf.help_label = "Help";
-	conf.no_label = "No";
-	conf.ok_label = "OK";
-	conf.yes_label = "Yes";
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;
 
