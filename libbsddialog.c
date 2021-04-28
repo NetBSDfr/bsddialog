@@ -658,7 +658,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(window, cols, bs, shortkey);
+			draw_buttons(button, cols, bs, true);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -668,7 +668,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[defbutton]; // -> buttvalues[selbutton]
+			output = bs.value[bs.curr]; // -> buttvalues[selbutton]
 			loop = false;
 			break;
 		case 27: // Esc
@@ -676,18 +676,18 @@ do_menu(struct config conf, char* text, int rows, int cols,
 			loop = false;
 			break;
 		case '\t': // TAB
-			defbutton = (defbutton + 1) % nbuttons;
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
 		case KEY_LEFT:
-			if (defbutton > 0) {
-				defbutton--;
+			if (bs.curr > 0) {
+				bs.curr--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (defbutton < nbuttons - 1) {
-				defbutton++;
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
 				buttupdate = true;
 			}
 			break;
@@ -902,7 +902,7 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = padsupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(window, cols, bs, shortkey);
+			draw_buttons(button, cols, bs, true);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -935,7 +935,7 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[defbutton]; // -> buttvalues[selbutton]
+			output = bs.value[bs.curr]; // -> buttvalues[selbutton]
 			loop = false;
 			break;
 		case 27: // Esc
@@ -943,7 +943,7 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 			loop = false;
 			break;
 		case '\t': // TAB
-			defbutton = (defbutton + 1) % nbuttons;
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
 		}
@@ -1070,7 +1070,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	selected = -1;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(window, cols, bs, shortkey);
+			draw_buttons(button, cols, bs, shortkey);
 			wrefresh(buttwin);
 			buttupdate = false;
 		}
@@ -1583,7 +1583,7 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 		}
 
 		if (buttupdate) {
-			draw_buttons(window, cols, bs, shortkey);
+			draw_buttons(button, cols, bs, true);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1591,7 +1591,7 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[defbutton]; // values -> outputs
+			output = bs.value[bs.curr]; // values -> outputs
 			loop = false;
 			dprintf(conf.output_fd, "%d", currvalue);
 			break;
@@ -1600,18 +1600,18 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 			loop = false;
 			break;
 		case '\t': // TAB
-			defbutton = (defbutton + 1) % nbuttons;
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
 		case KEY_LEFT:
-			if (defbutton > 0) {
-				defbutton--;
+			if (bs.curr > 0) {
+				bs.curr--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (defbutton < nbuttons - 1) {
-				defbutton++;
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
 				buttupdate = true;
 			}
 			break;
@@ -1671,7 +1671,7 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 		}
 
 		if (buttupdate) {
-			draw_buttons(window, cols, bs, shortkey);
+			draw_buttons(button, cols, bs, true);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1690,7 +1690,7 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 		}
 		switch(input) {
 		case 10: // Enter
-			output = values[defbutton]; // values -> outputs
+			output = bs.value[bs.curr]; // values -> outputs
 			loop = false;
 			break;
 		case 27: // Esc
@@ -1698,18 +1698,18 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 			loop = false;
 			break;
 		case '\t': // TAB
-			defbutton = (defbutton + 1) % nbuttons;
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
 		case KEY_LEFT:
-			if (defbutton > 0) {
-				defbutton--;
+			if (bs.curr > 0) {
+				bs.curr--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (defbutton< nbuttons - 1) {
-				defbutton++;
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
 				buttupdate = true;
 			}
 			break;
@@ -1765,7 +1765,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(window, cols, bs, shortkey);
+			draw_buttons(button, cols, bs, true);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1780,7 +1780,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[selbutton]; // values -> outputs
+			output = bs.value[bs.curr]; // values -> outputs
 			loop = false;
 			if (conf.time_format == NULL) {
 				dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
@@ -1804,14 +1804,14 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 			sel = (sel + 1) % 3;
 			break;
 		case KEY_LEFT:
-			if (selbutton > 0) {
-				selbutton--;
+			if (bs.curr > 0) {
+				bs.curr--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (selbutton < nbuttons - 1) {
-				selbutton++;
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
 				buttupdate = true;
 			}
 			break;
@@ -1883,7 +1883,7 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(window, cols, bs, shortkey);
+			draw_buttons(button, cols, bs, true);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1900,7 +1900,7 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 		input = getch();
 		switch(input) {
 		case 10: // Enter
-			output = values[selbutton]; // values -> outputs
+			output = bs.value[bs.curr]; // values -> outputs
 			loop = false;
 			if (conf.date_format == NULL) {
 				dprintf(conf.output_fd, "%u/%u/%u",
@@ -1925,14 +1925,14 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 			sel = (sel + 1) % 3;
 			break;
 		case KEY_LEFT:
-			if (selbutton > 0) {
-				selbutton--;
+			if (bs.curr > 0) {
+				bs.curr--;
 				buttupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (selbutton < nbuttons - 1) {
-				selbutton++;
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
 				buttupdate = true;
 			}
 			break;
