@@ -409,11 +409,14 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 
 void
 widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
-    WINDOW *shadow)
+    WINDOW *shadow, WINDOW *buttonswin)
 {
 
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
+
+	if (buttonswin != NULL)
+		delwin(buttonswin);
 
 	delwin(window);
 
@@ -453,7 +456,7 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 
 	getch();
 
-	widget_end(conf, "Infobox", widget, rows, cols, shadow);
+	widget_end(conf, "Infobox", widget, rows, cols, shadow, NULL);
 
 	return (BSDDIALOG_YESOK);
 }
@@ -535,8 +538,7 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
 	    true, /*fd*/ 0);
 
-	delwin(button);
-	widget_end(conf, "Msgbox", widget, rows, cols, shadow);
+	widget_end(conf, "Msgbox", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -559,8 +561,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, /*fd*/ 0);
 
-	delwin(button);
-	widget_end(conf, "Yesno", widget, rows, cols, shadow);
+	widget_end(conf, "Yesno", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -766,10 +767,9 @@ do_menu(struct config conf, char* text, int rows, int cols,
 		}
 	}
 
-	delwin(button);
 	delwin(menupad);
 	delwin(menuwin);
-	widget_end(conf, "MenuToFix", widget, rows, cols, shadow); // tofix name
+	widget_end(conf, "MenuToFix", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -1013,12 +1013,11 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 		}
 	}
 
-	delwin(button);
 	delwin(leftpad);
 	delwin(leftwin);
 	delwin(rightpad);
 	delwin(rightwin);
-	widget_end(conf, "Buildlist", widget, rows, cols, shadow);
+	widget_end(conf, "Buildlist", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -1254,9 +1253,8 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 		free_field(field[i]);
 	free(field);
 
-	delwin(button);
 	delwin(entry);
-	widget_end(conf, "Mixedform", widget, rows, cols, shadow);
+	widget_end(conf, "Mixedform", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -1494,7 +1492,7 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 	}
 
 	delwin(bar);
-	widget_end(conf, "Gauge", widget, rows, cols, shadow);
+	widget_end(conf, "Gauge", widget, rows, cols, shadow, NULL);
 
 	return BSDDIALOG_YESOK;
 }
@@ -1557,7 +1555,7 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 	getch();
 
 	delwin(bar);
-	widget_end(conf, "Mixedgaugebox", widget, rows, cols, shadow);
+	widget_end(conf, "Mixedgaugebox", widget, rows, cols, shadow, NULL);
 
 	return BSDDIALOG_YESOK;
 }
@@ -1646,9 +1644,8 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 		}
 	}
 
-	delwin(button);
 	delwin(bar);
-	widget_end(conf, "Rangebox", widget, rows, cols, shadow);
+	widget_end(conf, "Rangebox", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -1737,9 +1734,8 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 
 	nodelay(stdscr, FALSE);
 
-	delwin(button);
 	delwin(bar);
-	widget_end(conf, "Pause", widget, rows, cols, shadow);
+	widget_end(conf, "Pause", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -1847,10 +1843,9 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 
 	curs_set(0);
 
-	delwin(button);
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	widget_end(conf, "Timebox", widget, rows, cols, shadow);
+	widget_end(conf, "Timebox", widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -1970,10 +1965,9 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 
 	curs_set(0);
 
-	delwin(button);
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	widget_end(conf, "Timebox", widget, rows, cols, shadow);
+	widget_end(conf, "Timebox", widget, rows, cols, shadow, button);
 
 	return output;
 }
