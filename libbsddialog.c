@@ -371,6 +371,48 @@ get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
 	}
 }
 
+void
+newget_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
+    char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
+    bool help, char *helplabel)
+{
+
+	bs->nbuttons = 0;
+	bs->curr = 0;
+
+	if (yesok) {
+		bs->label[0] = yesoklabel;
+		bs->value[0] = BSDDIALOG_YESOK;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (extra) {
+		bs->label[bs->nbuttons] = extralabel;
+		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (nocancel) {
+		bs->label[bs->nbuttons] = nocancellabel;
+		bs->value[bs->nbuttons] = BSDDIALOG_NOCANCEL;
+		if (defaultno)
+			bs->curr = bs->nbuttons;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (help) {
+		bs->label[bs->nbuttons] = helplabel;
+		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (bs->nbuttons == 0) {
+		bs->label[0] = yesoklabel;
+		bs->value[0] = BSDDIALOG_YESOK;
+		bs->nbuttons = 1;
+	}
+}
+
 int
 widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
     int *h, int *w, WINDOW **shadow, bool buttons, WINDOW **buttonswin)
