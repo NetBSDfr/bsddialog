@@ -67,15 +67,6 @@ int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_li
 void
 draw_button(WINDOW *window, int x, int size, char *text, bool selected,
     bool shortkey);
-void
-draw_buttons(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int selected, bool shortkey);
-void
-get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
-    char* yesoklabel, bool extra, char *extralabel, bool nocancel,
-    char *nocancellabel, bool help, char *helplabel, bool defaultno,
-    int *defbutton);
-
 #define MAXBUTTONS 4 /* yes|ok - extra - no|cancel - help */
 struct buttons {
 	unsigned int nbuttons;
@@ -83,9 +74,11 @@ struct buttons {
 	int value[MAXBUTTONS];
 	int curr;
 };
-
 void
-newget_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
+draw_buttons(WINDOW *window, int cols, int nbuttons, char **buttons,
+    int selected, bool shortkey);
+void
+get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
     bool help, char *helplabel);
 
@@ -329,50 +322,7 @@ draw_buttons(WINDOW *window, int cols, int nbuttons, char **buttons,
 }
 
 void
-get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok, 
-    char *yesoklabel, bool extra, char *extralabel, bool nocancel,
-    char *nocancellabel, bool help, char *helplabel, bool defaultno,
-    int *defbutton)
-{
-
-	*nbuttons = 0;
-	*defbutton = 0;
-
-	if (yesok) {
-		buttons[0] = yesoklabel;
-		values[0] = BSDDIALOG_YESOK;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (extra) {
-		buttons[*nbuttons] = extralabel;
-		values[*nbuttons] = BSDDIALOG_EXTRA;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (nocancel) {
-		buttons[*nbuttons] = nocancellabel;
-		values[*nbuttons] = BSDDIALOG_NOCANCEL;
-		if (defaultno)
-			*defbutton = *nbuttons;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (help) {
-		buttons[*nbuttons] = helplabel;
-		values[*nbuttons] = BSDDIALOG_HELP;
-		*nbuttons = *nbuttons + 1;
-	}
-
-	if (*nbuttons == 0) {
-		buttons[0] = yesoklabel;
-		values[0] = BSDDIALOG_YESOK;
-		*nbuttons = 1;
-	}
-}
-
-void
-newget_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
+get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
     bool help, char *helplabel)
 {
@@ -579,16 +529,16 @@ int
 bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 {
 	WINDOW *widget, *button, *shadow;
-	char *buttons[3];
-	int values[3], output, nbuttons, defbutton, y, x;
+	int output, y, x;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
 		return -1;
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), false, NULL, conf.help_button,
-	    BUTTONLABEL(help_label), false, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,
+	    BUTTONLABEL(help_label));
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
 	    true, /*fd*/ 0);
@@ -602,16 +552,16 @@ int
 bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 {
 	WINDOW *widget, *button, *shadow;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton, y, x;
+	int output, y, x;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
 		return -1;
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(yes_label),
-	conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(no_label),
-	conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(yes_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(no_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	output = buttons_handler(button, cols, nbuttons, buttons, values,
 	    defbutton, true, /*fd*/ 0);
@@ -676,10 +626,11 @@ do_menu(struct config conf, char* text, int rows, int cols,
     int nitems, struct bsddialog_menuitem *items)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
-	char *buttons[4], *sepstr, quotech;
-	int i, values[4], output, nbuttons, defbutton, y, x, input, curr;
+	char *sepstr, quotech;
+	int i, output, y, x, input, curr;
 	int ys, ye, xs, xe;
 	bool loop, buttupdate, sep;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -712,9 +663,9 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	if (mode == TREEVIEWMODE)
 		xs = x + 2 + 1;
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
@@ -930,12 +881,12 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
     bool startleft)
 {
 	WINDOW *widget, *button, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton, i, x, y, input;
+	int output, i, x, y, input;
 	bool loop, buttupdate, padsupdate;
 	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols, curr;
 	enum side {LEFT, RIGHT} currV;
 	int currH;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -958,9 +909,9 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	wbkgd(leftpad, t.widgetcolor);
 	wbkgd(rightpad, t.widgetcolor);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	currH = 0;
 	currV = startleft ? LEFT : RIGHT;
@@ -1241,10 +1192,10 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
     int formheight, int nitems, struct formitem *items)
 {
 	WINDOW *widget, *button, *entry, *shadow;
-	char *buttons[4];
-	int i, values[4], output, nbuttons, defbutton, color, y, x;
+	int i, output, color, y, x;
 	FIELD **field;
 	FORM *form;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -1254,9 +1205,9 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	    formheight+2, cols-2, NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
 	    conf.ascii_lines, false);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(cancel_label),
-	conf.help_button, BUTTONLABEL(help_label), conf.defaultno, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
@@ -1620,12 +1571,12 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
     int max, int def)
 {
 	WINDOW *widget, *button, *bar, *shadow;
-	char*buttons[4];
-	int nbuttons, defbutton, values[4], y, x;
+	int y, x;
 	bool loop, buttupdate, barupdate;
 	int input, currvalue, output, sizebar;
 	float perc;
 	int positions = max - min + 1;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -1634,10 +1585,9 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
-	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
-	    conf.defaultno, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	currvalue = def;
 	sizebar = cols - 16;
@@ -1708,11 +1658,11 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 {
 	WINDOW *widget, *button, *bar, *shadow;
-	char*buttons[4];
-	int output, nbuttons, defbutton, values[4], y, x;
+	int output, y, x;
 	bool loop, buttupdate, barupdate;
 	int input, currvalue, sizebar;
 	float perc;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -1721,10 +1671,9 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
-	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
-	    conf.defaultno, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	currvalue = sec;
 	sizebar = cols-16;
@@ -1802,8 +1751,9 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
 {
 	WINDOW *widget, *button, *shadow;
-	char *buttons[4], stringtime[1024];
-	int i, input, output, nbuttons, selbutton, values[4], y, x, sel;
+	char stringtime[1024];
+	int i, input, output, y, x, sel;
+	struct buttons bs;
 	bool loop, buttupdate;
 	time_t clock;
 	struct tm *localtm;
@@ -1826,10 +1776,9 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	c[2].win = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
-	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
-	    conf.defaultno, &selbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	sel=0;
 	curs_set(2);
@@ -1909,8 +1858,9 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
     unsigned int yy, unsigned int mm, unsigned int dd)
 {
 	WINDOW *widget, *button, *shadow;
-	char *buttons[4], stringtime[1024];
-	int i, input, output, nbuttons, selbutton, values[4], y, x, sel;
+	char stringtime[1024];
+	int i, input, output, y, x, sel;
+	struct buttons bs;
 	bool loop, buttupdate;
 	time_t clock;
 	struct tm *localtm;
@@ -1945,10 +1895,9 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 
 	wrefresh(widget);
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
-	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
-	    conf.defaultno, &selbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	sel=2;
 	curs_set(2);
@@ -2036,17 +1985,17 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	char line[MAXINPUT];
 	WINDOW *widget, *pad, *button, *shadow;
 	int i, y, x, padrows, padcols, ys, ye, xs, xe;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
+	int output;
 	int pipefd[2];
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
 		return -1;
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), false, NULL, conf.help_button,
-	    BUTTONLABEL(help_label), false, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,
+	    BUTTONLABEL(help_label));
 
 	if (text != NULL && conf.no_lines == false) {
 		print_text_multiline(widget, 1, 2, text, cols - 4);
@@ -2100,18 +2049,16 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 {
 	char line[MAXINPUT];
 	WINDOW *widget, *pad, *button, *shadow;
-	int i, y, x, padrows, padcols, ys, ye, xs, xe;
-	char *buttons[4];
-	int values[4], output, nbuttons, defbutton;
+	int i, y, x, padrows, padcols, ys, ye, xs, xe, output;
+	struct buttons bs;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
 		return -1;
 
-	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
-	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
-	    BUTTONLABEL(cancel_label), conf.help_button, BUTTONLABEL(help_label),
-	    conf.defaultno, &defbutton);
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
 	if (text != NULL && conf.no_lines == false) {
 		mvwhline(widget, 2, 2, conf.ascii_lines ? '-' : ACS_HLINE, cols -4);
