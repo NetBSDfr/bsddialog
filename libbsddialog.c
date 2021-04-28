@@ -58,14 +58,12 @@ struct bsddialogtheme t;
 
 enum elevation { RAISED, LOWERED, NOLINES };
 
-WINDOW *
-new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
+WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
     enum elevation elev, bool asciilines, bool subwindowborders);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
 
-void
-draw_button(WINDOW *window, int x, int size, char *text, bool selected,
+void draw_button(WINDOW *window, int x, int size, char *text, bool selected,
     bool shortkey);
 #define MAXBUTTONS 4 /* yes|ok - extra - no|cancel - help */
 struct buttons {
@@ -75,8 +73,7 @@ struct buttons {
 	int curr;
 };
 void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey);
-void
-get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
+void get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
     bool help, char *helplabel);
 
