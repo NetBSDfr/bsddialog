@@ -360,7 +360,7 @@ get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
 
 int
 widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
-    int *h, int *w, WINDOW **shadow)
+    int *h, int *w, WINDOW **shadow, bool buttons, WINDOW **buttonswin)
 {
 
 	if (*h <= 0)
@@ -379,8 +379,9 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 		wrefresh(*shadow);
 	}
 
-	*widget = new_window(*y, *x, *h, *w, conf.title, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
+	*widget = new_window(*y, *x, *h, *w, conf.title,
+	    buttons ? NULL : conf.hline, conf.no_lines ? NOLINES : RAISED,
+	    conf.ascii_lines, false);
 	if(*widget == NULL) {
 		delwin(*shadow);
 		return -1;
@@ -390,6 +391,18 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 		print_text_multiline(*widget, 1, 2, text, *w - 4);
 
 	wrefresh(*widget);
+
+	if (buttons) {
+		*buttonswin = new_window(*y + *h - 3, *x, 3, *w, NULL,
+		    conf.hline, conf.no_lines ? NOLINES : RAISED,
+		    conf.ascii_lines, true);
+		if (*buttonswin == NULL) {
+			delwin(*shadow);
+			delwin(*widget);
+			return -1;
+		}
+		wrefresh(*buttonswin);
+	}
 
 	return 0;
 }
@@ -434,7 +447,8 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 	WINDOW *widget, *shadow;
 	int y, x;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    false, NULL) <0)
 		return -1;
 
 	getch();
@@ -510,11 +524,9 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	char *buttons[3];
 	int values[3], output, nbuttons, defbutton, y, x;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
-
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	    conf.extra_button, BUTTONLABEL(extra_label), false, NULL, conf.help_button,
@@ -536,11 +548,9 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton, y, x;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
-
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(yes_label),
 	conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(no_label),
@@ -615,14 +625,13 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	int ys, ye, xs, xe;
 	bool loop, buttupdate, sep;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
 
 	menuwin = new_window(y + rows - 5 - menurows, x + 2, menurows+2, cols-4,
 	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
 	    conf.ascii_lines, false);
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	menupad = newpad(nitems, line);
 	wbkgd(menupad, t.widgetcolor);
@@ -873,7 +882,8 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	enum side {LEFT, RIGHT} currV;
 	int currH;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
 
 	winsy = y + rows - 5 - menurows;
@@ -883,8 +893,6 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	rightwinx = x + cols - 2 -(cols-5)/2;
 	rightwin = new_window(winsy, rightwinx, menurows+2, (cols-5)/2, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	wrefresh(leftwin);
 	wrefresh(rightwin);
@@ -1184,14 +1192,13 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	FIELD **field;
 	FORM *form;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
 
 	entry = new_window(y + rows - 3 - formheight -2, x +1,
 	    formheight+2, cols-2, NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
 	    conf.ascii_lines, false);
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel, BUTTONLABEL(cancel_label),
@@ -1441,7 +1448,8 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 	int i, y, x;
 	bool mainloop = true;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    false, NULL) <0)
 		return -1;
 
 	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, conf.hline,
@@ -1509,7 +1517,8 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 	    "[     N/A     ]",
 	    "[   UNKNOWN   ]",};
 
-	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    false, NULL) <0)
 		return -1;
 
 	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, conf.hline,
@@ -1565,13 +1574,12 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 	float perc;
 	int positions = max - min + 1;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
 
 	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
@@ -1654,13 +1662,12 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 	int input, currvalue, sizebar;
 	float perc;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
 
 	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, false);
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
@@ -1755,7 +1762,8 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 		WINDOW *win;
 	} c[3] = { {23, hh, NULL}, {59, mm, NULL}, {59, ss, NULL} };
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
 
 	c[0].win = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
@@ -1766,9 +1774,6 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
 	c[2].win = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
-
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
@@ -1875,8 +1880,10 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 	    { "October", 30 }, { "November", 30 }, { "December",  30 }
 	};
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
+
 	c[0].win = new_window(y + rows - 6, x + cols/2 - 12, 3, 6, NULL, NULL,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 	mvwaddch(widget, rows - 5, cols/2 - 6, '/');
@@ -1887,9 +1894,6 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
 
 	wrefresh(widget);
-
-	button = new_window(y + rows -3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
@@ -1987,11 +1991,9 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	int values[4], output, nbuttons, defbutton;
 	int pipefd[2];
 
-	if (widget_init(conf, &widget, &y, &x, /*text*/NULL, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
-
-	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	    conf.extra_button, BUTTONLABEL(extra_label), false, NULL, conf.help_button,
@@ -2053,11 +2055,9 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 	char *buttons[4];
 	int values[4], output, nbuttons, defbutton;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
-
-	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	get_buttons(&nbuttons, buttons, values, ! conf.no_ok, BUTTONLABEL(ok_label),
 	    conf.extra_button, BUTTONLABEL(extra_label), ! conf.no_cancel,
@@ -2111,11 +2111,9 @@ do_text(enum textmode mode, struct config conf, char* path, int rows, int cols)
 	FILE *fp;
 	bool loop;
 
-	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow) < 0)
+	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
+	    true, &button) <0)
 		return -1;
-
-	button = new_window(y + rows - 3, x, 3, cols, NULL, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines, true);
 
 	exitbutt = conf.exit_label == NULL ? exitbutt : conf.exit_label;
 	draw_button(button, (cols-2)/2 - strlen(exitbutt)/2, strlen(exitbutt)+2,
