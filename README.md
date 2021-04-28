@@ -36,6 +36,7 @@ Examples:
  * [ ] KEY\_RESIZE
  * [ ] Scrollable *text*
  * [ ] Automanic *height* and *width* (% bsddialog text 0 0)
+ * [ ] Fullscreen (*height* and *width* less than 0)
 
 
  - Common Options:
