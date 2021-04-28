@@ -76,6 +76,19 @@ get_buttons(int *nbuttons, char *buttons[4], int values[4], bool yesok,
     char *nocancellabel, bool help, char *helplabel, bool defaultno,
     int *defbutton);
 
+#define MAXBUTTONS 4 /* yes|ok - extra - no|cancel - help */
+struct buttons {
+	unsigned int nbuttons;
+	char *label[MAXBUTTONS];
+	int value[MAXBUTTONS];
+	int curr;
+};
+
+void
+newget_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
+    char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
+    bool help, char *helplabel);
+
 int
 buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
     int *values, int selected, bool shortkey, int fd);
