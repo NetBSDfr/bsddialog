@@ -1056,9 +1056,9 @@ struct formitem {
 };
 
 int
-mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, WINDOW *entry, FORM *form,
-    FIELD **field, int nitems, struct formitem *items, int fd)
+mixedform_handler(WINDOW *buttwin, int cols, struct buttons bs, bool shortkey,
+    WINDOW *entry, FORM *form, FIELD **field, int nitems, struct formitem *items,
+    int fd)
 {
 	bool loop, buttupdate, inentry = true;
 	int i, input, output;
@@ -1067,10 +1067,10 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	curs_set(2);
 	pos_form_cursor(form);
 	loop = buttupdate = true;
-	selected = -1;
+	bs.curr = -1;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(button, cols, bs, shortkey);
+			draw_buttons(buttwin, cols, bs, shortkey);
 			wrefresh(buttwin);
 			buttupdate = false;
 		}
@@ -1080,7 +1080,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 		case 10: // Enter
 			if (inentry)
 				break;
-			output = values[selected]; // values -> buttvalues
+			output = bs.value[bs.curr]; // values -> buttvalues
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nitems; i++) {
@@ -1097,12 +1097,12 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			break;
 		case '\t': // TAB
 			if (inentry) {
-				selected = 0;
+				bs.curr = 0;
 				inentry = false;
 				curs_set(0);
 			} else {
-				selected++;
-				inentry = selected >= nbuttons ? true : false;
+				bs.curr++;
+				inentry = bs.curr >= bs.nbuttons ? true : false;
 				if (inentry) {
 					curs_set(2);
 					pos_form_cursor(form);
@@ -1114,8 +1114,8 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			if (inentry) {
 				form_driver(form, REQ_PREV_CHAR);
 			} else {
-				if (selected > 0) {
-					selected--;
+				if (bs.curr > 0) {
+					bs.curr--;
 					buttupdate = true;
 				}
 			}
@@ -1124,8 +1124,8 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 			if (inentry) {
 				form_driver(form, REQ_NEXT_CHAR);
 			} else {
-				if (selected < nbuttons - 1) {
-					selected++;
+				if (bs.curr < bs.nbuttons - 1) {
+					bs.curr++;
 					buttupdate = true;
 				}
 			}
@@ -1232,8 +1232,8 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 
 	wrefresh(entry);
 
-	output = mixedform_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, entry, form, field, nitems, items, conf.output_fd);
+	output = mixedform_handler(button, cols, bs, true, entry, form, field,
+	    nitems, items, conf.output_fd);
 
 	unpost_form(form);
 	free_form(form);
