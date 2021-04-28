@@ -74,9 +74,7 @@ struct buttons {
 	int value[MAXBUTTONS];
 	int curr;
 };
-void
-draw_buttons(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int selected, bool shortkey);
+void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey);
 void
 get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
@@ -298,26 +296,24 @@ draw_button(WINDOW *window, int x, int size, char *text, bool selected,
 	}
 }
 
-void
-draw_buttons(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int selected, bool shortkey)
+void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey)
 {
 	int i, x, start_x, size;
 #define SIZEBUTTON  8
 #define BUTTONSPACE 3
 
-	size = MAX(SIZEBUTTON - 2, strlen(buttons[0]));
-	for (i=1; i < nbuttons; i++)
-		size = MAX(size, strlen(buttons[i]));
+	size = MAX(SIZEBUTTON - 2, strlen(bs.label[0]));
+	for (i=1; i < bs.nbuttons; i++)
+		size = MAX(size, strlen(bs.label[i]));
 	size += 2;
 
-	start_x = size * nbuttons + (nbuttons - 1) * BUTTONSPACE;
+	start_x = size * bs.nbuttons + (bs.nbuttons - 1) * BUTTONSPACE;
 	start_x = cols/2 - start_x/2;
 
-	for (i = 0; i < nbuttons; i++) {
+	for (i = 0; i < bs.nbuttons; i++) {
 		x = i * (size + BUTTONSPACE);
-		draw_button(window, start_x + x, size, buttons[i],
-		    i == selected, shortkey);
+		draw_button(window, start_x + x, size, bs.label[i],
+		    i == bs.curr, shortkey);
 	}
 }
 
@@ -480,8 +476,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 	loop = update = true;
 	while(loop) {
 		if (update) {
-			draw_buttons(window, cols, nbuttons, buttons, selected,
-			    shortkey);
+			draw_buttons(window, cols, bs, shortkey);
 			update = false;
 		}
 		wrefresh(window);
@@ -673,8 +668,7 @@ do_menu(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(button, cols, nbuttons, buttons, defbutton,
-			    true);
+			draw_buttons(window, cols, bs, shortkey);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -918,8 +912,7 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = padsupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(button, cols, nbuttons, buttons, defbutton,
-			    true);
+			draw_buttons(window, cols, bs, shortkey);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1087,8 +1080,7 @@ mixedform_handler(WINDOW *buttwin, int cols, int nbuttons, char **buttons,
 	selected = -1;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(buttwin, cols, nbuttons, buttons, selected,
-			    shortkey);
+			draw_buttons(window, cols, bs, shortkey);
 			wrefresh(buttwin);
 			buttupdate = false;
 		}
@@ -1601,8 +1593,7 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 		}
 
 		if (buttupdate) {
-			draw_buttons(button, cols, nbuttons, buttons, defbutton,
-			    true);
+			draw_buttons(window, cols, bs, shortkey);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1690,8 +1681,7 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 		}
 
 		if (buttupdate) {
-			draw_buttons(button, cols, nbuttons, buttons, defbutton,
-			    true);
+			draw_buttons(window, cols, bs, shortkey);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1785,8 +1775,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(button, cols, nbuttons, buttons, selbutton,
-			    true);
+			draw_buttons(window, cols, bs, shortkey);
 			wrefresh(button);
 			buttupdate = false;
 		}
@@ -1904,8 +1893,7 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(button, cols, nbuttons, buttons, selbutton,
-			    true);
+			draw_buttons(window, cols, bs, shortkey);
 			wrefresh(button);
 			buttupdate = false;
 		}
