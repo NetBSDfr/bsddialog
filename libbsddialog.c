@@ -80,10 +80,6 @@ get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
     bool help, char *helplabel);
 
-int
-buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, int fd);
-
 
 int bsddialog_init(void)
 {
@@ -466,8 +462,7 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
  * SECTION 2 "Button": msgbox - yesno
  */
 int
-buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
-    int *values, int selected, bool shortkey, int fd)
+buttons_handler(WINDOW *window, int cols, struct buttons bs, bool shortkey)
 {
 	bool loop, update;
 	int i, input;
@@ -483,7 +478,7 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 		input = getch();
 		switch (input) {
 		case 10: /* Enter */
-			output = values[selected];
+			output = bs.value[bs.curr];
 			loop = false;
 			break;
 		case 27: /* Esc */
@@ -491,26 +486,26 @@ buttons_handler(WINDOW *window, int cols, int nbuttons, char **buttons,
 			loop = false;
 			break;
 		case '\t': /* TAB */
-			selected = (selected + 1) % nbuttons;
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			update = true;
 			break;
 		case KEY_LEFT:
-			if (selected > 0) {
-				selected--;
+			if (bs.curr > 0) {
+				bs.curr--;
 				update = true;
 			}
 			break;
 		case KEY_RIGHT:
-			if (selected < nbuttons - 1) {
-				selected++;
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
 				update = true;
 			}
 			break;
 		default:
 			if (shortkey) {
-				for (i = 0; i < nbuttons; i++)
-					if (input == (buttons[i])[0]) {
-						output = values[selected];
+				for (i = 0; i < bs.nbuttons; i++)
+					if (input == (bs.label[i])[0]) {
+						output = bs.value[i];
 						loop = false;
 				}
 			}
@@ -535,8 +530,7 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,
 	    BUTTONLABEL(help_label));
 
-	output = buttons_handler(button, cols, nbuttons, buttons, values, 0,
-	    true, /*fd*/ 0);
+	output = buttons_handler(button, cols, bs, true);
 
 	widget_end(conf, "Msgbox", widget, rows, cols, shadow, button);
 
@@ -558,8 +552,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(no_label),
 	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
-	output = buttons_handler(button, cols, nbuttons, buttons, values,
-	    defbutton, true, /*fd*/ 0);
+	output = buttons_handler(button, cols, bs, true);
 
 	widget_end(conf, "Yesno", widget, rows, cols, shadow, button);
 
@@ -2027,8 +2020,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 		}
 	}
 
-	output = buttons_handler(button, cols, nbuttons, buttons, values, defbutton,
-	    true, /*fd*/ 0);
+	output = buttons_handler(button, cols, bs, true);
 
 	return output;
 }
@@ -2070,8 +2062,7 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 		i++;
 	}
 	
-	output = buttons_handler(button, cols, nbuttons, buttons, values, defbutton,
-	    true, /*fd*/ 0);
+	output = buttons_handler(button, cols, bs, true);
 
 	return output;
 }
