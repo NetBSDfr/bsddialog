@@ -42,7 +42,7 @@ static struct bsddialog_theme defaulttheme = {
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_CYAN)),
 	.surroundtitle   = true,
 	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
-	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_WHITE)),
+	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
 	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
 	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
 
