@@ -49,6 +49,14 @@ enum menumode {
 	TREEVIEWMODE
 };
 
+struct positionlen {
+	unsigned int prefixlen;
+	unsigned int selectorlen;
+	unsigned int maxdepth;
+	unsigned int namelen;
+	unsigned int desclen;
+};
+
 void
 draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mode,
     int xdesc, bool curr, bool bottomdesc)
@@ -343,31 +351,32 @@ bsddialog_treeview(struct config conf, char* text, int rows, int cols,
 int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
 {
-	int i, j, line, maxname, maxdesc;
+	int i, j;
 	bool on, prefix;
+	struct positionlen poslen = { 0, 0, 0, 0 };
+	struct bsddialog_menuitem item;
 
 	prefix = false;
-	line = maxname = maxdesc = 0;
 	for (i=0; i<ngroups; i++) {
 		on = false;
-		if (groups[i].type == BSDDIALOG_PORTCHECKLIST || groups[i].type == BSDDIALOG_PORTRADIOLIST)
-			prefix = true;
+		if (groups[i].type == BSDDIALOG_RADIOLIST)
+			poslen.selectorlen = 3;
 		for (j=0; j<groups[i].nitems; j++) {
-			if (groups[i].type == BSDDIALOG_RADIOLIST || groups[i].type == BSDDIALOG_PORTRADIOLIST) {
+			item = groups[i].items[j];
+			if (groups[i].type == BSDDIALOG_RADIOLIST) {
 				if (on == true)
-					groups[i].items[j].on = false;
+					item.on = false;
 
-				if (groups[i].items[j].on == true)
+				if (item.on == true)
 					on = true;
 			}
-			maxname = MAX(maxname, strlen(groups[i].items[j].name) + 1);
-			maxdesc = MAX(maxdesc, strlen(groups[i].items[j].desc));
-			line = MAX(line, maxname + maxdesc + 4);
-		}
-	}
 
-	if (prefix) {
-		line++;
+			if (conf.item_prefix)
+				poslen.prefixlen = MAX(poslen.prefixlen, strlen(item.bottomdesc));
+
+			poslen.namelen = MAX(poslen.namelen, strlen(item.name) + 1);
+			poslen.desclen = MAX(poslen.desclen, strlen(item.desc));
+		}
 	}
 
 	return BSDDIALOG_ERROR;
