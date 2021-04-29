@@ -28,32 +28,44 @@
 #ifndef _BSDDIALOG_THEME_H_
 #define _BSDDIALOG_THEME_H_
 
-enum bsddialog_theme { DEFAULT, EIGHTCOLORS, DIALOG, WHIPTAILPURPLE, WHIPTAIL };
-
-struct bsddialogtheme {
+struct bsddialog_theme {
 	int shadowcolor;
 	int backgroundcolor;
-	int widgetcolor;
-	int currbuttoncolor;
-	int buttoncolor;
-	int currshortkeycolor;
-	int shortkeycolor;
-	int curritemcolor;
-	int itemcolor;
-	int currbarcolor;
-	int barcolor;
-	int currtagcolor;
-	int tagcolor;
 	bool surroundtitle;
 	int titlecolor;
 	int lineraisecolor;
 	int linelowercolor;
-	int bottomtitlecolor;
+	int widgetcolor;
+
+	int curritemcolor;
+	int itemcolor;
+	int currtagcolor;
+	int tagcolor;
+
 	int currfieldcolor;
-	int fieldreadonlycolor;
 	int fieldcolor;
+	int fieldreadonlycolor;
+
+	int currbarcolor;
+	int barcolor;
+
+	int currbuttoncolor;
+	int buttoncolor;
+	int currshortkeycolor;
+	int shortkeycolor;
+
+	int bottomtitlecolor;
 };
 
-int set_theme(enum bsddialog_theme t, struct bsddialogtheme *s);
+enum bsddialog_default_theme {
+	BSDDIALOG_THEME_DEFAULT,
+	BSDDIALOG_THEME_DIALOG,
+	BSDDIALOG_THEME_PURPLE,
+	BSDDIALOG_THEME_BLUE
+};
+
+//struct bsddialog_theme bsddialog_gettheme();
+//int bsddialog_setcustomtheme(struct bsddialog_theme *theme);
+int bsddialog_settheme(enum bsddialog_default_theme theme);
 
 #endif

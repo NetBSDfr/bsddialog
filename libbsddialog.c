@@ -44,7 +44,7 @@
 
 #define MAXINPUT 2048
 
-extern struct bsddialogtheme t;
+extern struct bsddialog_theme t;
 
 int bsddialog_init(void)
 {
@@ -66,7 +66,7 @@ int bsddialog_init(void)
 			c++;
 	}
 
-	set_theme(DEFAULT, &t); /* EIGHTCOLORS WHIPTAILPURPLE WHIPTAIL */
+	bsddialog_settheme(BSDDIALOG_THEME_DEFAULT);
 
 	bkgd(t.backgroundcolor);
 

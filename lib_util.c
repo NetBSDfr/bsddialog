@@ -38,7 +38,7 @@
 #include "lib_util.h"
 #include "theme.h"
 
-extern struct bsddialogtheme t;
+extern struct bsddialog_theme t;
 
 int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line)
 {

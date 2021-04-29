@@ -39,7 +39,7 @@
 
 #define TREESPACE 4
 
-extern struct bsddialogtheme t;
+extern struct bsddialog_theme t;
 
 enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE, TREEVIEWMODE };
 
