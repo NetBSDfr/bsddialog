@@ -112,7 +112,7 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 
 	if (title != NULL) {
 		if (t.surroundtitle && elev != NOLINES) {
-			wattron(win, rightcolor);
+			wattron(win, leftcolor);
 			mvwaddch(win, 0, cols/2 - strlen(title)/2 - 1, rtee);
 			mvwaddch(win, 0, cols/2 + strlen(title)/2 + 1, ltee);
 			wattroff(win, leftcolor);
