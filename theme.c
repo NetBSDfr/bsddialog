@@ -37,9 +37,36 @@
 
 struct bsddialog_theme t;
 
-static void settheme(struct bsddialog_theme newtheme);
-
 static struct bsddialog_theme defaulttheme = {
+	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
+	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,  COLOR_BLUE))  | A_BOLD,
+	.surroundtitle   = false,
+	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
+	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_WHITE)) | A_BOLD,
+	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
+	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
+
+	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
+	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
+	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD,
+	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
+
+	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
+	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD,
+	.fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE))| A_BOLD,
+
+	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
+	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
+
+	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, COLOR_BLUE)) | A_BOLD,
+	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
+	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_BLUE)) | A_BOLD,
+	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_RED,    COLOR_WHITE))| A_BOLD,
+
+	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
+};
+
+static struct bsddialog_theme dialogtheme = {
 	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,  COLOR_BLUE))  | A_BOLD,
 	.surroundtitle   = false,
@@ -160,14 +187,18 @@ int bsddialog_settheme(enum bsddialog_default_theme t)
 {
 	int error = 0;
 
-	if (t == BSDDIALOG_THEME_DEFAULT || t == BSDDIALOG_THEME_DIALOG)
+	if (t == BSDDIALOG_THEME_DEFAULT)
 		settheme(defaulttheme);
+	else if ( t == BSDDIALOG_THEME_DIALOG)
+		settheme(dialogtheme);
 	else if ( t == BSDDIALOG_THEME_PURPLE)
 		settheme(purpletheme);
 	else if (t == BSDDIALOG_THEME_BLUE)
 		settheme(bluetheme);
-	else
+	else {
+		settheme(defaulttheme);
 		error = -1;
+	}
 
 	return error;
 }
