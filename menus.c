@@ -41,7 +41,13 @@
 
 extern struct bsddialog_theme t;
 
-enum menumode { BUILDLISTMODE, CHECKLISTMODE, MENUMODE, RADIOLISTMODE, TREEVIEWMODE };
+enum menumode {
+	BUILDLISTMODE,
+	CHECKLISTMODE,
+	MENUMODE,
+	RADIOLISTMODE,
+	TREEVIEWMODE
+};
 
 void
 draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mode,
@@ -58,14 +64,14 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		wprintw(pad, "[%c]", item.on ? 'X' : ' ');
 	if (mode == RADIOLISTMODE || mode == TREEVIEWMODE)
 		wprintw(pad, "(%c)", item.on ? '*' : ' ');
-	wattron(pad, color);
+	wattroff(pad, color);
 
 	if (mode != BUILDLISTMODE && mode != TREEVIEWMODE) {
 		wattron(pad, colorname);
 		if (mode != MENUMODE)
 			wmove(pad, y, 4);
 		waddstr(pad, item.name);
-		wattron(pad, colorname);
+		wattroff(pad, colorname);
 	}
 
 	if ((mode == BUILDLISTMODE || mode == TREEVIEWMODE) && selected == false)
@@ -76,7 +82,7 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 	if (mode == TREEVIEWMODE)
 		xdesc = xdesc + item.depth * TREESPACE;
 	mvwaddstr(pad, y, xdesc, item.desc);
-	wattron(pad, color);
+	wattroff(pad, color);
 
 	if (selected && bottomdesc == true) {
 		move(LINES-2, 5);
