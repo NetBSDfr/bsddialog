@@ -114,14 +114,16 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 		if (t.surroundtitle && elev != NOLINES) {
 			wattron(win, leftcolor);
 			mvwaddch(win, 0, cols/2 - strlen(title)/2 - 1, rtee);
-			mvwaddch(win, 0, cols/2 + strlen(title)/2 + 1, ltee);
 			wattroff(win, leftcolor);
 		}
-
 		wattron(win, t.titlecolor);
-		wmove(win, 0, cols/2 - strlen(title)/2);
-		waddstr(win, title);
+		mvwaddstr(win, 0, cols/2 - strlen(title)/2, title);
 		wattroff(win, t.titlecolor);
+		if (t.surroundtitle && elev != NOLINES) {
+			wattron(win, leftcolor);
+			waddch(win, ltee);
+			wattroff(win, leftcolor);
+		}
 	}
 
 	if (bottomtitle != NULL) {
