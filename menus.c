@@ -352,14 +352,14 @@ int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
 {
 	int i, j;
-	bool on, prefix;
+	bool on;
 	struct positionlen poslen = { 0, 0, 0, 0 };
 	struct bsddialog_menuitem item;
 
-	prefix = false;
 	for (i=0; i<ngroups; i++) {
 		on = false;
-		if (groups[i].type == BSDDIALOG_RADIOLIST)
+		if (groups[i].type == BSDDIALOG_RADIOLIST ||
+		    groups[i].type == BSDDIALOG_CHECKLIST)
 			poslen.selectorlen = 3;
 		for (j=0; j<groups[i].nitems; j++) {
 			item = groups[i].items[j];
