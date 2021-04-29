@@ -21,7 +21,7 @@ Output:
 ![screenshot](screenshot.png)
 
 
-Examples:
+Examples utility:
 ```
 % bsddialog --title msgbox --msgbox "Hello World!" 5 30
 % bsddialog --title yesno --yesno "Hello World!" 5 30
@@ -29,6 +29,17 @@ Examples:
 % bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
 % bsddialog --pause "Hello World!" 8 50 5
+```
+
+Examples library:
+```
+% cd library_examples
+% sh compile
+% ./buildlist
+% ./checklist
+% ./menu
+% ./radiolist
+% ./treeview
 ```
 
 **TODO**
