@@ -35,6 +35,8 @@
 
 #define BSD_COLOR(BACKGROUND, FOREGROUND) (BACKGROUND * 8 + FOREGROUND +1)
 
+struct bsddialogtheme t;
+
 static void set_dialog_theme(struct bsddialogtheme *s)
 {
 	s->shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK));
