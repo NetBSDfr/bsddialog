@@ -51,12 +51,12 @@ enum menumode {
 
 void
 draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mode,
-    int xdesc, bool selected, bool bottomdesc)
+    int xdesc, bool curr, bool bottomdesc)
 {
 	int color, colorname;
 
-	color = selected ? t.curritemcolor : t.itemcolor;
-	colorname = selected ? t.currtagcolor : t.tagcolor;
+	color = curr ? t.curritemcolor : t.itemcolor;
+	colorname = curr ? t.currtagcolor : t.tagcolor;
 
 	wmove(pad, y, 0);
 	wattron(pad, color);
@@ -74,7 +74,7 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		wattroff(pad, colorname);
 	}
 
-	if ((mode == BUILDLISTMODE || mode == TREEVIEWMODE) && selected == false)
+	if ((mode == BUILDLISTMODE || mode == TREEVIEWMODE) && curr == false)
 		color = item.on ? t.tagcolor : t.itemcolor;
 	wattron(pad, color);
 	if (mode == CHECKLISTMODE || mode == RADIOLISTMODE || mode == TREEVIEWMODE)
@@ -84,7 +84,7 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 	mvwaddstr(pad, y, xdesc, item.desc);
 	wattroff(pad, color);
 
-	if (selected && bottomdesc == true) {
+	if (curr && bottomdesc == true) {
 		move(LINES-2, 5);
 		clrtoeol();
 		addstr(item.bottomdesc);
