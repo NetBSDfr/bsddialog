@@ -39,6 +39,7 @@
 #define BSDDIALOG_ERROR		-1 // generic error or ESC key
 
 struct config {
+	bool item_prefix; //BSDDialog extension
 	bool ascii_lines;
 	int aspect;	// aspect ratio
 	//char *backtitle;
@@ -126,8 +127,6 @@ enum bsddialog_grouptype {
 	BSDDIALOG_CHECKLIST,
 	BSDDIALOG_RADIOLIST,
 	BSDDIALOG_SEPARATOR,
-	BSDDIALOG_PORTCHECKLIST,
-	BSDDIALOG_PORTRADIOLIST
 };
 
 struct bsddialog_menugroup {
