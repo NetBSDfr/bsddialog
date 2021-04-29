@@ -39,15 +39,15 @@ int main()
 	    { false, 0, "Name 5", "Desc 5", "+" }
 	};
 	struct bsddialog_menugroup group[3] = {
-	    { BSDDIALOG_PORTCHECKLIST, 5, check },
-	    { BSDDIALOG_SEPARATOR,     5, sep   },
-	    { BSDDIALOG_PORTRADIOLIST, 5, radio }
+	    { BSDDIALOG_CHECKLIST, 5, check },
+	    { BSDDIALOG_SEPARATOR, 5, sep   },
+	    { BSDDIALOG_RADIOLIST, 5, radio }
 	};
 
 	memset(&conf, 0, sizeof(struct config));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
-	conf.item_help = true;
+	conf.item_prefix = true;
 	conf.title = "mixedmenu";
 	
 	if (bsddialog_init() < 0)
