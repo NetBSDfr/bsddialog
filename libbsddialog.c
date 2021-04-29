@@ -855,6 +855,32 @@ bsddialog_treeview(struct config conf, char* text, int rows, int cols,
 int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
 {
+	int i, j, line, maxname, maxdesc;
+	bool on, prefix;
+
+	prefix = false;
+	line = maxname = maxdesc = 0;
+	for (i=0; i<ngroups; i++) {
+		on = false;
+		if (groups[i].type == BSDDIALOG_PORTCHECKLIST || groups[i].type == BSDDIALOG_PORTRADIOLIST)
+			prefix = true;
+		for (j=0; j<groups[i].nitems; j++) {
+			if (groups[i].type == BSDDIALOG_RADIOLIST || groups[i].type == BSDDIALOG_PORTRADIOLIST) {
+				if (on == true)
+					groups[i].items[j].on = false;
+
+				if (groups[i].items[j].on == true)
+					on = true;
+			}
+			maxname = MAX(maxname, strlen(groups[i].items[j].name) + 1);
+			maxdesc = MAX(maxdesc, strlen(groups[i].items[j].desc));
+			line = MAX(line, maxname + maxdesc + 4);
+		}
+	}
+
+	if (prefix) {
+		line++;
+	}
 
 	return BSDDIALOG_ERROR;
 }
