@@ -40,7 +40,7 @@ struct bsddialog_theme t;
 static struct bsddialog_theme defaulttheme = {
 	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_CYAN)),
-	.surroundtitle   = false,
+	.surroundtitle   = true,
 	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
 	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_WHITE)),
 	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
@@ -92,7 +92,7 @@ static struct bsddialog_theme dialogtheme = {
 	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_BLUE)) | A_BOLD,
 	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_RED,    COLOR_WHITE))| A_BOLD,
 
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
+	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD
 };
 
 static struct bsddialog_theme purpletheme = {
@@ -121,7 +121,7 @@ static struct bsddialog_theme purpletheme = {
 	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_RED)),
 	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
 
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
+	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD
 };
 
 static struct bsddialog_theme bluetheme = {
@@ -150,7 +150,7 @@ static struct bsddialog_theme bluetheme = {
 	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_RED)),
 	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
 
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
+	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD
 };
 
 static void settheme(struct bsddialog_theme newtheme)
