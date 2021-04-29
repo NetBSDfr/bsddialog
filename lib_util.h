@@ -30,6 +30,15 @@
 
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+#define LABEL_cancel_label "Cancel"
+#define LABEL_exit_label   "EXIT"
+#define LABEL_extra_label  "Extra"
+#define LABEL_help_label   "Help"
+#define LABEL_no_label     "No"
+#define LABEL_ok_label     "OK"
+#define LABEL_yes_label    "Yes"
+#define BUTTONLABEL(l) (conf.l != NULL ? conf.l : LABEL_ ##l)
+
 enum elevation { RAISED, LOWERED, NOLINES };
 
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
