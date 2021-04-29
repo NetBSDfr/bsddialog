@@ -66,7 +66,7 @@ int bsddialog_init(void)
 			c++;
 	}
 
-	bsddialog_settheme(BSDDIALOG_THEME_DEFAULT);
+	bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
 
 	bkgd(t.backgroundcolor);
 
