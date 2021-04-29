@@ -363,6 +363,7 @@ int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
 			poslen.selectorlen = 3;
 		for (j=0; j<groups[i].nitems; j++) {
 			item = groups[i].items[j];
+			// add SELECTOR
 			if (groups[i].type == BSDDIALOG_RADIOLIST) {
 				if (on == true)
 					item.on = false;
