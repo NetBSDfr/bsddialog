@@ -163,7 +163,7 @@ static void settheme(struct bsddialog_theme newtheme)
 	t.linelowercolor  = newtheme.linelowercolor;
 	t.widgetcolor     = newtheme.widgetcolor;
 
-	t.curritemcolor   = newtheme.widgetcolor;
+	t.curritemcolor   = newtheme.curritemcolor;
 	t.itemcolor       = newtheme.itemcolor;
 	t.currtagcolor    = newtheme.currtagcolor;
 	t.tagcolor        = newtheme.tagcolor;
