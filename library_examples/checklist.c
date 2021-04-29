@@ -13,7 +13,6 @@
 
 #include "../bsddialog.h"
 
-/* cc ../theme.c ../libbsddialog.c checklist.c -o checklist -lform -lncurses */
 int main()
 {
 	int i, output;

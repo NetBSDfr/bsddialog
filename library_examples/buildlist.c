@@ -13,7 +13,6 @@
 
 #include "../bsddialog.h"
 
-/* cc ../theme.c ../libbsddialog.c buildlist.c -o buildlist -lform -lncurses */
 int main()
 {
 	int i, output;

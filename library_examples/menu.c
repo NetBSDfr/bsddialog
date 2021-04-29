@@ -13,7 +13,6 @@
 
 #include "../bsddialog.h"
 
-/* cc ../theme.c ../libbsddialog.c menu.c -o menu -lform -lncurses */
 int main()
 {
 	int i, output;

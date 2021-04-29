@@ -13,7 +13,6 @@
 
 #include "../bsddialog.h"
 
-/* cc ../theme.c ../libbsddialog.c treeview.c -o treeview -lform -lncurses */
 int main()
 {
 	int i, output;

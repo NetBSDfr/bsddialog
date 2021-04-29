@@ -13,10 +13,7 @@
 
 #include "../bsddialog.h"
 
-/* 
- * Actually this is an example for mixedmenu to reproduce dialog4ports(1)
- * cc ../theme.c ../libbsddialog.c dialog4ports.c -o dialog4ports -lform -lncurses
- */
+/* Actually this is an example for mixedmenu to reproduce dialog4ports(1) */
 int main()
 {
 	int i, j, output;

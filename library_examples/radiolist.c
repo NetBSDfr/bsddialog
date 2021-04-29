@@ -13,7 +13,6 @@
 
 #include "../bsddialog.h"
 
-/* cc ../theme.c ../libbsddialog.c radiolist.c -o radiolist -lform -lncurses */
 int main()
 {
 	int i, output;
