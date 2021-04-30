@@ -18,6 +18,7 @@ int main()
 {
 	int i, j, output;
 	struct config conf; //bsddialog_config conf;
+	struct bsddialog_menuitem item;
 	struct bsddialog_menuitem check[5] = {
 	    { true,  0, "Name 1", "Desc 1", "+" },
 	    { false, 0, "Name 2", "Desc 2", "+" },
@@ -51,19 +52,21 @@ int main()
 		return -1;
 
 	output = bsddialog_mixedmenu(conf, "Example (dialog4ports)", 15, 30, 5,
-	    5, items);
+	    5, group);
 
 	bsddialog_end();
 
 	printf("Mixedmenu (dialog4ports):\n");
 	for (i=0; i<3; i++) {
-		for (j=0; j<group.nitems; j++)
-		if (group[i].type == BSDDIALOG_SEPARATOR)
-			printf("----- %s -----\n", group[i][j].name);
-		else if (group[i].type == BSDDIALOG_RADIOLIST)
-			printf(" (%c) %s\n", items[i].on ? '*' : ' ', items[i].name);
-		else /* BSDDIALOG_PORTCHECKLIST */
-			printf(" [%c] %s\n", items[i].on ? 'X' : ' ', items[i].name);
+		for (j=0; j<group->nitems; j++) {
+			item = group[i].items[j];
+			if (group[i].type == BSDDIALOG_SEPARATOR)
+				printf("----- %s -----\n", item.name);
+			else if (group[i].type == BSDDIALOG_RADIOLIST)
+				printf(" (%c) %s\n", item.on ? '*' : ' ', item.name);
+			else /* BSDDIALOG_PORTCHECKLIST */
+				printf(" [%c] %s\n", item.on ? 'X' : ' ', item.name);
+		}
 	}
 		
 	
