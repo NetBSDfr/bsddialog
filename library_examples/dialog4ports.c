@@ -38,7 +38,7 @@ int main()
 	};
 	struct bsddialog_menugroup group[3] = {
 	    { BSDDIALOG_CHECKLIST, 5, check },
-	    { BSDDIALOG_SEPARATOR, 5, sep   },
+	    { BSDDIALOG_SEPARATOR, 1, sep   },
 	    { BSDDIALOG_RADIOLIST, 5, radio }
 	};
 
@@ -52,13 +52,13 @@ int main()
 		return -1;
 
 	output = bsddialog_mixedmenu(conf, "Example (dialog4ports)", 15, 30, 5,
-	    5, group);
+	    3, group);
 
 	bsddialog_end();
 
 	printf("Mixedmenu (dialog4ports):\n");
 	for (i=0; i<3; i++) {
-		for (j=0; j<group->nitems; j++) {
+		for (j=0; j<group[i].nitems; j++) {
 			item = group[i].items[j];
 			if (group[i].type == BSDDIALOG_SEPARATOR)
 				printf("----- %s -----\n", item.name);
