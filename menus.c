@@ -61,6 +61,22 @@ struct positionlen {
 	unsigned int line; //max(name+desc, separator)
 };
 
+int checkradiolist(int nitems, struct bsddialog_menuitem *items)
+{
+	int i, error;
+
+	error = 0;
+	for (i=0; i<nitems; i++) {
+		if (error > 0)
+			items[i].on = false;
+
+		if (items[i].on == true)
+			error++;
+	}
+
+	return (error == 0 ? 0 : -1);
+}
+
 void
 draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mode,
     int xdesc, bool curr, bool bottomdesc)
@@ -279,13 +295,8 @@ int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
 				poslen.separatorlen = MAX(poslen.separatorlen, strlen(item.name) + strlen(item.desc));
 				continue;
 			}
-			if (groups[i].type == BSDDIALOG_RADIOLIST) {
-				if (on == true)
-					item.on = false;
-
-				if (item.on == true)
-					on = true;
-			}
+			if (groups[i].type == BSDDIALOG_RADIOLIST)
+				checkradiolist(groups[i].nitems, groups[i].items);
 
 			if (conf.item_prefix)
 				poslen.prefixlen = MAX(poslen.prefixlen, strlen(item.bottomdesc));
@@ -505,16 +516,11 @@ bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
 	int i, output, line, maxname, maxdesc;
-	bool on = false;
+
+	checkradiolist(nitems, items);
 
 	line = maxname = maxdesc = 0;
 	for (i=0; i<nitems; i++) {
-		if (on == true)
-			items[i].on = false;
-
-		if (items[i].on == true)
-			on = true;
-
 		maxname = MAX(maxname, strlen(items[i].name) + 1);
 		maxdesc = MAX(maxdesc, strlen(items[i].desc));
 		line = MAX(line, maxname + maxdesc + 4);
@@ -531,15 +537,11 @@ bsddialog_treeview(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
 	int i, output, line, maxdesc;
-	bool on = false;
+
+	checkradiolist(nitems, items);
 
 	line = maxdesc = 0;
 	for (i=0; i<nitems; i++) {
-		if (on == true)
-			items[i].on = false;
-
-		if (items[i].on == true)
-			on = true;
 		maxdesc = MAX(maxdesc, strlen(items[i].desc));
 		line = MAX(line, maxdesc + 4 + items[i].depth * TREESPACE);
 	}
