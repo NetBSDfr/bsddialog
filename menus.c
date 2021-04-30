@@ -536,17 +536,24 @@ bsddialog_treeview(struct config conf, char* text, int rows, int cols,
 }
 
 int
-do_buildlist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int line, int nitems, struct bsddialog_menuitem *items,
-    bool startleft)
+bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
 	WINDOW *widget, *button, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
-	int output, i, x, y, input;
-	bool loop, buttupdate, padsupdate;
+	int output, i, x, y, input, line;
+	bool loop, buttupdate, padsupdate, startleft;
 	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols, curr;
 	enum side {LEFT, RIGHT} currV;
 	int currH;
 	struct buttons bs;
+
+	startleft = false;
+	line = 0;
+	for (i=0; i<nitems; i++) {
+		line = MAX(line, strlen(items[i].desc));
+		if (items[i].on == false)
+			startleft = true;
+	}
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -683,26 +690,6 @@ do_buildlist(struct config conf, char* text, int rows, int cols,
 	delwin(rightpad);
 	delwin(rightwin);
 	widget_end(conf, "Buildlist", widget, rows, cols, shadow, button);
-
-	return output;
-}
-
-int
-bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
-{
-	int i, output, line;
-	bool startleft = false;
-
-	line = 0;
-	for (i=0; i<nitems; i++) {
-		line = MAX(line, strlen(items[i].desc));
-		if (items[i].on == false)
-			startleft = true;
-	}
-
-	output = do_buildlist(conf, text, rows, cols, menurows, line, nitems,
-	    items, startleft);
 
 	return output;
 }
