@@ -3,6 +3,7 @@ bsddialog
 *~
 library_examples/buildlist
 library_examples/checklist
+library_examples/dialog4ports
 library_examples/menu
 library_examples/radiolist
 library_examples/treeview
