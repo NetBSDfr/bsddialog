@@ -47,6 +47,7 @@ enum menumode {
 	MENUMODE,
 	MIXEDMENUMODE,
 	RADIOLISTMODE,
+	SEPARATORMODE,
 	TREEVIEWMODE
 };
 
@@ -64,12 +65,24 @@ void
 draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mode,
     int xdesc, bool curr, bool bottomdesc)
 {
-	int color, colorname;
+	int x, color, colorname;
 
 	color = curr ? t.curritemcolor : t.itemcolor;
 	colorname = curr ? t.currtagcolor : t.tagcolor;
 
-	wmove(pad, y, 0);
+	if (mode == SEPARATORMODE) {
+		// hline
+		wmove(pad, y, 10 /* fix */);
+		wprintw(pad, " %s %s ", item.name, item.desc);
+		return;
+	}
+
+	x = 0;
+
+	/* prefix */
+
+	/* selector */
+	wmove(pad, y, x);
 	wattron(pad, color);
 	if (mode == CHECKLISTMODE)
 		wprintw(pad, "[%c]", item.on ? 'X' : ' ');
@@ -77,6 +90,7 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		wprintw(pad, "(%c)", item.on ? '*' : ' ');
 	wattroff(pad, color);
 
+	/* name */
 	if (mode != BUILDLISTMODE && mode != TREEVIEWMODE) {
 		wattron(pad, colorname);
 		if (mode != MENUMODE)
@@ -85,6 +99,7 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		wattroff(pad, colorname);
 	}
 
+	/* description */
 	if ((mode == BUILDLISTMODE || mode == TREEVIEWMODE) && curr == false)
 		color = item.on ? t.tagcolor : t.itemcolor;
 	wattron(pad, color);
