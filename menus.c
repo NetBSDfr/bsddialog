@@ -45,6 +45,7 @@ enum menumode {
 	BUILDLISTMODE,
 	CHECKLISTMODE,
 	MENUMODE,
+	MIXEDMENUMODE,
 	RADIOLISTMODE,
 	TREEVIEWMODE
 };
@@ -55,6 +56,8 @@ struct positionlen {
 	unsigned int maxdepth;
 	unsigned int namelen;
 	unsigned int desclen;
+	unsigned int separatorlen;
+	unsigned int line; //max(name+desc, separator)
 };
 
 void
@@ -99,6 +102,190 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 		
 		refresh();
 	}
+}
+
+int
+do_mixedmenu(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, enum menumode mode, struct positionlen poslen,
+    int ngroups, struct bsddialog_menugroup *groups, int totnitems)
+{
+	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
+	char *sepstr, quotech;
+	int i, j, tot, output, y, x, input, curr;
+	int ys, ye, xs, xe;
+	bool loop, buttupdate, sep;
+	struct buttons bs;
+	struct bsddialog_menuitem item;
+
+	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true, &button) <0)
+		return -1;
+
+	menuwin = new_window(y + rows - 5 - menurows, x + 2, menurows+2, cols-4,
+	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
+	    conf.ascii_lines, false);
+
+	menupad = newpad(totnitems, poslen.line);
+	wbkgd(menupad, t.widgetcolor);
+
+	curr = -1;
+	/*if (conf.default_item != NULL) {
+		for (i=0; i<nitems; i++) {
+			if (strcmp(items[i].name, conf.default_item) == 0) {
+				curr = i;
+				break;
+			}
+		}
+	}*/
+	tot = 0;
+	curr = curr < 0 ? 0 : curr;
+	for (i=0; i<ngroups; i++)
+		for (j=0; j<groups[i].nitems; j++) {
+			item = groups[i].items[j];
+			draw_myitem(menupad, tot, item, RADIOLISTMODE, /*xdesc*/10, tot == curr, conf.item_help);
+			tot++;
+		}
+
+	ys = y + rows - 5 - menurows + 1;
+	ye = ys + menurows + 2 -1;
+	xs = (poslen.line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - poslen.line/2;
+	xe = (poslen.line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
+	if (mode == TREEVIEWMODE)
+		xs = x + 2 + 1;
+
+	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
+	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
+	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+
+	wrefresh(menuwin);
+	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
+
+	loop = buttupdate = true;
+	while(loop) {
+		if (buttupdate) {
+			draw_buttons(button, cols, bs, true);
+			wrefresh(button);
+			buttupdate = false;
+		}
+		//wrefresh(menuwin);
+		prefresh(menupad, 0, 0, ys, xs, ye, xe);
+
+		input = getch();
+		/*switch(input) {
+		case 10: // Enter
+			output = bs.value[bs.curr]; // -> buttvalues[selbutton]
+			loop = false;
+			break;
+		case 27: // Esc
+			output = BSDDIALOG_ERROR;
+			loop = false;
+			break;
+		case '\t': // TAB
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
+			buttupdate = true;
+			break;
+		case KEY_LEFT:
+			if (bs.curr > 0) {
+				bs.curr--;
+				buttupdate = true;
+			}
+			break;
+		case KEY_RIGHT:
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
+				buttupdate = true;
+			}
+			break;
+		}
+
+		if (totnitems <= 0)
+			continue;
+
+		switch(input) {
+		case KEY_UP:
+			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
+			curr = (curr > 0) ? curr - 1 : 0;
+			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
+			break;
+		case KEY_DOWN:
+			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
+			curr = (curr < nitems-1) ? curr +1 : nitems-1;
+			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
+			break;
+		case ' ': // Space
+			if (mode == MENUMODE)
+				break;
+			else if (mode == CHECKLISTMODE)
+				items[curr].on = ! items[curr].on;
+			else { //RADIOLISTMODE and TREEVIEWMODE
+				if (items[curr].on == true)
+					break;
+				for (i=0; i<nitems; i++)
+					if (items[i].on == true) {
+						items[i].on = false;
+						draw_myitem(menupad, i, items[i],
+						    mode, xdesc, false, conf.item_help);
+					}
+				items[curr].on = true;
+			}
+			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
+			break;
+		default:
+			
+			break;
+		}*/
+	}
+
+	delwin(menupad);
+	delwin(menuwin);
+	widget_end(conf, "MenuToFix", widget, rows, cols, shadow, button);
+
+	return output;
+}
+
+
+int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
+    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
+{
+	int i, j, totnitems, output;
+	bool on;
+	struct positionlen poslen = { 0, 0, 0, 0, 0 };
+	struct bsddialog_menuitem item;
+
+	totnitems = 0;
+	for (i=0; i<ngroups; i++) {
+		on = false;
+		//if (groups[i].type == BSDDIALOG_RADIOLIST ||
+		//    groups[i].type == BSDDIALOG_CHECKLIST)
+			poslen.selectorlen = 3;
+		for (j=0; j<groups[i].nitems; j++) {
+			item = groups[i].items[j];
+			if (groups[i].type == BSDDIALOG_SEPARATOR) {
+				poslen.separatorlen = MAX(poslen.separatorlen, strlen(item.name) + strlen(item.desc));
+				continue;
+			}
+			if (groups[i].type == BSDDIALOG_RADIOLIST) {
+				if (on == true)
+					item.on = false;
+
+				if (item.on == true)
+					on = true;
+			}
+
+			if (conf.item_prefix)
+				poslen.prefixlen = MAX(poslen.prefixlen, strlen(item.bottomdesc));
+
+			poslen.namelen = MAX(poslen.namelen, strlen(item.name));
+			poslen.desclen = MAX(poslen.desclen, strlen(item.desc));
+		}
+	}
+
+	poslen.line = MAX(1 + 1 + poslen.separatorlen + 1, poslen.namelen + 1 + poslen.desclen);
+
+	output = do_mixedmenu(conf, text, rows, cols, menurows, MIXEDMENUMODE,
+		poslen, ngroups, groups, totnitems);
+
+	return BSDDIALOG_ERROR;
 }
 
 int
@@ -346,41 +533,6 @@ bsddialog_treeview(struct config conf, char* text, int rows, int cols,
 	    TREEVIEWMODE, nitems, items);
 
 	return output;
-}
-
-int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
-{
-	int i, j;
-	bool on;
-	struct positionlen poslen = { 0, 0, 0, 0 };
-	struct bsddialog_menuitem item;
-
-	for (i=0; i<ngroups; i++) {
-		on = false;
-		if (groups[i].type == BSDDIALOG_RADIOLIST ||
-		    groups[i].type == BSDDIALOG_CHECKLIST)
-			poslen.selectorlen = 3;
-		for (j=0; j<groups[i].nitems; j++) {
-			item = groups[i].items[j];
-			// add SELECTOR
-			if (groups[i].type == BSDDIALOG_RADIOLIST) {
-				if (on == true)
-					item.on = false;
-
-				if (item.on == true)
-					on = true;
-			}
-
-			if (conf.item_prefix)
-				poslen.prefixlen = MAX(poslen.prefixlen, strlen(item.bottomdesc));
-
-			poslen.namelen = MAX(poslen.namelen, strlen(item.name) + 1);
-			poslen.desclen = MAX(poslen.desclen, strlen(item.desc));
-		}
-	}
-
-	return BSDDIALOG_ERROR;
 }
 
 int
