@@ -87,9 +87,11 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 	colorname = curr ? t.currtagcolor : t.tagcolor;
 
 	if (mode == SEPARATORMODE) {
+	wattron(pad, color);
 		// hline
-		wmove(pad, y, 10 /* fix */);
+		wmove(pad, y, 1 /* fix */);
 		wprintw(pad, " %s %s ", item.name, item.desc);
+	wattroff(pad, color);
 		return;
 	}
 
@@ -157,6 +159,7 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 	    conf.ascii_lines, false);
 
 	menupad = newpad(totnitems, poslen.line);
+	//menupad = newpad(100, 100);
 	wbkgd(menupad, t.widgetcolor);
 
 	curr = -1;
@@ -170,12 +173,19 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 	}*/
 	tot = 0;
 	curr = curr < 0 ? 0 : curr;
-	for (i=0; i<ngroups; i++)
+	for (i=0; i<ngroups; i++) {
+		if (groups[i].type == BSDDIALOG_SEPARATOR)
+			mode = SEPARATORMODE;
+		else if (groups[i].type == BSDDIALOG_RADIOLIST)
+			mode = RADIOLISTMODE;
+		else
+			mode = CHECKLISTMODE;
 		for (j=0; j<groups[i].nitems; j++) {
 			item = groups[i].items[j];
-			draw_myitem(menupad, tot, item, RADIOLISTMODE, /*xdesc*/10, tot == curr, conf.item_help);
+			draw_myitem(menupad, tot, item, mode, /*xdesc*/10, tot == curr, conf.item_help);
 			tot++;
 		}
+	}
 
 	ys = y + rows - 5 - menurows + 1;
 	ye = ys + menurows + 2 -1;
@@ -190,8 +200,10 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
-
-	loop = buttupdate = true;
+	//prefresh(menupad, 0, 0, 0, 0, 10, 10);//delete?
+	//refresh();
+getch();
+	/*loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(button, cols, bs, true);
@@ -264,8 +276,8 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 		default:
 			
 			break;
-		}*/
-	}
+		}
+	}*/
 
 	delwin(menupad);
 	delwin(menuwin);
@@ -279,24 +291,23 @@ int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
 {
 	int i, j, totnitems, output;
-	bool on;
 	struct positionlen poslen = { 0, 0, 0, 0, 0 };
 	struct bsddialog_menuitem item;
 
 	totnitems = 0;
-	for (i=0; i<ngroups; i++) {
-		on = false;
+	for (i=0; i < ngroups; i++) {
+		if (groups[i].type == BSDDIALOG_RADIOLIST)
+			checkradiolist(groups[i].nitems, groups[i].items);
 		//if (groups[i].type == BSDDIALOG_RADIOLIST ||
 		//    groups[i].type == BSDDIALOG_CHECKLIST)
-			poslen.selectorlen = 3;
-		for (j=0; j<groups[i].nitems; j++) {
+			//poslen.selectorlen = 3;
+		for (j=0; j < groups[i].nitems; j++) {
+			totnitems++;
 			item = groups[i].items[j];
 			if (groups[i].type == BSDDIALOG_SEPARATOR) {
 				poslen.separatorlen = MAX(poslen.separatorlen, strlen(item.name) + strlen(item.desc));
 				continue;
 			}
-			if (groups[i].type == BSDDIALOG_RADIOLIST)
-				checkradiolist(groups[i].nitems, groups[i].items);
 
 			if (conf.item_prefix)
 				poslen.prefixlen = MAX(poslen.prefixlen, strlen(item.bottomdesc));
