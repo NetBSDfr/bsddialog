@@ -51,14 +51,14 @@ enum menumode {
 	TREEVIEWMODE
 };
 
-struct positionlen {
+struct lineposition {
 	unsigned int prefixlen;
 	unsigned int selectorlen;
 	unsigned int maxdepth;
 	unsigned int namelen;
 	unsigned int desclen;
 	unsigned int separatorlen;
-	unsigned int line; //max(name+desc, separator)
+	unsigned int line;
 };
 
 int checkradiolist(int nitems, struct bsddialog_menuitem *items)
@@ -241,17 +241,43 @@ enum menumode getmode(enum menumode mode, struct bsddialog_menugroup group)
 
 int
 do_mixedlist(struct config conf, char* text, int rows, int cols,
-    unsigned int menurows, enum menumode mode, struct positionlen poslen,
-    int ngroups, struct bsddialog_menugroup *groups, int totnitems)
+    unsigned int menurows, char *namewidget, enum menumode mode, int ngroups,
+    struct bsddialog_menugroup *groups)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
-	int i, j, tot, output, y, x, input;
-	int ys, ye, xs, xe;
+	int i, j, output, input;
+	int y, x, ys, ye, xs, xe, abs, g, rel, totnitems;
 	bool loop, buttupdate;
 	struct buttons bs;
 	struct bsddialog_menuitem *item;
-	int abs, g, rel;
 	enum menumode currmode;
+	struct lineposition pos = { 0, 0, 0, 0, 0 };
+
+	totnitems = 0;
+	for (i=0; i < ngroups; i++) {
+		if (groups[i].type == BSDDIALOG_RADIOLIST)
+			checkradiolist(groups[i].nitems, groups[i].items);
+		//if (groups[i].type == BSDDIALOG_RADIOLIST ||
+		//    groups[i].type == BSDDIALOG_CHECKLIST)
+			//pos.selectorlen = 3;
+		for (j=0; j < groups[i].nitems; j++) {
+			totnitems++;
+			item = &groups[i].items[j];
+			if (groups[i].type == BSDDIALOG_SEPARATOR) {
+				pos.separatorlen = MAX(pos.separatorlen, strlen(item->name) + strlen(item->desc));
+				continue;
+			}
+
+			if (conf.item_prefix)
+				pos.prefixlen = MAX(pos.prefixlen, strlen(item->bottomdesc));
+
+			pos.namelen = MAX(pos.namelen, strlen(item->name));
+			pos.desclen = MAX(pos.desclen, strlen(item->desc));
+		}
+	}
+
+	pos.line = MAX(1 + 1 + pos.separatorlen + 1, pos.namelen + 1 + pos.desclen);
+
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -261,7 +287,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
 	    conf.ascii_lines, false);
 
-	menupad = newpad(totnitems, poslen.line);
+	menupad = newpad(totnitems, pos.line);
 	wbkgd(menupad, t.widgetcolor);
 
 	getfirst(ngroups, groups, &abs, &g, &rel);
@@ -273,20 +299,20 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 			}
 		}
 	}*/
-	tot = 0;
+	totnitems = 0;
 	for (i=0; i<ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
 		for (j=0; j<groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			draw_myitem(menupad, tot, *item, currmode, /*xdesc*/10, tot == abs, conf.item_help);
-			tot++;
+			draw_myitem(menupad, totnitems, *item, currmode, /*xdesc*/10, totnitems == abs, conf.item_help);
+			totnitems++;
 		}
 	}
 
 	ys = y + rows - 5 - menurows + 1;
 	ye = ys + menurows + 2 -1;
-	xs = (poslen.line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - poslen.line/2;
-	xe = (poslen.line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
+	xs = (pos.line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - pos.line/2;
+	xe = (pos.line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
 	if (currmode == TREEVIEWMODE)
 		xs = x + 2 + 1;
 
@@ -382,7 +408,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 
 	delwin(menupad);
 	delwin(menuwin);
-	widget_end(conf, "MenuToFix", widget, rows, cols, shadow, button);
+	widget_end(conf, namewidget, widget, rows, cols, shadow, button);
 
 	return output;
 }
@@ -391,37 +417,10 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 int bsddialog_mixedlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
 {
-	int i, j, totnitems, output;
-	struct positionlen poslen = { 0, 0, 0, 0, 0 };
-	struct bsddialog_menuitem item;
+	int output;
 
-	totnitems = 0;
-	for (i=0; i < ngroups; i++) {
-		if (groups[i].type == BSDDIALOG_RADIOLIST)
-			checkradiolist(groups[i].nitems, groups[i].items);
-		//if (groups[i].type == BSDDIALOG_RADIOLIST ||
-		//    groups[i].type == BSDDIALOG_CHECKLIST)
-			//poslen.selectorlen = 3;
-		for (j=0; j < groups[i].nitems; j++) {
-			totnitems++;
-			item = groups[i].items[j];
-			if (groups[i].type == BSDDIALOG_SEPARATOR) {
-				poslen.separatorlen = MAX(poslen.separatorlen, strlen(item.name) + strlen(item.desc));
-				continue;
-			}
-
-			if (conf.item_prefix)
-				poslen.prefixlen = MAX(poslen.prefixlen, strlen(item.bottomdesc));
-
-			poslen.namelen = MAX(poslen.namelen, strlen(item.name));
-			poslen.desclen = MAX(poslen.desclen, strlen(item.desc));
-		}
-	}
-
-	poslen.line = MAX(1 + 1 + poslen.separatorlen + 1, poslen.namelen + 1 + poslen.desclen);
-
-	output = do_mixedlist(conf, text, rows, cols, menurows, MIXEDLISTMODE,
-		poslen, ngroups, groups, totnitems);
+	output = do_mixedlist(conf, text, rows, cols, menurows, "Mixedlist",
+	    MIXEDLISTMODE, ngroups, groups);
 
 	return output;
 }
