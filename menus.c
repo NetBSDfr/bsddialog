@@ -45,7 +45,7 @@ enum menumode {
 	BUILDLISTMODE,
 	CHECKLISTMODE,
 	MENUMODE,
-	MIXEDMENUMODE,
+	MIXEDMENUMODE,  //rename mixedlist
 	RADIOLISTMODE,
 	SEPARATORMODE,
 	TREEVIEWMODE
@@ -137,16 +137,59 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 	}
 }
 
+/*void
+getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
+    int *rel)
+{
+	int i, j;
+
+	*abs = *rel = *group = -1;
+	for (i=0; i<ngroups; i++) {
+		if (groups[i] == BSDDIALOG_SEPARATOR) {
+			abspos += groups[i].nitems;
+			continue;
+		}
+		if (groups[i].nitems != 0) {
+			*group = i;
+			*abs = *abs + 1;
+			*rel = 0; //useful?
+			break;
+		}
+	}
+}
+
+void
+getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
+    int *rel)
+{
+	int i, j;
+
+	if ()
+
+	*abs = *rel = *group = -1;
+	for (i=0; i<ngroups; i++) {
+		if (groups[i] == BSDDIALOG_SEPARATOR) {
+			abspos += groups[i].nitems;
+			continue;
+		}
+		if (groups[i].nitems != 0) {
+			*group = i;
+			*abs = *abs + 1;
+			*rel = 0; //useful?
+			break;
+		}
+	}
+}*/
+
 int
 do_mixedmenu(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, enum menumode mode, struct positionlen poslen,
     int ngroups, struct bsddialog_menugroup *groups, int totnitems)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
-	char *sepstr, quotech;
 	int i, j, tot, output, y, x, input, curr;
 	int ys, ye, xs, xe;
-	bool loop, buttupdate, sep;
+	bool loop, buttupdate;
 	struct buttons bs;
 	struct bsddialog_menuitem item;
 
@@ -159,7 +202,6 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 	    conf.ascii_lines, false);
 
 	menupad = newpad(totnitems, poslen.line);
-	//menupad = newpad(100, 100);
 	wbkgd(menupad, t.widgetcolor);
 
 	curr = -1;
@@ -200,10 +242,8 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
-	//prefresh(menupad, 0, 0, 0, 0, 10, 10);//delete?
-	//refresh();
-getch();
-	/*loop = buttupdate = true;
+
+	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(button, cols, bs, true);
@@ -214,7 +254,7 @@ getch();
 		prefresh(menupad, 0, 0, ys, xs, ye, xe);
 
 		input = getch();
-		/*switch(input) {
+		switch(input) {
 		case 10: // Enter
 			output = bs.value[bs.curr]; // -> buttvalues[selbutton]
 			loop = false;
@@ -244,7 +284,7 @@ getch();
 		if (totnitems <= 0)
 			continue;
 
-		switch(input) {
+		/*switch(input) {
 		case KEY_UP:
 			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
 			curr = (curr > 0) ? curr - 1 : 0;
@@ -276,8 +316,8 @@ getch();
 		default:
 			
 			break;
-		}
-	}*/
+		}*/
+	}
 
 	delwin(menupad);
 	delwin(menuwin);
@@ -322,7 +362,7 @@ int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
 	output = do_mixedmenu(conf, text, rows, cols, menurows, MIXEDMENUMODE,
 		poslen, ngroups, groups, totnitems);
 
-	return BSDDIALOG_ERROR;
+	return output;
 }
 
 int
@@ -471,7 +511,11 @@ do_menu(struct config conf, char* text, int rows, int cols,
 					if (sep == true)
 					    dprintf(conf.output_fd, "%s", sepstr);
 					sep = true;
+					if (strchr(items[i].name, ' ') != NULL)
+						dprintf(conf.output_fd, "%c", quotech);
 					dprintf(conf.output_fd, "%s",items[i].name);
+					if (strchr(items[i].name, ' ') != NULL)
+						dprintf(conf.output_fd, "%c", quotech);
 				}
 			}
 		}
