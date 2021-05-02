@@ -227,13 +227,14 @@ getprev(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 enum menumode getmode(enum menumode mode, struct bsddialog_menugroup group)
 {
 
-	if (group.type == BSDDIALOG_SEPARATOR)
-		mode = SEPARATORMODE;
-	else if (group.type == BSDDIALOG_RADIOLIST)
-		mode = RADIOLISTMODE;
-	else if (group.type == BSDDIALOG_CHECKLIST)
-		mode = CHECKLISTMODE;
-	/* otherwise no mixedmenu */
+	if (mode == MIXEDLISTMODE) {
+		if (group.type == BSDDIALOG_SEPARATOR)
+			mode = SEPARATORMODE;
+		else if (group.type == BSDDIALOG_RADIOLIST)
+			mode = RADIOLISTMODE;
+		else if (group.type == BSDDIALOG_CHECKLIST)
+			mode = CHECKLISTMODE;
+	}
 
 	return mode;
 }
@@ -250,6 +251,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	struct buttons bs;
 	struct bsddialog_menuitem *item;
 	int abs, g, rel;
+	enum menumode currmode;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -275,10 +277,10 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	tot = 0;
 	curr = curr < 0 ? 0 : curr;
 	for (i=0; i<ngroups; i++) {
-		mode = getmode(mode, groups[i]);
+		currmode = getmode(mode, groups[i]);
 		for (j=0; j<groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			draw_myitem(menupad, tot, *item, mode, /*xdesc*/10, tot == abs, conf.item_help);
+			draw_myitem(menupad, tot, *item, currmode, /*xdesc*/10, tot == abs, conf.item_help);
 			tot++;
 		}
 	}
@@ -287,7 +289,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	ye = ys + menurows + 2 -1;
 	xs = (poslen.line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - poslen.line/2;
 	xe = (poslen.line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
-	if (mode == TREEVIEWMODE)
+	if (currmode == TREEVIEWMODE)
 		xs = x + 2 + 1;
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
@@ -298,7 +300,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
 
 	item = &groups[g].items[rel];
-	mode = getmode(mode, groups[g]);
+	currmode = getmode(mode, groups[g]);
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
@@ -342,25 +344,25 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 
 		switch(input) {
 		case KEY_UP:
-			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, false, conf.item_help);
+			draw_myitem(menupad, abs, *item, currmode, /*xdesc*/10, false, conf.item_help);
 			//curr = (curr > 0) ? curr - 1 : 0;
 			getprev(ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
-			mode = getmode(mode, groups[g]);
-			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, true, conf.item_help);
+			currmode= getmode(mode, groups[g]);
+			draw_myitem(menupad, abs, *item, currmode, /*xdesc*/10, true, conf.item_help);
 			break;
 		case KEY_DOWN:
-			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, false, conf.item_help);
+			draw_myitem(menupad, abs, *item, currmode, /*xdesc*/10, false, conf.item_help);
 			//curr = (curr < nitems-1) ? curr +1 : nitems-1;
 			getnext(ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
-			mode = getmode(mode, groups[g]);
-			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, true, conf.item_help);
+			currmode = getmode(mode, groups[g]);
+			draw_myitem(menupad, abs, *item, currmode, /*xdesc*/10, true, conf.item_help);
 			break;
 		case ' ': // Space
-			if (mode == MENUMODE)
+			if (currmode == MENUMODE)
 				break;
-			else if (mode == CHECKLISTMODE)
+			else if (currmode == CHECKLISTMODE)
 				item->on = !item->on;
 			else { //RADIOLISTMODE and TREEVIEWMODE
 				if (item->on == true)
@@ -368,11 +370,11 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 				for (i=0; i<groups[g].nitems; i++)
 					if (groups[g].items[i].on == true) {
 						groups[g].items[i].on = false;
-						draw_myitem(menupad, abs - rel + i, groups[g].items[i], mode, /*xdesc*/10, false, conf.item_help);
+						draw_myitem(menupad, abs - rel + i, groups[g].items[i], currmode, /*xdesc*/10, false, conf.item_help);
 					}
 				item->on = true;
 			}
-			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, true, conf.item_help);
+			draw_myitem(menupad, abs, *item, currmode, /*xdesc*/10, true, conf.item_help);
 			break;
 		default:
 			
