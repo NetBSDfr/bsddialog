@@ -135,36 +135,36 @@ Examples library:
 
  - Widgets:
 
-| Widget       | Status      | Note                                            |
-|------------- | ----------- | ----------------------------------------------- |
-| buildlist    | In progress |                                                 |
-| calendar     | In progress | add leap year, year <=0, month days             |
-| checklist    | In progress |                                                 |
-| dselect      |             |                                                 |
-| editbox      |             |                                                 |
-| form         | In progress | implemented via --mixedform                     |
-| fselect      |             |                                                 |
-| gauge        | In progress |                                                 |
-| infobox      | In progress | Do not clear the screen                         |
-| inputbox     | In progress | implemented via --mixedform, todo \<init\>      |
-| inputmenu    |             |                                                 |
-| menu         | In progress | todo scrolling                                  |
-| mixedform    | In progress |                                                 |
-| mixedgauge   | In progress |                                                 |
-| mixedmenu    | In progress | Can implement [dialog4ports(1)](https://man.freebsd.org/dialog4ports/1) |
-| msgbox       | In progress |                                                 |
-| passwordbox  | In progress | implemented via --mixedform, todo \<init\>      |
-| passwordform | In progress | implemented via --mixedform                     |
-| pause        | In progress |                                                 |
-| prgbox       | In progress | add command opts                                |
-| programbox   | Coding      |                                                 |
-| progressbox  | Coding      |                                                 |
-| radiolist    | In progress |                                                 |
-| rangebox     | In progress | todo PAGE-UP/PAGE-DOWN/HOME/END keys            |
-| tailbox      | Coding      | todo via --textbox or fseek?                    |
-| tailboxbg    |             |                                                 |
-| textbox      | In progress | todo navigation keys                            |
-| timebox      | In progress |                                                 |
-| treeview     | In progress |                                                 |
-| yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
+| Widget         | Status      | Note                                          |
+|--------------- | ----------- | ----------------------------------------------|
+| --buildlist    | In progress |                                               |
+| --calendar     | In progress | add leap year, year <=0, month days           |
+| --checklist    | In progress |                                               |
+| --dselect      |             |                                               |
+| --editbox      |             |                                               |
+| --form         | In progress | implemented via --mixedform                   |
+| --fselect      |             |                                               |
+| --gauge        | In progress |                                               |
+| --infobox      | In progress | Do not clear the screen                       |
+| --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
+| --inputmenu    |             |                                               |
+| --menu         | In progress | todo scrolling                                |
+| --mixedform    | In progress |                                               |
+| --mixedgauge   | In progress |                                               |
+| --mixedmenu    | In progress | Can implement [dialog4ports(1)](https://man.freebsd.org/dialog4ports/1) |
+| --msgbox       | In progress |                                               |
+| --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
+| --passwordform | In progress | implemented via --mixedform                   |
+| --pause        | In progress |                                               |
+| --prgbox       | In progress | add command opts                              |
+| --programbox   | Coding      |                                               |
+| --progressbox  | Coding      |                                               |
+| --radiolist    | In progress |                                               |
+| --rangebox     | In progress | todo PAGE-UP/PAGE-DOWN/HOME/END keys          |
+| --tailbox      | Coding      | todo via --textbox or fseek?                  |
+| --tailboxbg    |             |                                               |
+| --textbox      | In progress | todo navigation keys                          |
+| --timebox      | In progress |                                               |
+| --treeview     | In progress |                                               |
+| --yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
 
