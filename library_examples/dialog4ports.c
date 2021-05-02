@@ -51,11 +51,11 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_mixedmenu(conf, "dialog4ports", 25, 60, 15, 3, group);
+	output = bsddialog_mixedlist(conf, "dialog4ports", 25, 60, 15, 3, group);
 
 	bsddialog_end();
 
-	printf("Mixedmenu (dialog4ports):\n");
+	printf("Mixedlist (dialog4ports):\n");
 	for (i=0; i<3; i++) {
 		for (j=0; j<group[i].nitems; j++) {
 			item = group[i].items[j];

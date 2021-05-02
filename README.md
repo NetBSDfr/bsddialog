@@ -151,7 +151,7 @@ Examples library:
 | --menu         | In progress | todo scrolling                                |
 | --mixedform    | In progress |                                               |
 | --mixedgauge   | In progress |                                               |
-| --mixedmenu    | In progress | Can implement [dialog4ports(1)](https://man.freebsd.org/dialog4ports/1) |
+| --mixedlist    | In progress | Can implement [dialog4ports(1)](https://man.freebsd.org/dialog4ports/1) |
 | --msgbox       | In progress |                                               |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |

@@ -160,7 +160,7 @@ int bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
 int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
     unsigned int perc, int argc, char **argv);
-int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
+int bsddialog_mixedlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups);
 int bsddialog_msgbox(struct config conf, char* text, int rows, int cols);
 int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols);

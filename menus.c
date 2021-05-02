@@ -239,7 +239,7 @@ enum menumode getmode(enum menumode mode, struct bsddialog_menugroup group)
 }
 
 int
-do_mixedmenu(struct config conf, char* text, int rows, int cols,
+do_mixedlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, enum menumode mode, struct positionlen poslen,
     int ngroups, struct bsddialog_menugroup *groups, int totnitems)
 {
@@ -388,7 +388,7 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 }
 
 
-int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
+int bsddialog_mixedlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
 {
 	int i, j, totnitems, output;
@@ -420,7 +420,7 @@ int bsddialog_mixedmenu(struct config conf, char* text, int rows, int cols,
 
 	poslen.line = MAX(1 + 1 + poslen.separatorlen + 1, poslen.namelen + 1 + poslen.desclen);
 
-	output = do_mixedmenu(conf, text, rows, cols, menurows, MIXEDMENUMODE,
+	output = do_mixedlist(conf, text, rows, cols, menurows, MIXEDMENUMODE,
 		poslen, ngroups, groups, totnitems);
 
 	return output;
