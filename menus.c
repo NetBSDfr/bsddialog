@@ -245,7 +245,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
     int ngroups, struct bsddialog_menugroup *groups, int totnitems)
 {
 	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
-	int i, j, tot, output, y, x, input, curr;
+	int i, j, tot, output, y, x, input;
 	int ys, ye, xs, xe;
 	bool loop, buttupdate;
 	struct buttons bs;
@@ -265,7 +265,6 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	wbkgd(menupad, t.widgetcolor);
 
 	getfirst(ngroups, groups, &abs, &g, &rel);
-	curr = -1;
 	/*if (conf.default_item != NULL) {
 		for (i=0; i<nitems; i++) {
 			if (strcmp(items[i].name, conf.default_item) == 0) {
@@ -275,7 +274,6 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		}
 	}*/
 	tot = 0;
-	curr = curr < 0 ? 0 : curr;
 	for (i=0; i<ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
 		for (j=0; j<groups[i].nitems; j++) {
@@ -339,7 +337,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 			break;
 		}
 
-		if (totnitems <= 0)
+		if (abs < 0)
 			continue;
 
 		switch(input) {
