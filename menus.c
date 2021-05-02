@@ -45,7 +45,7 @@ enum menumode {
 	BUILDLISTMODE,
 	CHECKLISTMODE,
 	MENUMODE,
-	MIXEDMENUMODE,
+	MIXEDLISTMODE,
 	RADIOLISTMODE,
 	SEPARATORMODE,
 	TREEVIEWMODE
@@ -420,7 +420,7 @@ int bsddialog_mixedlist(struct config conf, char* text, int rows, int cols,
 
 	poslen.line = MAX(1 + 1 + poslen.separatorlen + 1, poslen.namelen + 1 + poslen.desclen);
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, MIXEDMENUMODE,
+	output = do_mixedlist(conf, text, rows, cols, menurows, MIXEDLISTMODE,
 		poslen, ngroups, groups, totnitems);
 
 	return output;
