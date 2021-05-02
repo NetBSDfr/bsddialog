@@ -268,7 +268,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 				continue;
 			}
 
-			if (conf.item_prefix)
+			if (conf.item_prefix && item->bottomdesc != NULL)
 				pos.prefixlen = MAX(pos.prefixlen, strlen(item->bottomdesc));
 
 			pos.namelen = MAX(pos.namelen, strlen(item->name));
