@@ -137,49 +137,106 @@ draw_myitem(WINDOW *pad, int y, struct bsddialog_menuitem item, enum menumode mo
 	}
 }
 
-/*void
+void
 getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
     int *rel)
 {
-	int i, j;
+	int i, a;
 
 	*abs = *rel = *group = -1;
+	a = 0;
 	for (i=0; i<ngroups; i++) {
-		if (groups[i] == BSDDIALOG_SEPARATOR) {
-			abspos += groups[i].nitems;
+		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+			a += groups[i].nitems;
 			continue;
 		}
 		if (groups[i].nitems != 0) {
 			*group = i;
-			*abs = *abs + 1;
-			*rel = 0; //useful?
+			*abs = a + *abs + 1;
+			*rel = 0;
 			break;
 		}
 	}
 }
 
 void
-getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
+getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
     int *rel)
 {
-	int i, j;
+	int i, a;
 
-	if ()
+	if (*abs < 0 || *group < 0 || *rel < 0)
+		return;
 
-	*abs = *rel = *group = -1;
-	for (i=0; i<ngroups; i++) {
-		if (groups[i] == BSDDIALOG_SEPARATOR) {
-			abspos += groups[i].nitems;
+	if (*rel + 1 < groups[*group].nitems) {
+		*rel = *rel + 1;
+		*abs = *abs + 1;
+		return;
+	}
+
+	if (*group + 1 > ngroups)
+		return;
+
+	a = *abs;
+	for (i = *group + 1; i < ngroups; i++) {
+		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+			a += groups[i].nitems;
 			continue;
 		}
 		if (groups[i].nitems != 0) {
 			*group = i;
-			*abs = *abs + 1;
-			*rel = 0; //useful?
+			*abs = a + 1;
+			*rel = 0;
 			break;
 		}
 	}
-}*/
+}
+void
+getprev(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
+    int *rel)
+{
+	int i, a;
+
+	if (*abs < 0 || *group < 0 || *rel < 0)
+		return;
+
+	if (*rel > 0) {
+		*rel = *rel - 1;
+		*abs = *abs - 1;
+		return;
+	}
+
+	if (*group - 1 < 0)
+		return;
+
+	a = *abs;
+	for (i = *group - 1; i >= 0; i--) {
+		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+			a -= groups[i].nitems;
+			continue;
+		}
+		if (groups[i].nitems != 0) {
+			*group = i;
+			*abs = a - 1;
+			*rel = groups[i].nitems - 1;
+			break;
+		}
+	}
+}
+
+enum menumode getmode(enum menumode mode, struct bsddialog_menugroup group)
+{
+
+	if (group.type == BSDDIALOG_SEPARATOR)
+		mode = SEPARATORMODE;
+	else if (group.type == BSDDIALOG_RADIOLIST)
+		mode = RADIOLISTMODE;
+	else if (group.type == BSDDIALOG_CHECKLIST)
+		mode = CHECKLISTMODE;
+	/* otherwise no mixedmenu */
+
+	return mode;
+}
 
 int
 do_mixedmenu(struct config conf, char* text, int rows, int cols,
@@ -191,7 +248,8 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 	int ys, ye, xs, xe;
 	bool loop, buttupdate;
 	struct buttons bs;
-	struct bsddialog_menuitem item;
+	struct bsddialog_menuitem *item;
+	int abs, g, rel;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true, &button) <0)
@@ -204,6 +262,7 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 	menupad = newpad(totnitems, poslen.line);
 	wbkgd(menupad, t.widgetcolor);
 
+	getfirst(ngroups, groups, &abs, &g, &rel);
 	curr = -1;
 	/*if (conf.default_item != NULL) {
 		for (i=0; i<nitems; i++) {
@@ -216,15 +275,10 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 	tot = 0;
 	curr = curr < 0 ? 0 : curr;
 	for (i=0; i<ngroups; i++) {
-		if (groups[i].type == BSDDIALOG_SEPARATOR)
-			mode = SEPARATORMODE;
-		else if (groups[i].type == BSDDIALOG_RADIOLIST)
-			mode = RADIOLISTMODE;
-		else
-			mode = CHECKLISTMODE;
+		mode = getmode(mode, groups[i]);
 		for (j=0; j<groups[i].nitems; j++) {
-			item = groups[i].items[j];
-			draw_myitem(menupad, tot, item, mode, /*xdesc*/10, tot == curr, conf.item_help);
+			item = &groups[i].items[j];
+			draw_myitem(menupad, tot, *item, mode, /*xdesc*/10, tot == abs, conf.item_help);
 			tot++;
 		}
 	}
@@ -243,6 +297,8 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
 
+	item = &groups[g].items[rel];
+	mode = getmode(mode, groups[g]);
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
@@ -284,39 +340,44 @@ do_mixedmenu(struct config conf, char* text, int rows, int cols,
 		if (totnitems <= 0)
 			continue;
 
-		/*switch(input) {
+		switch(input) {
 		case KEY_UP:
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
-			curr = (curr > 0) ? curr - 1 : 0;
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
+			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, false, conf.item_help);
+			//curr = (curr > 0) ? curr - 1 : 0;
+			getprev(ngroups, groups, &abs, &g, &rel);
+			item = &groups[g].items[rel];
+			mode = getmode(mode, groups[g]);
+			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, true, conf.item_help);
 			break;
 		case KEY_DOWN:
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, false, conf.item_help);
-			curr = (curr < nitems-1) ? curr +1 : nitems-1;
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
+			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, false, conf.item_help);
+			//curr = (curr < nitems-1) ? curr +1 : nitems-1;
+			getnext(ngroups, groups, &abs, &g, &rel);
+			item = &groups[g].items[rel];
+			mode = getmode(mode, groups[g]);
+			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, true, conf.item_help);
 			break;
 		case ' ': // Space
 			if (mode == MENUMODE)
 				break;
 			else if (mode == CHECKLISTMODE)
-				items[curr].on = ! items[curr].on;
+				item->on = !item->on;
 			else { //RADIOLISTMODE and TREEVIEWMODE
-				if (items[curr].on == true)
+				if (item->on == true)
 					break;
-				for (i=0; i<nitems; i++)
-					if (items[i].on == true) {
-						items[i].on = false;
-						draw_myitem(menupad, i, items[i],
-						    mode, xdesc, false, conf.item_help);
+				for (i=0; i<groups[g].nitems; i++)
+					if (groups[g].items[i].on == true) {
+						groups[g].items[i].on = false;
+						draw_myitem(menupad, abs - rel + i, groups[g].items[i], mode, /*xdesc*/10, false, conf.item_help);
 					}
-				items[curr].on = true;
+				item->on = true;
 			}
-			draw_myitem(menupad, curr, items[curr], mode, xdesc, true, conf.item_help);
+			draw_myitem(menupad, abs, *item, mode, /*xdesc*/10, true, conf.item_help);
 			break;
 		default:
 			
 			break;
-		}*/
+		}
 	}
 
 	delwin(menupad);

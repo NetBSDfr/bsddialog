@@ -51,8 +51,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_mixedmenu(conf, "WIP dialog4ports", 25, 60, 15,
-	    3, group);
+	output = bsddialog_mixedmenu(conf, "dialog4ports", 25, 60, 15, 3, group);
 
 	bsddialog_end();
 
