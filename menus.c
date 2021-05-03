@@ -64,7 +64,7 @@ struct lineposition {
 	unsigned int line;
 };
 
-int checkradiolist(int nitems, struct bsddialog_menuitem *items)
+static int checkradiolist(int nitems, struct bsddialog_menuitem *items)
 {
 	int i, error;
 
@@ -80,7 +80,7 @@ int checkradiolist(int nitems, struct bsddialog_menuitem *items)
 	return (error == 0 ? 0 : -1);
 }
 
-int checkmenu(int nitems, struct bsddialog_menuitem *items) // can change
+static int checkmenu(int nitems, struct bsddialog_menuitem *items) // useful?
 {
 	int i, error;
 
@@ -95,7 +95,7 @@ int checkmenu(int nitems, struct bsddialog_menuitem *items) // can change
 	return (error == 0 ? 0 : -1);
 }
 
-void
+static void
 getfirst(struct config conf, int ngroups, struct bsddialog_menugroup *groups,
     int *abs, int *group, int *rel)
 {
@@ -130,7 +130,7 @@ getfirst(struct config conf, int ngroups, struct bsddialog_menugroup *groups,
 	}
 }
 
-void
+static void
 getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
     int *rel)
 {
@@ -163,7 +163,7 @@ getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 	}
 }
 
-void
+static void
 getprev(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
     int *rel)
 {
@@ -196,7 +196,8 @@ getprev(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 	}
 }
 
-enum menumode getmode(enum menumode mode, struct bsddialog_menugroup group)
+static enum menumode
+getmode(enum menumode mode, struct bsddialog_menugroup group)
 {
 
 	if (mode == MIXEDLISTMODE) {
@@ -211,7 +212,7 @@ enum menumode getmode(enum menumode mode, struct bsddialog_menugroup group)
 	return mode;
 }
 
-void
+static void
 drawitem(struct config conf, WINDOW *pad, int y,
     struct bsddialog_menuitem item, enum menumode mode, struct lineposition pos,
     bool curr)
@@ -279,9 +280,9 @@ drawitem(struct config conf, WINDOW *pad, int y,
 	}
 }
 
-void
+static void
 print_selected_list(struct config conf, int output, enum menumode mode,
-    int ngroups, struct bsddialog_menugroup *groups, int g, int rel)
+    int ngroups, struct bsddialog_menugroup *groups, int g, int rel) // utility?
 {
 	int i, j;
 	bool sep;
@@ -330,7 +331,7 @@ print_selected_list(struct config conf, int output, enum menumode mode,
 	}
 }
 
-int
+static int
 do_mixedlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, char *namewidget, enum menumode mode, int ngroups,
     struct bsddialog_menugroup *groups)
