@@ -97,7 +97,7 @@ int bsddialog_backtitle(struct config conf, char *backtitle)
  * SECTIONS
  *  1) "Info"    infobox
  *  2) "Button"  msgbox - yesno
- *  3) "Menu"    buildlist - checklist - menu - radiolist - treeview
+ *  3) "Menu"    buildlist - checklist - menu - mixedlist - radiolist - treeview
  *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
  *  5) "Editor"  editbox(todo)
  *  6) "Bar"     gauge - mixedgauge - rangebox - pause
