@@ -504,8 +504,8 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		}
 	}
 
-	//if (abs >= 0)
-		//print_selected_list(conf, output, mode, ngroups, groups, g, rel);
+	if (abs >= 0)
+		print_selected_list(conf, output, mode, ngroups, groups, g, rel);
 
 	delwin(menupad);
 	delwin(menuwin);
