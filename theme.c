@@ -135,11 +135,11 @@ static struct bsddialog_theme magentatheme = {
 
 	.buttleftch      = '<',
 	.buttrightchar   = '>',
-	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)) | A_BOLD,
+	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_RED)) | A_BOLD,
 	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
 	.currbuttoncolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_RED)),
 	.buttoncolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
-	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)),
+	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)) | A_BOLD,
 	.shortkeycolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
 
 	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD
