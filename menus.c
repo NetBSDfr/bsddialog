@@ -193,14 +193,21 @@ draw_myitem(struct config conf, WINDOW *pad, int y,
 	colorname = curr ? t.currtagcolor : t.tagcolor;
 
 	if (mode == SEPARATORMODE) {
-		wattron(pad, t.itemcolor);
 		if (conf.no_lines == false) {
+			wattron(pad, t.itemcolor);
 			linech = conf.ascii_lines ? '-' : ACS_HLINE;
 			mvwhline(pad, y, 0, linech, pos.line);
+			wattroff(pad, t.itemcolor);
 		}
-		wmove(pad, y, pos.line/2 - (strlen(item.name)+strlen(item.desc)+1)/2);
-		wprintw(pad, "%s %s", item.name, item.desc);
-		wattroff(pad, t.itemcolor);
+		wmove(pad, y, pos.line/2 - (strlen(item.name)+strlen(item.desc))/2);
+		wattron(pad, t.namesepcolor);
+		waddstr(pad, item.name);
+		wattroff(pad, t.namesepcolor);
+		if (strlen(item.name) > 0 && strlen(item.desc) > 0)
+			waddch(pad, ' ');
+		wattron(pad, t.descsepcolor);
+		waddstr(pad, item.desc);
+		wattroff(pad, t.descsepcolor);
 		return;
 	}
 

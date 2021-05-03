@@ -50,6 +50,8 @@ static struct bsddialog_theme defaulttheme = {
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
 	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE)),
 	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
+	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_WHITE)),
+	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
 
 	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)),
 	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)),
@@ -79,6 +81,8 @@ static struct bsddialog_theme dialogtheme = {
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
 	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD,
 	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
+	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_WHITE)) | A_BOLD,
+	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
 
 	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
 	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD,
@@ -108,6 +112,8 @@ static struct bsddialog_theme purpletheme = {
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
 	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD,
 	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
+	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_WHITE)) | A_BOLD,
+	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
 
 	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
 	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD,
@@ -138,6 +144,8 @@ static void settheme(struct bsddialog_theme newtheme)
 	t.itemcolor       = newtheme.itemcolor;
 	t.currtagcolor    = newtheme.currtagcolor;
 	t.tagcolor        = newtheme.tagcolor;
+	t.namesepcolor    = newtheme.namesepcolor;
+	t.descsepcolor    = newtheme.descsepcolor;
 
 	t.currfieldcolor  = newtheme.currfieldcolor;
 	t.fieldcolor      = newtheme.fieldcolor;

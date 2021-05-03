@@ -27,7 +27,7 @@ int main()
 	    { true,  0, "Name 5", "Desc 5", ""  }
 	};
 	struct bsddialog_menuitem sep[1] = {
-	    { true, 0, "Radio", "list", "" }
+	    { true, 0, "Radiolist", "(desc)", "" }
 	};
 	struct bsddialog_menuitem radio[5] = {
 	    { true,  0, "Name 1", "Desc 1", "" },
@@ -51,7 +51,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_mixedlist(conf, "dialog4ports", 25, 60, 15, 3, group);
+	output = bsddialog_mixedlist(conf, "dialog4ports", 20, 30, 11, 3, group);
 
 	bsddialog_end();
 

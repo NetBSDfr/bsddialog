@@ -41,6 +41,8 @@ struct bsddialog_theme {
 	int itemcolor;
 	int currtagcolor;
 	int tagcolor;
+	int namesepcolor;
+	int descsepcolor;
 
 	int currfieldcolor;
 	int fieldcolor;
