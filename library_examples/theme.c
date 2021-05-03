@@ -35,10 +35,14 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	do {
+	while (true) {
 		bsddialog_backtitle(conf, "Theme Example");
 
 		output = bsddialog_menu(conf, "Choose theme", 15, 40, 4, 4, items);
+
+		if (output != BSDDIALOG_YESOK || items[3].on)
+			break;
+
 		if (items[0].on) {
 			theme = BSDDIALOG_THEME_DIALOG;
 			conf.default_item = items[0].name;
@@ -51,11 +55,9 @@ int main()
 			theme = BSDDIALOG_THEME_PURPLE;
 			conf.default_item = items[2].name;
 		}
-		else
-			theme = BSDDIALOG_THEME_DEFAULT;
 
 		bsddialog_settheme(theme);
-	} while (output == BSDDIALOG_YESOK && items[3].on == false);
+	}
 
 	bsddialog_end();	
 
