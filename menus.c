@@ -470,17 +470,14 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 
 		switch(input) {
 		case KEY_UP:
-			draw_myitem(conf, menupad, abs, *item, currmode, pos, false);
-			getprev(ngroups, groups, &abs, &g, &rel);
-			item = &groups[g].items[rel];
-			currmode= getmode(mode, groups[g]);
-			draw_myitem(conf, menupad, abs, *item, currmode, pos, true);
-			break;
 		case KEY_DOWN:
 			draw_myitem(conf, menupad, abs, *item, currmode, pos, false);
-			getnext(ngroups, groups, &abs, &g, &rel);
+			if (input == KEY_UP)
+				getprev(ngroups, groups, &abs, &g, &rel);
+			else
+				getnext(ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
-			currmode = getmode(mode, groups[g]);
+			currmode= getmode(mode, groups[g]);
 			draw_myitem(conf, menupad, abs, *item, currmode, pos, true);
 			break;
 		case ' ': // Space
