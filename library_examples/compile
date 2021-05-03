@@ -1,7 +1,7 @@
 #!/bin/sh
 
 lib="../theme.c ../lib_util.c ../menus.c ../libbsddialog.c"
-examples="buildlist menu treeview checklist radiolist dialog4ports"
+examples="buildlist menu treeview checklist radiolist dialog4ports theme"
 
 for e in $examples
 do

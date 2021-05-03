@@ -98,8 +98,8 @@ static struct bsddialog_theme dialogtheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
 
-	.buttleftch      = '<',
-	.buttrightchar   = '>',
+	.buttleftch      = '[',
+	.buttrightchar   = ']',
 	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
 	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
 	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, COLOR_BLUE)) | A_BOLD,
@@ -133,8 +133,8 @@ static struct bsddialog_theme purpletheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
 
-	.buttleftch      = '{',
-	.buttrightchar   = '}',
+	.buttleftch      = '<',
+	.buttrightchar   = '>',
 	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)),
 	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
 	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)),
@@ -179,7 +179,10 @@ static void settheme(struct bsddialog_theme newtheme)
 	t.shortkeycolor   = newtheme.shortkeycolor;
 
 	t.bottomtitlecolor= newtheme.bottomtitlecolor;
+
+	bkgd(t.backgroundcolor);
 }
+
 
 int bsddialog_settheme(enum bsddialog_default_theme t)
 {
@@ -195,6 +198,8 @@ int bsddialog_settheme(enum bsddialog_default_theme t)
 		settheme(defaulttheme);
 		error = -1;
 	}
+
+	refresh();
 
 	return error;
 }

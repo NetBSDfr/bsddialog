@@ -80,6 +80,21 @@ int checkradiolist(int nitems, struct bsddialog_menuitem *items)
 	return (error == 0 ? 0 : -1);
 }
 
+int checkmenu(int nitems, struct bsddialog_menuitem *items) // can change
+{
+	int i, error;
+
+	error = 0;
+	for (i=0; i<nitems; i++) {
+		if (items[i].on == true)
+			error++;
+
+		items[i].on = false;
+	}
+
+	return (error == 0 ? 0 : -1);
+}
+
 void
 getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
     int *rel)
@@ -278,7 +293,6 @@ print_selected_list(struct config conf, int output, enum menumode mode,
 
 	if (currmode == MENUMODE) {
 		dprintf(conf.output_fd, "%s", item->name);
-		item->on = true; // for utility? check do_menu()
 		return;
 	}
 	/* else Lists */
@@ -331,6 +345,9 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		if (currmode == RADIOLISTMODE || currmode == TREEVIEWMODE)
 			checkradiolist(groups[i].nitems, groups[i].items);
 
+		if (currmode == MENUMODE)
+			checkmenu(groups[i].nitems, groups[i].items);
+
 		if (currmode == RADIOLISTMODE || currmode == CHECKLISTMODE || currmode == TREEVIEWMODE)
 			pos.selectorlen = 3;
 
@@ -367,12 +384,19 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	wbkgd(menupad, t.widgetcolor);
 
 	getfirst(ngroups, groups, &abs, &g, &rel);
-	/*if (conf.default_item != NULL) {
-		for (i=0; i<nitems; i++) {
-			if (strcmp(items[i].name, conf.default_item) == 0) {
-				curr = i;
-				break;
-			}
+	/*totnitems = 0;
+	for (i=0; i<ngroups; i++) {
+		currmode = getmode(mode, groups[i]);
+		for (j=0; j<groups[i].nitems; j++) {
+			item = &groups[i].items[j];
+			if (conf.default_item != NULL)
+				if (strcmp(item->name, conf.default_item) == 0)
+					if (currmode != SEPARATORMODE) {
+						abs = totnitems;
+						i = groups[i].nitems;
+						j = ngroups;
+					}
+			totnitems++;
 		}
 	}*/
 	totnitems = 0;
@@ -380,7 +404,8 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		currmode = getmode(mode, groups[i]);
 		for (j=0; j<groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			draw_myitem(conf, menupad, totnitems, *item, currmode, pos, totnitems == abs);
+			draw_myitem(conf, menupad, totnitems, *item, currmode,
+			    pos, totnitems == abs);
 			totnitems++;
 		}
 	}
@@ -415,6 +440,8 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		switch(input) {
 		case 10: // Enter
 			output = bs.value[bs.curr];
+			if (currmode == MENUMODE)
+				item->on = true;
 			loop = false;
 			break;
 		case 27: // Esc
@@ -475,10 +502,6 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 				item->on = true;
 			}
 			draw_myitem(conf, menupad, abs, *item, currmode, pos, true);
-			break;
-		default:
-			
-			break;
 		}
 	}
 

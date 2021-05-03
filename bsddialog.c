@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include "bsddialog.h"
+#include "theme.h"
 
 #define BSDDIALOG_VERSION "0.1 devel"
 
@@ -142,6 +143,8 @@
 #define TREEVIEW	100 // treeview
 #define YESNO		101 // yesno
 
+#define THEME		102 // theme
+
 void usage(void);
 /* widgets */
 #define BUILDER_ARGS struct config conf, char* text, int rows, int cols, \
@@ -221,7 +224,7 @@ void usage(void)
 
 int main(int argc, char *argv[argc])
 {
-	char text[1024], *backtitle = NULL;
+	char text[1024], *backtitle = NULL, *theme = NULL;
 	int input, rows, cols, output;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
 	bool ignore = false;
@@ -300,6 +303,7 @@ int main(int argc, char *argv[argc])
 	    { "stdout", no_argument, NULL, STDOUT },
 	    { "tab-correct", no_argument, NULL, 'X' },
 	    { "tab-len", required_argument, NULL /*n*/, 'X' },
+	    { "theme", required_argument, NULL /*string*/, THEME },
 	    { "time-format", required_argument, NULL /*format*/, TIME_FORMAT },
 	    { "timeout", required_argument, NULL /*secs*/, 'X' },
 	    { "title", required_argument, NULL /*title*/, TITLE },
@@ -549,6 +553,9 @@ int main(int argc, char *argv[argc])
 		case TEXTBOX:
 			widgetbuilder = textbox_builder;
 			break;
+		case THEME:
+			theme = optarg;
+			break;
 		case TIMEBOX:
 			widgetbuilder = timebox_builder;
 			break;
@@ -588,6 +595,17 @@ int main(int argc, char *argv[argc])
 	if(bsddialog_init() != 0) {
 		printf("Cannot init ncurses\n");
 		return 1;
+	}
+
+	if (theme != NULL) {
+		if (strcmp(theme, "default") == 0)
+			bsddialog_settheme(BSDDIALOG_THEME_DEFAULT);
+		else if (strcmp(theme, "dialog") == 0)
+			bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
+		else if (strcmp(theme, "purple") == 0)
+			bsddialog_settheme(BSDDIALOG_THEME_PURPLE);
+		else
+			bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
 	}
 
 	if (backtitle != NULL)
