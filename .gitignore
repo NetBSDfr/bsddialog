@@ -6,4 +6,5 @@ library_examples/checklist
 library_examples/dialog4ports
 library_examples/menu
 library_examples/radiolist
+library_examples/theme
 library_examples/treeview
