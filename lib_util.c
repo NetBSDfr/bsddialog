@@ -177,24 +177,27 @@ draw_button(WINDOW *window, int x, int size, char *text, bool selected,
 	int i, color_arrows, color_shortkey, color_button;
 
 	if (selected) {
-		color_arrows = t.currshortkeycolor;
+		color_arrows = t.currbuttdelimcolor;
 		color_shortkey = t.currshortkeycolor;
 		color_button = t.currbuttoncolor;
 	} else {
-		color_arrows = t.buttoncolor;
+		color_arrows = t.buttdelimcolor;
 		color_shortkey = t.shortkeycolor;
 		color_button = t.buttoncolor;
 	}
 
 	wattron(window, color_arrows);
 	mvwaddch(window, 1, x, t.buttleftch);
+	wattroff(window, color_arrows);
+	wattron(window, color_button);
 	for(i = 1; i < size - 1; i++)
-		mvwaddch(window, 1, x + i, ' ');
+		waddch(window, ' ');
+	wattroff(window, color_button);
+	wattron(window, color_arrows);
 	mvwaddch(window, 1, x + i, t.buttrightchar);
 	wattroff(window, color_arrows);
 
 	x = x + 1 + ((size - 2 - strlen(text))/2);
-
 	wattron(window, color_button);
 	mvwaddstr(window, 1, x, text);
 	wattroff(window, color_button);

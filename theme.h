@@ -53,6 +53,8 @@ struct bsddialog_theme {
 
 	int buttleftch;
 	int buttrightchar;
+	int currbuttdelimcolor;
+	int buttdelimcolor;
 	int currbuttoncolor;
 	int buttoncolor;
 	int currshortkeycolor;
