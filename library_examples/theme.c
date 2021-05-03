@@ -20,10 +20,10 @@ int main()
 	struct config conf; //bsddialog_config conf;
 	enum bsddialog_default_theme theme;
 	struct bsddialog_menuitem items[4] = {
-	    {false, 0, "Dialog",  "Current dialog(1) theme", "BSDDIALOG_THEME_DIALOG"},
+	    {false, 0, "Dialog",  "Current dialog(1) theme", "BSDDIALOG_THEME_DIALOG" },
 	    {false, 0, "Next",    "Future default theme",    "BSDDIALOG_THEME_DEFAULT"},
-	    {false, 0, "Magenta", "Test Theme",              "BSDDIALOG_THEME_PURPLE"},
-	    {false, 0, "Quit",    "",                        "Quit or Cancel to exit"},
+	    {false, 0, "Magenta", "Testing",                 "BSDDIALOG_THEME_MAGENTA"},
+	    {false, 0, "Quit",    "Quit or <Cancel> to exit","Quit or Cancel to exit" }
 	};
 
 	memset(&conf, 0, sizeof(struct config));
@@ -52,7 +52,7 @@ int main()
 			conf.default_item = items[1].name;
 		}
 		else if (items[2].on) {
-			theme = BSDDIALOG_THEME_PURPLE;
+			theme = BSDDIALOG_THEME_MAGENTA;
 			conf.default_item = items[2].name;
 		}
 

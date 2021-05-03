@@ -602,8 +602,8 @@ int main(int argc, char *argv[argc])
 			bsddialog_settheme(BSDDIALOG_THEME_DEFAULT);
 		else if (strcmp(theme, "dialog") == 0)
 			bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
-		else if (strcmp(theme, "purple") == 0)
-			bsddialog_settheme(BSDDIALOG_THEME_PURPLE);
+		else if (strcmp(theme, "magenta") == 0)
+			bsddialog_settheme(BSDDIALOG_THEME_MAGENTA);
 		else
 			bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
 	}

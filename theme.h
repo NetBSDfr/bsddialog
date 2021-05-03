@@ -66,7 +66,7 @@ struct bsddialog_theme {
 enum bsddialog_default_theme {
 	BSDDIALOG_THEME_DEFAULT,
 	BSDDIALOG_THEME_DIALOG,
-	BSDDIALOG_THEME_PURPLE,
+	BSDDIALOG_THEME_MAGENTA,
 };
 
 //struct bsddialog_theme bsddialog_gettheme();
