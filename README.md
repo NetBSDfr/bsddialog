@@ -122,7 +122,7 @@ Examples library:
 | --stdout                     | In progress |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
-| --theme *string*             | In progress | default|dialog|purple           |
+| --theme *string*             | In progress | default\|dialog\|purple         |
 | --time-format *format*       | Completed   |                                 |
 | --timeout *secs*             |             |                                 |
 | --title *title*              | Completed   |                                 |
