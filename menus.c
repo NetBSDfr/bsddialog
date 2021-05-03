@@ -212,7 +212,7 @@ enum menumode getmode(enum menumode mode, struct bsddialog_menugroup group)
 }
 
 void
-draw_myitem(struct config conf, WINDOW *pad, int y,
+drawitem(struct config conf, WINDOW *pad, int y,
     struct bsddialog_menuitem item, enum menumode mode, struct lineposition pos,
     bool curr)
 {
@@ -403,7 +403,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		currmode = getmode(mode, groups[i]);
 		for (j=0; j<groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			draw_myitem(conf, menupad, totnitems, *item, currmode,
+			drawitem(conf, menupad, totnitems, *item, currmode,
 			    pos, totnitems == abs);
 			totnitems++;
 		}
@@ -471,14 +471,14 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		switch(input) {
 		case KEY_UP:
 		case KEY_DOWN:
-			draw_myitem(conf, menupad, abs, *item, currmode, pos, false);
+			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			if (input == KEY_UP)
 				getprev(ngroups, groups, &abs, &g, &rel);
 			else
 				getnext(ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
-			draw_myitem(conf, menupad, abs, *item, currmode, pos, true);
+			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			break;
 		case ' ': // Space
 			if (currmode == MENUMODE)
@@ -491,13 +491,13 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 				for (i=0; i<groups[g].nitems; i++)
 					if (groups[g].items[i].on == true) {
 						groups[g].items[i].on = false;
-						draw_myitem(conf, menupad,
+						drawitem(conf, menupad,
 						    abs - rel + i, groups[g].items[i],
 						    currmode, pos, false);
 					}
 				item->on = true;
 			}
-			draw_myitem(conf, menupad, abs, *item, currmode, pos, true);
+			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 		}
 	}
 
@@ -643,13 +643,13 @@ bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
 				if (items[i].on == false) {
 					if (currV == LEFT && currH == nlefts)
 						curr = i;
-					draw_myitem(conf, leftpad, nlefts, items[i],
+					drawitem(conf, leftpad, nlefts, items[i],
 					    BUILDLISTMODE, pos, curr == i);
 					nlefts++;
 				} else {
 					if (currV == RIGHT && currH == nrights)
 						curr = i;
-					draw_myitem(conf, rightpad, nrights, items[i],
+					drawitem(conf, rightpad, nrights, items[i],
 					    BUILDLISTMODE, pos, curr == i);
 					nrights++;
 				}
