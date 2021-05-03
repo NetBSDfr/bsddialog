@@ -124,35 +124,6 @@ static struct bsddialog_theme purpletheme = {
 	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD
 };
 
-static struct bsddialog_theme bluetheme = {
-	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
-	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD,
-	.surroundtitle   = true,
-	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_WHITE)),
-	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
-	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
-	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
-
-	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
-	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
-	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD,
-	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
-
-	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
-	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD,
-	.fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE))| A_BOLD,
-
-	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
-	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
-
-	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)),
-	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
-	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_RED)),
-	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
-
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD
-};
-
 static void settheme(struct bsddialog_theme newtheme)
 {
 	t.shadowcolor     = newtheme.shadowcolor;
@@ -193,8 +164,6 @@ int bsddialog_settheme(enum bsddialog_default_theme t)
 		settheme(dialogtheme);
 	else if ( t == BSDDIALOG_THEME_PURPLE)
 		settheme(purpletheme);
-	else if (t == BSDDIALOG_THEME_BLUE)
-		settheme(bluetheme);
 	else {
 		settheme(defaulttheme);
 		error = -1;
