@@ -96,10 +96,11 @@ int checkmenu(int nitems, struct bsddialog_menuitem *items) // can change
 }
 
 void
-getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
-    int *rel)
+getfirst(struct config conf, int ngroups, struct bsddialog_menugroup *groups,
+    int *abs, int *group, int *rel)
 {
-	int i, a;
+	int i, j, a;
+	struct bsddialog_menuitem *item;
 
 	*abs = *rel = *group = -1;
 	a = 0;
@@ -108,11 +109,23 @@ getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 			a += groups[i].nitems;
 			continue;
 		}
-		if (groups[i].nitems != 0) {
+		if (conf.default_item == NULL && groups[i].nitems != 0) {
 			*group = i;
-			*abs = a + *abs + 1;
+			*abs = a;
 			*rel = 0;
 			break;
+		}
+		for (j = 0; j < groups[i].nitems; j++) {
+			item = &groups[i].items[j];
+			if (conf.default_item != NULL && item->name != NULL) {
+				if (strcmp(item->name, conf.default_item) == 0) {
+					*abs = a;
+					*group = i;
+					*rel = j;
+					return;
+				}
+			}
+			a++;
 		}
 	}
 }
@@ -149,6 +162,7 @@ getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 		}
 	}
 }
+
 void
 getprev(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
     int *rel)
@@ -383,22 +397,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	menupad = newpad(totnitems, pos.line);
 	wbkgd(menupad, t.widgetcolor);
 
-	getfirst(ngroups, groups, &abs, &g, &rel);
-	/*totnitems = 0;
-	for (i=0; i<ngroups; i++) {
-		currmode = getmode(mode, groups[i]);
-		for (j=0; j<groups[i].nitems; j++) {
-			item = &groups[i].items[j];
-			if (conf.default_item != NULL)
-				if (strcmp(item->name, conf.default_item) == 0)
-					if (currmode != SEPARATORMODE) {
-						abs = totnitems;
-						i = groups[i].nitems;
-						j = ngroups;
-					}
-			totnitems++;
-		}
-	}*/
+	getfirst(conf, ngroups, groups, &abs, &g, &rel);
 	totnitems = 0;
 	for (i=0; i<ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
@@ -505,8 +504,8 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 		}
 	}
 
-	if (abs >= 0)
-		print_selected_list(conf, output, mode, ngroups, groups, g, rel);
+	//if (abs >= 0)
+		//print_selected_list(conf, output, mode, ngroups, groups, g, rel);
 
 	delwin(menupad);
 	delwin(menuwin);
