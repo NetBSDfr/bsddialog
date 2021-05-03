@@ -37,21 +37,24 @@
 
 struct bsddialog_theme t;
 
+
 static struct bsddialog_theme defaulttheme = {
+#define bgwidget  COLOR_WHITE
+#define bgcurr    COLOR_RED
 	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_CYAN)),
 	.surroundtitle   = true,
-	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
-	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
-	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
-	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
+	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  bgwidget)) ,
+	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
+	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
+	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
 
-	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)),
-	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
-	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE)),
-	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
-	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_WHITE)),
-	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
+	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
+	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
+	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
+	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)),
+	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)),
+	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
 
 	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)),
 	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)),
@@ -60,12 +63,12 @@ static struct bsddialog_theme defaulttheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)),
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
 
-	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, COLOR_BLUE)),
-	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
+	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgcurr)),
+	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
 	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_BLUE)),
-	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_RED,    COLOR_WHITE)),
+	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_RED,    bgwidget)),
 
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE))
+	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget))
 };
 
 static struct bsddialog_theme dialogtheme = {
