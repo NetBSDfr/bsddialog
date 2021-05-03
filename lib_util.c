@@ -187,10 +187,10 @@ draw_button(WINDOW *window, int x, int size, char *text, bool selected,
 	}
 
 	wattron(window, color_arrows);
-	mvwaddch(window, 1, x, '<');
+	mvwaddch(window, 1, x, t.buttleftch);
 	for(i = 1; i < size - 1; i++)
 		mvwaddch(window, 1, x + i, ' ');
-	mvwaddch(window, 1, x + i, '>');
+	mvwaddch(window, 1, x + i, t.buttrightchar);
 	wattroff(window, color_arrows);
 
 	x = x + 1 + ((size - 2 - strlen(text))/2);

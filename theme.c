@@ -63,6 +63,8 @@ static struct bsddialog_theme defaulttheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)),
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
 
+	.buttleftch      = '[',
+	.buttrightchar   = ']',
 	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgcurr)),
 	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
 	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_BLUE)),
@@ -94,6 +96,8 @@ static struct bsddialog_theme dialogtheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
 
+	.buttleftch      = '<',
+	.buttrightchar   = '>',
 	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, COLOR_BLUE)) | A_BOLD,
 	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
 	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_BLUE)) | A_BOLD,
@@ -125,6 +129,8 @@ static struct bsddialog_theme purpletheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
 
+	.buttleftch      = '{',
+	.buttrightchar   = '}',
 	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)),
 	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
 	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_RED)),
@@ -157,6 +163,8 @@ static void settheme(struct bsddialog_theme newtheme)
 	t.currbarcolor    = newtheme.currbarcolor;
 	t.barcolor        = newtheme.barcolor;
 
+	t.buttleftch      = newtheme.buttleftch;
+	t.buttrightchar   = newtheme.buttrightchar;
 	t.currbuttoncolor = newtheme.currbuttoncolor;
 	t.buttoncolor     = newtheme.buttoncolor;
 	t.currshortkeycolor = newtheme.currshortkeycolor;
