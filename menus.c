@@ -37,6 +37,10 @@
 #include "lib_util.h"
 #include "theme.h"
 
+/*
+ *  Menu API: buildlist - checklist - menu - mixedlist - radiolist - treeview
+ */
+
 #define TREESPACE 4
 
 extern struct bsddialog_theme t;
@@ -512,6 +516,9 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	return output;
 }
 
+/*
+ * API
+ */
 
 int bsddialog_mixedlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
