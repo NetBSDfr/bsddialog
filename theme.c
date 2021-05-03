@@ -51,7 +51,7 @@ static struct bsddialog_theme defaulttheme = {
 
 	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
-	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
+	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgcurr)),
 	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)),
 	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)),
 	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
