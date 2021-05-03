@@ -40,14 +40,14 @@ struct bsddialog_theme t;
 
 static struct bsddialog_theme defaulttheme = {
 #define bgwidget  COLOR_WHITE
-#define bgcurr    COLOR_RED
-	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
+#define bgcurr    COLOR_YELLOW
+	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_BLACK)),
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
 	.surroundtitle   = true,
-	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,  bgwidget)) ,
-	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
-	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
-	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
+	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)) ,
+	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
+	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
+	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
 
 	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
@@ -65,12 +65,12 @@ static struct bsddialog_theme defaulttheme = {
 
 	.buttleftch      = '[',
 	.buttrightchar   = ']',
-	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
-	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
-	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)) | A_UNDERLINE,
-	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)) | A_UNDERLINE,
-	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,bgcurr)) | A_UNDERLINE,
-	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_RED,    bgwidget)) | A_UNDERLINE,
+	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, bgcurr)),
+	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
+	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,    bgcurr))  | A_UNDERLINE,
+	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,    bgwidget))| A_UNDERLINE,
+	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgcurr))  | A_UNDERLINE,
+	.shortkeycolor     = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget))| A_UNDERLINE,
 
 	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget))
 };
@@ -119,9 +119,9 @@ static struct bsddialog_theme magentatheme = {
 	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
 	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
 
-	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
+	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)) | A_BOLD,
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD,
-	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD,
+	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE)) | A_BOLD,
 	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_CYAN)) | A_BOLD,
 	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_CYAN)) | A_BOLD,
 	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD,
@@ -135,12 +135,12 @@ static struct bsddialog_theme magentatheme = {
 
 	.buttleftch      = '<',
 	.buttrightchar   = '>',
-	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
-	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
-	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)),
-	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
-	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_RED)),
-	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
+	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)) | A_BOLD,
+	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
+	.currbuttoncolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_RED)),
+	.buttoncolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
+	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)),
+	.shortkeycolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
 
 	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD
 };
