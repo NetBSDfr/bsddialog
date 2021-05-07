@@ -1,0 +1,23 @@
+# Any copyright is dedicated to the Public Domain, see:
+#     <http://creativecommons.org/publicdomain/zero/1.0/>
+#
+# Written in 2021 by Alfonso Sabato Siciliano
+
+CFLAGS = -Wall
+INCLUDEDIR = ./
+LDFLAGS = -L/usr/lib -lform -lncurses -ltinfo
+OUTPUT = bsddialog
+SOURCES = theme.c menus.c lib_util.c libbsddialog.c bsddialog.c
+OBJECTS=$(SOURCES:.c=.o)
+RM= rm -f
+
+all : $(OUTPUT)
+
+clean:
+	rm -f $(OUTPUT) *.o *~
+
+$(OUTPUT): $(OBJECTS)
+	    $(CC) $^ -o $@ $(LDFLAGS)
+
+%.o: %.c
+	    $(CC) -I$(INCLUDEDIR) -c $(CCFLAGS) $<
