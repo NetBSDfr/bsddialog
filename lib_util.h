@@ -44,7 +44,6 @@ enum elevation { RAISED, LOWERED, NOLINES };
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
     enum elevation elev, bool asciilines, bool subwindowborders);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line);
 void print_text(struct config conf, WINDOW *pad, int cols, char *text);
 
 void draw_button(WINDOW *window, int x, int size, char *text, bool selected,

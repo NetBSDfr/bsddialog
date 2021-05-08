@@ -39,26 +39,9 @@
 #include "lib_util.h"
 #include "theme.h"
 
+enum token { TEXT, ATTRON, ATTROFF, ATTRSET, WS, END};
+
 extern struct bsddialog_theme t;
-
-int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_line)
-{
-	char fmtstr[8];
-	int line = 0;
-	
-	sprintf(fmtstr, "%%.%ds", size_line);
-	while(strlen(str) > 0) {
-		mvwprintw(win, y + line, x, fmtstr, str);
-		if((int)strlen(str) > size_line)
-			str += size_line;
-		else
-			str += strlen(str);
-
-		line++;
-	}
-	line = line > 0 ? line-1 : 0;
-	return line;
-}
 
 static bool isws(int ch)
 {
@@ -66,8 +49,7 @@ static bool isws(int ch)
 	return (ch == ' ' || ch == '\t' || ch == '\n');
 }
 
-// only maxlen for now (escape chars in the future)
-static void
+/*static void
 prepare_text(struct config conf, char *text, char *newtext, int *maxlen)
 {
 	int len, i, ch, max;
@@ -87,9 +69,7 @@ prepare_text(struct config conf, char *text, char *newtext, int *maxlen)
 	}
 
 	*maxlen = max;
-}
-
-enum token { TEXT, ATTRON, ATTROFF, ATTRSET, WS, END};
+}*/
 
 static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
 {
@@ -172,6 +152,7 @@ next_token(struct config conf, char *text, char *valuestr, int *valueint)
 		if (isws(text[i])) {
 			if (i == 0) {
 				valuestr[0] = text[i];
+				valuestr[1] = '\0';
 				tok = WS;
 			}
 			break;
@@ -199,17 +180,41 @@ next_token(struct config conf, char *text, char *valuestr, int *valueint)
 	return tok;
 }
 
+static void print_string(WINDOW *win, int *y, int *x, int maxx, char *str)
+{
+	int len, line;
+	char fmtstr[8];
+
+	if(strlen(str) == 0)
+		return;
+
+	line = maxx - 1;
+	sprintf(fmtstr, "%%.%ds", line);
+	/*if (*x > maxx) {
+		*y++;
+		*x = 1;
+	}*/
+
+	while ((len = strlen(str)) > 0) {
+		if (*x + len > maxx) {
+			*y = (*x != 1 ? *y+1 : *y);
+			*x = 1;
+		}
+		mvwprintw(win, *y, *x, fmtstr, str);
+		str += (len > line ? line : len);
+		*x += (len > line ? line : len);
+	}
+}
+
 void
 print_text(struct config conf, WINDOW *pad, int cols, char *text)
 {
-	char fmtstr[8], *valuestr;
-	int valueint, x,y, vlen;
+	char *valuestr;
+	int valueint, x, y;
 	bool loop;
 	enum token tok;
 
 	valuestr = malloc(strlen(text) + 1);
-
-	sprintf(fmtstr, "%%.%ds", cols - 2); // delete -2 after pad
 
 	x = 1;
 	y = 1;
@@ -221,9 +226,8 @@ print_text(struct config conf, WINDOW *pad, int cols, char *text)
 			loop = false;
 			break;
 		case WS:
-			mvwaddch(pad, y, x, valuestr[0]);
-			x++;
-			text++;
+			text += strlen(valuestr);
+			print_string(pad, &y, &x, cols-1, valuestr);
 			break;
 		case ATTRON:
 			wattron(pad, valueint);
@@ -239,18 +243,11 @@ print_text(struct config conf, WINDOW *pad, int cols, char *text)
 			break;
 		case TEXT:
 			text += strlen(valuestr);
-			while ((vlen = strlen(valuestr)) > 0) {
-				if (x + vlen > cols - 1) {
-					y++;
-					x = 1;
-				}
-				mvwprintw(pad, y, x, fmtstr, valuestr);
-				valuestr += (vlen > cols - 2 ? cols-2 : vlen);
-				x += (vlen > cols - 1 ? cols-2 : vlen);
-			}
+			print_string(pad, &y, &x, cols-1, valuestr);
 			break;
 		} // end switch
 	}
+	free(valuestr);
 }
 
 WINDOW *
@@ -496,7 +493,7 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 	}
 
 	if (text != NULL) /* programbox etc */
-		print_text_multiline(*widget, 1, 2, text, *w - 4);
+		print_text(conf, *widget, *w-4, text);
 
 	wrefresh(*widget);
 
