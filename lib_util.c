@@ -74,15 +74,15 @@ prepare_text(struct config conf, char *text, char *newtext, int *maxlen)
 static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
 {
 	bool isattr;
-	struct color { int n; int c; } colors[8] = {
-	    { 0, COLOR_BLACK  },
-	    { 1, COLOR_RED    },
-	    { 2, COLOR_GREEN  },
-	    { 3, COLOR_YELLOW },
-	    { 4, COLOR_BLUE   },
-	    { 5, COLOR_MAGENTA},
-	    { 6, COLOR_CYAN   },
-	    { 7, COLOR_WHITE  }
+	int colors[8] = {
+	    COLOR_BLACK,
+	    COLOR_RED,
+	    COLOR_GREEN,
+	    COLOR_YELLOW,
+	    COLOR_BLUE,
+	    COLOR_MAGENTA,
+	    COLOR_CYAN,
+	    COLOR_WHITE
 	};
 
 	if (text[1] == '\0' || text[1] != 'Z')
@@ -95,7 +95,7 @@ static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
 		*tok = ATTRON;
 		// tocheck: import BSD_COLOR
 		// tofix color background
-		*attr = COLOR_PAIR(colors[text[2] - 48].c * 8 + COLOR_WHITE + 1);
+		*attr = COLOR_PAIR(colors[text[2] - 48] * 8 + COLOR_WHITE + 1);
 		return true;
 	}
 
