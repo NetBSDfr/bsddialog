@@ -116,9 +116,12 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 	WINDOW *widget, *shadow;
 	int y, x;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (widget_init(conf, &widget, &y, &x, /*text*/NULL, &rows, &cols, &shadow,
 	    false, NULL) <0)
 		return -1;
+
+	print_text(conf, widget, cols, text);
+	wrefresh(widget);
 
 	getch();
 

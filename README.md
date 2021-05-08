@@ -61,7 +61,7 @@ Examples library:
 | --begin *y x*                | Completed   | add --starty --startx?          |
 | --cancel-label *string*      | Completed   |                                 |
 | --clear                      |             |                                 |
-| --colors                     |             |                                 |
+| --colors                     | Coding      | only --infobox for now          |
 | --column-separator *string*  |             |                                 |
 | --cr-wrap                    |             |                                 |
 | --create-rc *file*           |             |                                 |

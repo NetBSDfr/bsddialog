@@ -25,6 +25,7 @@
  * SUCH DAMAGE.
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -57,6 +58,200 @@ int print_text_multiline(WINDOW *win, int y, int x, const char *str, int size_li
 	}
 	line = line > 0 ? line-1 : 0;
 	return line;
+}
+
+static bool isws(int ch)
+{
+
+	return (ch == ' ' || ch == '\t' || ch == '\n');
+}
+
+// only maxlen for now (escape chars in the future)
+static void
+prepare_text(struct config conf, char *text, char *newtext, int *maxlen)
+{
+	int len, i, ch, max;
+
+	i = max = len = 0;
+	while (true) {
+		ch = text[i];
+
+		if (isws(ch)) {
+			max = MAX(len, max);
+			len = 0;
+		} else
+			len++;
+
+		if (ch == '\0')
+			break;
+	}
+
+	*maxlen = max;
+}
+
+enum token { TEXT, ATTRON, ATTROFF, ATTRSET, WS, END};
+
+static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
+{
+	bool isattr;
+	enum token t;
+	struct color { int n; int c; } colors[8] = {
+	    { 0, COLOR_BLACK  },
+	    { 1, COLOR_RED    },
+	    { 2, COLOR_GREEN  },
+	    { 3, COLOR_YELLOW },
+	    { 4, COLOR_BLUE   },
+	    { 5, COLOR_MAGENTA},
+	    { 6, COLOR_CYAN   },
+	    { 7, COLOR_WHITE  }
+	};
+
+	if (text[1] == '\0' || text[1] != 'Z')
+		return false;
+
+	if (text[2] == '\0')
+		return false;
+
+	if ((text[2] - 48) >= 0 && (text[2] - 48) < 8) {
+		*tok = ATTRON;
+		// tocheck: import BSD_COLOR
+		// tofix color background
+		*attr = COLOR_PAIR(colors[text[2] - 48].c * 8 + COLOR_WHITE + 1);
+		return true;
+	}
+
+	isattr = true;
+	switch (text[2]) {
+	case 'n':
+		*tok = ATTRSET;
+		*attr = A_NORMAL;
+		break;
+	case 'b':
+		*tok = ATTRON;
+		*attr = A_BOLD;
+		break;
+	case 'B':
+		*tok = ATTROFF;
+		*attr = A_BOLD;
+		break;
+	case 'r':
+		*tok = ATTRON;
+		*attr = A_REVERSE;
+		break;
+	case 'R':
+		*tok = ATTROFF;
+		*attr = A_REVERSE;
+		break;
+	case 'u':
+		*tok = ATTRON;
+		*attr = A_UNDERLINE;
+		break;
+	case 'U':
+		*tok = ATTROFF;
+		*attr = A_UNDERLINE;
+		break;
+	default:
+		isattr = false;
+	}
+
+
+	return isattr;
+}
+
+static int
+next_token(struct config conf, char *text, char *valuestr, int *valueint)
+{
+	int i, j, attr;
+	enum token tok, tokattr;
+
+	i = j = 0;
+
+	if (text[0] == '\0')
+		return END;
+
+	while (text[i] != '\0') {
+		if (isws(text[i])) {
+			if (i == 0) {
+				valuestr[0] = text[i];
+				tok = WS;
+			}
+			break;
+		}
+
+		if (text[i] == '\\') {
+			if (conf.colors) {
+				if (is_ncurses_attr(text + i, &tokattr, &attr)) {
+					if (i == 0) {
+						*valueint = attr;
+						tok = tokattr;
+					}
+					break;
+				}
+			}
+		}
+
+		valuestr[j] = text[i];
+		j++;
+		valuestr[j] = '\0';
+		i++;
+		tok = TEXT;
+	}
+
+	return tok;
+}
+
+void
+print_text(struct config conf, WINDOW *pad, int cols, char *text)
+{
+	char fmtstr[8], *valuestr;
+	int valueint, x,y, vlen;
+	bool loop;
+	enum token tok;
+
+	valuestr = malloc(strlen(text) + 1);
+
+	sprintf(fmtstr, "%%.%ds", cols - 2); // delete -2 after pad
+
+	x = 1;
+	y = 1;
+	loop = true;
+	while (loop) {
+		tok = next_token(conf, text, valuestr, &valueint);
+		switch (tok) {
+		case END:
+			loop = false;
+			break;
+		case WS:
+			mvwaddch(pad, y, x, valuestr[0]);
+			x++;
+			text++;
+			break;
+		case ATTRON:
+			wattron(pad, valueint);
+			text += 3;
+			break;
+		case ATTROFF:
+			wattroff(pad, valueint);
+			text += 3;
+			break;
+		case ATTRSET:
+			wattrset(pad, valueint);
+			text += 3;
+			break;
+		case TEXT:
+			text += strlen(valuestr);
+			while ((vlen = strlen(valuestr)) > 0) {
+				if (x + vlen > cols - 1) {
+					y++;
+					x = 1;
+				}
+				mvwprintw(pad, y, x, fmtstr, valuestr);
+				valuestr += (vlen > cols - 2 ? cols-2 : vlen);
+				x += (vlen > cols - 1 ? cols-2 : vlen);
+			}
+			break;
+		} // end switch
+	}
 }
 
 WINDOW *

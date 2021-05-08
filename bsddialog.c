@@ -245,7 +245,7 @@ int main(int argc, char *argv[argc])
 	    { "begin", required_argument, NULL /*y x*/, BEGIN },
 	    { "cancel-label", required_argument, NULL /*string*/, CANCEL_LABEL },
 	    { "clear", no_argument, NULL, 'X' },
-	    { "colors", no_argument, NULL, 'X' },
+	    { "colors", no_argument, NULL, COLORS },
 	    { "column-separator", required_argument, NULL /*string*/, 'X' },
 	    { "cr-wrap", no_argument, NULL, 'X' },
 	    { "create-rc", required_argument, NULL /*file*/, 'X' },
@@ -367,6 +367,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case CANCEL_LABEL:
 			conf.cancel_label = optarg;
+			break;
+		case COLORS:
+			conf.colors = true;
 			break;
 		case DATE_FORMAT:
 			conf.date_format = optarg;
