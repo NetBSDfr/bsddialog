@@ -49,28 +49,6 @@ static bool isws(int ch)
 	return (ch == ' ' || ch == '\t' || ch == '\n');
 }
 
-/*static void
-prepare_text(struct config conf, char *text, char *newtext, int *maxlen)
-{
-	int len, i, ch, max;
-
-	i = max = len = 0;
-	while (true) {
-		ch = text[i];
-
-		if (isws(ch)) {
-			max = MAX(len, max);
-			len = 0;
-		} else
-			len++;
-
-		if (ch == '\0')
-			break;
-	}
-
-	*maxlen = max;
-}*/
-
 static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
 {
 	bool isattr;
