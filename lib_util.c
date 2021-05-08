@@ -190,10 +190,6 @@ static void print_string(WINDOW *win, int *y, int *x, int maxx, char *str)
 
 	line = maxx - 1;
 	sprintf(fmtstr, "%%.%ds", line);
-	/*if (*x > maxx) {
-		*y++;
-		*x = 1;
-	}*/
 
 	while ((len = strlen(str)) > 0) {
 		if (*x + len > maxx) {
