@@ -3,9 +3,9 @@
 **Work In Progress!**
 
 This project provides **bsddialog** and **libbsddialog**, an utility and a
-library to build scripts and tools with *Text User Interface Widgets*,
-this project is inspired by **dialog** https://invisible-island.net/dialog.
-However **bsddialog** is released under the terms of the *BSD-2-Clause License*
+library to build scripts and tools with *TUI Widgets*.
+The project is inspired by **dialog** https://invisible-island.net/dialog,
+however **bsddialog** is released under the terms of the *BSD-2-Clause License*
 and the *"features synchronization"* with **dialog** is not a priority.
 
 **Getting Started**
