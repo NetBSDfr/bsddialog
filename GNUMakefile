@@ -20,4 +20,4 @@ $(OUTPUT): $(OBJECTS)
 	    $(CC) $^ -o $@ $(LDFLAGS)
 
 %.o: %.c
-	    $(CC) -I$(INCLUDEDIR) -c $(CFLAGS) $<
+	    $(CC) $(CFLAGS) -I$(INCLUDEDIR) -c $<
