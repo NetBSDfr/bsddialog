@@ -675,7 +675,8 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 			}
 			if (strcmp(input,"XXX") == 0)
 				break;
-			print_text(conf, widget, cols-4, input);
+			//print_text(conf, widget, 1, 1, cols-2, input);
+			mvwaddstr(widget, 1, i, input);
 			i = i + strlen(input) + 1;
 			wrefresh(widget);
 		}
@@ -705,7 +706,7 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 	    "[     N/A     ]",
 	    "[   UNKNOWN   ]",};
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
 	    false, NULL) <0)
 		return -1;
 
@@ -730,7 +731,7 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 		}
 	}
 
-	print_text(conf, widget, rows - 4, text);
+	print_text(conf, widget, rows-6, 2, cols-2, text);
 
 	/* main bar */
 	draw_perc_bar(bar, 1, 1, cols-8, perc, false, -1 /*unused*/);
@@ -1178,7 +1179,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	    BUTTONLABEL(help_label));
 
 	if (text != NULL && conf.no_lines == false) {
-		print_text(conf, widget, cols - 4, text);
+		print_text(conf, widget, 1, 1, cols-2, text);
 		mvwhline(widget, 2, 2, conf.ascii_lines ? '-' : ACS_HLINE, cols -4);
 		wrefresh(widget);
 	}

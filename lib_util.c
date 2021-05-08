@@ -180,7 +180,7 @@ next_token(struct config conf, char *text, char *valuestr, int *valueint)
 	return tok;
 }
 
-static void print_string(WINDOW *win, int *y, int *x, int maxx, char *str)
+static void print_string(WINDOW *win, int *y, int *x, int minx, int maxx, char *str)
 {
 	int len, line;
 	char fmtstr[8];
@@ -188,13 +188,13 @@ static void print_string(WINDOW *win, int *y, int *x, int maxx, char *str)
 	if(strlen(str) == 0)
 		return;
 
-	line = maxx - 1;
+	line = maxx - minx + 1;
 	sprintf(fmtstr, "%%.%ds", line);
 
 	while ((len = strlen(str)) > 0) {
 		if (*x + len > maxx) {
 			*y = (*x != 1 ? *y+1 : *y);
-			*x = 1;
+			*x = minx;
 		}
 		mvwprintw(win, *y, *x, fmtstr, str);
 		str += (len > line ? line : len);
@@ -203,7 +203,8 @@ static void print_string(WINDOW *win, int *y, int *x, int maxx, char *str)
 }
 
 void
-print_text(struct config conf, WINDOW *pad, int cols, char *text)
+print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
+    char *text)
 {
 	char *valuestr;
 	int valueint, x, y;
@@ -212,8 +213,8 @@ print_text(struct config conf, WINDOW *pad, int cols, char *text)
 
 	valuestr = malloc(strlen(text) + 1);
 
-	x = 1;
-	y = 1;
+	x = minx;
+	y = starty;
 	loop = true;
 	while (loop) {
 		tok = next_token(conf, text, valuestr, &valueint);
@@ -223,7 +224,7 @@ print_text(struct config conf, WINDOW *pad, int cols, char *text)
 			break;
 		case WS:
 			text += strlen(valuestr);
-			print_string(pad, &y, &x, cols-1, valuestr);
+			print_string(pad, &y, &x, minx, maxx, valuestr);
 			break;
 		case ATTRON:
 			wattron(pad, valueint);
@@ -239,7 +240,7 @@ print_text(struct config conf, WINDOW *pad, int cols, char *text)
 			break;
 		case TEXT:
 			text += strlen(valuestr);
-			print_string(pad, &y, &x, cols-1, valuestr);
+			print_string(pad, &y, &x, minx, maxx, valuestr);
 			break;
 		} // end switch
 	}
@@ -489,7 +490,7 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 	}
 
 	if (text != NULL) /* programbox etc */
-		print_text(conf, *widget, *w-4, text);
+		print_text(conf, *widget, 1, 2, *w-3, text);
 
 	wrefresh(*widget);
 
