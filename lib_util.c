@@ -94,7 +94,6 @@ enum token { TEXT, ATTRON, ATTROFF, ATTRSET, WS, END};
 static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
 {
 	bool isattr;
-	enum token t;
 	struct color { int n; int c; } colors[8] = {
 	    { 0, COLOR_BLACK  },
 	    { 1, COLOR_RED    },
