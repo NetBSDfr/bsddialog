@@ -39,7 +39,7 @@
 #include "lib_util.h"
 #include "theme.h"
 
-enum token { TEXT, ATTRON, ATTROFF, ATTRSET, WS, END};
+enum token { TEXT, WS, END};
 
 extern struct bsddialog_theme t;
 
@@ -49,7 +49,7 @@ static bool isws(int ch)
 	return (ch == ' ' || ch == '\t' || ch == '\n');
 }
 
-static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
+static bool check_set_ncurses_attr(WINDOW *win, char *text)
 {
 	bool isattr;
 	int colors[8] = {
@@ -63,49 +63,42 @@ static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
 	    COLOR_WHITE
 	};
 
+	if (text[0] == '\0' || text[0] != '\\')
+		return false;
 	if (text[1] == '\0' || text[1] != 'Z')
 		return false;
-
 	if (text[2] == '\0')
 		return false;
 
 	if ((text[2] - 48) >= 0 && (text[2] - 48) < 8) {
-		*tok = ATTRON;
 		// tocheck: import BSD_COLOR
 		// tofix color background
-		*attr = COLOR_PAIR(colors[text[2] - 48] * 8 + COLOR_WHITE + 1);
+		wattron(win, COLOR_PAIR(colors[text[2] - 48] * 8 + COLOR_WHITE + 1));
 		return true;
 	}
 
 	isattr = true;
 	switch (text[2]) {
 	case 'n':
-		*tok = ATTRSET;
-		*attr = A_NORMAL;
+		wattrset(win, A_NORMAL);
 		break;
 	case 'b':
-		*tok = ATTRON;
-		*attr = A_BOLD;
+		wattron(win, A_BOLD);
 		break;
 	case 'B':
-		*tok = ATTROFF;
-		*attr = A_BOLD;
+		wattroff(win, A_BOLD);
 		break;
 	case 'r':
-		*tok = ATTRON;
-		*attr = A_REVERSE;
+		wattron(win, A_REVERSE);
 		break;
 	case 'R':
-		*tok = ATTROFF;
-		*attr = A_REVERSE;
+		wattroff(win, A_REVERSE);
 		break;
 	case 'u':
-		*tok = ATTRON;
-		*attr = A_UNDERLINE;
+		wattron(win, A_UNDERLINE);
 		break;
 	case 'U':
-		*tok = ATTROFF;
-		*attr = A_UNDERLINE;
+		wattroff(win, A_UNDERLINE);
 		break;
 	default:
 		isattr = false;
@@ -149,8 +142,7 @@ next_token(struct config conf, char *text, char *valuestr, int *valueint)
 static void
 print_string(WINDOW *win, int *y, int *x, int minx, int maxx, char *str, bool color)
 {
-	int i, j, len, reallen, attr;
-	enum token tok;
+	int i, j, len, reallen;
 
 	if(strlen(str) == 0)
 		return;
@@ -159,7 +151,7 @@ print_string(WINDOW *win, int *y, int *x, int minx, int maxx, char *str, bool co
 	if (color) {
 		i=0;
 		while (i < len) {
-			if (str[i] == '\\' && is_ncurses_attr(str+1, &tok, &attr))
+			if (check_set_ncurses_attr(win, str+i))
 				reallen -= 3;
 			i++;
 		}
@@ -173,18 +165,7 @@ print_string(WINDOW *win, int *y, int *x, int minx, int maxx, char *str, bool co
 		}
 		j = *x;
 		while (j < maxx && i < len) {
-			if (str[i] == '\\' && is_ncurses_attr(str+i, &tok, &attr) && color) {
-				switch (tok) {
-				case ATTRON:
-					wattron(win, attr);
-					break;
-				case ATTROFF:
-					wattroff(win, attr);
-					break;
-				case ATTRSET:
-					wattrset(win, attr);
-					break;
-				}
+			if (color && check_set_ncurses_attr(win, str+i)) {
 				i += 3;
 			} else {
 				mvwaddch(win, *y, j, str[i]);
