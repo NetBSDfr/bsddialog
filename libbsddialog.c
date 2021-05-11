@@ -68,10 +68,6 @@ int bsddialog_init(void)
 
 	bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
 
-	bkgd(t.backgroundcolor);
-
-	refresh();
-
 	return error;
 }
 
