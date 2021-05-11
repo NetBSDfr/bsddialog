@@ -118,8 +118,8 @@ static bool is_ncurses_attr(char *text, enum token *tok, int *attr)
 static int
 next_token(struct config conf, char *text, char *valuestr, int *valueint)
 {
-	int i, j, attr;
-	enum token tok, tokattr;
+	int i, j;
+	enum token tok;
 
 	i = j = 0;
 
@@ -136,18 +136,6 @@ next_token(struct config conf, char *text, char *valuestr, int *valueint)
 			break;
 		}
 
-		if (text[i] == '\\') {
-			if (conf.colors) {
-				if (is_ncurses_attr(text + i, &tokattr, &attr)) {
-					if (i == 0) {
-						*valueint = attr;
-						tok = tokattr;
-					}
-					break;
-				}
-			}
-		}
-
 		valuestr[j] = text[i];
 		j++;
 		valuestr[j] = '\0';
@@ -158,25 +146,54 @@ next_token(struct config conf, char *text, char *valuestr, int *valueint)
 	return tok;
 }
 
-static void print_string(WINDOW *win, int *y, int *x, int minx, int maxx, char *str)
+static void
+print_string(WINDOW *win, int *y, int *x, int minx, int maxx, char *str, bool color)
 {
-	int len, line;
-	char fmtstr[8];
+	int i, j, len, reallen, attr;
+	enum token tok;
 
 	if(strlen(str) == 0)
 		return;
 
-	line = maxx - minx + 1;
-	sprintf(fmtstr, "%%.%ds", line);
+	len = reallen = strlen(str);
+	if (color) {
+		i=0;
+		while (i < len) {
+			if (str[i] == '\\' && is_ncurses_attr(str+1, &tok, &attr))
+				reallen -= 3;
+			i++;
+		}
+	}
 
-	while ((len = strlen(str)) > 0) {
-		if (*x + len > maxx) {
-			*y = (*x != 1 ? *y+1 : *y);
+	i = 0;
+	while (i < len) {
+		if (*x + reallen > maxx) {
+			*y = (*x != minx ? *y+1 : *y);
 			*x = minx;
 		}
-		mvwprintw(win, *y, *x, fmtstr, str);
-		str += (len > line ? line : len);
-		*x += (len > line ? line : len);
+		j = *x;
+		while (j < maxx && i < len) {
+			if (str[i] == '\\' && is_ncurses_attr(str+i, &tok, &attr) && color) {
+				switch (tok) {
+				case ATTRON:
+					wattron(win, attr);
+					break;
+				case ATTROFF:
+					wattroff(win, attr);
+					break;
+				case ATTRSET:
+					wattrset(win, attr);
+					break;
+				}
+				i += 3;
+			} else {
+				mvwaddch(win, *y, j, str[i]);
+				i++;
+				reallen--;
+				j++;
+				*x = j;
+			}
+		}
 	}
 }
 
@@ -202,23 +219,11 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 			break;
 		case WS:
 			text += strlen(valuestr);
-			print_string(pad, &y, &x, minx, maxx, valuestr);
-			break;
-		case ATTRON:
-			wattron(pad, valueint);
-			text += 3;
-			break;
-		case ATTROFF:
-			wattroff(pad, valueint);
-			text += 3;
-			break;
-		case ATTRSET:
-			wattrset(pad, valueint);
-			text += 3;
+			print_string(pad, &y, &x, minx, maxx, valuestr, false /*useless*/);
 			break;
 		case TEXT:
 			text += strlen(valuestr);
-			print_string(pad, &y, &x, minx, maxx, valuestr);
+			print_string(pad, &y, &x, minx, maxx, valuestr, conf.colors);
 			break;
 		} // end switch
 	}
