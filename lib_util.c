@@ -207,6 +207,7 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 			break;
 		} // end switch
 	}
+
 	free(valuestr);
 }
 
