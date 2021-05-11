@@ -104,7 +104,6 @@ static bool check_set_ncurses_attr(WINDOW *win, char *text)
 		isattr = false;
 	}
 
-
 	return isattr;
 }
 
