@@ -28,8 +28,13 @@
 #ifndef _LIBBSDDIALOG_UTIL_H_
 #define _LIBBSDDIALOG_UTIL_H_
 
+/*
+ * Utils to implement widgets
+ */
+
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+/* Buttons */
 #define LABEL_cancel_label "Cancel"
 #define LABEL_exit_label   "EXIT"
 #define LABEL_extra_label  "Extra"
@@ -38,16 +43,6 @@
 #define LABEL_ok_label     "OK"
 #define LABEL_yes_label    "Yes"
 #define BUTTONLABEL(l) (conf.l != NULL ? conf.l : LABEL_ ##l)
-
-enum elevation { RAISED, LOWERED, NOLINES };
-
-WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
-    enum elevation elev, bool asciilines, bool subwindowborders);
-void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-void print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
-    char *text);
-void draw_button(WINDOW *window, int x, int size, char *text, bool selected,
-    bool shortkey);
 #define MAXBUTTONS 4 /* yes|ok - extra - no|cancel - help */
 struct buttons {
 	unsigned int nbuttons;
@@ -55,14 +50,22 @@ struct buttons {
 	int value[MAXBUTTONS];
 	int curr;
 };
-void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey);
 void get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
     bool help, char *helplabel);
+void draw_button(WINDOW *window, int x, int size, char *text, bool selected,
+    bool shortkey);
+void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey);
 
+/* widget */
+enum elevation { RAISED, LOWERED, NOLINES };
+WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
+    enum elevation elev, bool asciilines, bool subwindowborders);
+void window_scrolling_handler(WINDOW *pad, int rows, int cols);
+void print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
+    char *text);
 int widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
     int *h, int *w, WINDOW **shadow, bool buttons, WINDOW **buttonswin);
-
 void widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow, WINDOW *buttonswin);
 
