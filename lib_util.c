@@ -256,7 +256,7 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 }
 
 void
-draw_button(WINDOW *window, int x, int size, char *text, bool selected,
+draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
     bool shortkey)
 {
 	int i, color_arrows, color_shortkey, color_button;
@@ -272,29 +272,30 @@ draw_button(WINDOW *window, int x, int size, char *text, bool selected,
 	}
 
 	wattron(window, color_arrows);
-	mvwaddch(window, 1, x, t.buttleftch);
+	mvwaddch(window, y, x, t.buttleftch);
 	wattroff(window, color_arrows);
 	wattron(window, color_button);
 	for(i = 1; i < size - 1; i++)
 		waddch(window, ' ');
 	wattroff(window, color_button);
 	wattron(window, color_arrows);
-	mvwaddch(window, 1, x + i, t.buttrightchar);
+	mvwaddch(window, y, x + i, t.buttrightchar);
 	wattroff(window, color_arrows);
 
 	x = x + 1 + ((size - 2 - strlen(text))/2);
 	wattron(window, color_button);
-	mvwaddstr(window, 1, x, text);
+	mvwaddstr(window, y, x, text);
 	wattroff(window, color_button);
 
 	if (shortkey) {
 		wattron(window, color_shortkey);
-		mvwaddch(window, 1, x, text[0]);
+		mvwaddch(window, y, x, text[0]);
 		wattroff(window, color_shortkey);
 	}
 }
 
-void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey)
+void
+draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 {
 	int i, x, start_x, size;
 #define SIZEBUTTON  8
@@ -310,7 +311,7 @@ void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey)
 
 	for (i = 0; i < bs.nbuttons; i++) {
 		x = i * (size + BUTTONSPACE);
-		draw_button(window, start_x + x, size, bs.label[i],
+		draw_button(window, y, start_x + x, size, bs.label[i],
 		    i == bs.curr, shortkey);
 	}
 }
@@ -359,7 +360,7 @@ get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
 
 WINDOW *
 new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
-    enum elevation elev, bool asciilines, bool subwindowborders)
+    enum elevation elev, bool asciilines)
 {
 	WINDOW *win;
 	int leftcolor, rightcolor;
@@ -396,16 +397,6 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 		mvwaddch(win, rows-1, cols-1, br);
 		mvwhline(win, rows-1, 1, bs, cols-2);
 		wattroff(win, rightcolor);
-
-		if (subwindowborders) {
-			wattron(win, leftcolor);
-			mvwaddch(win, 0, 0, ltee);
-			wattroff(win, leftcolor);
-
-			wattron(win, rightcolor);
-			mvwaddch(win, 0, cols-1, rtee);
-			wattroff(win, rightcolor);
-		}
 	}
 
 	if (title != NULL) {
@@ -438,8 +429,9 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 
 int
 widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
-    int *h, int *w, WINDOW **shadow, bool buttons, WINDOW **buttonswin)
+    int *h, int *w, WINDOW **shadow, bool buttons)
 {
+	int ts, ltee, rtee;
 
 	if (*h <= 0)
 		; /* todo */
@@ -457,9 +449,8 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 		wrefresh(*shadow);
 	}
 
-	*widget = new_window(*y, *x, *h, *w, conf.title,
-	    buttons ? NULL : conf.hline, conf.no_lines ? NOLINES : RAISED,
-	    conf.ascii_lines, false);
+	*widget = new_window(*y, *x, *h, *w, conf.title, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
 	if(*widget == NULL) {
 		delwin(*shadow);
 		return -1;
@@ -468,33 +459,33 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 	if (text != NULL) /* programbox etc */
 		print_text(conf, *widget, 1, 2, *w-3, text);
 
-	wrefresh(*widget);
+	if (buttons && conf.no_lines != true) {
+		ts = conf.ascii_lines ? '-' : ACS_HLINE;
+		ltee = conf.ascii_lines ? '+' : ACS_LTEE;
+		rtee = conf.ascii_lines ? '+' : ACS_RTEE;
 
-	if (buttons) {
-		*buttonswin = new_window(*y + *h - 3, *x, 3, *w, NULL,
-		    conf.hline, conf.no_lines ? NOLINES : RAISED,
-		    conf.ascii_lines, true);
-		if (*buttonswin == NULL) {
-			delwin(*shadow);
-			delwin(*widget);
-			return -1;
-		}
-		wrefresh(*buttonswin);
+		wattron(*widget, t.lineraisecolor);
+		mvwaddch(*widget, *h-3, 0, ltee);
+		mvwhline(*widget, *h-3, 1, ts, *w-2);
+		wattroff(*widget, t.lineraisecolor);
+
+		wattron(*widget, t.linelowercolor);
+		mvwaddch(*widget, *h-3, *w-1, rtee);
+		wattroff(*widget, t.linelowercolor);
 	}
+
+	wrefresh(*widget);
 
 	return 0;
 }
 
 void
 widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
-    WINDOW *shadow, WINDOW *buttonswin)
+    WINDOW *shadow)
 {
 
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
-
-	if (buttonswin != NULL)
-		delwin(buttonswin);
 
 	delwin(window);
 

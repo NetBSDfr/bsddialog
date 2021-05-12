@@ -354,7 +354,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, char *namewidget, enum menumode mode, int ngroups,
     struct bsddialog_menugroup *groups)
 {
-	WINDOW *widget, *button, *menuwin, *menupad, *shadow;
+	WINDOW *widget, *menuwin, *menupad, *shadow;
 	int i, j, output, input;
 	int y, x, ys, ye, xs, xe, abs, g, rel, totnitems;
 	bool loop, buttupdate;
@@ -364,12 +364,12 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true, &button) <0)
+	    true) < 0)
 		return -1;
 
 	menuwin = new_window(y + rows - 5 - menurows, x + 2, menurows+2, cols-4,
 	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
-	    conf.ascii_lines, false);
+	    conf.ascii_lines);
 
 
 	totnitems = 0;
@@ -447,8 +447,8 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(button, cols, bs, true);
-			wrefresh(button);
+			draw_buttons(widget, rows-2, cols, bs, true);
+			wrefresh(widget);
 			buttupdate = false;
 		}
 		//wrefresh(menuwin);
@@ -525,7 +525,7 @@ do_mixedlist(struct config conf, char* text, int rows, int cols,
 
 	delwin(menupad);
 	delwin(menuwin);
-	widget_end(conf, namewidget, widget, rows, cols, shadow, button);
+	widget_end(conf, namewidget, widget, rows, cols, shadow);
 
 	return output;
 }
@@ -605,7 +605,7 @@ int
 bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
 {
-	WINDOW *widget, *button, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
+	WINDOW *widget, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
 	int output, i, x, y, input;
 	bool loop, buttupdate, padsupdate, startleft;
 	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols, curr;
@@ -622,16 +622,16 @@ bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
 	}
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true, &button) <0)
+	    true) <0)
 		return -1;
 
 	winsy = y + rows - 5 - menurows;
 	leftwinx = x+2;
 	leftwin = new_window(winsy, leftwinx, menurows+2, (cols-5)/2, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
 	rightwinx = x + cols - 2 -(cols-5)/2;
 	rightwin = new_window(winsy, rightwinx, menurows+2, (cols-5)/2, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines, false);
+	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
 
 	wrefresh(leftwin);
 	wrefresh(rightwin);
@@ -651,8 +651,8 @@ bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
 	loop = buttupdate = padsupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(button, cols, bs, true);
-			wrefresh(button);
+			draw_buttons(widget, rows-2, cols, bs, true);
+			wrefresh(widget);
 			buttupdate = false;
 		}
 
@@ -755,7 +755,7 @@ bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
 	delwin(leftwin);
 	delwin(rightpad);
 	delwin(rightwin);
-	widget_end(conf, "Buildlist", widget, rows, cols, shadow, button);
+	widget_end(conf, "Buildlist", widget, rows, cols, shadow);
 
 	return output;
 }

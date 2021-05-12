@@ -53,20 +53,20 @@ struct buttons {
 void get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
     bool help, char *helplabel);
-void draw_button(WINDOW *window, int x, int size, char *text, bool selected,
+void draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
     bool shortkey);
-void draw_buttons(WINDOW *window, int cols, struct buttons bs, bool shortkey);
+void draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey);
 
 /* widget */
 enum elevation { RAISED, LOWERED, NOLINES };
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
-    enum elevation elev, bool asciilines, bool subwindowborders);
+    enum elevation elev, bool asciilines);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
     char *text);
 int widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
-    int *h, int *w, WINDOW **shadow, bool buttons, WINDOW **buttonswin);
+    int *h, int *w, WINDOW **shadow, bool buttons);
 void widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
-    WINDOW *shadow, WINDOW *buttonswin);
+    WINDOW *shadow);
 
 #endif
