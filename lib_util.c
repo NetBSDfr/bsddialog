@@ -205,7 +205,7 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 			text += strlen(valuestr);
 			print_string(pad, &y, &x, minx, maxx, valuestr, conf.colors);
 			break;
-		} // end switch
+		}
 	}
 
 	free(valuestr);
