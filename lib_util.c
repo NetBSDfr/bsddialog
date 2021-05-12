@@ -39,9 +39,10 @@
 #include "lib_util.h"
 #include "theme.h"
 
-enum token { TEXT, WS, END};
-
 extern struct bsddialog_theme t;
+
+/* Text */
+enum token { TEXT, WS, END};
 
 static bool isws(int ch)
 {
@@ -223,6 +224,7 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 	return pad;
 }*/
 
+/* scrolling handler */
 void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 {
 	int input, cur_line = 0, shown_lines;
@@ -255,6 +257,7 @@ void window_scrolling_handler(WINDOW *pad, int rows, int cols)
 	wattroff(pad, t.widgetcolor);
 }
 
+/* Buttons */
 void
 draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
     bool shortkey)
@@ -358,6 +361,7 @@ get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
 	}
 }
 
+/* Widgets builders */
 WINDOW *
 new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
     enum elevation elev, bool asciilines)
