@@ -42,7 +42,7 @@
 extern struct bsddialog_theme t;
 
 /* Text */
-enum token { TEXT, WS, END};
+enum token { TEXT, WS, END };
 
 static bool isws(int ch)
 {
