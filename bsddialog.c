@@ -247,7 +247,7 @@ int main(int argc, char *argv[argc])
 	    { "clear", no_argument, NULL, 'X' },
 	    { "colors", no_argument, NULL, COLORS },
 	    { "column-separator", required_argument, NULL /*string*/, 'X' },
-	    { "cr-wrap", no_argument, NULL, 'X' },
+	    { "cr-wrap", no_argument, NULL, CR_WRAP },
 	    { "create-rc", required_argument, NULL /*file*/, 'X' },
 	    { "date-format", required_argument, NULL /*format*/, DATE_FORMAT },
 	    { "defaultno", no_argument, NULL, DEFAULTNO },
@@ -273,13 +273,13 @@ int main(int argc, char *argv[argc])
 	    { "max-input", required_argument, NULL /*size*/, 'X' },
 	    { "no-cancel", no_argument, NULL, NO_CANCEL },
 	    { "nocancel", no_argument, NULL, NOCANCEL },
-	    { "no-collapse", no_argument, NULL, 'X' },
+	    { "no-collapse", no_argument, NULL, NO_COLLAPSE },
 	    { "no-items", no_argument, NULL, 'X' },
 	    { "no-kill", no_argument, NULL, 'X' },
 	    { "no-label", required_argument, NULL /*string*/, NO_LABEL },
 	    { "no-lines", no_argument, NULL, NO_LINES },
 	    { "no-mouse", no_argument, NULL, 'X' },
-	    { "no-nl-expand", no_argument, NULL, 'X' },
+	    { "no-nl-expand", no_argument, NULL, NO_NL_EXPAND },
 	    { "no-ok", no_argument, NULL, NO_OK },
 	    { "nook ", no_argument, NULL, NOOK },
 	    { "no-shadow", no_argument, NULL, NO_SHADOW },
@@ -308,7 +308,7 @@ int main(int argc, char *argv[argc])
 	    { "timeout", required_argument, NULL /*secs*/, 'X' },
 	    { "title", required_argument, NULL /*title*/, TITLE },
 	    { "trace", required_argument, NULL /*filename*/, 'X' },
-	    { "trim", no_argument, NULL, 'X' },
+	    { "trim", no_argument, NULL, TRIM },
 	    { "version", no_argument, NULL, VERSION },
 	    { "visit-items", no_argument, NULL, 'X' },
 	    { "yes-label", required_argument, NULL /*string*/, YES_LABEL },
@@ -371,6 +371,9 @@ int main(int argc, char *argv[argc])
 		case COLORS:
 			conf.colors = true;
 			break;
+		case CR_WRAP:
+			conf.cr_wrap = true;
+			break;
 		case DATE_FORMAT:
 			conf.date_format = optarg;
 			break;
@@ -416,11 +419,17 @@ int main(int argc, char *argv[argc])
 		case NO_CANCEL:
 			conf.no_cancel = true;
 			break;
+		case NO_COLLAPSE:
+			conf.no_collapse = true;
+			break;
 		case NO_LABEL:
 			conf.no_label = optarg;
 			break;
 		case NO_LINES:
 			conf.no_lines = true;
+			break;
+		case NO_NL_EXPAND:
+			conf.no_nl_expand = true;
 			break;
 		case NOOK:
 		case NO_OK:
@@ -470,6 +479,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case TITLE:
 			conf.title = optarg;
+			break;
+		case TRIM:
+			conf.trim = true;
 			break;
 		case VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);

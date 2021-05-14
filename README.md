@@ -63,7 +63,7 @@ Examples library:
 | --clear                      |             |                                 |
 | --colors                     | Completed   |                                 |
 | --column-separator *string*  |             |                                 |
-| --cr-wrap                    |             |                                 |
+| --cr-wrap                    | Coding      |                                 |
 | --create-rc *file*           |             |                                 |
 | --date-format *format*       | Completed   |                                 |
 | --defaultno                  | Completed   |                                 |
@@ -90,13 +90,13 @@ Examples library:
 | --max-input *size*           |             |                                 |
 | --no-cancel                  | Completed   |                                 |
 | --nocancel                   | Completed   |                                 |
-| --no-collapse                |             |                                 |
+| --no-collapse                | Coding      |                                 |
 | --no-items                   |             | useful?                         |
 | --no-kill                    |             |                                 |
 | --no-label *string*          | Completed   |                                 |
 | --no-lines                   | Completed   |                                 |
 | --no-mouse                   |             |                                 |
-| --no-nl-expand               |             |                                 |
+| --no-nl-expand               | Coding      |                                 |
 | --no-ok                      | Completed   |                                 |
 | --nook                       | Completed   |                                 |
 | --no-shadow                  | Completed   |                                 |
@@ -129,7 +129,7 @@ Examples library:
 | --title *title*              | Completed   |                                 |
 | --trace *filename*           |             |                                 |
 | --week-start *day*           |             |                                 |
-| --trim                       |             |                                 |
+| --trim                       | Coding      |                                 |
 | --version                    | Completed   |                                 |
 | --visit-items                |             |                                 |
 | --yes-label *string*         | Completed   |                                 |
