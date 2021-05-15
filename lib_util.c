@@ -212,17 +212,82 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 	free(valuestr);
 }
 
-/*WINDOW* print_pad_text(struct config conf, int rows, int cols, char *text)
+static void prepare_text(struct config conf, char *text, char *buf)
+{
+	int i, j;
+
+	i = j = 0;
+	while (text[i] != '\0') {
+		switch (text[i]) {
+		case '\\':
+			switch (text[i+1]) {
+			case '\0':
+				i--;
+				buf[j] = '\\';
+				break;
+			case '\\':
+				buf[j] = '\\';
+				break;
+			case 'n':
+				if (conf.no_nl_expand) {
+					buf[j] = '\\';
+					j++;
+					buf[j] = 'n';
+				} else
+					buf[j] = '\n';
+				break;
+			case 't':
+				if (conf.no_collapse) {
+					buf[j] = '\\';
+					j++;
+					buf[j] = 't';
+				} else
+					buf[j] = '\t';
+				break;
+			default:
+				buf[j] = buf[i];
+			}
+			i++;
+			break;
+		case '\n':
+			buf[j] = conf.cr_wrap ? ' ' : '\n';
+			break;
+		case '\t':
+			buf[j] = conf.no_collapse ? '\t' : ' ';
+			break;
+		default:
+			buf[j] = text[i];
+		}
+		i++;
+		j = (conf.trim && buf[j] == ' ') ? j : j+1;
+	}
+	buf[j] = '\0';
+}
+
+WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 {
 	WINDOW *pad;
+	bool loop;
+	char *buf;
 
-	if ((pad = newpad(rows, cols)) == NULL)
+	if ((pad = newpad(*rows, cols)) == NULL)
 		return NULL;
 
-	print_text(conf, pad, 0, 0, cols-1, text);
+	if ((buf = malloc(strlen(text) + 1)) == NULL) {
+		delwin(pad);
+		return NULL;
+	}
+	prepare_text(conf, text, buf);
+
+	loop = true;
+	while (loop) {
+		
+	}
+	free(buf);
+	//print_text(conf, pad, 0, 0, cols-1, text);
 
 	return pad;
-}*/
+}
 
 /* scrolling handler */
 void window_scrolling_handler(WINDOW *pad, int rows, int cols)
