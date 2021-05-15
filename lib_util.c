@@ -44,12 +44,6 @@ extern struct bsddialog_theme t;
 /* Text */
 enum token { TEXT, WS, END };
 
-static bool isws(int ch)
-{
-
-	return (ch == ' ' || ch == '\t' || ch == '\n');
-}
-
 static bool check_set_ncurses_attr(WINDOW *win, char *text)
 {
 	bool isattr;
@@ -106,6 +100,12 @@ static bool check_set_ncurses_attr(WINDOW *win, char *text)
 	}
 
 	return isattr;
+}
+
+static bool isws(int ch)
+{
+
+	return (ch == ' ' || ch == '\t' || ch == '\n');
 }
 
 static int
