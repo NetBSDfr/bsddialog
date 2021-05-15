@@ -212,7 +212,7 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 	free(valuestr);
 }
 
-/*WINDOW* new_pad_text(struct config conf, int rows, int cols, char *text)
+/*WINDOW* print_pad_text(struct config conf, int rows, int cols, char *text)
 {
 	WINDOW *pad;
 
