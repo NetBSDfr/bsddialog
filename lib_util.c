@@ -224,13 +224,11 @@ static void prepare_text(struct config conf, char *text, char *buf)
 	while (text[i] != '\0') {
 		switch (text[i]) {
 		case '\\':
+			buf[j] = '\\';
 			switch (text[i+1]) {
-			case '\0':
-				i--;
-				buf[j] = '\\';
-				break;
 			case '\\':
 				buf[j] = '\\';
+				i++;
 				break;
 			case 'n':
 				if (conf.no_nl_expand) {
@@ -239,6 +237,7 @@ static void prepare_text(struct config conf, char *text, char *buf)
 					buf[j] = 'n';
 				} else
 					buf[j] = '\n';
+				i++;
 				break;
 			case 't':
 				if (conf.no_collapse) {
@@ -247,11 +246,9 @@ static void prepare_text(struct config conf, char *text, char *buf)
 					buf[j] = 't';
 				} else
 					buf[j] = '\t';
+				i++;
 				break;
-			default:
-				buf[j] = buf[i];
 			}
-			i++;
 			break;
 		case '\n':
 			buf[j] = conf.cr_wrap ? ' ' : '\n';
@@ -342,13 +339,14 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 		return NULL;
 	}
 	prepare_text(conf, text, buf);
+	mvprintw(1,1,"%s", buf); refresh();
 
 	if ((string = malloc(strlen(text) + 1)) == NULL) {
 		delwin(pad);
 		free(buf);
 		return NULL;
 	}
-
+mvprintw(2,2,"%s", buf); refresh();
 	i = j = x = y = 0;
 	while (true) {
 		string[j] = buf[i];
