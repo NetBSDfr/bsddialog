@@ -305,7 +305,7 @@ print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool colo
 	while (i < len) {
 		if (*x + reallen > cols) {
 			*y = (*x != 0 ? *y+1 : *y);
-			if (*y >= *rows) {/* check for whitespaces*/
+			if (*y >= *rows) {
 				*rows = *y + 1;
 				wresize(win, *rows, cols);
 			}
