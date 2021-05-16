@@ -327,6 +327,7 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 	WINDOW *pad;
 	char *buf, *string;
 	int i, j, x, y;
+	bool loop;
 
 	if ((pad = newpad(*rows, cols)) == NULL)
 		return NULL;
@@ -344,26 +345,27 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 		return NULL;
 	}
 	i = j = x = y = 0;
-	while (true) {
+	loop = true;
+	while (loop) {
 		string[j] = buf[i];
-		if (string[j] == '\0') {
-			if (j != 0)
+		if (string[j] == '\0' || string[j] == '\n' ||
+		    string[j] == '\t' || string[j] == ' ') {
+			if (j != 0) {
+				string[j] = '\0';
 				print_str(pad, &y, &x, cols, string, conf.colors);
-			break;
+			}
 		}
-		if (string[j] == '\n') {
-			if (j != 0) {
-				string[j] = '\0';
-				print_str(pad, &y, &x, cols, string, conf.colors);
-			}
-			j=-1;
-			x=0;
+
+		switch (buf[i]) {
+		case '\0':
+			loop = false;
+			break;
+		case '\n':
+			j =- 1;
+			x = 0;
 			y++;
-		} else if (string [j] == '\t') {
-			if (j != 0) {
-				string[j] = '\0';
-				print_str(pad, &y, &x, cols, string, conf.colors);
-			}
+			break;
+		case '\t':
 			for (j=0; j<4 /*tablen*/; j++) {
 				x++;
 				if (x >= cols) {
@@ -372,19 +374,16 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 				}
 			}
 			j=-1;
-		}
-		else if (string [j] == ' ') {
-			if (j != 0) {
-				string[j] = '\0';
-				print_str(pad, &y, &x, cols, string, conf.colors);
-			}
-			j=-1;
+			break;
+		case ' ':
 			x++;
 			if (x >= cols) {
-				x=0;
+				x = 0;
 				y++;
 			}
+			j =- 1;
 		}
+
 		j++;
 		i++;
 	}
