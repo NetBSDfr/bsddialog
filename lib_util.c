@@ -227,12 +227,10 @@ static void prepare_text(struct config conf, char *text, char *buf)
 			buf[j] = '\\';
 			switch (text[i+1]) {
 			case '\\':
-				buf[j] = '\\';
 				i++;
 				break;
 			case 'n':
 				if (conf.no_nl_expand) {
-					buf[j] = '\\';
 					j++;
 					buf[j] = 'n';
 				} else
@@ -241,7 +239,6 @@ static void prepare_text(struct config conf, char *text, char *buf)
 				break;
 			case 't':
 				if (conf.no_collapse) {
-					buf[j] = '\\';
 					j++;
 					buf[j] = 't';
 				} else
@@ -339,14 +336,12 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 		return NULL;
 	}
 	prepare_text(conf, text, buf);
-	mvprintw(1,1,"%s", buf); refresh();
 
 	if ((string = malloc(strlen(text) + 1)) == NULL) {
 		delwin(pad);
 		free(buf);
 		return NULL;
 	}
-mvprintw(2,2,"%s", buf); refresh();
 	i = j = x = y = 0;
 	while (true) {
 		string[j] = buf[i];
