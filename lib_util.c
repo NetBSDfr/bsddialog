@@ -284,7 +284,7 @@ static bool is_ncurses_attr(char *text)
 }
 
 static void
-print_str(WINDOW *win, int *y, int *x, int cols, char *str, bool color)
+print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool color)
 {
 	int i, j, len, reallen;
 
@@ -305,6 +305,10 @@ print_str(WINDOW *win, int *y, int *x, int cols, char *str, bool color)
 	while (i < len) {
 		if (*x + reallen > cols) {
 			*y = (*x != 0 ? *y+1 : *y);
+			if (*y >= *rows) {/* check for whitespaces*/
+				*rows = *y + 1;
+				wresize(win, *rows, cols);
+			}
 			*x = 0;
 		}
 		j = *x;
@@ -352,7 +356,7 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 		    string[j] == '\t' || string[j] == ' ') {
 			if (j != 0) {
 				string[j] = '\0';
-				print_str(pad, &y, &x, cols, string, conf.colors);
+				print_str(pad, rows, &y, &x, cols, string, conf.colors);
 			}
 		}
 
@@ -382,6 +386,11 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 				y++;
 			}
 			j =- 1;
+		}
+
+		if (y >= *rows) {/* check for whitespaces*/
+			*rows = y + 1;
+			wresize(pad, *rows, cols);
 		}
 
 		j++;

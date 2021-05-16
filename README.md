@@ -45,7 +45,7 @@ Examples library:
 **TODO**
 
  * [ ] KEY\_RESIZE
- * [ ] Scrollable *text*
+ * [X] Scrollable *text* (new\_text\_pad())
  * [ ] Automanic *height* and *width* (% bsddialog text 0 0)
  * [ ] Fullscreen (*height* and *width* less than 0)
  * [ ] ToFix % bsddialog --hline "bottom line" title "test title" --infobox test 8 40
