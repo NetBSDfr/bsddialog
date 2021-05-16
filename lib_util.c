@@ -41,6 +41,8 @@
 
 extern struct bsddialog_theme t;
 
+// old test, to delete in the future
+
 /* Text */
 enum token { TEXT, WS, END };
 
@@ -212,6 +214,8 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 	free(valuestr);
 }
 
+// new text funcs
+
 static void prepare_text(struct config conf, char *text, char *buf)
 {
 	int i, j;
@@ -264,11 +268,71 @@ static void prepare_text(struct config conf, char *text, char *buf)
 	buf[j] = '\0';
 }
 
+static bool is_ncurses_attr(char *text)
+{
+	bool isattr;
+
+	if (text[0] == '\0' || text[0] != '\\')
+		return false;
+	if (text[1] == '\0' || text[1] != 'Z')
+		return false;
+	if (text[2] == '\0')
+		return false;
+
+	if ((text[2] - 48) >= 0 && (text[2] - 48) < 8) {
+		return true;
+	}
+
+	isattr = text[2] == 'n' || text[2] == 'b' || text[2] == 'B' ||
+	    text[2] == 'r' || text[2] == 'R' || text[2] == 'u' || text[2] == 'U';
+
+	return isattr;
+}
+
+static void
+print_str(WINDOW *win, int *y, int *x, int cols, char *str, bool color)
+{
+	int i, j, len, reallen;
+
+	if(strlen(str) == 0)
+		return;
+
+	len = reallen = strlen(str);
+	if (color) {
+		i=0;
+		while (i < len) {
+			if (is_ncurses_attr(str+i))
+				reallen -= 3;
+			i++;
+		}
+	}
+
+	i = 0;
+	while (i < len) {
+		if (*x + reallen > cols) {
+			*y = (*x != 0 ? *y+1 : *y);
+			*x = 0;
+		}
+		j = *x;
+		while (j < cols && i < len) {
+			if (color && check_set_ncurses_attr(win, str+i)) {
+				i += 3;
+			} else {
+				mvwaddch(win, *y, j, str[i]);
+				i++;
+				reallen--;
+				j++;
+				*x = j;
+			}
+		}
+	}
+}
+
 WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 {
 	WINDOW *pad;
-	bool loop;
-	char *buf;
+	char *buf, *string;
+	int i, j, x, y;
 
 	if ((pad = newpad(*rows, cols)) == NULL)
 		return NULL;
@@ -279,12 +343,60 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 	}
 	prepare_text(conf, text, buf);
 
-	loop = true;
-	while (loop) {
-		
+	if ((string = malloc(strlen(text) + 1)) == NULL) {
+		delwin(pad);
+		free(buf);
+		return NULL;
 	}
+
+	i = j = x = y = 0;
+	while (true) {
+		string[j] = buf[i];
+		if (string[j] == '\0') {
+			if (j != 0)
+				print_str(pad, &y, &x, cols, string, conf.colors);
+			break;
+		}
+		if (string[j] == '\n') {
+			if (j != 0) {
+				string[j] = '\0';
+				print_str(pad, &y, &x, cols, string, conf.colors);
+			}
+			j=-1;
+			x=0;
+			y++;
+		} else if (string [j] == '\t') {
+			if (j != 0) {
+				string[j] = '\0';
+				print_str(pad, &y, &x, cols, string, conf.colors);
+			}
+			for (j=0; j<4 /*tablen*/; j++) {
+				x++;
+				if (x >= cols) {
+					x=0;
+					y++;
+				}
+			}
+			j=-1;
+		}
+		else if (string [j] == ' ') {
+			if (j != 0) {
+				string[j] = '\0';
+				print_str(pad, &y, &x, cols, string, conf.colors);
+			}
+			j=-1;
+			x++;
+			if (x >= cols) {
+				x=0;
+				y++;
+			}
+		}
+		j++;
+		i++;
+	}
+
+	free(string);
 	free(buf);
-	//print_text(conf, pad, 0, 0, cols-1, text);
 
 	return pad;
 }
