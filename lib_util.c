@@ -330,6 +330,7 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 
 	if ((pad = newpad(*rows, cols)) == NULL)
 		return NULL;
+	wbkgd(pad, t.widgetcolor);
 
 	if ((buf = malloc(strlen(text) + 1)) == NULL) {
 		delwin(pad);
