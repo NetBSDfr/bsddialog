@@ -622,7 +622,7 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 	if (*w <= 0)
 		; /* todo */
 
-	*y = (conf.y < 0) ? (LINES/2 - *h/2 - 1) : conf.y;
+	*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
 	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
 
 	if (conf.shadow) {
