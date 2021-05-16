@@ -197,7 +197,7 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 		if(conf.shadow)
 			delwin(shadow);
 		return BSDDIALOG_ERROR;
-	}
+	}                                 /* to fix */
 	prefresh(textpad, 0, 0, y+1, x+2, y+textrows, x+cols-2);
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
