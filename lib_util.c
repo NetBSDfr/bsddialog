@@ -693,7 +693,8 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 	*widget = new_window(*y, *x, *h, *w, conf.title, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
 	if(*widget == NULL) {
-		delwin(*shadow);
+		if (conf.shadow)
+			delwin(*shadow);
 		return -1;
 	}
 
