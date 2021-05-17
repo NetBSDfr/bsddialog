@@ -722,12 +722,15 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 }
 
 void
-widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
-    WINDOW *shadow)
+widget_withtextpad_end(struct config conf, char *name, WINDOW *window, int h,
+    int w, WINDOW *textpad, WINDOW *shadow)
 {
 
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
+
+	if (textpad != NULL)
+		delwin(textpad);
 
 	delwin(window);
 
@@ -736,4 +739,12 @@ widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "%s size: (%d, %d)\n", name, h, w);
+}
+
+void
+widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
+    WINDOW *shadow)
+{
+
+	widget_withtextpad_end(conf, name, window, h, w, NULL, shadow);
 }

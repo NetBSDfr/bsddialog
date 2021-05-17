@@ -183,7 +183,7 @@ buttons_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortke
 int
 bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *shadow, *textpad;
+	WINDOW *widget, *textpad, *shadow;
 	int output, y, x, textrows;
 	struct buttons bs;
 
@@ -198,8 +198,7 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 
 	output = buttons_handler(widget, rows-2, cols, bs, true);
 
-	widget_end(conf, "Msgbox", widget, rows, cols, shadow);
-	delwin(textpad);
+	widget_withtextpad_end(conf, "Msgbox", widget, rows, cols, textpad, shadow);
 
 	return output;
 }

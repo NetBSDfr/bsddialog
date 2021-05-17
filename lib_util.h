@@ -72,5 +72,8 @@ widget_withtextpad_init(struct config conf, WINDOW **shadow, WINDOW **widget,
     bool buttons);
 void widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow);
+void
+widget_withtextpad_end(struct config conf, char *name, WINDOW *window, int h,
+    int w, WINDOW *textpad, WINDOW *shadow);
 
 #endif
