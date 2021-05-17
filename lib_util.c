@@ -635,6 +635,9 @@ widget_withtextpad_init(struct config conf, WINDOW **shadow, WINDOW **widget,
 		return -1;
 	}
 
+	if (textpad == NULL && text != NULL) /* no pad */
+		print_text(conf, *widget, 1, 2, *w-3, text);
+
 	if (buttons && conf.no_lines != true) {
 		ts = conf.ascii_lines ? '-' : ACS_HLINE;
 		ltee = conf.ascii_lines ? '+' : ACS_LTEE;
@@ -651,6 +654,9 @@ widget_withtextpad_init(struct config conf, WINDOW **shadow, WINDOW **widget,
 	}
 
 	wrefresh(*widget);
+
+	if (textpad == NULL)
+		return 0; /* widget_init() ends */
 
 	if (text != NULL) { /* programbox etc */
 		if ((*textpad = newpad(*htextpad, *w-4)) == NULL) {
@@ -672,53 +678,12 @@ int
 widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
     int *h, int *w, WINDOW **shadow, bool buttons)
 {
-	int ts, ltee, rtee;
+	int output;
 
-	if (*h <= 0)
-		; /* todo */
+	output = widget_withtextpad_init(conf, shadow, widget, y, x, h, w, NULL,
+	    NULL, text, buttons);
 
-	if (*w <= 0)
-		; /* todo */
-
-	*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
-	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
-
-	if (conf.shadow) {
-		if ((*shadow = newwin(*h, *w+1, *y+1, *x+1)) == NULL)
-			return -1;
-		wbkgd(*shadow, t.shadowcolor);
-		wrefresh(*shadow);
-	}
-
-	*widget = new_window(*y, *x, *h, *w, conf.title, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
-	if(*widget == NULL) {
-		if (conf.shadow)
-			delwin(*shadow);
-		return -1;
-	}
-
-	if (text != NULL) /* programbox etc */
-		print_text(conf, *widget, 1, 2, *w-3, text);
-
-	if (buttons && conf.no_lines != true) {
-		ts = conf.ascii_lines ? '-' : ACS_HLINE;
-		ltee = conf.ascii_lines ? '+' : ACS_LTEE;
-		rtee = conf.ascii_lines ? '+' : ACS_RTEE;
-
-		wattron(*widget, t.lineraisecolor);
-		mvwaddch(*widget, *h-3, 0, ltee);
-		mvwhline(*widget, *h-3, 1, ts, *w-2);
-		wattroff(*widget, t.lineraisecolor);
-
-		wattron(*widget, t.linelowercolor);
-		mvwaddch(*widget, *h-3, *w-1, rtee);
-		wattroff(*widget, t.linelowercolor);
-	}
-
-	wrefresh(*widget);
-
-	return 0;
+	return output;
 }
 
 void
