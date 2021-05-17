@@ -126,7 +126,7 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
 /*
  * SECTION 2 "Button": msgbox - yesno
  */
-int
+static int
 buttons_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 {
 	bool loop, update;
@@ -254,7 +254,7 @@ struct formitem {
 	unsigned int itemflags;
 };
 
-int
+static int
 mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
     bool shortkey, WINDOW *entry, FORM *form, FIELD **field, int nitems,
     struct formitem *items, int fd)
@@ -368,7 +368,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 	return output;
 }
 
-int
+static int
 do_mixedform(struct config conf, char* text, int rows, int cols,
     int formheight, int nitems, struct formitem *items)
 {
@@ -596,7 +596,7 @@ int bsddialog_editbox(struct config conf, char* text, int rows, int cols)
 /*
  * SECTION 6 "Bar": gauge - mixedgauge - rangebox - pause
  */
-void
+static void
 draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, int label)
 {
 	char labelstr[128];
@@ -1274,7 +1274,7 @@ int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
  */
 enum textmode { TAILMODE, TAILBGMODE, TEXTMODE};
 
-int
+static int
 do_text(enum textmode mode, struct config conf, char* path, int rows, int cols)
 {
 	WINDOW *widget, *pad, *shadow;
