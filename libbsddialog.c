@@ -187,18 +187,10 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 	int output, y, x, textrows;
 	struct buttons bs;
 
-	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
-	    true) <0)
-		return -1;
-
 	textrows = rows - 4;
-	if ((textpad = new_pad_text(conf, &textrows, cols-4, text)) == NULL) {
-		delwin(widget);
-		if(conf.shadow)
-			delwin(shadow);
-		return BSDDIALOG_ERROR;
-	}                                 /* to fix */
-	prefresh(textpad, 0, 0, y+1, x+2, y+textrows, x+cols-2);
+	if (widget_withtextpad_init(conf, &shadow, &widget, &y, &x, &rows, &cols,
+	    &textpad, &textrows, text, true) < 0)
+		return -1;
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
 	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,

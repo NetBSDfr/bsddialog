@@ -326,27 +326,23 @@ print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool colo
 	}
 }
 
-WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
+static void
+print_textpad(struct config conf, WINDOW *pad, int *rows, int cols, char *text)
 {
-	WINDOW *pad;
 	char *buf, *string;
 	int i, j, x, y;
 	bool loop;
 
-	if ((pad = newpad(*rows, cols)) == NULL)
-		return NULL;
-	wbkgd(pad, t.widgetcolor);
-
 	if ((buf = malloc(strlen(text) + 1)) == NULL) {
 		delwin(pad);
-		return NULL;
+		return;
 	}
 	prepare_text(conf, text, buf);
 
 	if ((string = malloc(strlen(text) + 1)) == NULL) {
 		delwin(pad);
 		free(buf);
-		return NULL;
+		return;
 	}
 	i = j = x = y = 0;
 	loop = true;
@@ -399,8 +395,6 @@ WINDOW* new_pad_text(struct config conf, int *rows, int cols, char *text)
 
 	free(string);
 	free(buf);
-
-	return pad;
 }
 
 /* scrolling handler */
@@ -608,6 +602,70 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 	}
 
 	return win;
+}
+
+int
+widget_withtextpad_init(struct config conf, WINDOW **shadow, WINDOW **widget,
+    int *y, int *x, int *h, int *w, WINDOW **textpad, int *htextpad, char *text,
+    bool buttons)
+{
+	int ts, ltee, rtee;
+
+	if (*h <= 0)
+		; /* todo */
+
+	if (*w <= 0)
+		; /* todo */
+
+	*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
+	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
+
+	if (conf.shadow) {
+		if ((*shadow = newwin(*h, *w+1, *y+1, *x+1)) == NULL)
+			return -1;
+		wbkgd(*shadow, t.shadowcolor);
+		wrefresh(*shadow);
+	}
+
+	*widget = new_window(*y, *x, *h, *w, conf.title, conf.hline,
+	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
+	if(*widget == NULL) {
+		if (conf.shadow)
+			delwin(*shadow);
+		return -1;
+	}
+
+	if (buttons && conf.no_lines != true) {
+		ts = conf.ascii_lines ? '-' : ACS_HLINE;
+		ltee = conf.ascii_lines ? '+' : ACS_LTEE;
+		rtee = conf.ascii_lines ? '+' : ACS_RTEE;
+
+		wattron(*widget, t.lineraisecolor);
+		mvwaddch(*widget, *h-3, 0, ltee);
+		mvwhline(*widget, *h-3, 1, ts, *w-2);
+		wattroff(*widget, t.lineraisecolor);
+
+		wattron(*widget, t.linelowercolor);
+		mvwaddch(*widget, *h-3, *w-1, rtee);
+		wattroff(*widget, t.linelowercolor);
+	}
+
+	wrefresh(*widget);
+
+	if (text != NULL) { /* programbox etc */
+		if ((*textpad = newpad(*htextpad, *w-4)) == NULL) {
+			if (conf.shadow)
+				delwin(*shadow);
+			delwin(*textpad);
+			return -1;
+		}
+		wbkgd(*textpad, t.widgetcolor);
+		print_textpad(conf, *textpad, htextpad, *w-4, text);
+                                                     /* to fix */
+		prefresh(*textpad, 0, 0, *y+1, *x+2, *y+*htextpad, *x+*w-2);
+	}
+
+	return 0;
 }
 
 int
