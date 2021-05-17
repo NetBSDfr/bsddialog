@@ -41,7 +41,7 @@
 
 extern struct bsddialog_theme t;
 
-// old test, to delete in the future
+// old text, to delete in the future
 
 /* Text */
 enum token { TEXT, WS, END };
