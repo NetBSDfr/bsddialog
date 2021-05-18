@@ -1157,6 +1157,60 @@ int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
 /*
  * SECTION 8 "Command": prgbox - programbox(todo) - progressbox(todo)
  */
+static int
+command_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
+{
+	bool loop, update;
+	int i, input;
+	int output;
+
+	loop = update = true;
+	while(loop) {
+		if (update) {
+			draw_buttons(window, y, cols, bs, shortkey);
+			update = false;
+		}
+		wrefresh(window);
+		input = getch();
+		switch (input) {
+		case 10: /* Enter */
+			output = bs.value[bs.curr];
+			loop = false;
+			break;
+		case 27: /* Esc */
+			output = BSDDIALOG_ERROR;
+			loop = false;
+			break;
+		case '\t': /* TAB */
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
+			update = true;
+			break;
+		case KEY_LEFT:
+			if (bs.curr > 0) {
+				bs.curr--;
+				update = true;
+			}
+			break;
+		case KEY_RIGHT:
+			if (bs.curr < bs.nbuttons - 1) {
+				bs.curr++;
+				update = true;
+			}
+			break;
+		default:
+			if (shortkey) {
+				for (i = 0; i < bs.nbuttons; i++)
+					if (input == (bs.label[i])[0]) {
+						output = bs.value[i];
+						loop = false;
+				}
+			}
+		}
+	}
+
+	return output;
+}
+
 int
 bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *command)
 {
@@ -1217,7 +1271,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 		}
 	}
 
-	output = buttons_handler(widget, rows-2, cols, bs, true);
+	output = command_handler(widget, rows-2, cols, bs, true);
 
 	return output;
 }
@@ -1259,7 +1313,7 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 		i++;
 	}
 	
-	output = buttons_handler(widget, rows-2, cols, bs, true);
+	output = command_handler(widget, rows-2, cols, bs, true);
 
 	return output;
 }
