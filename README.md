@@ -45,7 +45,7 @@ Examples library:
 **TODO**
 
  * [ ] KEY\_RESIZE
- * [X] Scrollable *text* (new\_text\_pad())
+ * [X] Scrollable *text* (print\_textpad())
  * [ ] Automanic *height* and *width* (% bsddialog text 0 0)
  * [ ] Fullscreen (*height* and *width* less than 0)
  * [ ] ToFix % bsddialog --hline "bottom line" title "test title" --infobox test 8 40
@@ -139,9 +139,9 @@ Examples library:
 
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
-| --buildlist    | In progress |                                               |
-| --calendar     | In progress | add leap year, year <=0, month days           |
-| --checklist    | In progress |                                               |
+| --buildlist    | In progress | todo resize, auto rows/cols, F1               |
+| --calendar     | In progress | todo resize, auto rows/cols, F1, leap year, year <=0, month days |
+| --checklist    | In progress | todo resize, auto rows/cols, F1               |
 | --dselect      |             |                                               |
 | --editbox      |             |                                               |
 | --form         | In progress | implemented via --mixedform                   |
@@ -150,23 +150,23 @@ Examples library:
 | --infobox      | In progress | Do not clear the screen                       |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --inputmenu    |             |                                               |
-| --menu         | In progress | todo scrolling                                |
-| --mixedform    | In progress |                                               |
-| --mixedgauge   | In progress |                                               |
+| --menu         | In progress | todo resize, auto rows/cols, F1, todo scrolling |
+| --mixedform    | In progress | todo resize, auto rows/cols, F1               |
+| --mixedgauge   | In progress | todo resize, auto rows/cols, F1               |
 | --mixedlist    | In progress | Can implement [dialog4ports(1)](https://man.freebsd.org/dialog4ports/1) |
-| --msgbox       | In progress |                                               |
+| --msgbox       | In progress | todo resize, auto rows/cols, F1               |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |
-| --pause        | In progress |                                               |
+| --pause        | In progress | todo resize, auto rows/cols, F1               |
 | --prgbox       | In progress | add command opts                              |
 | --programbox   | Coding      |                                               |
 | --progressbox  | Coding      |                                               |
-| --radiolist    | In progress |                                               |
-| --rangebox     | In progress | todo PAGE-UP/PAGE-DOWN/HOME/END keys          |
+| --radiolist    | In progress | todo resize, auto rows/cols, F1               |
+| --rangebox     | In progress | todo resize, auto rows/cols, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
 | --tailbox      | Coding      | todo via --textbox or fseek?                  |
 | --tailboxbg    |             |                                               |
 | --textbox      | In progress | todo navigation keys                          |
-| --timebox      | In progress |                                               |
-| --treeview     | In progress |                                               |
-| --yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
+| --timebox      | In progress | todo resize, auto rows/cols, F1               |
+| --treeview     | In progress | todo resize, auto rows/cols, F1               |
+| --yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button, todo resize, auto rows/cols, F1 |
 
