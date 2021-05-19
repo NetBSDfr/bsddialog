@@ -154,6 +154,9 @@ buttons_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortke
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			update = true;
 			break;
+		case KEY_RESIZE: // TODO
+			update = true;
+			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
