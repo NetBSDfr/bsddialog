@@ -8,3 +8,6 @@ library_examples/menu
 library_examples/radiolist
 library_examples/theme
 library_examples/treeview
+library_examples/infobox
+library_examples/msgbox
+library_examples/yesno

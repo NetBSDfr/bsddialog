@@ -1,11 +1,10 @@
 #!/bin/sh
 
 lib="../theme.c ../lib_util.c ../menus.c ../libbsddialog.c"
-examples="buildlist menu treeview checklist radiolist dialog4ports theme"
+examples="buildlist menu treeview checklist radiolist dialog4ports theme \
+	infobox yesno msgbox"
 
 for e in $examples
 do
 	cc -Wall $lib ${e}.c -o $e -lform -lncurses
 done
-
-#to fix ./bsddialog --hline "ala efln fe erge " title "wfnf erfe efr" --infobox test 8 40
