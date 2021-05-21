@@ -361,7 +361,7 @@ print_textpad(struct config conf, WINDOW *pad, int *rows, int cols, char *text)
 			loop = false;
 			break;
 		case '\n':
-			j =- 1;
+			j = -1;
 			x = 0;
 			y++;
 			break;
@@ -369,11 +369,11 @@ print_textpad(struct config conf, WINDOW *pad, int *rows, int cols, char *text)
 			for (j=0; j<4 /*tablen*/; j++) {
 				x++;
 				if (x >= cols) {
-					x=0;
+					x = 0;
 					y++;
 				}
 			}
-			j=-1;
+			j = -1;
 			break;
 		case ' ':
 			x++;
@@ -381,7 +381,7 @@ print_textpad(struct config conf, WINDOW *pad, int *rows, int cols, char *text)
 				x = 0;
 				y++;
 			}
-			j =- 1;
+			j = -1;
 		}
 
 		if (y >= *rows) {/* check for whitespaces*/
