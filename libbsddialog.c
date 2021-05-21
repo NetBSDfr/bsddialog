@@ -132,13 +132,14 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 {
 	WINDOW *widget, *textpad, *shadow;
 	bool loop, update;
-	int i, x, y, input, output, textrows;
+	int i, x, y, input, output, textrows, textrow;
 
 	textrows = rows - 4;
 	if (widget_withtextpad_init(conf, &shadow, &widget, &y, &x, &rows, &cols,
 	    &textpad, &textrows, text, true) < 0)
 		return -1;
 
+	textrow = 0;
 	loop = update = true;
 	while(loop) {
 		if (update) {
@@ -162,6 +163,18 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			break;
 		case KEY_RESIZE: // TODO
 			update = true;
+			break;
+		case KEY_UP:
+			if (textrow == 0)
+				break;
+			textrow--;
+			prefresh(textpad, textrow, 0, y+1, x+2, y+rows-4, x+cols-2);
+			break;
+		case KEY_DOWN:
+			if (textrow + rows - 4 >= textrows)
+				break;
+			textrow++;
+			prefresh(textpad, textrow, 0, y+1, x+2, y+rows-4, x+cols-2);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
