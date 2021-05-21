@@ -27,7 +27,34 @@ library to build scripts and tools with a *Text User Interface Widgets*.
 
 ### 1.2 Hello World
 
-msgbox.c
+helloworld.c
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+#include <bsddialog.h>
+
+int main()
+{
+	struct bsddialog_conf conf;
+	
+	if (bsddialog_init() < 0)
+		return -1;
+
+	memset(&conf, 0, sizeof(struct bsddialog_conf));
+	bsddialog_msgbox(conf, "Hello World!", 7, 20);
+
+	bsddialog_end();
+
+	return 0;
+}
+```
+
+```
+% cc -I/usr/local/include helloworld.c -o helloworld -L/usr/local/lib/ -lbsddialog
+% ./helloworld
+```
 
 ## 2 struct sddialog\_config
 
