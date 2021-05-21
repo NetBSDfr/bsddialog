@@ -147,7 +147,7 @@
 
 void usage(void);
 /* widgets */
-#define BUILDER_ARGS struct config conf, char* text, int rows, int cols, \
+#define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows, int cols, \
 	int argc, char **argv
 int buildlist_builder(BUILDER_ARGS);
 int calendar_builder(BUILDER_ARGS);
@@ -229,9 +229,9 @@ int main(int argc, char *argv[argc])
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
 	bool ignore = false;
 	struct winsize ws;
-	struct config conf;
+	struct bsddialog_conf conf;
 
-	memset(&conf, 0, sizeof(struct config));
+	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;

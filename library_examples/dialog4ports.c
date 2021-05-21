@@ -17,7 +17,7 @@
 int main()
 {
 	int i, j, output;
-	struct config conf; //bsddialog_config conf;
+	struct bsddialog_conf conf;
 	struct bsddialog_menuitem item;
 	struct bsddialog_menuitem check[5] = {
 	    { true,  0, "Name 1", "Desc 1", "+" },
@@ -42,7 +42,7 @@ int main()
 	    { BSDDIALOG_RADIOLIST, 5, radio }
 	};
 
-	memset(&conf, 0, sizeof(struct config));
+	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
 	conf.item_prefix = true;

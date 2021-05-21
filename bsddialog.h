@@ -38,7 +38,7 @@
 #define BSDDIALOG_ITEM_HELP	 4
 #define BSDDIALOG_ERROR		-1 // generic error or ESC key
 
-struct config {
+struct bsddialog_conf {
 	bool item_prefix; //BSDDialog extension
 	bool ascii_lines;
 	int aspect;	// aspect ratio
@@ -137,51 +137,51 @@ struct bsddialog_menugroup {
 
 int  bsddialog_init(void);
 void bsddialog_end(void);
-int  bsddialog_backtitle(struct config conf, char *backtitle);
+int  bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 /* widgets */
-int bsddialog_buildlist(struct config conf, char* text, int rows, int cols,
+int bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
+int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int yy, unsigned int mm, unsigned int dd);
-int bsddialog_checklist(struct config conf, char* text, int rows, int cols,
+int bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_dselect(struct config conf, char* text, int rows, int cols);
-int bsddialog_editbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_form(struct config conf, char* text, int rows, int cols,
+int bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
-int bsddialog_fselect(struct config conf, char* text, int rows, int cols);
-int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc);
-int bsddialog_infobox(struct config conf, char* text, int rows, int cols);
-int bsddialog_inputbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols);
-int bsddialog_menu(struct config conf, char* text, int rows, int cols,
+int bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, int perc);
+int bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
+int bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
-int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
+int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int perc, int argc, char **argv);
-int bsddialog_mixedlist(struct config conf, char* text, int rows, int cols,
+int bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups);
-int bsddialog_msgbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
+int bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
-int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec);
-int bsddialog_prgbox(struct config conf, char* text, int rows, int cols,
+int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, int sec);
+int bsddialog_prgbox(struct bsddialog_conf conf, char* text, int rows, int cols,
     char *command);
-int bsddialog_programbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_progressbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_radiolist(struct config conf, char* text, int rows, int cols,
+int bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_progressbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_rangebox(struct config conf, char* text, int rows, int cols,
+int bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     int min, int max, int def);
-int bsddialog_tailbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_tailboxbg(struct config conf, char* text, int rows, int cols);
-int bsddialog_textbox(struct config conf, char* text, int rows, int cols);
-int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
+int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss);
-int bsddialog_treeview(struct config conf, char* text, int rows, int cols,
+int bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_yesno(struct config conf, char* text, int rows, int cols);
+int bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 #endif

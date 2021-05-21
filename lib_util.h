@@ -62,18 +62,18 @@ enum elevation { RAISED, LOWERED, NOLINES };
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
     enum elevation elev, bool asciilines);
 void window_scrolling_handler(WINDOW *pad, int rows, int cols);
-void print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
+void print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int maxx,
     char *text);
-int widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
+int widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *text,
     int *h, int *w, WINDOW **shadow, bool buttons);
 int
-widget_withtextpad_init(struct config conf, WINDOW **shadow, WINDOW **widget,
+widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
     int *y, int *x, int *h, int *w, WINDOW **textpad, int *htextpad, char *text,
     bool buttons);
-void widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
+void widget_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow);
 void
-widget_withtextpad_end(struct config conf, char *name, WINDOW *window, int h,
+widget_withtextpad_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h,
     int w, WINDOW *textpad, WINDOW *shadow);
 
 #endif

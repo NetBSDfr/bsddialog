@@ -16,7 +16,7 @@
 int main()
 {
 	int i, output;
-	struct config conf; //bsddialog_config conf;
+	struct bsddialog_conf conf;
 	struct bsddialog_menuitem items[5] = {
 	    {true,  0, "Name 1", "Desc 1", "Bottom Desc 1"},
 	    {false, 0, "Name 2", "Desc 2", "Bottom Desc 2"},
@@ -25,7 +25,7 @@ int main()
 	    {true,  0, "Name 5", "Desc 5", "Bottom Desc 5"}
 	};
 
-	memset(&conf, 0, sizeof(struct config));
+	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
 	conf.item_help = true;

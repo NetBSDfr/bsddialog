@@ -16,9 +16,9 @@
 int main()
 {
 	int output;
-	struct config conf; //bsddialog_config conf;
+	struct bsddialog_conf conf;
 
-	memset(&conf, 0, sizeof(struct config));
+	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
 	conf.title = "yesno";

@@ -77,7 +77,7 @@ void bsddialog_end(void)
 	endwin();
 }
 
-int bsddialog_backtitle(struct config conf, char *backtitle)
+int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle)
 {
 
 	mvaddstr(0, 1, backtitle);
@@ -107,7 +107,7 @@ int bsddialog_backtitle(struct config conf, char *backtitle)
  * SECTION 1 "Info": infobox
  */
 int
-bsddialog_infobox(struct config conf, char* text, int rows, int cols)
+bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	WINDOW *widget, *shadow;
 	int y, x;
@@ -127,7 +127,7 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
  * SECTION 2 "Button": msgbox - yesno
  */
 static int
-do_button(struct config conf, char *text, int rows, int cols, char *name,
+do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
     struct buttons bs, bool shortkey)
 {
 	WINDOW *widget, *textpad, *shadow;
@@ -192,7 +192,7 @@ do_button(struct config conf, char *text, int rows, int cols, char *name,
 }
 
 int
-bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
+bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
@@ -204,7 +204,7 @@ bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 }
 
 int
-bsddialog_yesno(struct config conf, char* text, int rows, int cols)
+bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
@@ -223,7 +223,7 @@ bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 /*
  * SECTIONS 4 "Form": inputbox - passwordbox - form - passwordform - mixedform
  */
-int bsddialog_inputmenu(struct config conf, char* text, int rows, int cols)
+int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	return 0;
 }
@@ -359,7 +359,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 }
 
 static int
-do_mixedform(struct config conf, char* text, int rows, int cols,
+do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int nitems, struct formitem *items)
 {
 	WINDOW *widget, *entry, *shadow;
@@ -436,7 +436,7 @@ do_mixedform(struct config conf, char* text, int rows, int cols,
 	return output;
 }
 
-int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	int output;
 	struct formitem item;
@@ -456,7 +456,7 @@ int bsddialog_inputbox(struct config conf, char* text, int rows, int cols)
 	return output;
 }
 
-int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	int output;
 	struct formitem item;
@@ -477,7 +477,7 @@ int bsddialog_passwordbox(struct config conf, char* text, int rows, int cols)
 }
 
 int
-bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
+bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv)
 {
 	int i, output, nitems;
@@ -505,7 +505,7 @@ bsddialog_mixedform(struct config conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_form(struct config conf, char* text, int rows, int cols,
+bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv)
 {
 	int i, output, nitems, itemlen, inputlen;
@@ -540,7 +540,7 @@ bsddialog_form(struct config conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
+bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv)
 {
 	int i, output, nitems, itemlen, inputlen;
@@ -577,7 +577,7 @@ bsddialog_passwordform(struct config conf, char* text, int rows, int cols,
 /*
  * SECTION 5 "Editor":  editbox(todo)
  */
-int bsddialog_editbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
 	return (BSDDIALOG_ERROR);
@@ -616,7 +616,7 @@ draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, int
 	}
 }
 
-int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc)
+int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, int perc)
 {
 	WINDOW *widget, *bar, *shadow;
 	char input[2048];
@@ -675,7 +675,7 @@ int bsddialog_gauge(struct config conf, char* text, int rows, int cols, int perc
 	return BSDDIALOG_YESOK;
 }
 
-int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
+int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int perc, int argc, char **argv)
 {
 	WINDOW *widget, *bar, *shadow;
@@ -739,7 +739,7 @@ int bsddialog_mixedgauge(struct config conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
+bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, int min,
     int max, int def)
 {
 	WINDOW *widget, *bar, *shadow;
@@ -826,7 +826,7 @@ bsddialog_rangebox(struct config conf, char* text, int rows, int cols, int min,
 	return output;
 }
 
-int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
+int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, int sec)
 {
 	WINDOW *widget, *bar, *shadow;
 	int output, y, x;
@@ -917,7 +917,7 @@ int bsddialog_pause(struct config conf, char* text, int rows, int cols, int sec)
 /*
  * SECTION 7 "Time": timebox - calendar
  */
-int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
+int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
 {
 	WINDOW *widget, *shadow;
@@ -1023,7 +1023,7 @@ int bsddialog_timebox(struct config conf, char* text, int rows, int cols,
 	return output;
 }
 
-int bsddialog_calendar(struct config conf, char* text, int rows, int cols,
+int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int yy, unsigned int mm, unsigned int dd)
 {
 	WINDOW *widget, *shadow;
@@ -1202,7 +1202,7 @@ command_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortke
 }
 
 int
-bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *command)
+bsddialog_prgbox(struct bsddialog_conf conf, char* text, int rows, int cols, char *command)
 {
 	char line[MAXINPUT];
 	WINDOW *widget, *pad, *shadow;
@@ -1266,7 +1266,7 @@ bsddialog_prgbox(struct config conf, char* text, int rows, int cols, char *comma
 	return output;
 }
 
-int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	char line[MAXINPUT];
 	WINDOW *widget, *pad, *shadow;
@@ -1308,7 +1308,7 @@ int bsddialog_programbox(struct config conf, char* text, int rows, int cols)
 	return output;
 }
 
-int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_progressbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	return 0;
 }
@@ -1319,7 +1319,7 @@ int bsddialog_progressbox(struct config conf, char* text, int rows, int cols)
 enum textmode { TAILMODE, TAILBGMODE, TEXTMODE};
 
 static int
-do_text(enum textmode mode, struct config conf, char* path, int rows, int cols)
+do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, int cols)
 {
 	WINDOW *widget, *pad, *shadow;
 	int i, input, y, x, padrows, padcols, ypad, xpad, ys, ye, xs, xe;
@@ -1400,20 +1400,20 @@ do_text(enum textmode mode, struct config conf, char* path, int rows, int cols)
 	return (BSDDIALOG_ERROR);
 }
 
-int bsddialog_tailbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
 	return (do_text(TAILMODE, conf, text, rows, cols));
 }
 
-int bsddialog_tailboxbg(struct config conf, char* text, int rows, int cols)
+int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
 	return (do_text(TAILBGMODE, conf, text, rows, cols));
 }
 
 
-int bsddialog_textbox(struct config conf, char* text, int rows, int cols)
+int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
 	return (do_text(TEXTMODE, conf, text, rows, cols));
@@ -1422,13 +1422,13 @@ int bsddialog_textbox(struct config conf, char* text, int rows, int cols)
 /*
  * SECTION 10 "File": dselect(todo) - fselect(todo)
  */
-int bsddialog_dselect(struct config conf, char* text, int rows, int cols)
+int bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
 	return (BSDDIALOG_ERROR);
 }
 
-int bsddialog_fselect(struct config conf, char* text, int rows, int cols)
+int bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
 	return (BSDDIALOG_ERROR);

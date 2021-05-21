@@ -111,7 +111,7 @@ static bool isws(int ch)
 }
 
 static int
-next_token(struct config conf, char *text, char *valuestr, int *valueint)
+next_token(struct bsddialog_conf conf, char *text, char *valuestr, int *valueint)
 {
 	int i, j;
 	enum token tok;
@@ -181,7 +181,7 @@ print_string(WINDOW *win, int *y, int *x, int minx, int maxx, char *str, bool co
 }
 
 void
-print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
+print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int maxx,
     char *text)
 {
 	char *valuestr;
@@ -216,7 +216,7 @@ print_text(struct config conf, WINDOW *pad, int starty, int minx, int maxx,
 
 // new text funcs
 
-static void prepare_text(struct config conf, char *text, char *buf)
+static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
 {
 	int i, j;
 
@@ -327,7 +327,7 @@ print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool colo
 }
 
 static void
-print_textpad(struct config conf, WINDOW *pad, int *rows, int cols, char *text)
+print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char *text)
 {
 	char *buf, *string;
 	int i, j, x, y;
@@ -605,7 +605,7 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 }
 
 int
-widget_withtextpad_init(struct config conf, WINDOW **shadow, WINDOW **widget,
+widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
     int *y, int *x, int *h, int *w, WINDOW **textpad, int *htextpad, char *text,
     bool buttons)
 {
@@ -675,7 +675,7 @@ widget_withtextpad_init(struct config conf, WINDOW **shadow, WINDOW **widget,
 }
 
 int
-widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
+widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *text,
     int *h, int *w, WINDOW **shadow, bool buttons)
 {
 	int output;
@@ -687,7 +687,7 @@ widget_init(struct config conf, WINDOW **widget, int *y, int *x, char *text,
 }
 
 void
-widget_withtextpad_end(struct config conf, char *name, WINDOW *window, int h,
+widget_withtextpad_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h,
     int w, WINDOW *textpad, WINDOW *shadow)
 {
 
@@ -707,7 +707,7 @@ widget_withtextpad_end(struct config conf, char *name, WINDOW *window, int h,
 }
 
 void
-widget_end(struct config conf, char *name, WINDOW *window, int h, int w,
+widget_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow)
 {
 

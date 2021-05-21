@@ -17,7 +17,7 @@
 int main()
 {
 	int output;
-	struct config conf; //bsddialog_config conf;
+	struct bsddialog_conf conf;
 	enum bsddialog_default_theme theme;
 	struct bsddialog_menuitem items[4] = {
 	    {false, 0, "Dialog",  "Current dialog(1) theme", "BSDDIALOG_THEME_DIALOG" },
@@ -26,7 +26,7 @@ int main()
 	    {false, 0, "Quit",    "Quit or <Cancel> to exit","Quit or Cancel to exit" }
 	};
 
-	memset(&conf, 0, sizeof(struct config));
+	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
 	conf.item_help = true;
