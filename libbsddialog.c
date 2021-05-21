@@ -127,19 +127,25 @@ bsddialog_infobox(struct config conf, char* text, int rows, int cols)
  * SECTION 2 "Button": msgbox - yesno
  */
 static int
-buttons_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
+do_button(struct config conf, char *text, int rows, int cols, char *name,
+    struct buttons bs, bool shortkey)
 {
+	WINDOW *widget, *textpad, *shadow;
 	bool loop, update;
-	int i, input;
-	int output;
+	int i, x, y, input, output, textrows;
+
+	textrows = rows - 4;
+	if (widget_withtextpad_init(conf, &shadow, &widget, &y, &x, &rows, &cols,
+	    &textpad, &textrows, text, true) < 0)
+		return -1;
 
 	loop = update = true;
 	while(loop) {
 		if (update) {
-			draw_buttons(window, y, cols, bs, shortkey);
+			draw_buttons(widget, rows-2, cols, bs, shortkey);
 			update = false;
 		}
-		wrefresh(window);
+		wrefresh(widget);
 		input = getch();
 		switch (input) {
 		case 10: /* Enter */
@@ -180,52 +186,33 @@ buttons_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortke
 		}
 	}
 
+	widget_withtextpad_end(conf, name, widget, rows, cols, textpad, shadow);
+
 	return output;
 }
 
 int
 bsddialog_msgbox(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *textpad, *shadow;
-	int output, y, x, textrows;
 	struct buttons bs;
-
-	textrows = rows - 4;
-	if (widget_withtextpad_init(conf, &shadow, &widget, &y, &x, &rows, &cols,
-	    &textpad, &textrows, text, true) < 0)
-		return -1;
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
 	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,
 	    BUTTONLABEL(help_label));
 
-	output = buttons_handler(widget, rows-2, cols, bs, true);
-
-	widget_withtextpad_end(conf, "Msgbox", widget, rows, cols, textpad, shadow);
-
-	return output;
+	return (do_button(conf, text, rows, cols, "msgbox", bs, true));
 }
 
 int
 bsddialog_yesno(struct config conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *shadow;
-	int output, y, x;
 	struct buttons bs;
-
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true) <0)
-		return -1;
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(yes_label), conf.extra_button,
 	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(no_label),
 	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
-	output = buttons_handler(widget, rows-2, cols, bs, true);
-
-	widget_end(conf, "Yesno", widget, rows, cols, shadow);
-
-	return output;
+	return (do_button(conf, text, rows, cols, "yesno", bs, true));
 }
 
 /*
