@@ -51,15 +51,24 @@ int main()
 }
 ```
 
+**To compile**
 ```
 % cc -I/usr/local/include helloworld.c -o helloworld -L/usr/local/lib/ -lbsddialog
 % ./helloworld
 ```
+**Output**:
 
-## 2 struct sddialog\_config
+## 2 Global tools
 
-The struct:
+### 2.1 Starting
+
+### 2.2 Ending
+
+### 2.3 bsddialog\_conf
+
 ```c
+struct bsddialog_conf {
+};
 ```
 
 Common members:
