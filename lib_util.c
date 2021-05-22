@@ -609,7 +609,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
     int *y, int *x, int *h, int *w, WINDOW **textpad, int *textrows, char *text,
     bool buttons)
 {
-	int ts, ltee, rtee, htextpad;
+	int ts, ltee, rtee;// htextpad;
 
 	if (*h <= 0)
 		; /* todo */
@@ -666,9 +666,9 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 			return -1;
 		}
 		wbkgd(*textpad, t.widgetcolor);
-		htextpad = *textrows;
+		//htextpad = *textrows;
 		print_textpad(conf, *textpad, textrows, *w-4, text);
-		prefresh(*textpad, 0, 0, *y+1, *x+2, *y+htextpad, *x+*w-2);
+		//prefresh(*textpad, 0, 0, *y+1, *x+2, *y+htextpad, *x+*w-2);
 	}
 
 	return 0;

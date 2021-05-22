@@ -131,22 +131,28 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
     struct buttons bs, bool shortkey)
 {
 	WINDOW *widget, *textpad, *shadow;
-	bool loop, update;
+	bool loop, buttonupdate, textupdate;
 	int i, x, y, input, output, textrows, textrow;
 
-	textrows = rows - 4;
+	textrows = rows - 4; // rename htextpad
 	if (widget_withtextpad_init(conf, &shadow, &widget, &y, &x, &rows, &cols,
 	    &textpad, &textrows, text, true) < 0)
 		return -1;
 
 	textrow = 0;
-	loop = update = true;
+	loop = buttonupdate = textupdate = true;
 	while(loop) {
-		if (update) {
+		if (buttonupdate) {
 			draw_buttons(widget, rows-2, cols, bs, shortkey);
-			update = false;
+			buttonupdate = false;
 		}
-		wrefresh(widget);
+		if (textupdate) {
+			if (textrows > rows -4)
+				mvwprintw(widget, rows-3, cols-6, "%3d%%", (int)( (100 * (textrow+rows-4)) / textrows ) );
+			prefresh(textpad, textrow, 0, y+1, x+2, y+rows-4, x+cols-2);
+			textupdate = false;
+		}
+		wrefresh(widget); //useful? Only after perc update?
 		input = getch();
 		switch (input) {
 		case 10: /* Enter */
@@ -159,33 +165,33 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			update = true;
+			buttonupdate = true;
 			break;
 		case KEY_RESIZE: // TODO
-			update = true;
+			buttonupdate = true;
 			break;
 		case KEY_UP:
 			if (textrow == 0)
 				break;
 			textrow--;
-			prefresh(textpad, textrow, 0, y+1, x+2, y+rows-4, x+cols-2);
+			textupdate = true;
 			break;
 		case KEY_DOWN:
 			if (textrow + rows - 4 >= textrows)
 				break;
 			textrow++;
-			prefresh(textpad, textrow, 0, y+1, x+2, y+rows-4, x+cols-2);
+			textupdate = true;
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				update = true;
+				buttonupdate = true;
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < bs.nbuttons - 1) {
 				bs.curr++;
-				update = true;
+				buttonupdate = true;
 			}
 			break;
 		default:
