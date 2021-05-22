@@ -61,7 +61,6 @@ void draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool short
 enum elevation { RAISED, LOWERED, NOLINES };
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
     enum elevation elev, bool asciilines);
-void window_scrolling_handler(WINDOW *pad, int rows, int cols);
 void print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int maxx,
     char *text);
 int widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *text,

@@ -397,39 +397,6 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 	free(buf);
 }
 
-/* scrolling handler */
-void window_scrolling_handler(WINDOW *pad, int rows, int cols)
-{
-	int input, cur_line = 0, shown_lines;
-	bool loop = true;
-	int x = 2, y = COLS/2 - cols/2; /* tofix x & y*/
-
-	shown_lines = rows > (LINES - x - 1) ? (LINES - x - 1) : rows;
-	wattron(pad, t.widgetcolor);
-	while(loop) {
-		mvwvline(pad, 1, cols-1, ACS_VLINE, rows-2);
-		if(cur_line > 0)
-			mvwaddch(pad, cur_line, cols-1, ACS_UARROW);
-		if(cur_line + shown_lines < rows)
-			mvwaddch(pad, cur_line + shown_lines-1, cols-1, 'v');
-		prefresh(pad, cur_line, 0, x, y, shown_lines+1, COLS-2);
-		input = getch();
-		switch(input) {
-		case KEY_UP:
-			if (cur_line > 0)
-				cur_line--;
-			break;
-		case KEY_DOWN:
-			if (cur_line + shown_lines < rows)
-				cur_line++;
-			break;
-		default:
-			loop = false;
-		}
-	}
-	wattroff(pad, t.widgetcolor);
-}
-
 /* Buttons */
 void
 draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
