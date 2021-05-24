@@ -573,10 +573,10 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 
 int
 widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
-    int *y, int *x, int *h, int *w, WINDOW **textpad, int *textrows, char *text,
+    int *y, int *x, int *h, int *w, WINDOW **textpad, int *htextpad, char *text,
     bool buttons)
 {
-	int ts, ltee, rtee;// htextpad;
+	int ts, ltee, rtee;
 
 	if (*h <= 0)
 		; /* todo */
@@ -626,16 +626,14 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 		return 0; /* widget_init() ends */
 
 	if (text != NULL) { /* programbox etc */
-		if ((*textpad = newpad(*textrows, *w-4)) == NULL) {
+		if ((*textpad = newpad(*htextpad, *w-4)) == NULL) {
 			if (conf.shadow)
 				delwin(*shadow);
 			delwin(*textpad);
 			return -1;
 		}
 		wbkgd(*textpad, t.widgetcolor);
-		//htextpad = *textrows;
-		print_textpad(conf, *textpad, textrows, *w-4, text);
-		//prefresh(*textpad, 0, 0, *y+1, *x+2, *y+htextpad, *x+*w-2);
+		print_textpad(conf, *textpad, htextpad, *w-4, text);
 	}
 
 	return 0;
