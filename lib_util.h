@@ -49,6 +49,7 @@ struct buttons {
 	char *label[MAXBUTTONS];
 	int value[MAXBUTTONS];
 	int curr;
+	unsigned int sizebutton; /* including left and right delimiters */
 };
 void get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,

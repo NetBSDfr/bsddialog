@@ -440,21 +440,15 @@ draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
 void
 draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 {
-	int i, x, start_x, size;
-#define SIZEBUTTON  8
+	int i, x, start_x;
 #define BUTTONSPACE 3
 
-	size = MAX(SIZEBUTTON - 2, strlen(bs.label[0]));
-	for (i=1; i < bs.nbuttons; i++)
-		size = MAX(size, strlen(bs.label[i]));
-	size += 2;
-
-	start_x = size * bs.nbuttons + (bs.nbuttons - 1) * BUTTONSPACE;
+	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * BUTTONSPACE;
 	start_x = cols/2 - start_x/2;
 
 	for (i = 0; i < bs.nbuttons; i++) {
-		x = i * (size + BUTTONSPACE);
-		draw_button(window, y, start_x + x, size, bs.label[i],
+		x = i * (bs.sizebutton + BUTTONSPACE);
+		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
 		    i == bs.curr, shortkey);
 	}
 }
@@ -464,9 +458,12 @@ get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
     char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
     bool help, char *helplabel)
 {
+	int i;
+#define SIZEBUTTON  8
 
 	bs->nbuttons = 0;
 	bs->curr = 0;
+	bs->sizebutton = 0;
 
 	if (yesok) {
 		bs->label[0] = yesoklabel;
@@ -499,6 +496,11 @@ get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
 		bs->value[0] = BSDDIALOG_YESOK;
 		bs->nbuttons = 1;
 	}
+
+	bs->sizebutton = MAX(SIZEBUTTON - 2, strlen(bs->label[0]));
+	for (i=1; i < bs->nbuttons; i++)
+		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
+	bs->sizebutton += 2;
 }
 
 /* Widgets builders */
