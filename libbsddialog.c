@@ -138,11 +138,11 @@ button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
 	minrows = 4;
 	mincols = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
 	mincols += 2; /* borders*/
-	mincols = MAX(4 /*2borders+2buttondelimiters*/, mincols);
+	mincols = MAX(4 /* 2borders + 2buttondelimiters */, mincols);
 
 	if (strlen(text) > 0) {
 		minrows++;
-		mincols = MAX(5 /*2borders+2pads+1space*/, mincols);
+		mincols = MAX(5 /* 2borders + 2pads + 1space */, mincols);
 	}
 
 	if (minrows > rows || mincols > cols)
