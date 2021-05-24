@@ -148,7 +148,8 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 		}
 		if (textupdate) {
 			if (textrows > rows -4)
-				mvwprintw(widget, rows-3, cols-6, "%3d%%", (int)( (100 * (textrow+rows-4)) / textrows ) );
+				mvwprintw(widget, rows-3, cols-6, "%3d%%",
+				    (int)((100 * (textrow+rows-4)) / textrows));
 			prefresh(textpad, textrow, 0, y+1, x+2, y+rows-4, x+cols-2);
 			textupdate = false;
 		}
