@@ -441,13 +441,12 @@ void
 draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 {
 	int i, x, start_x;
-#define BUTTONSPACE 3
 
-	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * BUTTONSPACE;
+	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.buttonspace;
 	start_x = cols/2 - start_x/2;
 
 	for (i = 0; i < bs.nbuttons; i++) {
-		x = i * (bs.sizebutton + BUTTONSPACE);
+		x = i * (bs.sizebutton + t.buttonspace);
 		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
 		    i == bs.curr, shortkey);
 	}

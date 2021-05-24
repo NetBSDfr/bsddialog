@@ -63,6 +63,7 @@ static struct bsddialog_theme defaulttheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)),
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
 
+	.buttonspace     = 3,
 	.buttleftch      = '[',
 	.buttrightchar   = ']',
 	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, bgcurr)),
@@ -98,6 +99,7 @@ static struct bsddialog_theme dialogtheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
 
+	.buttonspace     = 3,
 	.buttleftch      = '[',
 	.buttrightchar   = ']',
 	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
@@ -133,6 +135,7 @@ static struct bsddialog_theme magentatheme = {
 	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
 	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
 
+	.buttonspace     = 3,
 	.buttleftch      = '<',
 	.buttrightchar   = '>',
 	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_RED)) | A_BOLD,
@@ -169,6 +172,7 @@ static void settheme(struct bsddialog_theme newtheme)
 	t.currbarcolor    = newtheme.currbarcolor;
 	t.barcolor        = newtheme.barcolor;
 
+	t.buttonspace     = newtheme.buttonspace;
 	t.buttleftch      = newtheme.buttleftch;
 	t.buttrightchar   = newtheme.buttrightchar;
 	t.currbuttdelimcolor = newtheme.currbuttdelimcolor;

@@ -51,6 +51,7 @@ struct bsddialog_theme {
 	int currbarcolor;
 	int barcolor;
 
+	unsigned int buttonspace;
 	int buttleftch;
 	int buttrightchar;
 	int currbuttdelimcolor;
