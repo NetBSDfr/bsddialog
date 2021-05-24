@@ -3,7 +3,7 @@
 #
 # Written in 2021 by Alfonso Sabato Siciliano
 
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 INCLUDEDIR = ./
 LDFLAGS = -lform -lncurses -ltinfo
 OUTPUT = bsddialog
