@@ -132,11 +132,11 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 {
 	WINDOW *widget, *textpad, *shadow;
 	bool loop, buttonupdate, textupdate;
-	int i, x, y, input, output, textrows, textrow;
+	int i, x, y, input, output, htextpad, textrow;
 
-	textrows = rows - 4; // rename htextpad
+	htextpad = rows - 4;
 	if (widget_withtextpad_init(conf, &shadow, &widget, &y, &x, &rows, &cols,
-	    &textpad, &textrows, text, true) < 0)
+	    &textpad, &htextpad, text, true) < 0)
 		return -1;
 
 	textrow = 0;
@@ -147,9 +147,9 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			buttonupdate = false;
 		}
 		if (textupdate) {
-			if (textrows > rows -4)
+			if (htextpad > rows -4)
 				mvwprintw(widget, rows-3, cols-6, "%3d%%",
-				    (int)((100 * (textrow+rows-4)) / textrows));
+				    (int)((100 * (textrow+rows-4)) / htextpad));
 			prefresh(textpad, textrow, 0, y+1, x+2, y+rows-4, x+cols-2);
 			textupdate = false;
 		}
@@ -178,7 +178,7 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			textupdate = true;
 			break;
 		case KEY_DOWN:
-			if (textrow + rows - 4 >= textrows)
+			if (textrow + rows - 4 >= htextpad)
 				break;
 			textrow++;
 			textupdate = true;
