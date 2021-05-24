@@ -384,7 +384,7 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 			j = -1;
 		}
 
-		if (y >= *rows) {/* check for whitespaces*/
+		if (y >= *rows) { /* check for whitespaces */
 			*rows = y + 1;
 			wresize(pad, *rows, cols);
 		}
