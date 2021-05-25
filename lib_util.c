@@ -283,6 +283,38 @@ static bool is_ncurses_attr(char *text)
 	return isattr;
 }
 
+unsigned int maxword(struct bsddialog_conf conf, char *text)
+{
+	char *buf;
+	unsigned int max;
+	int i, len, buflen;
+
+	if ((buf = malloc(strlen(text) + 1)) == NULL)
+		return 0;
+
+	prepare_text(conf, text, buf);
+
+	buflen = strlen(buf);
+	max = len = 0;
+	for (i=0; i < buflen; i++) {
+		if (buf[i] == '\t' || buf[i] == '\n' || buf[i] == ' ')
+			if (len != 0) {
+				// to check \Zx?
+				max = MAX(max, len);
+				len = 0;
+				continue;
+			}
+		if (conf.colors && is_ncurses_attr(buf + i))
+			i+=3;
+		else
+			len++;
+	}
+
+	free(buf);
+
+	return max;
+}
+
 static void
 print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool color)
 {

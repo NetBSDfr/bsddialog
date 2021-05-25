@@ -59,6 +59,7 @@ void draw_button(WINDOW *window, int y, int x, int size, char *text, bool select
 void draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey);
 
 /* widget */
+unsigned int maxword(struct bsddialog_conf conf, char *text);
 enum elevation { RAISED, LOWERED, NOLINES };
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
     enum elevation elev, bool asciilines);
