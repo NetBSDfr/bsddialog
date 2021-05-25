@@ -174,6 +174,24 @@ static void set_size(struct bsddialog_conf conf, int *y, int *x, int *h, int *w)
 		*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
 }
 
+/*static void
+button_autosize(struct bsddialog_conf conf, int *rows, int *cols, char *text,
+    struct buttons bs)
+{
+	int h, w;
+
+	if (*rows == 0) {
+	}
+
+	if (*cols == 0) {
+		w = 0;
+		if (strlen(text) > 0)
+		w = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
+		w = MAX(4, w);
+		w += 2; // borders
+	}
+}*/
+
 static int
 do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
     struct buttons bs, bool shortkey)
@@ -182,6 +200,7 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	bool loop, buttonupdate, textupdate;
 	int i, y, x, input, output, htextpad, textrow;
 
+	//button_autosize(conf, &rows, &cols, text, bs);
 	set_size(conf, &y, &x, &rows, &cols);
 	if (button_checksize(conf, y, x, rows, cols, text, bs) == false)
 		return -1;
