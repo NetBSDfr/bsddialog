@@ -574,28 +574,19 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 
 int
 widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
-    int *y, int *x, int *h, int *w, WINDOW **textpad, int *htextpad, char *text,
+    int y, int x, int h, int w, WINDOW **textpad, int *htextpad, char *text,
     bool buttons)
 {
 	int ts, ltee, rtee;
 
-	if (*h <= 0)
-		; /* todo */
-
-	if (*w <= 0)
-		; /* todo */
-
-	*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
-	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
-
 	if (conf.shadow) {
-		if ((*shadow = newwin(*h, *w+1, *y+1, *x+1)) == NULL)
+		if ((*shadow = newwin(h, w+1, y+1, x+1)) == NULL)
 			return -1;
 		wbkgd(*shadow, t.shadowcolor);
 		wrefresh(*shadow);
 	}
 
-	*widget = new_window(*y, *x, *h, *w, conf.title, conf.hline,
+	*widget = new_window(y, x, h, w, conf.title, conf.hline,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
 	if(*widget == NULL) {
 		if (conf.shadow)
@@ -604,7 +595,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 	}
 
 	if (textpad == NULL && text != NULL) /* no pad */
-		print_text(conf, *widget, 1, 2, *w-3, text);
+		print_text(conf, *widget, 1, 2, w-3, text);
 
 	if (buttons && conf.no_lines != true) {
 		ts = conf.ascii_lines ? '-' : ACS_HLINE;
@@ -612,12 +603,12 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 		rtee = conf.ascii_lines ? '+' : ACS_RTEE;
 
 		wattron(*widget, t.lineraisecolor);
-		mvwaddch(*widget, *h-3, 0, ltee);
-		mvwhline(*widget, *h-3, 1, ts, *w-2);
+		mvwaddch(*widget, h-3, 0, ltee);
+		mvwhline(*widget, h-3, 1, ts, w-2);
 		wattroff(*widget, t.lineraisecolor);
 
 		wattron(*widget, t.linelowercolor);
-		mvwaddch(*widget, *h-3, *w-1, rtee);
+		mvwaddch(*widget, h-3, w-1, rtee);
 		wattroff(*widget, t.linelowercolor);
 	}
 
@@ -627,14 +618,14 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 		return 0; /* widget_init() ends */
 
 	if (text != NULL) { /* programbox etc */
-		if ((*textpad = newpad(*htextpad, *w-4)) == NULL) {
+		if ((*textpad = newpad(*htextpad, w-4)) == NULL) {
 			if (conf.shadow)
 				delwin(*shadow);
 			delwin(*textpad);
 			return -1;
 		}
 		wbkgd(*textpad, t.widgetcolor);
-		print_textpad(conf, *textpad, htextpad, *w-4, text);
+		print_textpad(conf, *textpad, htextpad, w-4, text);
 	}
 
 	return 0;
@@ -646,8 +637,18 @@ widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *t
 {
 	int output;
 
-	output = widget_withtextpad_init(conf, shadow, widget, y, x, h, w, NULL,
-	    NULL, text, buttons);
+	// to delete (each widget has to check its x,y,h,w)
+	if (*h <= 0)
+		; /* todo */
+
+	if (*w <= 0)
+		; /* todo */
+
+	*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
+	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
+
+	output = widget_withtextpad_init(conf, shadow, widget, *y, *x, *h, *w,
+	    NULL, NULL, text, buttons);
 
 	return output;
 }

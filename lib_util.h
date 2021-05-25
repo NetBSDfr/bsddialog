@@ -68,7 +68,7 @@ int widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, cha
     int *h, int *w, WINDOW **shadow, bool buttons);
 int
 widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
-    int *y, int *x, int *h, int *w, WINDOW **textpad, int *htextpad, char *text,
+    int y, int x, int h, int w, WINDOW **textpad, int *htextpad, char *text,
     bool buttons);
 void widget_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow);
