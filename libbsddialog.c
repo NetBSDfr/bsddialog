@@ -127,17 +127,23 @@ bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
  * SECTION 2 "Button": msgbox - yesno
  */
 bool
-button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
-    struct buttons bs)
+button_checksize(struct bsddialog_conf conf, int y, int x, int rows, int cols,
+    char *text, struct buttons bs)
 {
 	int minrows, mincols;
+
+	if (y > LINES - 1 || x > COLS - 1)
+		return false;
 
 	rows = rows < 0 ? LINES : rows;
 	cols = cols < 0 ? COLS : cols;
 
+	if (y + rows > LINES -1 || x + cols > COLS -1)
+		return false;
+
 	minrows = 4;
 	mincols = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
-	mincols += 2; /* borders*/
+	mincols += 2; /* borders */
 	mincols = MAX(4 /* 2borders + 2buttondelimiters */, mincols);
 
 	if (strlen(text) > 0) {
@@ -151,19 +157,37 @@ button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
 	return true;
 }
 
+static void set_size(struct bsddialog_conf conf, int *y, int *x, int *h, int *w)
+{
+
+	if (*h < 0) {
+		*y = 0;
+		*h = conf.shadow ? LINES - 1 : LINES;
+	} else
+		*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
+
+
+	if (*w <= 0) {
+		*x = 0;
+		*w = conf.shadow ? COLS - 2 : COLS;
+	} else
+		*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
+}
+
 static int
 do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
     struct buttons bs, bool shortkey)
 {
 	WINDOW *widget, *textpad, *shadow;
 	bool loop, buttonupdate, textupdate;
-	int i, x, y, input, output, htextpad, textrow;
+	int i, y, x, input, output, htextpad, textrow;
 
-	if (button_checksize(conf, rows, cols, text, bs) == false)
+	set_size(conf, &y, &x, &rows, &cols);
+	if (button_checksize(conf, y, x, rows, cols, text, bs) == false)
 		return -1;
 
 	htextpad = rows - 4;
-	if (widget_withtextpad_init(conf, &shadow, &widget, &y, &x, &rows, &cols,
+	if (widget_withtextpad_init(conf, &shadow, &widget, y, x, rows, cols,
 	    &textpad, &htextpad, text, true) < 0)
 		return -1;
 
