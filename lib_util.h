@@ -32,6 +32,11 @@
  * Utils to implement widgets
  */
 
+#define BSDDIALOG_DEBUG(y,x,fmt, ...) do {			\
+	mvprintw(y, x, fmt, __VA_ARGS__);			\
+	refresh();						\
+} while (0)
+
 #define	MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
