@@ -166,6 +166,8 @@ button_autosize(struct bsddialog_conf conf, int *y, int *x, int *rows, int *cols
 
 	if (*rows == 0) {
 		h = strlen(text) > 0 ? 5 : 4;
+
+		*y = (conf.y < 0) ? (LINES/2 - h/2) : conf.y;
 	} else {
 		h = *rows;
 	}
@@ -176,16 +178,15 @@ button_autosize(struct bsddialog_conf conf, int *y, int *x, int *rows, int *cols
 		w = MAX(4 /* 2borders + 2buttondelimiters */, w); /* text check */
 		if (text != NULL)
 			w = MAX(w, maxword(conf, text) + 4);
-		w = MIN(w, (conf.shadow ? COLS -1 : COLS));
+		w = MIN(w, (conf.shadow ? COLS -2 : COLS));
+
+		*x = (conf.x < 0) ? (COLS/2 - w/2) : conf.x;
 	} else {
 		w = *cols;
 	}
 
 	*rows = h;
 	*cols = w;
-
-	*y = (conf.y < 0) ? (LINES/2 - h/2) : conf.y;
-	*x = (conf.x < 0) ? (COLS/2 - w/2) : conf.x;
 }
 
 bool
