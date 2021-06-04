@@ -150,7 +150,7 @@ Examples library:
 | --mixedform    | In progress | todo resize, auto rows/cols, F1               |
 | --mixedgauge   | In progress | todo resize, auto rows/cols, F1               |
 | --mixedlist    | In progress | Can implement [dialog4ports(1)](https://man.freebsd.org/dialog4ports/1) |
-| --msgbox       | In progress | todo resize, auto rows/cols, F1               |
+| --msgbox       | In progress | todo resize, F1                               |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |
 | --pause        | In progress | todo resize, auto rows/cols, F1               |
@@ -164,5 +164,5 @@ Examples library:
 | --textbox      | In progress | todo navigation keys                          |
 | --timebox      | In progress | todo resize, auto rows/cols, F1               |
 | --treeview     | In progress | todo resize, auto rows/cols, F1               |
-| --yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button, todo resize, auto rows/cols, F1 |
+| --yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button, todo resize, F1 |
 

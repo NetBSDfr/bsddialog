@@ -126,22 +126,76 @@ bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 /*
  * SECTION 2 "Button": msgbox - yesno
  */
+// in check_set_fullscreen? Macro?
+static bool check_term_size(bool shadow)
+{
+	int minh, minw;
+
+	minh = shadow ? LINES - 1 : LINES;
+	minw = shadow ? COLS - 2 : COLS;
+
+	if (minh <= 0 || minw <=0)
+		return false;
+
+	return true;
+}
+
+//lib_util.h in the future
+static void
+check_set_fullscreen(struct bsddialog_conf conf, int *y, int *x, int *h, int *w)
+{
+
+	if (*h < 0) {
+		*y = 0;
+		*h = conf.shadow ? LINES - 1 : LINES;
+	} else if (*h > 0)
+		*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
+
+	if (*w < 0) {
+		*x = 0;
+		*w = conf.shadow ? COLS - 2 : COLS;
+	} else if (*w > 0)
+		*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
+}
+
+static void
+button_autosize(struct bsddialog_conf conf, int *y, int *x, int *rows, int *cols,
+    char *text, struct buttons bs)
+{
+	int h, w;
+
+	if (*rows == 0) {
+		h = strlen(text) > 0 ? 5 : 4;
+	} else {
+		h = *rows;
+	}
+
+	if (*cols == 0) {
+		w = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
+		w += 2; /* borders */
+		w = MAX(4 /* 2borders + 2buttondelimiters */, w); /* text check */
+		if (text != NULL)
+			w = MAX(w, maxword(conf, text) + 4);
+		w = MIN(w, (conf.shadow ? COLS -1 : COLS));
+	} else {
+		w = *cols;
+	}
+
+	*rows = h;
+	*cols = w;
+
+	*y = (conf.y < 0) ? (LINES/2 - h/2) : conf.y;
+	*x = (conf.x < 0) ? (COLS/2 - w/2) : conf.x;
+}
+
 bool
 button_checksize(struct bsddialog_conf conf, int y, int x, int rows, int cols,
     char *text, struct buttons bs)
 {
 	int minrows, mincols;
 
-	if (y > LINES - 1 || x > COLS - 1)
-		return false;
-
-	rows = rows < 0 ? LINES : rows;
-	cols = cols < 0 ? COLS : cols;
-
-	if (y + rows > LINES -1 || x + cols > COLS -1)
-		return false;
-
 	minrows = 4;
+
 	mincols = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
 	mincols += 2; /* borders */
 	mincols = MAX(4 /* 2borders + 2buttondelimiters */, mincols);
@@ -157,40 +211,18 @@ button_checksize(struct bsddialog_conf conf, int y, int x, int rows, int cols,
 	return true;
 }
 
-static void set_size(struct bsddialog_conf conf, int *y, int *x, int *h, int *w)
+// widget_init() should call
+static bool check_position(bool shadow, int y, int x, int h, int w)
 {
 
-	if (*h < 0) {
-		*y = 0;
-		*h = conf.shadow ? LINES - 1 : LINES;
-	} else
-		*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
+	if ((y + h + (shadow ? 1 : 0)) > LINES)
+		return false;
 
+	if ((x + w + (shadow ? 2 : 0)) > COLS)
+		return false;
 
-	if (*w <= 0) {
-		*x = 0;
-		*w = conf.shadow ? COLS - 2 : COLS;
-	} else
-		*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
+	return true;
 }
-
-/*static void
-button_autosize(struct bsddialog_conf conf, int *rows, int *cols, char *text,
-    struct buttons bs)
-{
-	int h, w;
-
-	if (*rows == 0) {
-	}
-
-	if (*cols == 0) {
-		w = 0;
-		if (strlen(text) > 0)
-		w = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
-		w = MAX(4, w);
-		w += 2; // borders
-	}
-}*/
 
 static int
 do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
@@ -200,9 +232,13 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	bool loop, buttonupdate, textupdate;
 	int i, y, x, input, output, htextpad, textrow;
 
-	//button_autosize(conf, &rows, &cols, text, bs);
-	set_size(conf, &y, &x, &rows, &cols);
+	if (check_term_size(conf.shadow) == false)
+		return -1;
+	check_set_fullscreen(conf, &y, &x, &rows, &cols);
+	button_autosize(conf, &y, &x, &rows, &cols, text, bs);
 	if (button_checksize(conf, y, x, rows, cols, text, bs) == false)
+		return -1;
+	if (check_position(conf.shadow, y, x, rows, cols) == false)
 		return -1;
 
 	htextpad = rows - 4;
