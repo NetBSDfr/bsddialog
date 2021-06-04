@@ -261,7 +261,7 @@ int main(int argc, char *argv[argc])
 	    { "help-label", required_argument, NULL /*string*/, HELP_LABEL },
 	    { "help-status", no_argument, NULL, HELP_STATUS },
 	    { "help-tags", no_argument, NULL, 'X' },
-	    { "hfile", required_argument, NULL /*filename*/, 'X' },
+	    { "hfile", required_argument, NULL /*filename*/, HFILE },
 	    { "hline", required_argument, NULL /*string*/, HLINE },
 	    { "ignore", no_argument, NULL, IGNORE },
 	    { "input-fd", required_argument, NULL /*fd*/, 'X' },
@@ -405,6 +405,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case HELP_STATUS:
 			conf.help_status = true;
+			break;
+		case HFILE:
+			conf.hfile = optarg;
 			break;
 		case HLINE:
 			conf.hline = optarg;

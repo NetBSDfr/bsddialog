@@ -276,6 +276,15 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttonupdate = true;
 			break;
+		case KEY_F(1): // TODO
+			if (conf.hfile == NULL)
+				break;
+			bsddialog_textbox(conf, conf.hfile, rows, cols);
+			//clear();
+			wrefresh(widget);
+			textupdate = true;
+			buttonupdate = true;
+			break;
 		case KEY_RESIZE: // TODO
 			buttonupdate = true;
 			break;
