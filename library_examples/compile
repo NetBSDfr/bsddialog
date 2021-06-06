@@ -1,6 +1,6 @@
 #!/bin/sh
 
-lib="../theme.c ../lib_util.c ../msgbox_yesno.c ../menus.c ../libbsddialog.c"
+lib="../theme.c ../lib_util.c ../menus.c ../libbsddialog.c"
 examples="buildlist menu treeview checklist radiolist dialog4ports theme \
 	infobox yesno msgbox"
 
