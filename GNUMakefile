@@ -7,7 +7,7 @@ CFLAGS = -Wall -g
 INCLUDEDIR = ./
 LDFLAGS = -lform -lncurses -ltinfo
 OUTPUT = bsddialog
-SOURCES = theme.c menus.c lib_util.c libbsddialog.c bsddialog.c
+SOURCES = theme.c msgbox_yesno.c menus.c lib_util.c libbsddialog.c bsddialog.c
 OBJECTS=$(SOURCES:.c=.o)
 RM= rm -f
 
