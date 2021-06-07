@@ -60,7 +60,7 @@ int bsddialog_init(void)
 	curs_set(0);
 
 	error += start_color();
-	for (i=0; i< 8; i++)
+	for (i=0; i<8; i++)
 		for(j=0; j<8; j++) {
 			error += init_pair(c, i, j);
 			c++;
