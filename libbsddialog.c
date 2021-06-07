@@ -165,7 +165,7 @@ button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*w += 2; /* borders */
 		*w = MAX(4 /* 2borders + 2buttondelimiters */, *w); /* text check */
 		if (text != NULL)
-			*w = MAX(*w, maxword(conf, text) + 4);//fallisce se la più lunga è l' ultima
+			*w = MAX(*w, maxword(conf, text) + 4);
 		*w = MIN(*w, (conf.shadow ? COLS -2 : COLS));
 	}
 }

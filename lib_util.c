@@ -294,10 +294,10 @@ unsigned int maxword(struct bsddialog_conf conf, char *text)
 
 	prepare_text(conf, text, buf);
 
-	buflen = strlen(buf);
+	buflen = strlen(buf) + 1;
 	max = len = 0;
 	for (i=0; i < buflen; i++) {
-		if (buf[i] == '\t' || buf[i] == '\n' || buf[i] == ' ')
+		if (buf[i] == '\t' || buf[i] == '\n' || buf[i] == ' ' || buf[i] == '\0')
 			if (len != 0) {
 				// to check \Zx?
 				max = MAX(max, len);
