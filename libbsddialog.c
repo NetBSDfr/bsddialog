@@ -44,11 +44,16 @@
 
 #define MAXINPUT 2048
 
+#define ERRBUFLEN 1024
+static const char errorbuffer[ERRBUFLEN];
+
 extern struct bsddialog_theme t;
 
 int bsddialog_init(void)
 {
 	int i, j, c = 1, error = 0;
+
+	memset((void*)errorbuffer, 0, ERRBUFLEN);
 
 	if(initscr() == NULL)
 		return -1;
@@ -87,6 +92,11 @@ int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle)
 	refresh();
 
 	return 0;
+}
+
+const char *bsddialog_geterror(void)
+{
+	return errorbuffer;
 }
 
 /*
