@@ -41,7 +41,7 @@
 
 /* 'extern const char *errorbuffer;' to use this macro */
 #define RETURN_ERROR(str,retvalue) do {		\
-	strncpy(errorbuffer,str,ERRBUFLEN);	\
+	strcpy(errorbuffer,str);		\
 	return retvalue;			\
 } while (0)
 

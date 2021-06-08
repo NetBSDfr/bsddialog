@@ -45,7 +45,7 @@
 #define MAXINPUT 2048
 
 #define ERRBUFLEN 1024
-static const char errorbuffer[ERRBUFLEN];
+static char errorbuffer[ERRBUFLEN];
 
 extern struct bsddialog_theme t;
 
