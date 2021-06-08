@@ -56,7 +56,7 @@ int bsddialog_init(void)
 	memset((void*)errorbuffer, 0, ERRBUFLEN);
 
 	if(initscr() == NULL)
-		return -1;
+		RETURN_ERROR("Cannot init ncurses", -1);
 
 	error += keypad(stdscr, TRUE);
 	nl();
@@ -70,6 +70,9 @@ int bsddialog_init(void)
 			error += init_pair(c, i, j);
 			c++;
 	}
+
+	if(error > 0)
+		RETURN_ERROR("Cannot init ncurses", -1);
 
 	bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
 
