@@ -637,6 +637,7 @@ int main(int argc, char *argv[argc])
 
 	// debug
 	printf("[Debug] Exit status: %d\n", output);
+	printf("[Debug] Error msg: %s\n", bsddialog_geterror());
 	return output;
 }
 
