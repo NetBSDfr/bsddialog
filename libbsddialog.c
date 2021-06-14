@@ -71,8 +71,10 @@ int bsddialog_init(void)
 			c++;
 	}
 
-	if(error > 0)
+	if(error > 0) {
+		bsddialog_end();
 		RETURN_ERROR("Cannot init ncurses", -1);
+	}
 
 	bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
 
