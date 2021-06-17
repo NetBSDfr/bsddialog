@@ -269,7 +269,7 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			prefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
 			textupdate = false;
 		}
-		wrefresh(widget); //useful? Only after perc update?
+		wrefresh(widget); //useful? Only after an actual update?
 		input = getch();
 		switch (input) {
 		case 10: /* Enter */
