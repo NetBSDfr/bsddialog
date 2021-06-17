@@ -611,7 +611,7 @@ int main(int argc, char *argv[argc])
 	argv += 3;
 
 	if(bsddialog_init() != 0) {
-		printf("Cannot init ncurses\n");
+		printf("Error: %s\n", bsddialog_geterror());
 		return 1;
 	}
 
