@@ -8,6 +8,9 @@ The project is inspired by **dialog** https://invisible-island.net/dialog,
 however **bsddialog** is released under the terms of the *BSD-2-Clause License*
 and the *"features synchronization"* with **dialog** is not a priority.
 
+Description: https://www.freebsd.org/status/report-2021-04-2021-06/#\_bsddialog\_tui\_widgets
+
+
 **Getting Started**
 
 ```
