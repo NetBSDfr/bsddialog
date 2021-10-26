@@ -191,7 +191,7 @@ button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
 {
 	int minrows, mincols;
 
-	minrows = 4;
+	minrows = 4; /* 2borders + 1 button labels + 1 buttons upper border */
 
 	mincols = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
 	mincols += 2; /* borders */
