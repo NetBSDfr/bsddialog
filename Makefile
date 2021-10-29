@@ -1,9 +1,10 @@
 # Any copyright is dedicated to the Public Domain, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>
 #
-# Written in 2021 by Alfonso Sabato Siciliano
+# Written by Alfonso Sabato Siciliano
 
 OUTPUT=  bsddialog
+HEADERS = bsddialog.h theme.h
 SOURCES= theme.c menus.c lib_util.c libbsddialog.c bsddialog.c
 OBJECTS= ${SOURCES:.c=.o}
 
@@ -34,7 +35,7 @@ clean:
 ${OUTPUT}: ${OBJECTS}
 	${CC} ${LDFLAGS} ${OBJECTS} -o ${.PREFIX}
 
-.c.o:
+.c.o: ${HEADERS}
 	${CC} ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
 
 install:
