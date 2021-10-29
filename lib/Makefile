@@ -1,0 +1,71 @@
+# Any copyright is dedicated to the Public Domain, see:
+#     <http://creativecommons.org/publicdomain/zero/1.0/>
+#
+# Written by Alfonso Sabato Siciliano
+
+VERSION = 0.1
+LIBRARY = bsddialog
+LIBRARY_SO = lib${LIBRARY:=.so}
+HEADERS = bsddialog.h theme.h
+SOURCES= theme.c menus.c lib_util.c libbsddialog.c 
+OBJECTS= ${SOURCES:.c=.o}
+FBSDFLAGS= -O2 -pipe -std=gnu99 -Wno-format-zero-length \
+	-fstack-protector-strong -Qunused-arguments
+CFLAGS = -I/usr/local/include -fPIC -Wall -Wextra ${FBSDFLAGS}
+LDFLAGS = -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
+	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} 
+
+INSTALL_PREFIX=/usr/local
+AR = ar -crD
+LN = ln -s
+RM = rm -f
+CP = cp
+GZIP = gzip -cn
+LDCONFIG = /sbin/ldconfig -m
+
+# BASE ncurses
+LDFLAGS += -L/usr/lib -lform -lncurses -ltinfo
+
+# PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
+.if defined(PORTNCURSES)
+CFLAGS += -DPORTNCURSES -I/usr/local/include
+LDFLAGS += -L/usr/local/lib -lform -lncurses -ltinfo
+.endif
+
+MAN= ${OUTPUT}.3
+GZIP= gzip -cn
+MANDIR= /usr/local/share/man/man3
+
+INSTALL= install
+RM= rm -f
+
+all : man ${LIBRARY}
+
+${LIBRARY}: ${OBJECTS}
+	${CC} ${LDFLAGS} ${.ALLSRC} -o ${LIBRARY_SO}.${VERSION}
+	# LN for devel
+	${LN} ${LIBRARY_SO}.${VERSION} ${LIBRARY_SO}
+
+.c.o:
+	${CC} ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
+
+man:
+	${GZIP} ${LIBRARY}.3 > ${LIBRARY}.3.gz
+
+clean:
+	${RM} ${LIBRARY_SO}* *.o *~ *.gz
+
+
+install:
+	${CP} ${LIBRARY}.h ${INSTALL_PREFIX}/include
+	${CP} ${LIBRARY_SO}.${VERSION} ${INSTALL_PREFIX}/lib/
+	${LN} ${INSTALL_PREFIX}/lib/${LIBRARY_SO}.${VERSION} ${INSTALL_PREFIX}/lib/${LIBRARY_SO}
+	${LDCONFIG} ${INSTALL_PREFIX}/lib
+	${CP} ${LIBRARY}.3.gz ${INSTALL_PREFIX}/man/man3/
+
+unistall:
+	${RM} ${INSTALL_PREFIX}/include/${LIBRARY}.h
+	${RM} ${INSTALL_PREFIX}/lib/${LIBRARY_SO}
+	${RM} ${INSTALL_PREFIX}/lib/${LIBRARY_SO}.${VERSION}
+	${LDCONFIG} ${INSTALL_PREFIX}/lib
+	${RM} ${INSTALL_PREFIX}/man/man3/${LIBRARY}.3.gz

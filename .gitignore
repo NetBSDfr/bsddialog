@@ -11,3 +11,5 @@ library_examples/treeview
 library_examples/infobox
 library_examples/msgbox
 library_examples/yesno
+*.gz
+lib/libbsddialog.so*

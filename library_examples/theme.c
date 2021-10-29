@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../bsddialog.h"
-#include "../theme.h"
+#include <bsddialog.h>
+#include <theme.h>
 
 int main()
 {

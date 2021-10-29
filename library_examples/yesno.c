@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../bsddialog.h"
+#include <bsddialog.h>
 
 int main()
 {

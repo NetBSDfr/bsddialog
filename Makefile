@@ -4,22 +4,15 @@
 # Written by Alfonso Sabato Siciliano
 
 OUTPUT=  bsddialog
-HEADERS = bsddialog.h theme.h
-SOURCES= theme.c menus.c lib_util.c libbsddialog.c bsddialog.c
+SOURCES= bsddialog.c
 OBJECTS= ${SOURCES:.c=.o}
+LIBPATH= ./lib
+LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
-# BASE ncurses
-CFLAGS= -Wall
-LDFLAGS= -L/usr/lib -lform -lncurses -ltinfo
+CFLAGS= -Wall -I${LIBPATH}
+LDFLAGS= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
 
-# PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
-.if defined(PORTNCURSES)
-CFLAGS += -DPORTNCURSES -I/usr/local/include
-LDFLAGS = -L/usr/local/lib -lform -lncurses -ltinfo
-.endif
-
-BINDIR= /usr/local/sbin
-
+BINDIR= /usr/local/bin
 MAN= ${OUTPUT}.1
 GZIP= gzip -cn
 MANDIR= /usr/local/share/man/man1
@@ -29,13 +22,17 @@ RM= rm -f
 
 all : ${OUTPUT}
 
-clean:
-	${RM} ${OUTPUT} *.o *~ *.core ${MAN}.gz
-
-${OUTPUT}: ${OBJECTS}
+${OUTPUT}: ${LIBBSDDIALOG} ${OBJECTS}
 	${CC} ${LDFLAGS} ${OBJECTS} -o ${.PREFIX}
 
-.c.o: ${HEADERS}
+${LIBBSDDIALOG}:
+.if defined(PORTNCURSES)
+	make -C ${LIBPATH} -DPORTNCURSES
+.else
+	make -C ${LIBPATH}
+.endif
+
+.c.o:
 	${CC} ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
 
 install:
@@ -47,3 +44,5 @@ unistall:
 	${RM} ${BINDIR}/${OUTPUT}
 	${RM} ${MANDIR}/${MAN}.gz
 
+clean:
+	${RM} ${OUTPUT} *.o *~ *.core ${MAN}.gz

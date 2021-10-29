@@ -34,8 +34,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "bsddialog.h"
-#include "theme.h"
+#include <bsddialog.h>
+#include <theme.h>
 
 #define BSDDIALOG_VERSION "0.1 devel"
 

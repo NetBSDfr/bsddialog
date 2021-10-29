@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../bsddialog.h"
+#include <bsddialog.h>
 
 /* Actually this is an example for mixedmenu to reproduce dialog4ports(1) */
 int main()
