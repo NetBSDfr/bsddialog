@@ -18,7 +18,7 @@ $(OUTPUT): $(LIBBSDDIALOG) $(OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 ${LIBBSDDIALOG}:
-	make -C ${LIBPATH}
+	make -C ${LIBPATH} -f GNUMakefile
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $<
