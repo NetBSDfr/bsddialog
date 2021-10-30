@@ -14,7 +14,7 @@ LDFLAGS = -lform -lncurses -ltinfo
 LIBFLAG = -shared
 
 RM = rm -f
-LN = ln -s
+LN = ln -s -f
 
 all : $(LIBRARY)
 
