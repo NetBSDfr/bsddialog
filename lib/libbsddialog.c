@@ -157,12 +157,12 @@ check_set_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 	if (minh <= 0 || minw <=0)
 		return false;
 
-	if (rows < 0)
+	if (rows == BSDDIALOG_FULLSCREEN)
 		*h = conf.shadow ? LINES - 1 : LINES;
 	else
 		*h = rows;
 
-	if (cols < 0)
+	if (cols == BSDDIALOG_FULLSCREEN)
 		*w = conf.shadow ? COLS - 2 : COLS;
 	else
 		*w = cols;
@@ -175,11 +175,11 @@ button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons bs)
 {
 
-	if (rows == 0) {
+	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = strlen(text) > 0 ? 5 : 4;
 	}
 
-	if (cols == 0) {
+	if (cols == BSDDIALOG_AUTOSIZE) {
 		*w = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
 		*w += 2; /* borders */
 		*w = MAX(4 /* 2borders + 2buttondelimiters */, *w); /* text check */
@@ -218,15 +218,15 @@ check_set_position(struct bsddialog_conf conf, int *y, int *x, int rows,
     int cols, int h, int w)
 {
 
-	if (rows < 0)
+	if (rows == BSDDIALOG_FULLSCREEN)
 		*y = 0;
 	else
-		*y = (conf.y < 0) ? (LINES/2 - h/2) : conf.y;
+		*y = (conf.y == BSDDIALOG_CENTER) ? (LINES/2 - h/2) : conf.y;
 
-	if (cols < 0)
+	if (cols == BSDDIALOG_FULLSCREEN)
 		*x = 0;
 	else
-		*x = (conf.x < 0) ? (COLS/2 - w/2) : conf.x;
+		*x = (conf.x == BSDDIALOG_CENTER) ? (COLS/2 - w/2) : conf.x;
 
 
 	if ((*y + h + (conf.shadow ? 1 : 0)) > LINES)

@@ -38,6 +38,11 @@
 #define BSDDIALOG_EXTRA		 3 // Extra button
 #define BSDDIALOG_ITEM_HELP	 4
 
+/* size and position */
+#define BSDDIALOG_FULLSCREEN	-1
+#define BSDDIALOG_AUTOSIZE	0
+#define BSDDIALOG_CENTER	-1
+
 struct bsddialog_conf {
 	bool item_prefix; //BSDDialog extension
 	bool ascii_lines;
