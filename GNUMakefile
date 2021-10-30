@@ -20,7 +20,7 @@ $(OUTPUT): $(LIBBSDDIALOG) $(OBJECTS)
 ${LIBBSDDIALOG}:
 	make -C ${LIBPATH} -f GNUMakefile
 
-%.o: %.c $(HEADERS)
+%.o: %.c $(LIBBSDDIALOG)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
