@@ -135,9 +135,9 @@ struct bsddialog_menugroup {
 	struct bsddialog_menuitem *items;
 };
 
-int  bsddialog_init(void);
-void bsddialog_end(void);
-int  bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
+int bsddialog_init(void);
+int bsddialog_end(void);
+int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 const char *bsddialog_geterror(void);
 
 /* widgets */

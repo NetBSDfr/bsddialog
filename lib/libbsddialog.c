@@ -51,7 +51,7 @@ extern struct bsddialog_theme t;
 
 int bsddialog_init(void)
 {
-	int i, j, c = 1, error = 0;
+	int i, j, c = 1, error = OK;
 
 	memset((void*)errorbuffer, 0, ERRBUFLEN);
 
@@ -63,7 +63,7 @@ int bsddialog_init(void)
 	error += cbreak();
 	error += noecho();
 	curs_set(0);
-	if(error > 0) {
+	if(error != OK) {
 		bsddialog_end();
 		RETURN_ERROR("Cannot init ncurses (keypad and cursor)", -1);
 	}
@@ -74,7 +74,7 @@ int bsddialog_init(void)
 			error += init_pair(c, i, j);
 			c++;
 	}
-	if(error > 0) {
+	if(error != OK) {
 		bsddialog_end();
 		RETURN_ERROR("Cannot init ncurses (colors)", -1);
 	}
@@ -84,10 +84,13 @@ int bsddialog_init(void)
 	return error;
 }
 
-void bsddialog_end(void)
+int bsddialog_end(void)
 {
 
-	endwin();
+	if (endwin() != OK)
+		RETURN_ERROR("Cannot end ncurses (endwin)", -1);
+
+	return 0;
 }
 
 int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle)
