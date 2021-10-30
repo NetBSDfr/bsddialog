@@ -42,7 +42,7 @@
 extern struct bsddialog_theme t;
 
 //lib_util.h in the future
-static bool
+static int
 check_set_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 {
 	int minh, minw;
@@ -51,7 +51,7 @@ check_set_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 	minw = conf.shadow ? COLS - t.shadowcols : COLS;
 
 	if (minh <= 0 || minw <=0)
-		return false;
+		RETURN_ERROR("Terminal too small");
 
 	if (rows == BSDDIALOG_FULLSCREEN)
 		*h = conf.shadow ? LINES - t.shadowrows : LINES;
@@ -63,7 +63,7 @@ check_set_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 	else
 		*w = cols;
 
-	return true;
+	return 0;
 }
 
 static void
@@ -85,7 +85,7 @@ button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	}
 }
 
-static bool
+static int
 button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
     struct buttons bs)
 {
@@ -102,14 +102,17 @@ button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
 		mincols = MAX(5 /* 2borders + 2pads + 1space */, mincols);
 	}
 
-	if (minrows > rows || mincols > cols)
-		return false;
+	if (minrows > rows)
+		RETURN_ERROR("Few rows");
 
-	return true;
+	if (mincols > cols)
+		RETURN_ERROR("Few lines");
+
+	return 0;
 }
 
 // widget_init() should call
-static bool
+static int
 check_set_position(struct bsddialog_conf conf, int *y, int *x, int rows,
     int cols, int h, int w)
 {
@@ -126,12 +129,14 @@ check_set_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 
 
 	if ((*y + h + (conf.shadow ? t.shadowrows : 0)) > LINES)
-		return false;
+		RETURN_ERROR("The lower of the box under the terminal "\
+		    "(decrease the lines or the start y)");
 
 	if ((*x + w + (conf.shadow ? t.shadowcols : 0)) > COLS)
-		return false;
+		RETURN_ERROR("The right of the box over the terminal "\
+		    "(decrease the cols or the start x)");
 
-	return true;
+	return 0;
 }
 
 static int
@@ -142,13 +147,13 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	bool loop, buttonupdate, textupdate;
 	int i, y, x, h, w, input, output, htextpad, textrow;
 
-	if (check_set_size(conf, rows, cols, &h, &w) == false)
-		return -1;
+	if (check_set_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
 	button_autosize(conf, rows, cols, &h, &w, text, bs);
-	if (button_checksize(conf, h, w, text, bs) == false)
-		return -1;
-	if (check_set_position(conf, &y, &x, rows, cols, h, w) == false)
-		return -1;
+	if (button_checksize(conf, h, w, text, bs) != 0)
+		return BSDDIALOG_ERROR;
+	if (check_set_position(conf, &y, &x, rows, cols, h, w) != 0)
+		return BSDDIALOG_ERROR;
 
 	htextpad = h - 4;
 	if (widget_withtextpad_init(conf, &shadow, &widget, y, x, h, w,
