@@ -16,7 +16,6 @@ LDFLAGS = -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} 
 
 INSTALL_PREFIX=/usr/local
-AR = ar -crD
 LN = ln -s
 RM = rm -f
 CP = cp
