@@ -31,12 +31,12 @@
 #include <stdbool.h>
 
 /* Exit status */
+#define BSDDIALOG_ERROR		-1 // generic error or ESC key
 #define BSDDIALOG_YESOK		 0 // YES or OK buttons
 #define BSDDIALOG_NOCANCEL	 1 // No or Cancel buttons
 #define BSDDIALOG_HELP		 2 // Help button
 #define BSDDIALOG_EXTRA		 3 // Extra button
 #define BSDDIALOG_ITEM_HELP	 4
-#define BSDDIALOG_ERROR		-1 // generic error or ESC key
 
 struct bsddialog_conf {
 	bool item_prefix; //BSDDialog extension
