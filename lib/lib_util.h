@@ -39,10 +39,13 @@
 #define	MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-/* 'extern const char *errorbuffer;' to use this macro */
-#define RETURN_ERROR(str,retvalue) do {		\
-	strcpy(errorbuffer,str);		\
-	return retvalue;			\
+/* error buffer */
+const char *get_error_string(void);
+void set_error_string(char *string);
+
+#define RETURN_ERROR(str) do {			\
+	set_error_string(str);			\
+	return BSDDIALOg_ERROR;			\
 } while (0)
 
 /* Buttons */

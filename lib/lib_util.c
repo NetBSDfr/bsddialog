@@ -41,6 +41,20 @@
 
 extern struct bsddialog_theme t;
 
+#define ERRBUFLEN 1024
+static char errorbuffer[ERRBUFLEN];
+
+const char *get_error_string(void)
+{
+	return errorbuffer;
+}
+
+void set_error_string(char *str)
+{
+
+	strncpy(errorbuffer, str, ERRBUFLEN-1);
+}
+
 // old text, to delete in the future
 
 /* Text */

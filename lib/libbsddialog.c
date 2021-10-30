@@ -44,19 +44,16 @@
 
 #define MAXINPUT 2048
 
-#define ERRBUFLEN 1024
-static char errorbuffer[ERRBUFLEN];
-
 extern struct bsddialog_theme t;
 
 int bsddialog_init(void)
 {
 	int i, j, c = 1, error = OK;
 
-	memset((void*)errorbuffer, 0, ERRBUFLEN);
+	set_error_string("");
 
 	if(initscr() == NULL)
-		RETURN_ERROR("Cannot init ncurses (initscr)", -1);
+		RETURN_ERROR("Cannot init ncurses (initscr)");
 
 	error += keypad(stdscr, TRUE);
 	nl();
@@ -65,7 +62,7 @@ int bsddialog_init(void)
 	curs_set(0);
 	if(error != OK) {
 		bsddialog_end();
-		RETURN_ERROR("Cannot init ncurses (keypad and cursor)", -1);
+		RETURN_ERROR("Cannot init ncurses (keypad and cursor)");
 	}
 
 	error += start_color();
@@ -76,7 +73,7 @@ int bsddialog_init(void)
 	}
 	if(error != OK) {
 		bsddialog_end();
-		RETURN_ERROR("Cannot init ncurses (colors)", -1);
+		RETURN_ERROR("Cannot init ncurses (colors)");
 	}
 
 	bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
@@ -88,7 +85,7 @@ int bsddialog_end(void)
 {
 
 	if (endwin() != OK)
-		RETURN_ERROR("Cannot end ncurses (endwin)", -1);
+		RETURN_ERROR("Cannot end ncurses (endwin)");
 
 	return 0;
 }
@@ -107,7 +104,8 @@ int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle)
 
 const char *bsddialog_geterror(void)
 {
-	return errorbuffer;
+
+	return get_error_string();
 }
 
 /*
