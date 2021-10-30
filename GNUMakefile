@@ -3,22 +3,25 @@
 #
 # Written by Alfonso Sabato Siciliano
 
-CFLAGS = -Wall -g
-INCLUDEDIR = ./
-LDFLAGS = -lform -lncurses -ltinfo
-OUTPUT = bsddialog
-HEADERS = bsddialog.h theme.h
-SOURCES = theme.c menus.c lib_util.c libbsddialog.c bsddialog.c
-OBJECTS = $(SOURCES:.c=.o)
+OUTPUT=  bsddialog
+SOURCES= bsddialog.c
+OBJECTS= $(SOURCES:.c=.o)
+LIBPATH= ./lib
+LIBBSDDIALOG= $(LIBPATH)/libbsddialog.so
+CFLAGS= -Wall -I$(LIBPATH)
+LDFLAGS= -Wl,-rpath=$(LIBPATH) -L$(LIBPATH) -lbsddialog
 RM = rm -f
 
 all : $(OUTPUT)
 
-clean:
-	$(RM) $(OUTPUT) *.o *~
-
-$(OUTPUT): $(OBJECTS)
+$(OUTPUT): $(LIBBSDDIALOG) $(OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
+${LIBBSDDIALOG}:
+	make -C ${LIBPATH}
+
 %.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) -I$(INCLUDEDIR) -c $<
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	$(RM) $(OUTPUT) *.o *~

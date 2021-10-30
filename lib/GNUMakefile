@@ -1,0 +1,29 @@
+# PUBLIC DOMAIN - NO WARRANTY, see:
+# 	<http://creativecommons.org/publicdomain/zero/1.0/>
+#
+# Written by Alfonso Sabato Siciliano
+
+VERSION = 0.1
+LIBRARY = bsddialog
+LIBRARY_SO = lib${LIBRARY:=.so}
+HEADERS = bsddialog.h theme.h
+SOURCES= theme.c menus.c lib_util.c libbsddialog.c 
+OBJECTS = $(SOURCES:.c=.o)
+CFLAGS = -Wall -Werror -fpic -g
+LDFLAGS = -lform -lncurses -ltinfo
+LIBFLAG = -shared
+
+RM = rm -f
+LN = ln -s
+
+all : $(LIBRARY)
+
+$(LIBRARY): $(OBJECTS)
+	$(CC) $(LIBFLAG) $^ -o $(LIBRARY_SO).$(VERSION) $(LDFLAGS)
+	${LN} ${LIBRARY_SO}.${VERSION} ${LIBRARY_SO}
+
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	$(RM) $(LIBRARY_SO)* *.o *~
