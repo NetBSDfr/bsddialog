@@ -31,6 +31,8 @@
 #include <curses.h>
 #endif
 
+#include "bsddialog.h"
+#include "lib_util.h"
 #include "theme.h"
 
 #define BSD_COLOR(BACKGROUND, FOREGROUND) (BACKGROUND * 8 + FOREGROUND +1)
@@ -200,22 +202,19 @@ static void settheme(struct bsddialog_theme newtheme)
 }
 
 
-int bsddialog_settheme(enum bsddialog_default_theme t)
+int bsddialog_settheme(enum bsddialog_default_theme newtheme)
 {
-	int error = 0;
 
-	if (t == BSDDIALOG_THEME_DEFAULT)
+	if (newtheme == BSDDIALOG_THEME_DEFAULT)
 		settheme(defaulttheme);
-	else if ( t == BSDDIALOG_THEME_DIALOG)
+	else if (newtheme == BSDDIALOG_THEME_DIALOG)
 		settheme(dialogtheme);
-	else if ( t == BSDDIALOG_THEME_MAGENTA)
+	else if (newtheme == BSDDIALOG_THEME_MAGENTA)
 		settheme(magentatheme);
-	else {
-		settheme(defaulttheme);
-		error = -1;
-	}
+	else
+		RETURN_ERROR("Unknow default theme");
 
 	refresh();
 
-	return error;
+	return 0;
 }
