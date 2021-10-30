@@ -151,8 +151,8 @@ check_set_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 {
 	int minh, minw;
 
-	minh = conf.shadow ? LINES - 1 : LINES;
-	minw = conf.shadow ? COLS - 2 : COLS;
+	minh = conf.shadow ? LINES - t.shadowrows : LINES;
+	minw = conf.shadow ? COLS - t.shadowcols : COLS;
 
 	if (minh <= 0 || minw <=0)
 		return false;
