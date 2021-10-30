@@ -22,13 +22,13 @@ CP = cp
 GZIP = gzip -cn
 LDCONFIG = /sbin/ldconfig -m
 
-# BASE ncurses
-LDFLAGS += -L/usr/lib -lform -lncurses -ltinfo
-
-# PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
 .if defined(PORTNCURSES)
+# PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
 CFLAGS += -DPORTNCURSES -I/usr/local/include
 LDFLAGS += -L/usr/local/lib -lform -lncurses -ltinfo
+.else
+# BASE ncurses
+LDFLAGS += -L/usr/lib -lform -lncurses -ltinfo
 .endif
 
 MAN= ${OUTPUT}.3
