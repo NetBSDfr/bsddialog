@@ -4,11 +4,9 @@
 
 This project provides **bsddialog** and **libbsddialog**, an utility and a
 library to build scripts and tools with *TUI Widgets*.
-The project is inspired by **dialog** https://invisible-island.net/dialog,
-however **bsddialog** is released under the terms of the *BSD-2-Clause License*
-and the *"features synchronization"* with **dialog** is not a priority.
 
-Description: <https://www.freebsd.org/status/report-2021-04-2021-06/#_bsddialog_tui_widgets>
+Description:
+<https://www.freebsd.org/status/report-2021-04-2021-06/#_bsddialog_tui_widgets>
 
 
 **Getting Started**
@@ -26,12 +24,12 @@ Output:
 
 Examples utility:
 ```
-% bsddialog --title msgbox --msgbox "Hello World!" 5 30
-% bsddialog --title yesno --yesno "Hello World!" 5 30
-% bsddialog --inputbox "Hello World!" 10 30 2>input.txt; cat input.txt; rm input.txt
-% bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
-% bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
-% bsddialog --pause "Hello World!" 8 50 5
+% ./bsddialog --title msgbox --msgbox "Hello World!" 5 30
+% ./bsddialog --title yesno --yesno "Hello World!" 5 30
+% ./bsddialog --inputbox "Hello World!" 10 30 2>input.txt; cat input.txt; rm input.txt
+% ./bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
+% ./bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
+% ./bsddialog --pause "Hello World!" 8 50 5
 ```
 
 Examples library:
