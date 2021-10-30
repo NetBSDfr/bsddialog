@@ -7,7 +7,7 @@ VERSION = 0.1
 LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
 HEADERS = bsddialog.h theme.h
-SOURCES= theme.c menus.c lib_util.c libbsddialog.c 
+SOURCES= theme.c menus.c lib_util.c libbsddialog.c message.c
 OBJECTS= ${SOURCES:.c=.o}
 FBSDFLAGS= -O2 -pipe -std=gnu99 -Wno-format-zero-length \
 	-fstack-protector-strong -Qunused-arguments
