@@ -229,10 +229,10 @@ check_set_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 		*x = (conf.x == BSDDIALOG_CENTER) ? (COLS/2 - w/2) : conf.x;
 
 
-	if ((*y + h + (conf.shadow ? 1 : 0)) > LINES)
+	if ((*y + h + (conf.shadow ? t.shadowrows : 0)) > LINES)
 		return false;
 
-	if ((*x + w + (conf.shadow ? 2 : 0)) > COLS)
+	if ((*x + w + (conf.shadow ? t.shadowcols : 0)) > COLS)
 		return false;
 
 	return true;
