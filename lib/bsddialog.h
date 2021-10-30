@@ -30,7 +30,7 @@
 
 #include <stdbool.h>
 
-/* Exit */
+/* Exit status */
 #define BSDDIALOG_YESOK		 0 // YES or OK buttons
 #define BSDDIALOG_NOCANCEL	 1 // No or Cancel buttons
 #define BSDDIALOG_HELP		 2 // Help button
