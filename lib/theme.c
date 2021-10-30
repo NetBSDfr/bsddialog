@@ -42,6 +42,9 @@ static struct bsddialog_theme defaulttheme = {
 #define bgwidget  COLOR_WHITE
 #define bgcurr    COLOR_YELLOW
 	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_BLACK)),
+	.shadowrows      = 1,
+	.shadowcols      = 2,
+
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
 	.surroundtitle   = true,
 	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)) ,
@@ -78,6 +81,9 @@ static struct bsddialog_theme defaulttheme = {
 
 static struct bsddialog_theme dialogtheme = {
 	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
+	.shadowrows      = 1,
+	.shadowcols      = 2,
+
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,  COLOR_BLUE))  | A_BOLD,
 	.surroundtitle   = false,
 	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
@@ -114,6 +120,9 @@ static struct bsddialog_theme dialogtheme = {
 
 static struct bsddialog_theme magentatheme = {
 	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
+	.shadowrows      = 1,
+	.shadowcols      = 2,
+
 	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_MAGENTA))| A_BOLD,
 	.surroundtitle   = true,
 	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_CYAN)),
@@ -151,6 +160,9 @@ static struct bsddialog_theme magentatheme = {
 static void settheme(struct bsddialog_theme newtheme)
 {
 	t.shadowcolor     = newtheme.shadowcolor;
+	t.shadowrows      = newtheme.shadowrows;
+	t.shadowcols      = newtheme.shadowcols;
+
 	t.backgroundcolor = newtheme.backgroundcolor;
 	t.surroundtitle   = newtheme.surroundtitle;
 	t.titlecolor      = newtheme.titlecolor;

@@ -30,6 +30,9 @@
 
 struct bsddialog_theme {
 	int shadowcolor;
+	unsigned int shadowrows;
+	unsigned int shadowcols;
+
 	int backgroundcolor;
 	bool surroundtitle;
 	int titlecolor;

@@ -158,12 +158,12 @@ check_set_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 		return false;
 
 	if (rows == BSDDIALOG_FULLSCREEN)
-		*h = conf.shadow ? LINES - 1 : LINES;
+		*h = conf.shadow ? LINES - t.shadowrows : LINES;
 	else
 		*h = rows;
 
 	if (cols == BSDDIALOG_FULLSCREEN)
-		*w = conf.shadow ? COLS - 2 : COLS;
+		*w = conf.shadow ? COLS - t.shadowcols : COLS;
 	else
 		*w = cols;
 
