@@ -29,7 +29,7 @@
 #define _LIBBSDDIALOG_UTIL_H_
 
 /*
- * Utils to implement widgets
+ * Utils to implement widgets - Private API
  */
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {	\
 	mvprintw(y, x, fmt, __VA_ARGS__);	\
