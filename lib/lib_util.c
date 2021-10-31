@@ -630,7 +630,8 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 	int ts, ltee, rtee;
 
 	if (conf.shadow) {
-		if ((*shadow = newwin(h, w+1, y+1, x+1)) == NULL)
+		*shadow = newwin(h, w, y + t.shadowrows, x + t.shadowcols);
+		if (*shadow == NULL)
 			RETURN_ERROR("Cannot build shadow");
 		wbkgd(*shadow, t.shadowcolor);
 		wrefresh(*shadow);
