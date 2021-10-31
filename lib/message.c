@@ -39,6 +39,8 @@
 #include "lib_util.h"
 #include "theme.h"
 
+/* msgbox and yesno */
+
 extern struct bsddialog_theme t;
 
 //lib_util.h in the future
@@ -140,7 +142,7 @@ check_set_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 }
 
 static int
-do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
+do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
     struct buttons bs, bool shortkey)
 {
 	WINDOW *widget, *textpad, *shadow;
@@ -241,6 +243,8 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	return output;
 }
 
+/* API */
+
 int
 bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
@@ -250,7 +254,7 @@ bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,
 	    BUTTONLABEL(help_label));
 
-	return (do_button(conf, text, rows, cols, "msgbox", bs, true));
+	return (do_widget(conf, text, rows, cols, "msgbox", bs, true));
 }
 
 int
@@ -262,5 +266,5 @@ bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols)
 	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(no_label),
 	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
 
-	return (do_button(conf, text, rows, cols, "yesno", bs, true));
+	return (do_widget(conf, text, rows, cols, "yesno", bs, true));
 }
