@@ -157,8 +157,8 @@ do_button(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 
 	htextpad = h - 4;
 	if (widget_withtextpad_init(conf, &shadow, &widget, y, x, h, w,
-	    &textpad, &htextpad, text, true) < 0)
-		return -1;
+	    &textpad, &htextpad, text, true) != 0)
+		return BSDDIALOG_ERROR;
 
 	textrow = 0;
 	loop = buttonupdate = textupdate = true;

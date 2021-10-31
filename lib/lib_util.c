@@ -629,7 +629,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 
 	if (conf.shadow) {
 		if ((*shadow = newwin(h, w+1, y+1, x+1)) == NULL)
-			return -1;
+			RETURN_ERROR("Cannot build shadow");
 		wbkgd(*shadow, t.shadowcolor);
 		wrefresh(*shadow);
 	}
@@ -639,7 +639,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 	if(*widget == NULL) {
 		if (conf.shadow)
 			delwin(*shadow);
-		return -1;
+		RETURN_ERROR("Cannot build widget window");
 	}
 
 	if (textpad == NULL && text != NULL) /* no pad */
@@ -670,7 +670,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 			if (conf.shadow)
 				delwin(*shadow);
 			delwin(*textpad);
-			return -1;
+			RETURN_ERROR("Cannot build text");
 		}
 		wbkgd(*textpad, t.widgetcolor);
 		print_textpad(conf, *textpad, htextpad, w-4, text);
