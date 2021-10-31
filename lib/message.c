@@ -45,24 +45,21 @@ extern struct bsddialog_theme t;
 
 //lib_util.h in the future
 static int
-check_set_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
+set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 {
-	int minh, minw;
-
-	minh = conf.shadow ? LINES - t.shadowrows : LINES;
-	minw = conf.shadow ? COLS - t.shadowcols : COLS;
-
-	if (minh <= 0 || minw <=0)
-		RETURN_ERROR("Terminal too small");
 
 	if (rows == BSDDIALOG_FULLSCREEN)
 		*h = conf.shadow ? LINES - t.shadowrows : LINES;
-	else
+	else if (rows < BSDDIALOG_FULLSCREEN)
+		RETURN_ERROR("Negative (less than -1) height");
+	else /* AUTOSIZE or > 0*/
 		*h = rows;
 
 	if (cols == BSDDIALOG_FULLSCREEN)
 		*w = conf.shadow ? COLS - t.shadowcols : COLS;
-	else
+	else if (cols < BSDDIALOG_FULLSCREEN)
+		RETURN_ERROR("Negative (less than -1) width");
+	else /* AUTOSIZE or > 0 */
 		*w = cols;
 
 	return 0;
@@ -149,7 +146,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	bool loop, buttonupdate, textupdate;
 	int i, y, x, h, w, input, output, htextpad, textrow;
 
-	if (check_set_size(conf, rows, cols, &h, &w) != 0)
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
 	button_autosize(conf, rows, cols, &h, &w, text, bs);
 	if (button_checksize(conf, h, w, text, bs) != 0)
