@@ -338,52 +338,6 @@ print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int ma
 
 // new text funcs
 
-static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
-{
-	int i, j;
-
-	i = j = 0;
-	while (text[i] != '\0') {
-		switch (text[i]) {
-		case '\\':
-			buf[j] = '\\';
-			switch (text[i+1]) {
-			case '\\':
-				i++;
-				break;
-			case 'n':
-				if (conf.no_nl_expand) {
-					j++;
-					buf[j] = 'n';
-				} else
-					buf[j] = '\n';
-				i++;
-				break;
-			case 't':
-				if (conf.no_collapse) {
-					j++;
-					buf[j] = 't';
-				} else
-					buf[j] = '\t';
-				i++;
-				break;
-			}
-			break;
-		case '\n':
-			buf[j] = conf.cr_wrap ? ' ' : '\n';
-			break;
-		case '\t':
-			buf[j] = conf.no_collapse ? '\t' : ' ';
-			break;
-		default:
-			buf[j] = text[i];
-		}
-		i++;
-		j = (conf.trim && buf[j] == ' ') ? j : j+1;
-	}
-	buf[j] = '\0';
-}
-
 static bool is_ncurses_attr(char *text)
 {
 	bool isattr;
@@ -478,6 +432,52 @@ print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool colo
 			}
 		}
 	}
+}
+
+static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
+{
+	int i, j;
+
+	i = j = 0;
+	while (text[i] != '\0') {
+		switch (text[i]) {
+		case '\\':
+			buf[j] = '\\';
+			switch (text[i+1]) {
+			case '\\':
+				i++;
+				break;
+			case 'n':
+				if (conf.no_nl_expand) {
+					j++;
+					buf[j] = 'n';
+				} else
+					buf[j] = '\n';
+				i++;
+				break;
+			case 't':
+				if (conf.no_collapse) {
+					j++;
+					buf[j] = 't';
+				} else
+					buf[j] = '\t';
+				i++;
+				break;
+			}
+			break;
+		case '\n':
+			buf[j] = conf.cr_wrap ? ' ' : '\n';
+			break;
+		case '\t':
+			buf[j] = conf.no_collapse ? '\t' : ' ';
+			break;
+		default:
+			buf[j] = text[i];
+		}
+		i++;
+		j = (conf.trim && buf[j] == ' ') ? j : j+1;
+	}
+	buf[j] = '\0';
 }
 
 static int
