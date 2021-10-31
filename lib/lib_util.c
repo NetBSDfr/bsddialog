@@ -41,6 +41,8 @@
 
 extern struct bsddialog_theme t;
 
+/* Error buffer */
+
 #define ERRBUFLEN 1024
 static char errorbuffer[ERRBUFLEN];
 
