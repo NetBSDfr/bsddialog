@@ -75,12 +75,13 @@ button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	}
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
-		*w += 2; /* borders */
-		*w = MAX(4 /* 2borders + 2buttondelimiters */, *w); /* text check */
-		if (text != NULL)
-			*w = MAX(*w, maxword(conf, text) + 4);
-		*w = MIN(*w, (conf.shadow ? COLS -2 : COLS));
+		*w = 2; /* borders */
+		/* buttons size */
+		*w += bs.nbuttons * bs.sizebutton;
+		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+		/* text size */
+		*w = MAX(*w, maxword(conf, text) + 4 /* borders and text pad*/);
+		*w = MIN(*w, (conf.shadow ? COLS - t.shadowcols : COLS));
 	}
 }
 
