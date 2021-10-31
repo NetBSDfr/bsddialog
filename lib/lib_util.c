@@ -480,23 +480,21 @@ print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool colo
 	}
 }
 
-static void
+static int
 print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char *text)
 {
 	char *buf, *string;
 	int i, j, x, y;
 	bool loop;
 
-	if ((buf = malloc(strlen(text) + 1)) == NULL) {
-		delwin(pad);
-		return;
-	}
+	if ((buf = malloc(strlen(text) + 1)) == NULL)
+		RETURN_ERROR("Cannot build (analyze) text");
+
 	prepare_text(conf, text, buf);
 
 	if ((string = malloc(strlen(text) + 1)) == NULL) {
-		delwin(pad);
 		free(buf);
-		return;
+		RETURN_ERROR("Cannot build (analyze) text");
 	}
 	i = j = x = y = 0;
 	loop = true;
@@ -549,6 +547,8 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 
 	free(string);
 	free(buf);
+
+	return 0;
 }
 
 
@@ -669,13 +669,19 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 
 	if (text != NULL) { /* programbox etc */
 		if ((*textpad = newpad(*htextpad, w-4)) == NULL) {
+			delwin(*textpad);
 			if (conf.shadow)
 				delwin(*shadow);
-			delwin(*textpad);
 			RETURN_ERROR("Cannot build text");
 		}
 		wbkgd(*textpad, t.widgetcolor);
-		print_textpad(conf, *textpad, htextpad, w-4, text);
+		if (print_textpad(conf, *textpad, htextpad, w-4, text) !=0) {
+			delwin(*textpad);
+			delwin(*widget);
+			if (conf.shadow)
+				delwin(*shadow);
+			return BSDDIALOG_ERROR;
+		}
 	}
 
 	return 0;
