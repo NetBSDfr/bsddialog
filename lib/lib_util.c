@@ -57,9 +57,115 @@ void set_error_string(char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
-// old text, to delete in the future
+
+/* Buttons */
+void
+draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
+    bool shortkey)
+{
+	int i, color_arrows, color_shortkey, color_button;
+
+	if (selected) {
+		color_arrows = t.currbuttdelimcolor;
+		color_shortkey = t.currshortkeycolor;
+		color_button = t.currbuttoncolor;
+	} else {
+		color_arrows = t.buttdelimcolor;
+		color_shortkey = t.shortkeycolor;
+		color_button = t.buttoncolor;
+	}
+
+	wattron(window, color_arrows);
+	mvwaddch(window, y, x, t.buttleftch);
+	wattroff(window, color_arrows);
+	wattron(window, color_button);
+	for(i = 1; i < size - 1; i++)
+		waddch(window, ' ');
+	wattroff(window, color_button);
+	wattron(window, color_arrows);
+	mvwaddch(window, y, x + i, t.buttrightchar);
+	wattroff(window, color_arrows);
+
+	x = x + 1 + ((size - 2 - strlen(text))/2);
+	wattron(window, color_button);
+	mvwaddstr(window, y, x, text);
+	wattroff(window, color_button);
+
+	if (shortkey) {
+		wattron(window, color_shortkey);
+		mvwaddch(window, y, x, text[0]);
+		wattroff(window, color_shortkey);
+	}
+}
+
+void
+draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
+{
+	int i, x, start_x;
+
+	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.buttonspace;
+	start_x = cols/2 - start_x/2;
+
+	for (i = 0; i < bs.nbuttons; i++) {
+		x = i * (bs.sizebutton + t.buttonspace);
+		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
+		    i == bs.curr, shortkey);
+	}
+}
+
+void
+get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
+    char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
+    bool help, char *helplabel)
+{
+	int i;
+#define SIZEBUTTON  8
+
+	bs->nbuttons = 0;
+	bs->curr = 0;
+	bs->sizebutton = 0;
+
+	if (yesok) {
+		bs->label[0] = yesoklabel;
+		bs->value[0] = BSDDIALOG_YESOK;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (extra) {
+		bs->label[bs->nbuttons] = extralabel;
+		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (nocancel) {
+		bs->label[bs->nbuttons] = nocancellabel;
+		bs->value[bs->nbuttons] = BSDDIALOG_NOCANCEL;
+		if (defaultno)
+			bs->curr = bs->nbuttons;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (help) {
+		bs->label[bs->nbuttons] = helplabel;
+		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
+		bs->nbuttons = bs->nbuttons + 1;
+	}
+
+	if (bs->nbuttons == 0) {
+		bs->label[0] = yesoklabel;
+		bs->value[0] = BSDDIALOG_YESOK;
+		bs->nbuttons = 1;
+	}
+
+	bs->sizebutton = MAX(SIZEBUTTON - 2, strlen(bs->label[0]));
+	for (i=1; i < bs->nbuttons; i++)
+		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
+	bs->sizebutton += 2;
+}
 
 /* Text */
+
+// old text, to delete in the future
 enum token { TEXT, WS, END };
 
 static bool check_set_ncurses_attr(WINDOW *win, char *text)
@@ -445,110 +551,6 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 	free(buf);
 }
 
-/* Buttons */
-void
-draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
-    bool shortkey)
-{
-	int i, color_arrows, color_shortkey, color_button;
-
-	if (selected) {
-		color_arrows = t.currbuttdelimcolor;
-		color_shortkey = t.currshortkeycolor;
-		color_button = t.currbuttoncolor;
-	} else {
-		color_arrows = t.buttdelimcolor;
-		color_shortkey = t.shortkeycolor;
-		color_button = t.buttoncolor;
-	}
-
-	wattron(window, color_arrows);
-	mvwaddch(window, y, x, t.buttleftch);
-	wattroff(window, color_arrows);
-	wattron(window, color_button);
-	for(i = 1; i < size - 1; i++)
-		waddch(window, ' ');
-	wattroff(window, color_button);
-	wattron(window, color_arrows);
-	mvwaddch(window, y, x + i, t.buttrightchar);
-	wattroff(window, color_arrows);
-
-	x = x + 1 + ((size - 2 - strlen(text))/2);
-	wattron(window, color_button);
-	mvwaddstr(window, y, x, text);
-	wattroff(window, color_button);
-
-	if (shortkey) {
-		wattron(window, color_shortkey);
-		mvwaddch(window, y, x, text[0]);
-		wattroff(window, color_shortkey);
-	}
-}
-
-void
-draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
-{
-	int i, x, start_x;
-
-	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.buttonspace;
-	start_x = cols/2 - start_x/2;
-
-	for (i = 0; i < bs.nbuttons; i++) {
-		x = i * (bs.sizebutton + t.buttonspace);
-		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
-		    i == bs.curr, shortkey);
-	}
-}
-
-void
-get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
-    char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
-    bool help, char *helplabel)
-{
-	int i;
-#define SIZEBUTTON  8
-
-	bs->nbuttons = 0;
-	bs->curr = 0;
-	bs->sizebutton = 0;
-
-	if (yesok) {
-		bs->label[0] = yesoklabel;
-		bs->value[0] = BSDDIALOG_YESOK;
-		bs->nbuttons = bs->nbuttons + 1;
-	}
-
-	if (extra) {
-		bs->label[bs->nbuttons] = extralabel;
-		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
-		bs->nbuttons = bs->nbuttons + 1;
-	}
-
-	if (nocancel) {
-		bs->label[bs->nbuttons] = nocancellabel;
-		bs->value[bs->nbuttons] = BSDDIALOG_NOCANCEL;
-		if (defaultno)
-			bs->curr = bs->nbuttons;
-		bs->nbuttons = bs->nbuttons + 1;
-	}
-
-	if (help) {
-		bs->label[bs->nbuttons] = helplabel;
-		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
-		bs->nbuttons = bs->nbuttons + 1;
-	}
-
-	if (bs->nbuttons == 0) {
-		bs->label[0] = yesoklabel;
-		bs->value[0] = BSDDIALOG_YESOK;
-		bs->nbuttons = 1;
-	}
-
-	bs->sizebutton = MAX(SIZEBUTTON - 2, strlen(bs->label[0]));
-	for (i=1; i < bs->nbuttons; i++)
-		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
-	bs->sizebutton += 2;
-}
 
 /* Widgets builders */
 WINDOW *
