@@ -56,7 +56,7 @@ int main()
 			conf.default_item = items[2].name;
 		}
 
-		bsddialog_settheme(theme);
+		bsddialog_set_default_theme(theme);
 	}
 
 	bsddialog_end();	

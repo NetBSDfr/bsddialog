@@ -617,13 +617,13 @@ int main(int argc, char *argv[argc])
 
 	if (theme != NULL) {
 		if (strcmp(theme, "default") == 0)
-			bsddialog_settheme(BSDDIALOG_THEME_DEFAULT);
+			bsddialog_set_default_theme(BSDDIALOG_THEME_DEFAULT);
 		else if (strcmp(theme, "dialog") == 0)
-			bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
+			bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG);
 		else if (strcmp(theme, "magenta") == 0)
-			bsddialog_settheme(BSDDIALOG_THEME_MAGENTA);
+			bsddialog_set_default_theme(BSDDIALOG_THEME_MAGENTA);
 		else
-			bsddialog_settheme(BSDDIALOG_THEME_DIALOG);
+			bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG);
 	}
 
 	if (backtitle != NULL)

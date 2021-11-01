@@ -165,7 +165,7 @@ static struct bsddialog_theme magentatheme = {
 	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD
 };
 
-static void settheme(struct bsddialog_theme newtheme)
+void bsddialog_set_theme(struct bsddialog_theme newtheme)
 {
 	t.shadowcolor     = newtheme.shadowcolor;
 	t.shadowrows      = newtheme.shadowrows;
@@ -207,22 +207,22 @@ static void settheme(struct bsddialog_theme newtheme)
 	t.bottomtitlecolor= newtheme.bottomtitlecolor;
 
 	bkgd(t.backgroundcolor);
+
+	refresh();
 }
 
 
-int bsddialog_settheme(enum bsddialog_default_theme newtheme)
+int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 {
 
 	if (newtheme == BSDDIALOG_THEME_DEFAULT)
-		settheme(defaulttheme);
+		bsddialog_set_theme(defaulttheme);
 	else if (newtheme == BSDDIALOG_THEME_DIALOG)
-		settheme(dialogtheme);
+		bsddialog_set_theme(dialogtheme);
 	else if (newtheme == BSDDIALOG_THEME_MAGENTA)
-		settheme(magentatheme);
+		bsddialog_set_theme(magentatheme);
 	else
 		RETURN_ERROR("Unknow default theme");
-
-	refresh();
 
 	return 0;
 }
