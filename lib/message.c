@@ -44,7 +44,12 @@
 #define HBORDERS	2
 #define VBORDERS	2
 #define AUTO_WIDTH	(COLS / 3)
-#define MIN_HEIGHT	5	/* 2 borders + 2 buttons + 1 line */
+/*
+ * Min height = 5: 2 up & down borders + 2 label & up border buttons + 1 line
+ * for text, at least 1 line is important for widget_withtextpad_init() to avoid
+ * "Cannot build the pad window for text".
+ */
+#define MIN_HEIGHT	5
 
 extern struct bsddialog_theme t;
 
