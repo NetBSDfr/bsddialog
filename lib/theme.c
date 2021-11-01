@@ -233,3 +233,9 @@ bsddialog_color(enum bsddialog_color background, enum bsddialog_color foreground
 
 	return COLOR_PAIR(BSD_COLOR(background, foreground));
 }
+
+struct bsddialog_theme bsddialog_get_theme()
+{
+
+	return t;
+}
