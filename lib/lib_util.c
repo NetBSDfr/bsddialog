@@ -477,8 +477,8 @@ get_text_properties(struct bsddialog_conf conf, char *text,
 			wordlen++;
 	}
 
-	*maxline = *nlines = 0;
-	linelen = 0;
+	*maxline = linelen = 0;
+	*nlines = 1;
 	for (i=0; i < buflen; i++) {
 		switch (buf[i]) {
 		case '\n':
@@ -494,8 +494,8 @@ get_text_properties(struct bsddialog_conf conf, char *text,
 				linelen++;
 		}
 	}
-	if (*nlines == 0 && *maxline > 0)
-		*nlines = 1;
+	if (*nlines == 1 && *maxline == 0)
+		*nlines = 0;
 
 	free(buf);
 
