@@ -124,28 +124,40 @@ button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
 
 // widget_init() should call
 static int
-check_set_position(struct bsddialog_conf conf, int *y, int *x, int rows,
+set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
     int cols, int h, int w)
 {
 
 	if (rows == BSDDIALOG_FULLSCREEN)
 		*y = 0;
+	else if (conf.y == BSDDIALOG_CENTER)
+		*y = LINES/2 - h/2;
+	else if (conf.y < BSDDIALOG_CENTER)
+		RETURN_ERROR("Negative begin y (less than -1)");
+	else if (conf.y >= LINES)
+		RETURN_ERROR("Begin Y under the terminal");
 	else
-		*y = (conf.y == BSDDIALOG_CENTER) ? (LINES/2 - h/2) : conf.y;
-
-	if (cols == BSDDIALOG_FULLSCREEN)
-		*x = 0;
-	else
-		*x = (conf.x == BSDDIALOG_CENTER) ? (COLS/2 - w/2) : conf.x;
-
+		*y = conf.y;
 
 	if ((*y + h + (conf.shadow ? t.shadowrows : 0)) > LINES)
 		RETURN_ERROR("The lower of the box under the terminal "\
-		    "(decrease the lines or the start y)");
+		    "(begin Y + height (+ shadow) > terminal lines)");
+
+
+	if (cols == BSDDIALOG_FULLSCREEN)
+		*x = 0;
+	else if (conf.x == BSDDIALOG_CENTER)
+		*x = COLS/2 - w/2;
+	else if (conf.x < BSDDIALOG_CENTER)
+		RETURN_ERROR("Negative begin x (less than -1)");
+	else if (conf.x >= COLS)
+		RETURN_ERROR("Begin X over the right of the terminal");
+	else
+		*x = conf.x;
 
 	if ((*x + w + (conf.shadow ? t.shadowcols : 0)) > COLS)
 		RETURN_ERROR("The right of the box over the terminal "\
-		    "(decrease the cols or the start x)");
+		    "(begin X + width (+ shadow) > terminal cols)");
 
 	return 0;
 }
@@ -163,7 +175,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	button_autosize(conf, rows, cols, &h, &w, text, bs);
 	if (button_checksize(conf, h, w, text, bs) != 0)
 		return BSDDIALOG_ERROR;
-	if (check_set_position(conf, &y, &x, rows, cols, h, w) != 0)
+	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
 	htextpad = h - 4;
