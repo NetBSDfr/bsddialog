@@ -65,13 +65,19 @@ set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 	return 0;
 }
 
-static void
+static int
 button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons bs)
 {
+	unsigned int maxword, maxline, nlines;
+
+	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
+		return BSDDIALOG_ERROR;
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = strlen(text) > 0 ? 5 : 4;
+		*h = 4; /* 2borders + 1buttons labels + 1button up border */
+		*h += nlines; printf("nlines %d\n", nlines);
+		*h = MIN(*h, (conf.shadow ? LINES - t.shadowrows : LINES));
 	}
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
@@ -80,9 +86,12 @@ button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*w += bs.nbuttons * bs.sizebutton;
 		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
 		/* text size */
-		*w = MAX(*w, maxword(conf, text) + 4 /* borders and text pad*/);
+		*w = MAX(*w, maxword + 4 /* borders and text padding*/);
+		/* avoid tui overflow */
 		*w = MIN(*w, (conf.shadow ? COLS - t.shadowcols : COLS));
 	}
+
+	return 0;
 }
 
 static int

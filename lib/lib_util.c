@@ -448,36 +448,58 @@ static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
 	buf[j] = '\0';
 }
 
-unsigned int maxword(struct bsddialog_conf conf, char *text)
+int
+get_text_properties(struct bsddialog_conf conf, char *text,
+    unsigned int *maxword, unsigned int *maxline, unsigned int *nlines)
 {
 	char *buf;
-	unsigned int max;
-	int i, len, buflen;
+	int i, buflen, wordlen, linelen;
 
 	if ((buf = malloc(strlen(text) + 1)) == NULL)
-		return 0;
+		RETURN_ERROR("Cannot building a buffer to find the properties "\
+		    "of the text properties");
 
 	prepare_text(conf, text, buf);
 
 	buflen = strlen(buf) + 1;
-	max = len = 0;
+	*maxword = 0;
+	wordlen = 0;
 	for (i=0; i < buflen; i++) {
 		if (buf[i] == '\t' || buf[i] == '\n' || buf[i] == ' ' || buf[i] == '\0')
-			if (len != 0) {
-				// to check \Zx?
-				max = MAX(max, len);
-				len = 0;
+			if (wordlen != 0) {
+				*maxword = MAX(*maxword, wordlen);
+				wordlen = 0;
 				continue;
 			}
 		if (conf.colors && is_ncurses_attr(buf + i))
-			i+=3;
+			i += 3;
 		else
-			len++;
+			wordlen++;
 	}
+
+	*maxline = *nlines = 0;
+	linelen = 0;
+	for (i=0; i < buflen; i++) {
+		switch (buf[i]) {
+		case '\n':
+			*nlines = *nlines + 1;
+		case '\0':
+			*maxline = MAX(*maxline, linelen);
+			linelen = 0;
+			break;
+		default:
+			if (conf.colors && is_ncurses_attr(buf + i))
+				i += 3;
+			else
+				linelen++;
+		}
+	}
+	if (*nlines == 0 && *maxline > 0)
+		*nlines = 1;
 
 	free(buf);
 
-	return max;
+	return 0;
 }
 
 static int
