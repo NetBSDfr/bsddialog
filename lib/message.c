@@ -76,7 +76,7 @@ button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = 4; /* 2borders + 1buttons labels + 1button up border */
-		*h += nlines; printf("nlines %d\n", nlines);
+		*h += nlines;
 		*h = MIN(*h, (conf.shadow ? LINES - t.shadowrows : LINES));
 	}
 
