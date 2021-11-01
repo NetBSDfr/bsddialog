@@ -44,6 +44,7 @@
 #define HBORDERS	2
 #define VBORDERS	2
 #define AUTO_WIDTH	(COLS / 3)
+#define MIN_HEIGHT	5	/* 2 borders + 2 buttons + 1 line */
 
 extern struct bsddialog_theme t;
 
@@ -94,8 +95,10 @@ message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = HBORDERS + 2; /* 1buttons labels + 1button up border */
-		*h += MAX(nlines, (*w / 9)); /* aspect ratio: add conf/theme? */
+		*h = MIN_HEIGHT - 1;
+		if (maxword > 0)
+			*h += MAX(nlines, (*w / 9)); /* aspect ratio: add conf/theme? */
+		*h = MAX(*h, MIN_HEIGHT);
 		/* avoid terminal overflow */
 		*h = MIN(*h, (conf.shadow ? LINES - t.shadowrows : LINES));
 	}
