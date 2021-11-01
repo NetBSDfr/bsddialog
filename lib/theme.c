@@ -42,11 +42,11 @@ struct bsddialog_theme t;
 static struct bsddialog_theme defaulttheme = {
 #define bgwidget  COLOR_WHITE
 #define bgcurr    COLOR_YELLOW
-	.shadowcolor     = GET_COLOR(COLOR_BLACK,  COLOR_BLACK),
+	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadowrows      = 1,
 	.shadowcols      = 2,
 
-	.backgroundcolor = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
+	.backgroundcolor = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 	.surroundtitle   = true,
 	.titlecolor      = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.lineraisecolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
@@ -72,12 +72,12 @@ static struct bsddialog_theme defaulttheme = {
 	.buttonspace     = 3,
 	.buttleftch      = '[',
 	.buttrightchar   = ']',
-	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE, bgcurr),
-	.buttdelimcolor     = GET_COLOR(COLOR_BLACK, bgwidget),
-	.currbuttoncolor = GET_COLOR(COLOR_WHITE,    bgcurr)  | A_UNDERLINE,
-	.buttoncolor     = GET_COLOR(COLOR_BLACK,    bgwidget)| A_UNDERLINE,
-	.currshortkeycolor = GET_COLOR(COLOR_BLACK,  bgcurr)  | A_UNDERLINE,
-	.shortkeycolor     = GET_COLOR(COLOR_YELLOW, bgwidget)| A_UNDERLINE,
+	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE,  bgcurr),
+	.buttdelimcolor     = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.currbuttoncolor    = GET_COLOR(COLOR_WHITE,  bgcurr)    | A_UNDERLINE,
+	.buttoncolor        = GET_COLOR(COLOR_BLACK,  bgwidget)  | A_UNDERLINE,
+	.currshortkeycolor  = GET_COLOR(COLOR_BLACK,  bgcurr)    | A_UNDERLINE,
+	.shortkeycolor      = GET_COLOR(COLOR_YELLOW, bgwidget)  | A_UNDERLINE,
 
 	.bottomtitlecolor= GET_COLOR(COLOR_BLACK, bgwidget)
 };
@@ -113,14 +113,14 @@ static struct bsddialog_theme dialogtheme = {
 	.buttonspace     = 3,
 	.buttleftch      = '[',
 	.buttrightchar   = ']',
-	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE) | A_BOLD,
+	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)   | A_BOLD,
 	.buttdelimcolor     = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.currbuttoncolor = GET_COLOR(COLOR_YELLOW, COLOR_BLUE) | A_BOLD,
-	.buttoncolor     = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.currshortkeycolor = GET_COLOR(COLOR_WHITE,COLOR_BLUE) | A_BOLD,
-	.shortkeycolor   = GET_COLOR(COLOR_RED,    COLOR_WHITE)| A_BOLD,
+	.currbuttoncolor    = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)   | A_BOLD,
+	.buttoncolor        = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
+	.currshortkeycolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)   | A_BOLD,
+	.shortkeycolor      = GET_COLOR(COLOR_RED,    COLOR_WHITE)  | A_BOLD,
 
-	.bottomtitlecolor= GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD
+	.bottomtitlecolor   = GET_COLOR(COLOR_BLACK,  COLOR_WHITE)  | A_BOLD
 };
 
 static struct bsddialog_theme magentatheme = {
@@ -128,10 +128,10 @@ static struct bsddialog_theme magentatheme = {
 	.shadowrows      = 1,
 	.shadowcols      = 2,
 
-	.backgroundcolor = GET_COLOR(COLOR_WHITE,  COLOR_MAGENTA)| A_BOLD,
+	.backgroundcolor = GET_COLOR(COLOR_WHITE,  COLOR_MAGENTA) | A_BOLD,
 	.surroundtitle   = true,
 	.titlecolor      = GET_COLOR(COLOR_RED,   COLOR_CYAN),
-	.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
+	.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_CYAN)     | A_BOLD,
 	.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 	.widgetcolor     = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 
@@ -154,12 +154,12 @@ static struct bsddialog_theme magentatheme = {
 	.buttonspace     = 3,
 	.buttleftch      = '<',
 	.buttrightchar   = '>',
-	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE, COLOR_RED) | A_BOLD,
+	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE, COLOR_RED)    | A_BOLD,
 	.buttdelimcolor     = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 	.currbuttoncolor    = GET_COLOR(COLOR_WHITE, COLOR_RED),
-	.buttoncolor       = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
-	.currshortkeycolor = GET_COLOR(COLOR_WHITE,  COLOR_RED) | A_BOLD,
-	.shortkeycolor     = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
+	.buttoncolor        = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
+	.currshortkeycolor  = GET_COLOR(COLOR_WHITE,  COLOR_RED)   | A_BOLD,
+	.shortkeycolor      = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
 
 	.bottomtitlecolor= GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD
 };
@@ -193,17 +193,17 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 	t.currbarcolor    = newtheme.currbarcolor;
 	t.barcolor        = newtheme.barcolor;
 
-	t.buttonspace     = newtheme.buttonspace;
-	t.buttleftch      = newtheme.buttleftch;
-	t.buttrightchar   = newtheme.buttrightchar;
+	t.buttonspace        = newtheme.buttonspace;
+	t.buttleftch         = newtheme.buttleftch;
+	t.buttrightchar      = newtheme.buttrightchar;
 	t.currbuttdelimcolor = newtheme.currbuttdelimcolor;
 	t.buttdelimcolor     = newtheme.buttdelimcolor;
-	t.currbuttoncolor = newtheme.currbuttoncolor;
-	t.buttoncolor     = newtheme.buttoncolor;
-	t.currshortkeycolor = newtheme.currshortkeycolor;
-	t.shortkeycolor   = newtheme.shortkeycolor;
+	t.currbuttoncolor    = newtheme.currbuttoncolor;
+	t.buttoncolor        = newtheme.buttoncolor;
+	t.currshortkeycolor  = newtheme.currshortkeycolor;
+	t.shortkeycolor      = newtheme.shortkeycolor;
 
-	t.bottomtitlecolor= newtheme.bottomtitlecolor;
+	t.bottomtitlecolor   = newtheme.bottomtitlecolor;
 
 	bkgd(t.backgroundcolor);
 
