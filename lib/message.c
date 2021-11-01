@@ -52,15 +52,17 @@ set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 		*h = conf.shadow ? LINES - t.shadowrows : LINES;
 	else if (rows < BSDDIALOG_FULLSCREEN)
 		RETURN_ERROR("Negative (less than -1) height");
-	else /* AUTOSIZE or > 0*/
+	else if (rows > BSDDIALOG_AUTOSIZE)
 		*h = rows;
+	/* rows == AUTOSIZE: each widget has to set its size */
 
 	if (cols == BSDDIALOG_FULLSCREEN)
 		*w = conf.shadow ? COLS - t.shadowcols : COLS;
 	else if (cols < BSDDIALOG_FULLSCREEN)
 		RETURN_ERROR("Negative (less than -1) width");
-	else /* AUTOSIZE or > 0 */
+	else if (rows > BSDDIALOG_AUTOSIZE)
 		*w = cols;
+	/* cols == AUTOSIZE: each widget has to set its size */
 
 	return 0;
 }
