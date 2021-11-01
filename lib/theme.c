@@ -54,6 +54,8 @@ static struct bsddialog_theme defaulttheme = {
 	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
 	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
 
+	.texthmargin     = 1,
+
 	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
 	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgcurr)),
@@ -92,6 +94,8 @@ static struct bsddialog_theme dialogtheme = {
 	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_WHITE)) | A_BOLD,
 	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
 	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
+
+	.texthmargin     = 1,
 
 	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
@@ -132,6 +136,8 @@ static struct bsddialog_theme magentatheme = {
 	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
 	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
 
+	.texthmargin     = 1,
+
 	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)) | A_BOLD,
 	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD,
 	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE)) | A_BOLD,
@@ -171,6 +177,8 @@ static void settheme(struct bsddialog_theme newtheme)
 	t.lineraisecolor  = newtheme.lineraisecolor;
 	t.linelowercolor  = newtheme.linelowercolor;
 	t.widgetcolor     = newtheme.widgetcolor;
+
+	t.texthmargin     = newtheme.texthmargin;
 
 	t.curritemcolor   = newtheme.curritemcolor;
 	t.itemcolor       = newtheme.itemcolor;

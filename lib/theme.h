@@ -40,6 +40,8 @@ struct bsddialog_theme {
 	int linelowercolor;
 	int widgetcolor;
 
+	unsigned int texthmargin;
+
 	int curritemcolor;
 	int itemcolor;
 	int currtagcolor;
