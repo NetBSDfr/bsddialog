@@ -35,134 +35,133 @@
 #include "lib_util.h"
 #include "theme.h"
 
-#define BSD_COLOR(BACKGROUND, FOREGROUND) (BACKGROUND * 8 + FOREGROUND +1)
+#define GET_COLOR(bg, fg) (COLOR_PAIR(bg * 8 + fg +1))
 
 struct bsddialog_theme t;
-
 
 static struct bsddialog_theme defaulttheme = {
 #define bgwidget  COLOR_WHITE
 #define bgcurr    COLOR_YELLOW
-	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_BLACK)),
+	.shadowcolor     = GET_COLOR(COLOR_BLACK,  COLOR_BLACK),
 	.shadowrows      = 1,
 	.shadowcols      = 2,
 
-	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
+	.backgroundcolor = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
 	.surroundtitle   = true,
-	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)) ,
-	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
-	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
-	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
+	.titlecolor      = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.lineraisecolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.linelowercolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.widgetcolor     = GET_COLOR(COLOR_BLACK,  bgwidget),
 
 	.texthmargin     = 1,
 
-	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  bgcurr)),
-	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
-	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgcurr)),
-	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)),
-	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget)),
-	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgwidget)),
+	.curritemcolor   = GET_COLOR(COLOR_WHITE,  bgcurr),
+	.itemcolor       = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.currtagcolor    = GET_COLOR(COLOR_BLACK,  bgcurr),
+	.tagcolor        = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.namesepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.descsepcolor    = GET_COLOR(COLOR_BLACK,  bgwidget),
 
-	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)),
-	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)),
-	.fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE)),
+	.currfieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
+	.fieldcolor      = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
+	.fieldreadonlycolor = GET_COLOR(COLOR_CYAN,COLOR_WHITE),
 
-	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)),
-	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)),
+	.currbarcolor    = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
+	.barcolor        = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
 
 	.buttonspace     = 3,
 	.buttleftch      = '[',
 	.buttrightchar   = ']',
-	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, bgcurr)),
-	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget)),
-	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,    bgcurr))  | A_UNDERLINE,
-	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,    bgwidget))| A_UNDERLINE,
-	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  bgcurr))  | A_UNDERLINE,
-	.shortkeycolor     = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, bgwidget))| A_UNDERLINE,
+	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE, bgcurr),
+	.buttdelimcolor     = GET_COLOR(COLOR_BLACK, bgwidget),
+	.currbuttoncolor = GET_COLOR(COLOR_WHITE,    bgcurr)  | A_UNDERLINE,
+	.buttoncolor     = GET_COLOR(COLOR_BLACK,    bgwidget)| A_UNDERLINE,
+	.currshortkeycolor = GET_COLOR(COLOR_BLACK,  bgcurr)  | A_UNDERLINE,
+	.shortkeycolor     = GET_COLOR(COLOR_YELLOW, bgwidget)| A_UNDERLINE,
 
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, bgwidget))
+	.bottomtitlecolor= GET_COLOR(COLOR_BLACK, bgwidget)
 };
 
 static struct bsddialog_theme dialogtheme = {
-	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
+	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadowrows      = 1,
 	.shadowcols      = 2,
 
-	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,  COLOR_BLUE))  | A_BOLD,
+	.backgroundcolor = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
 	.surroundtitle   = false,
-	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
-	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_WHITE)) | A_BOLD,
-	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
-	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)),
+	.titlecolor      = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
+	.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_WHITE) | A_BOLD,
+	.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
+	.widgetcolor     = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 
 	.texthmargin     = 1,
 
-	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
-	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
-	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE))  | A_BOLD,
-	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
-	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_WHITE)) | A_BOLD,
-	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD,
+	.curritemcolor   = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
+	.itemcolor       = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
+	.currtagcolor    = GET_COLOR(COLOR_YELLOW,COLOR_BLUE)  | A_BOLD,
+	.tagcolor        = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
+	.namesepcolor    = GET_COLOR(COLOR_YELLOW,COLOR_WHITE) | A_BOLD,
+	.descsepcolor    = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 
-	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
-	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD,
-	.fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE))| A_BOLD,
+	.currfieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE) | A_BOLD,
+	.fieldcolor      = GET_COLOR(COLOR_WHITE,  COLOR_CYAN) | A_BOLD,
+	.fieldreadonlycolor = GET_COLOR(COLOR_CYAN,COLOR_WHITE)| A_BOLD,
 
-	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
-	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
+	.currbarcolor    = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
+	.barcolor        = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
 
 	.buttonspace     = 3,
 	.buttleftch      = '[',
 	.buttrightchar   = ']',
-	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
-	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
-	.currbuttoncolor = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW, COLOR_BLUE)) | A_BOLD,
-	.buttoncolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_WHITE)),
-	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,COLOR_BLUE)) | A_BOLD,
-	.shortkeycolor   = COLOR_PAIR(BSD_COLOR(COLOR_RED,    COLOR_WHITE))| A_BOLD,
+	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE) | A_BOLD,
+	.buttdelimcolor     = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
+	.currbuttoncolor = GET_COLOR(COLOR_YELLOW, COLOR_BLUE) | A_BOLD,
+	.buttoncolor     = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
+	.currshortkeycolor = GET_COLOR(COLOR_WHITE,COLOR_BLUE) | A_BOLD,
+	.shortkeycolor   = GET_COLOR(COLOR_RED,    COLOR_WHITE)| A_BOLD,
 
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_WHITE)) | A_BOLD
+	.bottomtitlecolor= GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD
 };
 
 static struct bsddialog_theme magentatheme = {
-	.shadowcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_BLACK)),
+	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadowrows      = 1,
 	.shadowcols      = 2,
 
-	.backgroundcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_MAGENTA))| A_BOLD,
+	.backgroundcolor = GET_COLOR(COLOR_WHITE,  COLOR_MAGENTA)| A_BOLD,
 	.surroundtitle   = true,
-	.titlecolor      = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_CYAN)),
-	.lineraisecolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_CYAN)) | A_BOLD,
-	.linelowercolor  = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
-	.widgetcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
+	.titlecolor      = GET_COLOR(COLOR_RED,   COLOR_CYAN),
+	.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
+	.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
+	.widgetcolor     = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 
 	.texthmargin     = 1,
 
-	.curritemcolor   = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE)) | A_BOLD,
-	.itemcolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD,
-	.currtagcolor    = COLOR_PAIR(BSD_COLOR(COLOR_YELLOW,COLOR_BLUE)) | A_BOLD,
-	.tagcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_CYAN)) | A_BOLD,
-	.namesepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_RED,   COLOR_CYAN)) | A_BOLD,
-	.descsepcolor    = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD,
+	.curritemcolor   = GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
+	.itemcolor       = GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD,
+	.currtagcolor    = GET_COLOR(COLOR_YELLOW,COLOR_BLUE) | A_BOLD,
+	.tagcolor        = GET_COLOR(COLOR_BLUE,  COLOR_CYAN) | A_BOLD,
+	.namesepcolor    = GET_COLOR(COLOR_RED,   COLOR_CYAN) | A_BOLD,
+	.descsepcolor    = GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD,
 
-	.currfieldcolor  = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_BLUE)) | A_BOLD,
-	.fieldcolor      = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_CYAN)) | A_BOLD,
-	.fieldreadonlycolor = COLOR_PAIR(BSD_COLOR(COLOR_CYAN,COLOR_WHITE))| A_BOLD,
+	.currfieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE) | A_BOLD,
+	.fieldcolor      = GET_COLOR(COLOR_WHITE,  COLOR_CYAN) | A_BOLD,
+	.fieldreadonlycolor = GET_COLOR(COLOR_CYAN,COLOR_WHITE)| A_BOLD,
 
-	.currbarcolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_BLUE))  | A_BOLD,
-	.barcolor        = COLOR_PAIR(BSD_COLOR(COLOR_BLUE,  COLOR_WHITE)) | A_BOLD,
+	.currbarcolor    = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
+	.barcolor        = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
 
 	.buttonspace     = 3,
 	.buttleftch      = '<',
 	.buttrightchar   = '>',
-	.currbuttdelimcolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_RED)) | A_BOLD,
-	.buttdelimcolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)),
-	.currbuttoncolor    = COLOR_PAIR(BSD_COLOR(COLOR_WHITE, COLOR_RED)),
-	.buttoncolor       = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
-	.currshortkeycolor = COLOR_PAIR(BSD_COLOR(COLOR_WHITE,  COLOR_RED)) | A_BOLD,
-	.shortkeycolor     = COLOR_PAIR(BSD_COLOR(COLOR_BLACK,  COLOR_CYAN)),
+	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE, COLOR_RED) | A_BOLD,
+	.buttdelimcolor     = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
+	.currbuttoncolor    = GET_COLOR(COLOR_WHITE, COLOR_RED),
+	.buttoncolor       = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
+	.currshortkeycolor = GET_COLOR(COLOR_WHITE,  COLOR_RED) | A_BOLD,
+	.shortkeycolor     = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
 
-	.bottomtitlecolor= COLOR_PAIR(BSD_COLOR(COLOR_BLACK, COLOR_CYAN)) | A_BOLD
+	.bottomtitlecolor= GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD
 };
 
 void bsddialog_set_theme(struct bsddialog_theme newtheme)
@@ -231,7 +230,7 @@ int
 bsddialog_color(enum bsddialog_color background, enum bsddialog_color foreground)
 {
 
-	return COLOR_PAIR(BSD_COLOR(background, foreground));
+	return GET_COLOR(background, foreground);
 }
 
 struct bsddialog_theme bsddialog_get_theme()
