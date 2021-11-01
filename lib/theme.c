@@ -226,3 +226,10 @@ int bsddialog_settheme(enum bsddialog_default_theme newtheme)
 
 	return 0;
 }
+
+int
+bsddialog_color(enum bsddialog_color background, enum bsddialog_color foreground)
+{
+
+	return COLOR_PAIR(BSD_COLOR(background, foreground));
+}

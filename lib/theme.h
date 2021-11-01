@@ -28,6 +28,17 @@
 #ifndef _BSDDIALOG_THEME_H_
 #define _BSDDIALOG_THEME_H_
 
+enum bsddialog_color {
+	BSDDIALOG_BLACK = 0,
+	BSDDIALOG_RED,
+	BSDDIALOG_GREEN,
+	BSDDIALOG_YELLOW,
+	BSDDIALOG_BLUE,
+	BSDDIALOG_MAGENTA,
+	BSDDIALOG_CYAN,
+	BSDDIALOG_WHITE,
+};
+
 struct bsddialog_theme {
 	int shadowcolor;
 	unsigned int shadowrows;
@@ -75,6 +86,7 @@ enum bsddialog_default_theme {
 	BSDDIALOG_THEME_MAGENTA,
 };
 
+int bsddialog_color(enum bsddialog_color background, enum bsddialog_color foreground);
 //struct bsddialog_theme bsddialog_gettheme();
 //int bsddialog_setcustomtheme(struct bsddialog_theme *theme);
 int bsddialog_settheme(enum bsddialog_default_theme theme);
