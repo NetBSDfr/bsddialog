@@ -72,7 +72,7 @@ set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 }
 
 static int
-button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons bs)
 {
 	unsigned int maxword, maxline, nlines, line;
@@ -104,7 +104,7 @@ button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-button_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
+message_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
     struct buttons bs)
 {
 	int minrows, mincols;
@@ -179,8 +179,8 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	button_autosize(conf, rows, cols, &h, &w, text, bs);
-	if (button_checksize(conf, h, w, text, bs) != 0)
+	message_autosize(conf, rows, cols, &h, &w, text, bs);
+	if (message_checksize(conf, h, w, text, bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
 		return BSDDIALOG_ERROR;
