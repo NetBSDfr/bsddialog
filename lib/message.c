@@ -41,6 +41,10 @@
 
 /* msgbox and yesno */
 
+#define HBORDERS	2
+#define VBORDERS	2
+#define AUTO_WIDTH	(COLS / 3)
+
 extern struct bsddialog_theme t;
 
 //lib_util.h in the future
@@ -71,26 +75,29 @@ static int
 button_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons bs)
 {
-	unsigned int maxword, maxline, nlines;
+	unsigned int maxword, maxline, nlines, line;
 
 	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = 4; /* 2borders + 1buttons labels + 1button up border */
-		*h += nlines;
-		*h = MIN(*h, (conf.shadow ? LINES - t.shadowrows : LINES));
-	}
-
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = 2; /* borders */
+		*w = VBORDERS;
 		/* buttons size */
 		*w += bs.nbuttons * bs.sizebutton;
 		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
 		/* text size */
-		*w = MAX(*w, maxword + 4 /* borders and text padding*/);
-		/* avoid tui overflow */
+		line = MIN(maxline + VBORDERS + t.texthmargin * 2, AUTO_WIDTH);
+		line = MAX(line, maxword + VBORDERS + t.texthmargin * 2);
+		*w = MAX(*w, line);
+		/* avoid terminal overflow */
 		*w = MIN(*w, (conf.shadow ? COLS - t.shadowcols : COLS));
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE) {
+		*h = HBORDERS + 2; /* 1buttons labels + 1button up border */
+		*h += MAX(nlines, (*w / 9)); /* aspect ratio: add conf/theme? */
+		/* avoid terminal overflow */
+		*h = MIN(*h, (conf.shadow ? LINES - t.shadowrows : LINES));
 	}
 
 	return 0;
