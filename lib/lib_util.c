@@ -695,7 +695,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 			delwin(*textpad);
 			if (conf.shadow)
 				delwin(*shadow);
-			RETURN_ERROR("Cannot build text");
+			RETURN_ERROR("Cannot build the pad window for text");
 		}
 		wbkgd(*textpad, t.widgetcolor);
 		if (print_textpad(conf, *textpad, htextpad, w-4, text) !=0) {
