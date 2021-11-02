@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include <bsddialog.h>
-#include <theme.h>
+#include <bsddialog_theme.h>
 
 int main()
 {
