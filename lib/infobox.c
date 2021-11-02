@@ -43,8 +43,8 @@ bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 	int y, x;
 
 	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    false) <0)
-		return -1;
+	    false) != 0)
+		return (BSDDIALOG_ERROR);
 
 	getch();
 
