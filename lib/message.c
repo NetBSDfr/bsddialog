@@ -57,21 +57,33 @@ extern struct bsddialog_theme t;
 static int
 set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 {
+	int maxheight, maxwidth;
+
+	if ((maxheight = conf.shadow ? LINES - t.shadowrows : LINES) <=0)
+		RETURN_ERROR("Terminal too small, rows - shadow <= 0");
 
 	if (rows == BSDDIALOG_FULLSCREEN)
-		*h = conf.shadow ? LINES - t.shadowrows : LINES;
+		*h = maxheight;
 	else if (rows < BSDDIALOG_FULLSCREEN)
 		RETURN_ERROR("Negative (less than -1) height");
-	else if (rows > BSDDIALOG_AUTOSIZE)
-		*h = rows;
+	else if (rows > BSDDIALOG_AUTOSIZE) {
+		if ((*h = rows) > maxheight)
+			RETURN_ERROR("Height too big (> terminal height - "\
+			    "shadow");
+	}
 	/* rows == AUTOSIZE: each widget has to set its size */
 
+	if ((maxwidth = conf.shadow ? COLS - t.shadowcols : COLS) <= 0)
+		RETURN_ERROR("Terminal too small, cols - shadow <= 0");
+
 	if (cols == BSDDIALOG_FULLSCREEN)
-		*w = conf.shadow ? COLS - t.shadowcols : COLS;
+		*w = cols;
 	else if (cols < BSDDIALOG_FULLSCREEN)
 		RETURN_ERROR("Negative (less than -1) width");
-	else if (cols > BSDDIALOG_AUTOSIZE)
-		*w = cols;
+	else if (cols > BSDDIALOG_AUTOSIZE) {
+		if ((*w = cols) > maxwidth)
+			RETURN_ERROR("Width too big (> terminal width - shadow)");
+	}
 	/* cols == AUTOSIZE: each widget has to set its size */
 
 	return 0;
