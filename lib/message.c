@@ -53,7 +53,7 @@
 
 extern struct bsddialog_theme t;
 
-//lib_util.h in the future
+//lib_util in the future
 static int
 set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 {
@@ -131,7 +131,7 @@ message_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
 	return 0;
 }
 
-// widget_init() should call
+//lib_util in the future
 static int
 set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
     int cols, int h, int w)
