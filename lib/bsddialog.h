@@ -144,6 +144,8 @@ int bsddialog_init(void);
 int bsddialog_end(void);
 int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 const char *bsddialog_geterror(void);
+int terminalheight(void);
+int terminalwidth(void);
 
 /* widgets */
 int bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,

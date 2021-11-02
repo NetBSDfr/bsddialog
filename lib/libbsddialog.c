@@ -109,6 +109,18 @@ const char *bsddialog_geterror(void)
 	return get_error_string();
 }
 
+int terminalheight(void)
+{
+
+	return LINES;
+}
+
+int terminalwidth(void)
+{
+
+	return COLS;
+}
+
 /*
  * SECTIONS
  *  1) "Info"    infobox
