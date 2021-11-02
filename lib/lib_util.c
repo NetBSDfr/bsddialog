@@ -37,7 +37,7 @@
 
 #include "bsddialog.h"
 #include "lib_util.h"
-#include "theme.h"
+#include "bsddialog_theme.h"
 
 extern struct bsddialog_theme t;
 

@@ -35,7 +35,7 @@
 
 #include "bsddialog.h"
 #include "lib_util.h"
-#include "theme.h"
+#include "bsddialog_theme.h"
 
 /*
  *  Menu API: buildlist - checklist - menu - mixedlist - radiolist - treeview

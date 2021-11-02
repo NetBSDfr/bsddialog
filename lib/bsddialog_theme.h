@@ -25,8 +25,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _BSDDIALOG_THEME_H_
-#define _BSDDIALOG_THEME_H_
+#ifndef _LIBBSDDIALOG_THEME_H_
+#define _LIBBSDDIALOG_THEME_H_
 
 enum bsddialog_color {
 	BSDDIALOG_BLACK = 0,

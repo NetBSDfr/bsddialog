@@ -33,7 +33,7 @@
 
 #include "bsddialog.h"
 #include "lib_util.h"
-#include "theme.h"
+#include "bsddialog_theme.h"
 
 #define GET_COLOR(bg, fg) (COLOR_PAIR(bg * 8 + fg +1))
 

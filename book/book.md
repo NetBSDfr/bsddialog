@@ -306,7 +306,7 @@ fselect(todo)
 ## 13 Style
 
 ```c
-#include <theme.h>
+#include <bsddialog_theme.h>
 ```
 
 ```c
