@@ -7,7 +7,7 @@ VERSION = 0.1
 LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
 HEADERS = bsddialog.h bsddialog_theme.h
-SOURCES= theme.c menus.c lib_util.c libbsddialog.c message.c
+SOURCES= theme.c menubox.c lib_util.c libbsddialog.c messagebox.c
 OBJECTS = $(SOURCES:.c=.o)
 CFLAGS = -Wall -Werror -fpic -g
 LDFLAGS = -lform -lncurses -ltinfo
