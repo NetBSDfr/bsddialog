@@ -34,6 +34,8 @@
 #include "bsddialog.h"
 #include "lib_util.h"
 
+/* "File": dselect - fselect */
+
 int bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 

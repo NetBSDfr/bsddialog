@@ -34,6 +34,8 @@
 #include "bsddialog.h"
 #include "lib_util.h"
 
+/* "Info": infobox */
+
 int
 bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {

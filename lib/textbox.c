@@ -37,6 +37,8 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
+/* "Text": tailbox - tailboxbg - textbox */
+
 extern struct bsddialog_theme t;
 
 enum textmode { TAILMODE, TAILBGMODE, TEXTMODE};

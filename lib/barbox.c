@@ -38,6 +38,8 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
+/* "Bar": gauge - mixedgauge - rangebox - pause */
+
 extern struct bsddialog_theme t;
 
 static void

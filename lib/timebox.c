@@ -36,6 +36,8 @@
 #include "bsddialog.h"
 #include "lib_util.h"
 
+/* "Time": timebox - calendar */
+
 int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int hh, unsigned int mm, unsigned int ss)
 {

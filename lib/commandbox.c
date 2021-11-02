@@ -37,6 +37,8 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
+/* "Command": prgbox - programbox - progressbox */
+
 #define MAXINPUT 2048 /* in bsddialoh.h? in bsddialog.c get/set static maxinput? */
 
 extern struct bsddialog_theme t;

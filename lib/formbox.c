@@ -39,6 +39,8 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
+/* "Form": inputbox - passwordbox - form - passwordform - mixedform */
+
 extern struct bsddialog_theme t;
 
 int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols)

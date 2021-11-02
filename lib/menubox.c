@@ -37,9 +37,7 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
-/*
- *  Menu API: buildlist - checklist - menu - mixedlist - radiolist - treeview
- */
+/* "Menu": checklist - menu - radiolist - treeview - buildlist */
 
 #define TREESPACE 4
 

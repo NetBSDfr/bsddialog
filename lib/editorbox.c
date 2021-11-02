@@ -34,6 +34,8 @@
 #include "bsddialog.h"
 #include "lib_util.h"
 
+/* "Editor":  editbox */
+
 int bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 

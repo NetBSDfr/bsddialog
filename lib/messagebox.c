@@ -39,7 +39,7 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
-/* msgbox and yesno */
+/* "Message": msgbox - yesno */
 
 #define HBORDERS	2
 #define VBORDERS	2U

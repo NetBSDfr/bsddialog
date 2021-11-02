@@ -39,6 +39,23 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
+/*
+ * This file implements some public function not related to a specific widget.
+ * utils.h/c provides private functions to implement the library.
+ * theme.h/c is public API related to theme.
+ * Widgets implementation:
+ *  infobox.c    infobox
+ *  messgebox.c  msgbox - yesno
+ *  menubox.c    buildlist - checklist - menu - mixedlist - radiolist - treeview
+ *  formbox.c    inputbox - passwordbox - form - passwordform - mixedform
+ *  editorbox.c  editbox
+ *  barbox.c     gauge - mixedgauge - rangebox - pause
+ *  timebox.c    timebox - calendar
+ *  commandbox.c prgbox - programbox - progressbox
+ *  tailbox.c    tailbox - tailboxbg - textbox
+ *  filebox.c    dselect - fselect
+ */
+
 extern struct bsddialog_theme t;
 
 int bsddialog_init(void)
@@ -115,63 +132,4 @@ int terminalwidth(void)
 
 	return COLS;
 }
-
-/*
- * SECTIONS
- *  1) "Info"    infobox
- *  2) "Message" msgbox - yesno
- *  3) "Menu"    buildlist - checklist - menu - mixedlist - radiolist - treeview
- *  4) "Form"    inputbox - passwordbox - form - passwordform - mixedform
- *  5) "Editor"  editbox(todo)
- *  6) "Bar"     gauge - mixedgauge - rangebox - pause
- *  7) "Time"    timebox - calendar
- *  8) "Command" prgbox - programbox(todo) - progressbox(todo)
- *  9) "Text"    tailbox - tailboxbg(todo) - textbox
- * 10) "File"    dselect(todo) - fselect(todo)
- */
-
-/*
- * SECTION 1 "Info": infobox
- * infobox.c
- */
-
-/*
- * SECTION 2 "Message": msgbox - yesno
- * messagebox.c
- */
-
-/*
- * SECTION 3 "Menu": checklist - menu - radiolist - treeview - buildlist
- * menubox.c
- */
-
-/*
- * SECTIONS 4 "Form": inputbox - passwordbox - form - passwordform - mixedform
- * formbox.c
- */
-
-/*
- * SECTION 5 "Editor":  editbox(todo)
- * editorbox.c
- */
-
-/*
- * SECTION 6 "Bar": gauge - mixedgauge - rangebox - pause
- */
-
-/*
- * SECTION 7 "Time": timebox - calendar
- */
-
-/*
- * SECTION 8 "Command": prgbox - programbox(todo) - progressbox(todo)
- */
-
-/*
- * SECTION 9 "Text": tailbox - tailboxbg(todo) - textbox
- */
-
-/*
- * SECTION 10 "File": dselect(todo) - fselect(todo)
- */
 
