@@ -193,7 +193,8 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	message_autosize(conf, rows, cols, &h, &w, text, bs);
+	if (message_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
+		return BSDDIALOG_ERROR;
 	if (message_checksize(conf, h, w, text, bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
