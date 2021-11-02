@@ -76,7 +76,8 @@ int bsddialog_init(void)
 		RETURN_ERROR("Cannot init ncurses (colors)");
 	}
 
-	bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG);
+	if (bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG) != 0)
+		error = BSDDIALOG_ERROR;
 
 	return error;
 }
