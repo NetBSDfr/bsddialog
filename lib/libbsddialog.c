@@ -137,32 +137,17 @@ int terminalwidth(void)
 
 /*
  * SECTION 1 "Info": infobox
+ * infobox.c
  */
-int
-bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
-{
-	WINDOW *widget, *shadow;
-	int y, x;
-
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    false) <0)
-		return -1;
-
-	getch();
-
-	widget_end(conf, "Infobox", widget, rows, cols, shadow);
-
-	return (BSDDIALOG_YESOK);
-}
 
 /*
  * SECTION 2 "Message": msgbox - yesno
- * message.c
+ * messagebox.c
  */
 
 /*
  * SECTION 3 "Menu": checklist - menu - radiolist - treeview - buildlist
- * menus.c
+ * menubox.c
  */
 
 /*
