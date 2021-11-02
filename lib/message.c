@@ -115,24 +115,18 @@ static int
 message_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
     struct buttons bs)
 {
-	int minrows, mincols;
+	int mincols;
 
-	minrows = 4; /* 2borders + 1 button labels + 1 buttons upper border */
+	mincols = VBORDERS;
+	mincols += bs.nbuttons * bs.sizebutton;
+	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
 
-	mincols = bs.nbuttons * bs.sizebutton + (bs.nbuttons-1) * t.buttonspace;
-	mincols += 2; /* borders */
-	mincols = MAX(4 /* 2borders + 2buttondelimiters */, mincols);
+	if (cols < mincols)
+		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "\
+		    "for nbuttons size and margin + borders");
 
-	if (strlen(text) > 0) {
-		minrows++;
-		mincols = MAX(5 /* 2borders + 2pads + 1space */, mincols);
-	}
-
-	if (minrows > rows)
-		RETURN_ERROR("Few rows");
-
-	if (mincols > cols)
-		RETURN_ERROR("Few lines");
+	if (rows < MIN_HEIGHT)
+		RETURN_ERROR("Msgbox and Yesno need at least height 5");
 
 	return 0;
 }
