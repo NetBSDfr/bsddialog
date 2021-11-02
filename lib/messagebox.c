@@ -208,16 +208,19 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	while(loop) {
 		if (buttonupdate) {
 			draw_buttons(widget, h-2, w, bs, shortkey);
+			wrefresh(widget);
 			buttonupdate = false;
 		}
 		if (textupdate) {
-			if (htextpad > h -4)
+			if (htextpad > h -4) {
 				mvwprintw(widget, h-3, w-6, "%3d%%",
 				    (int)((100 * (textrow+h-4)) / htextpad));
+				wrefresh(widget);
+			}
 			prefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
 			textupdate = false;
 		}
-		wrefresh(widget); //useful? Only after an actual update?
+
 		input = getch();
 		switch (input) {
 		case 10: /* Enter */
@@ -242,7 +245,12 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			buttonupdate = true;
 			break;
 		case KEY_RESIZE: // TODO
+		case 'm':
+			y--;
+			x--;
+			mvwin(widget, y, x);
 			buttonupdate = true;
+			textupdate = true;
 			break;
 		case KEY_UP:
 			if (textrow == 0)
