@@ -42,8 +42,8 @@
 /* msgbox and yesno */
 
 #define HBORDERS	2
-#define VBORDERS	2
-#define AUTO_WIDTH	(COLS / 3)
+#define VBORDERS	2U
+#define AUTO_WIDTH	(COLS / 3U)
 /*
  * Min height = 5: 2 up & down borders + 2 label & up border buttons + 1 line
  * for text, at least 1 line is important for widget_withtextpad_init() to avoid
@@ -93,7 +93,7 @@ static int
 message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons bs)
 {
-	unsigned int maxword, maxline, nlines, line;
+	int maxword, maxline, nlines, line;
 
 	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
 		return BSDDIALOG_ERROR;
@@ -105,10 +105,10 @@ message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
 		/* text size */
 		line = MIN(maxline + VBORDERS + t.texthmargin * 2, AUTO_WIDTH);
-		line = MAX(line, maxword + VBORDERS + t.texthmargin * 2);
+		line = MAX(line, (int) (maxword + VBORDERS + t.texthmargin * 2));
 		*w = MAX(*w, line);
 		/* avoid terminal overflow */
-		*w = MIN(*w, (conf.shadow ? COLS - t.shadowcols : COLS));
+		*w = MIN(*w, conf.shadow ? COLS - (int) t.shadowcols : COLS);
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
@@ -117,15 +117,13 @@ message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 			*h += MAX(nlines, (*w / 9)); /* aspect ratio: add conf/theme? */
 		*h = MAX(*h, MIN_HEIGHT);
 		/* avoid terminal overflow */
-		*h = MIN(*h, (conf.shadow ? LINES - t.shadowrows : LINES));
+		*h = MIN(*h, conf.shadow ? LINES - (int) t.shadowrows : LINES);
 	}
 
 	return 0;
 }
 
-static int
-message_checksize(struct bsddialog_conf conf, int rows, int cols, char *text,
-    struct buttons bs)
+static int message_checksize(int rows, int cols, struct buttons bs)
 {
 	int mincols;
 
@@ -160,7 +158,7 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 	else
 		*y = conf.y;
 
-	if ((*y + h + (conf.shadow ? t.shadowrows : 0)) > LINES)
+	if ((*y + h + (conf.shadow ? (int) t.shadowrows : 0)) > LINES)
 		RETURN_ERROR("The lower of the box under the terminal "\
 		    "(begin Y + height (+ shadow) > terminal lines)");
 
@@ -176,7 +174,7 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 	else
 		*x = conf.x;
 
-	if ((*x + w + (conf.shadow ? t.shadowcols : 0)) > COLS)
+	if ((*x + w + (conf.shadow ? (int) t.shadowcols : 0)) > COLS)
 		RETURN_ERROR("The right of the box over the terminal "\
 		    "(begin X + width (+ shadow) > terminal cols)");
 
@@ -195,7 +193,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 		return BSDDIALOG_ERROR;
 	if (message_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
 		return BSDDIALOG_ERROR;
-	if (message_checksize(conf, h, w, text, bs) != 0)
+	if (message_checksize(h, w, bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
 		return BSDDIALOG_ERROR;
@@ -265,14 +263,14 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < bs.nbuttons - 1) {
+			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				buttonupdate = true;
 			}
 			break;
 		default:
 			if (shortkey) {
-				for (i = 0; i < bs.nbuttons; i++)
+				for (i = 0; i < (int) bs.nbuttons; i++)
 					if (input == (bs.label[i])[0]) {
 						output = bs.value[i];
 						loop = false;

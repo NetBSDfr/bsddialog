@@ -119,7 +119,7 @@ getfirst(struct bsddialog_conf conf, int ngroups, struct bsddialog_menugroup *gr
 			*rel = 0;
 			break;
 		}
-		for (j = 0; j < groups[i].nitems; j++) {
+		for (j = 0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
 			if (conf.default_item != NULL && item->name != NULL) {
 				if (strcmp(item->name, conf.default_item) == 0) {
@@ -143,7 +143,7 @@ getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 	if (*abs < 0 || *group < 0 || *rel < 0)
 		return;
 
-	if (*rel + 1 < groups[*group].nitems) {
+	if (*rel + 1 < (int) groups[*group].nitems) {
 		*rel = *rel + 1;
 		*abs = *abs + 1;
 		return;
@@ -168,7 +168,7 @@ getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 }
 
 static void
-getprev(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
+getprev(struct bsddialog_menugroup *groups, int *abs, int *group,
     int *rel)
 {
 	int i, a;
@@ -188,13 +188,13 @@ getprev(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 	a = *abs;
 	for (i = *group - 1; i >= 0; i--) {
 		if (groups[i].type == BSDDIALOG_SEPARATOR) {
-			a -= groups[i].nitems;
+			a -= (int) groups[i].nitems;
 			continue;
 		}
 		if (groups[i].nitems != 0) {
 			*group = i;
 			*abs = a - 1;
-			*rel = groups[i].nitems - 1;
+			*rel = (int) groups[i].nitems - 1;
 			break;
 		}
 	}
@@ -316,7 +316,7 @@ print_selected_list(struct bsddialog_conf conf, int output, enum menumode mode,
 	}
 	/* else Lists */
 	for (i=0; i < ngroups; i++) {
-		for (j=0; j < groups[i].nitems; j++) {
+		for (j=0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
 			if (groups[i].type == BSDDIALOG_SEPARATOR)
 				dprintf(conf.output_fd, "--%s %s--\n",
@@ -384,7 +384,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		if (currmode == RADIOLISTMODE || currmode == CHECKLISTMODE || currmode == TREEVIEWMODE)
 			pos.selectorlen = 3;
 
-		for (j=0; j < groups[i].nitems; j++) {
+		for (j=0; j < (int) groups[i].nitems; j++) {
 			totnitems++;
 			item = &groups[i].items[j];
 
@@ -394,7 +394,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			}
 
 			if (currmode == TREEVIEWMODE) {
-				pos.maxdepth = MAX(pos.maxdepth, item->depth);
+				pos.maxdepth = MAX((int) pos.maxdepth, item->depth);
 			}
 
 			if (conf.item_prefix && item->bottomdesc != NULL)
@@ -420,7 +420,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	totnitems = 0;
 	for (i=0; i<ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
-		for (j=0; j<groups[i].nitems; j++) {
+		for (j=0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
 			drawitem(conf, menupad, totnitems, *item, currmode,
 			    pos, totnitems == abs);
@@ -430,8 +430,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	ys = y + rows - 5 - menurows + 1;
 	ye = ys + menurows + 2 -1;
-	xs = (pos.line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - pos.line/2;
-	xe = (pos.line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
+	xs = ((int) pos.line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - pos.line/2;
+	xe = ((int) pos.line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
 	if (currmode == TREEVIEWMODE)
 		xs = x + 2 + 1;
 
@@ -477,7 +477,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < bs.nbuttons - 1) {
+			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				buttupdate = true;
 			}
@@ -492,7 +492,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		case KEY_DOWN:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			if (input == KEY_UP)
-				getprev(ngroups, groups, &abs, &g, &rel);
+				getprev(groups, &abs, &g, &rel);
 			else
 				getnext(ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
@@ -507,7 +507,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			else { //RADIOLISTMODE and TREEVIEWMODE
 				if (item->on == true)
 					break;
-				for (i=0; i<groups[g].nitems; i++)
+				for (i=0; i < (int) groups[g].nitems; i++)
 					if (groups[g].items[i].on == true) {
 						groups[g].items[i].on = false;
 						drawitem(conf, menupad,

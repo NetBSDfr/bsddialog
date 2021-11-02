@@ -224,7 +224,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 				curs_set(0);
 			} else {
 				bs.curr++;
-				inentry = bs.curr >= bs.nbuttons ? true : false;
+				inentry = bs.curr >= (int) bs.nbuttons ? true : false;
 				if (inentry) {
 					curs_set(2);
 					pos_form_cursor(form);
@@ -246,7 +246,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 			if (inentry) {
 				form_driver(form, REQ_NEXT_CHAR);
 			} else {
-				if (bs.curr < bs.nbuttons - 1) {
+				if (bs.curr < (int) bs.nbuttons - 1) {
 					bs.curr++;
 					buttupdate = true;
 				}
@@ -540,8 +540,8 @@ draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, int
 	else
 		sprintf(labelstr, "%3d%%", perc);
 	wmove(win, y, x + size/2 - 2);
-	for (i=0; i<strlen(labelstr); i++) {
-		color = ( (blue_x + 1) <= (size/2 - strlen(labelstr)/2 + i) ) ?
+	for (i=0; i < (int) strlen(labelstr); i++) {
+		color = ( (blue_x + 1) <= (size/2 - (int) strlen(labelstr)/2 + i) ) ?
 		    t.barcolor : t.currbarcolor;
 		wattron(win, color);
 		waddch(win, labelstr[i]);
@@ -733,7 +733,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < bs.nbuttons - 1) {
+			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				buttupdate = true;
 			}
@@ -831,7 +831,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < bs.nbuttons - 1) {
+			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				buttupdate = true;
 			}
@@ -933,7 +933,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < bs.nbuttons - 1) {
+			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				buttupdate = true;
 			}
@@ -1054,7 +1054,7 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < bs.nbuttons - 1) {
+			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				buttupdate = true;
 			}
@@ -1115,14 +1115,14 @@ command_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortke
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < bs.nbuttons - 1) {
+			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				update = true;
 			}
 			break;
 		default:
 			if (shortkey) {
-				for (i = 0; i < bs.nbuttons; i++)
+				for (i = 0; i < (int) bs.nbuttons; i++)
 					if (input == (bs.label[i])[0]) {
 						output = bs.value[i];
 						loop = false;
@@ -1287,7 +1287,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	}*/
 	i = 0;
 	while(fgets(buf, BUFSIZ, fp) != NULL) {
-		if (strlen(buf) > padcols) {
+		if ((int) strlen(buf) > padcols) {
 			padcols = strlen(buf);
 			wresize(pad, padrows, padcols);
 		}

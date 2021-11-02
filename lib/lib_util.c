@@ -106,7 +106,7 @@ draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.buttonspace;
 	start_x = cols/2 - start_x/2;
 
-	for (i = 0; i < bs.nbuttons; i++) {
+	for (i = 0; i < (int) bs.nbuttons; i++) {
 		x = i * (bs.sizebutton + t.buttonspace);
 		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
 		    i == bs.curr, shortkey);
@@ -158,7 +158,7 @@ get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
 	}
 
 	bs->sizebutton = MAX(SIZEBUTTON - 2, strlen(bs->label[0]));
-	for (i=1; i < bs->nbuttons; i++)
+	for (i=1; i < (int) bs->nbuttons; i++)
 		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
 	bs->sizebutton += 2;
 }
@@ -233,7 +233,7 @@ static bool isws(int ch)
 }
 
 static int
-next_token(struct bsddialog_conf conf, char *text, char *valuestr, int *valueint)
+next_token(char *text, char *valuestr)
 {
 	int i, j;
 	enum token tok;
@@ -307,7 +307,7 @@ print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int ma
     char *text)
 {
 	char *valuestr;
-	int valueint, x, y;
+	int x, y;
 	bool loop;
 	enum token tok;
 
@@ -317,7 +317,7 @@ print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int ma
 	y = starty;
 	loop = true;
 	while (loop) {
-		tok = next_token(conf, text, valuestr, &valueint);
+		tok = next_token(text, valuestr);
 		switch (tok) {
 		case END:
 			loop = false;
@@ -449,8 +449,8 @@ static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
 }
 
 int
-get_text_properties(struct bsddialog_conf conf, char *text,
-    unsigned int *maxword, unsigned int *maxline, unsigned int *nlines)
+get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
+    int *maxline, int *nlines)
 {
 	char *buf;
 	int i, buflen, wordlen, linelen;
