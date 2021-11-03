@@ -72,10 +72,14 @@ void draw_button(WINDOW *window, int y, int x, int size, char *text, bool select
     bool shortkey);
 void draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey);
 
+/* cleaner */
+int hide_widget(int y, int x, int h, int w, bool withshadow);
+
 /* widget */
 int
 get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
     int *maxline, int *nlines);
+
 enum elevation { RAISED, LOWERED, NOLINES };
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
     enum elevation elev, bool asciilines);

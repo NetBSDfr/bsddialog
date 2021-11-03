@@ -57,6 +57,26 @@ void set_error_string(char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
+/* cleaner */
+int hide_widget(int y, int x, int h, int w, bool withshadow)
+{
+	WINDOW *clear;
+
+	/* no check: y, x, h and w are checked by the builders */
+	if ((clear = newwin(h, w, y + t.shadowrows, x + t.shadowcols)) == NULL)
+		RETURN_ERROR("Cannot hide the widget");
+	wbkgd(clear, t.backgroundcolor);
+
+	if (withshadow)
+		wrefresh(clear);
+
+	mvwin(clear, y, x);
+	wrefresh(clear);
+
+	delwin(clear);
+
+	return 0;
+}
 
 /* Buttons */
 void
