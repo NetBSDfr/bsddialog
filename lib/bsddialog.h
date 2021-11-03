@@ -51,7 +51,7 @@ struct bsddialog_conf {
 	int x;		// BEGIN
 	int y;		// BEGIN
 	char *cancel_label;
-	bool clear;	// useful?
+	bool clear;
 	bool colors;
 	char *colums_separator;
 	bool cr_wrap;

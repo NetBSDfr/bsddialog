@@ -756,6 +756,9 @@ void
 widget_withtextpad_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h,
     int w, WINDOW *textpad, WINDOW *shadow)
 {
+	int y, x;
+
+	getmaxyx(window, y, x); /* for clear, add y & x to args? */
 
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
@@ -767,6 +770,9 @@ widget_withtextpad_end(struct bsddialog_conf conf, char *name, WINDOW *window, i
 
 	if (conf.shadow)
 		delwin(shadow);
+
+	if (conf.clear)
+		hide_widget(y, x, h, w, shadow != NULL);
 
 	if (conf.print_size)
 		dprintf(conf.output_fd, "%s size: (%d, %d)\n", name, h, w);
