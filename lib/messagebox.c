@@ -181,12 +181,47 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 	return 0;
 }
 
+static void
+buttonsupdate(WINDOW *widget, int h, int w, struct buttons bs, bool shortkey)
+{
+	draw_buttons(widget, h-2, w, bs, shortkey);
+	wrefresh(widget);
+}
+
+static void
+textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
+    int htextpad, int textrow)
+{
+
+	if (htextpad > h - 4) {
+		mvwprintw(widget, h-3, w-6, "%3d%%", (int)((100 * (textrow+h-4)) / htextpad));
+		wrefresh(widget);
+	}
+
+	prefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
+}
+
+static void
+updatebox(WINDOW *shadow, WINDOW *widget, int y, int x, int h, int w,
+    WINDOW *textpad, int htextpad, int textrow, struct buttons bs, bool shortkey)
+{
+
+	hide_widget(y+1,x+1,h,w,shadow != NULL);
+
+	mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
+	wrefresh(shadow); refresh();
+
+	mvwin(widget, y, x); /* refreshed by the following funcs*/
+	buttonsupdate(widget, h, w, bs, shortkey);
+	textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
+}
+
 static int
 do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
     struct buttons bs, bool shortkey)
 {
 	WINDOW *widget, *textpad, *shadow;
-	bool loop, buttonupdate, textupdate;
+	bool loop;
 	int i, y, x, h, w, input, output, htextpad, textrow;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -204,23 +239,10 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 		return BSDDIALOG_ERROR;
 
 	textrow = 0;
-	loop = buttonupdate = textupdate = true;
+	loop = true;
+	buttonsupdate(widget, h, w, bs, shortkey);
+	textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
 	while(loop) {
-		if (buttonupdate) {
-			draw_buttons(widget, h-2, w, bs, shortkey);
-			wrefresh(widget);
-			buttonupdate = false;
-		}
-		if (textupdate) {
-			if (htextpad > h -4) {
-				mvwprintw(widget, h-3, w-6, "%3d%%",
-				    (int)((100 * (textrow+h-4)) / htextpad));
-				wrefresh(widget);
-			}
-			prefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
-			textupdate = false;
-		}
-
 		input = getch();
 		switch (input) {
 		case 10: /* Enter */
@@ -233,7 +255,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			buttonupdate = true;
+			buttonsupdate(widget, h, w, bs, shortkey);
 			break;
 		case KEY_F(1): // TODO
 			if (conf.hfile == NULL)
@@ -241,39 +263,41 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			bsddialog_textbox(conf, conf.hfile, h, w);
 			//clear();
 			wrefresh(widget);
-			textupdate = true;
-			buttonupdate = true;
+			//textupdate = true;
+			//buttonupdate = true;
 			break;
 		case KEY_RESIZE: // TODO
 		case 'm':
 			y--;
 			x--;
-			mvwin(widget, y, x);
-			buttonupdate = true;
-			textupdate = true;
+			/*mvwin(widget, y, x); // buttonsupdate() refreshes widget
+			buttonsupdate(widget, h, w, bs, shortkey);
+			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);*/
+			updatebox(shadow, widget, y, x, h, w, textpad, htextpad,
+			    textrow, bs, shortkey);
 			break;
 		case KEY_UP:
 			if (textrow == 0)
 				break;
 			textrow--;
-			textupdate = true;
+			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
 			break;
 		case KEY_DOWN:
 			if (textrow + h - 4 >= htextpad)
 				break;
 			textrow++;
-			textupdate = true;
+			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				buttonupdate = true;
+				buttonsupdate(widget, h, w, bs, shortkey);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				buttonupdate = true;
+				buttonsupdate(widget, h, w, bs, shortkey);
 			}
 			break;
 		default:
