@@ -25,6 +25,7 @@
  * SUCH DAMAGE.
  */
 
+#include <ctype.h>
 #include <string.h>
 
 #ifdef PORTNCURSES
@@ -297,12 +298,13 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			}
 			break;
 		default:
-			if (shortkey) {
-				for (i = 0; i < (int) bs.nbuttons; i++)
-					if (input == (bs.label[i])[0]) {
-						output = bs.value[i];
-						loop = false;
-				}
+			if (shortkey == false)
+				break;
+
+			for (i = 0; i < (int) bs.nbuttons; i++)
+				if (tolower(input) == tolower((bs.label[i])[0])) {
+					output = bs.value[i];
+					loop = false;
 			}
 		}
 	}
