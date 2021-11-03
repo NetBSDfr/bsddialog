@@ -15,7 +15,7 @@ Description:
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
 % make -D PORTNCURSES
-% ./bsddialog --title BSD --msgbox "Hello World!" 5 24
+% ./bsddialog --msgbox "Hello World!" 8 20
 ```
 Output:
 
