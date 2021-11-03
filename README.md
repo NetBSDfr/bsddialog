@@ -57,7 +57,7 @@ Examples library:
 | --backtitle *backtitle*      | Completed   |                                 |
 | --begin *y x*                | Completed   | add --starty --startx?          |
 | --cancel-label *string*      | Completed   |                                 |
-| --clear                      | In progress |                                 |
+| --clear                      | Completed   | test with multiple widgets      |
 | --colors                     | Completed   |                                 |
 | --column-separator *string*  |             |                                 |
 | --cr-wrap                    | Coding      |                                 |

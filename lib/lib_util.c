@@ -758,7 +758,7 @@ widget_withtextpad_end(struct bsddialog_conf conf, char *name, WINDOW *window, i
 {
 	int y, x;
 
-	getmaxyx(window, y, x); /* for clear, add y & x to args? */
+	getbegyx(window, y, x); /* for clear, add y & x to args? */
 
 	if (conf.sleep > 0)
 		sleep(conf.sleep);
