@@ -201,21 +201,6 @@ textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
 	prefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
 }
 
-static void
-updatebox(WINDOW *shadow, WINDOW *widget, int y, int x, int h, int w,
-    WINDOW *textpad, int htextpad, int textrow, struct buttons bs, bool shortkey)
-{
-
-	hide_widget(y+1,x+1,h,w,shadow != NULL);
-
-	mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
-	wrefresh(shadow); refresh();
-
-	mvwin(widget, y, x); /* refreshed by the following funcs*/
-	buttonsupdate(widget, h, w, bs, shortkey);
-	textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
-}
-
 static int
 do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
     struct buttons bs, bool shortkey)
@@ -266,15 +251,26 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			//textupdate = true;
 			//buttonupdate = true;
 			break;
-		case KEY_RESIZE: // TODO
-		case 'm':
-			y--;
-			x--;
-			/*mvwin(widget, y, x); // buttonsupdate() refreshes widget
+		case KEY_RESIZE: //to improve
+		case 'r':
+			hide_widget(y, x, h, w,conf.shadow);
+
+			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+				return BSDDIALOG_ERROR;
+			if (message_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
+				return BSDDIALOG_ERROR;
+			if (message_checksize(h, w, bs) != 0)
+				return BSDDIALOG_ERROR;
+			if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
+				return BSDDIALOG_ERROR;
+
+			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
+			wrefresh(shadow);
+
+			mvwin(widget, y, x); /* refreshed by the following funcs*/
 			buttonsupdate(widget, h, w, bs, shortkey);
-			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);*/
-			updatebox(shadow, widget, y, x, h, w, textpad, htextpad,
-			    textrow, bs, shortkey);
+			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
+			refresh();
 			break;
 		case KEY_UP:
 			if (textrow == 0)
