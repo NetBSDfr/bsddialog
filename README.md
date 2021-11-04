@@ -136,12 +136,11 @@ Examples library:
 
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
-| --buildlist    | In progress | todo autosize, resize, F1               |
+| --buildlist    | In progress | todo autosize, resize, F1                     |
 | --calendar     | In progress | todo autosize, resize, F1, leap year, year <=0, month days |
-| --checklist    | In progress | todo autosize, resize, F1               |
+| --checklist    | In progress | todo autosize, resize, F1                     |
 | --dselect      |             |                                               |
 | --editbox      |             |                                               |
-| todo |
 | --form         | In progress | implemented via --mixedform                   |
 | --fselect      |             |                                               |
 | --gauge        | In progress |                                               |
