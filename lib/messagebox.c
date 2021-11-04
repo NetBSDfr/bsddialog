@@ -251,7 +251,17 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			/* No break! the terminal size can change */
 		case KEY_RESIZE: //to improve
 		case 'r':
+			/*BSDDIALOG_DEBUG(4,1,"LINES: %d, COLS: %d", LINES, COLS);
+			BSDDIALOG_DEBUG(5,1,"old y: %d, old x: %d, old h: %d, old w: %d", y,x,h,w);
+
+			BSDDIALOG_DEBUG(6,1,"Hide and new size and position",1);*/
 			hide_widget(y, x, h, w,conf.shadow);
+
+			/*
+			 * Unnecessary, but, when the columns decrease the
+			 * following "refresh" seem not work
+			 */
+			refresh();
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
@@ -261,6 +271,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
 				return BSDDIALOG_ERROR;
+			//BSDDIALOG_DEBUG(7,1,"y: %d, x: %d, h: %d, w: %d", y,x,h,w);
 
 			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
 			wrefresh(shadow);
@@ -268,7 +279,6 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			mvwin(widget, y, x); /* refreshed by the following funcs*/
 			buttonsupdate(widget, h, w, bs, shortkey);
 			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
-			refresh();
 			break;
 		case KEY_UP:
 			if (textrow == 0)
