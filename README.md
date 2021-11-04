@@ -74,7 +74,7 @@ Examples library:
 | --help-label *string*        | Completed   |                                 |
 | --help-status                | Completed   |                                 |
 | --help-tags                  |             | example?                        |
-| --hfile *filename*           | Coding      | use textbox, the challenge is to refresh the caller widget |
+| --hfile *filename*           | In progress | implemented via textbox         |
 | --hline *string*             | Completed   |                                 |
 | --ignore                     | In progress | todo --ignore -error            |
 | --input-fd *fd*              |             |                                 |
