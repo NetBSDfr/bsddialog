@@ -136,34 +136,35 @@ Examples library:
 
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
-| --buildlist    | In progress | todo resize, auto rows/cols, F1               |
-| --calendar     | In progress | todo resize, auto rows/cols, F1, leap year, year <=0, month days |
-| --checklist    | In progress | todo resize, auto rows/cols, F1               |
+| --buildlist    | In progress | todo autosize, resize, F1               |
+| --calendar     | In progress | todo autosize, resize, F1, leap year, year <=0, month days |
+| --checklist    | In progress | todo autosize, resize, F1               |
 | --dselect      |             |                                               |
 | --editbox      |             |                                               |
+| todo |
 | --form         | In progress | implemented via --mixedform                   |
 | --fselect      |             |                                               |
 | --gauge        | In progress |                                               |
 | --infobox      | In progress | Do not clear the screen                       |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --inputmenu    |             |                                               |
-| --menu         | In progress | todo resize, auto rows/cols, F1, todo scrolling |
-| --mixedform    | In progress | todo resize, auto rows/cols, F1               |
-| --mixedgauge   | In progress | todo resize, auto rows/cols, F1               |
+| --menu         | In progress | todo autosize, resize, F1, todo scrolling     |
+| --mixedform    | In progress | todo autosize, resize, F1                     |
+| --mixedgauge   | In progress | todo autosize, resize, F1                     |
 | --mixedlist    | In progress | Can implement [dialog4ports(1)](https://man.freebsd.org/dialog4ports/1) |
-| --msgbox       | In progress | todo resize, F1                               |
+| --msgbox       | Completed   | to improve resize                             |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |
-| --pause        | In progress | todo resize, auto rows/cols, F1               |
+| --pause        | In progress | todo autosize, resize, F1                     |
 | --prgbox       | In progress | add command opts                              |
 | --programbox   | Coding      |                                               |
-| --progressbox  | Coding      |                                               |
-| --radiolist    | In progress | todo resize, auto rows/cols, F1               |
-| --rangebox     | In progress | todo resize, auto rows/cols, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
+| --progressbox  |             |                                               |
+| --radiolist    | In progress | todo autosize, resize, F1                     |
+| --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
 | --tailbox      | Coding      | todo via --textbox or fseek?                  |
 | --tailboxbg    |             |                                               |
 | --textbox      | In progress | todo navigation keys                          |
-| --timebox      | In progress | todo resize, auto rows/cols, F1               |
-| --treeview     | In progress | todo resize, auto rows/cols, F1               |
-| --yesno        | In progress | dialog renames yes/no -> ok/cancel with --extra-button --help-button, todo resize, F1 |
+| --timebox      | In progress | todo autosize, resize, F1                     |
+| --treeview     | In progress | todo autosize, resize, F1                     |
+| --yesno        | Completed   | dialog renames yes/no -> ok/cancel with --extra-button --help-button; improve resize |
 
