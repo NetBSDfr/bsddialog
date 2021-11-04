@@ -243,15 +243,12 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttonsupdate(widget, h, w, bs, shortkey);
 			break;
-		case KEY_F(1): // TODO
+		case KEY_F(1):
 			if (conf.hfile == NULL)
 				break;
-			bsddialog_textbox(conf, conf.hfile, h, w);
-			//clear();
-			wrefresh(widget);
-			//textupdate = true;
-			//buttonupdate = true;
-			break;
+			if (f1help(conf) != 0)
+				return BSDDIALOG_ERROR;
+			/* No break! the terminal size can change */
 		case KEY_RESIZE: //to improve
 		case 'r':
 			hide_widget(y, x, h, w,conf.shadow);

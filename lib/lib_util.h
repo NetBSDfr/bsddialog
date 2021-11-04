@@ -80,6 +80,8 @@ int
 get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
     int *maxline, int *nlines);
 
+int f1help(struct bsddialog_conf conf);
+
 enum elevation { RAISED, LOWERED, NOLINES };
 WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
     enum elevation elev, bool asciilines);

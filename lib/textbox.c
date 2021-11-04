@@ -122,7 +122,10 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 		}
 	}
 
-	return (BSDDIALOG_ERROR);
+	/* to improve: name, rows and cols, now only for F1 */
+	widget_end(conf, "F1 Help", widget, rows, cols, shadow);
+
+	return (BSDDIALOG_YESOK); /* to improve*/
 }
 
 int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols)

@@ -78,6 +78,23 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 	return 0;
 }
 
+/* F1 help */
+int f1help(struct bsddialog_conf conf)
+{
+	char *file = conf.hfile;
+
+	conf.hfile = NULL;
+	conf.clear = true;
+	conf.y = BSDDIALOG_CENTER;
+	conf.x = BSDDIALOG_CENTER;
+	conf.title = "HELP";
+	conf.sleep = 0;
+	/* to check extras */
+
+	/* TODO: LINES/2, COLS/2 -> BSDDIALOG_AUTOSIZE, BSDDIALOG_AUTOSIZE */
+	return bsddialog_textbox(conf, file, LINES/2, COLS/2);
+}
+
 /* Buttons */
 void
 draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
