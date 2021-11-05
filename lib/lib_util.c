@@ -379,19 +379,18 @@ static bool is_ncurses_attr(char *text)
 {
 	bool isattr;
 
-	if (text[0] == '\0' || text[0] != '\\')
-		return false;
-	if (text[1] == '\0' || text[1] != 'Z')
-		return false;
-	if (text[2] == '\0')
+	if (strnlen(text, 3) < 3)
 		return false;
 
-	if ((text[2] - 48) >= 0 && (text[2] - 48) < 8) {
+	if (text[0] != '\\' || text[1] != 'Z')
+		return false;
+
+	if ((text[2] - '0') >= 0 && (text[2] - '0') < 8)
 		return true;
-	}
 
 	isattr = text[2] == 'n' || text[2] == 'b' || text[2] == 'B' ||
-	    text[2] == 'r' || text[2] == 'R' || text[2] == 'u' || text[2] == 'U';
+	    text[2] == 'r' || text[2] == 'R' || text[2] == 'u' ||
+	    text[2] == 'U';
 
 	return isattr;
 }
@@ -560,6 +559,7 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 	loop = true;
 	while (loop) {
 		string[j] = buf[i];
+
 		if (string[j] == '\0' || string[j] == '\n' ||
 		    string[j] == '\t' || string[j] == ' ') {
 			if (j != 0) {
