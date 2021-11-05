@@ -480,7 +480,8 @@ static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
 			buf[j] = text[i];
 		}
 		i++;
-		j = (conf.trim && buf[j] == ' ') ? j : j+1;
+		j += (buf[j] == ' ' && conf.trim && j > 0 && buf[j-1] == ' ') ?
+		    0 : 1;
 	}
 	buf[j] = '\0';
 }
