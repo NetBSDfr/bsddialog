@@ -83,7 +83,7 @@ int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	    false) <0)
 		return -1;
 
-	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, conf.hline,
+	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
 
 	wrefresh(widget);
@@ -153,7 +153,7 @@ int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int c
 	    false) <0)
 		return -1;
 
-	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, conf.hline,
+	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, NULL,
 	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
 
 	/* mini bars */
