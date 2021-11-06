@@ -615,11 +615,10 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 
 
 /* Widgets builders */
-WINDOW *
-new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
-    enum elevation elev)
+static void
+update_boxed_window(struct bsddialog_conf conf, WINDOW *win, int y, int x,
+    int rows, int cols, enum elevation elev)
 {
-	WINDOW *win;
 	int leftcolor, rightcolor;
 	int ls, rs, ts, bs, tl, tr, bl, br;
 	int ltee, rtee;
@@ -632,13 +631,6 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
 	br = ACS_LRCORNER;
 	ltee = ACS_LTEE;
 	rtee = ACS_RTEE;
-
-	if ((win = newwin(rows, cols, y, x)) == NULL) {
-		set_error_string("Cannot build boxed window");
-		return NULL;
-	}
-
-	wbkgd(win, t.widgetcolor);
 
 	if (conf.no_lines == false) {
 		if (conf.ascii_lines) {
@@ -659,6 +651,22 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
 		mvwhline(win, rows-1, 1, bs, cols-2);
 		wattroff(win, rightcolor);
 	}
+}
+
+WINDOW *
+new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
+    enum elevation elev)
+{
+	WINDOW *win;
+
+	if ((win = newwin(rows, cols, y, x)) == NULL) {
+		set_error_string("Cannot build boxed window");
+		return NULL;
+	}
+
+	wbkgd(win, t.widgetcolor);
+
+	update_boxed_window(conf, win, y, x, rows, cols, elev);
 
 	return win;
 }
