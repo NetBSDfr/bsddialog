@@ -25,6 +25,8 @@
  * SUCH DAMAGE.
  */
 
+#include <sys/param.h>
+
 #include <string.h>
 
 #ifdef PORTNCURSES

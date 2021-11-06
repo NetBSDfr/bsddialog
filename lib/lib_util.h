@@ -32,9 +32,6 @@
  * Utils to implement widgets - Private API
  */
 
-#define	MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
-
 /* debug */
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {	\
 	mvprintw(y, x, fmt, __VA_ARGS__);	\
