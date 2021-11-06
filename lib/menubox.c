@@ -365,9 +365,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    true) < 0)
 		return -1;
 
-	menuwin = new_window(y + rows - 5 - menurows, x + 2, menurows+2, cols-4,
-	    NULL, NULL, conf.no_lines ? NOLINES : LOWERED,
-	    conf.ascii_lines);
+	menuwin = new_boxed_window(conf, y + rows - 5 - menurows, x + 2,
+	    menurows+2, cols-4, LOWERED);
 
 
 	totnitems = 0;
@@ -625,11 +624,11 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	winsy = y + rows - 5 - menurows;
 	leftwinx = x+2;
-	leftwin = new_window(winsy, leftwinx, menurows+2, (cols-5)/2, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	leftwin = new_boxed_window(conf, winsy, leftwinx, menurows+2, (cols-5)/2,
+	    LOWERED);
 	rightwinx = x + cols - 2 -(cols-5)/2;
-	rightwin = new_window(winsy, rightwinx, menurows+2, (cols-5)/2, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	rightwin = new_boxed_window(conf, winsy, rightwinx, menurows+2,
+	    (cols-5)/2, LOWERED);
 
 	wrefresh(leftwin);
 	wrefresh(rightwin);

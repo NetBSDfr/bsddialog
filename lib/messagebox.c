@@ -220,7 +220,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 		return BSDDIALOG_ERROR;
 
 	htextpad = h - 4;
-	if (widget_withtextpad_init(conf, &shadow, &widget, y, x, h, w,
+	if (widget_withtextpad_init(conf, &shadow, &widget, y, x, h, w, RAISED,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 

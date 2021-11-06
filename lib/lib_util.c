@@ -614,8 +614,8 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 
 /* Widgets builders */
 WINDOW *
-new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
-    enum elevation elev, bool asciilines)
+new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
+    enum elevation elev)
 {
 	WINDOW *win;
 	int leftcolor, rightcolor;
@@ -631,11 +631,15 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 	ltee = ACS_LTEE;
 	rtee = ACS_RTEE;
 
-	win = newwin(rows, cols, y, x);
+	if ((win = newwin(rows, cols, y, x)) == NULL) {
+		set_error_string("Cannot build boxed window");
+		return NULL;
+	}
+
 	wbkgd(win, t.widgetcolor);
 
-	if (elev != NOLINES) {
-		if (asciilines) {
+	if (conf.no_lines == false) {
+		if (conf.ascii_lines) {
 			ls = rs = '|';
 			ts = bs = '-';
 			tl = tr = bl = br = ltee = rtee = '+';
@@ -654,40 +658,25 @@ new_window(int y, int x, int rows, int cols, char *title, char *bottomtitle,
 		wattroff(win, rightcolor);
 	}
 
-	if (title != NULL) {
-		if (t.surroundtitle && elev != NOLINES) {
-			wattron(win, leftcolor);
-			mvwaddch(win, 0, cols/2 - strlen(title)/2 - 1, rtee);
-			wattroff(win, leftcolor);
-		}
-		wattron(win, t.titlecolor);
-		mvwaddstr(win, 0, cols/2 - strlen(title)/2, title);
-		wattroff(win, t.titlecolor);
-		if (t.surroundtitle && elev != NOLINES) {
-			wattron(win, leftcolor);
-			waddch(win, ltee);
-			wattroff(win, leftcolor);
-		}
-	}
-
-	if (bottomtitle != NULL) {
-		wattron(win, t.bottomtitlecolor);
-		wmove(win, rows - 1, cols/2 - strlen(bottomtitle)/2 - 1);
-		waddch(win, '[');
-		waddstr(win, bottomtitle);
-		waddch(win, ']');
-		wattroff(win, t.bottomtitlecolor);
-	}
-
 	return win;
 }
 
+/*
+ * `enum elevation elev` could be useless because it should be always RAISED,
+ * to check at the end.
+ */
 int
 widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
-    int y, int x, int h, int w, WINDOW **textpad, int *htextpad, char *text,
-    bool buttons)
+    int y, int x, int h, int w, enum elevation elev, WINDOW **textpad,
+    int *htextpad, char *text, bool buttons)
 {
 	int ts, ltee, rtee;
+	int colorsurroundtitle;
+
+	ts = conf.ascii_lines ? '-' : ACS_HLINE;
+	ltee = conf.ascii_lines ? '+' : ACS_LTEE;
+	rtee = conf.ascii_lines ? '+' : ACS_RTEE;
+	colorsurroundtitle = elev == RAISED ? t.lineraisecolor : t.linelowercolor;
 
 	if (conf.shadow) {
 		*shadow = newwin(h, w, y + t.shadowrows, x + t.shadowcols);
@@ -697,22 +686,41 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 		wrefresh(*shadow);
 	}
 
-	*widget = new_window(y, x, h, w, conf.title, conf.hline,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
-	if(*widget == NULL) {
+	if ((*widget = new_boxed_window(conf, y, x, h, w, RAISED)) == NULL) {
 		if (conf.shadow)
 			delwin(*shadow);
-		RETURN_ERROR("Cannot build widget window");
+		return BSDDIALOG_ERROR;
+	}
+
+	if (conf.title != NULL) {
+		if (t.surroundtitle && conf.no_lines == false) {
+			wattron(*widget, colorsurroundtitle);
+			mvwaddch(*widget, 0, w/2 - strlen(conf.title)/2 - 1, rtee);
+			wattroff(*widget, colorsurroundtitle);
+		}
+		wattron(*widget, t.titlecolor);
+		mvwaddstr(*widget, 0, w/2 - strlen(conf.title)/2, conf.title);
+		wattroff(*widget, t.titlecolor);
+		if (t.surroundtitle && elev != NOLINES) {
+			wattron(*widget, colorsurroundtitle);
+			waddch(*widget, ltee);
+			wattroff(*widget, colorsurroundtitle);
+		}
+	}
+
+	if (conf.hline != NULL) {
+		wattron(*widget, t.bottomtitlecolor);
+		wmove(*widget, h - 1, w/2 - strlen(conf.hline)/2 - 1);
+		waddch(*widget, '[');
+		waddstr(*widget, conf.hline);
+		waddch(*widget, ']');
+		wattroff(*widget, t.bottomtitlecolor);
 	}
 
 	if (textpad == NULL && text != NULL) /* no pad */
 		print_text(conf, *widget, 1, 2, w-3, text);
 
 	if (buttons && conf.no_lines != true) {
-		ts = conf.ascii_lines ? '-' : ACS_HLINE;
-		ltee = conf.ascii_lines ? '+' : ACS_LTEE;
-		rtee = conf.ascii_lines ? '+' : ACS_RTEE;
-
 		wattron(*widget, t.lineraisecolor);
 		mvwaddch(*widget, h-3, 0, ltee);
 		mvwhline(*widget, h-3, 1, ts, w-2);
@@ -765,7 +773,7 @@ widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *t
 	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
 
 	output = widget_withtextpad_init(conf, shadow, widget, *y, *x, *h, *w,
-	    NULL, NULL, text, buttons);
+	    RAISED, NULL, NULL, text, buttons);
 
 	return output;
 }

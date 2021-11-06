@@ -58,14 +58,11 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 	    true) <0)
 		return -1;
 
-	c[0].win = new_window(y + rows - 6, x + cols/2 - 7, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	c[0].win = new_boxed_window(conf, y + rows - 6, x + cols/2 - 7, 3, 4, LOWERED);
 	mvwaddch(widget, rows - 5, cols/2 - 3, ':');
-	c[1].win = new_window(y + rows - 6, x + cols/2 - 2, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	c[1].win = new_boxed_window(conf, y + rows - 6, x + cols/2 - 2, 3, 4, LOWERED);
 	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
-	c[2].win = new_window(y + rows - 6, x + cols/2 + 3, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	c[2].win = new_boxed_window(conf, y + rows - 6, x + cols/2 + 3, 3, 4, LOWERED);
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
 	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
@@ -174,14 +171,11 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 	    true) <0)
 		return -1;
 
-	c[0].win = new_window(y + rows - 6, x + cols/2 - 12, 3, 6, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	c[0].win = new_boxed_window(conf, y + rows - 6, x + cols/2 - 12, 3, 6, LOWERED);
 	mvwaddch(widget, rows - 5, cols/2 - 6, '/');
-	c[1].win = new_window(y + rows - 6, x + cols/2 - 5, 3, 11, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	c[1].win = new_boxed_window(conf, y + rows - 6, x + cols/2 - 5, 3, 11, LOWERED);
 	mvwaddch(widget, rows - 5, cols/2 + 6, '/');
-	c[2].win = new_window(y + rows - 6, x + cols/2 + 7, 3, 4, NULL, NULL,
-	    conf.no_lines ? NOLINES : LOWERED, conf.ascii_lines);
+	c[2].win = new_boxed_window(conf, y + rows - 6, x + cols/2 + 7, 3, 4, LOWERED);
 
 	wrefresh(widget);
 

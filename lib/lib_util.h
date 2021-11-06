@@ -83,16 +83,17 @@ get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
 int f1help(struct bsddialog_conf conf);
 
 enum elevation { RAISED, LOWERED, NOLINES };
-WINDOW *new_window(int y, int x, int rows, int cols, char *title,char *bottomtitle,
-    enum elevation elev, bool asciilines);
+WINDOW *
+new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
+    enum elevation elev);
 void print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int maxx,
     char *text);
 int widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *text,
     int *h, int *w, WINDOW **shadow, bool buttons);
 int
 widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
-    int y, int x, int h, int w, WINDOW **textpad, int *htextpad, char *text,
-    bool buttons);
+    int y, int x, int h, int w, enum elevation elev, WINDOW **textpad,
+    int *htextpad, char *text, bool buttons);
 void widget_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow);
 void

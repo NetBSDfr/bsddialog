@@ -83,8 +83,7 @@ int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	    false) <0)
 		return -1;
 
-	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
+	bar = new_boxed_window(conf, y+rows -4, x+3, 3, cols-6, RAISED);
 
 	wrefresh(widget);
 	wrefresh(bar);
@@ -153,8 +152,7 @@ int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int c
 	    false) <0)
 		return -1;
 
-	bar = new_window(y+rows -4, x+3, 3, cols-6, NULL, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
+	bar = new_boxed_window(conf, y+rows -4, x+3, 3, cols-6, RAISED);
 
 	/* mini bars */
 	for (i=0; i < (argc/2); i++) {
@@ -210,8 +208,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 	    true) <0)
 		return -1;
 
-	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
+	bar = new_boxed_window(conf, y + rows - 6, x +7, 3, cols-14, RAISED);
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
 	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
@@ -295,8 +292,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	    true) <0)
 		return -1;
 
-	bar = new_window(y + rows - 6, x +7, 3, cols-14, NULL, NULL,
-	    conf.no_lines ? NOLINES : RAISED, conf.ascii_lines);
+	bar = new_boxed_window(conf, y + rows - 6, x +7, 3, cols-14, RAISED);
 
 	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
 	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
