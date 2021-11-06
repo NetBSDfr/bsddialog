@@ -675,8 +675,8 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
  * `enum elevation elev` could be useless because it should be always RAISED,
  * to check at the end.
  */
-int
-update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
+static int
+draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
     WINDOW *widget, int y, int x, int h, int w, enum elevation elev,
     WINDOW *textpad, int *htextpad, char *text, bool buttons)
 {
@@ -777,7 +777,7 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
 	}
 
 	if (textpad == NULL) { /* widget_init() */
-		error =  update_widget_withtextpad(conf, *shadow, *widget, y, x,
+		error =  draw_widget_withtextpad(conf, *shadow, *widget, y, x,
 		    h, w, elev, NULL, NULL, text, buttons);
 		return error;
 	}
@@ -792,7 +792,7 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
 		wbkgd(*textpad, t.widgetcolor);
 	}
 
-	error =  update_widget_withtextpad(conf, *shadow, *widget, y, x, h, w,
+	error =  draw_widget_withtextpad(conf, *shadow, *widget, y, x, h, w,
 	    elev, *textpad, htextpad, text, buttons);
 
 	return error;
