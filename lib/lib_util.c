@@ -676,9 +676,9 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
  * to check at the end.
  */
 int
-widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
-    int y, int x, int h, int w, enum elevation elev, WINDOW **textpad,
-    int *htextpad, char *text, bool buttons)
+update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
+    WINDOW *widget, int y, int x, int h, int w, enum elevation elev,
+    WINDOW *textpad, int *htextpad, char *text, bool buttons)
 {
 	int ts, ltee, rtee;
 	int colorsurroundtitle;
@@ -688,12 +688,86 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 	rtee = conf.ascii_lines ? '+' : ACS_RTEE;
 	colorsurroundtitle = elev == RAISED ? t.lineraisecolor : t.linelowercolor;
 
+	//useful?
+	if (conf.shadow && shadow == NULL)
+		RETURN_ERROR("Cannot uodate shadow its WINDOW is NULL");
+
+	if (shadow != NULL) {
+		//move? resize?
+		wrefresh(shadow);
+	}
+
+	// move / resize now or the caller?
+	update_boxed_window(conf, widget, y, x, h, w, elev);
+
+	if (conf.title != NULL) {
+		if (t.surroundtitle && conf.no_lines == false) {
+			wattron(widget, colorsurroundtitle);
+			mvwaddch(widget, 0, w/2 - strlen(conf.title)/2 - 1, rtee);
+			wattroff(widget, colorsurroundtitle);
+		}
+		wattron(widget, t.titlecolor);
+		mvwaddstr(widget, 0, w/2 - strlen(conf.title)/2, conf.title);
+		wattroff(widget, t.titlecolor);
+		if (t.surroundtitle && conf.no_lines == false) {
+			wattron(widget, colorsurroundtitle);
+			waddch(widget, ltee);
+			wattroff(widget, colorsurroundtitle);
+		}
+	}
+
+	if (conf.hline != NULL) {
+		wattron(widget, t.bottomtitlecolor);
+		wmove(widget, h - 1, w/2 - strlen(conf.hline)/2 - 1);
+		waddch(widget, '[');
+		waddstr(widget, conf.hline);
+		waddch(widget, ']');
+		wattroff(widget, t.bottomtitlecolor);
+	}
+
+	if (textpad == NULL && text != NULL) /* no pad */
+		print_text(conf, widget, 1, 2, w-3, text);
+
+	if (buttons && conf.no_lines == false) {
+		wattron(widget, t.lineraisecolor);
+		mvwaddch(widget, h-3, 0, ltee);
+		mvwhline(widget, h-3, 1, ts, w-2);
+		wattroff(widget, t.lineraisecolor);
+
+		wattron(widget, t.linelowercolor);
+		mvwaddch(widget, h-3, w-1, rtee);
+		wattroff(widget, t.linelowercolor);
+	}
+
+	wrefresh(widget);
+
+	if (textpad == NULL)
+		return 0; /* widget_init() ends */
+
+	if (text != NULL) /* programbox etc */
+		if (print_textpad(conf, textpad, htextpad, w-4, text) !=0)
+			return BSDDIALOG_ERROR;
+	/* textpad not updated for now */
+
+	return 0;
+}
+
+/*
+ * `enum elevation elev` could be useless because it should be always RAISED,
+ * to check at the end.
+ */
+int
+widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
+    int y, int x, int h, int w, enum elevation elev, WINDOW **textpad,
+    int *htextpad, char *text, bool buttons)
+{
+	int error;
+
 	if (conf.shadow) {
 		*shadow = newwin(h, w, y + t.shadowrows, x + t.shadowcols);
 		if (*shadow == NULL)
 			RETURN_ERROR("Cannot build shadow");
 		wbkgd(*shadow, t.shadowcolor);
-		wrefresh(*shadow);
 	}
 
 	if ((*widget = new_boxed_window(conf, y, x, h, w, elev)) == NULL) {
@@ -702,49 +776,11 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 		return BSDDIALOG_ERROR;
 	}
 
-	if (conf.title != NULL) {
-		if (t.surroundtitle && conf.no_lines == false) {
-			wattron(*widget, colorsurroundtitle);
-			mvwaddch(*widget, 0, w/2 - strlen(conf.title)/2 - 1, rtee);
-			wattroff(*widget, colorsurroundtitle);
-		}
-		wattron(*widget, t.titlecolor);
-		mvwaddstr(*widget, 0, w/2 - strlen(conf.title)/2, conf.title);
-		wattroff(*widget, t.titlecolor);
-		if (t.surroundtitle && conf.no_lines == false) {
-			wattron(*widget, colorsurroundtitle);
-			waddch(*widget, ltee);
-			wattroff(*widget, colorsurroundtitle);
-		}
+	if (textpad == NULL) { /* widget_init() */
+		error =  update_widget_withtextpad(conf, *shadow, *widget, y, x,
+		    h, w, elev, NULL, NULL, text, buttons);
+		return error;
 	}
-
-	if (conf.hline != NULL) {
-		wattron(*widget, t.bottomtitlecolor);
-		wmove(*widget, h - 1, w/2 - strlen(conf.hline)/2 - 1);
-		waddch(*widget, '[');
-		waddstr(*widget, conf.hline);
-		waddch(*widget, ']');
-		wattroff(*widget, t.bottomtitlecolor);
-	}
-
-	if (textpad == NULL && text != NULL) /* no pad */
-		print_text(conf, *widget, 1, 2, w-3, text);
-
-	if (buttons && conf.no_lines == false) {
-		wattron(*widget, t.lineraisecolor);
-		mvwaddch(*widget, h-3, 0, ltee);
-		mvwhline(*widget, h-3, 1, ts, w-2);
-		wattroff(*widget, t.lineraisecolor);
-
-		wattron(*widget, t.linelowercolor);
-		mvwaddch(*widget, h-3, w-1, rtee);
-		wattroff(*widget, t.linelowercolor);
-	}
-
-	wrefresh(*widget);
-
-	if (textpad == NULL)
-		return 0; /* widget_init() ends */
 
 	if (text != NULL) { /* programbox etc */
 		if ((*textpad = newpad(*htextpad, w-4)) == NULL) {
@@ -754,16 +790,12 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 			RETURN_ERROR("Cannot build the pad window for text");
 		}
 		wbkgd(*textpad, t.widgetcolor);
-		if (print_textpad(conf, *textpad, htextpad, w-4, text) !=0) {
-			delwin(*textpad);
-			delwin(*widget);
-			if (conf.shadow)
-				delwin(*shadow);
-			return BSDDIALOG_ERROR;
-		}
 	}
 
-	return 0;
+	error =  update_widget_withtextpad(conf, *shadow, *widget, y, x, h, w,
+	    elev, *textpad, htextpad, text, buttons);
+
+	return error;
 }
 
 int
