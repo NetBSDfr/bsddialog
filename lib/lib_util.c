@@ -616,7 +616,7 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 
 /* Widgets builders */
 static void
-update_boxed_window(struct bsddialog_conf conf, WINDOW *win, int y, int x,
+draw_borders(struct bsddialog_conf conf, WINDOW *win, int y, int x,
     int rows, int cols, enum elevation elev)
 {
 	int leftcolor, rightcolor;
@@ -666,7 +666,7 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
 
 	wbkgd(win, t.widgetcolor);
 
-	update_boxed_window(conf, win, y, x, rows, cols, elev);
+	draw_borders(conf, win, y, x, rows, cols, elev);
 
 	return win;
 }
@@ -698,7 +698,7 @@ update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 	}
 
 	// move / resize now or the caller?
-	update_boxed_window(conf, widget, y, x, h, w, elev);
+	draw_borders(conf, widget, y, x, h, w, elev);
 
 	if (conf.title != NULL) {
 		if (t.surroundtitle && conf.no_lines == false) {
