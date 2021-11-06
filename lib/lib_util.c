@@ -701,7 +701,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 		wattron(*widget, t.titlecolor);
 		mvwaddstr(*widget, 0, w/2 - strlen(conf.title)/2, conf.title);
 		wattroff(*widget, t.titlecolor);
-		if (t.surroundtitle && elev != NOLINES) {
+		if (t.surroundtitle && conf.no_lines == false) {
 			wattron(*widget, colorsurroundtitle);
 			waddch(*widget, ltee);
 			wattroff(*widget, colorsurroundtitle);
@@ -720,7 +720,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 	if (textpad == NULL && text != NULL) /* no pad */
 		print_text(conf, *widget, 1, 2, w-3, text);
 
-	if (buttons && conf.no_lines != true) {
+	if (buttons && conf.no_lines == false) {
 		wattron(*widget, t.lineraisecolor);
 		mvwaddch(*widget, h-3, 0, ltee);
 		mvwhline(*widget, h-3, 1, ts, w-2);

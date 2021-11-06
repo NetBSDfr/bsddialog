@@ -82,7 +82,7 @@ get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
 
 int f1help(struct bsddialog_conf conf);
 
-enum elevation { RAISED, LOWERED, NOLINES };
+enum elevation { RAISED, LOWERED };
 WINDOW *
 new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
     enum elevation elev);
