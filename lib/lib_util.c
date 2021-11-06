@@ -688,7 +688,7 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 		wrefresh(*shadow);
 	}
 
-	if ((*widget = new_boxed_window(conf, y, x, h, w, RAISED)) == NULL) {
+	if ((*widget = new_boxed_window(conf, y, x, h, w, elev)) == NULL) {
 		if (conf.shadow)
 			delwin(*shadow);
 		return BSDDIALOG_ERROR;
