@@ -104,6 +104,11 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
     WINDOW **widget, int y, int x, int h, int w, enum elevation elev,
     WINDOW **textpad, int *htextpad, char *text, bool buttons);
 
+int
+update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
+    WINDOW *widget, int y, int x, int h, int w, enum elevation elev,
+    WINDOW *textpad, int *htextpad, char *text, bool buttons);
+
 void
 end_widget_withtextpad(struct bsddialog_conf conf, char *name, WINDOW *window,
     int h, int w, WINDOW *textpad, WINDOW *shadow);

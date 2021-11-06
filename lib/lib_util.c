@@ -757,6 +757,25 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
  * to check at the end.
  */
 int
+update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
+    WINDOW *widget, int y, int x, int h, int w, enum elevation elev,
+    WINDOW *textpad, int *htextpad, char *text, bool buttons)
+{
+	int error;
+
+	/* nothing for now */
+
+	error =  draw_widget_withtextpad(conf, shadow, widget, y, x, h, w,
+	    elev, textpad, htextpad, text, buttons);
+
+	return error;
+}
+
+/*
+ * `enum elevation elev` could be useless because it should be always RAISED,
+ * to check at the end.
+ */
+int
 new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
     WINDOW **widget, int y, int x, int h, int w, enum elevation elev,
     WINDOW **textpad, int *htextpad, char *text, bool buttons)
