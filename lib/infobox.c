@@ -42,13 +42,13 @@ bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 	WINDOW *widget, *shadow;
 	int y, x;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    false) != 0)
 		return (BSDDIALOG_ERROR);
 
 	getch();
 
-	widget_end(conf, "Infobox", widget, rows, cols, shadow);
+	end_widget(conf, "Infobox", widget, rows, cols, shadow);
 
 	return (BSDDIALOG_YESOK);
 }

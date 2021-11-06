@@ -54,7 +54,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 		WINDOW *win;
 	} c[3] = { {23, hh, NULL}, {59, mm, NULL}, {59, ss, NULL} };
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -136,7 +136,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	widget_end(conf, "Timebox", widget, rows, cols, shadow);
+	end_widget(conf, "Timebox", widget, rows, cols, shadow);
 
 	return output;
 }
@@ -167,7 +167,7 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 	    { "October", 30 }, { "November", 30 }, { "December",  30 }
 	};
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -254,7 +254,7 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	widget_end(conf, "Timebox", widget, rows, cols, shadow);
+	end_widget(conf, "Timebox", widget, rows, cols, shadow);
 
 	return output;
 }

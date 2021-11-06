@@ -188,7 +188,7 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 	FORM *form;
 	struct buttons bs;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -250,7 +250,7 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 	free(field);
 
 	delwin(entry);
-	widget_end(conf, "Mixedform", widget, rows, cols, shadow);
+	end_widget(conf, "Mixedform", widget, rows, cols, shadow);
 
 	return output;
 }

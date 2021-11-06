@@ -363,7 +363,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	enum menumode currmode;
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) < 0)
 		return -1;
 
@@ -524,7 +524,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	delwin(menupad);
 	delwin(menuwin);
-	widget_end(conf, namewidget, widget, rows, cols, shadow);
+	end_widget(conf, namewidget, widget, rows, cols, shadow);
 
 	return output;
 }
@@ -620,7 +620,7 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			startleft = true;
 	}
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -754,7 +754,7 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	delwin(leftwin);
 	delwin(rightpad);
 	delwin(rightwin);
-	widget_end(conf, "Buildlist", widget, rows, cols, shadow);
+	end_widget(conf, "Buildlist", widget, rows, cols, shadow);
 
 	return output;
 }

@@ -757,9 +757,9 @@ update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
  * to check at the end.
  */
 int
-widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **widget,
-    int y, int x, int h, int w, enum elevation elev, WINDOW **textpad,
-    int *htextpad, char *text, bool buttons)
+new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
+    WINDOW **widget, int y, int x, int h, int w, enum elevation elev,
+    WINDOW **textpad, int *htextpad, char *text, bool buttons)
 {
 	int error;
 
@@ -799,8 +799,8 @@ widget_withtextpad_init(struct bsddialog_conf conf, WINDOW **shadow, WINDOW **wi
 }
 
 int
-widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *text,
-    int *h, int *w, WINDOW **shadow, bool buttons)
+new_widget(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x,
+    char *text, int *h, int *w, WINDOW **shadow, bool buttons)
 {
 	int output;
 
@@ -814,15 +814,15 @@ widget_init(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, char *t
 	*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
 	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
 
-	output = widget_withtextpad_init(conf, shadow, widget, *y, *x, *h, *w,
+	output = new_widget_withtextpad(conf, shadow, widget, *y, *x, *h, *w,
 	    RAISED, NULL, NULL, text, buttons);
 
 	return output;
 }
 
 void
-widget_withtextpad_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h,
-    int w, WINDOW *textpad, WINDOW *shadow)
+end_widget_withtextpad(struct bsddialog_conf conf, char *name, WINDOW *window,
+    int h, int w, WINDOW *textpad, WINDOW *shadow)
 {
 	int y, x;
 
@@ -847,9 +847,9 @@ widget_withtextpad_end(struct bsddialog_conf conf, char *name, WINDOW *window, i
 }
 
 void
-widget_end(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
+end_widget(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
     WINDOW *shadow)
 {
 
-	widget_withtextpad_end(conf, name, window, h, w, NULL, shadow);
+	end_widget_withtextpad(conf, name, window, h, w, NULL, shadow);
 }

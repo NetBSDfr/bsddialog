@@ -52,7 +52,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	FILE *fp;
 	bool loop;
 
-	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -123,7 +123,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	}
 
 	/* to improve: name, rows and cols, now only for F1 */
-	widget_end(conf, "F1 Help", widget, rows, cols, shadow);
+	end_widget(conf, "F1 Help", widget, rows, cols, shadow);
 
 	return (BSDDIALOG_YESOK); /* to improve*/
 }

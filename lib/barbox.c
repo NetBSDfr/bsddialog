@@ -79,7 +79,7 @@ int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	int i, y, x;
 	bool mainloop = true;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    false) <0)
 		return -1;
 
@@ -125,7 +125,7 @@ int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	}
 
 	delwin(bar);
-	widget_end(conf, "Gauge", widget, rows, cols, shadow);
+	end_widget(conf, "Gauge", widget, rows, cols, shadow);
 
 	return BSDDIALOG_YESOK;
 }
@@ -148,7 +148,7 @@ int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int c
 	    "[     N/A     ]",
 	    "[   UNKNOWN   ]",};
 
-	if (widget_init(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
 	    false) <0)
 		return -1;
 
@@ -187,7 +187,7 @@ int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int c
 	getch();
 
 	delwin(bar);
-	widget_end(conf, "Mixedgaugebox", widget, rows, cols, shadow);
+	end_widget(conf, "Mixedgaugebox", widget, rows, cols, shadow);
 
 	return BSDDIALOG_YESOK;
 }
@@ -204,7 +204,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 	int positions = max - min + 1;
 	struct buttons bs;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -274,7 +274,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 	}
 
 	delwin(bar);
-	widget_end(conf, "Rangebox", widget, rows, cols, shadow);
+	end_widget(conf, "Rangebox", widget, rows, cols, shadow);
 
 	return output;
 }
@@ -288,7 +288,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	float perc;
 	struct buttons bs;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -361,7 +361,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	nodelay(stdscr, FALSE);
 
 	delwin(bar);
-	widget_end(conf, "Pause", widget, rows, cols, shadow);
+	end_widget(conf, "Pause", widget, rows, cols, shadow);
 
 	return output;
 }

@@ -107,7 +107,7 @@ bsddialog_prgbox(struct bsddialog_conf conf, char* text, int rows, int cols, cha
 	int pipefd[2];
 	struct buttons bs;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
@@ -169,7 +169,7 @@ int bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows, int c
 	int i, y, x, padrows, padcols, ys, ye, xs, xe, output;
 	struct buttons bs;
 
-	if (widget_init(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
 
