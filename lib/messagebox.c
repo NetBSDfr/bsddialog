@@ -221,7 +221,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	htextpad = h - 4;
+	htextpad = 1;
 	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
@@ -275,10 +275,22 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 				return BSDDIALOG_ERROR;
 			//BSDDIALOG_DEBUG(7,1,"y: %d, x: %d, h: %d, w: %d", y,x,h,w);
 
+			wclear(shadow);
 			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
-			wrefresh(shadow);
+			wresize(shadow, h, w);
 
-			mvwin(widget, y, x); /* refreshed by the following funcs*/
+			wclear(widget);
+			mvwin(widget, y, x); // refreshed by the following funcs
+			wresize(widget, h, w);
+
+			htextpad = 1;
+			wclear(textpad);
+			wresize(textpad, 1, w - 4);
+
+			if(update_widget_withtextpad(conf, shadow, widget, y, x, h,
+			    w, RAISED, textpad, &htextpad, text, true) != 0)
+			return BSDDIALOG_ERROR;
+
 			buttonsupdate(widget, h, w, bs, shortkey);
 			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
 			break;
