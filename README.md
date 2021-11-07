@@ -188,5 +188,5 @@ Examples library:
 | --textbox      | In progress | todo navigation keys                          |
 | --timebox      | In progress | todo autosize, resize, F1                     |
 | --treeview     | In progress | todo autosize, resize, F1                     |
-| --yesno        | Completed   | dialog renames yes/no -> ok/cancel with --extra-button --help-button |
+| --yesno        | Completed   | dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button |
 
