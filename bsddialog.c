@@ -232,7 +232,7 @@ int main(int argc, char *argv[argc])
 	struct bsddialog_conf conf;
 
 	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = -1;
+	conf.y = conf.x = BSDDIALOG_CENTER;
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;
 
@@ -358,7 +358,7 @@ int main(int argc, char *argv[argc])
 		case BEGIN:
 			conf.y = atoi(optarg);
 			conf.x = atoi(argv[optind]);
-			if (conf.y < 0 || conf.x < 0) {
+			if (conf.y < BSDDIALOG_CENTER || conf.x < BSDDIALOG_CENTER) {
 				printf("Can't make new window at (y:%d, x:%d).",
 				    conf.y, conf.x);
 				return 1;
