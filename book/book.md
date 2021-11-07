@@ -1,28 +1,40 @@
 # BSDDialog Library
 
-## 1 Intro
+### PART I - Introduction, Tutorial and Examples
 
-This project provides **bsddialog** and **libbsddialog**, an utility and a
-library to build scripts and tools with a *Text User Interface Widgets*.
+## 1 Introduction
+
+The bsddialog library provides and API to build utilities with a Text User Interface.
 
 ### 1.1 Getting started
 
-*FreeBSD*:
+
+FreeBSD:
 
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
-% make -D PORTNCURSES
-% ./bsddialog --title Message --msgbox "Hello World!" 5 24
+% make
+% ./bsddialog --msgbox "Hello World!" 8 20
 ```
 
-*Linux*:
+If you are using XFCE install devel/ncurses
+
+```
+% sudo pkg install ncurses
+% git clone https://gitlab.com/alfix/bsddialog.git
+% cd bsddialog
+% make -DPORTNCURSES
+% ./bsddialog --msgbox "Hello World!" 8 20
+```
+
+Linux:
 
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
-% make -f GNUMakefile
-% ./bsddialog --title Message --msgbox "Hello World!" 5 24
+% make -GNUMakefile
+% ./bsddialog --msgbox "Hello World!" 8 20
 ```
 
 ### 1.2 Hello World
@@ -38,27 +50,31 @@ helloworld.c
 int main()
 {
 	struct bsddialog_conf conf;
-	
-	if (bsddialog_init() < 0)
-		return -1;
 
 	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	bsddialog_msgbox(conf, "Hello World!", 7, 20);
-
+	conf.y = conf.x = BSDDIALOG_CENTER;
+	conf.shadow = true;
+	
+	bsddialog_init();
+	bsddialog_msgbox(conf, "Hello World!", 8, 20);
 	bsddialog_end();
 
 	return 0;
 }
 ```
 
-**To compile**
+**Compiling and Running**:
+
 ```
 % cc -I/usr/local/include helloworld.c -o helloworld -L/usr/local/lib/ -lbsddialog
 % ./helloworld
 ```
+
 **Output**:
 
-#API
+![hellowworld](../screenshot.png)
+
+# 2 API
 
 BSDDialog provides functions to build graphical widget in a terminal.
 
@@ -173,6 +189,8 @@ struct bsddialog_conf {
 ```
 
 Common members:
+
+# PART II - Widgets Reference
 
 # Widgets
 
