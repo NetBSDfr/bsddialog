@@ -638,9 +638,21 @@ int main(int argc, char *argv[argc])
 
 	bsddialog_end();
 
-	// debug
-	printf("[Debug] Exit status: %d\n", output);
+	// debug & devel
+	printf("[Debug] Exit status: %d ", output);
+	switch (output) {
+	case BSDDIALOG_ERROR: 	  printf("ERROR");    break;
+	case BSDDIALOG_YESOK: 	  printf("YESOK");    break;
+	case BSDDIALOG_NOCANCEL:  printf("NOCANCEL"); break;
+	case BSDDIALOG_HELP: 	  printf("HELP");     break;
+	case BSDDIALOG_EXTRA:     printf("EXTRA");    break;
+	case BSDDIALOG_ITEM_HELP: printf("ITEM_HELP");break;
+	case BSDDIALOG_ESC: 	  printf("ESC");      break;
+	default: 		  printf("Unknow status! Bug!"); break;
+	}
+	printf("\n");
 	printf("[Debug] Error msg: %s\n", bsddialog_geterror());
+
 	return output;
 }
 
