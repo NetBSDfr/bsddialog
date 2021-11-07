@@ -62,8 +62,8 @@ set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 {
 	int maxheight, maxwidth;
 
-	if ((maxheight = conf.shadow ? LINES - t.shadowrows : LINES) <=0)
-		RETURN_ERROR("Terminal too small, rows - shadow <= 0");
+	if ((maxheight = widget_max_height(conf)) == BSDDIALOG_ERROR)
+		return BSDDIALOG_ERROR;
 
 	if (rows == BSDDIALOG_FULLSCREEN)
 		*h = maxheight;
@@ -76,11 +76,11 @@ set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 	}
 	/* rows == AUTOSIZE: each widget has to set its size */
 
-	if ((maxwidth = conf.shadow ? COLS - t.shadowcols : COLS) <= 0)
-		RETURN_ERROR("Terminal too small, cols - shadow <= 0");
+	if ((maxwidth = widget_max_width(conf)) == BSDDIALOG_ERROR)
+		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_FULLSCREEN)
-		*w = cols;
+		*w = maxwidth;
 	else if (cols < BSDDIALOG_FULLSCREEN)
 		RETURN_ERROR("Negative (less than -1) width");
 	else if (cols > BSDDIALOG_AUTOSIZE) {
@@ -111,7 +111,7 @@ message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		line = MAX(line, (int) (maxword + VBORDERS + t.texthmargin * 2));
 		*w = MAX(*w, line);
 		/* avoid terminal overflow */
-		*w = MIN(*w, conf.shadow ? COLS - (int) t.shadowcols : COLS);
+		*w = MIN(*w, widget_max_width(conf));
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
@@ -120,7 +120,7 @@ message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 			*h += MAX(nlines, (*w / 9)); /* aspect ratio: add conf/theme? */
 		*h = MAX(*h, MIN_HEIGHT);
 		/* avoid terminal overflow */
-		*h = MIN(*h, conf.shadow ? LINES - (int) t.shadowrows : LINES);
+		*h = MIN(*h, widget_max_height(conf));
 	}
 
 	return 0;
@@ -136,7 +136,7 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "\
-		    "for nbuttons size and margin + borders");
+		    "for borders, buttons and spaces between buttons");
 
 	if (rows < MIN_HEIGHT)
 		RETURN_ERROR("Msgbox and Yesno need at least height 5");
@@ -150,9 +150,7 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
     int cols, int h, int w)
 {
 
-	if (rows == BSDDIALOG_FULLSCREEN)
-		*y = 0;
-	else if (conf.y == BSDDIALOG_CENTER)
+	if (conf.y == BSDDIALOG_CENTER)
 		*y = LINES/2 - h/2;
 	else if (conf.y < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin y (less than -1)");
@@ -166,9 +164,7 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 		    "(begin Y + height (+ shadow) > terminal lines)");
 
 
-	if (cols == BSDDIALOG_FULLSCREEN)
-		*x = 0;
-	else if (conf.x == BSDDIALOG_CENTER)
+	if (conf.x == BSDDIALOG_CENTER)
 		*x = COLS/2 - w/2;
 	else if (conf.x < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin x (less than -1)");

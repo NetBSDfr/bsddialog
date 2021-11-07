@@ -84,11 +84,15 @@ int f1help(struct bsddialog_conf conf);
 /* cleaner */
 int hide_widget(int y, int x, int h, int w, bool withshadow);
 
-/* widget */
+/* (auto) size and (auto) position */
 int
 get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
     int *maxline, int *nlines);
 
+int widget_max_height(struct bsddialog_conf conf);
+int widget_max_width(struct bsddialog_conf conf);
+
+/* widget builders */
 void
 print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx,
     int maxx, char *text);
