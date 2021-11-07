@@ -14,9 +14,13 @@ Description:
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
-% make -D PORTNCURSES
+% make
 % ./bsddialog --msgbox "Hello World!" 8 20
 ```
+(Tip: If you are using XFCE install PORTNECURSES and build bsddialog by
+*% make -D PORTNCURSES*.
+
+
 Output:
 
 ![screenshot](screenshot.png)
