@@ -74,15 +74,19 @@ int main()
 
 ![hellowworld](../screenshot.png)
 
-# 2 API
+## 2 API
 
-BSDDialog provides functions to build graphical widget in a terminal.
-
-## 2 Global tools
+### 2.1 Starting
 
 ```c
 #include <bsddialog.h>
+
+int  bsddialog_init(void);
+void bsddialog_end(void);
+int  bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 ```
+
+### 2.2 Exit Status
 
 ```c
 #define BSDDIALOG_YESOK		 0 // YES or OK buttons
@@ -93,21 +97,13 @@ BSDDialog provides functions to build graphical widget in a terminal.
 #define BSDDIALOG_ERROR		-1 // generic error or ESC key
 ```
 
-### 2.1 Starting
+### 2.3 Errors
 
 ```c
-int  bsddialog_init(void);
-void bsddialog_end(void);
-int  bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 const char *bsddialog_geterror(void);
 ```
 
-### 2.2 Ending
-
-```c
-```
-
-### 2.3 bsddialog\_conf
+### 2.4 Configuration
 
 ```c
 struct bsddialog_conf {
@@ -188,7 +184,59 @@ struct bsddialog_conf {
 };
 ```
 
-Common members:
+### 2.5 Themes
+
+```c
+#include <bsddialog_theme.h>
+```
+
+```c
+struct bsddialog_theme {
+	int shadowcolor;
+	int backgroundcolor;
+	bool surroundtitle;
+	int titlecolor;
+	int lineraisecolor;
+	int linelowercolor;
+	int widgetcolor;
+
+	int curritemcolor;
+	int itemcolor;
+	int currtagcolor;
+	int tagcolor;
+	int namesepcolor;
+	int descsepcolor;
+
+	int currfieldcolor;
+	int fieldcolor;
+	int fieldreadonlycolor;
+
+	int currbarcolor;
+	int barcolor;
+
+	unsigned int buttonspace;
+	int buttleftch;
+	int buttrightchar;
+	int currbuttdelimcolor;
+	int buttdelimcolor;
+	int currbuttoncolor;
+	int buttoncolor;
+	int currshortkeycolor;
+	int shortkeycolor;
+
+	int bottomtitlecolor;
+};
+
+enum bsddialog_default_theme {
+	BSDDIALOG_THEME_DEFAULT,
+	BSDDIALOG_THEME_DIALOG,
+	BSDDIALOG_THEME_MAGENTA,
+};
+
+//struct bsddialog_theme bsddialog_gettheme();
+//int bsddialog_setcustomtheme(struct bsddialog_theme *theme);
+int bsddialog_settheme(enum bsddialog_default_theme theme);
+```
 
 # PART II - Widgets Reference
 
@@ -320,57 +368,3 @@ textbox
 
 dselect(todo)
 fselect(todo)
-
-## 13 Style
-
-```c
-#include <bsddialog_theme.h>
-```
-
-```c
-struct bsddialog_theme {
-	int shadowcolor;
-	int backgroundcolor;
-	bool surroundtitle;
-	int titlecolor;
-	int lineraisecolor;
-	int linelowercolor;
-	int widgetcolor;
-
-	int curritemcolor;
-	int itemcolor;
-	int currtagcolor;
-	int tagcolor;
-	int namesepcolor;
-	int descsepcolor;
-
-	int currfieldcolor;
-	int fieldcolor;
-	int fieldreadonlycolor;
-
-	int currbarcolor;
-	int barcolor;
-
-	unsigned int buttonspace;
-	int buttleftch;
-	int buttrightchar;
-	int currbuttdelimcolor;
-	int buttdelimcolor;
-	int currbuttoncolor;
-	int buttoncolor;
-	int currshortkeycolor;
-	int shortkeycolor;
-
-	int bottomtitlecolor;
-};
-
-enum bsddialog_default_theme {
-	BSDDIALOG_THEME_DEFAULT,
-	BSDDIALOG_THEME_DIALOG,
-	BSDDIALOG_THEME_MAGENTA,
-};
-
-//struct bsddialog_theme bsddialog_gettheme();
-//int bsddialog_setcustomtheme(struct bsddialog_theme *theme);
-int bsddialog_settheme(enum bsddialog_default_theme theme);
-```
