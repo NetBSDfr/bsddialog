@@ -11,16 +11,34 @@ Description:
 
 **Getting Started**
 
+FreeBSD:
+
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
 % make
 % ./bsddialog --msgbox "Hello World!" 8 20
 ```
-(Tip: If you are using XFCE install
-[devel/ncurses](https://www.freshports.org/devel/ncurses/) and build bsddialog
-by *% make -D PORTNCURSES*)
 
+If you are using XFCE install 
+[devel/ncurses](https://www.freshports.org/devel/ncurses/)
+
+```
+% sudo pkg install ncurses
+% git clone https://gitlab.com/alfix/bsddialog.git
+% cd bsddialog
+% make -DPORTNCURSES
+% ./bsddialog --msgbox "Hello World!" 8 20
+```
+
+Linux:
+
+```
+% git clone https://gitlab.com/alfix/bsddialog.git
+% cd bsddialog
+% make -GNUMakefile
+% ./bsddialog --msgbox "Hello World!" 8 20
+```
 
 Output:
 
