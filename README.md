@@ -17,8 +17,9 @@ Description:
 % make
 % ./bsddialog --msgbox "Hello World!" 8 20
 ```
-(Tip: If you are using XFCE install PORTNECURSES and build bsddialog by
-*% make -D PORTNCURSES*.
+(Tip: If you are using XFCE install
+[devel/ncurses](https://www.freshports.org/devel/ncurses/) and build bsddialog
+by *% make -D PORTNCURSES*)
 
 
 Output:
