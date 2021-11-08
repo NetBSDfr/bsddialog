@@ -38,7 +38,8 @@
 
 int bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
-
-	RETURN_ERROR("Editbox unimplemented");
+	text = "Editbox unimplemented";
+	bsddialog_msgbox(conf, text, rows, cols);
+	RETURN_ERROR(text);
 }
 

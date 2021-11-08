@@ -38,13 +38,15 @@
 
 int bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
-
-	return (BSDDIALOG_ERROR);
+	text = "Dselect unimplemented";
+	bsddialog_msgbox(conf, text, rows, cols);
+	RETURN_ERROR(text);
 }
 
 int bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
-
-	return (BSDDIALOG_ERROR);
+	text = "Fselect unimplemented";
+	bsddialog_msgbox(conf, text, rows, cols);
+	RETURN_ERROR(text);
 }
 

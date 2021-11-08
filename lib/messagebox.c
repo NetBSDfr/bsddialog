@@ -140,7 +140,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 		return BSDDIALOG_ERROR;
 	if (message_checksize(h, w, bs) != 0)
 		return BSDDIALOG_ERROR;
-	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
 	htextpad = 1;
@@ -189,7 +189,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 				return BSDDIALOG_ERROR;
 			if (message_checksize(h, w, bs) != 0)
 				return BSDDIALOG_ERROR;
-			if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
+			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
 
 			wclear(shadow);
@@ -204,8 +204,8 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			wclear(textpad);
 			wresize(textpad, 1, w - 4);
 
-			if(update_widget_withtextpad(conf, shadow, widget, y, x, h,
-			    w, RAISED, textpad, &htextpad, text, true) != 0)
+			if(update_widget_withtextpad(conf, shadow, widget, h, w,
+			    RAISED, textpad, &htextpad, text, true) != 0)
 			return BSDDIALOG_ERROR;
 
 			buttonsupdate(widget, h, w, bs, shortkey);

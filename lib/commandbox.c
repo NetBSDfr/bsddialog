@@ -206,6 +206,8 @@ int bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows, int c
 
 int bsddialog_progressbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
-	return 0;
+	text = "Progressbox unimplemented";
+	bsddialog_msgbox(conf, text, rows, cols);
+	RETURN_ERROR(text);
 }
 

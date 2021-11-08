@@ -45,7 +45,9 @@ extern struct bsddialog_theme t;
 
 int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
-	return 0;
+	text = "Inputbox unimplemented";
+	bsddialog_msgbox(conf, text, rows, cols);
+	RETURN_ERROR(text);
 }
 
 #define ITEMHIDDEN 0x1
@@ -67,7 +69,7 @@ struct formitem {
 static int
 mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
     bool shortkey, WINDOW *entry, FORM *form, FIELD **field, int nitems,
-    struct formitem *items, int fd)
+    /*struct formitem *items,*/ int fd)
 {
 	bool loop, buttupdate, inentry = true;
 	int i, input, output;
@@ -241,7 +243,7 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 	wrefresh(entry);
 
 	output = mixedform_handler(widget, rows-2, cols, bs, true, entry, form,
-	    field, nitems, items, conf.output_fd);
+	    field, nitems, /*items,*/ conf.output_fd);
 
 	unpost_form(form);
 	free_form(form);

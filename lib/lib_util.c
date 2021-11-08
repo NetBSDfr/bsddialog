@@ -677,8 +677,7 @@ set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
 }
 
 int
-set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
-    int cols, int h, int w)
+set_widget_position(struct bsddialog_conf conf, int *y, int *x, int h, int w)
 {
 
 	if (conf.y == BSDDIALOG_CENTER)
@@ -713,8 +712,8 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
 
 /* Widgets builders */
 static void
-draw_borders(struct bsddialog_conf conf, WINDOW *win, int y, int x,
-    int rows, int cols, enum elevation elev)
+draw_borders(struct bsddialog_conf conf, WINDOW *win, int rows, int cols,
+    enum elevation elev)
 {
 	int leftcolor, rightcolor;
 	int ls, rs, ts, bs, tl, tr, bl, br;
@@ -763,7 +762,7 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
 
 	wbkgd(win, t.widgetcolor);
 
-	draw_borders(conf, win, y, x, rows, cols, elev);
+	draw_borders(conf, win, rows, cols, elev);
 
 	return win;
 }
@@ -774,7 +773,7 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
  */
 static int
 draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
-    WINDOW *widget, int y, int x, int h, int w, enum elevation elev,
+    WINDOW *widget, int h, int w, enum elevation elev,
     WINDOW *textpad, int *htextpad, char *text, bool buttons)
 {
 	int ts, ltee, rtee;
@@ -795,7 +794,7 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 	}
 
 	// move / resize now or the caller?
-	draw_borders(conf, widget, y, x, h, w, elev);
+	draw_borders(conf, widget, h, w, elev);
 
 	if (conf.title != NULL) {
 		if (t.surroundtitle && conf.no_lines == false) {
@@ -855,14 +854,14 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
  */
 int
 update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
-    WINDOW *widget, int y, int x, int h, int w, enum elevation elev,
+    WINDOW *widget, int h, int w, enum elevation elev,
     WINDOW *textpad, int *htextpad, char *text, bool buttons)
 {
 	int error;
 
 	/* nothing for now */
 
-	error =  draw_widget_withtextpad(conf, shadow, widget, y, x, h, w,
+	error =  draw_widget_withtextpad(conf, shadow, widget, h, w,
 	    elev, textpad, htextpad, text, buttons);
 
 	return error;
@@ -893,8 +892,8 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
 	}
 
 	if (textpad == NULL) { /* widget_init() */
-		error =  draw_widget_withtextpad(conf, *shadow, *widget, y, x,
-		    h, w, elev, NULL, NULL, text, buttons);
+		error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w,
+		    elev, NULL, NULL, text, buttons);
 		return error;
 	}
 
@@ -908,8 +907,8 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
 		wbkgd(*textpad, t.widgetcolor);
 	}
 
-	error =  draw_widget_withtextpad(conf, *shadow, *widget, y, x, h, w,
-	    elev, *textpad, htextpad, text, buttons);
+	error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w, elev,
+	    *textpad, htextpad, text, buttons);
 
 	return error;
 }

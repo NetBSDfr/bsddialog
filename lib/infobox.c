@@ -96,7 +96,7 @@ bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 		return BSDDIALOG_ERROR;
 	if (infobox_checksize(h, w) != 0)
 		return BSDDIALOG_ERROR;
-	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
 	htextpad = 1;

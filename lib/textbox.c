@@ -52,6 +52,11 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	FILE *fp;
 	bool loop;
 
+	if (mode == TAILMODE || mode == TAILBGMODE) {
+		bsddialog_msgbox(conf, "Tailbox and Tailboxbg unimplemented", rows, cols);
+		RETURN_ERROR("Tailbox and Tailboxbg unimplemented");
+	}
+
 	if (new_widget(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
 	    true) <0)
 		return -1;
