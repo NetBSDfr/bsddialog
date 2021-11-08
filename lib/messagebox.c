@@ -32,10 +32,8 @@
 
 #ifdef PORTNCURSES
 #include <ncurses/curses.h>
-#include <ncurses/form.h>
 #else
 #include <curses.h>
-#include <form.h>
 #endif
 
 #include "bsddialog.h"
