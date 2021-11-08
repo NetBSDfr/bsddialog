@@ -286,7 +286,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -318,7 +318,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -348,7 +348,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -403,7 +403,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -434,7 +434,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -465,7 +465,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -496,7 +496,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -527,7 +527,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -558,7 +558,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -590,7 +590,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -620,7 +620,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -651,7 +651,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -682,7 +682,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -714,7 +714,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -746,7 +746,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -778,7 +778,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -809,7 +809,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -840,7 +840,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -871,7 +871,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -904,7 +904,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -935,7 +935,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -968,7 +968,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -998,7 +998,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -1028,7 +1028,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -1060,7 +1060,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -1090,7 +1090,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -1120,7 +1120,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -1152,7 +1152,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
@@ -1182,7 +1182,7 @@ Compile and run
 
 Output
 
-![exmple](./images/example.png)
+![example](./images/example.png)
 
 **Exist Status**
 
