@@ -56,42 +56,6 @@
 
 extern struct bsddialog_theme t;
 
-//lib_util in the future
-static int
-set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w)
-{
-	int maxheight, maxwidth;
-
-	if ((maxheight = widget_max_height(conf)) == BSDDIALOG_ERROR)
-		return BSDDIALOG_ERROR;
-
-	if (rows == BSDDIALOG_FULLSCREEN)
-		*h = maxheight;
-	else if (rows < BSDDIALOG_FULLSCREEN)
-		RETURN_ERROR("Negative (less than -1) height");
-	else if (rows > BSDDIALOG_AUTOSIZE) {
-		if ((*h = rows) > maxheight)
-			RETURN_ERROR("Height too big (> terminal height - "\
-			    "shadow");
-	}
-	/* rows == AUTOSIZE: each widget has to set its size */
-
-	if ((maxwidth = widget_max_width(conf)) == BSDDIALOG_ERROR)
-		return BSDDIALOG_ERROR;
-
-	if (cols == BSDDIALOG_FULLSCREEN)
-		*w = maxwidth;
-	else if (cols < BSDDIALOG_FULLSCREEN)
-		RETURN_ERROR("Negative (less than -1) width");
-	else if (cols > BSDDIALOG_AUTOSIZE) {
-		if ((*w = cols) > maxwidth)
-			RETURN_ERROR("Width too big (> terminal width - shadow)");
-	}
-	/* cols == AUTOSIZE: each widget has to set its size */
-
-	return 0;
-}
-
 static int
 message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons bs)
@@ -140,42 +104,6 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 
 	if (rows < MIN_HEIGHT)
 		RETURN_ERROR("Msgbox and Yesno need at least height 5");
-
-	return 0;
-}
-
-//lib_util in the future
-static int
-set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
-    int cols, int h, int w)
-{
-
-	if (conf.y == BSDDIALOG_CENTER)
-		*y = LINES/2 - h/2;
-	else if (conf.y < BSDDIALOG_CENTER)
-		RETURN_ERROR("Negative begin y (less than -1)");
-	else if (conf.y >= LINES)
-		RETURN_ERROR("Begin Y under the terminal");
-	else
-		*y = conf.y;
-
-	if ((*y + h + (conf.shadow ? (int) t.shadowrows : 0)) > LINES)
-		RETURN_ERROR("The lower of the box under the terminal "\
-		    "(begin Y + height (+ shadow) > terminal lines)");
-
-
-	if (conf.x == BSDDIALOG_CENTER)
-		*x = COLS/2 - w/2;
-	else if (conf.x < BSDDIALOG_CENTER)
-		RETURN_ERROR("Negative begin x (less than -1)");
-	else if (conf.x >= COLS)
-		RETURN_ERROR("Begin X over the right of the terminal");
-	else
-		*x = conf.x;
-
-	if ((*x + w + (conf.shadow ? (int) t.shadowcols : 0)) > COLS)
-		RETURN_ERROR("The right of the box over the terminal "\
-		    "(begin X + width (+ shadow) > terminal cols)");
 
 	return 0;
 }

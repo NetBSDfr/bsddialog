@@ -92,6 +92,13 @@ get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
 int widget_max_height(struct bsddialog_conf conf);
 int widget_max_width(struct bsddialog_conf conf);
 
+int
+set_widget_size(struct bsddialog_conf conf, int rows, int cols, int *h, int *w);
+
+int
+set_widget_position(struct bsddialog_conf conf, int *y, int *x, int rows,
+    int cols, int h, int w);
+
 /* widget builders */
 void
 print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx,
