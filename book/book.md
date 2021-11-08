@@ -238,65 +238,100 @@ enum bsddialog_default_theme {
 int bsddialog_settheme(enum bsddialog_default_theme theme);
 ```
 
-# PART II - Widgets Reference
+-------------------------------------------------------
 
-# Widgets
+### PART II - Widgets Reference
+
+## 3 Info
+
+### 3.1 infobox
+
+**API**
 
 ```c
-int bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int yy, unsigned int mm, unsigned int dd);
-int bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv);
-int bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, int perc);
-int bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv);
-int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int perc, int argc, char **argv);
-int bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups);
-int bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv);
-int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, int sec);
-int bsddialog_prgbox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    char *command);
-int bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_progressbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int min, int max, int def);
-int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int hh, unsigned int mm, unsigned int ss);
-int bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
-int bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
-## 3 "Info"
+**Example**
 
-infobox
+```c
+```
 
-## 4 Button
+Compile and run
 
-msgbox
-yesno
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+## 4 Message
+
+### 4.1 msgbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 4.2 yesno
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
 
 ## 5 Menu
 
@@ -322,49 +357,772 @@ struct bsddialog_menugroup {
 };
 ```
 
-buildlist
-checklist
-menu
-radiolist
-treeview
+### 5.1 buildlist
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 5.2 checklist
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 5.3 menu
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 5.4 mixedlist
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 5.5 radiolist
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 5.6 treeview
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
 
 ## 6 Form
 
-inputbox
-passwordbox 
-form
-passwordform
-mixedform
+### 6.1 inputbox
 
-## 7 "Editor"
+**API**
 
-editbox(todo)
+```c
+```
 
-## 8 "Bar"
+**Example**
 
-gauge
-mixedgauge
-rangebox
-pause
+```c
+```
 
-## 9 "Time"
+Compile and run
 
-timebox
-calendar
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
 
-## 10 "Command" 
+Output
 
-prgbox
-programbox(todo)
-progressbox(todo)
+![exmple](./images/example.png)
 
-## 11 "Text"
+**Exist Status**
 
-tailbox
-tailboxbg(todo)
-textbox
+**Configuration**
 
-## 12 "File"
+**Theme**
 
-dselect(todo)
-fselect(todo)
+### 6.2 passwordbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 6.3 form
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 6.4 passwordform
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 6.5 mixedform
+
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+## 7 Editor
+
+### 7.1 editbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+## 8 Bar
+
+### 8.1 gauge
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 8.2 mixedgauge
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 8.3 rangebox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 8.4 pause
+
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+## 9 Time
+
+### 9.1 timebox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 9.1 calendar
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+## 10 Command
+
+### 10.1 prgbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 10.2 programbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 10.3 progressbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+## 11 Text
+
+### 11.1 tailbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 11.2 tailboxbg
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 11.3 textbox
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+## 12 File
+
+### 12.1 dselect
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
+
+### 12.2 fselect
+
+**API**
+
+```c
+```
+
+**Example**
+
+```c
+```
+
+Compile and run
+
+```
+% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% ./ex
+```
+
+Output
+
+![exmple](./images/example.png)
+
+**Exist Status**
+
+**Configuration**
+
+**Theme**
