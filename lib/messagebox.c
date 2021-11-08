@@ -210,6 +210,9 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 
 			buttonsupdate(widget, h, w, bs, shortkey);
 			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
+
+			/* Important to fix expanding screen grey lines */
+			refresh();
 			break;
 		case KEY_UP:
 			if (textrow == 0)
