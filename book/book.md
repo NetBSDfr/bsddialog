@@ -66,7 +66,7 @@ int main()
 **Compiling and Running**:
 
 ```
-% cc -I/usr/local/include helloworld.c -o helloworld -L/usr/local/lib/ -lbsddialog
+% cc -I/usr/local/include helloworld.c -o helloworld -L/usr/local/lib -lbsddialog
 % ./helloworld
 ```
 
@@ -81,20 +81,23 @@ int main()
 ```c
 #include <bsddialog.h>
 
-int  bsddialog_init(void);
-void bsddialog_end(void);
-int  bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
+int bsddialog_init(void);
+int bsddialog_end(void);
+int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
+int terminalheight(void);
+int terminalwidth(void);
 ```
 
 ### 2.2 Exit Status
 
 ```c
+#define BSDDIALOG_ERROR		-1 // generic error (or ESC dialog)
 #define BSDDIALOG_YESOK		 0 // YES or OK buttons
 #define BSDDIALOG_NOCANCEL	 1 // No or Cancel buttons
 #define BSDDIALOG_HELP		 2 // Help button
 #define BSDDIALOG_EXTRA		 3 // Extra button
 #define BSDDIALOG_ITEM_HELP	 4
-#define BSDDIALOG_ERROR		-1 // generic error or ESC key
+#define BSDDIALOG_ESC		 5 // ESC key
 ```
 
 ### 2.3 Errors
@@ -114,7 +117,7 @@ struct bsddialog_conf {
 	int x;		// BEGIN
 	int y;		// BEGIN
 	char *cancel_label;
-	bool clear;	// useful?
+	bool clear;
 	bool colors;
 	char *colums_separator;
 	bool cr_wrap;
@@ -191,14 +194,30 @@ struct bsddialog_conf {
 ```
 
 ```c
+enum bsddialog_color {
+	BSDDIALOG_BLACK = 0,
+	BSDDIALOG_RED,
+	BSDDIALOG_GREEN,
+	BSDDIALOG_YELLOW,
+	BSDDIALOG_BLUE,
+	BSDDIALOG_MAGENTA,
+	BSDDIALOG_CYAN,
+	BSDDIALOG_WHITE,
+};
+
 struct bsddialog_theme {
 	int shadowcolor;
+	unsigned int shadowrows;
+	unsigned int shadowcols;
+
 	int backgroundcolor;
 	bool surroundtitle;
 	int titlecolor;
 	int lineraisecolor;
 	int linelowercolor;
 	int widgetcolor;
+
+	unsigned int texthmargin;
 
 	int curritemcolor;
 	int itemcolor;
@@ -233,9 +252,10 @@ enum bsddialog_default_theme {
 	BSDDIALOG_THEME_MAGENTA,
 };
 
-//struct bsddialog_theme bsddialog_gettheme();
-//int bsddialog_setcustomtheme(struct bsddialog_theme *theme);
-int bsddialog_settheme(enum bsddialog_default_theme theme);
+int bsddialog_color(enum bsddialog_color background, enum bsddialog_color foreground);
+struct bsddialog_theme bsddialog_get_theme();
+void bsddialog_set_theme(struct bsddialog_theme theme);
+int bsddialog_set_default_theme(enum bsddialog_default_theme theme);
 ```
 
 -------------------------------------------------------
@@ -259,8 +279,8 @@ int bsddialog_settheme(enum bsddialog_default_theme theme);
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include infobox.c -o infobox -L/usr/local/lib -lbsddialog
+% ./infobox
 ```
 
 Output
@@ -290,8 +310,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include msgbox.c -o msgbox -L/usr/local/lib -lbsddialog
+% ./msgbox
 ```
 
 Output
@@ -319,8 +339,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include yesno.c -o yesno -L/usr/local/lib -lbsddialog
+% ./yesno
 ```
 
 Output
@@ -372,8 +392,8 @@ struct bsddialog_menugroup {
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include buildlist.c -o buildlist -L/usr/local/lib -lbsddialog
+% ./buildlist
 ```
 
 Output
@@ -401,8 +421,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include checklist.c -o checklist -L/usr/local/lib -lbsddialog
+% ./checklist
 ```
 
 Output
@@ -430,8 +450,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include menu.c -o menu -L/usr/local/lib -lbsddialog
+% ./menu
 ```
 
 Output
@@ -459,8 +479,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include mixedlist.c -o mixedlist -L/usr/local/lib -lbsddialog
+% ./mixedlist
 ```
 
 Output
@@ -488,7 +508,7 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
+% cc -I/usr/local/include radiolist.c -o radiolist -L/usr/local/lib -lbsddialog
 % ./ex
 ```
 
@@ -517,8 +537,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include treeview.c -o treeview -L/usr/local/lib -lbsddialog
+% ./treeview
 ```
 
 Output
@@ -548,8 +568,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include inputbox.c -o inputbox -L/usr/local/lib -lbsddialog
+% ./inputbox
 ```
 
 Output
@@ -577,8 +597,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include passwordbox.c -o passwordbox -L/usr/local/lib -lbsddialog
+% ./passwordbox
 ```
 
 Output
@@ -606,8 +626,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include form.c -o form -L/usr/local/lib -lbsddialog
+% ./form
 ```
 
 Output
@@ -635,8 +655,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include passwordform.c -o passwordform -L/usr/local/lib -lbsddialog
+% ./passwordform
 ```
 
 Output
@@ -665,8 +685,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include mixedform.c -o mixedform -L/usr/local/lib -lbsddialog
+% ./mixedform
 ```
 
 Output
@@ -696,8 +716,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include editbox.c -o editbox -L/usr/local/lib -lbsddialog
+% ./editbox
 ```
 
 Output
@@ -727,8 +747,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include gauge.c -o gauge -L/usr/local/lib -lbsddialog
+% ./gauge
 ```
 
 Output
@@ -756,8 +776,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include mixedgauge.c -o mixedgauge -L/usr/local/lib -lbsddialog
+% ./mixedgauge
 ```
 
 Output
@@ -785,8 +805,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include rangebox.c -o rangebox -L/usr/local/lib -lbsddialog
+% ./rangebox
 ```
 
 Output
@@ -815,8 +835,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include pause.c -o pause -L/usr/local/lib -lbsddialog
+% ./pause
 ```
 
 Output
@@ -846,8 +866,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include timebox.c -o timebox -L/usr/local/lib -lbsddialog
+% ./timebox
 ```
 
 Output
@@ -875,8 +895,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include calendar.c -o calendar -L/usr/local/lib -lbsddialog
+% ./calendar
 ```
 
 Output
@@ -906,8 +926,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include prgbox.c -o prgbox -L/usr/local/lib -lbsddialog
+% ./prgbox
 ```
 
 Output
@@ -935,8 +955,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include programbox.c -o programbox -L/usr/local/lib -lbsddialog
+% ./programbox
 ```
 
 Output
@@ -964,8 +984,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include progressbox.c -o progressbox -L/usr/local/lib -lbsddialog
+% ./progressbox
 ```
 
 Output
@@ -995,8 +1015,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include tailbox.c -o tailbox -L/usr/local/lib -lbsddialog
+% ./tailbox
 ```
 
 Output
@@ -1024,8 +1044,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include tailboxbg.c -o tailboxbg -L/usr/local/lib -lbsddialog
+% ./tailboxbg
 ```
 
 Output
@@ -1053,8 +1073,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include textbox.c -o textbox -L/usr/local/lib -lbsddialog
+% ./textbox
 ```
 
 Output
@@ -1084,8 +1104,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include dselect.c -o dselect -L/usr/local/lib -lbsddialog
+% ./dselect
 ```
 
 Output
@@ -1113,8 +1133,8 @@ Output
 Compile and run
 
 ```
-% cc -I/usr/local/include ex.c -o ex -L/usr/local/lib/ -lbsddialog
-% ./ex
+% cc -I/usr/local/include fselect.c -o fselect -L/usr/local/lib -lbsddialog
+% ./fselect
 ```
 
 Output
