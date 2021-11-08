@@ -167,7 +167,7 @@ Examples library:
 | --form         | In progress | implemented via --mixedform                   |
 | --fselect      |             |                                               |
 | --gauge        | In progress |                                               |
-| --infobox      | In progress | Do not clear the screen                       |
+| --infobox      | Completed   | Do not clear the screen                       |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --inputmenu    |             |                                               |
 | --menu         | In progress | todo autosize, resize, F1, todo scrolling     |

@@ -25,6 +25,8 @@
  * SUCH DAMAGE.
  */
 
+#include <sys/param.h>
+
 #ifdef PORTNCURSES
 #include <ncurses/curses.h>
 #else
@@ -33,22 +35,80 @@
 
 #include "bsddialog.h"
 #include "lib_util.h"
+#include "bsddialog_theme.h"
 
 /* "Info": infobox */
+
+#define VBORDERS	2
+#define MIN_HEIGHT	3
+
+extern struct bsddialog_theme t;
+
+static int
+infobox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+    char *text)
+{
+	int maxword, maxline, nlines;
+
+	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
+		return BSDDIALOG_ERROR;
+
+	if (cols == BSDDIALOG_AUTOSIZE) {
+		/* text size */
+		*w =  maxline + VBORDERS + t.texthmargin * 2;
+		/* avoid terminal overflow */
+		*w = MIN(*w, widget_max_width(conf));
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE) {
+		*h = MIN_HEIGHT - 1;
+		if (maxword > 0)
+			*h += MIN(nlines, (*w / 9)); /* aspect ratio: add conf/theme? */
+		*h = MAX(*h, MIN_HEIGHT);
+		/* avoid terminal overflow */
+		*h = MIN(*h, widget_max_height(conf));
+	}
+
+	return 0;
+}
+
+static int infobox_checksize(int rows, int cols)
+{
+
+	if (cols < 5)
+		RETURN_ERROR("Few cols, infobox needs at least width 5");
+
+	if (rows < 3)
+		RETURN_ERROR("Infobox needs at least height 3");
+
+	return 0;
+}
 
 int
 bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
-	WINDOW *widget, *shadow;
-	int y, x;
+	WINDOW *shadow, *widget, *textpad;
+	int y, x, h, w, htextpad;
 
-	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    false) != 0)
-		return (BSDDIALOG_ERROR);
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
+	if (infobox_autosize(conf, rows, cols, &h, &w, text) != 0)
+		return BSDDIALOG_ERROR;
+	if (infobox_checksize(h, w) != 0)
+		return BSDDIALOG_ERROR;
+	if (set_widget_position(conf, &y, &x, rows, cols, h, w) != 0)
+		return BSDDIALOG_ERROR;
 
-	getch();
+	htextpad = 1;
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
+	    &textpad, &htextpad, text, false) != 0)
+		return BSDDIALOG_ERROR;
 
-	end_widget(conf, "Infobox", widget, rows, cols, shadow);
+	prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-2, x+w-t.texthmargin);
+
+	//getch();
+
+	end_widget_withtextpad(conf, "Infobox", widget, h, w, textpad, shadow);
 
 	return (BSDDIALOG_YESOK);
 }
