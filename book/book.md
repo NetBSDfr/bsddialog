@@ -269,6 +269,7 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme theme);
 **API**
 
 ```c
+int bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -300,6 +301,7 @@ Output
 **API**
 
 ```c
+int bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -329,6 +331,7 @@ Output
 **API**
 
 ```c
+int bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -382,6 +385,8 @@ struct bsddialog_menugroup {
 **API**
 
 ```c
+int bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
 ```
 
 **Example**
@@ -411,6 +416,8 @@ Output
 **API**
 
 ```c
+int bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
 ```
 
 **Example**
@@ -440,6 +447,8 @@ Output
 **API**
 
 ```c
+int bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
 ```
 
 **Example**
@@ -469,6 +478,8 @@ Output
 **API**
 
 ```c
+int bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups);
 ```
 
 **Example**
@@ -498,6 +509,8 @@ Output
 **API**
 
 ```c
+int bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
 ```
 
 **Example**
@@ -527,6 +540,8 @@ Output
 **API**
 
 ```c
+int bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items);
 ```
 
 **Example**
@@ -558,6 +573,7 @@ Output
 **API**
 
 ```c
+int bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -587,6 +603,7 @@ Output
 **API**
 
 ```c
+int bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -616,6 +633,8 @@ Output
 **API**
 
 ```c
+int bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
+    int formheight, int argc, char **argv);
 ```
 
 **Example**
@@ -645,6 +664,8 @@ Output
 **API**
 
 ```c
+int bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows, int cols,
+    int formheight, int argc, char **argv);
 ```
 
 **Example**
@@ -680,6 +701,8 @@ Output
 **Example**
 
 ```c
+int bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
+    int formheight, int argc, char **argv);
 ```
 
 Compile and run
@@ -706,6 +729,7 @@ Output
 **API**
 
 ```c
+int bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -737,6 +761,7 @@ Output
 **API**
 
 ```c
+int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, int perc);
 ```
 
 **Example**
@@ -766,6 +791,8 @@ Output
 **API**
 
 ```c
+int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int perc, int argc, char **argv);
 ```
 
 **Example**
@@ -795,6 +822,8 @@ Output
 **API**
 
 ```c
+int bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+    int min, int max, int def);
 ```
 
 **Example**
@@ -830,6 +859,7 @@ Output
 **Example**
 
 ```c
+int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, int sec);
 ```
 
 Compile and run
@@ -856,6 +886,8 @@ Output
 **API**
 
 ```c
+int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int hh, unsigned int mm, unsigned int ss);
 ```
 
 **Example**
@@ -885,6 +917,8 @@ Output
 **API**
 
 ```c
+int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int yy, unsigned int mm, unsigned int dd);
 ```
 
 **Example**
@@ -916,6 +950,8 @@ Output
 **API**
 
 ```c
+int bsddialog_prgbox(struct bsddialog_conf conf, char* text, int rows, int cols,
+    char *command);
 ```
 
 **Example**
@@ -945,6 +981,7 @@ Output
 **API**
 
 ```c
+int bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -974,6 +1011,7 @@ Output
 **API**
 
 ```c
+int bsddialog_progressbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -1005,6 +1043,7 @@ Output
 **API**
 
 ```c
+int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -1034,6 +1073,7 @@ Output
 **API**
 
 ```c
+int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -1063,6 +1103,7 @@ Output
 **API**
 
 ```c
+int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -1094,6 +1135,7 @@ Output
 **API**
 
 ```c
+int bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
@@ -1123,6 +1165,7 @@ Output
 **API**
 
 ```c
+int bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols);
 ```
 
 **Example**
