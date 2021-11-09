@@ -25,7 +25,7 @@ int main()
 	conf.title = "msgbox";
 
 	/* Run BSDDialog */
-	if (bsddialog_init() < 0) {
+	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return -1;
 	}
