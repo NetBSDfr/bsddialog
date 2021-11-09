@@ -35,11 +35,10 @@ int main()
 	/* User Input */
 	printf("User input: ");
 	switch (input) {
-	case BSDDIALOG_ERROR: printf("Error: %s", bsddialog_geterror()); break;
-	case BSDDIALOG_YESOK: printf("YESOK"); break;
-	case BSDDIALOG_ESC:   printf("ESC");   break;
+	case BSDDIALOG_ERROR: printf("Error %s\n", bsddialog_geterror()); break;
+	case BSDDIALOG_YESOK: printf("OK\n");  break;
+	case BSDDIALOG_ESC:   printf("ESC\n"); break;
 	}
-	printf("\n");
 
 	return input;
 }
