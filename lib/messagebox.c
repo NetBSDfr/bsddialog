@@ -158,7 +158,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			loop = false;
 			break;
 		case 27: /* Esc */
-			output = BSDDIALOG_ERROR;
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case '\t': /* TAB */
