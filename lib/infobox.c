@@ -104,9 +104,9 @@ bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 	    &textpad, &htextpad, text, false) != 0)
 		return BSDDIALOG_ERROR;
 
-	prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-2, x+w-t.texthmargin);
+	pnoutrefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-2, x+w-t.texthmargin);
 
-	//getch();
+	doupdate();
 
 	end_widget_withtextpad(conf, "Infobox", widget, h, w, textpad, shadow);
 

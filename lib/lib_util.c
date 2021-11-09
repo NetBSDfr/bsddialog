@@ -784,14 +784,8 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 	rtee = conf.ascii_lines ? '+' : ACS_RTEE;
 	colorsurroundtitle = elev == RAISED ? t.lineraisecolor : t.linelowercolor;
 
-	//useful?
-	if (conf.shadow && shadow == NULL)
-		RETURN_ERROR("Cannot uodate shadow its WINDOW is NULL");
-
-	if (shadow != NULL) {
-		//move? resize?
-		wrefresh(shadow);
-	}
+	if (shadow != NULL)
+		wnoutrefresh(shadow);
 
 	// move / resize now or the caller?
 	draw_borders(conf, widget, h, w, elev);
@@ -835,7 +829,7 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 		wattroff(widget, t.linelowercolor);
 	}
 
-	wrefresh(widget);
+	wnoutrefresh(widget);
 
 	if (textpad == NULL)
 		return 0; /* widget_init() ends */
@@ -917,7 +911,6 @@ int
 new_widget(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x,
     char *text, int *h, int *w, WINDOW **shadow, bool buttons)
 {
-	int output;
 
 	// to delete (each widget has to check its x,y,h,w)
 	if (*h <= 0)
@@ -929,10 +922,16 @@ new_widget(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x,
 	*y = (conf.y < 0) ? (LINES/2 - *h/2) : conf.y;
 	*x = (conf.x < 0) ? (COLS/2 - *w/2) : conf.x;
 
-	output = new_widget_withtextpad(conf, shadow, widget, *y, *x, *h, *w,
-	    RAISED, NULL, NULL, text, buttons);
+	if (new_widget_withtextpad(conf, shadow, widget, *y, *x, *h, *w, RAISED,
+	    NULL, NULL, text, buttons) != 0)
+		return BSDDIALOG_ERROR;
 
-	return output;
+	if (conf.shadow)
+		wrefresh(*shadow);
+
+	wrefresh(*widget);
+
+	return 0;
 }
 
 void

@@ -110,7 +110,7 @@ static void
 buttonsupdate(WINDOW *widget, int h, int w, struct buttons bs, bool shortkey)
 {
 	draw_buttons(widget, h-2, w, bs, shortkey);
-	wrefresh(widget);
+	wnoutrefresh(widget);
 }
 
 static void
@@ -120,10 +120,10 @@ textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
 
 	if (htextpad > h - 4) {
 		mvwprintw(widget, h-3, w-6, "%3d%%", (int)((100 * (textrow+h-4)) / htextpad));
-		wrefresh(widget);
+		wnoutrefresh(widget);
 	}
 
-	prefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
+	pnoutrefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
 }
 
 static int
@@ -153,6 +153,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	buttonsupdate(widget, h, w, bs, shortkey);
 	textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
 	while(loop) {
+		doupdate();
 		input = getch();
 		switch (input) {
 		case 10: /* Enter */
@@ -173,8 +174,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
 			/* No break! the terminal size can change */
-		case KEY_RESIZE: //to improve
-		case 'r':
+		case KEY_RESIZE:
 			hide_widget(y, x, h, w,conf.shadow);
 
 			/*
@@ -197,7 +197,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			wresize(shadow, h, w);
 
 			wclear(widget);
-			mvwin(widget, y, x); // refreshed by the following funcs
+			mvwin(widget, y, x);
 			wresize(widget, h, w);
 
 			htextpad = 1;
@@ -211,7 +211,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 			buttonsupdate(widget, h, w, bs, shortkey);
 			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
 
-			/* Important to fix expanding screen grey lines */
+			/* Important to fix grey lines expanding screen */
 			refresh();
 			break;
 		case KEY_UP:
