@@ -16,6 +16,3 @@ lib/libbsddialog.so*
 BSDDIALOG.geany
 BSDDIALOG.tags
 buid.sh
-dialog4ports-0.1.6/
-lib/testing.c
-utility_examples/msgbox.sh
