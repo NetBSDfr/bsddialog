@@ -307,6 +307,40 @@ int bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 **Example**
 
 ```c
+#include <stdio.h>
+#include <string.h>
+
+#include <bsddialog.h>
+
+int main()
+{
+	int input;
+	struct bsddialog_conf conf;
+
+	/* Configuration */
+	memset(&conf, 0, sizeof(struct bsddialog_conf));
+	conf.y = conf.x = BSDDIALOG_CENTER;
+	conf.shadow = true;
+	conf.title = "msgbox";
+
+	/* Run BSDDialog */
+	if (bsddialog_init() == BSDDIALOG_ERROR) {
+		printf("Error: %s\n", bsddialog_geterror());
+		return -1;
+	}
+	input = bsddialog_msgbox(conf, "Example", 7, 20);
+	bsddialog_end();
+
+	/* User Input */
+	printf("User input: ");
+	switch (input) {
+	case BSDDIALOG_ERROR: printf("Error %s\n", bsddialog_geterror()); break;
+	case BSDDIALOG_YESOK: printf("OK\n");  break;
+	case BSDDIALOG_ESC:   printf("ESC\n"); break;
+	}
+
+	return input;
+}
 ```
 
 Compile and run
@@ -321,6 +355,10 @@ Output
 ![example](./images/example.png)
 
 **Exist Status**
+
+ - **BSDDIALOG\_ERROR**
+ - **BSDDIALOG\_YESOK**
+ - **BSDDIALOG\_ESC**
 
 **Configuration**
 
