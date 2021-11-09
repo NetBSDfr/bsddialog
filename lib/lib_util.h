@@ -29,8 +29,11 @@
 #define _LIBBSDDIALOG_UTIL_H_
 
 /*
- * Utils to implement widgets - Private API
+ * Utils to implement widgets - Internal library  API
  */
+
+#define HBORDERS	2
+#define VBORDERS	2
 
 /* debug */
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {	\

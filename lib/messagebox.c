@@ -42,8 +42,6 @@
 
 /* "Message": msgbox - yesno */
 
-#define HBORDERS	2
-#define VBORDERS	2U
 #define AUTO_WIDTH	(COLS / 3U)
 /*
  * Min height = 5: 2 up & down borders + 2 label & up border buttons + 1 line
@@ -143,7 +141,6 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	htextpad = 1;
 	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
@@ -202,7 +199,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 
 			htextpad = 1;
 			wclear(textpad);
-			wresize(textpad, 1, w - 4);
+			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)

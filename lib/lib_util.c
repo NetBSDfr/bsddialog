@@ -835,9 +835,9 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 		return 0; /* widget_init() ends */
 
 	if (text != NULL) /* programbox etc */
-		if (print_textpad(conf, textpad, htextpad, w-4, text) !=0)
+		if (print_textpad(conf, textpad, htextpad,
+		    w - HBORDERS - t.texthmargin * 2, text) !=0)
 			return BSDDIALOG_ERROR;
-	/* textpad not updated for now */
 
 	return 0;
 }
@@ -892,7 +892,9 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
 	}
 
 	if (text != NULL) { /* programbox etc */
-		if ((*textpad = newpad(*htextpad, w-4)) == NULL) {
+		*htextpad = 1;
+		*textpad = newpad(*htextpad, w - HBORDERS - t.texthmargin * 2);
+		if (*textpad == NULL) {
 			delwin(*textpad);
 			if (conf.shadow)
 				delwin(*shadow);

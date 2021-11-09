@@ -39,7 +39,6 @@
 
 /* "Info": infobox */
 
-#define VBORDERS	2
 #define MIN_HEIGHT	3
 
 extern struct bsddialog_theme t;
@@ -75,8 +74,9 @@ infobox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 static int infobox_checksize(int rows, int cols)
 {
 
-	if (cols < 5)
-		RETURN_ERROR("Few cols, infobox needs at least width 5");
+	if (cols < HBORDERS + 1 + t.texthmargin * 2)
+		RETURN_ERROR("Few cols, infobox needs at least width 3 + text "\
+		    "margins");
 
 	if (rows < 3)
 		RETURN_ERROR("Infobox needs at least height 3");
@@ -99,7 +99,6 @@ bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols)
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	htextpad = 1;
 	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
 	    &textpad, &htextpad, text, false) != 0)
 		return BSDDIALOG_ERROR;
