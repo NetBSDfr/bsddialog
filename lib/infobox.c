@@ -74,7 +74,7 @@ infobox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 static int infobox_checksize(int rows, int cols)
 {
 
-	if (cols < HBORDERS + 1 + t.texthmargin * 2)
+	if (cols < HBORDERS + 1 + (int) t.texthmargin * 2)
 		RETURN_ERROR("Few cols, infobox needs at least width 3 + text "\
 		    "margins");
 
