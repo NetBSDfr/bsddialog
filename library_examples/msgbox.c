@@ -15,20 +15,31 @@
 
 int main()
 {
-	int output;
+	int input;
 	struct bsddialog_conf conf;
 
+	/* Configuration */
 	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = -1;
+	conf.y = conf.x = BSDDIALOG_CENTER;
 	conf.shadow = true;
 	conf.title = "msgbox";
-	
-	if (bsddialog_init() < 0)
+
+	/* Run BSDDialog */
+	if (bsddialog_init() < 0) {
+		printf("Error: %s\n", bsddialog_geterror());
 		return -1;
-
-	output = bsddialog_msgbox(conf, "Example", 7, 20);
-
+	}
+	input = bsddialog_msgbox(conf, "Example", 7, 20);
 	bsddialog_end();
 
-	return output;
+	/* User Input */
+	printf("User input: ");
+	switch (input) {
+	case BSDDIALOG_ERROR: printf("Error: %s", bsddialog_geterror()); break;
+	case BSDDIALOG_YESOK: printf("YESOK"); break;
+	case BSDDIALOG_ESC:   printf("ESC");   break;
+	}
+	printf("\n");
+
+	return input;
 }
