@@ -289,7 +289,7 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 static int
 do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, char *namewidget, enum menumode mode, int ngroups,
-    struct bsddialog_menugroup *groups)
+    struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
 	WINDOW *widget, *menuwin, *menupad, *shadow;
 	int i, j, output, input;
@@ -454,6 +454,9 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 	}
 
+	*focuslist = g;
+	*focusitem = rel;
+
 	delwin(menupad);
 	delwin(menuwin);
 	end_widget(conf, namewidget, widget, rows, cols, shadow);
@@ -466,75 +469,81 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
  */
 
 int bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups)
+    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups,
+    int *focuslist, int *focusitem)
 {
 	int output;
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Mixedlist",
-	    MIXEDLISTMODE, ngroups, groups);
+	    MIXEDLISTMODE, ngroups, groups, focuslist, focusitem);
 
 	return output;
 }
 
 int
 bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
+    int *focusitem)
 {
-	int output;
+	int output, unused;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Checklist",
-	    CHECKLISTMODE, 1, &group);
+	    CHECKLISTMODE, 1, &group, &unused, focusitem);
 
 	return output;
 }
 
 int
 bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
+    int *focusitem)
 {
-	int output;
+	int output, unused;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Menu",
-	    MENUMODE, 1, &group);
+	    MENUMODE, 1, &group, &unused, focusitem);
 
 	return output;
 }
 
 int
 bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
+    int *focusitem)
 {
-	int output;
+	int output, unused;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Radiolist",
-	    RADIOLISTMODE, 1, &group);
+	    RADIOLISTMODE, 1, &group, &unused, focusitem);
 
 	return output;
 }
 
 int
 bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
+    int *focusitem)
 {
-	int output;
+	int output, unused;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Treeview",
-	    TREEVIEWMODE, 1, &group);
+	    TREEVIEWMODE, 1, &group, &unused, focusitem);
 
 	return output;
 }
 
 int
 bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items)
+    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
+    int *focusitem)
 {
 	WINDOW *widget, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
 	int output, i, x, y, input;
@@ -681,6 +690,8 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			break;
 		}
 	}
+
+	*focusitem = curr;
 
 	delwin(leftpad);
 	delwin(leftwin);

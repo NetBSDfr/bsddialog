@@ -990,7 +990,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 
 static void
 print_selected_items(struct bsddialog_conf conf, int output, int nitems,
-    struct bsddialog_menuitem *items)
+    struct bsddialog_menuitem *items, int focusitem)
 {
 	int i;
 	bool sep;
@@ -1025,7 +1025,7 @@ print_selected_items(struct bsddialog_conf conf, int output, int nitems,
 
 int buildlist_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems;
+	int output, menurows, nitems, focusitem;
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
@@ -1040,18 +1040,19 @@ int buildlist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return output;
 
-	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems, items);
+	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems,
+	    items, &focusitem);
 	if (output == BSDDIALOG_ERROR)
 		return (BSDDIALOG_ERROR);
 
-	print_selected_items(conf, output, nitems, items);
+	print_selected_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
 
 int checklist_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems;
+	int output, menurows, nitems, focusitem;
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
@@ -1066,16 +1067,17 @@ int checklist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return output;
 
-	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems, items);
+	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
+	    items, &focusitem);
 
-	print_selected_items(conf, output, nitems, items);
+	print_selected_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
 
 int menu_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems;
+	int output, menurows, nitems, focusitem;
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
@@ -1090,9 +1092,10 @@ int menu_builder(BUILDER_ARGS)
 	if (output != 0)
 		return output;
 
-	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems, items);
+	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
+	    items, &focusitem);
 
-	print_selected_items(conf, output, nitems, items);
+	print_selected_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
@@ -1127,7 +1130,7 @@ int menu_builder(BUILDER_ARGS)
 
 int radiolist_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems;
+	int output, menurows, nitems, focusitem;
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
@@ -1142,16 +1145,17 @@ int radiolist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return output;
 
-	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems, items);
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
+	    items, &focusitem);
 
-	print_selected_items(conf, output, nitems, items);
+	print_selected_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
 
 int treeview_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems;
+	int output, menurows, nitems, focusitem;
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
@@ -1166,9 +1170,10 @@ int treeview_builder(BUILDER_ARGS)
 	if (output != 0)
 		return output;
 
-	output = bsddialog_treeview(conf, text, rows, cols, menurows, nitems, items);
+	output = bsddialog_treeview(conf, text, rows, cols, menurows, nitems,
+	    items, &focusitem);
 	
-	print_selected_items(conf, output, nitems, items);
+	print_selected_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
