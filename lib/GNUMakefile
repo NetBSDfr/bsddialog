@@ -11,7 +11,7 @@ SOURCES = barbox.c editorbox.c formbox.c lib_util.c menubox.c textbox.c \
 	timebox.c commandbox.c filebox.c infobox.c libbsddialog.c messagebox.c \
 	theme.c
 OBJECTS = $(SOURCES:.c=.o)
-CFLAGS = -Wall -Werror -fpic -g
+CFLAGS = -g -Wall -Werror -fpic
 LDFLAGS = -lform -lncurses -ltinfo
 LIBFLAG = -shared
 
