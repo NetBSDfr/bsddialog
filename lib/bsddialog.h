@@ -101,10 +101,10 @@ struct bsddialog_conf {
 	//bool print_version; utility
 	bool quoted;
 	bool scrollbar;
-	bool separate_output;
+	//bool separate_output; utility
 	char *separate_witget;
 	bool shadow;
-	bool single_quoted;
+	//bool single_quoted; utility
 	bool size_err;
 	int sleep;
 	//bool stderr_; utility, use .output_fd

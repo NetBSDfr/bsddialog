@@ -188,7 +188,7 @@ void usage(void)
 	       "[widget-opts]\n");
 }
 
-bool itemprefixflag, itembottomdescflag;
+bool itemprefixflag, itembottomdescflag, separateoutputflag, singlequotedflag;
 char *nstr ="";
 
 int main(int argc, char *argv[argc])
@@ -205,7 +205,9 @@ int main(int argc, char *argv[argc])
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;
 
-	ignoreflag = itemprefixflag = itembottomdescflag = false;
+	ignoreflag = false;
+	separateoutputflag = singlequotedflag = false;
+	itemprefixflag = itembottomdescflag = false;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -437,13 +439,13 @@ int main(int argc, char *argv[argc])
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			break;
 		case SEPARATE_OUTPUT:
-			conf.separate_output = true;
+			separateoutputflag = true;
 			break;
 		case SHADOW:
 			conf.shadow = true;
 			break;
 		case SINGLE_QUOTED:
-			conf.single_quoted = true;
+			singlequotedflag = true;
 			break;
 		case SLEEP:
 			conf.sleep = atoi(optarg);
@@ -965,7 +967,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 	if (setstatus) sizeitem++;
 	if (sethelp)   sizeitem++;
 	if ((argc % sizeitem) != 0) {
-		printf("Error: Menu/Checklist/Treeview/Radiolist bad #args\n"d);
+		printf("Error: Menu/Checklist/Treeview/Radiolist bad #args\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -986,6 +988,41 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 	return 0;
 }
 
+static void
+print_selected_items(struct bsddialog_conf conf, int output, int nitems,
+    struct bsddialog_menuitem *items)
+{
+	int i;
+	bool sep;
+	char *sepstr, quotech;
+
+	sep = false;
+
+	if (output == BSDDIALOG_HELP) {
+		dprintf(conf.output_fd, "HELP");
+		sep = true;
+	}
+
+	quotech = singlequotedflag ? '\'' : '"';
+	sepstr = separateoutputflag ? "\n" : " ";
+
+	if (output != BSDDIALOG_YESOK && conf.help_status == false)
+		return;
+
+	for (i = 0; i < nitems; i++) {
+		if (items[i].on == true) {
+			if (sep == true)
+				dprintf(conf.output_fd, "%s", sepstr);
+			sep = true;
+			if (strchr(items[i].name, ' ') != NULL)
+				dprintf(conf.output_fd, "%c", quotech);
+			dprintf(conf.output_fd, "%s",items[i].name);
+			if (strchr(items[i].name, ' ') != NULL)
+				dprintf(conf.output_fd, "%c", quotech);
+		}
+	}
+}
+
 int buildlist_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems;
@@ -1004,6 +1041,10 @@ int buildlist_builder(BUILDER_ARGS)
 		return output;
 
 	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems, items);
+	if (output == BSDDIALOG_ERROR)
+		return (BSDDIALOG_ERROR);
+
+	print_selected_items(conf, output, nitems, items);
 
 	return output;
 }
@@ -1027,6 +1068,8 @@ int checklist_builder(BUILDER_ARGS)
 
 	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems, items);
 
+	print_selected_items(conf, output, nitems, items);
+
 	return output;
 }
 
@@ -1049,8 +1092,38 @@ int menu_builder(BUILDER_ARGS)
 
 	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems, items);
 
+	print_selected_items(conf, output, nitems, items);
+
 	return output;
 }
+
+/*int mixedlist_builder(BUILDER_ARGS)
+{
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
+
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = get_menu_items(argc-1, argv+1, itemprefixflag, false, true,
+	    true, false, itembottomdescflag, &nitems, items);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_mixedlist(conf, text, rows, cols, menurows, nitems, items);
+	for (i=0; i < ngroups; i++) {
+		for (j=0; j < (int) groups[i].nitems; j++) {
+			item = &groups[i].items[j];
+			if (groups[i].type == BSDDIALOG_SEPARATOR)
+				dprintf(conf.output_fd, "--%s %s--\n",
+				    item->name, item->desc);
+
+	return output;
+}*/
 
 int radiolist_builder(BUILDER_ARGS)
 {
@@ -1070,6 +1143,8 @@ int radiolist_builder(BUILDER_ARGS)
 		return output;
 
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems, items);
+
+	print_selected_items(conf, output, nitems, items);
 
 	return output;
 }
@@ -1092,6 +1167,8 @@ int treeview_builder(BUILDER_ARGS)
 		return output;
 
 	output = bsddialog_treeview(conf, text, rows, cols, menurows, nitems, items);
+	
+	print_selected_items(conf, output, nitems, items);
 
 	return output;
 }

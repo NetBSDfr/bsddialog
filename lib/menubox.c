@@ -286,57 +286,6 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	}
 }
 
-static void
-print_selected_list(struct bsddialog_conf conf, int output, enum menumode mode,
-    int ngroups, struct bsddialog_menugroup *groups, int g, int rel) // utility?
-{
-	int i, j;
-	bool sep;
-	char *sepstr, quotech;
-	enum menumode currmode;
-	struct bsddialog_menuitem *item;
-
-	item = &groups[g].items[rel];
-	sep = false;
-
-	if (output == BSDDIALOG_HELP) {
-		dprintf(conf.output_fd, "HELP %s", item->name);
-		sep = true;
-	}
-
-	quotech = conf.single_quoted ? '\'' : '"';
-	sepstr = conf.separate_output ? "\n" : " ";
-
-	if (output != BSDDIALOG_YESOK && conf.help_status == false)
-		return;
-
-	currmode = getmode(mode, groups[g]);
-
-	if (currmode == MENUMODE) {
-		dprintf(conf.output_fd, "%s", item->name);
-		return;
-	}
-	/* else Lists */
-	for (i=0; i < ngroups; i++) {
-		for (j=0; j < (int) groups[i].nitems; j++) {
-			item = &groups[i].items[j];
-			if (groups[i].type == BSDDIALOG_SEPARATOR)
-				dprintf(conf.output_fd, "--%s %s--\n",
-				    item->name, item->desc);
-			if (item->on == true) {
-				if (sep == true)
-					dprintf(conf.output_fd, "%s", sepstr);
-				sep = true;
-				if (strchr(item->name, ' ') != NULL)
-					dprintf(conf.output_fd, "%c", quotech);
-				dprintf(conf.output_fd, "%s",item->name);
-				if (strchr(item->name, ' ') != NULL)
-					dprintf(conf.output_fd, "%c", quotech);
-			}
-		}
-	}
-}
-
 static int
 do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, char *namewidget, enum menumode mode, int ngroups,
@@ -504,9 +453,6 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 		}
 	}
-
-	if (abs >= 0)
-		print_selected_list(conf, output, mode, ngroups, groups, g, rel);
 
 	delwin(menupad);
 	delwin(menuwin);
