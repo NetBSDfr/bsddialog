@@ -20,21 +20,21 @@ int main()
 	struct bsddialog_conf conf;
 	struct bsddialog_menuitem item;
 	struct bsddialog_menuitem check[5] = {
-	    { true,  0, "Name 1", "Desc 1", "+" },
-	    { false, 0, "Name 2", "Desc 2", "+" },
-	    { true,  0, "Name 3", "Desc 3", "+" },
-	    { false, 0, "Name 4", "Desc 4", ""  },
-	    { true,  0, "Name 5", "Desc 5", ""  }
+	    { "+", true,  0, "Name 1", "Desc 1", "Bottom Desc 1" },
+	    { "" , false, 0, "Name 2", "Desc 2", "Bottom Desc 2" },
+	    { "+", true,  0, "Name 3", "Desc 3", "Bottom Desc 3" },
+	    { "" , false, 0, "Name 4", "Desc 4", "Bottom Desc 4" },
+	    { "+", true,  0, "Name 5", "Desc 5", "Bottom Desc 5" }
 	};
 	struct bsddialog_menuitem sep[1] = {
-	    { true, 0, "Radiolist", "(desc)", "" }
+	    { "", true, 0, "Radiolist", "(desc)", "" }
 	};
 	struct bsddialog_menuitem radio[5] = {
-	    { true,  0, "Name 1", "Desc 1", "" },
-	    { false, 0, "Name 2", "Desc 2", ""  },
-	    { false, 0, "Name 3", "Desc 3", ""  },
-	    { false, 0, "Name 4", "Desc 4", "+" },
-	    { false, 0, "Name 5", "Desc 5", "+" }
+	    { "",  true,  0, "Name 1", "Desc 1", "Bottom Desc 1" },
+	    { "+", false, 0, "Name 2", "Desc 2", "Bottom Desc 2" },
+	    { "",  false, 0, "Name 3", "Desc 3", "Bottom Desc 3" },
+	    { "+", false, 0, "Name 4", "Desc 4", "Bottom Desc 4" },
+	    { "",  false, 0, "Name 5", "Desc 5", "Bottom Desc 5" }
 	};
 	struct bsddialog_menugroup group[3] = {
 	    { BSDDIALOG_CHECKLIST, 5, check },
