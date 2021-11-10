@@ -144,6 +144,7 @@
 #define YESNO		101 // yesno
 
 #define THEME		102 // theme
+#define ITEM_PREFIX	103 // menu item prefix
 
 void usage(void);
 /* widgets */
@@ -179,41 +180,6 @@ int timebox_builder(BUILDER_ARGS);
 int treeview_builder(BUILDER_ARGS);
 int yesno_builder(BUILDER_ARGS);
 
-int get_menu_items(int argc, char **argv, bool setname, bool setdesc,
-    bool setstatus, bool setdepth, bool sethelp, int *nitems,
-    struct bsddialog_menuitem *items)
-{
-	int i, sizeitem, token;
-
-	sizeitem = 0;
-	if (setname)   sizeitem++;
-	if (setdesc)   sizeitem++;
-	if (setstatus) sizeitem++;
-	if (setdepth)  sizeitem++;
-	if (sethelp)   sizeitem++;
-	if ((argc % sizeitem) != 0)
-		return (-1);
-
-	*nitems = argc / sizeitem;
-	for (i=0; i<*nitems; i++) {
-		token = 0;
-		if (setname) { items[i].name = argv[sizeitem*i]; token++; }
-		if (setdesc) { items[i].desc = argv[sizeitem*i+token]; token++; }
-		if (setstatus) {
-			items[i].on = strcmp(argv[sizeitem * i + token], "on") == 0 ?
-			    true : false;
-			token++;
-		}
-		if (setdepth) {
-			items[i].depth = atoi(argv[sizeitem *i + token]);
-			token++;
-		}
-		if (sethelp) items[i].bottomdesc = argv[sizeitem *i + token];
-	}
-
-	return 0;
-}
-
 void usage(void)
 {
 
@@ -222,12 +188,15 @@ void usage(void)
 	       "[widget-opts]\n");
 }
 
+bool itemprefix, itembottomdesc;
+char *nstr ="";
+
 int main(int argc, char *argv[argc])
 {
 	char text[1024], *backtitle = NULL, *theme = NULL;
 	int input, rows, cols, output;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
-	bool ignore = false;
+	bool ignore/*, itemprefix, itembottomdesc*/;
 	struct winsize ws;
 	struct bsddialog_conf conf;
 
@@ -235,6 +204,8 @@ int main(int argc, char *argv[argc])
 	conf.y = conf.x = BSDDIALOG_CENTER;
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;
+
+	ignore = itemprefix = itembottomdesc = false;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -419,7 +390,10 @@ int main(int argc, char *argv[argc])
 			ignore = true;
 			break;
 		case ITEM_HELP:
-			conf.item_help = true;
+			itembottomdesc = true;
+			break;
+		case ITEM_PREFIX:
+			itemprefix = true;
 			break;
 		case NOCANCEL:
 		case NO_CANCEL:
@@ -656,28 +630,6 @@ int main(int argc, char *argv[argc])
 	return output;
 }
 
-int buildlist_builder(BUILDER_ARGS)
-{
-	int output, menurows, nitems;
-	struct bsddialog_menuitem items[100];
-
-	if (argc < 1) {
-		usage();
-		return (-1);
-	}
-
-	menurows = atoi(argv[0]);
-
-	output = get_menu_items(argc-1, argv+1, true, true, true, false,
-	    conf.item_help, &nitems, items);
-	if (output != 0)
-		return output;
-
-	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems, items);
-
-	return output;
-}
-
 int calendar_builder(BUILDER_ARGS)
 {
 	int output;
@@ -709,28 +661,6 @@ int calendar_builder(BUILDER_ARGS)
 	output = bsddialog_calendar(conf, text, rows, cols, yy, mm, dd);
 
 	return (output);
-}
-
-int checklist_builder(BUILDER_ARGS)
-{
-	int output, menurows, nitems;
-	struct bsddialog_menuitem items[100];
-
-	if (argc < 1) {
-		usage();
-		return (-1);
-	}
-
-	menurows = atoi(argv[0]);
-
-	output = get_menu_items(argc-1, argv+1, true, true, true, false,
-	    conf.item_help, &nitems, items);
-	if (output != 0)
-		return output;
-
-	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems, items);
-
-	return output;
 }
 
 int dselect_builder(BUILDER_ARGS)
@@ -811,28 +741,6 @@ int inputbox_builder(BUILDER_ARGS)
 int inputmenu_builder(BUILDER_ARGS)
 {
 	return 0;
-}
-
-int menu_builder(BUILDER_ARGS)
-{
-	int output, menurows, nitems;
-	struct bsddialog_menuitem items[100];
-
-	if (argc < 1) {
-		usage();
-		return (-1);
-	}
-
-	menurows = atoi(argv[0]);
-
-	output = get_menu_items(argc-1, argv+1, true, true, false, false,
-	    conf.item_help, &nitems, items);
-	if (output != 0)
-		return output;
-
-	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems, items);
-
-	return output;
 }
 
 int mixedform_builder(BUILDER_ARGS)
@@ -954,28 +862,6 @@ int progressbox_builder(BUILDER_ARGS)
 	return output;
 }
 
-int radiolist_builder(BUILDER_ARGS)
-{
-	int output, menurows, nitems;
-	struct bsddialog_menuitem items[100];
-
-	if (argc < 1) {
-		usage();
-		return (-1);
-	}
-
-	menurows = atoi(argv[0]);
-
-	output = get_menu_items(argc-1, argv+1, true, true, true, false,
-	    conf.item_help, &nitems, items);
-	if (output != 0)
-		return output;
-
-	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems, items);
-
-	return output;
-}
-
 int rangebox_builder(BUILDER_ARGS)
 {
 	int output /* always BSDDIALOG_YESOK */, min, max, def;
@@ -1054,6 +940,155 @@ int timebox_builder(BUILDER_ARGS)
 	return (output);
 }
 
+int yesno_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_yesno(conf, text, rows, cols);
+
+	return output;
+}
+
+/* MENU */
+static int
+get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
+    bool setname, bool setdesc, bool setstatus, bool sethelp, int *nitems,
+    struct bsddialog_menuitem *items)
+{
+	int i, j, sizeitem;
+
+	sizeitem = 0;
+	if (setprefix) sizeitem++;
+	if (setdepth)  sizeitem++;
+	if (setname)   sizeitem++;
+	if (setdesc)   sizeitem++;
+	if (setstatus) sizeitem++;
+	if (sethelp)   sizeitem++;
+	if ((argc % sizeitem) != 0)
+		return (-1);
+
+	*nitems = argc / sizeitem;
+	j = 0;
+	for (i=0; i<*nitems; i++) {
+		items[i].prefix = setprefix ? argv[j++] : nstr;
+		items[i].depth = setdepth ? atoi(argv[j++]) : 0;
+		items[i].name = setname ? argv[j++] : nstr;
+		items[i].desc = setdesc ? argv[j++] : nstr;
+		items[i].on = setstatus ? (strcmp(argv[j++], "on") == 0 ? true : false) : false;
+		items[i].bottomdesc = sethelp ? argv[j++] : nstr;
+	}
+
+	return 0;
+}
+
+int buildlist_builder(BUILDER_ARGS)
+{
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
+
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+   
+	output = get_menu_items(argc-1, argv+1, itemprefix,
+		false /* depth */,
+		true  /* name */,
+		true  /* desc */,
+		true  /* status */,
+		itembottomdesc,
+		&nitems, items);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems, items);
+
+	return output;
+}
+
+int checklist_builder(BUILDER_ARGS)
+{
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
+
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = get_menu_items(argc-1, argv+1, itemprefix,
+		false /* depth */,
+		true  /* name */,
+		true  /* desc */,
+		true  /* status */,
+		itembottomdesc,
+		&nitems, items);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems, items);
+
+	return output;
+}
+
+int menu_builder(BUILDER_ARGS)
+{
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
+
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = get_menu_items(argc-1, argv+1, itemprefix,
+		false /* depth */,
+		true  /* name */,
+		true  /* desc */,
+		false /* status */,
+		itembottomdesc,
+		&nitems, items);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems, items);
+
+	return output;
+}
+
+int radiolist_builder(BUILDER_ARGS)
+{
+	int output, menurows, nitems;
+	struct bsddialog_menuitem items[100];
+
+	if (argc < 1) {
+		usage();
+		return (-1);
+	}
+
+	menurows = atoi(argv[0]);
+
+	output = get_menu_items(argc-1, argv+1, itemprefix,
+		false /* depth */,
+		true  /* name */,
+		true  /* desc */,
+		true  /* status */,
+		itembottomdesc,
+		&nitems, items);
+	if (output != 0)
+		return output;
+
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems, items);
+
+	return output;
+}
+
 int treeview_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems;
@@ -1066,21 +1101,17 @@ int treeview_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, true, true, true, true,
-	    conf.item_help, &nitems, items);
+	output = get_menu_items(argc-1, argv+1, itemprefix,
+		true  /* depth */,
+		true  /* name */,
+		true  /* desc */,
+		true  /* status */,
+		itembottomdesc,
+		&nitems, items);
 	if (output != 0)
 		return output;
 
 	output = bsddialog_treeview(conf, text, rows, cols, menurows, nitems, items);
-
-	return output;
-}
-
-int yesno_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_yesno(conf, text, rows, cols);
 
 	return output;
 }

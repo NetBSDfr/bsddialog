@@ -45,7 +45,6 @@ int main()
 	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
-	conf.item_prefix = true;
 	conf.title = "mixedmenu";
 	
 	if (bsddialog_init() < 0)

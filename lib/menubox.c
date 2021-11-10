@@ -246,8 +246,9 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	}
 
 	/* prefix */
-	if (conf.item_prefix == true)
-		mvwaddstr(pad, y, 0, item.bottomdesc);
+	//if (conf.item_prefix == true)
+	if (item.prefix != NULL && item.prefix[0] != '\0')
+		mvwaddstr(pad, y, 0, item.prefix);
 
 	/* selector */
 	wmove(pad, y, pos.xselector);
@@ -275,7 +276,8 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	wattroff(pad, color);
 
 	/* bottom desc (item help) */
-	if (curr && conf.item_help == true) {
+	//if (curr && conf.item_help == true) {
+	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
 		move(LINES-2, 5);
 		clrtoeol();
 		addstr(item.bottomdesc);
@@ -382,9 +384,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				pos.maxdepth = MAX((int) pos.maxdepth, item->depth);
 			}
 
-			if (conf.item_prefix && item->bottomdesc != NULL)
-				pos.maxprefix = MAX(pos.maxprefix, strlen(item->bottomdesc));
-
+			pos.maxprefix = MAX(pos.maxprefix, strlen(item->prefix));
 			pos.maxname = MAX(pos.maxname, strlen(item->name));
 			pos.maxdesc = MAX(pos.maxdesc, strlen(item->desc));
 		}

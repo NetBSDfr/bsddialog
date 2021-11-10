@@ -45,7 +45,7 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
-	bool item_prefix; //BSDDialog extension, utility!
+	//bool item_prefix; //BSDDialog extension, utility!
 	bool ascii_lines;
 	int aspect;	// aspect ratio
 	//char *backtitle;
@@ -74,7 +74,7 @@ struct bsddialog_conf {
 	//bool ignore; utility
 	int input_fd;
 	bool insecure;
-	bool item_help; //utility!
+	//bool item_help; //utility!
 	bool keep_tite;
 	bool keep_window;
 	bool last_key;

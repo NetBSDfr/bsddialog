@@ -6,5 +6,5 @@ examples="buildlist menu treeview checklist radiolist dialog4ports theme \
 
 for e in $examples
 do
-	cc -Wall -I$libpath ${e}.c -o $e -L$libpath -lbsddialog -Wl,-rpath=$libpath
+	clang -g -Wall -I$libpath ${e}.c -o $e -L$libpath -lbsddialog -Wl,-rpath=$libpath
 done

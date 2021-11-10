@@ -29,7 +29,6 @@ int main()
 	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = -1;
 	conf.shadow = true;
-	conf.item_help = true;
 	conf.title = " Theme ";
 	
 	if (bsddialog_init() < 0)
