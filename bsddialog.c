@@ -188,7 +188,7 @@ void usage(void)
 	       "[widget-opts]\n");
 }
 
-bool itemprefix, itembottomdesc;
+bool itemprefixflag, itembottomdescflag;
 char *nstr ="";
 
 int main(int argc, char *argv[argc])
@@ -196,7 +196,7 @@ int main(int argc, char *argv[argc])
 	char text[1024], *backtitle = NULL, *theme = NULL;
 	int input, rows, cols, output;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
-	bool ignore/*, itemprefix, itembottomdesc*/;
+	bool ignoreflag;
 	struct winsize ws;
 	struct bsddialog_conf conf;
 
@@ -205,7 +205,7 @@ int main(int argc, char *argv[argc])
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;
 
-	ignore = itemprefix = itembottomdesc = false;
+	ignoreflag = itemprefixflag = itembottomdescflag = false;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -387,13 +387,13 @@ int main(int argc, char *argv[argc])
 			conf.hline = optarg;
 			break;
 		case IGNORE:
-			ignore = true;
+			ignoreflag = true;
 			break;
 		case ITEM_HELP:
-			itembottomdesc = true;
+			itembottomdescflag = true;
 			break;
 		case ITEM_PREFIX:
-			itemprefix = true;
+			itemprefixflag = true;
 			break;
 		case NOCANCEL:
 		case NO_CANCEL:
@@ -562,7 +562,7 @@ int main(int argc, char *argv[argc])
 			break;
 		/* Error */
 		default:
-			if (ignore == false) {
+			if (ignoreflag == false) {
 				usage();
 				return 1;
 			}
@@ -993,13 +993,8 @@ int buildlist_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
    
-	output = get_menu_items(argc-1, argv+1, itemprefix,
-		false /* depth */,
-		true  /* name */,
-		true  /* desc */,
-		true  /* status */,
-		itembottomdesc,
-		&nitems, items);
+	output = get_menu_items(argc-1, argv+1, itemprefixflag, false, true,
+	    true, true, itembottomdescflag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1020,13 +1015,8 @@ int checklist_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, itemprefix,
-		false /* depth */,
-		true  /* name */,
-		true  /* desc */,
-		true  /* status */,
-		itembottomdesc,
-		&nitems, items);
+	output = get_menu_items(argc-1, argv+1, itemprefixflag, false, true,
+	    true, true, itembottomdescflag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1047,13 +1037,8 @@ int menu_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, itemprefix,
-		false /* depth */,
-		true  /* name */,
-		true  /* desc */,
-		false /* status */,
-		itembottomdesc,
-		&nitems, items);
+	output = get_menu_items(argc-1, argv+1, itemprefixflag, false, true,
+	    true, false, itembottomdescflag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1074,13 +1059,8 @@ int radiolist_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, itemprefix,
-		false /* depth */,
-		true  /* name */,
-		true  /* desc */,
-		true  /* status */,
-		itembottomdesc,
-		&nitems, items);
+	output = get_menu_items(argc-1, argv+1, itemprefixflag, false, true,
+	    true, true, itembottomdescflag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1101,13 +1081,8 @@ int treeview_builder(BUILDER_ARGS)
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, itemprefix,
-		true  /* depth */,
-		true  /* name */,
-		true  /* desc */,
-		true  /* status */,
-		itembottomdesc,
-		&nitems, items);
+	output = get_menu_items(argc-1, argv+1, itemprefixflag, true, true,
+	    true, true, itembottomdescflag, &nitems, items);
 	if (output != 0)
 		return output;
 
