@@ -964,8 +964,10 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 	if (setdesc)   sizeitem++;
 	if (setstatus) sizeitem++;
 	if (sethelp)   sizeitem++;
-	if ((argc % sizeitem) != 0)
-		return (-1);
+	if ((argc % sizeitem) != 0) {
+		printf("Error: Menu/Checklist/Treeview/Radiolist bad #args\n"d);
+		return (BSDDIALOG_ERROR);
+	}
 
 	*nitems = argc / sizeitem;
 	j = 0;
@@ -974,7 +976,10 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 		items[i].depth = setdepth ? atoi(argv[j++]) : 0;
 		items[i].name = setname ? argv[j++] : nstr;
 		items[i].desc = setdesc ? argv[j++] : nstr;
-		items[i].on = setstatus ? (strcmp(argv[j++], "on") == 0 ? true : false) : false;
+		if (setstatus)
+			items[i].on = strcmp(argv[j++], "on") == 0 ? true : false;
+		else
+			items[i].on = false;
 		items[i].bottomdesc = sethelp ? argv[j++] : nstr;
 	}
 
