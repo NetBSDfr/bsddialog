@@ -66,6 +66,24 @@ Examples library:
 % ./treeview
 ```
 
+ - Common Options:
+ 
+--ascii-lines, --backtitle *backtitle*, --begin *y x* (add --starty --startx?),
+--cancel-label *string*, -clear (test with multiple widgets), --colors,
+--date-format *format*, --defaultno, --default-item *string*, 
+--exit-label *string*, --extra-button, --extra-label *string*, --help-button,
+--help-label *string*, --help-status, --hline *string*, --no-cancel, --nocancel,
+--no-label *string*, --no-lines, --no-ok, --nook, --no-shadow, 
+--ok-label *string*, --print-version, --shadow, --sleep *secs*,
+--theme *string* ("default", "dialog" and "magenta"), --time-format *format*,
+--title *title*, --version, --yes-label *string*.
+
+ - Widgets:
+ 
+ infobox (Do not clear the screen), msgbox,
+ yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
+
+
 **TODO**
 
  * fix: % bsddialog --hline "bottom line" title "test title" --infobox test 8 40
@@ -75,30 +93,14 @@ Examples library:
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
-| --ascii-lines                | Completed   |                                 |
 | --aspect *ratio*             |             |                                 |
-| --backtitle *backtitle*      | Completed   |                                 |
-| --begin *y x*                | Completed   | add --starty --startx?          |
-| --cancel-label *string*      | Completed   |                                 |
-| --clear                      | Completed   | test with multiple widgets      |
-| --colors                     | Completed   |                                 |
 | --column-separator *string*  |             |                                 |
 | --cr-wrap                    | Coding      |                                 |
 | --create-rc *file*           |             |                                 |
-| --date-format *format*       | Completed   |                                 |
-| --defaultno                  | Completed   |                                 |
 | --default-button *string*    |             |                                 |
-| --default-item *string*      | Completed   |                                 |
-| --exit-label *string*        | Completed   |                                 |
-| --extra-button               | Completed   |                                 |
-| --extra-label *string*       | Completed   |                                 |
 | --help                       | In progress |                                 |
-| --help-button                | Completed   |                                 |
-| --help-label *string*        | Completed   |                                 |
-| --help-status                | Completed   |                                 |
-| --help-tags                  |             | example?                        |
+| --help-tags                  |             |                                 |
 | --hfile *filename*           | In progress | implemented via textbox         |
-| --hline *string*             | Completed   |                                 |
 | --ignore                     | In progress | todo --ignore -error            |
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
@@ -108,20 +110,12 @@ Examples library:
 | --keep-window                |             |                                 |
 | --last-key                   |             |                                 |
 | --max-input *size*           |             |                                 |
-| --no-cancel                  | Completed   |                                 |
-| --nocancel                   | Completed   |                                 |
 | --no-collapse                | Coding      |                                 |
 | --no-items                   |             | useful?                         |
 | --no-kill                    |             |                                 |
-| --no-label *string*          | Completed   |                                 |
-| --no-lines                   | Completed   |                                 |
 | --no-mouse                   |             |                                 |
 | --no-nl-expand               | Coding      |                                 |
-| --no-ok                      | Completed   |                                 |
-| --nook                       | Completed   |                                 |
-| --no-shadow                  | Completed   |                                 |
 | --no-tags                    |             | useful?                         |
-| --ok-label *string*          | Completed   |                                 |
 | --output-fd *fd*             | In progress |                                 |
 | --separator *string*         |             |                                 |
 | --output-separator *string*  |             |                                 |
@@ -129,30 +123,23 @@ Examples library:
 | --print-size                 | In progress |                                 |
 | --print-text-only *str h w*  |             | useful?                         |
 | --print-text-size *str h w*  |             | useful?                         |
-| --print-version              | Completed   |                                 |
 | --quoted                     | Coding      | bsddialog (all tags) != dialog  |
 | --reorder                    |             |                                 |
 | --scrollbar                  |             |                                 |
 | --separate-output            | In progress | for buildlist, checklist and treeview, rename --separate-out-nl?  |
 | --separate-widget *string*   |             |                                 |
-| --shadow                     | Completed   | useful?                         |
 | --single-quoted              | Coding      | add --quote-string *string*?    |
 | --size-err                   |             |                                 |
-| --sleep *secs*               | Completed   |                                 |
 | --stderr                     | In progress |                                 |
 | --stdout                     | In progress |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
-| --theme *string*             | Completed   | themes: "default", "dialog" and "magenta" |
-| --time-format *format*       | Completed   |                                 |
 | --timeout *secs*             |             |                                 |
-| --title *title*              | Completed   |                                 |
 | --trace *filename*           |             |                                 |
 | --week-start *day*           |             |                                 |
 | --trim                       | Coding      |                                 |
-| --version                    | Completed   |                                 |
 | --visit-items                |             |                                 |
-| --yes-label *string*         | Completed   |                                 |
+
 
 
  - Widgets:
@@ -167,14 +154,12 @@ Examples library:
 | --form         | In progress | implemented via --mixedform                   |
 | --fselect      |             |                                               |
 | --gauge        | In progress |                                               |
-| --infobox      | Completed   | Do not clear the screen                       |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --inputmenu    |             |                                               |
 | --menu         | In progress | todo autosize, resize, F1, todo scrolling     |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
 | --mixedgauge   | In progress | todo autosize, resize, F1                     |
 | --mixedlist    | In progress | Can implement dialog4ports(1)                 |
-| --msgbox       | Completed   |                                               |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |
 | --pause        | In progress | todo autosize, resize, F1                     |
@@ -188,5 +173,4 @@ Examples library:
 | --textbox      | In progress | todo navigation keys                          |
 | --timebox      | In progress | todo autosize, resize, F1                     |
 | --treeview     | In progress | todo autosize, resize, F1                     |
-| --yesno        | Completed   | dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button |
 
