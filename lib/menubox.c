@@ -335,20 +335,6 @@ print_selected_list(struct bsddialog_conf conf, int output, enum menumode mode,
 	}
 }
 
-/*int minrows(char *text, bool internalpad, bool buttons)
-{
-	int min;
-
-	min = 0;
-
-	min = 2; // borders
-	min = min + (strlen(text) > 0 ? 1 :0);
-	min = min + (internalpad ? 3 : 0);
-	min = min + (buttons ? 2 : 0);
-
-	return min;
-}*/
-
 static int
 do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, char *namewidget, enum menumode mode, int ngroups,
