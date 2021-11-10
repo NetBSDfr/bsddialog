@@ -72,11 +72,11 @@ Examples library:
 --cancel-label *string*, -clear (test with multiple widgets), --colors,
 --date-format *format*, --defaultno, --default-item *string*, 
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
---help-label *string*, --help-status, --hline *string*, --no-cancel, --nocancel,
---no-label *string*, --no-lines, --no-ok, --nook, --no-shadow, 
---ok-label *string*, --print-version, --shadow, --sleep *secs*,
---theme *string* ("default", "dialog" and "magenta"), --time-format *format*,
---title *title*, --version, --yes-label *string*.
+--help-label *string*, --help-status, --help-tags, --hline *string*,
+--item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
+--nook, --no-shadow, --ok-label *string*, --print-version, --shadow,
+--sleep *secs*, --theme *string* ("default", "dialog" and "magenta"),
+--time-format *format*, --title *title*, --version, --yes-label *string*.
 
  - Widgets:
  
@@ -99,13 +99,11 @@ Examples library:
 | --create-rc *file*           |             |                                 |
 | --default-button *string*    |             |                                 |
 | --help                       | In progress |                                 |
-| --help-tags                  |             |                                 |
 | --hfile *filename*           | In progress | implemented via textbox         |
 | --ignore                     | In progress | todo --ignore -error            |
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
 | --iso-week                   |             |                                 |
-| --item-help                  | Coding      |                                 |
 | --keep-tite                  |             |                                 |
 | --keep-window                |             |                                 |
 | --last-key                   |             |                                 |

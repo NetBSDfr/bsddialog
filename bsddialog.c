@@ -233,7 +233,7 @@ int main(int argc, char *argv[argc])
 	    { "help-button", no_argument, NULL, HELP_BUTTON },
 	    { "help-label", required_argument, NULL /*string*/, HELP_LABEL },
 	    { "help-status", no_argument, NULL, HELP_STATUS },
-	    { "help-tags", no_argument, NULL, 'X' },
+	    { "help-tags", no_argument, NULL, HELP_TAGS },
 	    { "hfile", required_argument, NULL /*filename*/, HFILE },
 	    { "hline", required_argument, NULL /*string*/, HLINE },
 	    { "ignore", no_argument, NULL, IGNORE },
@@ -381,6 +381,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case HELP_STATUS:
 			conf.help_status = true;
+			break;
+		case HELP_TAGS:
+			conf.help_tags = true;
 			break;
 		case HFILE:
 			conf.hfile = optarg;
@@ -998,8 +1001,16 @@ print_selected_items(struct bsddialog_conf conf, int output, int nitems,
 
 	sep = false;
 
-	if (output == BSDDIALOG_HELP) {
-		dprintf(conf.output_fd, "HELP");
+	if (output == BSDDIALOG_HELP && focusitem >= 0) {
+		dprintf(conf.output_fd, "HELP ");
+		if (itembottomdescflag && conf.help_tags == false)
+			dprintf(conf.output_fd, "%s", items[focusitem].bottomdesc);
+		else
+			dprintf(conf.output_fd, "%s", items[focusitem].name);
+		
+		if (conf.help_status == false)
+			return;
+			
 		sep = true;
 	}
 
