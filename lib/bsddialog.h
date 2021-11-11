@@ -95,7 +95,7 @@ struct bsddialog_conf {
 	char *ok_label;
 	int output_fd;
 	char *separator;
-	char *output_separator;
+	//char *output_separator; utility
 	bool print_maxsize; // useful?
 	bool print_size; // useful?
 	//bool print_version; utility

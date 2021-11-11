@@ -188,8 +188,9 @@ void usage(void)
 	       "[widget-opts]\n");
 }
 
-bool itemprefixflag, itembottomdescflag, separateoutputflag, singlequotedflag;
+bool itemprefixflag, itembottomdescflag, separateoutputnlflag, singlequotedflag;
 bool liststatusflag, itemtageforhelpflag, itemquoteflag;
+char *itemstrseparator;
 char *nstr ="";
 
 int main(int argc, char *argv[argc])
@@ -207,10 +208,11 @@ int main(int argc, char *argv[argc])
 	conf.output_fd = STDERR_FILENO;
 
 	ignoreflag = false;
-	separateoutputflag = singlequotedflag = false;
+	separateoutputnlflag = singlequotedflag = false;
 	itemprefixflag = itembottomdescflag = false;
 	liststatusflag = itemtageforhelpflag = false;
 	itemquoteflag = false;
+	itemstrseparator = NULL;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -263,7 +265,7 @@ int main(int argc, char *argv[argc])
 	    { "ok-label", required_argument, NULL /*string*/, OK_LABEL },
 	    { "output-fd", required_argument, NULL /*fd*/, OUTPUT_FD },
 	    { "separator", required_argument, NULL /*string*/, 'X' },
-	    { "output-separator", required_argument, NULL /*string*/, 'X' },
+	    { "output-separator", required_argument, NULL /*string*/, OUTPUT_SEPARATOR },
 	    { "print-maxsize", no_argument, NULL, PRINT_MAXSIZE },
 	    { "print-size", no_argument, NULL, PRINT_SIZE },
 	    { "print-version", no_argument, NULL, PRINT_VERSION },
@@ -432,6 +434,9 @@ int main(int argc, char *argv[argc])
 		case OUTPUT_FD:
 			conf.output_fd = atoi(optarg);
 			break;
+		case OUTPUT_SEPARATOR:
+			itemstrseparator = optarg;
+			break;
 		case QUOTED:
 			itemquoteflag = true;
 			break;
@@ -445,7 +450,7 @@ int main(int argc, char *argv[argc])
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			break;
 		case SEPARATE_OUTPUT:
-			separateoutputflag = true;
+			separateoutputnlflag = true;
 			break;
 		case SHADOW:
 			conf.shadow = true;
@@ -1004,7 +1009,7 @@ print_selected_items(struct bsddialog_conf conf, int output, int nitems,
 
 	sep = false;
 	quotech = singlequotedflag ? '\'' : '"';
-	sepstr = separateoutputflag ? "\n" : " ";
+	sepstr = itemstrseparator != NULL ? itemstrseparator : " ";
 
 	if (output == BSDDIALOG_HELP && focusitem >= 0) {
 		dprintf(conf.output_fd, "HELP ");
@@ -1034,8 +1039,11 @@ print_selected_items(struct bsddialog_conf conf, int output, int nitems,
 		if (items[i].on == false)
 			continue;
 
-		if (sep == true)
+		if (sep == true) {
 			dprintf(conf.output_fd, "%s", sepstr);
+			if (separateoutputnlflag)
+				dprintf(conf.output_fd, "\n");
+		}
 		sep = true;
 
 		toquote = itemquoteflag || strchr(items[i].name, ' ') != NULL;
