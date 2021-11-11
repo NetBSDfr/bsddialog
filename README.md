@@ -75,8 +75,9 @@ Examples library:
 --help-label *string*, --help-status, --help-tags, --hline *string*,
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
 --nook, --no-shadow, --ok-label *string*, --output-separator *string*,
---print-version, --quoted (quotes all != dialog), --shadow,
---single-quoted (add --quote-with *ch*?),
+--print-version, --print-size (todo move lib -> utility),
+--quoted (quotes all != dialog), --shadow,
+--single-quoted (add --quote-with *ch*?), 
 --separator *string* (alias --output-separator *string*),
 --separate-output (rename --separate-output-withnl?), --sleep *secs*, --stderr,
 --stdout, --theme *string* ("default", "dialog" and "magenta"),
@@ -120,7 +121,6 @@ Examples library:
 | --no-tags                    |             | useful?                         |
 | --output-fd *fd*             | In progress |                                 |
 | --print-maxsize              | In progress |                                 |
-| --print-size                 | In progress |                                 |
 | --print-text-only *str h w*  |             | useful?                         |
 | --print-text-size *str h w*  |             | useful?                         |
 | --reorder                    |             |                                 |
