@@ -40,111 +40,113 @@
 #define BSDDIALOG_VERSION "0.1 devel"
 
 /* Common options */
-#define ASCII_LINES	1 // ascii-lines
-#define ASPECT		2 // aspect
-#define BACKTITLE	3 // backtitle
-#define BEGIN		4 // begin
-#define CANCEL_LABEL	5 // cancel-label
-#define CLEAR		6 // clear
-#define COLORS		7 // colors
-#define COLUMN_SEPARATOR 8 // column-separator
-#define CR_WRAP		9 // cr-wrap
-#define CREATE_RC	10 // create-rc
-#define DATE_FORMAT	11 // date-format
-#define DEFAULTNO	12 // defaultno
-#define DEFAULT_BUTTON	13 // default-button
-#define DEFAULT_ITEM	14 // default-item
-#define EXIT_LABEL	15 // exit-label
-#define EXTRA_BUTTON	16 // extra-button
-#define EXTRA_LABEL	17 // extra-label
-#define HELP		18 // help
-#define HELP_BUTTON	19 // help-button
-#define HELP_LABEL	20 // help-label
-#define HELP_STATUS	21 // help-status
-#define HELP_TAGS	22 // help-tags
-#define HFILE		23 // hfile
-#define HLINE		24 // hline
-#define IGNORE		25 // ignore
-#define INPUT_FD	26 // input-fd
-#define INSECURE	27 // insecure
-#define ITEM_HELP	28 // item-help
-#define KEEP_TITE	29 // keep-tite
-#define KEEP_WINDOW	30 // keep-window
-#define LAST_KEY	31 // last-key
-#define MAX_INPUT	32 // max-input
-#define NO_CANCEL	33 // no-cancel
-#define NOCANCEL	34 // nocancel
-#define NO_COLLAPSE	35 // no-collapse
-#define NO_ITEMS	36 // no-items
-#define NO_KILL		37 // no-kill
-#define NO_LABEL	38 // no-label
-#define NO_LINES	39 // no-lines
-#define NO_MOUSE	40 // no-mouse
-#define NO_NL_EXPAND	41 // no-nl-expand
-#define NO_OK		42 // no-ok
-#define NOOK		43 // nook 
-#define NO_SHADOW	44 // no-shadow
-#define NO_TAGS		45 // no-tags
-#define OK_LABEL	46 // ok-label
-#define OUTPUT_FD	47 // output-fd
-#define SEPARATOR	48 // separator
-#define OUTPUT_SEPARATOR 49 // output-separator
-#define PRINT_MAXSIZE	50 // print-maxsize
-#define PRINT_SIZE	51 // print-size
-#define PRINT_VERSION	52 // print-version
-#define QUOTED		53 // quoted
-#define SCROLLBAR	54 // scrollbar
-#define SEPARATE_OUTPUT	55 // separate-output
-#define SEPARATE_WIDGET	56 // separate-widget
-#define SHADOW		57 // shadow
-#define SINGLE_QUOTED	58 // single-quoted
-#define SIZE_ERR	59 // size-err
-#define SLEEP		60 // sleep
-#define STDERR		61 // stderr
-#define STDOUT		62 // stdout
-#define TAB_CORRECT	63 // tab-correct
-#define TAB_LEN		64 // tab-len
-#define TIME_FORMAT	65 // time-format
-#define TIMEOUT		66 // timeout
-#define TITLE		67 // title
-#define TRACE		68 // trace
-#define TRIM		69 // trim
-#define VERSION		70 // version
-#define VISIT_ITEMS	71 // visit-items
-#define YES_LABEL	72 // yes-label
-/* Widgets */
-#define BUILDLIST	73 // buildlist
-#define CALENDAR	74 // calendar
-#define CHECKLIST	75 // checklist
-#define DSELECT		76 // dselect
-#define EDITBOX		77 // editbox
-#define FORM		78 // form
-#define FSELECT		79 // fselect
-#define GAUGE		80 // gauge
-#define INFOBOX		81 // infobox
-#define INPUTBOX	82 // inputbox
-#define INPUTMENU	83 // inputmenu
-#define MENU		84 // menu
-#define MIXEDFORM	85 // mixedform
-#define MIXEDGAUGE	86 // mixedgauge
-#define MSGBOX		87 // msgbox
-#define PASSWORDBOX	88 // passwordbox
-#define PASSWORDFORM	89 // passwordform
-#define PAUSE		90 // pause
-#define PRGBOX		91 // prgbox
-#define PROGRAMBOX	92 // programbox
-#define PROGRESSBOX	93 // progressbox
-#define RADIOLIST	94 // radiolist
-#define RANGEBOX	95 // rangebox
-#define TAILBOX		96 // tailbox
-#define TAILBOXBG	97 // tailboxbg
-#define TEXTBOX		98 // textbox
-#define TIMEBOX		99 // timebox
-#define TREEVIEW	100 // treeview
-#define YESNO		101 // yesno
-
-#define THEME		102 // theme
-#define ITEM_PREFIX	103 // menu item prefix
+enum OPTS {
+	ASCII_LINES,
+	ASPECT,
+	BACKTITLE,
+	BEGIN,
+	CANCEL_LABEL,
+	CLEAR,
+	COLORS,
+	COLUMN_SEPARATOR,
+	CR_WRAP,
+	CREATE_RC,
+	DATE_FORMAT,
+	DEFAULTNO,
+	DEFAULT_BUTTON,
+	DEFAULT_ITEM,
+	EXIT_LABEL,
+	EXTRA_BUTTON,
+	EXTRA_LABEL,
+	HELP,
+	HELP_BUTTON,
+	HELP_LABEL,
+	HELP_STATUS,
+	HELP_TAGS,
+	HFILE,	
+	HLINE,
+	IGNORE,
+	INPUT_FD,
+	INSECURE,
+	ITEM_HELP,
+	KEEP_TITE,
+	KEEP_WINDOW,
+	LAST_KEY,
+	MAX_INPUT,
+	NO_CANCEL,
+	NOCANCEL,
+	NO_COLLAPSE,
+	NO_ITEMS,
+	NO_KILL,
+	NO_LABEL,
+	NO_LINES,
+	NO_MOUSE,
+	NO_NL_EXPAND,
+	NO_OK,
+	NOOK,
+	NO_SHADOW,
+	NO_TAGS,
+	OK_LABEL,
+	OUTPUT_FD,
+	OUTPUT_SEPARATOR,
+	PRINT_MAXSIZE,
+	PRINT_SIZE,
+	PRINT_VERSION,
+	QUOTED,
+	SCROLLBAR,
+	SEPARATE_OUTPUT,
+	SEPARATE_WIDGET,
+	SEPARATOR,
+	SHADOW,
+	SINGLE_QUOTED,
+	SIZE_ERR,
+	SLEEP,
+	STDERR,
+	STDOUT,
+	TAB_CORRECT,
+	TAB_LEN,
+	TIME_FORMAT,
+	TIMEOUT,
+	TITLE,
+	TRACE,
+	TRIM,
+	VERSION,
+	VISIT_ITEMS,
+	YES_LABEL,
+	/* Widgets */
+	BUILDLIST,
+	CALENDAR,
+	CHECKLIST,
+	DSELECT,
+	EDITBOX,
+	FORM,
+	FSELECT,
+	GAUGE,
+	INFOBOX,
+	INPUTBOX,
+	INPUTMENU,
+	MENU,
+	MIXEDFORM,
+	MIXEDGAUGE,
+	MSGBOX,
+	PASSWORDBOX,
+	PASSWORDFORM,
+	PAUSE,
+	PRGBOX,
+	PROGRAMBOX,
+	PROGRESSBOX,
+	RADIOLIST,
+	RANGEBOX,
+	TAILBOX,
+	TAILBOXBG,
+	TEXTBOX,
+	TIMEBOX,
+	TREEVIEW,
+	YESNO,
+	/* bsddialog extensions */
+	THEME,
+	ITEM_PREFIX
+};
 
 void usage(void);
 /* widgets */
