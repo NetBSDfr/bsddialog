@@ -77,6 +77,7 @@ Examples library:
 --nook, --no-shadow, --ok-label *string*, --output-separator *string*,
 --print-version, --quoted (quotes all != dialog), --shadow,
 --single-quoted (add --quote-with *ch*?),
+--separator *string* (alias --output-separator *string*),
 --separate-output (rename --separate-output-withnl?), --sleep *secs*, --stderr,
 --stdout, --theme *string* ("default", "dialog" and "magenta"),
 --time-format *format*, --title *title*, --version, --yes-label *string*.
@@ -118,7 +119,6 @@ Examples library:
 | --no-nl-expand               | Coding      |                                 |
 | --no-tags                    |             | useful?                         |
 | --output-fd *fd*             | In progress |                                 |
-| --separator *string*         |             |                                 |
 | --print-maxsize              | In progress |                                 |
 | --print-size                 | In progress |                                 |
 | --print-text-only *str h w*  |             | useful?                         |

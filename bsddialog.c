@@ -264,7 +264,7 @@ int main(int argc, char *argv[argc])
 	    { "no-tags", no_argument, NULL, 'X' },
 	    { "ok-label", required_argument, NULL /*string*/, OK_LABEL },
 	    { "output-fd", required_argument, NULL /*fd*/, OUTPUT_FD },
-	    { "separator", required_argument, NULL /*string*/, 'X' },
+	    { "separator", required_argument, NULL /*string*/, SEPARATOR },
 	    { "output-separator", required_argument, NULL /*string*/, OUTPUT_SEPARATOR },
 	    { "print-maxsize", no_argument, NULL, PRINT_MAXSIZE },
 	    { "print-size", no_argument, NULL, PRINT_SIZE },
@@ -434,6 +434,7 @@ int main(int argc, char *argv[argc])
 		case OUTPUT_FD:
 			conf.output_fd = atoi(optarg);
 			break;
+		case SEPARATOR:
 		case OUTPUT_SEPARATOR:
 			itemstrseparator = optarg;
 			break;
