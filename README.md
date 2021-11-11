@@ -125,7 +125,7 @@ Examples library:
 | --quoted                     | Coding      | bsddialog (all tags) != dialog  |
 | --reorder                    |             |                                 |
 | --scrollbar                  |             |                                 |
-| --separate-output            | In progress | for buildlist, checklist and treeview, rename --separate-out-nl?  |
+| --separate-output            | In progress | rename --separate-output-withnl?|
 | --separate-widget *string*   |             |                                 |
 | --single-quoted              | Coding      | add --quote-string *string*?    |
 | --size-err                   |             |                                 |
