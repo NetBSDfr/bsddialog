@@ -67,8 +67,8 @@ struct bsddialog_conf {
 	bool help;	//useful?
 	bool help_button;
 	char *help_label;
-	bool help_status;
-	bool help_tags;
+	//bool help_status; utility
+	//bool help_tags; utility
 	char *hfile;
 	char *hline;
 	//bool ignore; utility
@@ -99,7 +99,7 @@ struct bsddialog_conf {
 	bool print_maxsize; // useful?
 	bool print_size; // useful?
 	//bool print_version; utility
-	bool quoted;
+	//bool quoted; utility
 	bool scrollbar;
 	//bool separate_output; utility
 	char *separate_witget;

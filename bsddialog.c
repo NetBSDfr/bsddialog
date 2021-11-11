@@ -189,6 +189,7 @@ void usage(void)
 }
 
 bool itemprefixflag, itembottomdescflag, separateoutputflag, singlequotedflag;
+bool liststatusflag, itemtageforhelpflag, itemquoteflag;
 char *nstr ="";
 
 int main(int argc, char *argv[argc])
@@ -208,6 +209,8 @@ int main(int argc, char *argv[argc])
 	ignoreflag = false;
 	separateoutputflag = singlequotedflag = false;
 	itemprefixflag = itembottomdescflag = false;
+	liststatusflag = itemtageforhelpflag = false;
+	itemquoteflag = false;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -380,10 +383,10 @@ int main(int argc, char *argv[argc])
 			conf.help_label = optarg;
 			break;
 		case HELP_STATUS:
-			conf.help_status = true;
+			liststatusflag = true;
 			break;
 		case HELP_TAGS:
-			conf.help_tags = true;
+			itemtageforhelpflag = true;
 			break;
 		case HFILE:
 			conf.hfile = optarg;
@@ -430,7 +433,7 @@ int main(int argc, char *argv[argc])
 			conf.output_fd = atoi(optarg);
 			break;
 		case QUOTED:
-			conf.quoted = true;
+			itemquoteflag = true;
 			break;
 		case PRINT_MAXSIZE:
 			conf.print_maxsize = true;
@@ -996,41 +999,52 @@ print_selected_items(struct bsddialog_conf conf, int output, int nitems,
     struct bsddialog_menuitem *items, int focusitem)
 {
 	int i;
-	bool sep;
-	char *sepstr, quotech;
+	bool sep, toquote;
+	char *sepstr, quotech, *helpvalue;
 
 	sep = false;
+	quotech = singlequotedflag ? '\'' : '"';
+	sepstr = separateoutputflag ? "\n" : " ";
 
 	if (output == BSDDIALOG_HELP && focusitem >= 0) {
 		dprintf(conf.output_fd, "HELP ");
-		if (itembottomdescflag && conf.help_tags == false)
-			dprintf(conf.output_fd, "%s", items[focusitem].bottomdesc);
-		else
-			dprintf(conf.output_fd, "%s", items[focusitem].name);
 		
-		if (conf.help_status == false)
+		helpvalue = items[focusitem].name;
+		if (itembottomdescflag && itemtageforhelpflag == false)
+			helpvalue = items[focusitem].bottomdesc;
+
+		toquote = itemquoteflag || strchr(helpvalue, ' ') != NULL;
+
+		if (toquote)
+			dprintf(conf.output_fd, "%c", quotech);
+		dprintf(conf.output_fd, "%s", helpvalue);
+		if (toquote)
+			dprintf(conf.output_fd, "%c", quotech);
+		
+		if (liststatusflag == false)
 			return;
 			
 		sep = true;
 	}
 
-	quotech = singlequotedflag ? '\'' : '"';
-	sepstr = separateoutputflag ? "\n" : " ";
-
-	if (output != BSDDIALOG_YESOK && conf.help_status == false)
+	if (output != BSDDIALOG_YESOK && liststatusflag == false)
 		return;
 
 	for (i = 0; i < nitems; i++) {
-		if (items[i].on == true) {
-			if (sep == true)
-				dprintf(conf.output_fd, "%s", sepstr);
-			sep = true;
-			if (strchr(items[i].name, ' ') != NULL)
-				dprintf(conf.output_fd, "%c", quotech);
-			dprintf(conf.output_fd, "%s",items[i].name);
-			if (strchr(items[i].name, ' ') != NULL)
-				dprintf(conf.output_fd, "%c", quotech);
-		}
+		if (items[i].on == false)
+			continue;
+
+		if (sep == true)
+			dprintf(conf.output_fd, "%s", sepstr);
+		sep = true;
+
+		toquote = itemquoteflag || strchr(items[i].name, ' ') != NULL;
+
+		if (toquote)
+			dprintf(conf.output_fd, "%c", quotech);
+		dprintf(conf.output_fd, "%s", items[i].name);
+		if (toquote)
+			dprintf(conf.output_fd, "%c", quotech);
 	}
 }
 
