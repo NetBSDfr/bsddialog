@@ -45,6 +45,7 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
+	/* conf.button.* */
 	struct {
 		char *cancel_label;
 		bool defaultno;
@@ -60,28 +61,21 @@ struct bsddialog_conf {
 		char *ok_label;
 		char *yes_label;
 	} button;
-	//bool item_prefix; //BSDDialog extension, utility!
 	bool ascii_lines;
-	int aspect;	// aspect ratio
-	//char *backtitle;
-	int x;		// BEGIN
-	int y;		// BEGIN
+	int aspect;
+	int x;
+	int y;
 	bool clear;
 	bool colors;
 	char *colums_separator;
 	bool cr_wrap;
-	char *create_rc;// useful?
+	char *create_rc; //utility
 	char *date_format;
 	char *default_item;
-	bool help;	//useful?
-	//bool help_status; utility
-	//bool help_tags; utility
 	char *hfile;
 	char *hline;
-	//bool ignore; utility
 	int input_fd;
 	bool insecure;
-	//bool item_help; //utility!
 	bool keep_tite;
 	bool keep_window;
 	bool last_key;
@@ -92,24 +86,14 @@ struct bsddialog_conf {
 	bool no_lines;
 	bool no_mouse;
 	bool no_nl_expand;
-	//bool no_shadow; utility (.shadow for lib)
 	bool no_tags;
 	int output_fd;
-	//char *separator; utility and alias *output_separator
-	//char *output_separator; utility
-	//bool print_maxsize; // utility
-	bool print_size; // useful?
-	//bool print_version; utility
-	//bool quoted; utility
+	bool print_size; //utility?
 	bool scrollbar;
-	//bool separate_output; utility
 	char *separate_witget;
 	bool shadow;
-	//bool single_quoted; utility
 	bool size_err;
 	int sleep;
-	//bool stderr_; utility, use .output_fd
-	//bool stdout_; utility, use .output_fd
 	bool tab_correct;
 	int tab_len;
 	char *time_format;
@@ -117,7 +101,6 @@ struct bsddialog_conf {
 	char *title;
 	char *trace;
 	bool trim;
-	//bool version; utility
 	bool visit_items;
 };
 
