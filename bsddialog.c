@@ -198,7 +198,7 @@ int main(int argc, char *argv[argc])
 	char text[1024], *backtitle = NULL, *theme = NULL;
 	int input, rows, cols, output;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
-	bool ignoreflag;
+	bool ignoreflag, printmaxsizeflag;
 	struct winsize ws;
 	struct bsddialog_conf conf;
 
@@ -206,6 +206,8 @@ int main(int argc, char *argv[argc])
 	conf.y = conf.x = BSDDIALOG_CENTER;
 	conf.shadow = true;
 	conf.output_fd = STDERR_FILENO;
+
+	printmaxsizeflag = false;
 
 	ignoreflag = false;
 	separateoutputnlflag = singlequotedflag = false;
@@ -442,7 +444,7 @@ int main(int argc, char *argv[argc])
 			itemquoteflag = true;
 			break;
 		case PRINT_MAXSIZE:
-			conf.print_maxsize = true;
+			printmaxsizeflag = true;
 			break;
 		case PRINT_SIZE:
 			conf.print_size = true;
@@ -585,10 +587,11 @@ int main(int argc, char *argv[argc])
 	argc -= optind;
 	argv += optind;
 
-	if (conf.print_maxsize) {
+	if (printmaxsizeflag) {
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-		dprintf(conf.output_fd, "Terminal size: %d, %d\n",
-		    ws.ws_row, ws.ws_col);
+		dprintf(conf.output_fd, "MaxSize: %d, %d\n", ws.ws_row, ws.ws_col);
+		if (argc == 0)
+			return (0);
 	}
 
 	if (argc < 3) {

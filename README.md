@@ -76,7 +76,7 @@ Examples library:
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
 --nook, --no-shadow, --ok-label *string*, --output-separator *string*,
 --print-version, --print-size (todo move lib -> utility),
---quoted (quotes all != dialog), --shadow,
+--quoted (quotes all != dialog), --print-maxsize, --shadow,
 --single-quoted (add --quote-with *ch*?), 
 --separator *string* (alias --output-separator *string*),
 --separate-output (rename --separate-output-withnl?), --sleep *secs*, --stderr,
@@ -120,7 +120,6 @@ Examples library:
 | --no-nl-expand               | Coding      |                                 |
 | --no-tags                    |             | useful?                         |
 | --output-fd *fd*             | In progress |                                 |
-| --print-maxsize              | In progress |                                 |
 | --print-text-only *str h w*  |             | useful?                         |
 | --print-text-size *str h w*  |             | useful?                         |
 | --reorder                    |             |                                 |
