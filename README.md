@@ -75,8 +75,9 @@ Examples library:
 --help-label *string*, --help-status, --help-tags, --hline *string*,
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
 --nook, --no-shadow, --ok-label *string*, --print-version, --shadow,
---sleep *secs*, --theme *string* ("default", "dialog" and "magenta"),
---time-format *format*, --title *title*, --version, --yes-label *string*.
+--sleep *secs*, --stderr, --stdout, --theme *string* ("default", "dialog" and
+"magenta"), --time-format *format*, --title *title*, --version, --yes-label
+*string*.
 
  - Widgets:
  
@@ -128,8 +129,6 @@ Examples library:
 | --separate-widget *string*   |             |                                 |
 | --single-quoted              | Coding      | add --quote-string *string*?    |
 | --size-err                   |             |                                 |
-| --stderr                     | In progress |                                 |
-| --stdout                     | In progress |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
 | --timeout *secs*             |             |                                 |
