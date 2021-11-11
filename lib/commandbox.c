@@ -111,9 +111,8 @@ bsddialog_prgbox(struct bsddialog_conf conf, char* text, int rows, int cols, cha
 	    true) <0)
 		return -1;
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,
-	    BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    NULL, BUTTONLABEL(help_label));
 
 	if (text != NULL && conf.no_lines == false) {
 		print_text(conf, widget, 1, 1, cols-2, text);
@@ -173,9 +172,8 @@ int bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows, int c
 	    true) <0)
 		return -1;
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	if (text != NULL && conf.no_lines == false) {
 		mvwhline(widget, 2, 2, conf.ascii_lines ? '-' : ACS_HLINE, cols -4);

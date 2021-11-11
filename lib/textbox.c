@@ -61,7 +61,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	    true) <0)
 		return -1;
 
-	exitbutt = conf.exit_label == NULL ? exitbutt : conf.exit_label;
+	exitbutt = conf.button.exit_label == NULL ? exitbutt : conf.button.exit_label;
 	draw_button(widget, rows-2, (cols-2)/2 - strlen(exitbutt)/2, strlen(exitbutt)+2,
 	    exitbutt, true, true);
 

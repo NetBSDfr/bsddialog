@@ -197,9 +197,8 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 	entry = new_boxed_window(conf, y + rows - 3 - formheight -2, x +1,
 	    formheight+2, cols-2, LOWERED);
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {

@@ -348,7 +348,7 @@ int main(int argc, char *argv[argc])
 			optind++;
 			break;
 		case CANCEL_LABEL:
-			conf.cancel_label = optarg;
+			conf.button.cancel_label = optarg;
 			break;
 		case CLEAR:
 			conf.clear = true;
@@ -366,16 +366,16 @@ int main(int argc, char *argv[argc])
 			conf.default_item = optarg;
 			break;
 		case DEFAULTNO:
-			conf.defaultno = true;
+			conf.button.defaultno = true;
 			break;
 		case EXIT_LABEL:
-			conf.exit_label = optarg;
+			conf.button.exit_label = optarg;
 			break;
 		case EXTRA_BUTTON:
-			conf.extra_button = true;
+			conf.button.extra_button = true;
 			break;
 		case EXTRA_LABEL:
-			conf.extra_label = optarg;
+			conf.button.extra_label = optarg;
 			break;
 		case HELP:
 			usage();
@@ -383,10 +383,10 @@ int main(int argc, char *argv[argc])
 			printf("See \'man 1 bsddialog\' for more information.\n");
 			return 0;
 		case HELP_BUTTON:
-			conf.help_button = true;
+			conf.button.help_button = true;
 			break;
 		case HELP_LABEL:
-			conf.help_label = optarg;
+			conf.button.help_label = optarg;
 			break;
 		case HELP_STATUS:
 			liststatusflag = true;
@@ -411,13 +411,13 @@ int main(int argc, char *argv[argc])
 			break;
 		case NOCANCEL:
 		case NO_CANCEL:
-			conf.no_cancel = true;
+			conf.button.no_cancel = true;
 			break;
 		case NO_COLLAPSE:
 			conf.no_collapse = true;
 			break;
 		case NO_LABEL:
-			conf.no_label = optarg;
+			conf.button.no_label = optarg;
 			break;
 		case NO_LINES:
 			conf.no_lines = true;
@@ -427,13 +427,13 @@ int main(int argc, char *argv[argc])
 			break;
 		case NOOK:
 		case NO_OK:
-			conf.no_ok = true;
+			conf.button.no_ok = true;
 			break;
 		case NO_SHADOW:
 			conf.shadow = false;
 			break;
 		case OK_LABEL:
-			conf.ok_label = optarg;
+			conf.button.ok_label = optarg;
 			break;
 		case OUTPUT_FD:
 			conf.output_fd = atoi(optarg);
@@ -485,7 +485,7 @@ int main(int argc, char *argv[argc])
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			return 0;
 		case YES_LABEL:
-			conf.yes_label = optarg;
+			conf.button.yes_label = optarg;
 			break;
 		/* Widgets */
 		case BUILDLIST:

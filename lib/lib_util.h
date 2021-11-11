@@ -51,16 +51,16 @@ void set_error_string(char *string);
 } while (0)
 
 /* Buttons */
-#define LABEL_cancel_label "Cancel"
-#define LABEL_exit_label   "EXIT"
-#define LABEL_extra_label  "Extra"
-#define LABEL_help_label   "Help"
-#define LABEL_no_label     "No"
-#define LABEL_ok_label     "OK"
-#define LABEL_yes_label    "Yes"
-#define BUTTONLABEL(l) (conf.l != NULL ? conf.l : LABEL_ ##l)
-#define MAXBUTTONS 4 /* yes|ok - extra - no|cancel - help */
+#define LABEL_cancel_label	"Cancel"
+#define LABEL_exit_label	"EXIT"
+#define LABEL_extra_label	"Extra"
+#define LABEL_help_label	"Help"
+#define LABEL_no_label		"No"
+#define LABEL_ok_label		"OK"
+#define LABEL_yes_label		"Yes"
+#define BUTTONLABEL(l) (conf.button.l != NULL ? conf.button.l : LABEL_ ##l)
 
+#define MAXBUTTONS		4 /* yes|ok - extra - no|cancel - help */
 struct buttons {
 	unsigned int nbuttons;
 	char *label[MAXBUTTONS];
@@ -70,9 +70,8 @@ struct buttons {
 };
 
 void
-get_buttons(struct buttons *bs, bool yesok, char* yesoklabel, bool extra,
-    char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
-    bool help, char *helplabel);
+get_buttons(struct bsddialog_conf conf, struct buttons *bs, char *yesoklabel,
+    char *extralabel, char *nocancellabel, char *helplabel);
 
 void
 draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,

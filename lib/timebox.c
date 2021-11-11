@@ -64,9 +64,8 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 	mvwaddch(widget, rows - 5, cols/2 + 2, ':');
 	c[2].win = new_boxed_window(conf, y + rows - 6, x + cols/2 + 3, 3, 4, LOWERED);
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	sel=0;
 	curs_set(2);
@@ -179,9 +178,8 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 
 	wrefresh(widget);
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	sel=2;
 	curs_set(2);

@@ -259,9 +259,8 @@ bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), false, NULL, false, conf.help_button,
-	    BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    NULL /* nocancel */, BUTTONLABEL(help_label));
 
 	return (do_widget(conf, text, rows, cols, "msgbox", bs, true));
 }
@@ -271,9 +270,8 @@ bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(yes_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(no_label),
-	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(yes_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(no_label), BUTTONLABEL(help_label));
 
 	return (do_widget(conf, text, rows, cols, "yesno", bs, true));
 }

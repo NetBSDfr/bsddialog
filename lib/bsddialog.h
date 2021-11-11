@@ -45,28 +45,35 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
+	struct {
+		char *cancel_label;
+		bool defaultno;
+		char *default_button;
+		char *exit_label;
+		bool extra_button;
+		char *extra_label;
+		bool help_button;
+		char *help_label;
+		bool no_cancel;
+		char *no_label;
+		bool no_ok;
+		char *ok_label;
+		char *yes_label;
+	} button;
 	//bool item_prefix; //BSDDialog extension, utility!
 	bool ascii_lines;
 	int aspect;	// aspect ratio
 	//char *backtitle;
 	int x;		// BEGIN
 	int y;		// BEGIN
-	char *cancel_label;
 	bool clear;
 	bool colors;
 	char *colums_separator;
 	bool cr_wrap;
 	char *create_rc;// useful?
 	char *date_format;
-	bool defaultno;
-	char *default_button;
 	char *default_item;
-	char *exit_label;
-	bool extra_button;
-	char *extra_label;
 	bool help;	//useful?
-	bool help_button;
-	char *help_label;
 	//bool help_status; utility
 	//bool help_tags; utility
 	char *hfile;
@@ -79,20 +86,14 @@ struct bsddialog_conf {
 	bool keep_window;
 	bool last_key;
 	int max_input;
-	bool no_cancel;  // alias
-	//bool nocancel; // alias
 	bool no_collapse;
 	bool no_items;
 	bool no_kill;
-	char *no_label;
 	bool no_lines;
 	bool no_mouse;
 	bool no_nl_expand;
-	bool no_ok;  // alias
-	//bool nook; // alias
 	//bool no_shadow; utility (.shadow for lib)
 	bool no_tags;
-	char *ok_label;
 	int output_fd;
 	//char *separator; utility and alias *output_separator
 	//char *output_separator; utility
@@ -118,7 +119,6 @@ struct bsddialog_conf {
 	bool trim;
 	//bool version; utility
 	bool visit_items;
-	char *yes_label;
 };
 
 struct bsddialog_menuitem {

@@ -210,9 +210,8 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 
 	bar = new_boxed_window(conf, y + rows - 6, x +7, 3, cols-14, RAISED);
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	currvalue = def;
 	sizebar = cols - 16;
@@ -294,9 +293,8 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 
 	bar = new_boxed_window(conf, y + rows - 6, x +7, 3, cols-14, RAISED);
 
-	get_buttons(&bs, !conf.no_ok, BUTTONLABEL(ok_label), conf.extra_button,
-	    BUTTONLABEL(extra_label), !conf.no_cancel, BUTTONLABEL(cancel_label),
-	    conf.defaultno, conf.help_button, BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	currvalue = sec;
 	sizebar = cols-16;

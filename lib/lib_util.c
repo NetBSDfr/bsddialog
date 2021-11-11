@@ -153,46 +153,48 @@ draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 }
 
 void
-get_buttons(struct buttons *bs, bool yesok, char *yesoklabel, bool extra,
-    char *extralabel, bool nocancel, char *nocancellabel, bool defaultno,
-    bool help, char *helplabel)
+get_buttons(struct bsddialog_conf conf, struct buttons *bs, char *yesoklabel,
+    char *extralabel, char *nocancellabel, char *helplabel)
 {
 	int i;
 #define SIZEBUTTON  8
+#define DEFAULT_BUTTON_LABEL	LABEL_ok_label
+#define DEFAULT_BUTTON_VALUE	BSDDIALOG_YESOK
+
 
 	bs->nbuttons = 0;
 	bs->curr = 0;
 	bs->sizebutton = 0;
 
-	if (yesok) {
+	if (yesoklabel != NULL && conf.button.no_ok == false) {
 		bs->label[0] = yesoklabel;
 		bs->value[0] = BSDDIALOG_YESOK;
-		bs->nbuttons = bs->nbuttons + 1;
+		bs->nbuttons += 1;
 	}
 
-	if (extra) {
+	if (extralabel != NULL && conf.button.extra_button) {
 		bs->label[bs->nbuttons] = extralabel;
 		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
-		bs->nbuttons = bs->nbuttons + 1;
+		bs->nbuttons += 1;
 	}
 
-	if (nocancel) {
+	if (nocancellabel != NULL && conf.button.no_cancel == false) {
 		bs->label[bs->nbuttons] = nocancellabel;
 		bs->value[bs->nbuttons] = BSDDIALOG_NOCANCEL;
-		if (defaultno)
+		if (conf.button.defaultno)
 			bs->curr = bs->nbuttons;
-		bs->nbuttons = bs->nbuttons + 1;
+		bs->nbuttons += 1;
 	}
 
-	if (help) {
+	if (helplabel != NULL && conf.button.help_button) {
 		bs->label[bs->nbuttons] = helplabel;
 		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
-		bs->nbuttons = bs->nbuttons + 1;
+		bs->nbuttons += 1;
 	}
 
 	if (bs->nbuttons == 0) {
-		bs->label[0] = yesoklabel;
-		bs->value[0] = BSDDIALOG_YESOK;
+		bs->label[0] = DEFAULT_BUTTON_LABEL;
+		bs->value[0] = DEFAULT_BUTTON_VALUE;
 		bs->nbuttons = 1;
 	}
 
