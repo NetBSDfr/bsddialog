@@ -74,10 +74,12 @@ Examples library:
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
 --help-label *string*, --help-status, --help-tags, --hline *string*,
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
---nook, --no-shadow, --ok-label *string*, --print-version, --shadow,
---sleep *secs*, --stderr, --stdout, --theme *string* ("default", "dialog" and
-"magenta"), --time-format *format*, --title *title*, --version, --yes-label
-*string*.
+--nook, --no-shadow, --ok-label *string*, --output-separator *string*,
+--print-version, --quoted (quotes all != dialog), --shadow,
+--single-quoted (add --quote-with *ch*?),
+--separate-output (rename --separate-output-withnl?), --sleep *secs*, --stderr,
+--stdout, --theme *string* ("default", "dialog" and "magenta"),
+--time-format *format*, --title *title*, --version, --yes-label *string*.
 
  - Widgets:
  
@@ -117,17 +119,13 @@ Examples library:
 | --no-tags                    |             | useful?                         |
 | --output-fd *fd*             | In progress |                                 |
 | --separator *string*         |             |                                 |
-| --output-separator *string*  |             |                                 |
 | --print-maxsize              | In progress |                                 |
 | --print-size                 | In progress |                                 |
 | --print-text-only *str h w*  |             | useful?                         |
 | --print-text-size *str h w*  |             | useful?                         |
-| --quoted                     | Coding      | bsddialog (all tags) != dialog  |
 | --reorder                    |             |                                 |
 | --scrollbar                  |             |                                 |
-| --separate-output            | In progress | rename --separate-output-withnl?|
 | --separate-widget *string*   |             |                                 |
-| --single-quoted              | Coding      | add --quote-string *string*?    |
 | --size-err                   |             |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
