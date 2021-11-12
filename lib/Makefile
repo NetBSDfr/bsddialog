@@ -40,7 +40,8 @@ MANDIR= /usr/local/share/man/man3
 INSTALL= install
 RM= rm -f
 
-all : man ${LIBRARY}
+#all : man ${LIBRARY}
+all : ${LIBRARY}
 
 ${LIBRARY}: ${OBJECTS}
 	${CC} ${LDFLAGS} ${.ALLSRC} -o ${LIBRARY_SO}.${VERSION}
