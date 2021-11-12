@@ -453,8 +453,10 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 	}
 
-	*focuslist = g;
-	*focusitem = rel;
+	if (focuslist != NULL)
+		*focuslist = g;
+	if (focusitem !=NULL)
+		*focusitem = rel;
 
 	delwin(menupad);
 	delwin(menuwin);
@@ -484,12 +486,12 @@ bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem)
 {
-	int output, unused;
+	int output;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Checklist",
-	    CHECKLISTMODE, 1, &group, &unused, focusitem);
+	    CHECKLISTMODE, 1, &group, NULL, focusitem);
 
 	return output;
 }
@@ -499,12 +501,12 @@ bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem)
 {
-	int output, unused;
+	int output;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Menu",
-	    MENUMODE, 1, &group, &unused, focusitem);
+	    MENUMODE, 1, &group, NULL, focusitem);
 
 	return output;
 }
@@ -514,12 +516,12 @@ bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem)
 {
-	int output, unused;
+	int output;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Radiolist",
-	    RADIOLISTMODE, 1, &group, &unused, focusitem);
+	    RADIOLISTMODE, 1, &group, NULL, focusitem);
 
 	return output;
 }
@@ -529,12 +531,12 @@ bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem)
 {
-	int output, unused;
+	int output;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, "Treeview",
-	    TREEVIEWMODE, 1, &group, &unused, focusitem);
+	    TREEVIEWMODE, 1, &group, NULL, focusitem);
 
 	return output;
 }
@@ -689,7 +691,8 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 	}
 
-	*focusitem = curr;
+	if(focusitem != NULL)
+		*focusitem = curr;
 
 	delwin(leftpad);
 	delwin(leftwin);
