@@ -300,14 +300,6 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	enum menumode currmode;
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true) < 0)
-		return -1;
-
-	menuwin = new_boxed_window(conf, y + rows - 5 - menurows, x + 2,
-	    menurows+2, cols-4, LOWERED);
-
-
 	totnitems = 0;
 	for (i=0; i < ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
@@ -346,6 +338,14 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		pos.line = MAX(pos.maxsepstr + 3, pos.xname + pos.maxdepth * TREESPACE + pos.maxdesc );
 	else
 		pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
+
+
+	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
+	    true) < 0)
+		return -1;
+
+	menuwin = new_boxed_window(conf, y + rows - 5 - menurows, x + 2,
+	    menurows+2, cols-4, LOWERED);
 
 	menupad = newpad(totnitems, pos.line);
 	wbkgd(menupad, t.widgetcolor);
