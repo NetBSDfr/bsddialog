@@ -42,6 +42,7 @@
 /* "Menu": checklist - menu - radiolist - treeview - buildlist */
 
 #define TREESPACE 4
+#define MIN_HEIGHT	VBORDERS + 6 /* 2 buttons 1 text 3 menu */
 
 extern struct bsddialog_theme t;
 
@@ -287,13 +288,59 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 }
 
 static int
+menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+    struct buttons bs, int linelen, int nitems)
+{
+
+	if (cols == BSDDIALOG_AUTOSIZE) {
+		*w = VBORDERS;
+		/* buttons size */
+		*w += bs.nbuttons * bs.sizebutton;
+		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+		/* line size */
+		*w = MAX(*w, linelen + 6);
+		/* avoid terminal overflow */
+		*w = MIN(*w, widget_max_width(conf));
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE) {
+		*h = MIN_HEIGHT - 1 + nitems;
+		/* avoid terminal overflow */
+		*h = MIN(*h, widget_max_height(conf));
+	}
+
+	return 0;
+}
+
+static int menu_checksize(int rows, int cols, struct buttons bs, int linelen)
+{
+	int mincols;
+
+	mincols = VBORDERS;
+	/* buttons */
+	mincols += bs.nbuttons * bs.sizebutton;
+	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+	/* line */
+	mincols = MAX(mincols, linelen);
+
+	if (cols < mincols)
+		RETURN_ERROR("Few cols, width < size buttons or name+descripion "\
+		    "of the items");
+
+	if (rows < MIN_HEIGHT)
+		RETURN_ERROR("Msgbox and Yesno need at least height 7");
+
+	return 0;
+}
+
+static int
 do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, char *namewidget, enum menumode mode, int ngroups,
+    unsigned int menurows, char *name, enum menumode mode, int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
-	WINDOW *widget, *menuwin, *menupad, *shadow;
-	int i, j, output, input;
-	int y, x, ys, ye, xs, xe, abs, g, rel, totnitems;
+	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
+	int i, j, y, x, h, w, htextpad, output, input;
+	int ys, ye, xs, xe, abs, g, rel, totnitems;
 	bool loop, buttupdate;
 	struct buttons bs;
 	struct bsddialog_menuitem *item;
@@ -340,12 +387,24 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
 
 
-	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true) < 0)
-		return -1;
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
-	menuwin = new_boxed_window(conf, y + rows - 5 - menurows, x + 2,
-	    menurows+2, cols-4, LOWERED);
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
+	if (menu_autosize(conf, rows, cols, &h, &w, bs, pos.line, totnitems) != 0)
+		return BSDDIALOG_ERROR;
+	if (menu_checksize(h, w, bs, pos.line) != 0)
+		return BSDDIALOG_ERROR;
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
+		return BSDDIALOG_ERROR;
+
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
+	    &textpad, &htextpad, text, true) != 0)
+		return BSDDIALOG_ERROR;
+
+	menuwin = new_boxed_window(conf, y + h - 5 - menurows, x + 2,
+	    menurows+2, w-4, LOWERED);
 
 	menupad = newpad(totnitems, pos.line);
 	wbkgd(menupad, t.widgetcolor);
@@ -362,15 +421,12 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 	}
 
-	ys = y + rows - 5 - menurows + 1;
+	ys = y + h - 5 - menurows + 1;
 	ye = ys + menurows + 2 -1;
-	xs = ((int) pos.line > cols - 6) ? (x + 2 + 1) : x + 3 + (cols-6)/2 - pos.line/2;
-	xe = ((int) pos.line > cols - 6) ? xs + cols - 7 : xs + cols - 4 -1;
+	xs = ((int) pos.line > w - 6) ? (x + 2 + 1) : x + 3 + (w-6)/2 - pos.line/2;
+	xe = ((int) pos.line > w - 6) ? xs + w - 7 : xs + w - 4 -1;
 	if (currmode == TREEVIEWMODE)
 		xs = x + 2 + 1;
-
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
@@ -380,7 +436,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(widget, rows-2, cols, bs, true);
+			draw_buttons(widget, h-2, w, bs, true);
 			wrefresh(widget);
 			buttupdate = false;
 		}
@@ -460,7 +516,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	delwin(menupad);
 	delwin(menuwin);
-	end_widget(conf, namewidget, widget, rows, cols, shadow);
+	end_widget_withtextpad(conf, name, widget, h, w, textpad, shadow);
 
 	return output;
 }
