@@ -140,9 +140,9 @@ Examples library:
 
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
-| --buildlist    | In progress | todo autosize, resize, F1                     |
+| --buildlist    | In progress | todo autosize, resize, F1                               |
 | --calendar     | In progress | todo autosize, resize, F1, leap year, year <=0, month days |
-| --checklist    | In progress | todo autosize, resize, F1                     |
+| --checklist    | In progress | todo  resize, F1                              |
 | --dselect      |             |                                               |
 | --editbox      |             |                                               |
 | --form         | In progress | implemented via --mixedform                   |
@@ -150,21 +150,21 @@ Examples library:
 | --gauge        | In progress |                                               |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --inputmenu    |             |                                               |
-| --menu         | In progress | todo autosize, resize, F1, todo scrolling     |
+| --menu         | In progress | todo resize, F1, todo scrolling               |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
 | --mixedgauge   | In progress | todo autosize, resize, F1                     |
-| --mixedlist    | In progress | Can implement dialog4ports(1)                 |
+| --mixedlist    | In progress | Can implement a dialog4ports clone            |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |
 | --pause        | In progress | todo autosize, resize, F1                     |
 | --prgbox       | In progress | add command opts                              |
 | --programbox   | Coding      |                                               |
 | --progressbox  |             |                                               |
-| --radiolist    | In progress | todo autosize, resize, F1                     |
+| --radiolist    | In progress | todo resize, F1                               |
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
 | --tailbox      | Coding      | todo via --textbox or fseek?                  |
 | --tailboxbg    |             |                                               |
 | --textbox      | In progress | todo navigation keys                          |
 | --timebox      | In progress | todo autosize, resize, F1                     |
-| --treeview     | In progress | todo autosize, resize, F1                     |
+| --treeview     | In progress | todo  resize, F1                              |
 
