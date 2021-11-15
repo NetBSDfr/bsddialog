@@ -340,7 +340,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 {
 	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
 	int i, j, y, x, h, w, htextpad, output, input;
-	int ys, ye, xs, xe, abs, g, rel, totnitems;
+	int ymenupad, ys, ye, xs, xe, abs, g, rel, totnitems;
 	bool loop, buttupdate;
 	struct buttons bs;
 	struct bsddialog_menuitem *item;
@@ -410,14 +410,14 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	wbkgd(menupad, t.widgetcolor);
 
 	getfirst(conf, ngroups, groups, &abs, &g, &rel);
-	totnitems = 0;
+	ymenupad = 0;
 	for (i=0; i<ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
 		for (j=0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			drawitem(conf, menupad, totnitems, *item, currmode,
-			    pos, totnitems == abs);
-			totnitems++;
+			drawitem(conf, menupad, ymenupad, *item, currmode,
+			    pos, ymenupad == abs);
+			ymenupad++;
 		}
 	}
 

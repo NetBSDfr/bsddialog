@@ -44,15 +44,15 @@ int main()
 
 		if (items[0].on) {
 			theme = BSDDIALOG_THEME_DIALOG;
-			conf.default_item = items[0].name;
+			conf.menu.default_item = items[0].name;
 		}
 		else if (items[1].on) {
 			theme = BSDDIALOG_THEME_DEFAULT;
-			conf.default_item = items[1].name;
+			conf.menu.default_item = items[1].name;
 		}
 		else if (items[2].on) {
 			theme = BSDDIALOG_THEME_MAGENTA;
-			conf.default_item = items[2].name;
+			conf.menu.default_item = items[2].name;
 		}
 
 		bsddialog_set_default_theme(theme);
