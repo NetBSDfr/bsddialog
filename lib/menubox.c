@@ -482,12 +482,15 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 		switch(input) {
 		case KEY_UP:
+			drawitem(conf, menupad, abs, *item, currmode, pos, false);
+			getprev(groups, &abs, &g, &rel);
+			item = &groups[g].items[rel];
+			currmode= getmode(mode, groups[g]);
+			drawitem(conf, menupad, abs, *item, currmode, pos, true);
+			break;
 		case KEY_DOWN:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
-			if (input == KEY_UP)
-				getprev(groups, &abs, &g, &rel);
-			else
-				getnext(ngroups, groups, &abs, &g, &rel);
+			getnext(ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
