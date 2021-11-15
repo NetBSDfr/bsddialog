@@ -423,10 +423,14 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	ys = y + h - 5 - menurows + 1;
 	ye = ys + menurows + 2 -1;
-	xs = ((int) pos.line > w - 6) ? (x + 2 + 1) : x + 3 + (w-6)/2 - pos.line/2;
-	xe = ((int) pos.line > w - 6) ? xs + w - 7 : xs + w - 4 -1;
-	if (currmode == TREEVIEWMODE)
-		xs = x + 2 + 1;
+	if (conf.menu.align_left || pos.line > w - 6 || currmode == TREEVIEWMODE) {
+		xs = x + 3;
+		xe = xs + w - 7;
+	}
+	else { /* center */
+		xs = x + 3 + (w-6)/2 - pos.line/2;
+		xe = xs + w - 5;
+	}
 
 	wrefresh(menuwin);
 	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?

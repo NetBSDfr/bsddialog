@@ -63,6 +63,7 @@ struct bsddialog_conf {
 	} button;
 	/* conf.menu.* */
 	struct {
+		bool align_left;
 		char *default_item;
 		bool no_items;
 		bool no_tags;
