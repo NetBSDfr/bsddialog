@@ -363,7 +363,7 @@ int main(int argc, char *argv[argc])
 			conf.date_format = optarg;
 			break;
 		case DEFAULT_ITEM:
-			conf.default_item = optarg;
+			conf.menu.default_item = optarg;
 			break;
 		case DEFAULTNO:
 			conf.button.defaultno = true;

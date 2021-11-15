@@ -61,6 +61,13 @@ struct bsddialog_conf {
 		char *ok_label;
 		char *yes_label;
 	} button;
+	/* conf.menu.* */
+	struct {
+		char *default_item;
+		bool no_items;
+		bool no_tags;
+		bool visit_items;
+	} menu;
 	bool ascii_lines;
 	int aspect;
 	int x;
@@ -71,7 +78,6 @@ struct bsddialog_conf {
 	bool cr_wrap;
 	char *create_rc; //utility
 	char *date_format;
-	char *default_item;
 	char *hfile;
 	char *hline;
 	int input_fd;
@@ -81,12 +87,10 @@ struct bsddialog_conf {
 	bool last_key;
 	int max_input;
 	bool no_collapse;
-	bool no_items;
 	bool no_kill;
 	bool no_lines;
 	bool no_mouse;
 	bool no_nl_expand;
-	bool no_tags;
 	int output_fd;
 	bool print_size; //utility?
 	bool scrollbar;
@@ -101,7 +105,6 @@ struct bsddialog_conf {
 	char *title;
 	char *trace;
 	bool trim;
-	bool visit_items;
 };
 
 struct bsddialog_menuitem {

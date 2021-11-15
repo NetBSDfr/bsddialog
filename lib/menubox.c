@@ -114,7 +114,7 @@ getfirst(struct bsddialog_conf conf, int ngroups, struct bsddialog_menugroup *gr
 			a += groups[i].nitems;
 			continue;
 		}
-		if (conf.default_item == NULL && groups[i].nitems != 0) {
+		if (conf.menu.default_item == NULL && groups[i].nitems != 0) {
 			*group = i;
 			*abs = a;
 			*rel = 0;
@@ -122,8 +122,8 @@ getfirst(struct bsddialog_conf conf, int ngroups, struct bsddialog_menugroup *gr
 		}
 		for (j = 0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			if (conf.default_item != NULL && item->name != NULL) {
-				if (strcmp(item->name, conf.default_item) == 0) {
+			if (conf.menu.default_item != NULL && item->name != NULL) {
+				if (strcmp(item->name, conf.menu.default_item) == 0) {
 					*abs = a;
 					*group = i;
 					*rel = j;
