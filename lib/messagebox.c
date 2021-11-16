@@ -126,7 +126,7 @@ textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
 }
 
 static int
-do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name,
+do_widget(struct bsddialog_conf conf, char *text, int rows, int cols,
     struct buttons bs, bool shortkey)
 {
 	WINDOW *widget, *textpad, *shadow;
@@ -263,7 +263,7 @@ bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
 	    NULL /* nocancel */, BUTTONLABEL(help_label));
 
-	return (do_widget(conf, text, rows, cols, "msgbox", bs, true));
+	return (do_widget(conf, text, rows, cols, bs, true));
 }
 
 int
@@ -274,5 +274,5 @@ bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols)
 	get_buttons(conf, &bs, BUTTONLABEL(yes_label), BUTTONLABEL(extra_label),
 	    BUTTONLABEL(no_label), BUTTONLABEL(help_label));
 
-	return (do_widget(conf, text, rows, cols, "yesno", bs, true));
+	return (do_widget(conf, text, rows, cols, bs, true));
 }

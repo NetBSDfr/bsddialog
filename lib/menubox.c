@@ -360,7 +360,7 @@ menu_checksize(int rows, int cols, char *text, int linelen, int menurows,
 
 static int
 do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, char *name, enum menumode mode, int ngroups,
+    unsigned int menurows, enum menumode mode, int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
 	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
@@ -451,7 +451,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	ys = y + h - 5 - menurows + 1;
 	ye = y + h - 5 ;
-	if (conf.menu.align_left || pos.line > w - 6 || currmode == TREEVIEWMODE) {
+	if (conf.menu.align_left || (int)pos.line > w - 6 || currmode == TREEVIEWMODE) {
 		xs = x + 3;
 		xe = xs + w - 7;
 	}
@@ -474,7 +474,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			buttupdate = false;
 		}
 
-		if (totnitems > menurows) {
+		if (totnitems > (int) menurows) {
 			draw_borders(conf, menuwin, menurows+2, w-4, LOWERED);
 
 			if (ymenupad > 0) {
@@ -482,7 +482,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				mvwprintw(menuwin, 0, 2, "^^");
 				wattroff(menuwin, t.lineraisecolor);
 			}
-			if (ymenupad + menurows < totnitems) {
+			if ((int) (ymenupad + menurows) < totnitems) {
 				wattron(menuwin, t.linelowercolor);
 				mvwprintw(menuwin, menurows+1, 2, "vv");
 				wattroff(menuwin, t.linelowercolor);
@@ -544,7 +544,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
-			if (ymenupad + menurows <= abs)
+			if ((int)(ymenupad + menurows) <= abs)
 				ymenupad++;
 			break;
 		case ' ': // Space
@@ -590,8 +590,8 @@ int bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int co
 {
 	int output;
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, "Mixedlist",
-	    MIXEDLISTMODE, ngroups, groups, focuslist, focusitem);
+	output = do_mixedlist(conf, text, rows, cols, menurows, MIXEDLISTMODE,
+	    ngroups, groups, focuslist, focusitem);
 
 	return output;
 }
@@ -605,8 +605,8 @@ bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, "Checklist",
-	    CHECKLISTMODE, 1, &group, NULL, focusitem);
+	output = do_mixedlist(conf, text, rows, cols, menurows, CHECKLISTMODE,
+	    1, &group, NULL, focusitem);
 
 	return output;
 }
@@ -620,8 +620,8 @@ bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, "Menu",
-	    MENUMODE, 1, &group, NULL, focusitem);
+	output = do_mixedlist(conf, text, rows, cols, menurows, MENUMODE, 1,
+	    &group, NULL, focusitem);
 
 	return output;
 }
@@ -635,8 +635,8 @@ bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, "Radiolist",
-	    RADIOLISTMODE, 1, &group, NULL, focusitem);
+	output = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
+	    1, &group, NULL, focusitem);
 
 	return output;
 }
@@ -650,8 +650,8 @@ bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, "Treeview",
-	    TREEVIEWMODE, 1, &group, NULL, focusitem);
+	output = do_mixedlist(conf, text, rows, cols, menurows, TREEVIEWMODE, 1,
+	    &group, NULL, focusitem);
 
 	return output;
 }
