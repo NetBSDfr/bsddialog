@@ -287,10 +287,14 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	}
 }
 
-static int
+static void
 menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
-    struct buttons bs, int linelen, int nitems)
+    char *text, int linelen, unsigned int *menurows, int nitems,
+    struct buttons bs)
 {
+	int textrow, menusize;
+
+	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		*w = VBORDERS;
@@ -304,17 +308,30 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = MIN_HEIGHT - 1 + nitems;
+		*h = HBORDERS + 2 /* buttons */ + textrow;
+
+		if (*menurows == 0) {
+			menusize = nitems + 2;
+			*menurows = MIN(widget_max_height(conf) - *h, menusize);
+			*h = *h + *menurows;
+		}
+		else /* h autosize with a fixed menurows */
+			*h = *h + *menurows + 2;
+
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}
-
-	return 0;
+	else {
+		if (*menurows <= 0)
+			*menurows = MIN(rows-4-textrow, nitems);
+	}
 }
 
-static int menu_checksize(int rows, int cols, struct buttons bs, int linelen)
+static int
+menu_checksize(int rows, int cols, char *text, int linelen, int menurows,
+    int nitems, struct buttons bs)
 {
-	int mincols;
+	int mincols, textrow, menusize;
 
 	mincols = VBORDERS;
 	/* buttons */
@@ -324,11 +341,18 @@ static int menu_checksize(int rows, int cols, struct buttons bs, int linelen)
 	mincols = MAX(mincols, linelen);
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols, width < size buttons or name+descripion "\
-		    "of the items");
+		RETURN_ERROR("Few cols, width < size buttons or "\
+		    "name+descripion of the items");
 
-	if (rows < MIN_HEIGHT)
-		RETURN_ERROR("Msgbox and Yesno need at least height 7");
+	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
+
+	if (nitems > 0 && menurows == 0)
+		RETURN_ERROR("items > 0 but menurows == 0, prabably terminal "\
+		    "too small");
+
+	menusize = nitems > 0 ? 3 : 0;
+	if (rows < 2  + 2 + menusize + textrow)
+		RETURN_ERROR("Few lines for this menus");
 
 	return 0;
 }
@@ -392,9 +416,9 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	if (menu_autosize(conf, rows, cols, &h, &w, bs, pos.line, totnitems) != 0)
-		return BSDDIALOG_ERROR;
-	if (menu_checksize(h, w, bs, pos.line) != 0)
+	menu_autosize(conf, rows, cols, &h, &w, text, pos.line, &menurows,
+	    totnitems, bs);
+	if (menu_checksize(h, w, text, pos.line, menurows, totnitems, bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
