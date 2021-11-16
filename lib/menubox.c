@@ -433,7 +433,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	}
 
 	wrefresh(menuwin);
-	prefresh(menupad, 0, 0, ys, xs, ye, xe);//delete?
+	ymenupad = 0; /* now ymenupad is pminrow for prefresh() */
+	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);//delete?
 
 	item = &groups[g].items[rel];
 	currmode = getmode(mode, groups[g]);
@@ -444,8 +445,28 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			wrefresh(widget);
 			buttupdate = false;
 		}
-		//wrefresh(menuwin);
-		prefresh(menupad, 0, 0, ys, xs, ye, xe);
+
+		if (totnitems > menurows) {
+			draw_borders(conf, menuwin, menurows+2, w-4, LOWERED);
+
+			if (ymenupad > 0) {
+				wattron(menuwin, t.lineraisecolor);
+				mvwprintw(menuwin, 0, 2, "^^^");
+				wattroff(menuwin, t.lineraisecolor);
+			}
+			if (ymenupad + menurows < totnitems) {
+				wattron(menuwin, t.linelowercolor);
+				mvwprintw(menuwin, menurows+1, 2, "vvv");
+				wattroff(menuwin, t.linelowercolor);
+			}
+
+			mvwprintw(menuwin, menurows+1, w-10, "%3d%%",
+			    (100 * (ymenupad+menurows)) / totnitems);
+			wrefresh(menuwin);
+		}
+		
+		
+		prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 
 		input = getch();
 		switch(input) {
@@ -479,7 +500,6 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 		if (abs < 0)
 			continue;
-
 		switch(input) {
 		case KEY_UP:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
@@ -487,6 +507,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
+			if (ymenupad > abs && ymenupad > 0)
+				ymenupad--;
 			break;
 		case KEY_DOWN:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
@@ -494,6 +516,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
+			if (ymenupad + menurows <= abs)
+				ymenupad++;
 			break;
 		case ' ': // Space
 			if (currmode == MENUMODE)

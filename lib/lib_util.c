@@ -713,7 +713,7 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int h, int w)
 }
 
 /* Widgets builders */
-static void
+void
 draw_borders(struct bsddialog_conf conf, WINDOW *win, int rows, int cols,
     enum elevation elev)
 {

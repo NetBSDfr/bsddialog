@@ -107,6 +107,10 @@ print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx,
 
 enum elevation { RAISED, LOWERED };
 
+void
+draw_borders(struct bsddialog_conf conf, WINDOW *win, int rows, int cols,
+    enum elevation elev);
+
 WINDOW *
 new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
     enum elevation elev);
