@@ -194,6 +194,7 @@ bool itemprefixflag, itembottomdescflag, separateoutputnlflag, singlequotedflag;
 bool liststatusflag, itemtageforhelpflag, itemquoteflag;
 char *itemstrseparator;
 char *nstr ="";
+char *fmtdateflag, *fmttimeflag;
 
 int main(int argc, char *argv[argc])
 {
@@ -217,6 +218,8 @@ int main(int argc, char *argv[argc])
 	liststatusflag = itemtageforhelpflag = false;
 	itemquoteflag = false;
 	itemstrseparator = NULL;
+
+	fmtdateflag = fmttimeflag = NULL;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -360,7 +363,7 @@ int main(int argc, char *argv[argc])
 			conf.widget.text.cr_wrap = true;
 			break;
 		case DATE_FORMAT:
-			conf.date_format = optarg;
+			fmtdateflag = optarg;
 			break;
 		case DEFAULT_ITEM:
 			conf.menu.default_item = optarg;
@@ -473,7 +476,7 @@ int main(int argc, char *argv[argc])
 			conf.output_fd = STDOUT_FILENO;
 			break;
 		case TIME_FORMAT:
-			conf.time_format = optarg;
+			fmttimeflag = optarg;
 			break;
 		case TITLE:
 			conf.title = optarg;
@@ -654,30 +657,41 @@ int calendar_builder(BUILDER_ARGS)
 	int output;
 	unsigned int yy, mm, dd;
 	time_t cal;
-	struct tm *dt;
+	struct tm *localtm;
+	char stringdate[1024];
 
 	time(&cal);
-	dt = localtime(&cal);
-	yy = dt->tm_year + 1900;
-	mm = dt->tm_mon;
-	dd = dt->tm_mday;
+	localtm = localtime(&cal);
+	yy = localtm->tm_year + 1900;
+	mm = localtm->tm_mon;
+	dd = localtm->tm_mday;
 
-	if (argc > 0) {
+	/* --calendar text h w [year month day] */
+	if (argc == 3) {
 		yy = atoi(argv[0]) + 1900;
 		yy = yy > 9999 ? 9999 : yy;
-	}
-
-	if (argc > 1) {
 		mm = atoi(argv[1]);
 		mm = mm > 12 ? 12 : mm;
-	}
-
-	if (argc > 2) {
 		dd = atoi(argv[2]);
 		dd = dd > 31 ? 31 : dd;
 	}
 
-	output = bsddialog_calendar(conf, text, rows, cols, yy, mm, dd);
+	output = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
+	if (output != BSDDIALOG_YESOK)
+		return output;
+
+	if (fmtdateflag == NULL) {
+		dprintf(conf.output_fd, "%u/%u/%u", yy, mm, dd);
+	}
+	else {
+		time(&cal);
+		localtm = localtime(&cal);
+		localtm->tm_year = yy - 1900;
+		localtm->tm_mon  = mm;
+		localtm->tm_mday = dd;
+		strftime(stringdate, 1024, fmtdateflag, localtm);
+		dprintf(conf.output_fd, "%s", stringdate);
+	}
 
 	return (output);
 }
@@ -932,6 +946,7 @@ int timebox_builder(BUILDER_ARGS)
 	unsigned int hh, mm, ss;
 	time_t clock;
 	struct tm *localtm;
+	char stringtime[1024];
 
 	time(&clock);
 	localtm = localtime(&clock);
@@ -939,22 +954,32 @@ int timebox_builder(BUILDER_ARGS)
 	mm = localtm->tm_min;
 	ss = localtm->tm_sec;
 
-	if (argc > 0) {
+	/* --timebox text h w [hour minute second] */
+	if (argc == 3) {
 		hh = atoi(argv[0]);
 		hh = hh > 23 ? 23 : hh;
-	}
-
-	if (argc > 1) {
 		mm = atoi(argv[1]);
 		mm = mm > 60 ? 60 : mm;
-	}
-
-	if (argc > 2) {
 		ss = atoi(argv[2]);
 		ss = ss > 60 ? 60 : ss;
 	}
 
-	output = bsddialog_timebox(conf, text, rows, cols, hh, mm, ss);
+	output = bsddialog_timebox(conf, text, rows, cols, &hh, &mm, &ss);
+	if (output != BSDDIALOG_YESOK)
+		return output;
+
+	if (fmttimeflag == NULL) {
+		dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
+	}
+	else {
+		time(&clock);
+		localtm = localtime(&clock);
+		localtm->tm_hour = hh;
+		localtm->tm_min  = mm;
+		localtm->tm_sec = ss;
+		strftime(stringtime, 1024, fmttimeflag, localtm);
+		dprintf(conf.output_fd, "%s", stringtime);
+	}
 
 	return (output);
 }

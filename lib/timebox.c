@@ -25,8 +25,6 @@
  * SUCH DAMAGE.
  */
 
-#include <time.h>
-
 #ifdef PORTNCURSES
 #include <ncurses/curses.h>
 #else
@@ -39,20 +37,21 @@
 /* "Time": timebox - calendar */
 
 int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int hh, unsigned int mm, unsigned int ss)
+    unsigned int *hh, unsigned int *mm, unsigned int *ss)
 {
 	WINDOW *widget, *shadow;
-	char stringtime[1024];
 	int i, input, output, y, x, sel;
 	struct buttons bs;
 	bool loop, buttupdate;
-	time_t clock;
-	struct tm *localtm;
+
+	if (hh == NULL || mm == NULL || ss == NULL)
+		RETURN_ERROR("hh or mm or ss == NULL");
+
 	struct myclockstruct {
 		unsigned int max;
 		unsigned int curr;
 		WINDOW *win;
-	} c[3] = { {23, hh, NULL}, {59, mm, NULL}, {59, ss, NULL} };
+	} c[3] = { {23, *hh, NULL}, {59, *mm, NULL}, {59, *ss, NULL} };
 
 	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
@@ -88,20 +87,12 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 		switch(input) {
 		case 10: // Enter
 			output = bs.value[bs.curr]; // values -> outputs
-			loop = false;
-			if (conf.time_format == NULL) {
-				dprintf(conf.output_fd, "%u:%u:%u", hh, mm, ss);
-			} else {
-				time(&clock);
-				localtm = localtime(&clock);
-				localtm->tm_hour = c[0].curr;
-				localtm->tm_min  = c[1].curr;
-				localtm->tm_sec  = c[2].curr;
-				clock = mktime(localtm);
-				localtm = localtime(&clock);
-				strftime(stringtime, 1024, conf.time_format, localtm);
-				dprintf(conf.output_fd, "%s", stringtime);
+			if (output == BSDDIALOG_YESOK) {
+				*hh = c[0].curr - 1900;
+				*mm = c[1].curr;
+				*ss = c[2].curr;
 			}
+			loop = false;
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;
@@ -141,21 +132,22 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 }
 
 int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int yy, unsigned int mm, unsigned int dd)
+    unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
 	WINDOW *widget, *shadow;
-	char stringtime[1024];
 	int i, input, output, y, x, sel;
 	struct buttons bs;
 	bool loop, buttupdate;
-	time_t clock;
-	struct tm *localtm;
+
+	if (yy == NULL || mm == NULL || dd == NULL)
+		RETURN_ERROR("yy or mm or dd == NULL");
+
 	struct calendar {
 		unsigned int max;
 		unsigned int curr;
 		WINDOW *win;
 		unsigned int x;
-	} c[3] = {{9999, yy, NULL, 4 }, {12, mm, NULL, 9 }, {31, dd, NULL, 2 }};
+	} c[3] = {{9999, *yy, NULL, 4 }, {12, *mm, NULL, 9 }, {31, *dd, NULL, 2 }};
 	struct month {
 		char *name;
 		unsigned int days;
@@ -204,21 +196,12 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 		switch(input) {
 		case 10: // Enter
 			output = bs.value[bs.curr]; // values -> outputs
-			loop = false;
-			if (conf.date_format == NULL) {
-				dprintf(conf.output_fd, "%u/%u/%u",
-				    c[0].curr, c[1].curr, c[2].curr);
-			} else {
-				time(&clock);
-				localtm = localtime(&clock);
-				localtm->tm_year = c[0].curr - 1900;
-				localtm->tm_mon  = c[1].curr;
-				localtm->tm_mday = c[2].curr;
-				clock = mktime(localtm);
-				localtm = localtime(&clock);
-				strftime(stringtime, 1024, conf.date_format, localtm);
-				dprintf(conf.output_fd, "%s", stringtime);
+			if (output == BSDDIALOG_YESOK) {
+				*yy = c[0].curr - 1900;
+				*mm = c[1].curr;
+				*dd = c[2].curr;
 			}
+			loop = false;
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;

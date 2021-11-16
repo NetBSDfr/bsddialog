@@ -89,7 +89,6 @@ struct bsddialog_conf {
 	int y;
 	bool clear;
 	char *create_rc; //utility
-	char *date_format; //utility?
 	char *hfile;
 	char *hline;
 	int input_fd;
@@ -108,7 +107,6 @@ struct bsddialog_conf {
 	bool shadow;
 	bool size_err;
 	int sleep;
-	char *time_format; //utility?
 	int timeout;
 	char *title;
 	char *trace; //utility?
@@ -147,7 +145,7 @@ int bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int co
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
 int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int yy, unsigned int mm, unsigned int dd);
+    unsigned int *yy, unsigned int *mm, unsigned int *dd);
 int bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
@@ -188,7 +186,7 @@ int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols
 int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols);
 int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int hh, unsigned int mm, unsigned int ss);
+    unsigned int *hh, unsigned int *mm, unsigned int *ss);
 int bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
