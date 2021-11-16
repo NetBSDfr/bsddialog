@@ -126,15 +126,15 @@ update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
     int *htextpad, char *text, bool buttons);
 
 void
-end_widget_withtextpad(struct bsddialog_conf conf, char *name, WINDOW *window,
-    int h, int w, WINDOW *textpad, WINDOW *shadow);
+end_widget_withtextpad(struct bsddialog_conf conf, WINDOW *window, int h, int w,
+    WINDOW *textpad, WINDOW *shadow);
 
 int
 new_widget(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, 
     char *text, int *h, int *w, WINDOW **shadow, bool buttons);
 
 void
-end_widget(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
+end_widget(struct bsddialog_conf conf, WINDOW *window, int h, int w, 
     WINDOW *shadow);
 
 #endif

@@ -204,6 +204,7 @@ int main(int argc, char *argv[argc])
 	bool ignoreflag, printmaxsizeflag;
 	struct winsize ws;
 	struct bsddialog_conf conf;
+	int getH, getW;
 
 	memset(&conf, 0, sizeof(struct bsddialog_conf));
 	conf.y = conf.x = BSDDIALOG_CENTER;
@@ -452,7 +453,8 @@ int main(int argc, char *argv[argc])
 			printmaxsizeflag = true;
 			break;
 		case PRINT_SIZE:
-			conf.print_size = true;
+			conf.get_height = &getH;;
+			conf.get_width = &getW;
 			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
@@ -633,6 +635,10 @@ int main(int argc, char *argv[argc])
 		output = widgetbuilder(conf, text, rows, cols, argc, argv);
 
 	bsddialog_end();
+
+	if (conf.get_height != NULL && conf.get_width != NULL)
+		dprintf(conf.output_fd, "Widget size: (%d - %d)\n",
+		    *conf.get_height, *conf.get_width);
 
 	// debug & devel
 	printf("[Debug] Exit status: %d ", output);

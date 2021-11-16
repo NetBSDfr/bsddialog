@@ -939,8 +939,8 @@ new_widget(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x,
 }
 
 void
-end_widget_withtextpad(struct bsddialog_conf conf, char *name, WINDOW *window,
-    int h, int w, WINDOW *textpad, WINDOW *shadow)
+end_widget_withtextpad(struct bsddialog_conf conf, WINDOW *window, int h, int w,
+    WINDOW *textpad, WINDOW *shadow)
 {
 	int y, x;
 
@@ -960,14 +960,16 @@ end_widget_withtextpad(struct bsddialog_conf conf, char *name, WINDOW *window,
 	if (conf.clear)
 		hide_widget(y, x, h, w, shadow != NULL);
 
-	if (conf.print_size)
-		dprintf(conf.output_fd, "%s size: (%d, %d)\n", name, h, w);
+	if (conf.get_height != NULL)
+		*conf.get_height = h;
+	if (conf.get_width != NULL)
+		*conf.get_width = w;
 }
 
 void
-end_widget(struct bsddialog_conf conf, char *name, WINDOW *window, int h, int w,
+end_widget(struct bsddialog_conf conf, WINDOW *window, int h, int w,
     WINDOW *shadow)
 {
 
-	end_widget_withtextpad(conf, name, window, h, w, NULL, shadow);
+	end_widget_withtextpad(conf, window, h, w, NULL, shadow);
 }

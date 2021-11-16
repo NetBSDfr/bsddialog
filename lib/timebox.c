@@ -126,7 +126,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	end_widget(conf, "Timebox", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return output;
 }
@@ -235,7 +235,7 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	end_widget(conf, "Timebox", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return output;
 }

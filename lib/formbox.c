@@ -251,7 +251,7 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 	free(field);
 
 	delwin(entry);
-	end_widget(conf, "Mixedform", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return output;
 }

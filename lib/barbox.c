@@ -125,7 +125,7 @@ int bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	}
 
 	delwin(bar);
-	end_widget(conf, "Gauge", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return BSDDIALOG_YESOK;
 }
@@ -187,7 +187,7 @@ int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int c
 	getch();
 
 	delwin(bar);
-	end_widget(conf, "Mixedgaugebox", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return BSDDIALOG_YESOK;
 }
@@ -273,7 +273,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 	}
 
 	delwin(bar);
-	end_widget(conf, "Rangebox", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return output;
 }
@@ -359,7 +359,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	nodelay(stdscr, FALSE);
 
 	delwin(bar);
-	end_widget(conf, "Pause", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return output;
 }

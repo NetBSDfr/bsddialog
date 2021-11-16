@@ -575,7 +575,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	delwin(menupad);
 	delwin(menuwin);
-	end_widget_withtextpad(conf, name, widget, h, w, textpad, shadow);
+	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
 	return output;
 }
@@ -813,7 +813,7 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	delwin(leftwin);
 	delwin(rightpad);
 	delwin(rightwin);
-	end_widget(conf, "Buildlist", widget, rows, cols, shadow);
+	end_widget(conf, widget, rows, cols, shadow);
 
 	return output;
 }

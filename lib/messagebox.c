@@ -248,7 +248,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols, char *name
 		}
 	}
 
-	end_widget_withtextpad(conf, name, widget, h, w, textpad, shadow);
+	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
 	return output;
 }
