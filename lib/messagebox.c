@@ -117,7 +117,8 @@ textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
 {
 
 	if (htextpad > h - 4) {
-		mvwprintw(widget, h-3, w-6, "%3d%%", (int)((100 * (textrow+h-4)) / htextpad));
+		mvwprintw(widget, h-3, w-6, "%3d%%",
+		    100 * (textrow+h-4)/ htextpad);
 		wnoutrefresh(widget);
 	}
 

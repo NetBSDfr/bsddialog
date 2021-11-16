@@ -488,7 +488,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			}
 
 			mvwprintw(menuwin, menurows+1, w-10, "%3d%%",
-			    (100 * (ymenupad+menurows)) / totnitems);
+			    100 * (ymenupad + menurows) / totnitems);
 			wrefresh(menuwin);
 		}
 		
