@@ -369,7 +369,7 @@ print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx, int ma
 			break;
 		case TEXT:
 			text += strlen(valuestr);
-			print_string(pad, &y, &x, minx, maxx, valuestr, conf.colors);
+			print_string(pad, &y, &x, minx, maxx, valuestr, conf.widget.text.colors);
 			break;
 		}
 	}
@@ -456,7 +456,7 @@ static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
 				i++;
 				break;
 			case 'n':
-				if (conf.no_nl_expand) {
+				if (conf.widget.text.no_nl_expand) {
 					j++;
 					buf[j] = 'n';
 				} else
@@ -464,7 +464,7 @@ static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
 				i++;
 				break;
 			case 't':
-				if (conf.no_collapse) {
+				if (conf.widget.text.no_collapse) {
 					j++;
 					buf[j] = 't';
 				} else
@@ -474,16 +474,16 @@ static void prepare_text(struct bsddialog_conf conf, char *text, char *buf)
 			}
 			break;
 		case '\n':
-			buf[j] = conf.cr_wrap ? ' ' : '\n';
+			buf[j] = conf.widget.text.cr_wrap ? ' ' : '\n';
 			break;
 		case '\t':
-			buf[j] = conf.no_collapse ? '\t' : ' ';
+			buf[j] = conf.widget.text.no_collapse ? '\t' : ' ';
 			break;
 		default:
 			buf[j] = text[i];
 		}
 		i++;
-		j += (buf[j] == ' ' && conf.trim && j > 0 && buf[j-1] == ' ') ?
+		j += (buf[j] == ' ' && conf.widget.text.trim && j > 0 && buf[j-1] == ' ') ?
 		    0 : 1;
 	}
 	buf[j] = '\0';
@@ -512,7 +512,7 @@ get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
 				wordlen = 0;
 				continue;
 			}
-		if (conf.colors && is_ncurses_attr(buf + i))
+		if (conf.widget.text.colors && is_ncurses_attr(buf + i))
 			i += 3;
 		else
 			wordlen++;
@@ -529,7 +529,7 @@ get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
 			linelen = 0;
 			break;
 		default:
-			if (conf.colors && is_ncurses_attr(buf + i))
+			if (conf.widget.text.colors && is_ncurses_attr(buf + i))
 				i += 3;
 			else
 				linelen++;
@@ -568,7 +568,7 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 		    string[j] == '\t' || string[j] == ' ') {
 			if (j != 0) {
 				string[j] = '\0';
-				print_str(pad, rows, &y, &x, cols, string, conf.colors);
+				print_str(pad, rows, &y, &x, cols, string, conf.widget.text.colors);
 			}
 		}
 

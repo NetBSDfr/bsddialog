@@ -69,14 +69,25 @@ struct bsddialog_conf {
 		bool no_tags;
 		bool visit_items;
 	} menu;
+	/* conf.widget.* */
+	struct {
+		/* conf.widget.text.* */
+		struct {
+			bool colors;
+			bool cr_wrap;
+			bool no_collapse;
+			bool no_nl_expand;
+			bool tab_correct;
+			int tab_len;
+			bool trim;
+		} text;
+	} widget;
 	bool ascii_lines;
 	int aspect;
 	int x;
 	int y;
 	bool clear;
-	bool colors;
 	char *colums_separator;
-	bool cr_wrap;
 	char *create_rc; //utility
 	char *date_format;
 	char *hfile;
@@ -87,11 +98,9 @@ struct bsddialog_conf {
 	bool keep_window;
 	bool last_key;
 	int max_input;
-	bool no_collapse;
 	bool no_kill;
 	bool no_lines;
 	bool no_mouse;
-	bool no_nl_expand;
 	int output_fd;
 	bool print_size; //utility?
 	bool scrollbar;
@@ -99,13 +108,10 @@ struct bsddialog_conf {
 	bool shadow;
 	bool size_err;
 	int sleep;
-	bool tab_correct;
-	int tab_len;
 	char *time_format;
 	int timeout;
 	char *title;
 	char *trace;
-	bool trim;
 };
 
 struct bsddialog_menuitem {
