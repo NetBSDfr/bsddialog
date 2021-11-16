@@ -45,41 +45,7 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
-	/* conf.button.* */
-	struct {
-		char *cancel_label;
-		bool defaultno;
-		char *default_button;
-		char *exit_label;
-		bool extra_button;
-		char *extra_label;
-		bool help_button;
-		char *help_label;
-		bool no_cancel;
-		char *no_label;
-		bool no_ok;
-		char *ok_label;
-		char *yes_label;
-	} button;
-	/* conf.menu.* */
-	struct {
-		bool align_left;
-		char *colums_separator;
-		char *default_item;
-		bool no_items;
-		bool no_tags;
-		bool visit_items;
-	} menu;
-	/* conf.widget.text.* */
-	struct {
-		bool colors;
-		bool cr_wrap;
-		bool no_collapse;
-		bool no_nl_expand;
-		bool tab_correct;
-		int tab_len;
-		bool trim;
-	} text;
+	/* widget conf.* */
 	bool ascii_lines;
 	int aspect;
 	int x;
@@ -105,6 +71,41 @@ struct bsddialog_conf {
 	int sleep;
 	int timeout;
 	char *title;
+	/* conf.widget.text.* */
+	struct {
+		bool colors;
+		bool cr_wrap;
+		bool no_collapse;
+		bool no_nl_expand;
+		bool tab_correct;
+		int tab_len;
+		bool trim;
+	} text;
+	/* conf.menu.* */
+	struct {
+		bool align_left;
+		char *colums_separator;
+		char *default_item;
+		bool no_items;
+		bool no_tags;
+		bool visit_items;
+	} menu;
+	/* conf.button.* */
+	struct {
+		char *cancel_label;
+		bool defaultno;
+		char *default_button;
+		char *exit_label;
+		bool extra_button;
+		char *extra_label;
+		bool help_button;
+		char *help_label;
+		bool no_cancel;
+		char *no_label;
+		bool no_ok;
+		char *ok_label;
+		char *yes_label;
+	} button;
 };
 
 struct bsddialog_menuitem {
