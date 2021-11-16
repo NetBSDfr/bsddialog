@@ -314,6 +314,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 			menusize = nitems + 2;
 			*menurows = MIN(widget_max_height(conf) - *h, menusize);
 			*h = *h + *menurows;
+			*menurows = *menurows - 2;
 		}
 		else /* h autosize with a fixed menurows */
 			*h = *h + *menurows + 2;
@@ -323,7 +324,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	}
 	else {
 		if (*menurows == 0)
-			*menurows = MIN(rows-4-textrow, nitems);
+			*menurows = MIN(rows-6-textrow, nitems);
 	}
 }
 
@@ -347,7 +348,7 @@ menu_checksize(int rows, int cols, char *text, int linelen, int menurows,
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (nitems > 0 && menurows == 0)
-		RETURN_ERROR("items > 0 but menurows == 0, prabably terminal "\
+		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "\
 		    "too small");
 
 	menusize = nitems > 0 ? 3 : 0;
