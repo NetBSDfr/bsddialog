@@ -56,7 +56,6 @@ struct bsddialog_conf {
 	char *hfile;
 	char *hline;
 	int input_fd;
-	bool insecure;
 	bool keep_tite;
 	bool keep_window;
 	bool last_key;
@@ -81,6 +80,10 @@ struct bsddialog_conf {
 		int tab_len;
 		bool trim;
 	} text;
+	/* conf.form.* */
+	struct {
+		bool insecure;
+	} form;
 	/* conf.menu.* */
 	struct {
 		bool align_left;
