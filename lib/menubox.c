@@ -427,6 +427,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
+	prefresh(textpad, 0, 0, y + 1, x + 1, y + h - menurows, x + h - 1);
+
 	menuwin = new_boxed_window(conf, y + h - 5 - menurows, x + 2,
 	    menurows+2, w-4, LOWERED);
 
