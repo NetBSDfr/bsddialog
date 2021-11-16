@@ -89,7 +89,7 @@ struct bsddialog_conf {
 	int y;
 	bool clear;
 	char *create_rc; //utility
-	char *date_format;
+	char *date_format; //utility?
 	char *hfile;
 	char *hline;
 	int input_fd;
@@ -100,18 +100,18 @@ struct bsddialog_conf {
 	int max_input;
 	bool no_kill;
 	bool no_lines;
-	bool no_mouse;
-	int output_fd;
+	bool no_mouse; //useful?
+	int output_fd; //utility?
 	bool print_size; //utility?
-	bool scrollbar;
+	bool scrollbar; //useful?
 	char *separate_witget;
 	bool shadow;
 	bool size_err;
 	int sleep;
-	char *time_format;
+	char *time_format; //utility?
 	int timeout;
 	char *title;
-	char *trace;
+	char *trace; //utility?
 };
 
 struct bsddialog_menuitem {
