@@ -54,7 +54,7 @@ Examples utility:
 % ./bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % ./bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
 % ./bsddialog --pause "Hello World!" 8 50 5
-* ./bsddialog --checklist "Space to select" 0 0 0 Nam1 Desc1 off Name2 Desc2 on Name3 Desc3 off
+* ./bsddialog --checklist "Space to select" 0 0 0 Name1 Desc1 off Name2 Desc2 on Name3 Desc3 off
 ```
 
 Examples library:
