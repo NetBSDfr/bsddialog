@@ -70,19 +70,16 @@ struct bsddialog_conf {
 		bool no_tags;
 		bool visit_items;
 	} menu;
-	/* conf.widget.* */
+	/* conf.widget.text.* */
 	struct {
-		/* conf.widget.text.* */
-		struct {
-			bool colors;
-			bool cr_wrap;
-			bool no_collapse;
-			bool no_nl_expand;
-			bool tab_correct;
-			int tab_len;
-			bool trim;
-		} text;
-	} widget;
+		bool colors;
+		bool cr_wrap;
+		bool no_collapse;
+		bool no_nl_expand;
+		bool tab_correct;
+		int tab_len;
+		bool trim;
+	} text;
 	bool ascii_lines;
 	int aspect;
 	int x;

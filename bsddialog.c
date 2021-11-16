@@ -359,10 +359,10 @@ int main(int argc, char *argv[argc])
 			conf.clear = true;
 			break;
 		case COLORS:
-			conf.widget.text.colors = true;
+			conf.text.colors = true;
 			break;
 		case CR_WRAP:
-			conf.widget.text.cr_wrap = true;
+			conf.text.cr_wrap = true;
 			break;
 		case DATE_FORMAT:
 			fmtdateflag = optarg;
@@ -419,7 +419,7 @@ int main(int argc, char *argv[argc])
 			conf.button.no_cancel = true;
 			break;
 		case NO_COLLAPSE:
-			conf.widget.text.no_collapse = true;
+			conf.text.no_collapse = true;
 			break;
 		case NO_LABEL:
 			conf.button.no_label = optarg;
@@ -428,7 +428,7 @@ int main(int argc, char *argv[argc])
 			conf.no_lines = true;
 			break;
 		case NO_NL_EXPAND:
-			conf.widget.text.no_nl_expand = true;
+			conf.text.no_nl_expand = true;
 			break;
 		case NOOK:
 		case NO_OK:
@@ -485,7 +485,7 @@ int main(int argc, char *argv[argc])
 			conf.title = optarg;
 			break;
 		case TRIM:
-			conf.widget.text.trim = true;
+			conf.text.trim = true;
 			break;
 		case VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
