@@ -478,12 +478,12 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 			if (ymenupad > 0) {
 				wattron(menuwin, t.lineraisecolor);
-				mvwprintw(menuwin, 0, 2, "^^^");
+				mvwprintw(menuwin, 0, 2, "^^");
 				wattroff(menuwin, t.lineraisecolor);
 			}
 			if (ymenupad + menurows < totnitems) {
 				wattron(menuwin, t.linelowercolor);
-				mvwprintw(menuwin, menurows+1, 2, "vvv");
+				mvwprintw(menuwin, menurows+1, 2, "vv");
 				wattroff(menuwin, t.linelowercolor);
 			}
 
