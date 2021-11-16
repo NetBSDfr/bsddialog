@@ -64,6 +64,7 @@ struct bsddialog_conf {
 	/* conf.menu.* */
 	struct {
 		bool align_left;
+		char *colums_separator;
 		char *default_item;
 		bool no_items;
 		bool no_tags;
@@ -87,7 +88,6 @@ struct bsddialog_conf {
 	int x;
 	int y;
 	bool clear;
-	char *colums_separator;
 	char *create_rc; //utility
 	char *date_format;
 	char *hfile;
