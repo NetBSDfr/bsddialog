@@ -5,11 +5,13 @@ library_examples/buildlist
 library_examples/checklist
 library_examples/dialog4ports
 library_examples/menu
+library_examples/mixedlist
 library_examples/radiolist
 library_examples/theme
 library_examples/treeview
 library_examples/infobox
 library_examples/msgbox
+library_examples/ports
 library_examples/yesno
 *.gz
 lib/libbsddialog.so*

@@ -1,8 +1,8 @@
 #!/bin/sh
 
 libpath=../lib
-examples="buildlist menu treeview checklist radiolist dialog4ports theme \
-	infobox yesno msgbox"
+examples="buildlist menu treeview checklist radiolist mixedlist theme \
+	infobox yesno msgbox ports"
 
 for e in $examples
 do
