@@ -101,7 +101,6 @@ struct bsddialog_conf {
 	bool no_kill;
 	bool no_lines;
 	bool no_mouse; //useful?
-	int output_fd; //utility?
 	bool scrollbar; //useful?
 	char *separate_witget;
 	bool shadow;
@@ -180,7 +179,7 @@ int bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int co
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
 int bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int min, int max, int def);
+    int min, int max, int *value);
 int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols);
 int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols);

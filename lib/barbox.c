@@ -194,7 +194,7 @@ int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int c
 
 int
 bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, int min,
-    int max, int def)
+    int max, int *value)
 {
 	WINDOW *widget, *bar, *shadow;
 	int y, x;
@@ -213,7 +213,10 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
 	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
-	currvalue = def;
+	if (value == NULL)
+		RETURN_ERROR("*value == NULL");
+	
+	currvalue = *value;
 	sizebar = cols - 16;
 	loop = buttupdate = barupdate = true;
 	while(loop) {
@@ -234,8 +237,8 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 		switch(input) {
 		case 10: // Enter
 			output = bs.value[bs.curr]; // values -> outputs
+			*value = currvalue;
 			loop = false;
-			dprintf(conf.output_fd, "%d", currvalue);
 			break;
 		case 27: // Esc
 			output = BSDDIALOG_ERROR;

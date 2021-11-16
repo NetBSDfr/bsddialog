@@ -68,12 +68,12 @@ struct formitem {
 
 static int
 mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
-    bool shortkey, WINDOW *entry, FORM *form, FIELD **field, int nitems,
-    /*struct formitem *items,*/ int fd)
+    bool shortkey, WINDOW *entry, FORM *form, FIELD **field, int nitems
+    /*struct formitem *items*/)
 {
 	bool loop, buttupdate, inentry = true;
-	int i, input, output;
-	char *bufp;
+	int input, output;
+	//char *bufp;
 
 	curs_set(2);
 	pos_form_cursor(form);
@@ -94,12 +94,13 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 			output = bs.value[bs.curr]; // values -> buttvalues
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			for (i=0; i<nitems; i++) {
+			/* add a struct for forms */
+			/*for (i=0; i<nitems; i++) {
 				bufp = field_buffer(field[i], 0);
 				dprintf(fd, "\n+%s", bufp);
 				bufp = field_buffer(field[i], 1);
 				dprintf(fd, "-%s+", bufp);
-			}
+			}*/
 			loop = false;
 			break;
 		case 27: // Esc
@@ -242,7 +243,7 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 	wrefresh(entry);
 
 	output = mixedform_handler(widget, rows-2, cols, bs, true, entry, form,
-	    field, nitems, /*items,*/ conf.output_fd);
+	    field, nitems /*,items*/);
 
 	unpost_form(form);
 	free_form(form);
