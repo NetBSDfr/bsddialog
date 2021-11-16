@@ -322,7 +322,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*h = MIN(*h, widget_max_height(conf));
 	}
 	else {
-		if (*menurows <= 0)
+		if (*menurows == 0)
 			*menurows = MIN(rows-4-textrow, nitems);
 	}
 }
