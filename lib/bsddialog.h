@@ -88,7 +88,6 @@ struct bsddialog_conf {
 	int x;
 	int y;
 	bool clear;
-	char *create_rc; //utility
 	char *hfile;
 	char *hline;
 	int input_fd;
@@ -109,7 +108,6 @@ struct bsddialog_conf {
 	int sleep;
 	int timeout;
 	char *title;
-	char *trace; //utility?
 };
 
 struct bsddialog_menuitem {
