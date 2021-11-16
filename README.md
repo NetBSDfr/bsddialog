@@ -48,11 +48,13 @@ Output:
 Examples utility:
 ```
 % ./bsddialog --title msgbox --msgbox "Hello World!" 5 30
+% ./bsddialog --theme default --title msgbox --msgbox "Hello World!" 5 30
 % ./bsddialog --title yesno --yesno "Hello World!" 5 30
 % ./bsddialog --inputbox "Hello World!" 10 30 2>input.txt; cat input.txt; rm input.txt
 % ./bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % ./bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
 % ./bsddialog --pause "Hello World!" 8 50 5
+* ./bsddialog --checklist "Space to select" 0 0 0 Nam1 Desc1 off Name2 Desc2 on Name3 Desc3 off
 ```
 
 Examples library:
@@ -150,7 +152,7 @@ Examples library:
 | --gauge        | In progress |                                               |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --inputmenu    |             |                                               |
-| --menu         | In progress | todo resize, F1, todo scrolling               |
+| --menu         | In progress | todo resize, F1                               |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
 | --mixedgauge   | In progress | todo autosize, resize, F1                     |
 | --mixedlist    | In progress | Can implement a dialog4ports clone            |
