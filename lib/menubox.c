@@ -422,7 +422,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	}
 
 	ys = y + h - 5 - menurows + 1;
-	ye = ys + menurows + 2 -1;
+	ye = y + h - 5 ;
 	if (conf.menu.align_left || pos.line > w - 6 || currmode == TREEVIEWMODE) {
 		xs = x + 3;
 		xe = xs + w - 7;
