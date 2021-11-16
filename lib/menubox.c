@@ -304,7 +304,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		/* line size */
 		*w = MAX(*w, linelen + 6);
 		/* avoid terminal overflow */
-		*w = MIN(*w, widget_max_width(conf));
+		*w = MIN(*w, widget_max_width(conf) -2);
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
@@ -338,8 +338,8 @@ menu_checksize(int rows, int cols, char *text, int linelen, int menurows,
 	/* buttons */
 	mincols += bs.nbuttons * bs.sizebutton;
 	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
-	/* line */
-	mincols = MAX(mincols, linelen);
+	/* line, comment to permet some cols hidden */
+	/* mincols = MAX(mincols, linelen); */
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, width < size buttons or "\
