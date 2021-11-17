@@ -307,7 +307,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf));
 	}
-
+BSDDIALOG_DEBUG(4,1, "h: %d|||", *h);
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = HBORDERS + 2 /* buttons */ + textrow;
 
@@ -327,6 +327,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		if (*menurows == 0)
 			*menurows = MIN(rows-6-textrow, nitems);
 	}
+	BSDDIALOG_DEBUG(5, 1, "h: %d|||", *h);
 }
 
 static int
@@ -545,7 +546,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			 * following "refresh" seem not work
 			 */
 			refresh();
-
+BSDDIALOG_DEBUG(1,1, "menurows: %d, %u", menurows, menurows);
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
 			menu_autosize(conf, rows, cols, &h, &w, text, pos.line, &menurows,
@@ -554,7 +555,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
-			
+BSDDIALOG_DEBUG(2,1, "menurows: %d, %u", menurows, menurows);			
 			wclear(shadow);
 			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
 			wresize(shadow, h, w);
@@ -652,6 +653,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				item->on = true;
 			}
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
+			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 		}
 	}
 
