@@ -72,8 +72,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
     /*struct formitem *items*/)
 {
 	bool loop, buttupdate, inentry = true;
-	int input, output, i;
-	char *bufp;
+	int input, output;
 
 	curs_set(2);
 	pos_form_cursor(form);
@@ -95,12 +94,12 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			/* add a struct for forms */
-			for (i=0; i<nitems; i++) {
+			/*for (i=0; i<nitems; i++) {
 				bufp = field_buffer(field[i], 0);
-				//dprintf(fd, "\n+%s", bufp);
+				dprintf(fd, "\n+%s", bufp);
 				bufp = field_buffer(field[i], 1);
-				//dprintf(fd, "-%s+", bufp);
-			}
+				dprintf(fd, "-%s+", bufp);
+			}*/
 			loop = false;
 			break;
 		case 27: /* Esc */
