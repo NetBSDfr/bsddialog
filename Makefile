@@ -6,7 +6,7 @@
 OUTPUT=  bsddialog
 SOURCES= bsddialog.c
 OBJECTS= ${SOURCES:.c=.o}
-LIBPATH= ./lib
+LIBPATH= ${.CURDIR}/lib
 LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
 CFLAGS= -Wall -I${LIBPATH}
