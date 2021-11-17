@@ -499,17 +499,17 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		input = getch();
 		switch(input) {
 		case KEY_ENTER:
-		case 10: // Enter
+		case 10: /* Enter */
 			output = bs.value[bs.curr];
 			if (currmode == MENUMODE)
 				item->on = true;
 			loop = false;
 			break;
-		case 27: // Esc
+		case 27: /* Esc */
 			output = BSDDIALOG_ERROR;
 			loop = false;
 			break;
-		case '\t': // TAB
+		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
@@ -524,6 +524,22 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				bs.curr++;
 				buttupdate = true;
 			}
+			break;
+		case KEY_F(1):
+			if (conf.hfile == NULL)
+				break;
+			if (f1help(conf) != 0)
+				return BSDDIALOG_ERROR;
+			/* No break! the terminal size can change */
+		case KEY_RESIZE: /* to improve */
+			/*refresh();*/
+			draw_buttons(widget, h-2, w, bs, true);
+			wrefresh(widget);
+			prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
+			    y + h - menurows, x + 1 + w - t.texthmargin);
+			wrefresh(menuwin);
+			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			refresh();
 			break;
 		}
 
