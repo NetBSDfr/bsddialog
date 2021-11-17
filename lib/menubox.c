@@ -329,8 +329,8 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-menu_checksize(int rows, int cols, char *text, int linelen, int menurows,
-    int nitems, struct buttons bs)
+menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
+    struct buttons bs)
 {
 	int mincols, textrow, menusize;
 
@@ -419,7 +419,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 	menu_autosize(conf, rows, cols, &h, &w, text, pos.line, &menurows,
 	    totnitems, bs);
-	if (menu_checksize(h, w, text, pos.line, menurows, totnitems, bs) != 0)
+	if (menu_checksize(h, w, text, menurows, totnitems, bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
