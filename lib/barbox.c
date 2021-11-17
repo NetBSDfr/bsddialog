@@ -240,8 +240,8 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols, i
 			*value = currvalue;
 			loop = false;
 			break;
-		case 27: // Esc
-			output = BSDDIALOG_ERROR;
+		case 27: /* Esc */
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case '\t': // TAB
@@ -336,8 +336,8 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 			output = bs.value[bs.curr]; // values -> outputs
 			loop = false;
 			break;
-		case 27: // Esc
-			output = BSDDIALOG_ERROR;
+		case 27: /* Esc */
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case '\t': // TAB

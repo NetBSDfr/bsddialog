@@ -103,8 +103,8 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 			}*/
 			loop = false;
 			break;
-		case 27: // Esc
-			output = BSDDIALOG_ERROR;
+		case 27: /* Esc */
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case '\t': // TAB

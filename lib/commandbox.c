@@ -64,7 +64,7 @@ command_handler(WINDOW *window, int y, int cols, struct buttons bs, bool shortke
 			loop = false;
 			break;
 		case 27: /* Esc */
-			output = BSDDIALOG_ERROR;
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case '\t': /* TAB */

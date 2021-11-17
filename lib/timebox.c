@@ -85,8 +85,8 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 
 		input = getch();
 		switch(input) {
-		case 10: // Enter
-			output = bs.value[bs.curr]; // values -> outputs
+		case 10: /* Enter */
+			output = bs.value[bs.curr];
 			if (output == BSDDIALOG_YESOK) {
 				*hh = c[0].curr - 1900;
 				*mm = c[1].curr;
@@ -94,11 +94,11 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 			}
 			loop = false;
 			break;
-		case 27: // Esc
-			output = BSDDIALOG_ERROR;
+		case 27: /* Esc */
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
-		case '\t': // TAB
+		case '\t': /* TAB */
 			sel = (sel + 1) % 3;
 			break;
 		case KEY_LEFT:
@@ -204,7 +204,7 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 			loop = false;
 			break;
 		case 27: // Esc
-			output = BSDDIALOG_ERROR;
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case '\t': // TAB

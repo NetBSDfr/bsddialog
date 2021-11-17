@@ -51,6 +51,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	char buf[BUFSIZ], *exitbutt ="EXIT";
 	FILE *fp;
 	bool loop;
+	int output;
 
 	if (mode == TAILMODE || mode == TAILBGMODE) {
 		bsddialog_msgbox(conf, "Tailbox and Tailboxbg unimplemented", rows, cols);
@@ -106,10 +107,12 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 		prefresh(pad, ypad, xpad, ys, xs, ye, xe);
 		input = getch();
 		switch(input) {
-		case 10: // Enter
+		case 10: /* Enter */
+			output = BSDDIALOG_YESOK;
 			loop = false;
 			break;
-		case 27: // Esc
+		case 27: /* Esc */
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case KEY_LEFT:
@@ -130,7 +133,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	/* to improve: name, rows and cols, now only for F1 */
 	end_widget(conf, widget, rows, cols, shadow);
 
-	return (BSDDIALOG_YESOK); /* to improve*/
+	return output;
 }
 
 int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols)
