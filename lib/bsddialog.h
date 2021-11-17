@@ -45,7 +45,7 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
-	/* widget conf.* */
+	/* (widget) conf.* */
 	bool ascii_lines;
 	int aspect;
 	int x;
@@ -70,7 +70,7 @@ struct bsddialog_conf {
 	int sleep;
 	int timeout;
 	char *title;
-	/* conf.widget.text.* */
+	/* conf.text.* */
 	struct {
 		bool colors;
 		bool cr_wrap;
