@@ -80,11 +80,6 @@ int main()
 	output = bsddialog_mixedlist(conf, "", 0, 0, 0, 7, group, NULL,NULL);
 
 	bsddialog_end();
-	
-	if (output == BSDDIALOG_ERROR) {
-		printf("Error: %s\n", bsddialog_geterror());
-		return output;
-	}
 
 	printf("Options:\n");
 	for (i=0; i<7; i++) {
