@@ -304,7 +304,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		/* line size */
 		*w = MAX(*w, linelen + 6);
 		/* avoid terminal overflow */
-		*w = MIN(*w, widget_max_width(conf) -2);
+		*w = MIN(*w, widget_max_width(conf));
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {

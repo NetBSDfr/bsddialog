@@ -616,11 +616,16 @@ print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char
 }
 
 /* autosize */
+
+/*
+ * max y, that is from 0 to LINES - 1 - t.shadowrows,
+ * could not be max height but avoids problems with checksize
+ */
 int widget_max_height(struct bsddialog_conf conf)
 {
 	int maxheight;
 
-	if ((maxheight = conf.shadow ? LINES - t.shadowrows : LINES) <= 0)
+	if ((maxheight = conf.shadow ? LINES - 1 - t.shadowrows : LINES - 1) <= 0)
 		RETURN_ERROR("Terminal too small, LINES - shadow <= 0");
 
 	if (conf.y > 0)
@@ -630,11 +635,15 @@ int widget_max_height(struct bsddialog_conf conf)
 	return maxheight;
 }
 
+/*
+ * max x, that is from 0 to COLS - 1 - t.shadowcols,
+ *  * could not be max height but avoids problems with checksize
+ */
 int widget_max_width(struct bsddialog_conf conf)
 {
 	int maxwidth;
 
-	if ((maxwidth = conf.shadow ? COLS - t.shadowcols : COLS)  <= 0)
+	if ((maxwidth = conf.shadow ? COLS - 1 - t.shadowcols : COLS - 1)  <= 0)
 		RETURN_ERROR("Terminal too small, COLS - shadow <= 0");
 	if (conf.x > 0)
 		if ((maxwidth -= conf.x) <=0)
