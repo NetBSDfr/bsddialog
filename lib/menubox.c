@@ -359,6 +359,31 @@ menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	return 0;
 }
 
+/* the caller has to call prefresh(menupad, ymenupad, 0, ys, xs, ye, xe); */
+static void
+update_menuwin(struct bsddialog_conf conf, WINDOW *menuwin, int h, int w,
+    int totnitems, unsigned int menurows, int ymenupad)
+{
+	if (totnitems > (int) menurows) {
+			draw_borders(conf, menuwin, h, w, LOWERED);
+
+			if (ymenupad > 0) {
+				wattron(menuwin, t.lineraisecolor);
+				mvwprintw(menuwin, 0, 2, "^^");
+				wattroff(menuwin, t.lineraisecolor);
+			}
+			if ((int) (ymenupad + menurows) < totnitems) {
+				wattron(menuwin, t.linelowercolor);
+				mvwprintw(menuwin, h-1, 2, "vv");
+				wattroff(menuwin, t.linelowercolor);
+			}
+
+			mvwprintw(menuwin, h-1, w-10, "%3d%%",
+			    100 * (ymenupad + menurows) / totnitems);
+			//wrefresh(menuwin);
+		}
+}
+
 static int
 do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, enum menumode mode, int ngroups,
@@ -367,7 +392,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
 	int i, j, y, x, h, w, htextpad, output, input;
 	int ymenupad, ys, ye, xs, xe, abs, g, rel, totnitems;
-	bool loop, buttupdate;
+	bool loop;
 	struct buttons bs;
 	struct bsddialog_menuitem *item;
 	enum menumode currmode;
@@ -461,42 +486,18 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		xe = xs + w - 5;
 	}
 
-	wrefresh(menuwin);
 	ymenupad = 0; /* now ymenupad is pminrow for prefresh() */
-	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);//delete?
+	update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
+	wrefresh(menuwin);
+	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+	
+	draw_buttons(widget, h-2, w, bs, true);
+	wrefresh(widget);
 
 	item = &groups[g].items[rel];
 	currmode = getmode(mode, groups[g]);
-	loop = buttupdate = true;
+	loop = true;
 	while(loop) {
-		if (buttupdate) {
-			draw_buttons(widget, h-2, w, bs, true);
-			wrefresh(widget);
-			buttupdate = false;
-		}
-
-		if (totnitems > (int) menurows) {
-			draw_borders(conf, menuwin, menurows+2, w-4, LOWERED);
-
-			if (ymenupad > 0) {
-				wattron(menuwin, t.lineraisecolor);
-				mvwprintw(menuwin, 0, 2, "^^");
-				wattroff(menuwin, t.lineraisecolor);
-			}
-			if ((int) (ymenupad + menurows) < totnitems) {
-				wattron(menuwin, t.linelowercolor);
-				mvwprintw(menuwin, menurows+1, 2, "vv");
-				wattroff(menuwin, t.linelowercolor);
-			}
-
-			mvwprintw(menuwin, menurows+1, w-10, "%3d%%",
-			    100 * (ymenupad + menurows) / totnitems);
-			wrefresh(menuwin);
-		}
-		
-		
-		prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
-
 		input = getch();
 		switch(input) {
 		case KEY_ENTER:
@@ -512,18 +513,21 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			buttupdate = true;
+			draw_buttons(widget, h-2, w, bs, true);
+			wrefresh(widget);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				buttupdate = true;
+				draw_buttons(widget, h-2, w, bs, true);
+				wrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				buttupdate = true;
+				draw_buttons(widget, h-2, w, bs, true);
+				wrefresh(widget);
 			}
 			break;
 		case KEY_F(1):
@@ -533,14 +537,66 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 			/* No break! the terminal size can change */
 		case KEY_RESIZE: /* to improve */
-			/*refresh();*/
+		case 'r':
+			hide_widget(y, x, h, w,conf.shadow);
+
+			/*
+			 * Unnecessary, but, when the columns decrease the
+			 * following "refresh" seem not work
+			 */
+			refresh();
+
+			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+				return BSDDIALOG_ERROR;
+			menu_autosize(conf, rows, cols, &h, &w, text, pos.line, &menurows,
+			    totnitems, bs);
+			if (menu_checksize(h, w, text, menurows, totnitems, bs) != 0)
+				return BSDDIALOG_ERROR;
+			if (set_widget_position(conf, &y, &x, h, w) != 0)
+				return BSDDIALOG_ERROR;
+			
+			wclear(shadow);
+			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
+			wresize(shadow, h, w);
+
+			wclear(widget);
+			mvwin(widget, y, x);
+			wresize(widget, h, w);
+
+			htextpad = 1;
+			wclear(textpad);
+			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+
+			if(update_widget_withtextpad(conf, shadow, widget, h, w,
+			    RAISED, textpad, &htextpad, text, true) != 0)
+			return BSDDIALOG_ERROR;
+			
 			draw_buttons(widget, h-2, w, bs, true);
 			wrefresh(widget);
+
 			prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
 			    y + h - menurows, x + 1 + w - t.texthmargin);
+
+			wclear(menuwin);
+			mvwin(menuwin, y + h - 5 - menurows, x + 2);
+			wresize(menuwin,menurows+2, w-4);
+			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
 			wrefresh(menuwin);
+			
+			ys = y + h - 5 - menurows + 1;
+			ye = y + h - 5 ;
+			if (conf.menu.align_left || (int)pos.line > w - 6 || currmode == TREEVIEWMODE) {
+				xs = x + 3;
+				xe = xs + w - 7;
+			}
+			else { /* center */
+				xs = x + 3 + (w-6)/2 - pos.line/2;
+			xe = xs + w - 5;
+	}
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+
 			refresh();
+
 			break;
 		default:
 			for (i = 0; i < (int) bs.nbuttons; i++)
@@ -562,6 +618,9 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			if (ymenupad > abs && ymenupad > 0)
 				ymenupad--;
+			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
+			wrefresh(menuwin);
+			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			break;
 		case KEY_DOWN:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
@@ -571,6 +630,9 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			if ((int)(ymenupad + menurows) <= abs)
 				ymenupad++;
+			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
+			wrefresh(menuwin);
+			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			break;
 		case ' ': // Space
 			if (currmode == MENUMODE)
