@@ -498,6 +498,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 		input = getch();
 		switch(input) {
+		case KEY_ENTER:
 		case 10: // Enter
 			output = bs.value[bs.curr];
 			if (currmode == MENUMODE)
