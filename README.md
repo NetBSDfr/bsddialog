@@ -89,7 +89,7 @@ Examples library:
  
  infobox (Do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
-
+ checklist, radiolist, mixedlist, menu.
 
 **TODO**
 
@@ -116,11 +116,11 @@ Examples library:
 | --last-key                   |             |                                 |
 | --max-input *size*           |             |                                 |
 | --no-collapse                | Coding      |                                 |
-| --no-items                   |             | useful?                         |
+| --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
 | --no-mouse                   |             |                                 |
 | --no-nl-expand               | Coding      |                                 |
-| --no-tags                    |             | useful?                         |
+| --no-tags                    |             |                                 |
 | --output-fd *fd*             | In progress |                                 |
 | --print-text-only *str h w*  |             | useful?                         |
 | --print-text-size *str h w*  |             | useful?                         |
@@ -144,7 +144,6 @@ Examples library:
 |--------------- | ----------- | ----------------------------------------------|
 | --buildlist    | In progress | todo autosize, resize, F1                               |
 | --calendar     | In progress | todo autosize, resize, F1, leap year, year <=0, month days |
-| --checklist    | In progress | todo  resize, F1                              |
 | --dselect      |             |                                               |
 | --editbox      |             |                                               |
 | --form         | In progress | implemented via --mixedform                   |
@@ -152,17 +151,14 @@ Examples library:
 | --gauge        | In progress |                                               |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --inputmenu    |             |                                               |
-| --menu         | In progress | todo resize, F1                               |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
 | --mixedgauge   | In progress | todo autosize, resize, F1                     |
-| --mixedlist    | In progress | Can implement a dialog4ports clone            |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |
 | --pause        | In progress | todo autosize, resize, F1                     |
 | --prgbox       | In progress | add command opts                              |
 | --programbox   | Coding      |                                               |
 | --progressbox  |             |                                               |
-| --radiolist    | In progress | todo resize, F1                               |
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
 | --tailbox      | Coding      | todo via --textbox or fseek?                  |
 | --tailboxbg    |             |                                               |
