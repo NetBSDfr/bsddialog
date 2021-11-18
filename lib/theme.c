@@ -60,7 +60,7 @@ static struct bsddialog_theme defaulttheme = {
 	.currtagcolor    = GET_COLOR(COLOR_BLACK,  bgcurr),
 	.tagcolor        = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.namesepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
-	.descsepcolor    = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.descsepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
 
 	.currfieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
 	.fieldcolor      = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
@@ -100,8 +100,8 @@ static struct bsddialog_theme dialogtheme = {
 	.itemcolor       = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 	.currtagcolor    = GET_COLOR(COLOR_YELLOW,COLOR_BLUE)  | A_BOLD,
 	.tagcolor        = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
-	.namesepcolor    = GET_COLOR(COLOR_YELLOW,COLOR_WHITE) | A_BOLD,
-	.descsepcolor    = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
+	.namesepcolor    = GET_COLOR(COLOR_RED,   COLOR_WHITE),
+	.descsepcolor    = GET_COLOR(COLOR_RED,   COLOR_WHITE),
 
 	.currfieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE) | A_BOLD,
 	.fieldcolor      = GET_COLOR(COLOR_WHITE,  COLOR_CYAN) | A_BOLD,
