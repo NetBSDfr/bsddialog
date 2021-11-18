@@ -88,7 +88,7 @@ struct bsddialog_conf {
 	struct {
 		bool align_left;
 		char *colums_separator;
-		char *default_item;
+		char *default_item; //delete, add int *focus to API?
 		bool no_items;
 		bool no_tags;
 		bool visit_items;
