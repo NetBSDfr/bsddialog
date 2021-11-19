@@ -656,7 +656,7 @@ int main(int argc, char *argv[argc])
 		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
 
-	// debug & devel
+	/* debug & devel */
 	printf("[Debug] Exit status: %d ", output);
 	switch (output) {
 	case BSDDIALOG_ERROR: 	  printf("ERROR");    break;
@@ -669,7 +669,9 @@ int main(int argc, char *argv[argc])
 	default: 		  printf("Unknow status! Bug!"); break;
 	}
 	printf("\n");
-	printf("[Debug] Error msg: %s\n", bsddialog_geterror());
+
+	if (output == BSDDIALOG_ERROR)
+		printf("Error: %s\n", bsddialog_geterror());
 
 	return output;
 }
