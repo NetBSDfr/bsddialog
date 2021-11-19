@@ -184,9 +184,10 @@ int yesno_builder(BUILDER_ARGS);
 void usage(void)
 {
 
-	printf("usage: bsddialog --help | -- version\n"\
-	       "       bsddialog [common-opts] widget <text> <height> <width> "\
-	       "[widget-opts]\n");
+	printf("usage: bsddialog --help\n"\
+	       "       bsddialog --version\n"\
+	       "       bsddialog [--<common-opts>] --<widget> <text> "\
+	       "<height> <width> [--<widget-opts>]\n");
 }
 
 bool itemprefixflag, itembottomdescflag, separateoutputnlflag, singlequotedflag;
