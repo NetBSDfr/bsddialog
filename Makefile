@@ -45,4 +45,5 @@ unistall:
 	${RM} ${MANDIR}/${MAN}.gz
 
 clean:
+	make -C ${LIBPATH} clean
 	${RM} ${OUTPUT} *.o *~ *.core ${MAN}.gz
