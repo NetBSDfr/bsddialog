@@ -602,7 +602,7 @@ int main(int argc, char *argv[argc])
 		default:
 			if (ignore_flag == false) {
 				usage();
-				return 1;
+				return (BSDDIALOG_ERROR);
 			}
 		}
 	}
@@ -613,12 +613,12 @@ int main(int argc, char *argv[argc])
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
 		dprintf(output_fd_flag, "MaxSize: %d, %d\n", ws.ws_row, ws.ws_col);
 		if (argc == 0)
-			return (0);
+			return (BSDDIALOG_YESOK);
 	}
 
 	if (argc < 3) {
 		usage();
-		return (1);
+		return (BSDDIALOG_ERROR);
 	}
 	text = argv[0];
 	rows = atoi(argv[1]);
@@ -628,7 +628,7 @@ int main(int argc, char *argv[argc])
 
 	if(bsddialog_init() != 0) {
 		printf("Error: %s\n", bsddialog_geterror());
-		return 1;
+		return (BSDDIALOG_ERROR);
 	}
 
 	if (theme_flag != NULL) {
@@ -645,13 +645,14 @@ int main(int argc, char *argv[argc])
 	if (backtitle_flag != NULL)
 		bsddialog_backtitle(conf, backtitle_flag);
 
-	output = -1;
+	output = BSDDIALOG_YESOK;
 	if (widgetbuilder != NULL)
 		output = widgetbuilder(conf, text, rows, cols, argc, argv);
 
 	bsddialog_end();
 
-	if (conf.get_height != NULL && conf.get_width != NULL)
+	if (conf.get_height != NULL && conf.get_width != NULL &&
+	    output != BSDDIALOG_ERROR)
 		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
 
