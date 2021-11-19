@@ -205,7 +205,7 @@ void usage(void)
 
 int main(int argc, char *argv[argc])
 {
-	char *text, *backtitle = NULL, *theme = NULL;
+	char *text, *backtitle_flag, *theme_flag;
 	int input, rows, cols, output, getH, getW;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
 	bool ignore_flag, print_maxsize_flag;
@@ -216,6 +216,8 @@ int main(int argc, char *argv[argc])
 	conf.y = conf.x = BSDDIALOG_CENTER;
 	conf.shadow = true;
 
+	backtitle_flag = NULL;
+	theme_flag = NULL;
 	output_fd_flag = STDERR_FILENO;
 	print_maxsize_flag = false;
 	ignore_flag = false;
@@ -233,7 +235,7 @@ int main(int argc, char *argv[argc])
 	    /* common options */
 	    { "ascii-lines", no_argument, NULL, ASCII_LINES },
 	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
-	    { "backtitle", required_argument, NULL /*backtitle*/, BACKTITLE },
+	    { "backtitle_flag", required_argument, NULL /*backtitle_flag*/, BACKTITLE },
 	    { "begin-x", required_argument, NULL /*x*/, BEGIN_X },
 	    { "begin-y", required_argument, NULL /*y*/, BEGIN_Y },
 	    { "cancel-label", required_argument, NULL /*string*/, CANCEL_LABEL },
@@ -296,7 +298,7 @@ int main(int argc, char *argv[argc])
 	    { "stdout", no_argument, NULL, STDOUT },
 	    { "tab-correct", no_argument, NULL, 'X' },
 	    { "tab-len", required_argument, NULL /*n*/, 'X' },
-	    { "theme", required_argument, NULL /*string*/, THEME },
+	    { "theme_flag", required_argument, NULL /*string*/, THEME },
 	    { "time-format", required_argument, NULL /*format*/, TIME_FORMAT },
 	    { "timeout", required_argument, NULL /*secs*/, 'X' },
 	    { "title", required_argument, NULL /*title*/, TITLE },
@@ -346,7 +348,7 @@ int main(int argc, char *argv[argc])
 			conf.ascii_lines = true;
 			break;
 		case BACKTITLE:
-			backtitle = optarg;
+			backtitle_flag = optarg;
 			break;
 		case BEGIN_X:
 			conf.x = atoi(optarg);
@@ -491,7 +493,7 @@ int main(int argc, char *argv[argc])
 			output_fd_flag = STDOUT_FILENO;
 			break;
 		case THEME:
-			theme = optarg;
+			theme_flag = optarg;
 			break;
 		case TIME_FORMAT:
 			time_fmt_flag = optarg;
@@ -629,19 +631,19 @@ int main(int argc, char *argv[argc])
 		return 1;
 	}
 
-	if (theme != NULL) {
-		if (strcmp(theme, "default") == 0)
+	if (theme_flag != NULL) {
+		if (strcmp(theme_flag, "default") == 0)
 			bsddialog_set_default_theme(BSDDIALOG_THEME_DEFAULT);
-		else if (strcmp(theme, "dialog") == 0)
+		else if (strcmp(theme_flag, "dialog") == 0)
 			bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG);
-		else if (strcmp(theme, "magenta") == 0)
+		else if (strcmp(theme_flag, "magenta") == 0)
 			bsddialog_set_default_theme(BSDDIALOG_THEME_MAGENTA);
 		else
 			bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG);
 	}
 
-	if (backtitle != NULL)
-		bsddialog_backtitle(conf, backtitle);
+	if (backtitle_flag != NULL)
+		bsddialog_backtitle(conf, backtitle_flag);
 
 	output = -1;
 	if (widgetbuilder != NULL)
