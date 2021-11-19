@@ -9,7 +9,7 @@ Description:
 <https://www.freebsd.org/status/report-2021-04-2021-06/#_bsddialog_tui_widgets>
 
 
-**Getting Started**
+## Getting Started
 
 FreeBSD:
 
@@ -77,9 +77,9 @@ Use Cases:
  - [portconfig](https://gitlab.com/alfix/portconfig)
 
 
-**Features**:
+## Features
 
- - Common Options:
+**Common Options:**
  
 --ascii-lines, --backtitle *backtitle*, --begin-x *x* (--begin *y y*),
 (--begin *y x*), --cancel-label *string*, -clear (test with multiple widgets),
@@ -87,27 +87,27 @@ Use Cases:
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
 --help-label *string*, --help-status, --help-tags, --hline *string*,
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
---nook, --no-shadow, --ok-label *string*, --output-separator *string*,
---print-version, --print-size (todo move lib -> utility),
---quoted (quotes all != dialog), --print-maxsize, --shadow,
---single-quoted (add --quote-with *ch*?), 
+--nook, --no-shadow, --ok-label *string*, --output-fd *fd*,
+--output-separator *string*, --print-version,
+--print-size (todo move lib -> utility), --quoted (quotes all != dialog),
+--print-maxsize, --shadow, --single-quoted (add --quote-with *ch*?), 
 --separator *string* (alias --output-separator *string*),
 --separate-output (rename --separate-output-withnl?), --sleep *secs*, --stderr,
 --stdout, --theme *string* ("default", "dialog" and "magenta"),
 --time-format *format*, --title *title*, --version, --yes-label *string*.
 
- - Widgets:
+**Widgets:**
  
  infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
  checklist, radiolist, mixedlist and menu.
 
-**TODO**
+## TODO
 
- * fix: % bsddialog --hline "bottom line" title "test title" --infobox test 8 40
+**fix:** % bsddialog --hline "bottom line" title "test title" --infobox test 8 40
 
 
- - Common Options:
+**Common Options:**
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
@@ -129,27 +129,21 @@ Use Cases:
 | --no-collapse                | Coding      |                                 |
 | --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
-| --no-mouse                   |             |                                 |
 | --no-nl-expand               | Coding      |                                 |
 | --no-tags                    |             |                                 |
-| --output-fd *fd*             | In progress |                                 |
-| --print-text-only *str h w*  |             | useful?                         |
-| --print-text-size *str h w*  |             | useful?                         |
-| --reorder                    |             |                                 |
-| --scrollbar                  |             |                                 |
-| --separate-widget *string*   |             |                                 |
-| --size-err                   |             |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
-| --timeout *secs*             |             |                                 |
-| --trace *filename*           |             |                                 |
 | --week-start *day*           |             |                                 |
 | --trim                       | Coding      |                                 |
-| --visit-items                |             |                                 |
 
 
+Not planned in the short term: --no-mouse, --print-text-only *str h w*,
+--print-text-size *str h w*, --reorder, --scrollbar,
+--separate-widget *string*, --size-err, --timeout *secs*, --trace *filename*,
+--visit-items
 
- - Widgets:
+
+**Widgets:**
 
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
