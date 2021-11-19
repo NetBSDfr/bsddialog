@@ -175,5 +175,5 @@ Use Cases:
 | --tailboxbg    |             |                                               |
 | --textbox      | In progress | todo navigation keys                          |
 | --timebox      | In progress | todo autosize, resize, F1                     |
-| --treeview     | In progress | todo  resize, F1                              |
+| --treeview     | In progress | add tree lines                                |
 
