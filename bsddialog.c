@@ -149,8 +149,8 @@ enum OPTS {
 
 void usage(void);
 /* widgets */
-#define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows, int cols, \
-	int argc, char **argv
+#define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
+	int cols, int argc, char **argv
 int buildlist_builder(BUILDER_ARGS);
 int calendar_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
