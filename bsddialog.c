@@ -44,7 +44,8 @@ enum OPTS {
 	ASCII_LINES,
 	ASPECT,
 	BACKTITLE,
-	BEGIN,
+	BEGIN_X,
+	BEGIN_Y,
 	CANCEL_LABEL,
 	CLEAR,
 	COLORS,
@@ -229,7 +230,8 @@ int main(int argc, char *argv[argc])
 	    { "ascii-lines", no_argument, NULL, ASCII_LINES },
 	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
 	    { "backtitle", required_argument, NULL /*backtitle*/, BACKTITLE },
-	    { "begin", required_argument, NULL /*y x*/, BEGIN },
+	    { "begin-x", required_argument, NULL /*x*/, BEGIN_X },
+	    { "begin-y", required_argument, NULL /*y*/, BEGIN_Y },
 	    { "cancel-label", required_argument, NULL /*string*/, CANCEL_LABEL },
 	    { "clear", no_argument, NULL, CLEAR },
 	    { "colors", no_argument, NULL, COLORS },
@@ -342,15 +344,21 @@ int main(int argc, char *argv[argc])
 		case BACKTITLE:
 			backtitle = optarg;
 			break;
-		case BEGIN:
-			conf.y = atoi(optarg);
-			conf.x = atoi(argv[optind]);
-			if (conf.y < BSDDIALOG_CENTER || conf.x < BSDDIALOG_CENTER) {
-				printf("Can't make new window at (y:%d, x:%d).",
-				    conf.y, conf.x);
+		case BEGIN_X:
+			conf.x = atoi(optarg);
+			if (conf.x < BSDDIALOG_CENTER) {
+				printf("Error: --begin-x %d, cannot be < %d",
+				    conf.x, BSDDIALOG_CENTER);
 				return 1;
 			}
-			optind++;
+			break;
+		case BEGIN_Y:
+			conf.y = atoi(optarg);
+			if (conf.y < BSDDIALOG_CENTER) {
+				printf("Error: --begin-y %d, cannot be < %d",
+				    conf.y, BSDDIALOG_CENTER);
+				return 1;
+			}
 			break;
 		case CANCEL_LABEL:
 			conf.button.cancel_label = optarg;

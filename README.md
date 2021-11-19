@@ -51,7 +51,7 @@ Examples utility:
 % ./bsddialog --theme default --title msgbox --msgbox "Hello World!" 5 30
 % ./bsddialog --title yesno --yesno "Hello World!" 5 30
 % ./bsddialog --inputbox "Hello World!" 10 30 2>input.txt; cat input.txt; rm input.txt
-% ./bsddialog --backtitle "BSD-2-Clause License" --begin 5 5 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
+% ./bsddialog --backtitle "BSD-2-Clause License" --begin-y 2 --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % ./bsddialog --ascii-lines --backtitle "BSD-2-Clause License" --title "yesno widget" --extra-button --help-button --defaultno --yesno "Hello World!" 10 50
 % ./bsddialog --pause "Hello World!" 8 50 5
 * ./bsddialog --checklist "Space to select" 0 0 0 Name1 Desc1 off Name2 Desc2 on Name3 Desc3 off
@@ -77,9 +77,9 @@ Use Cases:
 
  - Common Options:
  
---ascii-lines, --backtitle *backtitle*, --begin *y x* (add --starty --startx?),
---cancel-label *string*, -clear (test with multiple widgets), --colors,
---date-format *format*, --defaultno, --default-item *string*, 
+--ascii-lines, --backtitle *backtitle*, --begin-x *x* (--begin *y y*),
+(--begin *y x*), --cancel-label *string*, -clear (test with multiple widgets),
+--colors, --date-format *format*, --defaultno, --default-item *string*, 
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
 --help-label *string*, --help-status, --help-tags, --hline *string*,
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
