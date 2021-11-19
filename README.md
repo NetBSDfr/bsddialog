@@ -61,10 +61,15 @@ Examples library:
 % cd library_examples
 % sh compile
 % ./buildlist
-% ./checklist
+% ./infobox
 % ./menu
+% ./mixedlist
+% ./msgbox
+% ./ports
 % ./radiolist
+% ./theme
 % ./treeview
+% ./yesno
 ```
 
 Use Cases:
@@ -93,9 +98,9 @@ Use Cases:
 
  - Widgets:
  
- infobox (Do not clear the screen), msgbox,
+ infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
- checklist, radiolist, mixedlist, menu.
+ checklist, radiolist, mixedlist and menu.
 
 **TODO**
 
