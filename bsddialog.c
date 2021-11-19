@@ -478,6 +478,9 @@ int main(int argc, char *argv[argc])
 		case STDOUT:
 			outputfdflag = STDOUT_FILENO;
 			break;
+		case THEME:
+			theme = optarg;
+			break;
 		case TIME_FORMAT:
 			fmttimeflag = optarg;
 			break;
@@ -571,9 +574,6 @@ int main(int argc, char *argv[argc])
 			break;
 		case TEXTBOX:
 			widgetbuilder = textbox_builder;
-			break;
-		case THEME:
-			theme = optarg;
 			break;
 		case TIMEBOX:
 			widgetbuilder = timebox_builder;
