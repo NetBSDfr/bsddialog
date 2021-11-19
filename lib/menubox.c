@@ -490,7 +490,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	}
 
 	ymenupad = 0; /* now ymenupad is pminrow for prefresh() */
-	if (ymenupad + menurows - 1 < abs)
+	if ((int)(ymenupad + menurows) - 1 < abs)
 		ymenupad = abs - menurows + 1;
 	update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
 	wrefresh(menuwin);
@@ -600,7 +600,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				xe = xs + w - 5;
 			}
 
-			if (ymenupad + menurows - 1 < abs)
+			if ((int)(ymenupad + menurows) - 1 < abs)
 				ymenupad = abs - menurows + 1;
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 
