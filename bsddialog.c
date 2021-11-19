@@ -1178,34 +1178,6 @@ int menu_builder(BUILDER_ARGS)
 	return output;
 }
 
-/*int mixedlist_builder(BUILDER_ARGS)
-{
-	int output, menurows, nitems;
-	struct bsddialog_menuitem items[100];
-
-	if (argc < 1) {
-		usage();
-		return (-1);
-	}
-
-	menurows = atoi(argv[0]);
-
-	output = get_menu_items(argc-1, argv+1, itemprefixflag, false, true,
-	    true, false, itembottomdescflag, &nitems, items);
-	if (output != 0)
-		return output;
-
-	output = bsddialog_mixedlist(conf, text, rows, cols, menurows, nitems, items);
-	for (i=0; i < ngroups; i++) {
-		for (j=0; j < (int) groups[i].nitems; j++) {
-			item = &groups[i].items[j];
-			if (groups[i].type == BSDDIALOG_SEPARATOR)
-				dprintf(conf.output_fd, "--%s %s--\n",
-				    item->name, item->desc);
-
-	return output;
-}*/
-
 int radiolist_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
