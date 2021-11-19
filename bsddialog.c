@@ -39,8 +39,8 @@
 
 #define BSDDIALOG_VERSION "0.1 devel"
 
-/* Common options */
 enum OPTS {
+	/* Common options */
 	ASCII_LINES,
 	ASPECT,
 	BACKTITLE,
