@@ -69,6 +69,7 @@ enum OPTS {
 	INPUT_FD,
 	INSECURE,
 	ITEM_HELP,
+	ITEM_PREFIX, /* bsddialog extensions */
 	KEEP_TITE,
 	KEEP_WINDOW,
 	LAST_KEY,
@@ -105,6 +106,7 @@ enum OPTS {
 	STDOUT,
 	TAB_CORRECT,
 	TAB_LEN,
+	THEME, /* bsddialog extensions */
 	TIME_FORMAT,
 	TIMEOUT,
 	TITLE,
@@ -143,9 +145,6 @@ enum OPTS {
 	TIMEBOX,
 	TREEVIEW,
 	YESNO,
-	/* bsddialog extensions */
-	THEME,
-	ITEM_PREFIX
 };
 
 void usage(void);

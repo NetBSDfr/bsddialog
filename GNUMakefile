@@ -24,4 +24,5 @@ ${LIBBSDDIALOG}:
 	$(CC) $(CFLAGS) -c $<
 
 clean:
+	make -C ${LIBPATH} -f GNUMakefile clean
 	$(RM) $(OUTPUT) *.o *~
