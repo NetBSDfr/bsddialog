@@ -23,8 +23,8 @@ int main()
 	struct bsddialog_menuitem check1[5] = {
 	    { "+", true,  0, "CSCOPE",        "cscope support", "" },
 	    { "+", true,  0, "DEFAULT_VIMRC", "Install bundled vimrc as default setting", "" },
-	    { "+", false, 0, "MAKE_JOBS",     "Enable parallel build", "" },
-	    { "+", true,  0, "NLS",           "Native Language Support", "" },
+	    { "", false, 0, "MAKE_JOBS",     "Enable parallel build", "" },
+	    { "", true,  0, "NLS",           "Native Language Support", "" },
 	    { "+", false, 0, "XTERM_SAVE",    "Restore xterm screen after exit", "" }
 	};
 	struct bsddialog_menuitem sep1[1] = {
@@ -32,9 +32,9 @@ int main()
 	};
 	struct bsddialog_menuitem check2[6] = {
 	    { "",  false, 0, "LUA",    "Lua scripting language support", "" },
-	    { "",  true,  0, "PERL",   "Perl scripting language support", "" },
+	    { "+",  true,  0, "PERL",   "Perl scripting language support", "" },
 	    { "",  true,  0, "PYTHON", "Python bindings or support", "" },
-	    { "",  true,  0, "RUBY",   "Ruby bindings or support", "" },
+	    { "+",  true,  0, "RUBY",   "Ruby bindings or support", "" },
 	    { "",  false, 0, "SCHEME", "MzScheme (Racket) bindings", "" },
 	    { "",  false, 0, "TCL",    "Tcl scripting language support", "" }
 	};
@@ -42,7 +42,7 @@ int main()
 	    { "", true, 0, "CTAGS", "", "" }
 	};
 	struct bsddialog_menuitem radio1[3] = {
-	    { "",  false, 0, "CTAGS_BASE",      "Use system ctags", "" },
+	    { "+",  false, 0, "CTAGS_BASE",      "Use system ctags", "" },
 	    { "",  true,  0, "CTAGS_EXUBERANT", "Use exctags instead of ctags", "" },
 	    { "",  false, 0, "CTAGS_UNIVERSAL", "Use uctags instead of ctags", "" }
 	};
