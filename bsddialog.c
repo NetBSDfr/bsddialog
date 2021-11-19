@@ -193,7 +193,7 @@ void usage(void)
 bool itemprefixflag, itembottomdescflag, separateoutputnlflag, singlequotedflag;
 bool liststatusflag, itemtageforhelpflag, itemquoteflag;
 char *itemstrseparator;
-char *nstr ="";
+char *nostring ="";
 char *fmtdateflag, *fmttimeflag;
 int outputfdflag;
 
@@ -1030,15 +1030,15 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 	*nitems = argc / sizeitem;
 	j = 0;
 	for (i=0; i<*nitems; i++) {
-		items[i].prefix = setprefix ? argv[j++] : nstr;
+		items[i].prefix = setprefix ? argv[j++] : nostring;
 		items[i].depth = setdepth ? atoi(argv[j++]) : 0;
-		items[i].name = setname ? argv[j++] : nstr;
-		items[i].desc = setdesc ? argv[j++] : nstr;
+		items[i].name = setname ? argv[j++] : nostring;
+		items[i].desc = setdesc ? argv[j++] : nostring;
 		if (setstatus)
 			items[i].on = strcmp(argv[j++], "on") == 0 ? true : false;
 		else
 			items[i].on = false;
-		items[i].bottomdesc = sethelp ? argv[j++] : nstr;
+		items[i].bottomdesc = sethelp ? argv[j++] : nostring;
 	}
 
 	return 0;
