@@ -149,16 +149,16 @@ enum OPTS {
 };
 
 /* libbsddialog does not support NULL string for now */
-char *nostring = "";
+static char *nostring = "";
 /* Menus flags and options */
-bool item_prefix_flag, item_bottomdesc_flag, item_output_sepnl_flag;
-bool item_singlequote_flag, list_items_on_flag, item_tag_help_flag;
-bool item_always_quote_flag;
-char *item_output_sep_flag;
+static bool item_prefix_flag, item_bottomdesc_flag, item_output_sepnl_flag;
+static bool item_singlequote_flag, list_items_on_flag, item_tag_help_flag;
+static bool item_always_quote_flag;
+static char *item_output_sep_flag;
 /* Time and calendar options */
-char *date_fmt_flag, *time_fmt_flag;
+static char *date_fmt_flag, *time_fmt_flag;
 /* General flags and options */
-int output_fd_flag;
+static int output_fd_flag;
 
 void usage(void);
 /* widgets */
