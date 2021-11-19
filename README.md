@@ -85,7 +85,7 @@ Use Cases:
 (--begin *y x*), --cancel-label *string*, -clear (test with multiple widgets),
 --colors, --date-format *format*, --defaultno, --default-item *string*, 
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
---help-label *string*, --help-status, --help-tags, --hline *string*,
+--help-label *string*, --help-status, --help-tags, --hline *string*, --ignore,
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
 --nook, --no-shadow, --ok-label *string*, --output-fd *fd*,
 --output-separator *string*, --print-version,
@@ -104,9 +104,6 @@ Use Cases:
 
 ## TODO
 
-**fix:** % bsddialog --hline "bottom line" title "test title" --infobox test 8 40
-
-
 **Common Options:**
 
 |  Option                      | Status      | Note                            |
@@ -118,7 +115,6 @@ Use Cases:
 | --default-button *string*    |             |                                 |
 | --help                       | In progress |                                 |
 | --hfile *filename*           | In progress | implemented via textbox         |
-| --ignore                     | In progress | todo --ignore -error            |
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
 | --iso-week                   |             |                                 |
