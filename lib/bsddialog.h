@@ -47,7 +47,7 @@
 struct bsddialog_conf {
 	/* (widget) conf.* */
 	bool ascii_lines;
-	int aspect;
+	int aspect_ratio;
 	int x;
 	int y;
 	bool clear;

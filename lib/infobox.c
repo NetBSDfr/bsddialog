@@ -62,7 +62,7 @@ infobox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = MIN_HEIGHT - 1;
 		if (maxword > 0)
-			*h += MIN(nlines, (*w / 9)); /* aspect ratio: add conf/theme? */
+			*h += MIN(nlines, (*w / GET_ASPECT_RATIO(conf)));
 		*h = MAX(*h, MIN_HEIGHT);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));

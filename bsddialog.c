@@ -42,7 +42,7 @@
 enum OPTS {
 	/* Common options */
 	ASCII_LINES,
-	ASPECT,
+	ASPECT_RATIO,
 	BACKTITLE,
 	BEGIN_X,
 	BEGIN_Y,
@@ -234,7 +234,7 @@ int main(int argc, char *argv[argc])
 	struct option longopts[] = {
 	    /* common options */
 	    { "ascii-lines", no_argument, NULL, ASCII_LINES },
-	    { "aspect", required_argument, NULL	/*ratio*/, 'X' },
+	    { "aspect", required_argument, NULL	/*ratio*/, ASPECT_RATIO },
 	    { "backtitle_flag", required_argument, NULL /*backtitle_flag*/, BACKTITLE },
 	    { "begin-x", required_argument, NULL /*x*/, BEGIN_X },
 	    { "begin-y", required_argument, NULL /*y*/, BEGIN_Y },
@@ -346,6 +346,13 @@ int main(int argc, char *argv[argc])
 		/* Common options */
 		case ASCII_LINES:
 			conf.ascii_lines = true;
+			break;
+		case ASPECT_RATIO:
+			conf.aspect_ratio = atoi(optarg);
+			if (conf.aspect_ratio < 1) {
+				printf("Error: aspect cannot be < 1");
+				return BSDDIALOG_ERROR;
+			}
 			break;
 		case BACKTITLE:
 			backtitle_flag = optarg;

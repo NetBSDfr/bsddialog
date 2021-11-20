@@ -35,6 +35,9 @@
 #define HBORDERS	2
 #define VBORDERS	2
 
+/* Set default aspect ratio to 9 */
+#define GET_ASPECT_RATIO(conf) (conf.aspect_ratio > 0 ? conf.aspect_ratio : 9)
+
 /* debug */
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {	\
 	mvprintw(y, x, fmt, __VA_ARGS__);	\

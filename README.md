@@ -81,7 +81,8 @@ Use Cases:
 
 **Common Options:**
  
---ascii-lines, --backtitle *backtitle*, --begin-x *x* (--begin *y y*),
+--ascii-lines, --aspect *ratio* (for infobox, msgbox and yesno),
+--backtitle *backtitle*, --begin-x *x* (--begin *y y*),
 (--begin *y x*), --cancel-label *string*, -clear (test with multiple widgets),
 --colors, --date-format *format*, --defaultno, --default-item *string*, 
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
@@ -108,7 +109,6 @@ Use Cases:
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
-| --aspect *ratio*             |             |                                 |
 | --column-separator *string*  |             |                                 |
 | --cr-wrap                    | Coding      |                                 |
 | --create-rc *file*           |             |                                 |
