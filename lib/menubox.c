@@ -170,8 +170,7 @@ getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 }
 
 static void
-getprev(struct bsddialog_menugroup *groups, int *abs, int *group,
-    int *rel)
+getprev(struct bsddialog_menugroup *groups, int *abs, int *group, int *rel)
 {
 	int i, a;
 
