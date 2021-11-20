@@ -31,13 +31,13 @@
 #include <stdbool.h>
 
 /* Exit status */
-#define BSDDIALOG_ERROR		-1 // generic error (or ESC dialog)
-#define BSDDIALOG_YESOK		 0 // YES or OK buttons
-#define BSDDIALOG_NOCANCEL	 1 // No or Cancel buttons
-#define BSDDIALOG_HELP		 2 // Help button
-#define BSDDIALOG_EXTRA		 3 // Extra button
+#define BSDDIALOG_ERROR		-1
+#define BSDDIALOG_YESOK		 0
+#define BSDDIALOG_NOCANCEL	 1
+#define BSDDIALOG_HELP		 2
+#define BSDDIALOG_EXTRA		 3
 #define BSDDIALOG_ITEM_HELP	 4
-#define BSDDIALOG_ESC		 5 // ESC key
+#define BSDDIALOG_ESC		 5
 
 /* size and position */
 #define BSDDIALOG_FULLSCREEN	-1
@@ -45,7 +45,7 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
-	/* (widget) conf.* */
+	/* conf.* */
 	bool ascii_lines;
 	int aspect_ratio;
 	int x;
