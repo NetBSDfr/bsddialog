@@ -55,20 +55,20 @@ struct bsddialog_conf {
 	int *get_width;
 	char *hfile;
 	char *hline;
-	int input_fd;
-	bool keep_tite;
-	bool keep_window;
-	bool last_key;
-	int max_input;
-	bool no_kill;
+	/*int input_fd;*/
+	/*bool keep_tite;*/
+	/*bool keep_window;*/
+	/*bool last_key;*/
+	/*int max_input;*/
+	/*bool no_kill;*/
 	bool no_lines;
-	bool no_mouse; //useful?
-	bool scrollbar; //useful?
-	char *separate_witget;
+	/*bool no_mouse; useful?*/
+	/*bool scrollbar; useful?*/
+	/*char *separate_witget;*/
 	bool shadow;
-	bool size_err;
+	/*bool size_err;*/
 	int sleep;
-	int timeout;
+	/*int timeout;*/
 	char *title;
 	/* conf.text.* */
 	struct {
@@ -76,22 +76,22 @@ struct bsddialog_conf {
 		bool cr_wrap;
 		bool no_collapse;
 		bool no_nl_expand;
-		bool tab_correct;
-		int tab_len;
+		/*bool tab_correct; textbox?*/
+		/*int tab_len; textbox?*/
 		bool trim;
 	} text;
 	/* conf.form.* */
-	struct {
+	/*struct {
 		bool insecure;
-	} form;
+	} form;*/
 	/* conf.menu.* */
 	struct {
 		bool align_left;
 		char *colums_separator;
-		char *default_item; //delete, add int *focus to API?
+		char *default_item; /*delete, add int *focus to API?*/
 		bool no_items;
 		bool no_tags;
-		bool visit_items;
+		/*bool visit_items;*/
 	} menu;
 	/* conf.button.* */
 	struct {
