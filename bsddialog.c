@@ -351,7 +351,7 @@ int main(int argc, char *argv[argc])
 			conf.aspect_ratio = atoi(optarg);
 			if (conf.aspect_ratio < 1) {
 				printf("Error: aspect cannot be < 1");
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			}
 			break;
 		case BACKTITLE:
@@ -362,7 +362,7 @@ int main(int argc, char *argv[argc])
 			if (conf.x < BSDDIALOG_CENTER) {
 				printf("Error: --begin-x %d, cannot be < %d",
 				    conf.x, BSDDIALOG_CENTER);
-				return 1;
+				return (BSDDIALOG_ERROR);
 			}
 			break;
 		case BEGIN_Y:
@@ -370,7 +370,7 @@ int main(int argc, char *argv[argc])
 			if (conf.y < BSDDIALOG_CENTER) {
 				printf("Error: --begin-y %d, cannot be < %d",
 				    conf.y, BSDDIALOG_CENTER);
-				return 1;
+				return (BSDDIALOG_ERROR);
 			}
 			break;
 		case CANCEL_LABEL:
@@ -410,7 +410,7 @@ int main(int argc, char *argv[argc])
 			usage();
 			printf("\n");
 			printf("See \'man 1 bsddialog\' for more information.\n");
-			return 0;
+			return (BSDDIALOG_YESOK);
 		case HELP_BUTTON:
 			conf.button.help_button = true;
 			break;
@@ -522,7 +522,7 @@ int main(int argc, char *argv[argc])
 			break;
 		case VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
-			return 0;
+			return (BSDDIALOG_YESOK);
 		case YES_LABEL:
 			conf.button.yes_label = optarg;
 			break;
@@ -689,7 +689,7 @@ int main(int argc, char *argv[argc])
 	if (output == BSDDIALOG_ERROR)
 		printf("Error: %s\n", bsddialog_geterror());
 
-	return output;
+	return (output);
 }
 
 int calendar_builder(BUILDER_ARGS)
@@ -718,7 +718,7 @@ int calendar_builder(BUILDER_ARGS)
 
 	output = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
 	if (output != BSDDIALOG_YESOK)
-		return output;
+		return (output);
 
 	if (date_fmt_flag == NULL) {
 		dprintf(output_fd_flag, "%u/%u/%u", yy, mm, dd);
@@ -742,7 +742,7 @@ int dselect_builder(BUILDER_ARGS)
 
 	output = bsddialog_dselect(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int editbox_builder(BUILDER_ARGS)
@@ -751,7 +751,7 @@ int editbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_editbox(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int form_builder(BUILDER_ARGS)
@@ -760,7 +760,7 @@ int form_builder(BUILDER_ARGS)
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	formheight = atoi(argv[0]);
@@ -768,7 +768,7 @@ int form_builder(BUILDER_ARGS)
 	output = bsddialog_form(conf, text, rows, cols, formheight, argc-1,
 	    argv + 1);
 
-	return output;
+	return (output);
 }
 
 int fselect_builder(BUILDER_ARGS)
@@ -777,7 +777,7 @@ int fselect_builder(BUILDER_ARGS)
 
 	output = bsddialog_fselect(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int gauge_builder(BUILDER_ARGS)
@@ -799,7 +799,7 @@ int infobox_builder(BUILDER_ARGS)
 
 	output = bsddialog_infobox(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int inputbox_builder(BUILDER_ARGS)
@@ -808,12 +808,13 @@ int inputbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_inputbox(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int inputmenu_builder(BUILDER_ARGS)
 {
-	return 0;
+
+	return (BSDDIALOG_ERROR);
 }
 
 int mixedform_builder(BUILDER_ARGS)
@@ -822,7 +823,7 @@ int mixedform_builder(BUILDER_ARGS)
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	formheight = atoi(argv[0]);
@@ -830,7 +831,7 @@ int mixedform_builder(BUILDER_ARGS)
 	output = bsddialog_mixedform(conf, text, rows, cols, formheight, argc-1,
 	    argv + 1);
 
-	return output;
+	return (output);
 }
 
 int mixedgauge_builder(BUILDER_ARGS)
@@ -839,7 +840,7 @@ int mixedgauge_builder(BUILDER_ARGS)
 
 	if (argc < 1 || (((argc-1) % 2) != 0) ) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	perc = atoi(argv[0]);
@@ -858,7 +859,7 @@ int msgbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_msgbox(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int passwordbox_builder(BUILDER_ARGS)
@@ -867,7 +868,7 @@ int passwordbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_passwordbox(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int passwordform_builder(BUILDER_ARGS)
@@ -876,7 +877,7 @@ int passwordform_builder(BUILDER_ARGS)
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	formheight = atoi(argv[0]);
@@ -884,7 +885,7 @@ int passwordform_builder(BUILDER_ARGS)
 	output = bsddialog_passwordform(conf, text, rows, cols, formheight,
 	    argc-1, argv + 1);
 
-	return output;
+	return (output);
 }
 
 int pause_builder(BUILDER_ARGS)
@@ -893,13 +894,13 @@ int pause_builder(BUILDER_ARGS)
 
 	if (argc < 1) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	sec = atoi(argv[0]);
 	output = bsddialog_pause(conf, text, rows, cols, sec);
 
-	return output;
+	return (output);
 }
 
 int prgbox_builder(BUILDER_ARGS)
@@ -908,13 +909,13 @@ int prgbox_builder(BUILDER_ARGS)
 
 	if (argc < 1) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	output = bsddialog_prgbox(conf, strlen(text) == 0 ? NULL : text, rows,
 	    cols, argv[0]);
 
-	return output;
+	return (output);
 }
 
 int programbox_builder(BUILDER_ARGS)
@@ -923,7 +924,7 @@ int programbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_programbox(conf, strlen(text) == 0 ? NULL : text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int progressbox_builder(BUILDER_ARGS)
@@ -932,7 +933,7 @@ int progressbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_progressbox(conf, strlen(text) == 0 ? NULL : text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int rangebox_builder(BUILDER_ARGS)
@@ -940,7 +941,7 @@ int rangebox_builder(BUILDER_ARGS)
 	int output, min, max, value;
 
 	if (argc < 2)
-		return (-1);
+		return (BSDDIALOG_ERROR);
 
 	min = atoi(argv[0]);
 	max = atoi(argv[1]);
@@ -966,7 +967,7 @@ int tailbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_tailbox(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int tailboxbg_builder(BUILDER_ARGS)
@@ -1074,7 +1075,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 		items[i].bottomdesc = sethelp ? argv[j++] : nostring;
 	}
 
-	return 0;
+	return (BSDDIALOG_YESOK);
 }
 
 static void
@@ -1141,7 +1142,7 @@ int buildlist_builder(BUILDER_ARGS)
 
 	if (argc < 1) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
@@ -1149,7 +1150,7 @@ int buildlist_builder(BUILDER_ARGS)
 	output = get_menu_items(argc-1, argv+1, item_prefix_flag, false, true,
 	    true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
-		return output;
+		return (output);
 
 	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
@@ -1168,7 +1169,7 @@ int checklist_builder(BUILDER_ARGS)
 
 	if (argc < 1) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
@@ -1193,7 +1194,7 @@ int menu_builder(BUILDER_ARGS)
 
 	if (argc < 1) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
@@ -1218,7 +1219,7 @@ int radiolist_builder(BUILDER_ARGS)
 
 	if (argc < 1) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
@@ -1243,7 +1244,7 @@ int treeview_builder(BUILDER_ARGS)
 
 	if (argc < 1) {
 		usage();
-		return (-1);
+		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
