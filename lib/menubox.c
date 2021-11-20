@@ -42,7 +42,7 @@
 
 /* "Menu": checklist - menu - radiolist - treeview - buildlist */
 
-#define TREESPACE 4
+#define DEPTHSPACE	4
 #define MIN_HEIGHT	VBORDERS + 6 /* 2 buttons 1 text 3 menu */
 
 extern struct bsddialog_theme t;
@@ -53,8 +53,7 @@ enum menumode {
 	MENUMODE,
 	MIXEDLISTMODE,
 	RADIOLISTMODE,
-	SEPARATORMODE,
-	TREEVIEWMODE
+	SEPARATORMODE
 };
 
 struct lineposition {
@@ -255,25 +254,28 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	wattron(pad, color);
 	if (mode == CHECKLISTMODE)
 		wprintw(pad, "[%c]", item.on ? 'X' : ' ');
-	if (mode == RADIOLISTMODE || mode == TREEVIEWMODE)
+	if (mode == RADIOLISTMODE)
 		wprintw(pad, "(%c)", item.on ? '*' : ' ');
 	wattroff(pad, color);
 
 	/* name */
-	if (mode != BUILDLISTMODE && mode != TREEVIEWMODE) {
+	if (mode != BUILDLISTMODE && conf.menu.no_tags == false) {
 		wattron(pad, colorname);
-		mvwaddstr(pad, y, pos.xname, item.name);
+		mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.name);
 		wattroff(pad, colorname);
 	}
 
 	/* description */
-	if ((mode == BUILDLISTMODE || mode == TREEVIEWMODE) && curr == false)
-		color = item.on ? t.tagcolor : t.itemcolor;
-	wattron(pad, color);
-	if (mode == TREEVIEWMODE)
-		pos.xdesc = pos.xname + item.depth * TREESPACE;
-	mvwaddstr(pad, y, pos.xdesc, item.desc);
-	wattroff(pad, color);
+	if (conf.menu.no_items == false) {
+		if ((mode == BUILDLISTMODE || conf.menu.no_tags) && curr == false)
+			color = item.on ? t.tagcolor : t.itemcolor;
+		wattron(pad, color);
+		if (conf.menu.no_tags)
+			mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.desc);
+		else
+			mvwaddstr(pad, y, pos.xdesc, item.desc);
+		wattroff(pad, color);
+	}
 
 	/* bottom desc (item help) */
 	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
@@ -401,13 +403,13 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	totnitems = 0;
 	for (i=0; i < ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
-		if (currmode == RADIOLISTMODE || currmode == TREEVIEWMODE)
+		if (currmode == RADIOLISTMODE)
 			checkradiolist(groups[i].nitems, groups[i].items);
 
 		if (currmode == MENUMODE)
 			checkmenu(groups[i].nitems, groups[i].items);
 
-		if (currmode == RADIOLISTMODE || currmode == CHECKLISTMODE || currmode == TREEVIEWMODE)
+		if (currmode == RADIOLISTMODE || currmode == CHECKLISTMODE)
 			pos.selectorlen = 3;
 
 		for (j=0; j < (int) groups[i].nitems; j++) {
@@ -419,23 +421,21 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				continue;
 			}
 
-			if (currmode == TREEVIEWMODE) {
-				pos.maxdepth = MAX((int) pos.maxdepth, item->depth);
-			}
-
 			pos.maxprefix = MAX(pos.maxprefix, strlen(item->prefix));
-			pos.maxname = MAX(pos.maxname, strlen(item->name));
-			pos.maxdesc = MAX(pos.maxdesc, strlen(item->desc));
+			pos.maxdepth  = MAX((int) pos.maxdepth, item->depth);
+			pos.maxname   = MAX(pos.maxname, strlen(item->name));
+			pos.maxdesc   = MAX(pos.maxdesc, strlen(item->desc));
 		}
 	}
+	pos.maxname = conf.menu.no_tags ? 0 : pos.maxname;
+	pos.maxdesc = conf.menu.no_items ? 0 : pos.maxdesc;
+	pos.maxdepth *= DEPTHSPACE;
 
 	pos.xselector = pos.maxprefix + (pos.maxprefix != 0 ? 1 : 0);
-	pos.xname = pos.xselector + pos.selectorlen + (pos.selectorlen != 0 ? 1 : 0);
-	pos.xdesc = pos.xname + pos.maxname + (pos.maxname != 0 ? 1 : 0);
-	if (currmode == TREEVIEWMODE)
-		pos.line = MAX(pos.maxsepstr + 3, pos.xname + pos.maxdepth * TREESPACE + pos.maxdesc );
-	else
-		pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
+	pos.xname = pos.xselector + pos.selectorlen + (pos.selectorlen > 0 ? 1 : 0);
+	pos.xdesc = pos.maxdepth + pos.xname + pos.maxname;
+	pos.xdesc += (pos.maxname != 0 ? 1 : 0);
+	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
 
 
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
@@ -477,7 +477,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	ys = y + h - 5 - menurows + 1;
 	ye = y + h - 5 ;
-	if (conf.menu.align_left || (int)pos.line > w - 6 || currmode == TREEVIEWMODE) {
+	if (conf.menu.align_left || (int)pos.line > w - 6) {
 		xs = x + 3;
 		xe = xs + w - 7;
 	}
@@ -588,7 +588,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			
 			ys = y + h - 5 - menurows + 1;
 			ye = y + h - 5 ;
-			if (conf.menu.align_left || (int)pos.line > w - 6 || currmode == TREEVIEWMODE) {
+			if (conf.menu.align_left || (int)pos.line > w - 6) {
 				xs = x + 3;
 				xe = xs + w - 7;
 			}
@@ -744,8 +744,11 @@ bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, TREEVIEWMODE, 1,
-	    &group, NULL, focusitem);
+	conf.menu.no_tags = true;
+	conf.menu.align_left = true;
+
+	output = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
+	    1, &group, NULL, focusitem);
 
 	return output;
 }

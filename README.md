@@ -88,8 +88,9 @@ Use Cases:
 --default-item *string*, 
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
 --help-label *string*, --help-status, --help-tags, --hline *string*, --ignore,
---item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
---nook, --no-shadow, --ok-label *string*, --output-fd *fd*,
+--item-help, --no-cancel, --nocancel, --no-label *string*, --no-items,
+--no-lines, --no-ok,
+--nook, --no-shadow, --no-tags, --ok-label *string*, --output-fd *fd*,
 --output-separator *string*, --print-version,
 --print-size (todo move lib -> utility), --quoted (quotes all != dialog),
 --print-maxsize, --shadow, --single-quoted (add --quote-with *ch*?), 
@@ -102,7 +103,7 @@ Use Cases:
  
  infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
- checklist, radiolist, mixedlist and menu.
+ checklist, radiolist, mixedlist, treeview and menu.
 
 ## TODO
 
@@ -122,10 +123,8 @@ Use Cases:
 | --last-key                   |             |                                 |
 | --max-input *size*           |             |                                 |
 | --no-collapse                | Coding      |                                 |
-| --no-items                   |             |                                 |
 | --no-kill                    |             |                                 |
 | --no-nl-expand               | Coding      |                                 |
-| --no-tags                    |             |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
 | --week-start *day*           |             |                                 |
@@ -164,5 +163,4 @@ Not planned in the short term: --create-rc *file*, --no-mouse,
 | --tailboxbg    |             |                                               |
 | --textbox      | In progress | todo navigation keys                          |
 | --timebox      | In progress | todo autosize, resize, F1                     |
-| --treeview     | In progress | add tree lines                                |
 
