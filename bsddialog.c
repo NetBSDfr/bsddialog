@@ -435,7 +435,7 @@ int main(int argc, char *argv[argc])
 		case ITEM_HELP:
 			item_bottomdesc_flag = true;
 			break;
-		case ITEM_ITEMS:
+		case NO_ITEMS:
 			conf.menu.no_items = true;
 			break;
 		case ITEM_PREFIX:
@@ -461,7 +461,7 @@ int main(int argc, char *argv[argc])
 		case NO_OK:
 			conf.button.no_ok = true;
 			break;
-		case ITEM_TAGS:
+		case NO_TAGS:
 			conf.menu.no_tags = true;
 			break;
 		case NO_SHADOW:
