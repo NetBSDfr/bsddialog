@@ -199,7 +199,7 @@ get_buttons(struct bsddialog_conf conf, struct buttons *bs, char *yesoklabel,
 	}
 
 	if (conf.button.default_label != NULL) {
-		for (i=0; i<bs->nbuttons; i++) {
+		for (i=0; i<(int)bs->nbuttons; i++) {
 			if (strcmp(conf.button.default_label, bs->label[i]) == 0)
 				bs->curr = i;
 		}
