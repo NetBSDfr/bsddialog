@@ -247,7 +247,6 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	}
 
 	/* prefix */
-	//if (conf.item_prefix == true)
 	if (item.prefix != NULL && item.prefix[0] != '\0')
 		mvwaddstr(pad, y, 0, item.prefix);
 
@@ -277,7 +276,6 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	wattroff(pad, color);
 
 	/* bottom desc (item help) */
-	//if (curr && conf.item_help == true) {
 	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
 		move(LINES-2, 5);
 		clrtoeol();
