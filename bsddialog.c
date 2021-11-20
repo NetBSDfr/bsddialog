@@ -49,9 +49,9 @@ enum OPTS {
 	CANCEL_LABEL,
 	CLEAR,
 	COLORS,
-	COLUMN_SEPARATOR,
+	/*COLUMN_SEPARATOR,*/
 	CR_WRAP,
-	CREATE_RC,
+	/*CREATE_RC,*/
 	DATE_FORMAT,
 	DEFAULTNO,
 	DEFAULT_BUTTON,
@@ -67,22 +67,22 @@ enum OPTS {
 	HFILE,	
 	HLINE,
 	IGNORE,
-	INPUT_FD,
-	INSECURE,
+	/*INPUT_FD,*/
+	/*INSECURE,*/
 	ITEM_HELP,
 	ITEM_PREFIX,
-	KEEP_TITE,
-	KEEP_WINDOW,
-	LAST_KEY,
-	MAX_INPUT,
+	/*KEEP_TITE,*/
+	/*KEEP_WINDOW,*/
+	/*LAST_KEY,*/
+	/*MAX_INPUT,*/
 	NO_CANCEL,
 	NOCANCEL,
 	NO_COLLAPSE,
 	NO_ITEMS,
-	NO_KILL,
+	/*NO_KILL,*/
 	NO_LABEL,
 	NO_LINES,
-	NO_MOUSE,
+	/*NO_MOUSE,*/
 	NO_NL_EXPAND,
 	NO_OK,
 	NOOK,
@@ -95,26 +95,26 @@ enum OPTS {
 	PRINT_SIZE,
 	PRINT_VERSION,
 	QUOTED,
-	SCROLLBAR,
+	/*SCROLLBAR,*/
 	SEPARATE_OUTPUT,
-	SEPARATE_WIDGET,
+	/*SEPARATE_WIDGET,*/
 	SEPARATOR,
 	SHADOW,
 	SINGLE_QUOTED,
-	SIZE_ERR,
+	/*SIZE_ERR,*/
 	SLEEP,
 	STDERR,
 	STDOUT,
-	TAB_CORRECT,
-	TAB_LEN,
+	/*TAB_CORRECT,*/
+	/*TAB_LEN,*/
 	THEME,
 	TIME_FORMAT,
-	TIMEOUT,
+	/*TIMEOUT,*/
 	TITLE,
-	TRACE,
+	/*TRACE,*/
 	TRIM,
 	VERSION,
-	VISIT_ITEMS,
+	/*VISIT_ITEMS,*/
 	YES_LABEL,
 	/* Widgets */
 	BUILDLIST,
@@ -241,9 +241,9 @@ int main(int argc, char *argv[argc])
 	    { "cancel-label", required_argument, NULL, CANCEL_LABEL },
 	    { "clear", no_argument, NULL, CLEAR },
 	    { "colors", no_argument, NULL, COLORS },
-	    { "column-separator", required_argument, NULL, 'X' },
+	    /*{ "column-separator", required_argument, NULL, COLUMN_SEPARATOR },*/
 	    { "cr-wrap", no_argument, NULL, CR_WRAP },
-	    { "create-rc", required_argument, NULL, 'X' },
+	    /*{ "create-rc", required_argument, NULL, CREATE_RC },*/
 	    { "date-format", required_argument, NULL, DATE_FORMAT },
 	    { "defaultno", no_argument, NULL, DEFAULTNO },
 	    { "default-button", required_argument, NULL, DEFAULT_BUTTON },
@@ -259,21 +259,21 @@ int main(int argc, char *argv[argc])
 	    { "hfile", required_argument, NULL, HFILE },
 	    { "hline", required_argument, NULL, HLINE },
 	    { "ignore", no_argument, NULL, IGNORE },
-	    { "input-fd", required_argument, NULL, 'X' },
-	    { "insecure", no_argument, NULL, 'X' },
+	    /*{ "input-fd", required_argument, NULL, INPUT_FD },*/
+	    /*{ "insecure", no_argument, NULL, INSECURE },*/
 	    { "item-help", no_argument, NULL, ITEM_HELP },
-	    { "keep-tite", no_argument, NULL, 'X' },
-	    { "keep-window", no_argument, NULL, 'X' },
-	    { "last-key", no_argument, NULL, 'X' },
-	    { "max-input", required_argument, NULL, 'X' },
+	    /*{ "keep-tite", no_argument, NULL, KEEP_TITE },*/
+	    /*{ "keep-window", no_argument, NULL, KEEP_WINDOW },*/
+	    /*{ "last-key", no_argument, NULL, LAST_KEY },*/
+	    /*{ "max-input", required_argument, NULL, MAX_INPUT },*/
 	    { "no-cancel", no_argument, NULL, NO_CANCEL },
 	    { "nocancel", no_argument, NULL, NOCANCEL },
 	    { "no-collapse", no_argument, NULL, NO_COLLAPSE },
 	    { "no-items", no_argument, NULL, NO_ITEMS },
-	    { "no-kill", no_argument, NULL, 'X' },
+	    /*{ "no-kill", no_argument, NULL, NO_KILL },*/
 	    { "no-label", required_argument, NULL, NO_LABEL },
 	    { "no-lines", no_argument, NULL, NO_LINES },
-	    { "no-mouse", no_argument, NULL, 'X' },
+	    /*{ "no-mouse", no_argument, NULL, NO_MOUSE },*/
 	    { "no-nl-expand", no_argument, NULL, NO_NL_EXPAND },
 	    { "no-ok", no_argument, NULL, NO_OK },
 	    { "nook ", no_argument, NULL, NOOK },
@@ -287,25 +287,25 @@ int main(int argc, char *argv[argc])
 	    { "print-size", no_argument, NULL, PRINT_SIZE },
 	    { "print-version", no_argument, NULL, PRINT_VERSION },
 	    { "quoted", no_argument, NULL, QUOTED },
-	    { "scrollbar", no_argument, NULL, 'X' },
+	    /*{ "scrollbar", no_argument, NULL, SCROLLBAR},*/
 	    { "separate-output", no_argument, NULL, SEPARATE_OUTPUT },
-	    { "separate-widget", required_argument, NULL, 'X' },
+	    /*{ "separate-widget", required_argument, NULL, SEPARATE_WIDGET },*/
 	    { "shadow", no_argument, NULL, SHADOW },
 	    { "single-quoted", no_argument, NULL, SINGLE_QUOTED },
-	    { "size-err", no_argument, NULL, 'X' },
+	    /*{ "size-err", no_argument, NULL, SIZE_ERR },*/
 	    { "sleep", required_argument, NULL, SLEEP },
 	    { "stderr", no_argument, NULL, STDERR },
 	    { "stdout", no_argument, NULL, STDOUT },
-	    { "tab-correct", no_argument, NULL, 'X' },
-	    { "tab-len", required_argument, NULL, 'X' },
+	    /*{ "tab-correct", no_argument, NULL, TAB_CORRECT },*/
+	    /*{ "tab-len", required_argument, NULL, TAB_LEN },*/
 	    { "theme_flag", required_argument, NULL, THEME },
 	    { "time-format", required_argument, NULL, TIME_FORMAT },
-	    { "timeout", required_argument, NULL, 'X' },
+	    /*{ "timeout", required_argument, NULL, TIMEOUT },*/
 	    { "title", required_argument, NULL, TITLE },
-	    { "trace", required_argument, NULL, 'X' },
+	    /*{ "trace", required_argument, NULL, TRACE },*/
 	    { "trim", no_argument, NULL, TRIM },
 	    { "version", no_argument, NULL, VERSION },
-	    { "visit-items", no_argument, NULL, 'X' },
+	    /*{ "visit-items", no_argument, NULL, VISIT_ITEMS },*/
 	    { "yes-label", required_argument, NULL, YES_LABEL },
 	    /* Widgets */
 	    { "buildlist", no_argument, NULL, BUILDLIST },
