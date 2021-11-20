@@ -112,7 +112,6 @@ Use Cases:
 | ---------------------------- | ----------- | ------------------------------- |
 | --column-separator *string*  |             |                                 |
 | --cr-wrap                    | Coding      |                                 |
-| --create-rc *file*           |             |                                 |
 | --help                       | In progress |                                 |
 | --hfile *filename*           | In progress | implemented via textbox         |
 | --input-fd *fd*              |             |                                 |
@@ -133,10 +132,10 @@ Use Cases:
 | --trim                       | Coding      |                                 |
 
 
-Not planned in the short term: --no-mouse, --print-text-only *str h w*,
---print-text-size *str h w*, --reorder, --scrollbar,
---separate-widget *string*, --size-err, --timeout *secs*, --trace *filename*,
---visit-items
+Not planned in the short term: --create-rc *file*, --no-mouse,
+--print-text-only *str h w*, --print-text-size *str h w*, --reorder, 
+-scrollbar, --separate-widget *string*, --size-err, --timeout *secs*,
+--trace *filename*, --visit-items
 
 
 **Widgets:**
