@@ -84,7 +84,8 @@ Use Cases:
 --ascii-lines, --aspect *ratio* (for infobox, msgbox and yesno),
 --backtitle *backtitle*, --begin-x *x* (--begin *y y*),
 (--begin *y x*), --cancel-label *string*, -clear (test with multiple widgets),
---colors, --date-format *format*, --defaultno, --default-item *string*, 
+--colors, --date-format *format*, --default-button *string*, --defaultno,
+--default-item *string*, 
 --exit-label *string*, --extra-button, --extra-label *string*, --help-button,
 --help-label *string*, --help-status, --help-tags, --hline *string*, --ignore,
 --item-help, --no-cancel, --nocancel, --no-label *string*, --no-lines, --no-ok,
@@ -112,7 +113,6 @@ Use Cases:
 | --column-separator *string*  |             |                                 |
 | --cr-wrap                    | Coding      |                                 |
 | --create-rc *file*           |             |                                 |
-| --default-button *string*    |             |                                 |
 | --help                       | In progress |                                 |
 | --hfile *filename*           | In progress | implemented via textbox         |
 | --input-fd *fd*              |             |                                 |

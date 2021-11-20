@@ -246,7 +246,7 @@ int main(int argc, char *argv[argc])
 	    { "create-rc", required_argument, NULL /*file*/, 'X' },
 	    { "date-format", required_argument, NULL /*format*/, DATE_FORMAT },
 	    { "defaultno", no_argument, NULL, DEFAULTNO },
-	    { "default-button", required_argument, NULL	/*string*/, 'X' },
+	    { "default-button", required_argument, NULL	/*string*/, DEFAULT_BUTTON },
 	    { "default-item", required_argument, NULL /*string*/, DEFAULT_ITEM },
 	    { "exit-label", required_argument, NULL /*string*/, EXIT_LABEL },
 	    { "extra-button", no_argument, NULL, EXTRA_BUTTON },
@@ -387,6 +387,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case DATE_FORMAT:
 			date_fmt_flag = optarg;
+			break;
+		case DEFAULT_BUTTON:
+			conf.button.default_label = optarg;
 			break;
 		case DEFAULT_ITEM:
 			conf.menu.default_item = optarg;

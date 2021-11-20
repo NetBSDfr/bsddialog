@@ -97,7 +97,7 @@ struct bsddialog_conf {
 	struct {
 		char *cancel_label;
 		bool defaultno;
-		char *default_button;
+		char *default_label;
 		char *exit_label;
 		bool extra_button;
 		char *extra_label;

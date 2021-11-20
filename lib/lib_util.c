@@ -198,6 +198,13 @@ get_buttons(struct bsddialog_conf conf, struct buttons *bs, char *yesoklabel,
 		bs->nbuttons = 1;
 	}
 
+	if (conf.button.default_label != NULL) {
+		for (i=0; i<bs->nbuttons; i++) {
+			if (strcmp(conf.button.default_label, bs->label[i]) == 0)
+				bs->curr = i;
+		}
+	}
+
 	bs->sizebutton = MAX(SIZEBUTTON - 2, strlen(bs->label[0]));
 	for (i=1; i < (int) bs->nbuttons; i++)
 		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
