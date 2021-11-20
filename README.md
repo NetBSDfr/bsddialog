@@ -111,13 +111,11 @@ Use Cases:
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
-| --column-separator *string*  |             |                                 |
 | --cr-wrap                    | Coding      |                                 |
 | --help                       | In progress |                                 |
 | --hfile *filename*           | In progress | implemented via textbox         |
 | --input-fd *fd*              |             |                                 |
 | --insecure                   |             |                                 |
-| --iso-week                   |             |                                 |
 | --keep-tite                  |             |                                 |
 | --keep-window                |             |                                 |
 | --last-key                   |             |                                 |
@@ -127,14 +125,14 @@ Use Cases:
 | --no-nl-expand               | Coding      |                                 |
 | --tab-correct                |             |                                 |
 | --tab-len *n*                |             |                                 |
-| --week-start *day*           |             |                                 |
 | --trim                       | Coding      |                                 |
 
 
-Not planned in the short term: --create-rc *file*, --no-mouse,
---print-text-only *str h w*, --print-text-size *str h w*, --reorder, 
--scrollbar, --separate-widget *string*, --size-err, --timeout *secs*,
---trace *filename*, --visit-items
+To evaluate / Not planned in the short term: --column-separator *string*,
+--create-rc *file*, --iso-week, --no-mouse, --print-text-only *str h w*,
+--print-text-size *str h w*, --reorder, -scrollbar, --separate-widget *string*,
+--size-err, --timeout *secs*,--trace *filename*, --visit-items,
+--week-start *day*.
 
 
 **Widgets:**
