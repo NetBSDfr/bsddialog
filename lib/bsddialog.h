@@ -41,7 +41,7 @@
 
 /* size and position */
 #define BSDDIALOG_FULLSCREEN	-1
-#define BSDDIALOG_AUTOSIZE	0
+#define BSDDIALOG_AUTOSIZE	 0
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
