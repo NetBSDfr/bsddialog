@@ -70,7 +70,7 @@ enum OPTS {
 	INPUT_FD,
 	INSECURE,
 	ITEM_HELP,
-	ITEM_PREFIX, /* bsddialog extensions */
+	ITEM_PREFIX,
 	KEEP_TITE,
 	KEEP_WINDOW,
 	LAST_KEY,
@@ -107,7 +107,7 @@ enum OPTS {
 	STDOUT,
 	TAB_CORRECT,
 	TAB_LEN,
-	THEME, /* bsddialog extensions */
+	THEME,
 	TIME_FORMAT,
 	TIMEOUT,
 	TITLE,
