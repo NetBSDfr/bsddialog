@@ -86,8 +86,8 @@ enum OPTS {
 	NO_NL_EXPAND,
 	NO_OK,
 	NOOK,
-	NO_SHADOW,
 	NO_TAGS,
+	NO_SHADOW,
 	OK_LABEL,
 	OUTPUT_FD,
 	OUTPUT_SEPARATOR,
@@ -269,7 +269,7 @@ int main(int argc, char *argv[argc])
 	    { "no-cancel", no_argument, NULL, NO_CANCEL },
 	    { "nocancel", no_argument, NULL, NOCANCEL },
 	    { "no-collapse", no_argument, NULL, NO_COLLAPSE },
-	    { "no-items", no_argument, NULL, 'X' },
+	    { "no-items", no_argument, NULL, NO_ITEMS },
 	    { "no-kill", no_argument, NULL, 'X' },
 	    { "no-label", required_argument, NULL /*string*/, NO_LABEL },
 	    { "no-lines", no_argument, NULL, NO_LINES },
@@ -277,8 +277,8 @@ int main(int argc, char *argv[argc])
 	    { "no-nl-expand", no_argument, NULL, NO_NL_EXPAND },
 	    { "no-ok", no_argument, NULL, NO_OK },
 	    { "nook ", no_argument, NULL, NOOK },
+	    { "no-tags", no_argument, NULL, NO_TAGS },
 	    { "no-shadow", no_argument, NULL, NO_SHADOW },
-	    { "no-tags", no_argument, NULL, 'X' },
 	    { "ok-label", required_argument, NULL /*string*/, OK_LABEL },
 	    { "output-fd", required_argument, NULL /*fd*/, OUTPUT_FD },
 	    { "separator", required_argument, NULL /*string*/, SEPARATOR },
@@ -435,6 +435,9 @@ int main(int argc, char *argv[argc])
 		case ITEM_HELP:
 			item_bottomdesc_flag = true;
 			break;
+		case ITEM_ITEMS:
+			conf.menu.no_items = true;
+			break;
 		case ITEM_PREFIX:
 			item_prefix_flag = true;
 			break;
@@ -457,6 +460,9 @@ int main(int argc, char *argv[argc])
 		case NOOK:
 		case NO_OK:
 			conf.button.no_ok = true;
+			break;
+		case ITEM_TAGS:
+			conf.menu.no_tags = true;
 			break;
 		case NO_SHADOW:
 			conf.shadow = false;
