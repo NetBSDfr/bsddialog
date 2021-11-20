@@ -111,8 +111,8 @@ static struct bsddialog_theme dialogtheme = {
 	.barcolor        = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
 
 	.buttonspace     = 3,
-	.buttleftch      = '[',
-	.buttrightchar   = ']',
+	.buttleftch      = '<',
+	.buttrightchar   = '>',
 	.currbuttdelimcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)   | A_BOLD,
 	.buttdelimcolor     = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
 	.currbuttoncolor    = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)   | A_BOLD,
