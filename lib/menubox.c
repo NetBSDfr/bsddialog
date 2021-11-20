@@ -313,7 +313,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		if (*menurows == 0) {
 			*h += nitems + 2;
 			*h = MIN(*h, widget_max_height(conf));
-			menusize = MIN(nitems + 2, *h - (HBORDERS + 2 /* buttons */ + textrow) );
+			menusize = MIN(nitems + 2, *h - (HBORDERS + 2 + textrow));
 			menusize -=2;
 			*menurows = menusize < 0 ? 0 : menusize;
 		}
@@ -417,7 +417,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			item = &groups[i].items[j];
 
 			if (groups[i].type == BSDDIALOG_SEPARATOR) {
-				pos.maxsepstr = MAX(pos.maxsepstr, strlen(item->name) + strlen(item->desc));
+				pos.maxsepstr = MAX(pos.maxsepstr,
+				    strlen(item->name) + strlen(item->desc));
 				continue;
 			}
 
@@ -583,7 +584,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			wclear(menuwin);
 			mvwin(menuwin, y + h - 5 - menurows, x + 2);
 			wresize(menuwin,menurows+2, w-4);
-			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
+			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
+			    menurows, ymenupad);
 			wrefresh(menuwin);
 			
 			ys = y + h - 5 - menurows + 1;
@@ -624,7 +626,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			if (ymenupad > abs && ymenupad > 0)
 				ymenupad--;
-			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
+			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
+			    menurows, ymenupad);
 			wrefresh(menuwin);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			break;
@@ -636,7 +639,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			if ((int)(ymenupad + menurows) <= abs)
 				ymenupad++;
-			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
+			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
+			    menurows, ymenupad);
 			wrefresh(menuwin);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			break;
@@ -828,8 +832,10 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 					nrights++;
 				}
 			}
-			prefresh(leftpad, 0, 0, winsy+1, leftwinx+1, winsy+1+menurows, leftwinx + 1 + padscols);
-			prefresh(rightpad, 0, 0, winsy+1, rightwinx+1, winsy+1+menurows, rightwinx + 1 + padscols);
+			prefresh(leftpad, 0, 0, winsy+1, leftwinx+1,
+			    winsy+1+menurows, leftwinx + 1 + padscols);
+			prefresh(rightpad, 0, 0, winsy+1, rightwinx+1,
+			    winsy+1+menurows, rightwinx + 1 + padscols);
 			padsupdate = false;
 		}
 
