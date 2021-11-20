@@ -39,7 +39,7 @@
 
 struct bsddialog_theme t;
 
-static struct bsddialog_theme defaulttheme = {
+static struct bsddialog_theme bsddialogtheme = {
 #define bgwidget  COLOR_WHITE
 #define bgcurr    COLOR_YELLOW
 	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
@@ -210,12 +210,13 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 	refresh();
 }
 
-
 int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 {
 
 	if (newtheme == BSDDIALOG_THEME_DEFAULT)
-		bsddialog_set_theme(defaulttheme);
+		bsddialog_set_theme(dialogtheme);
+	else if (newtheme == BSDDIALOG_THEME_BSDDIALOG)
+		bsddialog_set_theme(bsddialogtheme);
 	else if (newtheme == BSDDIALOG_THEME_DIALOG)
 		bsddialog_set_theme(dialogtheme);
 	else if (newtheme == BSDDIALOG_THEME_MAGENTA)
