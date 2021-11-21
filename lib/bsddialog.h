@@ -138,6 +138,7 @@ int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 const char *bsddialog_geterror(void);
 int terminalheight(void);
 int terminalwidth(void);
+void bsddialog_initconf(struct bsddialog_conf *conf);
 
 /* widgets */
 int

@@ -212,9 +212,7 @@ int main(int argc, char *argv[argc])
 	struct winsize ws;
 	struct bsddialog_conf conf;
 
-	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = BSDDIALOG_CENTER;
-	conf.shadow = true;
+	bsddialog_initconf(&conf);
 
 	backtitle_flag = NULL;
 	theme_flag = NULL;
