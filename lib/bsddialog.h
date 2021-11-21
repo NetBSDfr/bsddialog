@@ -156,8 +156,10 @@ bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols);
+
 int
 bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+
 int bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int argc, char **argv);
 
