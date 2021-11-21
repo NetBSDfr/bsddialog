@@ -26,9 +26,7 @@ int main()
 	    {"", false, 0, "Quit",     "Exit",                 "Quit or Cancel to exit" }
 	};
 
-	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = -1;
-	conf.shadow = true;
+	bsddialog_initconf(&conf);
 	conf.title = " Theme ";
 	
 	if (bsddialog_init() < 0)

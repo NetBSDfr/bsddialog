@@ -18,9 +18,7 @@ int main()
 	int output;
 	struct bsddialog_conf conf;
 
-	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = -1;
-	conf.shadow = true;
+	bsddialog_initconf(&conf);
 	conf.title = "yesno";
 	
 	if (bsddialog_init() < 0)

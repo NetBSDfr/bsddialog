@@ -25,9 +25,7 @@ int main()
 	    {"", true,  0, "Name 5", "Desc 5", "Bottom Desc 5"}
 	};
 
-	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = -1;
-	conf.shadow = true;
+	bsddialog_initconf(&conf);
 	conf.title = "radiolist";
 	
 	if (bsddialog_init() < 0)

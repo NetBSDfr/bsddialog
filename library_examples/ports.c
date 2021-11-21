@@ -69,9 +69,7 @@ int main()
 	    { BSDDIALOG_RADIOLIST, 7, radio2  },
 	};
 
-	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = BSDDIALOG_CENTER;
-	conf.shadow = true;
+	bsddialog_initconf(&conf);
 	conf.title = "vim-8.2.2569";
 	
 	if (bsddialog_init() < 0)

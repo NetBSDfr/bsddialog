@@ -19,9 +19,7 @@ int main()
 	struct bsddialog_conf conf;
 
 	/* Configuration */
-	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = BSDDIALOG_CENTER;
-	conf.shadow = true;
+	bsddialog_initconf(&conf);
 	conf.title = "msgbox";
 
 	/* Run BSDDialog */

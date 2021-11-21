@@ -42,9 +42,7 @@ int main()
 	    { BSDDIALOG_RADIOLIST, 5, radio }
 	};
 
-	memset(&conf, 0, sizeof(struct bsddialog_conf));
-	conf.y = conf.x = -1;
-	conf.shadow = true;
+	bsddialog_initconf(&conf);
 	conf.title = "mixedmenu";
 	
 	if (bsddialog_init() < 0)
