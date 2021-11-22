@@ -96,7 +96,7 @@ Use Cases:
 --print-maxsize, --shadow, --single-quoted (add --quote-with *ch*?), 
 --separator *string* (alias --output-separator *string*),
 --separate-output (rename --separate-output-withnl?), --sleep *secs*, --stderr,
---stdout, --theme *string* ("default", "dialog" and "magenta"),
+--stdout, --theme *string* ("bsddialog", "dialog", "blackwhite" and "magenta"),
 --time-format *format*, --title *title*, --version, --yes-label *string*.
 
 **Widgets:**
