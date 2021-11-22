@@ -515,7 +515,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			loop = false;
 			break;
 		case 27: /* Esc */
-			output = BSDDIALOG_ERROR;
+			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
 		case '\t': /* TAB */
@@ -544,8 +544,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
 			/* No break! the terminal size can change */
-		case KEY_RESIZE: /* to improve */
-		case 'r':
+		case KEY_RESIZE:
 			hide_widget(y, x, h, w,conf.shadow);
 
 			/*
