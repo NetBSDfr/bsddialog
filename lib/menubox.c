@@ -279,7 +279,7 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 
 	/* bottom desc (item help) */
 	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
-		move(LINES-2, 5);
+		move(LINES-1, 2);
 		clrtoeol();
 		addstr(item.bottomdesc);
 
