@@ -35,6 +35,9 @@
 #define HBORDERS	2
 #define VBORDERS	2
 
+/* ncurses has not a Ctrl key macro */
+#define KEY_CTRL(x) ((x) & 0x1f)
+
 /* Set default aspect ratio to 9 */
 #define GET_ASPECT_RATIO(conf) (conf.aspect_ratio > 0 ? conf.aspect_ratio : 9)
 

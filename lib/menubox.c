@@ -533,6 +533,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				wrefresh(widget);
 			}
 			break;
+		case KEY_CTRL('E'): /* add conf.menu.extrahelpkey ? */
 		case KEY_F(1):
 			if (conf.hfile == NULL)
 				break;
