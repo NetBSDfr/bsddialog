@@ -82,6 +82,49 @@ static struct bsddialog_theme bsddialogtheme = {
 	.bottomtitlecolor= GET_COLOR(COLOR_BLACK, bgwidget)
 };
 
+static struct bsddialog_theme blackwhite = {
+#define bk  COLOR_BLACK
+#define fg  COLOR_WHITE
+	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadowrows      = 1,
+	.shadowcols      = 2,
+
+	.backgroundcolor = GET_COLOR(fg, bk),
+	.surroundtitle   = true,
+	.titlecolor      = GET_COLOR(fg, bk),
+	.lineraisecolor  = GET_COLOR(fg, bk),
+	.linelowercolor  = GET_COLOR(fg, bk),
+	.widgetcolor     = GET_COLOR(fg, bk),
+
+	.texthmargin     = 1,
+
+	.curritemcolor   = GET_COLOR(fg, bk) | A_REVERSE,
+	.itemcolor       = GET_COLOR(fg, bk),
+	.currtagcolor    = GET_COLOR(fg, bk) | A_REVERSE,
+	.tagcolor        = GET_COLOR(fg, bk),
+	.namesepcolor    = GET_COLOR(fg, bk),
+	.descsepcolor    = GET_COLOR(fg, bk),
+
+	.currfieldcolor  = GET_COLOR(fg, bk) | A_REVERSE,
+	.fieldcolor      = GET_COLOR(fg, bk),
+	.fieldreadonlycolor = GET_COLOR(fg, bk),
+
+	.currbarcolor    = GET_COLOR(fg, bk) | A_REVERSE,
+	.barcolor        = GET_COLOR(fg, bk),
+
+	.buttonspace     = 3,
+	.buttleftch      = '[',
+	.buttrightchar   = ']',
+	.currbuttdelimcolor = GET_COLOR(fg, bk),
+	.buttdelimcolor     = GET_COLOR(fg, bk),
+	.currbuttoncolor    = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
+	.buttoncolor        = GET_COLOR(fg, bk) | A_UNDERLINE,
+	.currshortkeycolor  = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
+	.shortkeycolor      = GET_COLOR(fg, bk) | A_UNDERLINE,
+
+	.bottomtitlecolor= GET_COLOR(fg, bk)
+};
+
 static struct bsddialog_theme dialogtheme = {
 	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadowrows      = 1,
@@ -217,6 +260,8 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 		bsddialog_set_theme(dialogtheme);
 	else if (newtheme == BSDDIALOG_THEME_BSDDIALOG)
 		bsddialog_set_theme(bsddialogtheme);
+	else if (newtheme == BSDDIALOG_THEME_BLACKWHITE)
+		bsddialog_set_theme(blackwhite);
 	else if (newtheme == BSDDIALOG_THEME_DIALOG)
 		bsddialog_set_theme(dialogtheme);
 	else if (newtheme == BSDDIALOG_THEME_MAGENTA)
