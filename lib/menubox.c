@@ -648,12 +648,12 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			wrefresh(menuwin);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			break;
-		case ' ': // Space
+		case ' ': /* Space */
 			if (currmode == MENUMODE)
 				break;
 			else if (currmode == CHECKLISTMODE)
 				item->on = !item->on;
-			else { //RADIOLISTMODE and TREEVIEWMODE
+			else { /* RADIOLISTMODE */
 				if (item->on == true)
 					break;
 				for (i=0; i < (int) groups[g].nitems; i++)
