@@ -101,11 +101,10 @@ static int checkmenu(int nitems, struct bsddialog_menuitem *items) // useful?
 }
 
 static void
-getfirst(struct bsddialog_conf conf, int ngroups, struct bsddialog_menugroup *groups,
-    int *abs, int *group, int *rel)
+getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
+    int *rel)
 {
-	int i, j, a;
-	struct bsddialog_menuitem *item;
+	int i, a;
 
 	*abs = *rel = *group = -1;
 	a = 0;
@@ -114,11 +113,32 @@ getfirst(struct bsddialog_conf conf, int ngroups, struct bsddialog_menugroup *gr
 			a += groups[i].nitems;
 			continue;
 		}
-		if (conf.menu.default_item == NULL && groups[i].nitems != 0) {
+		if (groups[i].nitems != 0) {
 			*group = i;
 			*abs = a;
 			*rel = 0;
 			break;
+		}
+	}
+}
+
+static void
+getfirst_with_default(struct bsddialog_conf conf, int ngroups,
+    struct bsddialog_menugroup *groups, int *abs, int *group, int *rel)
+{
+	int i, j, a;
+	struct bsddialog_menuitem *item;
+
+	getfirst(ngroups, groups, abs, group, rel);
+	if (*abs < 0)
+		return;
+	
+	a = *abs;
+
+	for (i=*group; i<ngroups; i++) {
+		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+			a += groups[i].nitems;
+			continue;
 		}
 		for (j = 0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
@@ -131,6 +151,27 @@ getfirst(struct bsddialog_conf conf, int ngroups, struct bsddialog_menugroup *gr
 				}
 			}
 			a++;
+		}
+	}
+}
+
+static void
+getlast(int totnitems, int ngroups, struct bsddialog_menugroup *groups,
+    int *abs, int *group, int *rel)
+{
+	int i, a;
+
+	a = totnitems - 1;
+	for (i = ngroups-1; i>=0; i--) {
+		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+			a -= groups[i].nitems;
+			continue;
+		}
+		if (groups[i].nitems != 0) {
+			*group = i;
+			*abs = a;
+			*rel = groups[i].nitems - 1;
+			break;
 		}
 	}
 }
@@ -468,7 +509,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	menupad = newpad(totnitems, pos.line);
 	wbkgd(menupad, t.widgetcolor);
 
-	getfirst(conf, ngroups, groups, &abs, &g, &rel);
+	getfirst_with_default(conf, ngroups, groups, &abs, &g, &rel);
 	ymenupad = 0;
 	for (i=0; i<ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
@@ -622,9 +663,13 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		if (abs < 0)
 			continue;
 		switch(input) {
+		case KEY_HOME:
 		case KEY_UP:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
-			getprev(groups, &abs, &g, &rel);
+			if (input == KEY_HOME)
+				getfirst(ngroups, groups, &abs, &g, &rel);
+			else
+				getprev(groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
@@ -635,9 +680,13 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			wrefresh(menuwin);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			break;
+		case KEY_END:
 		case KEY_DOWN:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
-			getnext(ngroups, groups, &abs, &g, &rel);
+			if (input == KEY_END)
+				getlast(totnitems, ngroups, groups, &abs, &g, &rel);
+			else
+				getnext(ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
