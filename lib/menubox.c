@@ -696,7 +696,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		case KEY_HOME:
 		case KEY_UP:
 		case KEY_PPAGE:
-			if (abs == 0) /* useless, just to save cpu for rehresh */
+			if (abs == 0) /* useless, just to save cpu refresh */
 				break;
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			if (input == KEY_HOME)
@@ -719,7 +719,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		case KEY_DOWN:
 		case KEY_NPAGE:
 			if (abs == totnitems -1)
-				break; /* useless, just to save cpu for rehresh */
+				break; /* useless, just to save cpu refresh */
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			if (input == KEY_END)
 				getlast(totnitems, ngroups, groups, &abs, &g, &rel);
