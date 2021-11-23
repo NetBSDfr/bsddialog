@@ -210,6 +210,21 @@ getnext(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 }
 
 static void
+getfastnext(int menurows, int ngroups, struct bsddialog_menugroup *groups,
+    int *abs, int *group, int *rel)
+{
+	int a, start, i;
+
+	start = *abs;
+	i = menurows;
+	do {
+		a = *abs;
+		getnext(ngroups, groups, abs, group, rel);
+		i--;
+	} while (*abs != a && *abs < start + menurows && i > 0);
+}
+
+static void
 getprev(struct bsddialog_menugroup *groups, int *abs, int *group, int *rel)
 {
 	int i, a;
@@ -239,6 +254,21 @@ getprev(struct bsddialog_menugroup *groups, int *abs, int *group, int *rel)
 			break;
 		}
 	}
+}
+
+static void
+getfastprev(int menurows, struct bsddialog_menugroup *groups, int *abs,
+    int *group, int *rel)
+{
+	int a, start, i;
+
+	start = *abs;
+	i = menurows;
+	do {
+		a = *abs;
+		getprev(groups, abs, group, rel);
+		i--;
+	} while (*abs != a && *abs > start - menurows && i > 0);
 }
 
 static enum menumode
@@ -665,11 +695,14 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 		switch(input) {
 		case KEY_HOME:
 		case KEY_UP:
+		case KEY_PPAGE:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			if (input == KEY_HOME)
 				getfirst(ngroups, groups, &abs, &g, &rel);
-			else
+			else if (input == KEY_UP)
 				getprev(groups, &abs, &g, &rel);
+			else /* input == KEY_PPAGE*/
+				getfastprev(menurows, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
@@ -682,11 +715,14 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			break;
 		case KEY_END:
 		case KEY_DOWN:
+		case KEY_NPAGE:
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			if (input == KEY_END)
 				getlast(totnitems, ngroups, groups, &abs, &g, &rel);
-			else
+			else if (input == KEY_DOWN)
 				getnext(ngroups, groups, &abs, &g, &rel);
+			else /* input == KEY_NPAGE*/
+				getfastnext(menurows, ngroups, groups, &abs, &g, &rel);
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
