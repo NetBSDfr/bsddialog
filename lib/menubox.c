@@ -629,7 +629,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			if (ymenupad > abs && ymenupad > 0)
-				ymenupad--;
+				ymenupad = abs;
 			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
 			    menurows, ymenupad);
 			wrefresh(menuwin);
@@ -642,7 +642,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			if ((int)(ymenupad + menurows) <= abs)
-				ymenupad++;
+				ymenupad = abs - menurows + 1;
 			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
 			    menurows, ymenupad);
 			wrefresh(menuwin);
