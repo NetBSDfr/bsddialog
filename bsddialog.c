@@ -754,23 +754,6 @@ int editbox_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int form_builder(BUILDER_ARGS)
-{
-	int output, formheight;
-
-	if (argc < 1 || (((argc-1) % 8) != 0) ) {
-		usage();
-		return (BSDDIALOG_ERROR);
-	}
-
-	formheight = atoi(argv[0]);
-
-	output = bsddialog_form(conf, text, rows, cols, formheight, argc-1,
-	    argv + 1);
-
-	return (output);
-}
-
 int fselect_builder(BUILDER_ARGS)
 {
 	int output;
@@ -802,36 +785,10 @@ int infobox_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int inputbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_inputbox(conf, text, rows, cols);
-
-	return (output);
-}
-
 int inputmenu_builder(BUILDER_ARGS)
 {
 
 	return (BSDDIALOG_ERROR);
-}
-
-int mixedform_builder(BUILDER_ARGS)
-{
-	int output, formheight;
-
-	if (argc < 1 || (((argc-1) % 9) != 0) ) {
-		usage();
-		return (BSDDIALOG_ERROR);
-	}
-
-	formheight = atoi(argv[0]);
-
-	output = bsddialog_mixedform(conf, text, rows, cols, formheight, argc-1,
-	    argv + 1);
-
-	return (output);
 }
 
 int mixedgauge_builder(BUILDER_ARGS)
@@ -858,32 +815,6 @@ int msgbox_builder(BUILDER_ARGS)
 	int output;
 
 	output = bsddialog_msgbox(conf, text, rows, cols);
-
-	return (output);
-}
-
-int passwordbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_passwordbox(conf, text, rows, cols);
-
-	return (output);
-}
-
-int passwordform_builder(BUILDER_ARGS)
-{
-	int output, formheight;
-
-	if (argc < 1 || (((argc-1) % 8) != 0) ) {
-		usage();
-		return (BSDDIALOG_ERROR);
-	}
-
-	formheight = atoi(argv[0]);
-
-	output = bsddialog_passwordform(conf, text, rows, cols, formheight,
-	    argc-1, argv + 1);
 
 	return (output);
 }
@@ -1079,7 +1010,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 }
 
 static void
-print_selected_items(struct bsddialog_conf conf, int output, int nitems,
+print_menu_items(struct bsddialog_conf conf, int output, int nitems,
     struct bsddialog_menuitem *items, int focusitem)
 {
 	int i;
@@ -1157,7 +1088,7 @@ int buildlist_builder(BUILDER_ARGS)
 	if (output == BSDDIALOG_ERROR)
 		return (BSDDIALOG_ERROR);
 
-	print_selected_items(conf, output, nitems, items, focusitem);
+	print_menu_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
@@ -1182,7 +1113,7 @@ int checklist_builder(BUILDER_ARGS)
 	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_selected_items(conf, output, nitems, items, focusitem);
+	print_menu_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
@@ -1207,7 +1138,7 @@ int menu_builder(BUILDER_ARGS)
 	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_selected_items(conf, output, nitems, items, focusitem);
+	print_menu_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
@@ -1232,7 +1163,7 @@ int radiolist_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_selected_items(conf, output, nitems, items, focusitem);
+	print_menu_items(conf, output, nitems, items, focusitem);
 
 	return output;
 }
@@ -1257,7 +1188,78 @@ int treeview_builder(BUILDER_ARGS)
 	output = bsddialog_treeview(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 	
-	print_selected_items(conf, output, nitems, items, focusitem);
+	print_menu_items(conf, output, nitems, items, focusitem);
 
 	return output;
+}
+
+/* FORM */
+
+int form_builder(BUILDER_ARGS)
+{
+	int output, formheight;
+
+	if (argc < 1 || (((argc-1) % 8) != 0) ) {
+		usage();
+		return (BSDDIALOG_ERROR);
+	}
+
+	formheight = atoi(argv[0]);
+
+	output = bsddialog_form(conf, text, rows, cols, formheight, argc-1,
+	    argv + 1);
+
+	return (output);
+}
+
+int inputbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_inputbox(conf, text, rows, cols);
+
+	return (output);
+}
+
+int mixedform_builder(BUILDER_ARGS)
+{
+	int output, formheight;
+
+	if (argc < 1 || (((argc-1) % 9) != 0) ) {
+		usage();
+		return (BSDDIALOG_ERROR);
+	}
+
+	formheight = atoi(argv[0]);
+
+	output = bsddialog_mixedform(conf, text, rows, cols, formheight, argc-1,
+	    argv + 1);
+
+	return (output);
+}
+
+int passwordbox_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_passwordbox(conf, text, rows, cols);
+
+	return (output);
+}
+
+int passwordform_builder(BUILDER_ARGS)
+{
+	int output, formheight;
+
+	if (argc < 1 || (((argc-1) % 8) != 0) ) {
+		usage();
+		return (BSDDIALOG_ERROR);
+	}
+
+	formheight = atoi(argv[0]);
+
+	output = bsddialog_passwordform(conf, text, rows, cols, formheight,
+	    argc-1, argv + 1);
+
+	return (output);
 }

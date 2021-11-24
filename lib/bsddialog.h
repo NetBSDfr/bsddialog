@@ -132,6 +132,13 @@ struct bsddialog_menugroup {
 	struct bsddialog_menuitem *items;
 };
 
+#define BSDDIALOG_ITEM
+struct bsddialog_formitem {
+	int type;
+	char *label;
+	char *value;
+};
+
 int bsddialog_init(void);
 int bsddialog_end(void);
 int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
