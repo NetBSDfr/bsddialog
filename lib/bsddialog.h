@@ -134,7 +134,18 @@ struct bsddialog_menugroup {
 
 struct bsddialog_formitem {
 	char *label;
+	unsigned int ylabel;
+	unsigned int xlabel;
+
 	char *value;
+	unsigned int yvalue;
+	unsigned int xvalue;
+	unsigned int valuelen;
+	int formlen;
+
+#define BSDDIALOG_ITEMHIDDEN   0x1
+#define BSDDIALOG_ITEMREADONLY 0x2
+	unsigned int flags;
 };
 
 int bsddialog_init(void);
