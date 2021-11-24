@@ -132,9 +132,7 @@ struct bsddialog_menugroup {
 	struct bsddialog_menuitem *items;
 };
 
-#define BSDDIALOG_ITEM
 struct bsddialog_formitem {
-	int type;
 	char *label;
 	char *value;
 };
