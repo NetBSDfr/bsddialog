@@ -84,6 +84,8 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 int f1help(struct bsddialog_conf conf)
 {
 	char *file = conf.hfile;
+	char *title = conf.title;
+	int output;
 
 	conf.hfile = NULL;
 	conf.clear = true;
@@ -91,10 +93,13 @@ int f1help(struct bsddialog_conf conf)
 	conf.x = BSDDIALOG_CENTER;
 	conf.title = "HELP";
 	conf.sleep = 0;
-	/* to check extras */
 
-	/* TODO: LINES/2, COLS/2 -> BSDDIALOG_AUTOSIZE, BSDDIALOG_AUTOSIZE */
-	return bsddialog_textbox(conf, file, LINES/2, COLS/2);
+	output = bsddialog_textbox(conf, file, BSDDIALOG_AUTOSIZE,
+	    BSDDIALOG_AUTOSIZE);
+	conf.hfile = file;
+	conf.title = title;
+
+	return output;
 }
 
 /* Buttons */
