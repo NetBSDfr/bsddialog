@@ -50,21 +50,8 @@ int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int co
 	RETURN_ERROR(text);
 }
 
-#define ITEMHIDDEN 0x1
-#define ISITEMHIDDEN(item) (item.itemflags & 0x1)
-#define ITEMREADONLY 0x2
-#define ISITEMREADONLY(item) (item.itemflags & 0x2)
-struct formitem {
-	char *label;
-	unsigned int ylabel;
-	unsigned int xlabel;
-	char *item;
-	unsigned int yitem;
-	unsigned int xitem;
-	int itemlen;
-	unsigned int inputlen;
-	unsigned int itemflags;
-};
+#define ISITEMHIDDEN(item) (item.flags & BSDDIALOG_ITEMHIDDEN)
+#define ISITEMREADONLY(item) (item.flags & BSDDIALOG_ITEMREADONLY)
 
 static int
 mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
@@ -182,7 +169,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 
 static int
 do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nitems, struct formitem *items)
+    int formheight, int nitems, struct bsddialog_formitem *items)
 {
 	WINDOW *widget, *entry, *shadow;
 	int i, output, color, y, x;
@@ -202,11 +189,11 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
-		field[i] = new_field(1, items[i].itemlen, items[i].yitem-1, items[i].xitem-1, 0, 1);
+		field[i] = new_field(1, items[i].formlen, items[i].yvalue-1, items[i].xvalue-1, 0, 1);
 		field_opts_off(field[i], O_STATIC);
-		set_max_field(field[i], items[i].inputlen);
-		set_field_buffer(field[i], 0, items[i].item);
-		set_field_buffer(field[i], 1, items[i].item);
+		set_max_field(field[i], items[i].valuelen);
+		set_field_buffer(field[i], 0, items[i].value);
+		set_field_buffer(field[i], 1, items[i].value);
 		field_opts_off(field[i], O_AUTOSKIP);
 		field_opts_off(field[i], O_BLANK);
 		//field_opts_off(field[i], O_BS_OVERLOAD);
@@ -256,68 +243,33 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 	return output;
 }
 
-int bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols)
+int
+bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols,
+    struct bsddialog_formitem *item)
 {
 	int output;
-	struct formitem item;
 
-	item.label	= "";
-	item.ylabel	= 0;
-	item.xlabel	= 0;
-	item.item	= ""; // TODO add argv
-	item.yitem	= 1;
-	item.xitem	= 1;
-	item.itemlen	= cols-4;
-	item.inputlen	= 2048; // todo conf.sizeinput
-	item.itemflags	= 0;
-
-	output = do_mixedform(conf, text, rows, cols, 1, 1, &item);
+	output = do_mixedform(conf, text, rows, cols, 1, 1, item);
 
 	return output;
 }
 
-int bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows, int cols)
+int
+bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows, 
+    int cols, struct bsddialog_formitem *item)
 {
 	int output;
-	struct formitem item;
 
-	item.label	= "";
-	item.ylabel	= 0;
-	item.xlabel	= 0;
-	item.item	= ""; // TODO add argv
-	item.yitem	= 1;
-	item.xitem	= 1;
-	item.itemlen	= cols-4;
-	item.inputlen	= 2048; // todo conf.sizeinput
-	item.itemflags	= ITEMHIDDEN;
-
-	output = do_mixedform(conf, text, rows, cols, 1, 1, &item);
+	output = do_mixedform(conf, text, rows, cols, 1, 1, item);
 
 	return output;
 }
 
 int
 bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv)
+    int formheight, int nitems, struct bsddialog_formitem *items)
 {
-	int i, output, nitems;
-	struct formitem items[128];
-
-	if ((argc % 9) != 0)
-		return (-1);
-
-	nitems = argc / 9;
-	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[9*i];
-		items[i].ylabel	   = atoi(argv[9*i+1]);
-		items[i].xlabel	   = atoi(argv[9*i+2]);
-		items[i].item	   = argv[9*i+3];
-		items[i].yitem	   = atoi(argv[9*i+4]);
-		items[i].xitem	   = atoi(argv[9*i+5]);
-		items[i].itemlen   = atoi(argv[9*i+6]);
-		items[i].inputlen  = atoi(argv[9*i+7]);
-		items[i].itemflags = atoi(argv[9*i+8]);
-	}
+	int output;
 
 	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
 
@@ -326,33 +278,9 @@ bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv)
+    int formheight, int nitems, struct bsddialog_formitem *items)
 {
-	int i, output, nitems, itemlen, inputlen;
-	unsigned int flags = 0;
-	struct formitem items[128];
-
-	if ((argc % 8) != 0)
-		return (-1);
-
-	nitems = argc / 8;
-	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[8*i];
-		items[i].ylabel	   = atoi(argv[8*i+1]);
-		items[i].xlabel	   = atoi(argv[8*i+2]);
-		items[i].item	   = argv[8*i+3];
-		items[i].yitem	   = atoi(argv[8*i+4]);
-		items[i].xitem	   = atoi(argv[8*i+5]);
-
-		itemlen = atoi(argv[8*i+6]);
-		items[i].itemlen   = abs(itemlen);
-
-		inputlen = atoi(argv[8*i+7]);
-		items[i].inputlen = inputlen == 0 ? abs(itemlen) : inputlen;
-
-		flags = flags | (itemlen < 0 ? ITEMREADONLY : 0);
-		items[i].itemflags = flags;
-	}
+	int output;
 
 	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
 
@@ -360,34 +288,10 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv)
+bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows,
+    int cols, int formheight, int nitems, struct bsddialog_formitem *items)
 {
-	int i, output, nitems, itemlen, inputlen;
-	unsigned int flags = ITEMHIDDEN;
-	struct formitem items[128];
-
-	if ((argc % 8) != 0)
-		return (-1);
-
-	nitems = argc / 8;
-	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[8*i];
-		items[i].ylabel	   = atoi(argv[8*i+1]);
-		items[i].xlabel	   = atoi(argv[8*i+2]);
-		items[i].item	   = argv[8*i+3];
-		items[i].yitem	   = atoi(argv[8*i+4]);
-		items[i].xitem	   = atoi(argv[8*i+5]);
-
-		itemlen = atoi(argv[8*i+6]);
-		items[i].itemlen   = abs(itemlen);
-
-		inputlen = atoi(argv[8*i+7]);
-		items[i].inputlen = inputlen == 0 ? abs(itemlen) : inputlen;
-
-		flags = flags | (itemlen < 0 ? ITEMREADONLY : 0);
-		items[i].itemflags = flags;
-	}
+	int output;
 
 	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
 

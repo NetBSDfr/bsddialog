@@ -178,7 +178,7 @@ int
 bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv);
+    int formheight, int nitems, struct bsddialog_formitem *items);
 
 int
 bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols);
@@ -191,7 +191,8 @@ int
 bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
-bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols,
+    struct bsddialog_formitem *item);
 
 int
 bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols);
@@ -203,7 +204,7 @@ bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int argc, char **argv);
+    int formheight, int nitems, struct bsddialog_formitem *items);
 
 int
 bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
@@ -219,11 +220,11 @@ bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
 bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows,
-    int cols);
+    int cols, struct bsddialog_formitem *item);
 
 int
 bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows,
-    int cols, int formheight, int argc, char **argv);
+    int cols, int formheight, int nitems, struct bsddialog_formitem *items);
 
 int
 bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,

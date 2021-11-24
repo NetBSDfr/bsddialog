@@ -1194,10 +1194,11 @@ int treeview_builder(BUILDER_ARGS)
 }
 
 /* FORM */
-
 int form_builder(BUILDER_ARGS)
 {
-	int output, formheight;
+	int i, output, formheight, nitems, formlen, valuelen;
+	struct bsddialog_formitem items[100];
+	unsigned int flags = 0;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		usage();
@@ -1206,8 +1207,33 @@ int form_builder(BUILDER_ARGS)
 
 	formheight = atoi(argv[0]);
 
-	output = bsddialog_form(conf, text, rows, cols, formheight, argc-1,
-	    argv + 1);
+	argc--;
+	argv++;
+
+	if ((argc % 8) != 0)
+		return (-1);
+
+	nitems = argc / 8;
+	for (i=0; i<nitems; i++) {
+		items[i].label	   = argv[8*i];
+		items[i].ylabel	   = atoi(argv[8*i+1]);
+		items[i].xlabel	   = atoi(argv[8*i+2]);
+		items[i].value	   = argv[8*i+3];
+		items[i].yvalue	   = atoi(argv[8*i+4]);
+		items[i].xvalue	   = atoi(argv[8*i+5]);
+
+		formlen = atoi(argv[8*i+6]);
+		items[i].formlen   = abs(formlen);
+
+		valuelen = atoi(argv[8*i+7]);
+		items[i].valuelen = valuelen == 0 ? abs(formlen) : valuelen;
+
+		flags = flags | (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
+		items[i].flags = flags;
+	}
+
+	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
+	    items);
 
 	return (output);
 }
@@ -1215,15 +1241,27 @@ int form_builder(BUILDER_ARGS)
 int inputbox_builder(BUILDER_ARGS)
 {
 	int output;
+	struct bsddialog_formitem item;
 
-	output = bsddialog_inputbox(conf, text, rows, cols);
+	item.label	= "";
+	item.ylabel	= 0;
+	item.xlabel	= 0;
+	item.value	= ""; // TODO add argv
+	item.yvalue	= 1;
+	item.xvalue	= 1;
+	item.formlen	= cols-4;
+	item.valuelen	= 2048; // todo conf.sizeinput
+	item.flags	= 0;
+
+	output = bsddialog_inputbox(conf, text, rows, cols, &item);
 
 	return (output);
 }
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int output, formheight;
+	int i, output, formheight, nitems;
+	struct bsddialog_formitem items[100];
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
 		usage();
@@ -1231,9 +1269,25 @@ int mixedform_builder(BUILDER_ARGS)
 	}
 
 	formheight = atoi(argv[0]);
+	
+	argc--;
+	argv++;
 
-	output = bsddialog_mixedform(conf, text, rows, cols, formheight, argc-1,
-	    argv + 1);
+	nitems = argc / 9;
+	for (i=0; i<nitems; i++) {
+		items[i].label	   = argv[9*i];
+		items[i].ylabel	   = atoi(argv[9*i+1]);
+		items[i].xlabel	   = atoi(argv[9*i+2]);
+		items[i].value	   = argv[9*i+3];
+		items[i].yvalue	   = atoi(argv[9*i+4]);
+		items[i].xvalue	   = atoi(argv[9*i+5]);
+		items[i].formlen   = atoi(argv[9*i+6]);
+		items[i].valuelen  = atoi(argv[9*i+7]);
+		items[i].flags = atoi(argv[9*i+8]);
+	}
+
+	output = bsddialog_mixedform(conf, text, rows, cols, formheight, nitems,
+	    items);
 
 	return (output);
 }
@@ -1241,15 +1295,28 @@ int mixedform_builder(BUILDER_ARGS)
 int passwordbox_builder(BUILDER_ARGS)
 {
 	int output;
+	struct bsddialog_formitem item;
 
-	output = bsddialog_passwordbox(conf, text, rows, cols);
+	item.label	= "";
+	item.ylabel	= 0;
+	item.xlabel	= 0;
+	item.value	= ""; // TODO add argv
+	item.yvalue	= 1;
+	item.xvalue	= 1;
+	item.formlen	= cols-4;
+	item.valuelen	= 2048; // todo conf.sizeinput
+	item.flags	= BSDDIALOG_ITEMHIDDEN;
+
+	output = bsddialog_passwordbox(conf, text, rows, cols, &item);
 
 	return (output);
 }
 
 int passwordform_builder(BUILDER_ARGS)
 {
-	int output, formheight;
+	int i, output, formheight, nitems, formlen, valuelen;
+	struct bsddialog_formitem items[100];
+	unsigned int flags = BSDDIALOG_ITEMHIDDEN;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		usage();
@@ -1257,9 +1324,31 @@ int passwordform_builder(BUILDER_ARGS)
 	}
 
 	formheight = atoi(argv[0]);
+	
+	argc--;
+	argv++;
+
+	nitems = argc / 8;
+	for (i=0; i<nitems; i++) {
+		items[i].label	   = argv[8*i];
+		items[i].ylabel	   = atoi(argv[8*i+1]);
+		items[i].xlabel	   = atoi(argv[8*i+2]);
+		items[i].value	   = argv[8*i+3];
+		items[i].yvalue	   = atoi(argv[8*i+4]);
+		items[i].xvalue	   = atoi(argv[8*i+5]);
+
+		formlen = atoi(argv[8*i+6]);
+		items[i].formlen   = abs(formlen);
+
+		valuelen = atoi(argv[8*i+7]);
+		items[i].valuelen = valuelen == 0 ? abs(formlen) : valuelen;
+
+		flags = flags | (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
+		items[i].flags = flags;
+	}
 
 	output = bsddialog_passwordform(conf, text, rows, cols, formheight,
-	    argc-1, argv + 1);
+	    nitems, items);
 
 	return (output);
 }
