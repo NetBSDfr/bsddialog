@@ -141,13 +141,10 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 |--------------- | ----------- | ----------------------------------------------|
 | --buildlist    | In progress | todo autosize, resize, F1                               |
 | --calendar     | In progress | todo autosize, resize, F1, leap year, year <=0, month days |
-| --dselect      |             |                                               |
 | --editbox      |             |                                               |
 | --form         | In progress | implemented via --mixedform                   |
-| --fselect      |             |                                               |
 | --gauge        | In progress |                                               |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
-| --inputmenu    |             |                                               |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
 | --mixedgauge   | In progress | todo autosize, resize, F1                     |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
@@ -157,8 +154,8 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | --programbox   | Coding      |                                               |
 | --progressbox  |             |                                               |
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
-| --tailbox      | Coding      | todo via --textbox or fseek?                  |
-| --tailboxbg    |             |                                               |
 | --textbox      | In progress | todo navigation keys                          |
 | --timebox      | In progress | todo autosize, resize, F1                     |
 
+To evaluate / Not planned in the short term: tailbox (textbox/fseek), tailboxbg,
+dselect, fselect, inputmenu.
