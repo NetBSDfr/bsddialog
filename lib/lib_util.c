@@ -833,7 +833,7 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 		wattroff(widget, t.bottomtitlecolor);
 	}
 
-	if (textpad == NULL && text != NULL) /* no pad */
+	if (textpad == NULL && text != NULL) /* no pad, text null for textbox */
 		print_text(conf, widget, 1, 2, w-3, text);
 
 	if (buttons && conf.no_lines == false) {

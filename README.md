@@ -103,7 +103,7 @@ Use Cases:
  
  infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
- checklist, radiolist, mixedlist, treeview and menu.
+ checklist, radiolist, menu, mixedlist, treeview and textbox.
 
 ## TODO
 
@@ -154,7 +154,6 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | --programbox   | Coding      |                                               |
 | --progressbox  |             |                                               |
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
-| --textbox      | In progress | todo autosize, resize, F1                     |
 | --timebox      | In progress | todo autosize, resize, F1                     |
 
 To evaluate / Not planned in the short term: tailbox (textbox/fseek), tailboxbg,

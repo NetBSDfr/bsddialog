@@ -25,6 +25,9 @@
  * SUCH DAMAGE.
  */
 
+
+#include <sys/param.h>
+
 #include <string.h>
 
 #ifdef PORTNCURSES
@@ -39,16 +42,55 @@
 
 /* "Text": tailbox - tailboxbg - textbox */
 
+#define BUTTON_TEXTBOX "HELP"
+
 extern struct bsddialog_theme t;
 
 enum textmode { TAILMODE, TAILBGMODE, TEXTMODE};
 
+static void
+textbox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+    int hpad, int wpad)
+{
+
+	if (cols == BSDDIALOG_AUTOSIZE) {
+		*w = VBORDERS;
+		/* buttons size */
+		*w += strlen(BUTTON_TEXTBOX) + 2 /* text delims*/;
+		/* text size */
+		*w = MAX(*w, wpad + VBORDERS);
+		/* avoid terminal overflow */
+		*w = MIN(*w, widget_max_width(conf)-1); /* again -1, fix util.c */
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE) {
+		*h = hpad + 4; /* HBORDERS + button border */
+		/* avoid terminal overflow */
+		*h = MIN(*h, widget_max_height(conf));
+	}
+}
+
+static int textbox_checksize(int rows, int cols, int hpad, int wpad)
+{
+	int mincols;
+
+	mincols = VBORDERS + strlen(BUTTON_TEXTBOX) + 2 /* text delims */;
+
+	if (cols < mincols)
+		RETURN_ERROR("Few cols for the textbox");
+
+	if (rows < 4 /* HBORDERS + button*/ + (hpad > 0 ? 1 : 0))
+		RETURN_ERROR("Few rows for the textbox");
+
+	return 0;
+}
+
 static int
-do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, int cols)
+do_textbox(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, int cols)
 {
 	WINDOW *widget, *pad, *shadow;
-	int i, input, y, x, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
-	char buf[BUFSIZ], *exitbutt ="EXIT";
+	int i, input, y, x, h, w, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
+	char buf[BUFSIZ], *exitbutt;
 	FILE *fp;
 	bool loop;
 	int output;
@@ -57,21 +99,6 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 		bsddialog_msgbox(conf, "Tailbox and Tailboxbg unimplemented", rows, cols);
 		RETURN_ERROR("Tailbox and Tailboxbg unimplemented");
 	}
-
-	if (new_widget(conf, &widget, &y, &x, NULL, &rows, &cols, &shadow,
-	    true) <0)
-		return -1;
-
-	exitbutt = conf.button.exit_label == NULL ? exitbutt : conf.button.exit_label;
-	draw_button(widget, rows-2, (cols-2)/2 - strlen(exitbutt)/2, strlen(exitbutt)+2,
-	    exitbutt, true, true);
-
-	wrefresh(widget);
-
-	hpad = 1;
-	wpad = 1;
-	pad = newpad(hpad, wpad);
-	wbkgd(pad, t.widgetcolor);
 
 	if ((fp = fopen(path, "r")) == NULL)
 		RETURN_ERROR("Cannot open file");
@@ -84,6 +111,10 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 		for (i=hpad-1; i--; i>=0) {
 		}
 	}*/
+	hpad = 1;
+	wpad = 1;
+	pad = newpad(hpad, wpad);
+	wbkgd(pad, t.widgetcolor);
 	i = 0;
 	while(fgets(buf, BUFSIZ, fp) != NULL) {
 		if ((int) strlen(buf) > wpad) {
@@ -99,12 +130,30 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	}
 	fclose(fp);
 
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
+	textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad);
+	if (textbox_checksize(h, w, hpad, wpad) != 0)
+		return BSDDIALOG_ERROR;
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
+		return BSDDIALOG_ERROR;
+
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
+	    NULL, NULL, NULL, true) != 0)
+		return BSDDIALOG_ERROR;
+
+	exitbutt = conf.button.exit_label == NULL ? BUTTON_TEXTBOX : conf.button.exit_label;
+	draw_button(widget, h-2, (w-2)/2 - strlen(exitbutt)/2, strlen(exitbutt)+2,
+	    exitbutt, true, true);
+
+	wrefresh(widget);
+
 	ys = y + 1;
 	xs = x + 1;
-	ye = ys + rows-5;
-	xe = xs + cols-3;
+	ye = ys + h - 5;
+	xe = xs + w - 3;
 	ypad = xpad = 0;
-	printrows = rows -4;
+	printrows = h-4;
 	loop = true;
 	while(loop) {
 		prefresh(pad, ypad, xpad, ys, xs, ye, xe);
@@ -142,7 +191,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 			break;
 		case KEY_RIGHT:
 		case 'l':
-			xpad = (xpad + cols-2) < wpad-1 ? xpad + 1 : xpad;
+			xpad = (xpad + w-2) < wpad-1 ? xpad + 1 : xpad;
 			break;
 		case KEY_UP:
 		case 'k':
@@ -152,11 +201,60 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 		case'j':
 			ypad = ypad + printrows <= hpad -1 ? ypad + 1 : ypad;
 			break;
+		case KEY_F(1):
+			if (conf.hfile == NULL)
+				break;
+			if (f1help(conf) != 0)
+				return BSDDIALOG_ERROR;
+			/* No break! the terminal size can change */
+		case KEY_RESIZE:
+			hide_widget(y, x, h, w,conf.shadow);
+
+			/*
+			 * Unnecessary, but, when the columns decrease the
+			 * following "refresh" seem not work
+			 */
+			refresh();
+
+			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+				return BSDDIALOG_ERROR;
+			textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad);
+			if (textbox_checksize(h, w, hpad, wpad) != 0)
+				return BSDDIALOG_ERROR;
+			if (set_widget_position(conf, &y, &x, h, w) != 0)
+				return BSDDIALOG_ERROR;
+
+			wclear(shadow);
+			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
+			wresize(shadow, h, w);
+
+			wclear(widget);
+			mvwin(widget, y, x);
+			wresize(widget, h, w);
+
+			ys = y + 1;
+			xs = x + 1;
+			ye = ys + h - 5;
+			xe = xs + w - 3;
+			ypad = xpad = 0;
+			printrows = h - 4;
+
+			if(update_widget_withtextpad(conf, shadow, widget, h, w,
+			    RAISED, NULL, NULL, NULL, true) != 0)
+			return BSDDIALOG_ERROR;
+
+			draw_button(widget, h-2, (w-2)/2 - strlen(exitbutt)/2,
+			    strlen(exitbutt)+2, exitbutt, true, true);
+
+			wrefresh(widget); /* for button */
+
+			/* Important to fix grey lines expanding screen */
+			refresh();
+			break;
 		}
 	}
 
-	/* to improve: name, rows and cols, now only for F1 */
-	end_widget(conf, widget, rows, cols, shadow);
+	end_widget_withtextpad(conf, widget, h, w, pad, shadow);
 
 	return output;
 }
@@ -164,19 +262,19 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
-	return (do_text(TAILMODE, conf, text, rows, cols));
+	return (do_textbox(TAILMODE, conf, text, rows, cols));
 }
 
 int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
-	return (do_text(TAILBGMODE, conf, text, rows, cols));
+	return (do_textbox(TAILBGMODE, conf, text, rows, cols));
 }
 
 
 int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 
-	return (do_text(TEXTMODE, conf, text, rows, cols));
+	return (do_textbox(TEXTMODE, conf, text, rows, cols));
 }
 
