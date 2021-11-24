@@ -70,7 +70,7 @@ textbox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	}
 }
 
-static int textbox_checksize(int rows, int cols, int hpad, int wpad)
+static int textbox_checksize(int rows, int cols, int hpad)
 {
 	int mincols;
 
@@ -133,7 +133,7 @@ do_textbox(enum textmode mode, struct bsddialog_conf conf, char* path, int rows,
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
 	textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad);
-	if (textbox_checksize(h, w, hpad, wpad) != 0)
+	if (textbox_checksize(h, w, hpad) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
@@ -219,7 +219,7 @@ do_textbox(enum textmode mode, struct bsddialog_conf conf, char* path, int rows,
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
 			textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad);
-			if (textbox_checksize(h, w, hpad, wpad) != 0)
+			if (textbox_checksize(h, w, hpad) != 0)
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
