@@ -139,7 +139,7 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
-| --buildlist    | In progress | todo autosize, resize, F1                               |
+| --buildlist    | In progress | todo autosize, resize, F1                     |
 | --calendar     | In progress | todo autosize, resize, F1, leap year, year <=0, month days |
 | --editbox      |             |                                               |
 | --form         | In progress | implemented via --mixedform                   |
