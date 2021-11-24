@@ -8,7 +8,7 @@
 	Label5:   5	1	Value5		5	11	18	25	4 \
 	2>out.txt ; cat out.txt ; rm out.txt
 
-./bsddialog --backtitle "BSD-2-Clause Licese" --title " form " --form "Hello World!" 12 40 5 \
+./bsddialog --title " form " --form "Hello World!" 12 40 5 \
 	Label1:	1	1	Value1		1	9	18	25 \
 	Label2:	2	1	Value2		2	9	18	25 \
 	Label3:	3	1	Value3		3	9	18	25 \
