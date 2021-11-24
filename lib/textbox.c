@@ -68,8 +68,8 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 
 	wrefresh(widget);
 
-	padrows = rows - 4;
-	padcols = cols - 2;
+	padrows = 1;
+	padcols = 1;
 	pad = newpad(padrows, padcols);
 	wbkgd(pad, t.widgetcolor);
 
