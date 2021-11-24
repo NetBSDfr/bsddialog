@@ -89,7 +89,7 @@ enum bsddialog_default_theme {
 };
 
 int bsddialog_color(enum bsddialog_color background, enum bsddialog_color foreground);
-struct bsddialog_theme bsddialog_get_theme();
+struct bsddialog_theme bsddialog_get_theme(void);
 void bsddialog_set_theme(struct bsddialog_theme theme);
 int bsddialog_set_default_theme(enum bsddialog_default_theme theme);
 
