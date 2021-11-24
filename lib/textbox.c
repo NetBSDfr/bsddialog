@@ -73,7 +73,8 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	pad = newpad(padrows, padcols);
 	wbkgd(pad, t.widgetcolor);
 
-	fp = fopen(path, "r");
+	if ((fp = fopen(path, "r")) == NULL)
+		RETURN_ERROR("Cannot open file");
 	/*if (mode == TAILMODE) {
 		fseek (fp, 0, SEEK_END);
 		i = nlines = 0;
@@ -96,6 +97,7 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 		mvwaddstr(pad, i, 0, buf);
 		i++;
 	}
+	fclose(fp);
 
 	ys = y + 1;
 	xs = x + 1;
