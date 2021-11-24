@@ -154,7 +154,7 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | --programbox   | Coding      |                                               |
 | --progressbox  |             |                                               |
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
-| --textbox      | In progress | todo navigation keys                          |
+| --textbox      | In progress | todo autosize, resize, F1                     |
 | --timebox      | In progress | todo autosize, resize, F1                     |
 
 To evaluate / Not planned in the short term: tailbox (textbox/fseek), tailboxbg,

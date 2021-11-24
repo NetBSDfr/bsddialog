@@ -47,7 +47,7 @@ static int
 do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, int cols)
 {
 	WINDOW *widget, *pad, *shadow;
-	int i, input, y, x, hpad, wpad, ypad, xpad, ys, ye, xs, xe;
+	int i, input, y, x, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
 	char buf[BUFSIZ], *exitbutt ="EXIT";
 	FILE *fp;
 	bool loop;
@@ -104,11 +104,13 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	ye = ys + rows-5;
 	xe = xs + cols-3;
 	ypad = xpad = 0;
+	printrows = rows -4;
 	loop = true;
 	while(loop) {
 		prefresh(pad, ypad, xpad, ys, xs, ye, xe);
 		input = getch();
 		switch(input) {
+		case KEY_ENTER:
 		case 10: /* Enter */
 			output = BSDDIALOG_YESOK;
 			loop = false;
@@ -117,17 +119,38 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
+		case KEY_HOME:
+			ypad = 0;
+			break;
+		case KEY_END:
+			ypad = hpad - printrows;
+			ypad = ypad < 0 ? 0 : ypad;
+			break;
+		case KEY_PPAGE:
+			ypad -= printrows;
+			ypad = ypad < 0 ? 0 : ypad;
+			break;
+		case KEY_NPAGE:
+			ypad += printrows;
+			ypad = ypad + printrows > hpad ? hpad - printrows : ypad;
+			break;
+		case '0':
+			xpad = 0;
 		case KEY_LEFT:
+		case 'h':
 			xpad = xpad > 0 ? xpad - 1 : 0;
 			break;
 		case KEY_RIGHT:
+		case 'l':
 			xpad = (xpad + cols-2) < wpad-1 ? xpad + 1 : xpad;
 			break;
 		case KEY_UP:
+		case 'k':
 			ypad = ypad > 0 ? ypad - 1 : 0;
 			break;
 		case KEY_DOWN:
-			ypad = (ypad + rows-4) <= hpad ? ypad + 1 : ypad;
+		case'j':
+			ypad = ypad + printrows <= hpad -1 ? ypad + 1 : ypad;
 			break;
 		}
 	}
