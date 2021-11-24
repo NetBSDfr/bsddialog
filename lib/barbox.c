@@ -184,7 +184,7 @@ int bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int c
 	wrefresh(widget);
 	wrefresh(bar);
 
-	getch();
+	//getch();
 
 	delwin(bar);
 	end_widget(conf, widget, rows, cols, shadow);
