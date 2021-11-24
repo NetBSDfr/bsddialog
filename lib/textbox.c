@@ -47,7 +47,7 @@ static int
 do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, int cols)
 {
 	WINDOW *widget, *pad, *shadow;
-	int i, input, y, x, padrows, padcols, ypad, xpad, ys, ye, xs, xe;
+	int i, input, y, x, hpad, wpad, ypad, xpad, ys, ye, xs, xe;
 	char buf[BUFSIZ], *exitbutt ="EXIT";
 	FILE *fp;
 	bool loop;
@@ -68,9 +68,9 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 
 	wrefresh(widget);
 
-	padrows = 1;
-	padcols = 1;
-	pad = newpad(padrows, padcols);
+	hpad = 1;
+	wpad = 1;
+	pad = newpad(hpad, wpad);
 	wbkgd(pad, t.widgetcolor);
 
 	if ((fp = fopen(path, "r")) == NULL)
@@ -78,21 +78,21 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 	/*if (mode == TAILMODE) {
 		fseek (fp, 0, SEEK_END);
 		i = nlines = 0;
-		while (i < padrows) {
+		while (i < hpad) {
 			line = ;
 		}
-		for (i=padrows-1; i--; i>=0) {
+		for (i=hpad-1; i--; i>=0) {
 		}
 	}*/
 	i = 0;
 	while(fgets(buf, BUFSIZ, fp) != NULL) {
-		if ((int) strlen(buf) > padcols) {
-			padcols = strlen(buf);
-			wresize(pad, padrows, padcols);
+		if ((int) strlen(buf) > wpad) {
+			wpad = strlen(buf);
+			wresize(pad, hpad, wpad);
 		}
-		if (i > padrows-1) {
-			padrows++;
-			wresize(pad, padrows, padcols);
+		if (i > hpad-1) {
+			hpad++;
+			wresize(pad, hpad, wpad);
 		}
 		mvwaddstr(pad, i, 0, buf);
 		i++;
@@ -121,13 +121,13 @@ do_text(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, in
 			xpad = xpad > 0 ? xpad - 1 : 0;
 			break;
 		case KEY_RIGHT:
-			xpad = (xpad + cols-2) < padcols-1 ? xpad + 1 : xpad;
+			xpad = (xpad + cols-2) < wpad-1 ? xpad + 1 : xpad;
 			break;
 		case KEY_UP:
 			ypad = ypad > 0 ? ypad - 1 : 0;
 			break;
 		case KEY_DOWN:
-			ypad = (ypad + rows-4) <= padrows ? ypad + 1 : ypad;
+			ypad = (ypad + rows-4) <= hpad ? ypad + 1 : ypad;
 			break;
 		}
 	}
