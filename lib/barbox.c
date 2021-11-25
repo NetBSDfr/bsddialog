@@ -158,7 +158,7 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	max_minbarlen = 0;
 	for (i=0; i < (argc/2); i++)
-		max_minbarlen = MAX(max_minbarlen, strlen(argv[i*2]));
+		max_minbarlen = MAX(max_minbarlen, (int) strlen(argv[i*2]));
 	max_minbarlen += 3 + 16 /* seps + [...] or mainbar */;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
