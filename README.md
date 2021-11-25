@@ -104,7 +104,7 @@ Use Cases:
  
  infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
- checklist, radiolist, menu, mixedlist, treeview and textbox.
+ checklist, radiolist, menu, mixedlist, treeview, textbox and mixedgauge.
 
 ## TODO
 
@@ -145,7 +145,6 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | --gauge        | In progress | to autosize                                   |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
-| --mixedgauge   | In progress | todo autosize                                 |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
 | --passwordform | In progress | implemented via --mixedform                   |
 | --pause        | In progress | todo autosize, resize, F1                     |
