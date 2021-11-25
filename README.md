@@ -142,7 +142,7 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | --buildlist    | In progress | todo autosize, resize, F1                     |
 | --calendar     | In progress | todo autosize, resize, F1                     |
 | --form         | In progress | implemented via --mixedform                   |
-| --gauge        | In progress | to autosize                                   |
+| --gauge        | In progress | todo autosize                                 |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
 | --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
