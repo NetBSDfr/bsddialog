@@ -721,7 +721,7 @@ int calendar_builder(BUILDER_ARGS)
 		return (output);
 
 	if (date_fmt_flag == NULL) {
-		dprintf(output_fd_flag, "%u/%u/%u", yy, mm, dd);
+		dprintf(output_fd_flag, "%u/%u/%u", yy + 1900, mm, dd);
 	}
 	else {
 		time(&cal);
