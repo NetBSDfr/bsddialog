@@ -140,7 +140,7 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
 | --buildlist    | In progress | todo autosize, resize, F1                     |
-| --calendar     | In progress | todo autosize, resize, F1, leap year, year <=0, month days |
+| --calendar     | In progress | todo autosize, resize, F1                     |
 | --form         | In progress | implemented via --mixedform                   |
 | --gauge        | In progress | to autosize                                   |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |

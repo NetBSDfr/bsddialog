@@ -131,32 +131,52 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 	return output;
 }
 
-int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
+int
+bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
 	WINDOW *widget, *shadow;
 	int i, input, output, y, x, sel;
 	struct buttons bs;
 	bool loop, buttupdate;
-
-	if (yy == NULL || mm == NULL || dd == NULL)
-		RETURN_ERROR("yy or mm or dd == NULL");
-
 	struct calendar {
-		unsigned int max;
-		unsigned int curr;
+		int max;
+		int value;
 		WINDOW *win;
 		unsigned int x;
-	} c[3] = {{9999, *yy, NULL, 4 }, {12, *mm, NULL, 9 }, {31, *dd, NULL, 2 }};
+	};
 	struct month {
 		char *name;
 		unsigned int days;
-	} m[12] = {
-	    { "January", 30 }, { "February", 30 }, { "March",     30 },
-	    { "April",   30 }, { "May",      30 }, { "June",      30 },
-	    { "July",    30 }, { "August",   30 }, { "September", 30 },
-	    { "October", 30 }, { "November", 30 }, { "December",  30 }
 	};
+
+	if (yy == NULL || mm == NULL || dd == NULL)
+		RETURN_ERROR("yy / mm / dd cannot be NULL");
+
+	struct calendar c[3] = {
+		{9999, *yy, NULL, 4 },
+		{12,   *mm, NULL, 9 },
+		{31,   *dd, NULL, 2 }
+	};
+
+	struct month m[12] = {
+		{ "January", 31 }, { "February", 28 }, { "March",     31 },
+		{ "April",   30 }, { "May",      31 }, { "June",      30 },
+		{ "July",    31 }, { "August",   31 }, { "September", 30 },
+		{ "October", 31 }, { "November", 30 }, { "December",  31 }
+	};
+
+#define ISLEAF(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+
+	for (i = 0 ; i < 3; i++) {
+		if (c[i].value > c[i].max)
+			c[i].value = c[i].max;
+		if (c[i].value < 1)
+			c[i].value = 1;
+	}
+	c[2].max = m[c[1].value -1].days;
+	if (c[1].value == 2 && ISLEAF(c[0].value))
+		c[2].max = 29;
 
 	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
@@ -183,9 +203,9 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 			buttupdate = false;
 		}
 
-		mvwprintw(c[0].win, 1, 1, "%4d", c[0].curr);
-		mvwprintw(c[1].win, 1, 1, "%9s", m[c[1].curr-1].name);
-		mvwprintw(c[2].win, 1, 1, "%2d", c[2].curr);
+		mvwprintw(c[0].win, 1, 1, "%4d", c[0].value);
+		mvwprintw(c[1].win, 1, 1, "%9s", m[c[1].value-1].name);
+		mvwprintw(c[2].win, 1, 1, "%2d", c[2].value);
 		for (i=0; i<3; i++) {
 			wrefresh(c[i].win);
 		}
@@ -194,20 +214,21 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 
 		input = getch();
 		switch(input) {
-		case 10: // Enter
-			output = bs.value[bs.curr]; // values -> outputs
+		case KEY_ENTER:
+		case 10: /* Enter */
+			output = bs.value[bs.curr];
 			if (output == BSDDIALOG_YESOK) {
-				*yy = c[0].curr - 1900;
-				*mm = c[1].curr;
-				*dd = c[2].curr;
+				*yy = c[0].value - 1900;
+				*mm = c[1].value;
+				*dd = c[2].value;
 			}
 			loop = false;
 			break;
-		case 27: // Esc
+		case 27: /* Esc */
 			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
-		case '\t': // TAB
+		case '\t': /* TAB */
 			sel = (sel + 1) % 3;
 			break;
 		case KEY_LEFT:
@@ -223,10 +244,26 @@ int bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int col
 			}
 			break;
 		case KEY_UP:
-			c[sel].curr = c[sel].curr < c[sel].max ? c[sel].curr + 1 : 1;
+			c[sel].value = c[sel].value > 1 ? c[sel].value - 1 : c[sel].max ;
+			/* if mount change */
+			c[2].max = m[c[1].value -1].days;
+			/* if year change */
+			if (c[1].value == 2 && ISLEAF(c[0].value))
+				c[2].max = 29;
+			/* set new day */
+			if (c[2].value > c[2].max)
+				c[2].value = c[2].max;
 			break;
 		case KEY_DOWN:
-			c[sel].curr = c[sel].curr > 1 ? c[sel].curr - 1 : c[sel].max;
+			c[sel].value = c[sel].value < c[sel].max ? c[sel].value + 1 : 1;
+			/* if mount change */
+			c[2].max = m[c[1].value -1].days;
+			/* if year change */
+			if (c[1].value == 2 && ISLEAF(c[0].value))
+				c[2].max = 29;
+			/* set new day */
+			if (c[2].value > c[2].max)
+				c[2].value = c[2].max;
 			break;
 		}
 	}
