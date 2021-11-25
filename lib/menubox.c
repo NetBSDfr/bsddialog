@@ -687,7 +687,6 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 					output = bs.value[i];
 					loop = false;
 			}
-		
 		}
 
 		if (abs < 0)

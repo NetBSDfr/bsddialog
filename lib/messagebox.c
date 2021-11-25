@@ -204,7 +204,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols,
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)
-			return BSDDIALOG_ERROR;
+				return BSDDIALOG_ERROR;
 
 			buttonsupdate(widget, h, w, bs, shortkey);
 			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
