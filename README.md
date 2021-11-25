@@ -104,7 +104,8 @@ Use Cases:
  
  infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
- checklist, radiolist, menu, mixedlist, treeview, textbox and mixedgauge.
+ checklist, radiolist, menu, mixedlist, treeview, textbox, mixedgauge and
+ datebox.
 
 ## TODO
 
@@ -140,7 +141,6 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
 | --buildlist    | In progress | todo autosize, resize, F1                     |
-| --calendar     | In progress | todo autosize, resize, F1                     |
 | --form         | In progress | implemented via --mixedform                   |
 | --gauge        | In progress | todo autosize                                 |
 | --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
@@ -155,4 +155,4 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | --timebox      | In progress | todo autosize, resize, F1                     |
 
 To evaluate / Not planned in the short term: tailbox (textbox/fseek), tailboxbg,
-dselect, fselect, inputmenu, editbox.
+dselect, fselect, inputmenu, editbox, calendar (use datebox).

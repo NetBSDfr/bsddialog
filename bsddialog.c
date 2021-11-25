@@ -120,6 +120,7 @@ enum OPTS {
 	BUILDLIST,
 	CALENDAR,
 	CHECKLIST,
+	DATEBOX,
 	DSELECT,
 	EDITBOX,
 	FORM,
@@ -167,6 +168,7 @@ void usage(void);
 int buildlist_builder(BUILDER_ARGS);
 int calendar_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
+int datebox_builder(BUILDER_ARGS);
 int dselect_builder(BUILDER_ARGS);
 int editbox_builder(BUILDER_ARGS);
 int form_builder(BUILDER_ARGS);
@@ -309,6 +311,7 @@ int main(int argc, char *argv[argc])
 	    { "buildlist", no_argument, NULL, BUILDLIST },
 	    { "calendar", no_argument, NULL, CALENDAR },
 	    { "checklist", no_argument, NULL, CHECKLIST },
+	    { "datebox", no_argument, NULL, DATEBOX },
 	    { "dselect", no_argument, NULL, DSELECT },
 	    { "editbox", no_argument, NULL, EDITBOX },
 	    { "form", no_argument, NULL, FORM },
@@ -534,6 +537,9 @@ int main(int argc, char *argv[argc])
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
+		case DATEBOX:
+			widgetbuilder = datebox_builder;
+			break;
 		case DSELECT:
 			widgetbuilder = dselect_builder;
 			break;
@@ -695,6 +701,15 @@ int main(int argc, char *argv[argc])
 int calendar_builder(BUILDER_ARGS)
 {
 	int output;
+
+	output = datebox_builder(conf, text, rows, cols, argc, argv);
+
+	return (output);
+}
+
+int datebox_builder(BUILDER_ARGS)
+{
+	int output;
 	unsigned int yy, mm, dd;
 	time_t cal;
 	struct tm *localtm;
@@ -716,7 +731,7 @@ int calendar_builder(BUILDER_ARGS)
 		dd = dd > 31 ? 31 : dd;
 	}
 
-	output = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
+	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
 	if (output != BSDDIALOG_YESOK)
 		return (output);
 

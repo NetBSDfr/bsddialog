@@ -40,8 +40,8 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
-#define MINWCAL 25 // 23 wins + 2 VBORDERS
-#define MINHCAL  8 // 2 for text
+#define MINWDATE 25 // 23 wins + 2 VBORDERS
+#define MINHDATE 8 // 2 for text
 
 /* "Time": timebox - calendar */
 
@@ -143,7 +143,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 }
 
 static int
-calendar_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
+datebox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
     int *w, char *text, struct buttons bs)
 {
 	int maxword, maxline, nlines, line;
@@ -161,7 +161,7 @@ calendar_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
 		line = MAX(line, (int) (maxword + VBORDERS + t.texthmargin * 2));
 		*w = MAX(*w, line);
 		/* date windows */
-		*w = MAX(*w, MINWCAL);
+		*w = MAX(*w, MINWDATE);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf) -1);
 	}
@@ -177,26 +177,26 @@ calendar_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
 	return 0;
 }
 
-static int calendar_checksize(int rows, int cols, char *text, struct buttons bs)
+static int datebox_checksize(int rows, int cols, char *text, struct buttons bs)
 {
 	int mincols;
 
 	mincols = VBORDERS;
 	mincols += bs.nbuttons * bs.sizebutton;
 	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
-	mincols = MAX(MINWCAL, mincols);
+	mincols = MAX(MINWDATE, mincols);
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols for this calendar");
 
-	if (rows < MINHCAL + (strlen(text) > 0 ? 1 : 0))
+	if (rows < MINHDATE + (strlen(text) > 0 ? 1 : 0))
 		RETURN_ERROR("Few rows for this calendar");
 
 	return 0;
 }
 
 int
-bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
 	WINDOW *widget, *textpad, *shadow;
@@ -247,9 +247,9 @@ bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	if (calendar_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
+	if (datebox_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
 		return BSDDIALOG_ERROR;
-	if (calendar_checksize(h, w, text, bs) != 0)
+	if (datebox_checksize(h, w, text, bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
@@ -359,9 +359,9 @@ bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
-			if (calendar_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
+			if (datebox_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
 				return BSDDIALOG_ERROR;
-			if (calendar_checksize(h, w, text, bs) != 0)
+			if (datebox_checksize(h, w, text, bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;

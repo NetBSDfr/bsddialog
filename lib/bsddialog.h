@@ -172,6 +172,10 @@ bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
     int *focusitem);
 
 int
+bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int *yy, unsigned int *mm, unsigned int *dd);
+
+int
 bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
