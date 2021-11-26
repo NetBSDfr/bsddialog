@@ -77,7 +77,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 		case 10: /* Enter */
 			if (inentry)
 				break;
-			output = bs.value[bs.curr]; // values -> buttvalues
+			output = bs.value[bs.curr];
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nitems; i++) {
@@ -90,7 +90,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
-		case '\t': // TAB
+		case '\t': /* TAB */
 			if (inentry) {
 				bs.curr = 0;
 				inentry = false;
