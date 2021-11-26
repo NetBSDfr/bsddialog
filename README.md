@@ -58,7 +58,7 @@ Examples utility:
 
 Examples library:
 ```
-% cd library_examples
+% cd examples_library
 % sh compile
 % ./buildlist
 % ./datebox
