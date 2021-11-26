@@ -113,27 +113,25 @@ Use Cases:
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
-| --cr-wrap                    | Coding      |                                 |
-| --help                       | In progress |                                 |
-| --input-fd *fd*              |             |                                 |
-| --insecure                   |             |                                 |
-| --keep-tite                  |             |                                 |
-| --keep-window                |             |                                 |
-| --last-key                   |             |                                 |
-| --max-input *size*           |             |                                 |
-| --no-collapse                | Coding      |                                 |
-| --no-kill                    |             |                                 |
-| --no-nl-expand               | Coding      |                                 |
-| --tab-correct                |             |                                 |
-| --tab-len *n*                |             |                                 |
-| --trim                       | Coding      |                                 |
+| --column-separator *string*  |             | menu                            |
+| --cr-wrap                    | In progress | text                            |
+| --help                       | In progress | utility                         |
+| --input-fd *fd*              |             | gauge                           |
+| --insecure                   |             | form                            |
+| --max-input *size*           |             | form                            |
+| --no-collapse                | In progress | text                            |
+| --no-nl-expand               | In progress | text                            |
+| --tab-correct                |             | textbox (and text)              |
+| --tab-len *n*                |             | textbox (and text)              |
+| --trim                       | In progress | text                            |
 
 
-To evaluate / Not planned in the short term: --column-separator *string*,
+To evaluate / Not planned in the short term / not in bsdinstall:
+
 --create-rc *file*, --iso-week, --no-mouse, --print-text-only *str h w*,
 --print-text-size *str h w*, --reorder, -scrollbar, --separate-widget *string*,
 --size-err, --timeout *secs*,--trace *filename*, --visit-items,
---week-start *day*.
+--week-start *day*, --keep-tite, --keep-window, --last-key, --no-kill
 
 
 **Widgets:**
@@ -154,5 +152,8 @@ To evaluate / Not planned in the short term: --column-separator *string*,
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
 | --timebox      | In progress | todo autosize, resize, F1                     |
 
-To evaluate / Not planned in the short term: tailbox (textbox/fseek), tailboxbg,
-dselect, fselect, inputmenu, editbox, calendar (use datebox).
+
+To evaluate / Not planned in the short term:
+
+tailbox (textbox/fseek), tailboxbg, dselect, fselect, inputmenu, editbox,
+calendar (use datebox).
