@@ -66,7 +66,6 @@ Examples library:
 % ./menu
 % ./mixedlist
 % ./msgbox
-% ./ports
 % ./radiolist
 % ./theme
 % ./treeview
