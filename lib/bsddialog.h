@@ -59,7 +59,6 @@ struct bsddialog_conf {
 	/*bool keep_tite;*/
 	/*bool keep_window;*/
 	/*bool last_key;*/
-	/*int max_input;*/
 	/*bool no_kill;*/
 	bool no_lines;
 	/*bool no_mouse; useful?*/
@@ -80,15 +79,11 @@ struct bsddialog_conf {
 		/*int tab_len; textbox?*/
 		bool trim;
 	} text;
-	/* conf.form.* */
-	/*struct {
-		bool insecure;
-	} form;*/
 	/* conf.menu.* */
 	struct {
 		bool align_left;
 		char *colums_separator;
-		char *default_item; /*delete, add int *focus to API?*/
+		char *default_item; /* int default_item */
 		bool no_items;
 		bool no_tags;
 		/*bool visit_items;*/

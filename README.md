@@ -90,8 +90,8 @@ Use Cases:
 --exit-label *string*, --extra-button, --extra-label *string*,
 --hfile *filename* (for completed widgets), n--help-button,
 --help-label *string*, --help-status, --help-tags, --hline *string*, --ignore,
---item-help, --no-cancel, --nocancel, --no-label *string*, --no-items,
---no-lines, --no-ok,
+--insecure, --item-help, --max-input *size*, --no-cancel, --nocancel,
+--no-label *string*, --no-items, --no-lines, --no-ok,
 --nook, --no-shadow, --no-tags, --ok-label *string*, --output-fd *fd*,
 --output-separator *string*, --print-version,
 --print-size (todo move lib -> utility), --quoted (quotes all != dialog),
@@ -125,8 +125,6 @@ improve --timebox, add --column-separator
 | --cr-wrap                    | In progress | text                            |
 | --help                       | In progress | utility                         |
 | --input-fd *fd*              |             | gauge                           |
-| --insecure                   |             | form                            |
-| --max-input *size*           |             | form                            |
 | --no-collapse                | In progress | text                            |
 | --no-nl-expand               | In progress | text                            |
 | --tab-correct                |             | textbox (and text)              |
@@ -149,9 +147,9 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 | --buildlist    | In progress | todo autosize, resize, F1                     |
 | --form         | In progress | todo autosize, resize, F1                     |
 | --gauge        | In progress | todo autosize                                 |
-| --inputbox     | In progress | todo autosize, resize, F1, init               |
+| --inputbox     | In progress | todo autosize, resize, F1                     |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
-| --passwordbox  | In progress | todo autosize, resize, F1, init               |
+| --passwordbox  | In progress | todo autosize, resize, F1                     |
 | --passwordform | In progress | todo autosize, resize, F1                     |
 | --pause        | In progress | todo autosize, resize, F1                     |
 | --prgbox       | In progress | add command opts                              |

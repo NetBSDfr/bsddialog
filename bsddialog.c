@@ -68,13 +68,13 @@ enum OPTS {
 	HLINE,
 	IGNORE,
 	/*INPUT_FD,*/
-	/*INSECURE,*/
+	INSECURE,
 	ITEM_HELP,
 	ITEM_PREFIX,
 	/*KEEP_TITE,*/
 	/*KEEP_WINDOW,*/
 	/*LAST_KEY,*/
-	/*MAX_INPUT,*/
+	MAX_INPUT,
 	NO_CANCEL,
 	NOCANCEL,
 	NO_COLLAPSE,
@@ -158,6 +158,9 @@ static bool item_always_quote_flag;
 static char *item_output_sep_flag;
 /* Time and calendar options */
 static char *date_fmt_flag, *time_fmt_flag;
+/* Forms */
+static bool insecure_psw_flag;
+static int max_input_form_flag;
 /* General flags and options */
 static int output_fd_flag;
 
@@ -229,6 +232,9 @@ int main(int argc, char *argv[argc])
 	item_output_sep_flag = NULL;
 
 	date_fmt_flag = time_fmt_flag = NULL;
+	
+	insecure_psw_flag = false;
+	max_input_form_flag = 0;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -260,12 +266,12 @@ int main(int argc, char *argv[argc])
 	    { "hline", required_argument, NULL, HLINE },
 	    { "ignore", no_argument, NULL, IGNORE },
 	    /*{ "input-fd", required_argument, NULL, INPUT_FD },*/
-	    /*{ "insecure", no_argument, NULL, INSECURE },*/
+	    { "insecure", no_argument, NULL, INSECURE },
 	    { "item-help", no_argument, NULL, ITEM_HELP },
 	    /*{ "keep-tite", no_argument, NULL, KEEP_TITE },*/
 	    /*{ "keep-window", no_argument, NULL, KEEP_WINDOW },*/
 	    /*{ "last-key", no_argument, NULL, LAST_KEY },*/
-	    /*{ "max-input", required_argument, NULL, MAX_INPUT },*/
+	    { "max-input", required_argument, NULL, MAX_INPUT },
 	    { "no-cancel", no_argument, NULL, NO_CANCEL },
 	    { "nocancel", no_argument, NULL, NOCANCEL },
 	    { "no-collapse", no_argument, NULL, NO_COLLAPSE },
@@ -433,8 +439,14 @@ int main(int argc, char *argv[argc])
 		case IGNORE:
 			ignore_flag = true;
 			break;
+		case INSECURE:
+			insecure_psw_flag = true;
+			break;
 		case ITEM_HELP:
 			item_bottomdesc_flag = true;
+			break;
+		case MAX_INPUT:
+			max_input_form_flag = atoi(optarg);
 			break;
 		case NO_ITEMS:
 			conf.menu.no_items = true;
@@ -1257,7 +1269,7 @@ int form_builder(BUILDER_ARGS)
 		valuelen = atoi(argv[8*i+7]);
 		items[i].valuelen = valuelen == 0 ? abs(formlen) : valuelen;
 
-		flags = flags | (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
+		flags |= (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
 		items[i].flags = flags;
 	}
 
@@ -1276,11 +1288,11 @@ int inputbox_builder(BUILDER_ARGS)
 	item.label	= "";
 	item.ylabel	= 0;
 	item.xlabel	= 0;
-	item.init	= ""; // TODO add argv
+	item.init	= argc > 0 ? argv[0] : "";
 	item.yvalue	= 1;
 	item.xvalue	= 1;
 	item.formlen	= cols-4;
-	item.valuelen	= 2048; // todo conf.sizeinput
+	item.valuelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	item.flags	= 0;
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
@@ -1291,7 +1303,7 @@ int inputbox_builder(BUILDER_ARGS)
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems;
+	int i, output, formheight, nitems, flags;
 	struct bsddialog_formitem items[100];
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
@@ -1314,7 +1326,9 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].xvalue	   = atoi(argv[9*i+5]);
 		items[i].formlen   = atoi(argv[9*i+6]);
 		items[i].valuelen  = atoi(argv[9*i+7]);
-		items[i].flags = atoi(argv[9*i+8]);
+		flags = atoi(argv[9*i+8]);
+		flags &= (insecure_psw_flag ? BSDDIALOG_ITEMREADONLY : 3);
+		items[i].flags = flags;
 	}
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
@@ -1332,12 +1346,12 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.label	= "";
 	item.ylabel	= 0;
 	item.xlabel	= 0;
-	item.init	= ""; // TODO add argv
+	item.init	= argc > 0 ? argv[0] : "";
 	item.yvalue	= 1;
 	item.xvalue	= 1;
 	item.formlen	= cols-4;
-	item.valuelen	= 2048; // todo conf.sizeinput
-	item.flags	= BSDDIALOG_ITEMHIDDEN;
+	item.valuelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
+	item.flags	= insecure_psw_flag ? 0 : BSDDIALOG_ITEMHIDDEN;
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(conf, output, 1, &item);
@@ -1376,7 +1390,8 @@ int passwordform_builder(BUILDER_ARGS)
 		valuelen = atoi(argv[8*i+7]);
 		items[i].valuelen = valuelen == 0 ? abs(formlen) : valuelen;
 
-		flags = flags | (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
+		flags |= (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
+		flags &= (insecure_psw_flag ? BSDDIALOG_ITEMREADONLY : 3);
 		items[i].flags = flags;
 	}
 
