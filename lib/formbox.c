@@ -26,14 +26,13 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef PORTNCURSES
 #include <ncurses/form.h>
 #else
 #include <form.h>
 #endif
-
-#include <string.h>
 
 #include "bsddialog.h"
 #include "lib_util.h"
@@ -165,8 +164,8 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 	return output;
 }
 
-static int
-do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
+int
+bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int nitems, struct bsddialog_formitem *items)
 {
 	WINDOW *widget, *entry, *shadow;
@@ -237,17 +236,6 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	delwin(entry);
 	end_widget(conf, widget, rows, cols, shadow);
-
-	return output;
-}
-
-int
-bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nitems, struct bsddialog_formitem *items)
-{
-	int output;
-
-	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
 
 	return output;
 }
