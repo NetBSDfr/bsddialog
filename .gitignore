@@ -3,6 +3,7 @@ bsddialog
 *~
 library_examples/buildlist
 library_examples/checklist
+library_examples/datebox
 library_examples/dialog4ports
 library_examples/menu
 library_examples/mixedlist

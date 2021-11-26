@@ -61,6 +61,7 @@ Examples library:
 % cd library_examples
 % sh compile
 % ./buildlist
+% ./datebox
 % ./infobox
 % ./menu
 % ./mixedlist

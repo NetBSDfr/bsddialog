@@ -2,7 +2,7 @@
 
 libpath=../lib
 examples="buildlist menu treeview checklist radiolist mixedlist theme \
-	infobox yesno msgbox ports"
+	infobox yesno msgbox ports datebox"
 
 for e in $examples
 do
