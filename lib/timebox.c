@@ -369,7 +369,7 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 
 			wclear(shadow);
-			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
+			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
 			wresize(shadow, h, w);
 
 			wclear(widget);

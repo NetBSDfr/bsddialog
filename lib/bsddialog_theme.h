@@ -40,9 +40,12 @@ enum bsddialog_color {
 };
 
 struct bsddialog_theme {
-	int shadowcolor;
-	unsigned int shadowrows;
-	unsigned int shadowcols;
+	/* theme.shadow.* */
+	struct {
+		int color;
+		unsigned int h;
+		unsigned int w;
+	} shadow;
 
 	int backgroundcolor;
 	bool surroundtitle;

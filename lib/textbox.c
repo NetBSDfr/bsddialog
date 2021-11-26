@@ -225,7 +225,7 @@ do_textbox(enum textmode mode, struct bsddialog_conf conf, char* path, int rows,
 				return BSDDIALOG_ERROR;
 
 			wclear(shadow);
-			mvwin(shadow, y + t.shadowrows, x + t.shadowcols);
+			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
 			wresize(shadow, h, w);
 
 			wclear(widget);

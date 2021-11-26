@@ -65,7 +65,7 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 	WINDOW *clear;
 
 	/* no check: y, x, h and w are checked by the builders */
-	if ((clear = newwin(h, w, y + t.shadowrows, x + t.shadowcols)) == NULL)
+	if ((clear = newwin(h, w, y + t.shadow.h, x + t.shadow.w)) == NULL)
 		RETURN_ERROR("Cannot hide the widget");
 	wbkgd(clear, t.backgroundcolor);
 
@@ -637,7 +637,7 @@ int widget_max_height(struct bsddialog_conf conf)
 {
 	int maxheight;
 
-	if ((maxheight = conf.shadow ? LINES - 1 - t.shadowrows : LINES - 1) <= 0)
+	if ((maxheight = conf.shadow ? LINES - 1 - t.shadow.h : LINES - 1) <= 0)
 		RETURN_ERROR("Terminal too small, LINES - shadow <= 0");
 
 	if (conf.y > 0)
@@ -655,7 +655,7 @@ int widget_max_width(struct bsddialog_conf conf)
 {
 	int maxwidth;
 
-	if ((maxwidth = conf.shadow ? COLS - 1 - t.shadowcols : COLS - 1)  <= 0)
+	if ((maxwidth = conf.shadow ? COLS - 1 - t.shadow.w : COLS - 1)  <= 0)
 		RETURN_ERROR("Terminal too small, COLS - shadow <= 0");
 	if (conf.x > 0)
 		if ((maxwidth -= conf.x) <=0)
@@ -712,7 +712,7 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int h, int w)
 	else
 		*y = conf.y;
 
-	if ((*y + h + (conf.shadow ? (int) t.shadowrows : 0)) > LINES)
+	if ((*y + h + (conf.shadow ? (int) t.shadow.h : 0)) > LINES)
 		RETURN_ERROR("The lower of the box under the terminal "\
 		    "(begin Y + height (+ shadow) > terminal lines)");
 
@@ -726,7 +726,7 @@ set_widget_position(struct bsddialog_conf conf, int *y, int *x, int h, int w)
 	else
 		*x = conf.x;
 
-	if ((*x + w + (conf.shadow ? (int) t.shadowcols : 0)) > COLS)
+	if ((*x + w + (conf.shadow ? (int) t.shadow.w : 0)) > COLS)
 		RETURN_ERROR("The right of the box over the terminal "\
 		    "(begin X + width (+ shadow) > terminal cols)");
 
@@ -896,10 +896,10 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
 	int error;
 
 	if (conf.shadow) {
-		*shadow = newwin(h, w, y + t.shadowrows, x + t.shadowcols);
+		*shadow = newwin(h, w, y + t.shadow.h, x + t.shadow.w);
 		if (*shadow == NULL)
 			RETURN_ERROR("Cannot build shadow");
-		wbkgd(*shadow, t.shadowcolor);
+		wbkgd(*shadow, t.shadow.color);
 	}
 
 	if ((*widget = new_boxed_window(conf, y, x, h, w, elev)) == NULL) {

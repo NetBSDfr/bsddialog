@@ -42,9 +42,9 @@ struct bsddialog_theme t;
 static struct bsddialog_theme bsddialogtheme = {
 #define bgwidget  COLOR_WHITE
 #define bgcurr    COLOR_YELLOW
-	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadowrows      = 1,
-	.shadowcols      = 2,
+	.shadow.color     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.h         = 1,
+	.shadow.w         = 2,
 
 	.backgroundcolor = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 	.surroundtitle   = true,
@@ -85,9 +85,9 @@ static struct bsddialog_theme bsddialogtheme = {
 static struct bsddialog_theme blackwhite = {
 #define bk  COLOR_BLACK
 #define fg  COLOR_WHITE
-	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadowrows      = 1,
-	.shadowcols      = 2,
+	.shadow.color     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.h         = 1,
+	.shadow.w         = 2,
 
 	.backgroundcolor = GET_COLOR(fg, bk),
 	.surroundtitle   = true,
@@ -126,9 +126,9 @@ static struct bsddialog_theme blackwhite = {
 };
 
 static struct bsddialog_theme dialogtheme = {
-	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadowrows      = 1,
-	.shadowcols      = 2,
+	.shadow.color     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.h         = 1,
+	.shadow.w         = 2,
 
 	.backgroundcolor = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
 	.surroundtitle   = false,
@@ -167,9 +167,9 @@ static struct bsddialog_theme dialogtheme = {
 };
 
 static struct bsddialog_theme magentatheme = {
-	.shadowcolor     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadowrows      = 1,
-	.shadowcols      = 2,
+	.shadow.color     = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.h         = 1,
+	.shadow.w         = 2,
 
 	.backgroundcolor = GET_COLOR(COLOR_WHITE,  COLOR_MAGENTA) | A_BOLD,
 	.surroundtitle   = true,
@@ -209,9 +209,9 @@ static struct bsddialog_theme magentatheme = {
 
 void bsddialog_set_theme(struct bsddialog_theme newtheme)
 {
-	t.shadowcolor     = newtheme.shadowcolor;
-	t.shadowrows      = newtheme.shadowrows;
-	t.shadowcols      = newtheme.shadowcols;
+	t.shadow.color     = newtheme.shadow.color;
+	t.shadow.h         = newtheme.shadow.h;
+	t.shadow.w         = newtheme.shadow.w;
 
 	t.backgroundcolor = newtheme.backgroundcolor;
 	t.surroundtitle   = newtheme.surroundtitle;
