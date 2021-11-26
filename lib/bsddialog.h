@@ -143,6 +143,9 @@ struct bsddialog_formitem {
 	unsigned int valuelen;
 	int formlen;
 
+	char *newvalue1; /* allocated memory, to free */
+	char *newvalue2; /* allocated memory, to free*/
+
 #define BSDDIALOG_ITEMHIDDEN   0x1
 #define BSDDIALOG_ITEMREADONLY 0x2
 	unsigned int flags;

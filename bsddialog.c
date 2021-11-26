@@ -1215,8 +1215,12 @@ print_form_items(struct bsddialog_conf conf, int output, int nitems,
 	if (output == BSDDIALOG_ERROR)
 		return;
 
-	for (i=0; i < nitems; i++)
-		dprintf(output_fd_flag, "Label: %s, Value: %s\n", items[i].label, items[i].value);
+	for (i=0; i < nitems; i++) {
+		dprintf(output_fd_flag, "Label: %s, Value: %s\n",
+		    items[i].newvalue1, items[i].newvalue2);
+		free(items[i].newvalue1);
+		free(items[i].newvalue2);
+	}
 }
 
 int form_builder(BUILDER_ARGS)

@@ -28,12 +28,12 @@
 #include <stdlib.h>
 
 #ifdef PORTNCURSES
-#include <ncurses/curses.h>
 #include <ncurses/form.h>
 #else
-#include <curses.h>
 #include <form.h>
 #endif
+
+#include <string.h>
 
 #include "bsddialog.h"
 #include "lib_util.h"
@@ -82,8 +82,8 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nitems; i++) {
-				items[i].label = field_buffer(field[i], 0);
-				items[i].value = field_buffer(field[i], 1);
+				items[i].newvalue1 = strdup(field_buffer(field[i], 0));
+				items[i].newvalue2 = strdup(field_buffer(field[i], 1));
 			}
 			loop = false;
 			break;
@@ -231,9 +231,9 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	unpost_form(form);
 	free_form(form);
-	/*for (i=0; i < nitems; i++)
+	for (i=0; i < nitems; i++)
 		free_field(field[i]);
-	free(field);*/
+	free(field);
 
 	delwin(entry);
 	end_widget(conf, widget, rows, cols, shadow);
