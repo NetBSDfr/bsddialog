@@ -13,7 +13,6 @@
 
 #include <bsddialog.h>
 
-/* Actually this is an example for mixedmenu to reproduce dialog4ports(1) */
 int main()
 {
 	int i, j, output;
@@ -53,7 +52,7 @@ int main()
 
 	bsddialog_end();
 
-	printf("Mixedlist (dialog4ports):\n");
+	printf("Mixedlist:\n");
 	for (i=0; i<3; i++) {
 		for (j=0; j<group[i].nitems; j++) {
 			item = group[i].items[j];
