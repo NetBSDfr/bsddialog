@@ -1247,7 +1247,7 @@ int form_builder(BUILDER_ARGS)
 		items[i].label	   = argv[8*i];
 		items[i].ylabel	   = atoi(argv[8*i+1]);
 		items[i].xlabel	   = atoi(argv[8*i+2]);
-		items[i].value	   = argv[8*i+3];
+		items[i].init	   = argv[8*i+3];
 		items[i].yvalue	   = atoi(argv[8*i+4]);
 		items[i].xvalue	   = atoi(argv[8*i+5]);
 
@@ -1276,7 +1276,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.label	= "";
 	item.ylabel	= 0;
 	item.xlabel	= 0;
-	item.value	= ""; // TODO add argv
+	item.init	= ""; // TODO add argv
 	item.yvalue	= 1;
 	item.xvalue	= 1;
 	item.formlen	= cols-4;
@@ -1309,7 +1309,7 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].label	   = argv[9*i];
 		items[i].ylabel	   = atoi(argv[9*i+1]);
 		items[i].xlabel	   = atoi(argv[9*i+2]);
-		items[i].value	   = argv[9*i+3];
+		items[i].init	   = argv[9*i+3];
 		items[i].yvalue	   = atoi(argv[9*i+4]);
 		items[i].xvalue	   = atoi(argv[9*i+5]);
 		items[i].formlen   = atoi(argv[9*i+6]);
@@ -1332,7 +1332,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.label	= "";
 	item.ylabel	= 0;
 	item.xlabel	= 0;
-	item.value	= ""; // TODO add argv
+	item.init	= ""; // TODO add argv
 	item.yvalue	= 1;
 	item.xvalue	= 1;
 	item.formlen	= cols-4;
@@ -1366,7 +1366,7 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].label	   = argv[8*i];
 		items[i].ylabel	   = atoi(argv[8*i+1]);
 		items[i].xlabel	   = atoi(argv[8*i+2]);
-		items[i].value	   = argv[8*i+3];
+		items[i].init	   = argv[8*i+3];
 		items[i].yvalue	   = atoi(argv[8*i+4]);
 		items[i].xvalue	   = atoi(argv[8*i+5]);
 

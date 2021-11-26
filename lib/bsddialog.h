@@ -137,7 +137,7 @@ struct bsddialog_formitem {
 	unsigned int ylabel;
 	unsigned int xlabel;
 
-	char *value;
+	char *init;
 	unsigned int yvalue;
 	unsigned int xvalue;
 	unsigned int valuelen;

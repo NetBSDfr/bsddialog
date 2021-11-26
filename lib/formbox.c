@@ -189,8 +189,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		field[i] = new_field(1, items[i].formlen, items[i].yvalue-1, items[i].xvalue-1, 0, 1);
 		field_opts_off(field[i], O_STATIC);
 		set_max_field(field[i], items[i].valuelen);
-		set_field_buffer(field[i], 0, items[i].value);
-		set_field_buffer(field[i], 1, items[i].value);
+		set_field_buffer(field[i], 0, items[i].init);
+		set_field_buffer(field[i], 1, items[i].init);
 		field_opts_off(field[i], O_AUTOSKIP);
 		field_opts_off(field[i], O_BLANK);
 		//field_opts_off(field[i], O_BS_OVERLOAD);
