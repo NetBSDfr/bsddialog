@@ -109,6 +109,13 @@ Use Cases:
 
 ## TODO
 
+
+**bsdinstall:**
+
+NULL string for *text*, generic buttons for sade(8), complete forms,
+improve --timebox, add --column-separator
+
+
 **Common Options:**
 
 |  Option                      | Status      | Note                            |
