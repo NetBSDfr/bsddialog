@@ -250,11 +250,6 @@ int
 bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int *hh, unsigned int *mm, unsigned int *ss);
 
-int
-bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
-    int *focusitem);
-
 int bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 #endif

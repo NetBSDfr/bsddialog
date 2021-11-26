@@ -27,11 +27,13 @@ int main()
 
 	bsddialog_initconf(&conf);
 	conf.title = "radiolist";
+	conf.menu.no_tags = true;
+	conf.menu.align_left = true;
 	
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_treeview(conf, "Example", 15, 30, 5, 5, items, NULL);
+	output = bsddialog_radiolist(conf, "Example", 15, 30, 5, 5, items, NULL);
 
 	bsddialog_end();
 

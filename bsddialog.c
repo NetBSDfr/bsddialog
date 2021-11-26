@@ -1209,7 +1209,10 @@ int treeview_builder(BUILDER_ARGS)
 	if (output != 0)
 		return output;
 
-	output = bsddialog_treeview(conf, text, rows, cols, menurows, nitems,
+	conf.menu.no_tags = true;
+	conf.menu.align_left = true;
+
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 	
 	print_menu_items(conf, output, nitems, items, focusitem);

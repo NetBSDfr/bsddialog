@@ -832,24 +832,6 @@ bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_treeview(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
-    int *focusitem)
-{
-	int output;
-	struct bsddialog_menugroup group = {
-	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
-
-	conf.menu.no_tags = true;
-	conf.menu.align_left = true;
-
-	output = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
-	    1, &group, NULL, focusitem);
-
-	return output;
-}
-
-int
 bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem)
