@@ -25,6 +25,7 @@
  * SUCH DAMAGE.
  */
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -53,9 +54,8 @@ int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int co
 #define ISITEMREADONLY(item) (item.flags & BSDDIALOG_ITEMREADONLY)
 
 static int
-mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
-    bool shortkey, WINDOW *entry, FORM *form, FIELD **field, int nitems,
-    struct bsddialog_formitem *items)
+form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
+    FORM *form, FIELD **field, int nitems, struct bsddialog_formitem *items)
 {
 	bool loop, buttupdate, inentry = true;
 	int i, input, output;
@@ -66,7 +66,7 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 	bs.curr = -1;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(widget, y, cols, bs, shortkey);
+			draw_buttons(widget, y, cols, bs, !inentry);
 			wrefresh(widget);
 			buttupdate = false;
 		}
@@ -155,6 +155,15 @@ mixedform_handler(WINDOW *widget, int y, int cols, struct buttons bs,
 			if (inentry) {
 				form_driver(form, input);
 			}
+			else {
+				for (i = 0; i < (int) bs.nbuttons; i++) {
+					if (tolower(input) ==
+					    tolower((bs.label[i])[0])) {
+						output = bs.value[i];
+						loop = false;
+					}
+				}
+			}
 			break;
 		}
 	}
@@ -210,7 +219,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	}
 	field[i] = NULL;
 
-	if (nitems == 1) {// inputbox or passwordbox
+	 /* disable focus with 1 item (and inputbox or passwordbox) */
+	if (nitems == 1) {
 		set_field_fore(field[0], t.widgetcolor);
 		set_field_back(field[0], t.widgetcolor);
 	}
@@ -225,8 +235,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	wrefresh(entry);
 
-	output = mixedform_handler(widget, rows-2, cols, bs, true, entry, form,
-	    field, nitems ,items);
+	output = form_handler(widget, rows-2, cols, bs, entry, form, field,
+	    nitems ,items);
 
 	unpost_form(form);
 	free_form(form);
