@@ -1206,6 +1206,19 @@ int treeview_builder(BUILDER_ARGS)
 }
 
 /* FORM */
+static void
+print_form_items(struct bsddialog_conf conf, int output, int nitems,
+    struct bsddialog_formitem *items)
+{
+	int i;
+
+	if (output == BSDDIALOG_ERROR)
+		return;
+
+	for (i=0; i < nitems; i++)
+		dprintf(output_fd_flag, "Label: %s, Value: %s\n", items[i].label, items[i].value);
+}
+
 int form_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nitems, formlen, valuelen;
@@ -1246,6 +1259,7 @@ int form_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
+	print_form_items(conf, output, nitems, items);
 
 	return (output);
 }
@@ -1266,6 +1280,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.flags	= 0;
 
 	output = bsddialog_inputbox(conf, text, rows, cols, &item);
+	print_form_items(conf, output, 1, &item);
 
 	return (output);
 }
@@ -1300,6 +1315,7 @@ int mixedform_builder(BUILDER_ARGS)
 
 	output = bsddialog_mixedform(conf, text, rows, cols, formheight, nitems,
 	    items);
+	print_form_items(conf, output, nitems, items);
 
 	return (output);
 }
@@ -1320,6 +1336,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.flags	= BSDDIALOG_ITEMHIDDEN;
 
 	output = bsddialog_passwordbox(conf, text, rows, cols, &item);
+	print_form_items(conf, output, 1, &item);
 
 	return (output);
 }
@@ -1361,6 +1378,7 @@ int passwordform_builder(BUILDER_ARGS)
 
 	output = bsddialog_passwordform(conf, text, rows, cols, formheight,
 	    nitems, items);
+	print_form_items(conf, output, nitems, items);
 
 	return (output);
 }
