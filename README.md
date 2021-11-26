@@ -147,12 +147,12 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
 | --buildlist    | In progress | todo autosize, resize, F1                     |
-| --form         | In progress | implemented via --mixedform                   |
+| --form         | In progress | todo autosize, resize, F1                     |
 | --gauge        | In progress | todo autosize                                 |
-| --inputbox     | In progress | implemented via --mixedform, todo \<init\>    |
+| --inputbox     | In progress | todo autosize, resize, F1, init               |
 | --mixedform    | In progress | todo autosize, resize, F1                     |
-| --passwordbox  | In progress | implemented via --mixedform, todo \<init\>    |
-| --passwordform | In progress | implemented via --mixedform                   |
+| --passwordbox  | In progress | todo autosize, resize, F1, init               |
+| --passwordform | In progress | todo autosize, resize, F1                     |
 | --pause        | In progress | todo autosize, resize, F1                     |
 | --prgbox       | In progress | add command opts                              |
 | --programbox   | Coding      |                                               |

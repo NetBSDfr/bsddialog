@@ -242,39 +242,6 @@ do_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    struct bsddialog_formitem *item)
-{
-	int output;
-
-	output = do_mixedform(conf, text, rows, cols, 1, 1, item);
-
-	return output;
-}
-
-int
-bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows, 
-    int cols, struct bsddialog_formitem *item)
-{
-	int output;
-
-	output = do_mixedform(conf, text, rows, cols, 1, 1, item);
-
-	return output;
-}
-
-int
-bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nitems, struct bsddialog_formitem *items)
-{
-	int output;
-
-	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
-
-	return output;
-}
-
-int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int nitems, struct bsddialog_formitem *items)
 {
@@ -284,15 +251,3 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	return output;
 }
-
-int
-bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows,
-    int cols, int formheight, int nitems, struct bsddialog_formitem *items)
-{
-	int output;
-
-	output = do_mixedform(conf, text, rows, cols, formheight, nitems, items);
-
-	return output;
-}
-

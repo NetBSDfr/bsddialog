@@ -1283,7 +1283,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.valuelen	= 2048; // todo conf.sizeinput
 	item.flags	= 0;
 
-	output = bsddialog_inputbox(conf, text, rows, cols, &item);
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(conf, output, 1, &item);
 
 	return (output);
@@ -1317,7 +1317,7 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].flags = atoi(argv[9*i+8]);
 	}
 
-	output = bsddialog_mixedform(conf, text, rows, cols, formheight, nitems,
+	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
 	print_form_items(conf, output, nitems, items);
 
@@ -1339,7 +1339,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.valuelen	= 2048; // todo conf.sizeinput
 	item.flags	= BSDDIALOG_ITEMHIDDEN;
 
-	output = bsddialog_passwordbox(conf, text, rows, cols, &item);
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(conf, output, 1, &item);
 
 	return (output);
@@ -1380,7 +1380,7 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].flags = flags;
 	}
 
-	output = bsddialog_passwordform(conf, text, rows, cols, formheight,
+	output = bsddialog_form(conf, text, rows, cols, formheight,
 	    nitems, items);
 	print_form_items(conf, output, nitems, items);
 

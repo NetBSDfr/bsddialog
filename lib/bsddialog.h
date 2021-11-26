@@ -198,20 +198,12 @@ int
 bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
-bsddialog_inputbox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    struct bsddialog_formitem *item);
-
-int
 bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
 bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
-
-int
-bsddialog_mixedform(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nitems, struct bsddialog_formitem *items);
 
 int
 bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
@@ -224,14 +216,6 @@ bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-
-int
-bsddialog_passwordbox(struct bsddialog_conf conf, char* text, int rows,
-    int cols, struct bsddialog_formitem *item);
-
-int
-bsddialog_passwordform(struct bsddialog_conf conf, char* text, int rows,
-    int cols, int formheight, int nitems, struct bsddialog_formitem *items);
 
 int
 bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
