@@ -718,17 +718,14 @@ int datebox_builder(BUILDER_ARGS)
 	time(&cal);
 	localtm = localtime(&cal);
 	yy = localtm->tm_year + 1900;
-	mm = localtm->tm_mon;
+	mm = localtm->tm_mon + 1;
 	dd = localtm->tm_mday;
 
 	/* --calendar text h w [year month day] */
 	if (argc == 3) {
-		yy = atoi(argv[0]) + 1900;
-		yy = yy > 9999 ? 9999 : yy;
+		yy = atoi(argv[0]);
 		mm = atoi(argv[1]);
-		mm = mm > 12 ? 12 : mm;
 		dd = atoi(argv[2]);
-		dd = dd > 31 ? 31 : dd;
 	}
 
 	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
@@ -736,7 +733,7 @@ int datebox_builder(BUILDER_ARGS)
 		return (output);
 
 	if (date_fmt_flag == NULL) {
-		dprintf(output_fd_flag, "%u/%u/%u", yy + 1900, mm, dd);
+		dprintf(output_fd_flag, "%u/%u/%u", yy, mm, dd);
 	}
 	else {
 		time(&cal);

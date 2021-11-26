@@ -241,6 +241,8 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 	c[2].max = m[c[1].value -1].days;
 	if (c[1].value == 2 && ISLEAF(c[0].value))
 		c[2].max = 29;
+	if (c[2].value > c[2].max)
+		c[2].value = c[2].max;
 
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
 	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
@@ -291,7 +293,7 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 		case 10: /* Enter */
 			output = bs.value[bs.curr];
 			if (output == BSDDIALOG_YESOK) {
-				*yy = c[0].value - 1900;
+				*yy = c[0].value;
 				*mm = c[1].value;
 				*dd = c[2].value;
 			}
