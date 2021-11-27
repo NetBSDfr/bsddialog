@@ -202,7 +202,10 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			form_driver(form, REQ_DEL_PREV);
 			mf = GETMYFIELD2(form);
 			BSDDIALOG_DEBUG(3,1, "buf: |%s|", mf->buf);
-			shiftleft(mf);
+			if (mf->pos > 0) {
+				mf->pos -= 1;
+				shiftleft(mf);
+			}
 			BSDDIALOG_DEBUG(4, 1, "buf: |%s|", mf->buf);
 			break;
 		case KEY_DC:
