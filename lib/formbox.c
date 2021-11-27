@@ -208,8 +208,11 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 		case KEY_DC:
 			form_driver(form, REQ_DEL_CHAR);
 			mf = GETMYFIELD2(form);
-			BSDDIALOG_DEBUG(3,1, "buf: |%s|", mf->buf);
-			shiftleft(mf);
+			BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
+			BSDDIALOG_DEBUG(2,1, "buf: |%s|", mf->buf);
+			if (mf->len-1 >= mf->pos)
+				shiftleft(mf);
+			BSDDIALOG_DEBUG(3,1, "pos:%d, len:%d", mf->pos, mf->len);
 			BSDDIALOG_DEBUG(4,1, "buf: |%s|", mf->buf);
 			break;
 		default:
