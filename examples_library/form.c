@@ -20,10 +20,10 @@ int main()
 {
 	int i, output;
 	struct bsddialog_conf conf;
-	struct bsddialog_formitem items[3] = {
-		{"Input:",    1, 1, "value",     1, 11, 50, 20, .flags = 0     },
-		{"Input:",    2, 1, "read only", 2, 11, 50, 20, .flags = RO    },
-		{"Password:", 3, 1, "",          3, 11, 50, 20, .flags = HIDDEN}
+	struct bsddialog_formfield fields[3] = {
+		{"Input:",    1, 1, "value",     1, 11, 50, 20, 0      },
+		{"Input:",    2, 1, "read only", 2, 11, 50, 20, RO     },
+		{"Password:", 3, 1, "",          3, 11, 50, 20, HIDDEN }
 	};
 
 	bsddialog_initconf(&conf);
@@ -32,7 +32,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_form(conf, "Forms", 20, 50, 3, 3, items);
+	output = bsddialog_form(conf, "Forms", 20, 50, 3, 3, fields);
 
 	bsddialog_end();
 	
@@ -41,7 +41,7 @@ int main()
 
 	printf("Values:\n");
 	for (i=0; i<3; i++)
-		printf("%s|-|%s|\n", items[i].label, items[i].newvalue);
+		printf("%s|-|%s|\n", fields[i].label, fields[i].value);
 	
 	return output;
 }

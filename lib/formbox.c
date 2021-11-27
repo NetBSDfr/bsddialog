@@ -97,7 +97,7 @@ static void shiftleft(struct myfield *mf)
 
 static int
 form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
-    FORM *form, FIELD **field, int nitems, struct bsddialog_formitem *items)
+    FORM *form, FIELD **cfield, int nfields, struct bsddialog_formfield *fields)
 {
 	bool loop, buttupdate, inentry = true;
 	int i, input, output;
@@ -124,9 +124,9 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			output = bs.value[bs.curr];
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			for (i=0; i<nitems; i++) {
-				mf = GETMYFIELD(field[i]);
-				items[i].newvalue = strdup(mf->buf);
+			for (i=0; i<nfields; i++) {
+				mf = GETMYFIELD(cfield[i]);
+				fields[i].value = strdup(mf->buf);
 			}
 			loop = false;
 			break;
@@ -177,7 +177,7 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			}
 			break;
 		case KEY_UP:
-			if (nitems < 2)
+			if (nfields < 2)
 				break;
 			set_field_fore(current_field(form), t.form.fieldcolor);
 			set_field_back(current_field(form), t.form.fieldcolor);
@@ -187,7 +187,7 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			set_field_back(current_field(form), t.form.f_fieldcolor);
 			break;
 		case KEY_DOWN:
-			if (nitems < 2)
+			if (nfields < 2)
 				break;
 			set_field_fore(current_field(form), t.form.fieldcolor);
 			set_field_back(current_field(form), t.form.fieldcolor);
@@ -239,11 +239,11 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 
 int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nitems, struct bsddialog_formitem *items)
+    int formheight, int nfields, struct bsddialog_formfield *fields)
 {
 	WINDOW *widget, *entry, *shadow;
 	int i, output, color, y, x;
-	FIELD **field;
+	FIELD **cfield;
 	FORM *form;
 	struct buttons bs;
 
@@ -257,27 +257,27 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
 	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
-	struct myfield *myfields = malloc(nitems * sizeof(struct myfield));
-	field = calloc(nitems + 1, sizeof(FIELD*));
-	for (i=0; i < nitems; i++) {
-		field[i] = new_field(1, items[i].formlen, items[i].yvalue-1, items[i].xvalue-1, 0, 0);
-		field_opts_off(field[i], O_STATIC);
-		set_max_field(field[i], items[i].valuelen);
-		set_field_buffer(field[i], 0, items[i].init);
+	struct myfield *myfields = malloc(nfields * sizeof(struct myfield));
+	cfield = calloc(nfields + 1, sizeof(FIELD*));
+	for (i=0; i < nfields; i++) {
+		cfield[i] = new_field(1, fields[i].formlen, fields[i].yvalue-1, fields[i].xvalue-1, 0, 0);
+		field_opts_off(cfield[i], O_STATIC);
+		set_max_field(cfield[i], fields[i].maxvaluelen);
+		set_field_buffer(cfield[i], 0, fields[i].init);
 
-		myfields[i].pos = strlen(items[i].init);
-		myfields[i].len  = strlen(items[i].init);
-		myfields[i].size  = items[i].valuelen;// + 1;
+		myfields[i].pos = strlen(fields[i].init);
+		myfields[i].len  = strlen(fields[i].init);
+		myfields[i].size  = fields[i].maxvaluelen;// + 1;
 		myfields[i].buf = malloc(myfields[i].size);
 		memset(myfields[i].buf, 0, myfields[i].size);
-		strcpy(myfields[i].buf, items[i].init);
-		set_field_userptr(field[i], &myfields[i]);
+		strcpy(myfields[i].buf, fields[i].init);
+		set_field_userptr(cfield[i], &myfields[i]);
 
-		field_opts_off(field[i], O_AUTOSKIP);
-		field_opts_off(field[i], O_BLANK);
+		field_opts_off(cfield[i], O_AUTOSKIP);
+		field_opts_off(cfield[i], O_BLANK);
 		//field_opts_off(field[i], O_BS_OVERLOAD);
 
-		if (ISITEMHIDDEN(items[i])) {
+		if (ISITEMHIDDEN(fields[i])) {
 			//field_opts_off(field[i], O_PUBLIC);
 			myfields[i].secure = true;
 			myfields[i].securech = conf.form.securech != '\0' ?
@@ -285,45 +285,45 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 		else myfields[i].secure = false;
 
-		if (ISITEMREADONLY(items[i])) {
-			field_opts_off(field[i], O_EDIT);
-			field_opts_off(field[i], O_ACTIVE);
+		if (ISITEMREADONLY(fields[i])) {
+			field_opts_off(cfield[i], O_EDIT);
+			field_opts_off(cfield[i], O_ACTIVE);
 			color = t.form.readonlycolor;
 		} else {
 			color = i == 0 ? t.form.f_fieldcolor : t.form.fieldcolor;
 		}
-		set_field_fore(field[i], color);
-		set_field_back(field[i], color);
+		set_field_fore(cfield[i], color);
+		set_field_back(cfield[i], color);
 	}
-	field[i] = NULL;
+	cfield[i] = NULL;
 
 	 /* disable focus with 1 item (and inputbox or passwordbox) */
-	if (nitems == 1) {
-		set_field_fore(field[0], t.widgetcolor);
-		set_field_back(field[0], t.widgetcolor);
+	if (nfields == 1) {
+		set_field_fore(cfield[0], t.widgetcolor);
+		set_field_back(cfield[0], t.widgetcolor);
 	}
 
-	form = new_form(field);
+	form = new_form(cfield);
 	set_form_win(form, entry);
-	set_form_sub(form, derwin(entry, nitems, cols-4, 1, 1));
+	set_form_sub(form, derwin(entry, nfields, cols-4, 1, 1));
 	post_form(form);
 
-	for (i=0; i < nitems; i++)
-		mvwaddstr(entry, items[i].ylabel, items[i].xlabel, items[i].label);
+	for (i=0; i < nfields; i++)
+		mvwaddstr(entry, fields[i].ylabel, fields[i].xlabel, fields[i].label);
 
 	wrefresh(entry);
 
-	output = form_handler(widget, rows-2, cols, bs, entry, form, field,
-	    nitems, items);
+	output = form_handler(widget, rows-2, cols, bs, entry, form, cfield,
+	    nfields, fields);
 
 	unpost_form(form);
 	free_form(form);
-	for (i=0; i < nitems; i++) {
-		free_field(field[i]);
+	for (i=0; i < nfields; i++) {
+		free_field(cfield[i]);
 		free(myfields[i].buf);
 		//free(myfields[i]);
 	}
-	free(field);
+	free(cfield);
 
 	delwin(entry);
 	end_widget(conf, widget, rows, cols, shadow);

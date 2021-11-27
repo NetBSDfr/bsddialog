@@ -137,7 +137,7 @@ struct bsddialog_menugroup {
 	struct bsddialog_menuitem *items;
 };
 
-struct bsddialog_formitem {
+struct bsddialog_formfield {
 	char *label;
 	unsigned int ylabel;
 	unsigned int xlabel;
@@ -145,15 +145,12 @@ struct bsddialog_formitem {
 	char *init;
 	unsigned int yvalue;
 	unsigned int xvalue;
-	unsigned int valuelen;
+	unsigned int maxvaluelen;
 	int formlen;
-
-	char *newvalue; /* allocated memory, to free */
-
 #define BSDDIALOG_ITEMHIDDEN   0x1
 #define BSDDIALOG_ITEMREADONLY 0x2
-//#define BSDDIALOG_ITEMHIDDEN   0x4
-	unsigned int flags; /* form (value) flags */
+	unsigned int flags;
+	char *value; /* allocated memory, to free */
 };
 
 int bsddialog_init(void);
@@ -190,7 +187,7 @@ int
 bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nitems, struct bsddialog_formitem *items);
+    int formheight, int nfields, struct bsddialog_formfield *fields);
 
 int
 bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols);

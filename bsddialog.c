@@ -1221,25 +1221,25 @@ int treeview_builder(BUILDER_ARGS)
 
 /* FORM */
 static void
-print_form_items(struct bsddialog_conf conf, int output, int nitems,
-    struct bsddialog_formitem *items)
+print_form_items(struct bsddialog_conf conf, int output, int nfields,
+    struct bsddialog_formfield *fields)
 {
 	int i;
 
 	if (output == BSDDIALOG_ERROR)
 		return;
 
-	for (i=0; i < nitems; i++) {
+	for (i=0; i < nfields; i++) {
 		dprintf(output_fd_flag, "Label: %s, Value: %s\n",
-		    items[i].label, items[i].newvalue);
-		free(items[i].newvalue);
+		    fields[i].label, fields[i].value);
+		free(fields[i].value);
 	}
 }
 
 int form_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems, formlen, valuelen;
-	struct bsddialog_formitem items[100];
+	int i, output, formheight, nfields, formlen, valuelen;
+	struct bsddialog_formfield fields[100];
 	unsigned int flags = 0;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
@@ -1255,28 +1255,28 @@ int form_builder(BUILDER_ARGS)
 	if ((argc % 8) != 0)
 		return (-1);
 
-	nitems = argc / 8;
-	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[8*i];
-		items[i].ylabel	   = atoi(argv[8*i+1]);
-		items[i].xlabel	   = atoi(argv[8*i+2]);
-		items[i].init	   = argv[8*i+3];
-		items[i].yvalue	   = atoi(argv[8*i+4]);
-		items[i].xvalue	   = atoi(argv[8*i+5]);
+	nfields = argc / 8;
+	for (i=0; i<nfields; i++) {
+		fields[i].label	   = argv[8*i];
+		fields[i].ylabel	   = atoi(argv[8*i+1]);
+		fields[i].xlabel	   = atoi(argv[8*i+2]);
+		fields[i].init	   = argv[8*i+3];
+		fields[i].yvalue	   = atoi(argv[8*i+4]);
+		fields[i].xvalue	   = atoi(argv[8*i+5]);
 
 		formlen = atoi(argv[8*i+6]);
-		items[i].formlen   = abs(formlen);
+		fields[i].formlen   = abs(formlen);
 
 		valuelen = atoi(argv[8*i+7]);
-		items[i].valuelen = valuelen == 0 ? abs(formlen) : valuelen;
+		fields[i].maxvaluelen = valuelen == 0 ? abs(formlen) : valuelen;
 
 		flags |= (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
-		items[i].flags = flags;
+		fields[i].flags = flags;
 	}
 
-	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
-	    items);
-	print_form_items(conf, output, nitems, items);
+	output = bsddialog_form(conf, text, rows, cols, formheight, nfields,
+	    fields);
+	print_form_items(conf, output, nfields, fields);
 
 	return (output);
 }
@@ -1284,28 +1284,28 @@ int form_builder(BUILDER_ARGS)
 int inputbox_builder(BUILDER_ARGS)
 {
 	int output;
-	struct bsddialog_formitem item;
+	struct bsddialog_formfield field;
 
-	item.label	= "";
-	item.ylabel	= 0;
-	item.xlabel	= 0;
-	item.init	= argc > 0 ? argv[0] : "";
-	item.yvalue	= 1;
-	item.xvalue	= 1;
-	item.formlen	= cols-4;
-	item.valuelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
-	item.flags	= 0;
+	field.label	= "";
+	field.ylabel	= 0;
+	field.xlabel	= 0;
+	field.init	= argc > 0 ? argv[0] : "";
+	field.yvalue	= 1;
+	field.xvalue	= 1;
+	field.formlen	= cols-4;
+	field.maxvaluelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
+	field.flags	= 0;
 
-	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
-	print_form_items(conf, output, 1, &item);
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &field);
+	print_form_items(conf, output, 1, &field);
 
 	return (output);
 }
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems;
-	struct bsddialog_formitem items[100];
+	int i, output, formheight, nfields;
+	struct bsddialog_formfield fields[100];
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
 		usage();
@@ -1317,22 +1317,22 @@ int mixedform_builder(BUILDER_ARGS)
 	argc--;
 	argv++;
 
-	nitems = argc / 9;
-	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[9*i];
-		items[i].ylabel	   = atoi(argv[9*i+1]);
-		items[i].xlabel	   = atoi(argv[9*i+2]);
-		items[i].init	   = argv[9*i+3];
-		items[i].yvalue	   = atoi(argv[9*i+4]);
-		items[i].xvalue	   = atoi(argv[9*i+5]);
-		items[i].formlen   = atoi(argv[9*i+6]);
-		items[i].valuelen  = atoi(argv[9*i+7]);
-		items[i].flags = atoi(argv[9*i+8]);
+	nfields = argc / 9;
+	for (i=0; i<nfields; i++) {
+		fields[i].label	   = argv[9*i];
+		fields[i].ylabel	   = atoi(argv[9*i+1]);
+		fields[i].xlabel	   = atoi(argv[9*i+2]);
+		fields[i].init	   = argv[9*i+3];
+		fields[i].yvalue	   = atoi(argv[9*i+4]);
+		fields[i].xvalue	   = atoi(argv[9*i+5]);
+		fields[i].formlen   = atoi(argv[9*i+6]);
+		fields[i].maxvaluelen  = atoi(argv[9*i+7]);
+		fields[i].flags = atoi(argv[9*i+8]);
 	}
 
-	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
-	    items);
-	print_form_items(conf, output, nitems, items);
+	output = bsddialog_form(conf, text, rows, cols, formheight, nfields,
+	    fields);
+	print_form_items(conf, output, nfields, fields);
 
 	return (output);
 }
@@ -1340,28 +1340,28 @@ int mixedform_builder(BUILDER_ARGS)
 int passwordbox_builder(BUILDER_ARGS)
 {
 	int output;
-	struct bsddialog_formitem item;
+	struct bsddialog_formfield field;
 
-	item.label	= "";
-	item.ylabel	= 0;
-	item.xlabel	= 0;
-	item.init	= argc > 0 ? argv[0] : "";
-	item.yvalue	= 1;
-	item.xvalue	= 1;
-	item.formlen	= cols-4;
-	item.valuelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
-	item.flags	= BSDDIALOG_ITEMHIDDEN;
+	field.label	= "";
+	field.ylabel	= 0;
+	field.xlabel	= 0;
+	field.init	= argc > 0 ? argv[0] : "";
+	field.yvalue	= 1;
+	field.xvalue	= 1;
+	field.formlen	= cols-4;
+	field.maxvaluelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
+	field.flags	= BSDDIALOG_ITEMHIDDEN;
 
-	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
-	print_form_items(conf, output, 1, &item);
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &field);
+	print_form_items(conf, output, 1, &field);
 
 	return (output);
 }
 
 int passwordform_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems, formlen, valuelen;
-	struct bsddialog_formitem items[100];
+	int i, output, formheight, nfields, formlen, valuelen;
+	struct bsddialog_formfield fields[100];
 	unsigned int flags = BSDDIALOG_ITEMHIDDEN;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
@@ -1374,28 +1374,28 @@ int passwordform_builder(BUILDER_ARGS)
 	argc--;
 	argv++;
 
-	nitems = argc / 8;
-	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[8*i];
-		items[i].ylabel	   = atoi(argv[8*i+1]);
-		items[i].xlabel	   = atoi(argv[8*i+2]);
-		items[i].init	   = argv[8*i+3];
-		items[i].yvalue	   = atoi(argv[8*i+4]);
-		items[i].xvalue	   = atoi(argv[8*i+5]);
+	nfields = argc / 8;
+	for (i=0; i<nfields; i++) {
+		fields[i].label	   = argv[8*i];
+		fields[i].ylabel	   = atoi(argv[8*i+1]);
+		fields[i].xlabel	   = atoi(argv[8*i+2]);
+		fields[i].init	   = argv[8*i+3];
+		fields[i].yvalue	   = atoi(argv[8*i+4]);
+		fields[i].xvalue	   = atoi(argv[8*i+5]);
 
 		formlen = atoi(argv[8*i+6]);
-		items[i].formlen   = abs(formlen);
+		fields[i].formlen   = abs(formlen);
 
 		valuelen = atoi(argv[8*i+7]);
-		items[i].valuelen = valuelen == 0 ? abs(formlen) : valuelen;
+		fields[i].maxvaluelen = valuelen == 0 ? abs(formlen) : valuelen;
 
 		flags |= (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
-		items[i].flags = flags;
+		fields[i].flags = flags;
 	}
 
 	output = bsddialog_form(conf, text, rows, cols, formheight,
-	    nitems, items);
-	print_form_items(conf, output, nitems, items);
+	    nfields, fields);
+	print_form_items(conf, output, nfields, fields);
 
 	return (output);
 }
