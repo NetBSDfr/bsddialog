@@ -94,6 +94,10 @@ struct bsddialog_conf {
 	} menu;
 
 	struct {
+		int securech;
+	} form;
+
+	struct {
 		char *cancel_label;
 		bool defaultno;
 		char *default_label;
@@ -144,8 +148,7 @@ struct bsddialog_formitem {
 	unsigned int valuelen;
 	int formlen;
 
-	char *newvalue1; /* allocated memory, to free */
-	char *newvalue2; /* allocated memory, to free*/
+	char *newvalue; /* allocated memory, to free */
 
 #define BSDDIALOG_ITEMHIDDEN   0x1
 #define BSDDIALOG_ITEMREADONLY 0x2

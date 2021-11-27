@@ -1,5 +1,14 @@
 #!/bin/sh
 
+./bsddialog --title " inputbox " --inputbox "Hello World!" 12 40 init \
+	2>out.txt ; cat out.txt ; rm out.txt
+
+./bsddialog --title " password " --passwordbox "Hello World!" 12 40 \
+	2>out.txt ; cat out.txt ; rm out.txt
+
+./bsddialog --insecure --title " password " --passwordbox "Hello World!" 12 40 \
+	2>out.txt ; cat out.txt ; rm out.txt
+
 ./bsddialog --title " mixedform " --mixedform "Hello World!" 12 40 5 \
 	Label:    1	1	Entry		1	11	18	25	0 \
 	Label:    2	1	Read-Only	2	11	18	25	2 \

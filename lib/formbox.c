@@ -48,6 +48,8 @@ struct myfield {
 	char *buf;
 	int pos;
 	int size;
+	bool secure;
+	int securech;
 };
 
 #define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
@@ -70,7 +72,6 @@ static void insertch(struct myfield *mf, int ch)
 	if (mf->len == mf->size)
 		return;
 
-	/* shift right */
 	for (i=mf->len-1; i>=mf->pos; i--) {
 		mf->buf[i+1] = mf->buf[i];
 	}
@@ -124,9 +125,8 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nitems; i++) {
-				items[i].newvalue1 = strdup(field_buffer(field[i], 0));
 				mf = GETMYFIELD(field[i]);
-				items[i].newvalue2 = mf->buf;
+				items[i].newvalue = strdup(mf->buf);
 			}
 			loop = false;
 			break;
@@ -155,7 +155,6 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 				mf = GETMYFIELD2(form);
 				if (mf->pos > 0)
 					mf->pos -= 1;
-				BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
 			} else {
 				if (bs.curr > 0) {
 					bs.curr--;
@@ -169,7 +168,6 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 				if (mf->pos >= mf->len)
 					break;
 				mf->pos += 1;
-				BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
 				form_driver(form, REQ_NEXT_CHAR);
 			} else {
 				if (bs.curr < (int) bs.nbuttons - 1) {
@@ -201,33 +199,25 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
 			mf = GETMYFIELD2(form);
-			BSDDIALOG_DEBUG(3,1, "buf: |%s|", mf->buf);
 			if (mf->pos > 0) {
 				mf->pos -= 1;
 				shiftleft(mf);
 			}
-			BSDDIALOG_DEBUG(4, 1, "buf: |%s|", mf->buf);
 			break;
 		case KEY_DC:
 			form_driver(form, REQ_DEL_CHAR);
 			mf = GETMYFIELD2(form);
-			BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
-			BSDDIALOG_DEBUG(2,1, "buf: |%s|", mf->buf);
 			if (mf->len-1 >= mf->pos)
 				shiftleft(mf);
-			BSDDIALOG_DEBUG(3,1, "pos:%d, len:%d", mf->pos, mf->len);
-			BSDDIALOG_DEBUG(4,1, "buf: |%s|", mf->buf);
 			break;
 		default:
 			if (inentry) {
-				
-				form_driver(form, input);
 				mf = GETMYFIELD2(form);
-				BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
-				BSDDIALOG_DEBUG(2,1, "buf: |%s|", mf->buf);
+				if (mf->secure)
+					form_driver(form, mf->securech);
+				else
+					form_driver(form, input);
 				insertch(mf, input);
-				BSDDIALOG_DEBUG(3,1, "pos:%d, len:%d", mf->pos, mf->len);
-				BSDDIALOG_DEBUG(4,1, "buf: |%s|", mf->buf);
 			}
 			else {
 				for (i = 0; i < (int) bs.nbuttons; i++) {
@@ -276,8 +266,6 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		set_field_buffer(field[i], 0, items[i].init);
 
 		myfields[i].pos = strlen(items[i].init);
-		//if (myfields[i].pos < 0)
-		//	myfields[i].pos = 0;
 		myfields[i].len  = strlen(items[i].init);
 		myfields[i].size  = items[i].valuelen;// + 1;
 		myfields[i].buf = malloc(myfields[i].size);
@@ -289,8 +277,13 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		field_opts_off(field[i], O_BLANK);
 		//field_opts_off(field[i], O_BS_OVERLOAD);
 
-		if (ISITEMHIDDEN(items[i]))
-			field_opts_off(field[i], O_PUBLIC);
+		if (ISITEMHIDDEN(items[i])) {
+			//field_opts_off(field[i], O_PUBLIC);
+			myfields[i].secure = true;
+			myfields[i].securech = conf.form.securech != '\0' ?
+			    conf.form.securech : ' ';
+		}
+		else myfields[i].secure = false;
 
 		if (ISITEMREADONLY(items[i])) {
 			field_opts_off(field[i], O_EDIT);
@@ -325,8 +318,11 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	unpost_form(form);
 	free_form(form);
-	for (i=0; i < nitems; i++)
+	for (i=0; i < nitems; i++) {
 		free_field(field[i]);
+		free(myfields[i].buf);
+		//free(myfields[i]);
+	}
 	free(field);
 
 	delwin(entry);

@@ -159,7 +159,6 @@ static char *item_output_sep_flag;
 /* Time and calendar options */
 static char *date_fmt_flag, *time_fmt_flag;
 /* Forms */
-static bool insecure_psw_flag;
 static int max_input_form_flag;
 /* General flags and options */
 static int output_fd_flag;
@@ -233,7 +232,6 @@ int main(int argc, char *argv[argc])
 
 	date_fmt_flag = time_fmt_flag = NULL;
 	
-	insecure_psw_flag = false;
 	max_input_form_flag = 0;
 
 	/* options descriptor */
@@ -440,7 +438,7 @@ int main(int argc, char *argv[argc])
 			ignore_flag = true;
 			break;
 		case INSECURE:
-			insecure_psw_flag = true;
+			conf.form.securech = '*';
 			break;
 		case ITEM_HELP:
 			item_bottomdesc_flag = true;
@@ -1233,9 +1231,8 @@ print_form_items(struct bsddialog_conf conf, int output, int nitems,
 
 	for (i=0; i < nitems; i++) {
 		dprintf(output_fd_flag, "Label: %s, Value: %s\n",
-		    items[i].newvalue1, items[i].newvalue2);
-		free(items[i].newvalue1);
-		free(items[i].newvalue2);
+		    items[i].label, items[i].newvalue);
+		free(items[i].newvalue);
 	}
 }
 
@@ -1307,7 +1304,7 @@ int inputbox_builder(BUILDER_ARGS)
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems, flags;
+	int i, output, formheight, nitems;
 	struct bsddialog_formitem items[100];
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
@@ -1330,9 +1327,7 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].xvalue	   = atoi(argv[9*i+5]);
 		items[i].formlen   = atoi(argv[9*i+6]);
 		items[i].valuelen  = atoi(argv[9*i+7]);
-		flags = atoi(argv[9*i+8]);
-		flags &= (insecure_psw_flag ? BSDDIALOG_ITEMREADONLY : 3);
-		items[i].flags = flags;
+		items[i].flags = atoi(argv[9*i+8]);
 	}
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
@@ -1355,7 +1350,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.xvalue	= 1;
 	item.formlen	= cols-4;
 	item.valuelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
-	item.flags	= insecure_psw_flag ? 0 : BSDDIALOG_ITEMHIDDEN;
+	item.flags	= BSDDIALOG_ITEMHIDDEN;
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(conf, output, 1, &item);
@@ -1395,7 +1390,6 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].valuelen = valuelen == 0 ? abs(formlen) : valuelen;
 
 		flags |= (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
-		flags &= (insecure_psw_flag ? BSDDIALOG_ITEMREADONLY : 3);
 		items[i].flags = flags;
 	}
 

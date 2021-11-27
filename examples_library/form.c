@@ -41,7 +41,7 @@ int main()
 
 	printf("Values:\n");
 	for (i=0; i<3; i++)
-		printf("%s|-|%s|-|%s|\n", items[i].label, items[i].newvalue1, items[i].newvalue2);
+		printf("%s|-|%s|\n", items[i].label, items[i].newvalue);
 	
 	return output;
 }
