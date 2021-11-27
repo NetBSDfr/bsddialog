@@ -1270,7 +1270,7 @@ int form_builder(BUILDER_ARGS)
 		valuelen = atoi(argv[8*i+7]);
 		fields[i].maxvaluelen = valuelen == 0 ? abs(formlen) : valuelen;
 
-		flags |= (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
+		flags |= (formlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		fields[i].flags = flags;
 	}
 
@@ -1350,7 +1350,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	field.xvalue	= 1;
 	field.formlen	= cols-4;
 	field.maxvaluelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
-	field.flags	= BSDDIALOG_ITEMHIDDEN;
+	field.flags	= BSDDIALOG_FIELDHIDDEN;
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &field);
 	print_form_items(conf, output, 1, &field);
@@ -1362,7 +1362,7 @@ int passwordform_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nfields, formlen, valuelen;
 	struct bsddialog_formfield fields[100];
-	unsigned int flags = BSDDIALOG_ITEMHIDDEN;
+	unsigned int flags = BSDDIALOG_FIELDHIDDEN;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		usage();
@@ -1389,7 +1389,7 @@ int passwordform_builder(BUILDER_ARGS)
 		valuelen = atoi(argv[8*i+7]);
 		fields[i].maxvaluelen = valuelen == 0 ? abs(formlen) : valuelen;
 
-		flags |= (formlen < 0 ? BSDDIALOG_ITEMREADONLY : 0);
+		flags |= (formlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		fields[i].flags = flags;
 	}
 

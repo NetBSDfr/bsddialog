@@ -147,8 +147,8 @@ struct bsddialog_formfield {
 	unsigned int xvalue;
 	unsigned int maxvaluelen;
 	int formlen;
-#define BSDDIALOG_ITEMHIDDEN   0x1
-#define BSDDIALOG_ITEMREADONLY 0x2
+#define BSDDIALOG_FIELDHIDDEN   0x1
+#define BSDDIALOG_FIELDREADONLY 0x2
 	unsigned int flags;
 	char *value; /* allocated memory, to free */
 };

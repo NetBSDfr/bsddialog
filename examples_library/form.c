@@ -13,8 +13,8 @@
 
 #include <bsddialog.h>
 
-#define HIDDEN  BSDDIALOG_ITEMHIDDEN
-#define RO      BSDDIALOG_ITEMREADONLY
+#define HIDDEN  BSDDIALOG_FIELDHIDDEN
+#define RO      BSDDIALOG_FIELDREADONLY
 
 int main()
 {

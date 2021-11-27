@@ -62,8 +62,8 @@ int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int co
 	RETURN_ERROR(text);
 }
 
-#define ISITEMHIDDEN(item) (item.flags & BSDDIALOG_ITEMHIDDEN)
-#define ISITEMREADONLY(item) (item.flags & BSDDIALOG_ITEMREADONLY)
+#define ISFIELDHIDDEN(item) (item.flags & BSDDIALOG_FIELDHIDDEN)
+#define ISFIELDREADONLY(item) (item.flags & BSDDIALOG_FIELDREADONLY)
 
 static void insertch(struct myfield *mf, int ch)
 {
@@ -277,7 +277,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		field_opts_off(cfield[i], O_BLANK);
 		//field_opts_off(field[i], O_BS_OVERLOAD);
 
-		if (ISITEMHIDDEN(fields[i])) {
+		if (ISFIELDHIDDEN(fields[i])) {
 			//field_opts_off(field[i], O_PUBLIC);
 			myfields[i].secure = true;
 			myfields[i].securech = conf.form.securech != '\0' ?
@@ -285,7 +285,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 		else myfields[i].secure = false;
 
-		if (ISITEMREADONLY(fields[i])) {
+		if (ISFIELDREADONLY(fields[i])) {
 			field_opts_off(cfield[i], O_EDIT);
 			field_opts_off(cfield[i], O_ACTIVE);
 			color = t.form.readonlycolor;
