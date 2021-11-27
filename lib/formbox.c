@@ -269,20 +269,20 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		set_max_field(cfield[i], fields[i].maxvaluelen);
 		set_field_buffer(cfield[i], 0, fields[i].init);
 
-		myfields[i].pos = strlen(fields[i].init);
+		myfields[i].pos  = strlen(fields[i].init);
 		myfields[i].len  = strlen(fields[i].init);
-		myfields[i].size  = fields[i].maxvaluelen;
-		myfields[i].buf = malloc(myfields[i].size);
+		myfields[i].size = fields[i].maxvaluelen;
+		myfields[i].buf  = malloc(myfields[i].size);
 		memset(myfields[i].buf, 0, myfields[i].size);
 		strcpy(myfields[i].buf, fields[i].init);
 		set_field_userptr(cfield[i], &myfields[i]);
 
 		field_opts_off(cfield[i], O_AUTOSKIP);
 		field_opts_off(cfield[i], O_BLANK);
-		//field_opts_off(field[i], O_BS_OVERLOAD);
+		/* field_opts_off(field[i], O_BS_OVERLOAD); */
 
 		if (ISFIELDHIDDEN(fields[i])) {
-			/* field_opts_off(field[i], O_PUBLIC); hidden */
+			/* field_opts_off(field[i], O_PUBLIC); old hidden */
 			myfields[i].secure = true;
 			myfields[i].securech = conf.form.securech != '\0' ?
 			    conf.form.securech : ' ';
