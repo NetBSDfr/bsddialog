@@ -43,6 +43,7 @@
 
 extern struct bsddialog_theme t;
 
+/* util struct for private buffer and view options */
 struct myfield {
 	int len;
 	char *buf;
@@ -51,11 +52,11 @@ struct myfield {
 	bool secure;
 	int securech;
 };
-
 #define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
 #define GETMYFIELD2(form) ((struct myfield*)field_userptr(current_field(form)))
 
-int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols)
+int
+bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	text = "Inputbox unimplemented";
 	bsddialog_msgbox(conf, text, rows, cols);
@@ -141,7 +142,8 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 				curs_set(0);
 			} else {
 				bs.curr++;
-				inentry = bs.curr >= (int) bs.nbuttons ? true : false;
+				inentry = bs.curr >= (int) bs.nbuttons ?
+				    true : false;
 				if (inentry) {
 					curs_set(2);
 					pos_form_cursor(form);
@@ -246,6 +248,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	FIELD **cfield;
 	FORM *form;
 	struct buttons bs;
+	struct myfield *myfields;
 
 	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
 	    true) <0)
@@ -257,10 +260,11 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
 	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
-	struct myfield *myfields = malloc(nfields * sizeof(struct myfield));
+	myfields = malloc(nfields * sizeof(struct myfield));
 	cfield = calloc(nfields + 1, sizeof(FIELD*));
 	for (i=0; i < nfields; i++) {
-		cfield[i] = new_field(1, fields[i].formlen, fields[i].yvalue-1, fields[i].xvalue-1, 0, 0);
+		cfield[i] = new_field(1, fields[i].formlen, fields[i].yvalue-1,
+		    fields[i].xvalue-1, 0, 0);
 		field_opts_off(cfield[i], O_STATIC);
 		set_max_field(cfield[i], fields[i].maxvaluelen);
 		set_field_buffer(cfield[i], 0, fields[i].init);
@@ -321,7 +325,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	for (i=0; i < nfields; i++) {
 		free_field(cfield[i]);
 		free(myfields[i].buf);
-		//free(myfields[i]);
+		/* free(&(myfields[i])); */
 	}
 	free(cfield);
 
