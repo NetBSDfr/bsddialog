@@ -197,6 +197,18 @@ get_buttons(struct bsddialog_conf conf, struct buttons *bs, char *yesoklabel,
 		bs->nbuttons += 1;
 	}
 
+	if (conf.button.generic1_label != NULL) {
+		bs->label[bs->nbuttons] = conf.button.generic1_label;
+		bs->value[bs->nbuttons] = BSDDIALOG_GENERIC1;
+		bs->nbuttons += 1;
+	}
+
+	if (conf.button.generic2_label != NULL) {
+		bs->label[bs->nbuttons] = conf.button.generic2_label;
+		bs->value[bs->nbuttons] = BSDDIALOG_GENERIC2;
+		bs->nbuttons += 1;
+	}
+
 	if (bs->nbuttons == 0) {
 		bs->label[0] = DEFAULT_BUTTON_LABEL;
 		bs->value[0] = DEFAULT_BUTTON_VALUE;

@@ -66,7 +66,7 @@ void set_error_string(char *string);
 #define LABEL_yes_label		"Yes"
 #define BUTTONLABEL(l) (conf.button.l != NULL ? conf.button.l : LABEL_ ##l)
 
-#define MAXBUTTONS		4 /* yes|ok - extra - no|cancel - help */
+#define MAXBUTTONS	6 /* yes|ok + extra + no|cancel + help + 2 generics */
 struct buttons {
 	unsigned int nbuttons;
 	char *label[MAXBUTTONS];

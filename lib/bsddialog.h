@@ -40,6 +40,8 @@
 #define BSDDIALOG_EXTRA		 3
 #define BSDDIALOG_ITEM_HELP	 4
 #define BSDDIALOG_ESC		 5
+#define BSDDIALOG_GENERIC1       6
+#define BSDDIALOG_GENERIC2       7
 
 /* size and position */
 #define BSDDIALOG_FULLSCREEN	-1
@@ -47,7 +49,7 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
-	/* conf.* */
+
 	bool ascii_lines;
 	int aspect_ratio;
 	int x;
@@ -71,7 +73,7 @@ struct bsddialog_conf {
 	int sleep;
 	/*int timeout;*/
 	char *title;
-	/* conf.text.* */
+
 	struct {
 		bool colors;
 		bool cr_wrap;
@@ -81,7 +83,7 @@ struct bsddialog_conf {
 		/*int tab_len; textbox?*/
 		bool trim;
 	} text;
-	/* conf.menu.* */
+
 	struct {
 		bool align_left;
 		char *colums_separator;
@@ -90,7 +92,7 @@ struct bsddialog_conf {
 		bool no_tags;
 		/*bool visit_items;*/
 	} menu;
-	/* conf.button.* */
+
 	struct {
 		char *cancel_label;
 		bool defaultno;
@@ -98,6 +100,8 @@ struct bsddialog_conf {
 		char *exit_label;
 		bool extra_button;
 		char *extra_label;
+		char *generic1_label;
+		char *generic2_label;
 		bool help_button;
 		char *help_label;
 		bool no_cancel;
