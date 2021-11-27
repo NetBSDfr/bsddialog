@@ -37,7 +37,7 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
-#define BSDDIALOG_VERSION "0.1 devel"
+#define BSDDIALOG_VERSION "0.1-devel"
 
 enum OPTS {
 	/* Common options */
@@ -534,7 +534,8 @@ int main(int argc, char *argv[argc])
 			conf.text.trim = true;
 			break;
 		case VERSION:
-			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
+			printf("bsddialog %s (libbsddialog %s).\n",
+			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
 			return (BSDDIALOG_YESOK);
 		case YES_LABEL:
 			conf.button.yes_label = optarg;
