@@ -143,7 +143,8 @@ struct bsddialog_formitem {
 
 #define BSDDIALOG_ITEMHIDDEN   0x1
 #define BSDDIALOG_ITEMREADONLY 0x2
-	unsigned int flags;
+//#define BSDDIALOG_ITEMHIDDEN   0x4
+	unsigned int flags; /* form (value) flags */
 };
 
 int bsddialog_init(void);
