@@ -43,6 +43,15 @@
 
 extern struct bsddialog_theme t;
 
+struct myfield {
+	int len;
+	char *buf;
+	int pos;
+};
+
+#define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
+#define GETMYFIELD2(form) ((struct myfield*)field_userptr(current_field(form)))
+
 int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols)
 {
 	text = "Inputbox unimplemented";
@@ -59,11 +68,13 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 {
 	bool loop, buttupdate, inentry = true;
 	int i, input, output;
+	struct myfield *mf;
 
 	curs_set(2);
 	pos_form_cursor(form);
 	loop = buttupdate = true;
 	bs.curr = -1;
+	form_driver(form, REQ_END_LINE);
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(widget, y, cols, bs, !inentry);
@@ -82,7 +93,8 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nitems; i++) {
 				items[i].newvalue1 = strdup(field_buffer(field[i], 0));
-				items[i].newvalue2 = strdup(field_buffer(field[i], 1));
+				mf = GETMYFIELD(field[i]);
+				items[i].newvalue2 = mf->buf;
 			}
 			loop = false;
 			break;
@@ -154,6 +166,9 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 		default:
 			if (inentry) {
 				form_driver(form, input);
+				mf = GETMYFIELD2(form);
+				mf->buf[mf->pos] = input;
+				mf->pos +=1 ;
 			}
 			else {
 				for (i = 0; i < (int) bs.nbuttons; i++) {
@@ -193,13 +208,21 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
 	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
+	struct myfield *myfields = malloc(nitems * sizeof(struct myfield));
 	field = calloc(nitems + 1, sizeof(FIELD*));
 	for (i=0; i < nitems; i++) {
-		field[i] = new_field(1, items[i].formlen, items[i].yvalue-1, items[i].xvalue-1, 0, 1);
+		field[i] = new_field(1, items[i].formlen, items[i].yvalue-1, items[i].xvalue-1, 0, 0);
 		field_opts_off(field[i], O_STATIC);
 		set_max_field(field[i], items[i].valuelen);
 		set_field_buffer(field[i], 0, items[i].init);
-		set_field_buffer(field[i], 1, items[i].init);
+
+		//myfields[i].pos = strlen(items[i].init);
+		myfields[i].pos = strlen(items[i].init);
+		myfields[i].len  = items[i].valuelen;
+		myfields[i].buf = malloc(items[i].valuelen);
+		strcpy(myfields[i].buf, items[i].init);
+		set_field_userptr(field[i], &myfields[i]);
+
 		field_opts_off(field[i], O_AUTOSKIP);
 		field_opts_off(field[i], O_BLANK);
 		//field_opts_off(field[i], O_BS_OVERLOAD);
@@ -236,7 +259,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	wrefresh(entry);
 
 	output = form_handler(widget, rows-2, cols, bs, entry, form, field,
-	    nitems ,items);
+	    nitems, items);
 
 	unpost_form(form);
 	free_form(form);
