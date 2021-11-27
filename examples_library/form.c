@@ -20,11 +20,10 @@ int main()
 {
 	int i, output;
 	struct bsddialog_conf conf;
-	char *v1, *v2, *v3, *v4, *v5, *v6, *v7, *v8;
 	struct bsddialog_formitem items[3] = {
-		{"Input:",    1, 1, "value",     1, 11, 50, 20, v1, v2, 0},
-		{"Input:",    2, 1, "read only", 2, 11, 50, 20, v3, v4, RO},
-		{"Password:", 3, 1, "",          3, 11, 50, 20, v5, v6, HIDDEN}
+		{"Input:",    1, 1, "value",     1, 11, 50, 20, .flags = 0     },
+		{"Input:",    2, 1, "read only", 2, 11, 50, 20, .flags = RO    },
+		{"Password:", 3, 1, "",          3, 11, 50, 20, .flags = HIDDEN}
 	};
 
 	bsddialog_initconf(&conf);
