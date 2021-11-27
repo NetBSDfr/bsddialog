@@ -155,7 +155,7 @@ datebox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
 		*w = VBORDERS;
 		/* buttons size */
 		*w += bs.nbuttons * bs.sizebutton;
-		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 		/* text size */
 		line = maxline + VBORDERS + t.texthmargin * 2;
 		line = MAX(line, (int) (maxword + VBORDERS + t.texthmargin * 2));
@@ -183,7 +183,7 @@ static int datebox_checksize(int rows, int cols, char *text, struct buttons bs)
 
 	mincols = VBORDERS;
 	mincols += bs.nbuttons * bs.sizebutton;
-	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 	mincols = MAX(MINWDATE, mincols);
 
 	if (cols < mincols)

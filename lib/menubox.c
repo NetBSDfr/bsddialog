@@ -371,7 +371,7 @@ menu_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*w = VBORDERS;
 		/* buttons size */
 		*w += bs.nbuttons * bs.sizebutton;
-		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 		/* line size */
 		*w = MAX(*w, linelen + 6);
 		/*
@@ -413,7 +413,7 @@ menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	mincols = VBORDERS;
 	/* buttons */
 	mincols += bs.nbuttons * bs.sizebutton;
-	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 	/* line, comment to permet some cols hidden */
 	/* mincols = MAX(mincols, linelen); */
 

@@ -54,7 +54,7 @@ draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, int
 
 	wmove(win, y, x);
 	for (i = 0; i < size; i++) {
-		color = (i <= blue_x) ? t.currbarcolor : t.barcolor;
+		color = (i <= blue_x) ? t.bar.f_color : t.bar.color;
 		wattron(win, color);
 		waddch(win, ' ');
 		wattroff(win, color);
@@ -67,7 +67,7 @@ draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, int
 	wmove(win, y, x + size/2 - 2);
 	for (i=0; i < (int) strlen(labelstr); i++) {
 		color = ( (blue_x + 1) <= (size/2 - (int) strlen(labelstr)/2 + i) ) ?
-		    t.barcolor : t.currbarcolor;
+		    t.bar.color : t.bar.f_color;
 		wattron(win, color);
 		waddch(win, labelstr[i]);
 		wattroff(win, color);
@@ -222,9 +222,9 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 	
 	draw_perc_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 
-	wattron(bar, t.barcolor);
+	wattron(bar, t.bar.color);
 	mvwaddstr(bar, 0, 2, "Overall Progress");
-	wattroff(bar, t.barcolor);
+	wattroff(bar, t.bar.color);
 
 	wrefresh(bar);
 

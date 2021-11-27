@@ -39,20 +39,24 @@ enum bsddialog_color {
 	BSDDIALOG_WHITE,
 };
 
+/* f_ for focus/selected/active/current element */
 struct bsddialog_theme {
-	/* theme.shadow.* */
+	struct {
+		int color;
+	} terminal;
+
 	struct {
 		int color;
 		unsigned int h;
 		unsigned int w;
 	} shadow;
 
-	int backgroundcolor;
 	bool surroundtitle;
 	int titlecolor;
 	int lineraisecolor;
 	int linelowercolor;
 	int widgetcolor;
+	int bottomtitlecolor;
 
 	unsigned int texthmargin;
 
@@ -63,24 +67,28 @@ struct bsddialog_theme {
 	int namesepcolor;
 	int descsepcolor;
 
-	int currfieldcolor;
-	int fieldcolor;
-	int fieldreadonlycolor;
+	struct {
+		int f_fieldcolor;
+		int fieldcolor;
+		int readonlycolor;
+	} form;
 
-	int currbarcolor;
-	int barcolor;
+	struct {
+		int f_color;
+		int color;
+	} bar;
 
-	unsigned int buttonspace;
-	int buttleftch;
-	int buttrightchar;
-	int currbuttdelimcolor;
-	int buttdelimcolor;
-	int currbuttoncolor;
-	int buttoncolor;
-	int currshortkeycolor;
-	int shortkeycolor;
-
-	int bottomtitlecolor;
+	struct {
+		unsigned int space;
+		int leftch;
+		int rightch;
+		int delimcolor;
+		int f_delimcolor;
+		int color;
+		int f_color;
+		int shortcutcolor;
+		int f_shortcutcolor;
+	} button;
 };
 
 enum bsddialog_default_theme {

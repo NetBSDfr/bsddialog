@@ -65,7 +65,7 @@ message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*w = VBORDERS;
 		/* buttons size */
 		*w += bs.nbuttons * bs.sizebutton;
-		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 		/* text size */
 		line = MIN(maxline + VBORDERS + t.texthmargin * 2, AUTO_WIDTH);
 		line = MAX(line, (int) (maxword + VBORDERS + t.texthmargin * 2));
@@ -92,7 +92,7 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 
 	mincols = VBORDERS;
 	mincols += bs.nbuttons * bs.sizebutton;
-	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.buttonspace : 0;
+	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "\

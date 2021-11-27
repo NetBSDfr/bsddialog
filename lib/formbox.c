@@ -128,22 +128,22 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 		case KEY_UP:
 			if (nitems < 2)
 				break;
-			set_field_fore(current_field(form), t.fieldcolor);
-			set_field_back(current_field(form), t.fieldcolor);
+			set_field_fore(current_field(form), t.form.fieldcolor);
+			set_field_back(current_field(form), t.form.fieldcolor);
 			form_driver(form, REQ_PREV_FIELD);
 			form_driver(form, REQ_END_LINE);
-			set_field_fore(current_field(form), t.currfieldcolor);
-			set_field_back(current_field(form), t.currfieldcolor);
+			set_field_fore(current_field(form), t.form.f_fieldcolor);
+			set_field_back(current_field(form), t.form.f_fieldcolor);
 			break;
 		case KEY_DOWN:
 			if (nitems < 2)
 				break;
-			set_field_fore(current_field(form), t.fieldcolor);
-			set_field_back(current_field(form), t.fieldcolor);
+			set_field_fore(current_field(form), t.form.fieldcolor);
+			set_field_back(current_field(form), t.form.fieldcolor);
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_END_LINE);
-			set_field_fore(current_field(form), t.currfieldcolor);
-			set_field_back(current_field(form), t.currfieldcolor);
+			set_field_fore(current_field(form), t.form.f_fieldcolor);
+			set_field_back(current_field(form), t.form.f_fieldcolor);
 			break;
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
@@ -210,9 +210,9 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		if (ISITEMREADONLY(items[i])) {
 			field_opts_off(field[i], O_EDIT);
 			field_opts_off(field[i], O_ACTIVE);
-			color = t.fieldreadonlycolor;
+			color = t.form.readonlycolor;
 		} else {
-			color = i == 0 ? t.currfieldcolor : t.fieldcolor;
+			color = i == 0 ? t.form.f_fieldcolor : t.form.fieldcolor;
 		}
 		set_field_fore(field[i], color);
 		set_field_back(field[i], color);

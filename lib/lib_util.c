@@ -67,7 +67,7 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 	/* no check: y, x, h and w are checked by the builders */
 	if ((clear = newwin(h, w, y + t.shadow.h, x + t.shadow.w)) == NULL)
 		RETURN_ERROR("Cannot hide the widget");
-	wbkgd(clear, t.backgroundcolor);
+	wbkgd(clear, t.terminal.color);
 
 	if (withshadow)
 		wrefresh(clear);
@@ -110,24 +110,24 @@ draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
 	int i, color_arrows, color_shortkey, color_button;
 
 	if (selected) {
-		color_arrows = t.currbuttdelimcolor;
-		color_shortkey = t.currshortkeycolor;
-		color_button = t.currbuttoncolor;
+		color_arrows = t.button.f_delimcolor;
+		color_shortkey = t.button.f_shortcutcolor;
+		color_button = t.button.f_color;
 	} else {
-		color_arrows = t.buttdelimcolor;
-		color_shortkey = t.shortkeycolor;
-		color_button = t.buttoncolor;
+		color_arrows = t.button.delimcolor;
+		color_shortkey = t.button.shortcutcolor;
+		color_button = t.button.color;
 	}
 
 	wattron(window, color_arrows);
-	mvwaddch(window, y, x, t.buttleftch);
+	mvwaddch(window, y, x, t.button.leftch);
 	wattroff(window, color_arrows);
 	wattron(window, color_button);
 	for(i = 1; i < size - 1; i++)
 		waddch(window, ' ');
 	wattroff(window, color_button);
 	wattron(window, color_arrows);
-	mvwaddch(window, y, x + i, t.buttrightchar);
+	mvwaddch(window, y, x + i, t.button.rightch);
 	wattroff(window, color_arrows);
 
 	x = x + 1 + ((size - 2 - strlen(text))/2);
@@ -147,11 +147,11 @@ draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 {
 	int i, x, start_x;
 
-	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.buttonspace;
+	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.button.space;
 	start_x = cols/2 - start_x/2;
 
 	for (i = 0; i < (int) bs.nbuttons; i++) {
-		x = i * (bs.sizebutton + t.buttonspace);
+		x = i * (bs.sizebutton + t.button.space);
 		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
 		    i == bs.curr, shortkey);
 	}
