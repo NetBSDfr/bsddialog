@@ -47,6 +47,7 @@ struct myfield {
 	int len;
 	char *buf;
 	int pos;
+	int size;
 };
 
 #define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
@@ -61,6 +62,37 @@ int bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int co
 
 #define ISITEMHIDDEN(item) (item.flags & BSDDIALOG_ITEMHIDDEN)
 #define ISITEMREADONLY(item) (item.flags & BSDDIALOG_ITEMREADONLY)
+
+static void insertch(struct myfield *mf, int ch)
+{
+	int i;
+
+	if (mf->len == mf->size)
+		return;
+
+	/* shift right */
+	for (i=mf->len-1; i>=mf->pos; i--) {
+		mf->buf[i+1] = mf->buf[i];
+	}
+
+	mf->buf[mf->pos] = ch;
+	mf->pos += 1;
+	mf->len += 1;
+	mf->buf[mf->len] = '\0';
+}
+
+static void shiftleft(struct myfield *mf)
+{
+	int i, last;
+
+	for (i=mf->pos; i<mf->len; i++) {
+		mf->buf[i] = mf->buf[i+1];
+	}
+
+	last = mf->len > 0 ? mf->len -1 : 0;
+	mf->buf[last] = '\0';
+		mf->len = last;
+}
 
 static int
 form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
@@ -120,6 +152,10 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 		case KEY_LEFT:
 			if (inentry) {
 				form_driver(form, REQ_PREV_CHAR);
+				mf = GETMYFIELD2(form);
+				if (mf->pos > 0)
+					mf->pos -= 1;
+				BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
 			} else {
 				if (bs.curr > 0) {
 					bs.curr--;
@@ -129,6 +165,11 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			break;
 		case KEY_RIGHT:
 			if (inentry) {
+				mf = GETMYFIELD2(form);
+				if (mf->pos >= mf->len)
+					break;
+				mf->pos += 1;
+				BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
 				form_driver(form, REQ_NEXT_CHAR);
 			} else {
 				if (bs.curr < (int) bs.nbuttons - 1) {
@@ -159,16 +200,28 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			break;
 		case KEY_BACKSPACE:
 			form_driver(form, REQ_DEL_PREV);
+			mf = GETMYFIELD2(form);
+			BSDDIALOG_DEBUG(3,1, "buf: |%s|", mf->buf);
+			shiftleft(mf);
+			BSDDIALOG_DEBUG(4, 1, "buf: |%s|", mf->buf);
 			break;
 		case KEY_DC:
 			form_driver(form, REQ_DEL_CHAR);
+			mf = GETMYFIELD2(form);
+			BSDDIALOG_DEBUG(3,1, "buf: |%s|", mf->buf);
+			shiftleft(mf);
+			BSDDIALOG_DEBUG(4,1, "buf: |%s|", mf->buf);
 			break;
 		default:
 			if (inentry) {
+				
 				form_driver(form, input);
 				mf = GETMYFIELD2(form);
-				mf->buf[mf->pos] = input;
-				mf->pos +=1 ;
+				BSDDIALOG_DEBUG(1,1, "pos:%d, len:%d", mf->pos, mf->len);
+				BSDDIALOG_DEBUG(2,1, "buf: |%s|", mf->buf);
+				insertch(mf, input);
+				BSDDIALOG_DEBUG(3,1, "pos:%d, len:%d", mf->pos, mf->len);
+				BSDDIALOG_DEBUG(4,1, "buf: |%s|", mf->buf);
 			}
 			else {
 				for (i = 0; i < (int) bs.nbuttons; i++) {
@@ -216,10 +269,13 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		set_max_field(field[i], items[i].valuelen);
 		set_field_buffer(field[i], 0, items[i].init);
 
-		//myfields[i].pos = strlen(items[i].init);
 		myfields[i].pos = strlen(items[i].init);
-		myfields[i].len  = items[i].valuelen;
-		myfields[i].buf = malloc(items[i].valuelen);
+		//if (myfields[i].pos < 0)
+		//	myfields[i].pos = 0;
+		myfields[i].len  = strlen(items[i].init);
+		myfields[i].size  = items[i].valuelen;// + 1;
+		myfields[i].buf = malloc(myfields[i].size);
+		memset(myfields[i].buf, 0, myfields[i].size);
 		strcpy(myfields[i].buf, items[i].init);
 		set_field_userptr(field[i], &myfields[i]);
 
