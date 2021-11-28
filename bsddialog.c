@@ -1230,8 +1230,7 @@ print_form_items(struct bsddialog_conf conf, int output, int nfields,
 		return;
 
 	for (i=0; i < nfields; i++) {
-		dprintf(output_fd_flag, "Label: %s, Value: %s\n",
-		    fields[i].label, fields[i].value);
+		dprintf(output_fd_flag, "%s\n", fields[i].value);
 		free(fields[i].value);
 	}
 }
