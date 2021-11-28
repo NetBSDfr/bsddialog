@@ -46,14 +46,11 @@
  * Widgets implementation:
  *  infobox.c    infobox
  *  messgebox.c  msgbox - yesno
- *  menubox.c    buildlist - checklist - menu - mixedlist - radiolist - treeview
+ *  menubox.c    buildlist - checklist - menu - mixedlist - radiolist
  *  formbox.c    inputbox - passwordbox - form - passwordform - mixedform
- *  editorbox.c  editbox
  *  barbox.c     gauge - mixedgauge - rangebox - pause
+ *  textbox.c    textbox
  *  timebox.c    timebox - calendar
- *  commandbox.c prgbox - programbox - progressbox
- *  tailbox.c    tailbox - tailboxbg - textbox
- *  filebox.c    dselect - fselect
  */
 
 extern struct bsddialog_theme t;

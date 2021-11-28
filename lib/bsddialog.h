@@ -25,8 +25,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _BSDDIALOG_H_
-#define _BSDDIALOG_H_
+#ifndef _LIBBSDDIALOG_H_
+#define _LIBBSDDIALOG_H_
 
 #include <stdbool.h>
 
@@ -59,19 +59,10 @@ struct bsddialog_conf {
 	int *get_width;
 	char *hfile;
 	char *hline;
-	/*int input_fd;*/
-	/*bool keep_tite;*/
-	/*bool keep_window;*/
-	/*bool last_key;*/
-	/*bool no_kill;*/
+	/* int input_fd; */
 	bool no_lines;
-	/*bool no_mouse; useful?*/
-	/*bool scrollbar; useful?*/
-	/*char *separate_witget;*/
 	bool shadow;
-	/*bool size_err;*/
 	int sleep;
-	/*int timeout;*/
 	char *title;
 
 	struct {
@@ -79,18 +70,17 @@ struct bsddialog_conf {
 		bool cr_wrap;
 		bool no_collapse;
 		bool no_nl_expand;
-		/*bool tab_correct; textbox?*/
-		/*int tab_len; textbox?*/
+		/* bool tab_correct; textbox? */
+		/* int tab_len; textbox? */
 		bool trim;
 	} text;
 
 	struct {
 		bool align_left;
-		char *colums_separator;
-		char *default_item; /* int default_item */
+		/* char *colums_separator; sade(8)? */
+		char *default_item;
 		bool no_items;
 		bool no_tags;
-		/*bool visit_items;*/
 	} menu;
 
 	struct {
@@ -168,10 +158,6 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     int *focusitem);
 
 int
-bsddialog_calendar(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int *yy, unsigned int *mm, unsigned int *dd);
-
-int
 bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
@@ -181,17 +167,8 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int *yy, unsigned int *mm, unsigned int *dd);
 
 int
-bsddialog_dselect(struct bsddialog_conf conf, char* text, int rows, int cols);
-
-int
-bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-
-int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int formheight, int nfields, struct bsddialog_formfield *fields);
-
-int
-bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
 bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
@@ -199,9 +176,6 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
-
-int
-bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
 bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
@@ -225,18 +199,6 @@ bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
     int sec);
 
 int
-bsddialog_prgbox(struct bsddialog_conf conf, char* text, int rows, int cols,
-    char *command);
-
-int
-bsddialog_programbox(struct bsddialog_conf conf, char* text, int rows,
-    int cols);
-
-int
-bsddialog_progressbox(struct bsddialog_conf conf, char* text, int rows,
-    int cols);
-
-int
 bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
@@ -246,13 +208,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
     int min, int max, int *value);
 
 int
-bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols);
-
-int
-bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols);
-
-int
-bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols);
 
 int
 bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,

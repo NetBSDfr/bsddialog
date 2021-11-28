@@ -40,9 +40,9 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
-#define MINWDATE 25 // 23 wins + 2 VBORDERS
-#define MINWTIME 16 // 14 wins + 2 VBORDERS
-#define MINHEIGHT 8 // 2 for text
+#define MINWDATE 25 /* 23 wins + 2 VBORDERS */
+#define MINWTIME 16 /*14 wins + 2 VBORDERS */
+#define MINHEIGHT 8 /* 2 for text */
 
 /* "Time": timebox - datebox */
 

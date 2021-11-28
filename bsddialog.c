@@ -51,7 +51,6 @@ enum OPTS {
 	COLORS,
 	/*COLUMN_SEPARATOR,*/
 	CR_WRAP,
-	/*CREATE_RC,*/
 	DATE_FORMAT,
 	DEFAULTNO,
 	DEFAULT_BUTTON,
@@ -71,18 +70,13 @@ enum OPTS {
 	INSECURE,
 	ITEM_HELP,
 	ITEM_PREFIX,
-	/*KEEP_TITE,*/
-	/*KEEP_WINDOW,*/
-	/*LAST_KEY,*/
 	MAX_INPUT,
 	NO_CANCEL,
 	NOCANCEL,
 	NO_COLLAPSE,
 	NO_ITEMS,
-	/*NO_KILL,*/
 	NO_LABEL,
 	NO_LINES,
-	/*NO_MOUSE,*/
 	NO_NL_EXPAND,
 	NO_OK,
 	NOOK,
@@ -95,13 +89,10 @@ enum OPTS {
 	PRINT_SIZE,
 	PRINT_VERSION,
 	QUOTED,
-	/*SCROLLBAR,*/
 	SEPARATE_OUTPUT,
-	/*SEPARATE_WIDGET,*/
 	SEPARATOR,
 	SHADOW,
 	SINGLE_QUOTED,
-	/*SIZE_ERR,*/
 	SLEEP,
 	STDERR,
 	STDOUT,
@@ -109,26 +100,18 @@ enum OPTS {
 	/*TAB_LEN,*/
 	THEME,
 	TIME_FORMAT,
-	/*TIMEOUT,*/
 	TITLE,
-	/*TRACE,*/
 	TRIM,
 	VERSION,
-	/*VISIT_ITEMS,*/
 	YES_LABEL,
 	/* Widgets */
 	BUILDLIST,
-	CALENDAR,
 	CHECKLIST,
 	DATEBOX,
-	DSELECT,
-	EDITBOX,
 	FORM,
-	FSELECT,
 	GAUGE,
 	INFOBOX,
 	INPUTBOX,
-	INPUTMENU,
 	MENU,
 	MIXEDFORM,
 	MIXEDGAUGE,
@@ -136,13 +119,8 @@ enum OPTS {
 	PASSWORDBOX,
 	PASSWORDFORM,
 	PAUSE,
-	PRGBOX,
-	PROGRAMBOX,
-	PROGRESSBOX,
 	RADIOLIST,
 	RANGEBOX,
-	TAILBOX,
-	TAILBOXBG,
 	TEXTBOX,
 	TIMEBOX,
 	TREEVIEW,
@@ -168,17 +146,12 @@ void usage(void);
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
 	int cols, int argc, char **argv
 int buildlist_builder(BUILDER_ARGS);
-int calendar_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
 int datebox_builder(BUILDER_ARGS);
-int dselect_builder(BUILDER_ARGS);
-int editbox_builder(BUILDER_ARGS);
 int form_builder(BUILDER_ARGS);
-int fselect_builder(BUILDER_ARGS);
 int gauge_builder(BUILDER_ARGS);
 int infobox_builder(BUILDER_ARGS);
 int inputbox_builder(BUILDER_ARGS);
-int inputmenu_builder(BUILDER_ARGS);
 int menu_builder(BUILDER_ARGS);
 int mixedform_builder(BUILDER_ARGS);
 int mixedgauge_builder(BUILDER_ARGS);
@@ -186,13 +159,8 @@ int msgbox_builder(BUILDER_ARGS);
 int passwordbox_builder(BUILDER_ARGS);
 int passwordform_builder(BUILDER_ARGS);
 int pause_builder(BUILDER_ARGS);
-int prgbox_builder(BUILDER_ARGS);
-int programbox_builder(BUILDER_ARGS);
-int progressbox_builder(BUILDER_ARGS);
 int radiolist_builder(BUILDER_ARGS);
 int rangebox_builder(BUILDER_ARGS);
-int tailbox_builder(BUILDER_ARGS);
-int tailboxbg_builder(BUILDER_ARGS);
 int textbox_builder(BUILDER_ARGS);
 int timebox_builder(BUILDER_ARGS);
 int treeview_builder(BUILDER_ARGS);
@@ -247,7 +215,6 @@ int main(int argc, char *argv[argc])
 	    { "colors", no_argument, NULL, COLORS },
 	    /*{ "column-separator", required_argument, NULL, COLUMN_SEPARATOR },*/
 	    { "cr-wrap", no_argument, NULL, CR_WRAP },
-	    /*{ "create-rc", required_argument, NULL, CREATE_RC },*/
 	    { "date-format", required_argument, NULL, DATE_FORMAT },
 	    { "defaultno", no_argument, NULL, DEFAULTNO },
 	    { "default-button", required_argument, NULL, DEFAULT_BUTTON },
@@ -266,18 +233,13 @@ int main(int argc, char *argv[argc])
 	    /*{ "input-fd", required_argument, NULL, INPUT_FD },*/
 	    { "insecure", no_argument, NULL, INSECURE },
 	    { "item-help", no_argument, NULL, ITEM_HELP },
-	    /*{ "keep-tite", no_argument, NULL, KEEP_TITE },*/
-	    /*{ "keep-window", no_argument, NULL, KEEP_WINDOW },*/
-	    /*{ "last-key", no_argument, NULL, LAST_KEY },*/
 	    { "max-input", required_argument, NULL, MAX_INPUT },
 	    { "no-cancel", no_argument, NULL, NO_CANCEL },
 	    { "nocancel", no_argument, NULL, NOCANCEL },
 	    { "no-collapse", no_argument, NULL, NO_COLLAPSE },
 	    { "no-items", no_argument, NULL, NO_ITEMS },
-	    /*{ "no-kill", no_argument, NULL, NO_KILL },*/
 	    { "no-label", required_argument, NULL, NO_LABEL },
 	    { "no-lines", no_argument, NULL, NO_LINES },
-	    /*{ "no-mouse", no_argument, NULL, NO_MOUSE },*/
 	    { "no-nl-expand", no_argument, NULL, NO_NL_EXPAND },
 	    { "no-ok", no_argument, NULL, NO_OK },
 	    { "nook ", no_argument, NULL, NOOK },
@@ -291,12 +253,9 @@ int main(int argc, char *argv[argc])
 	    { "print-size", no_argument, NULL, PRINT_SIZE },
 	    { "print-version", no_argument, NULL, PRINT_VERSION },
 	    { "quoted", no_argument, NULL, QUOTED },
-	    /*{ "scrollbar", no_argument, NULL, SCROLLBAR},*/
 	    { "separate-output", no_argument, NULL, SEPARATE_OUTPUT },
-	    /*{ "separate-widget", required_argument, NULL, SEPARATE_WIDGET },*/
 	    { "shadow", no_argument, NULL, SHADOW },
 	    { "single-quoted", no_argument, NULL, SINGLE_QUOTED },
-	    /*{ "size-err", no_argument, NULL, SIZE_ERR },*/
 	    { "sleep", required_argument, NULL, SLEEP },
 	    { "stderr", no_argument, NULL, STDERR },
 	    { "stdout", no_argument, NULL, STDOUT },
@@ -304,26 +263,18 @@ int main(int argc, char *argv[argc])
 	    /*{ "tab-len", required_argument, NULL, TAB_LEN },*/
 	    { "theme_flag", required_argument, NULL, THEME },
 	    { "time-format", required_argument, NULL, TIME_FORMAT },
-	    /*{ "timeout", required_argument, NULL, TIMEOUT },*/
 	    { "title", required_argument, NULL, TITLE },
-	    /*{ "trace", required_argument, NULL, TRACE },*/
 	    { "trim", no_argument, NULL, TRIM },
 	    { "version", no_argument, NULL, VERSION },
-	    /*{ "visit-items", no_argument, NULL, VISIT_ITEMS },*/
 	    { "yes-label", required_argument, NULL, YES_LABEL },
 	    /* Widgets */
 	    { "buildlist", no_argument, NULL, BUILDLIST },
-	    { "calendar", no_argument, NULL, CALENDAR },
 	    { "checklist", no_argument, NULL, CHECKLIST },
 	    { "datebox", no_argument, NULL, DATEBOX },
-	    { "dselect", no_argument, NULL, DSELECT },
-	    { "editbox", no_argument, NULL, EDITBOX },
 	    { "form", no_argument, NULL, FORM },
-	    { "fselect", no_argument, NULL, FSELECT },
 	    { "gauge", no_argument, NULL, GAUGE },
 	    { "infobox", no_argument, NULL, INFOBOX },
 	    { "inputbox", no_argument, NULL, INPUTBOX },
-	    { "inputmenu", no_argument, NULL, INPUTMENU },
 	    { "menu", no_argument, NULL, MENU },
 	    { "mixedform", no_argument, NULL, MIXEDFORM },
 	    { "mixedgauge", no_argument, NULL, MIXEDGAUGE },
@@ -331,13 +282,8 @@ int main(int argc, char *argv[argc])
 	    { "passwordbox", no_argument, NULL, PASSWORDBOX },
 	    { "passwordform", no_argument, NULL, PASSWORDFORM },
 	    { "pause", no_argument, NULL, PAUSE },
-	    { "prgbox", no_argument, NULL, PRGBOX },
-	    { "programbox", no_argument, NULL, PROGRAMBOX },
-	    { "progressbox", no_argument, NULL, PROGRESSBOX },
 	    { "radiolist", no_argument, NULL, RADIOLIST },
 	    { "rangebox", no_argument, NULL, RANGEBOX },
-	    { "tailbox", no_argument, NULL, TAILBOX },
-	    { "tailboxbg", no_argument, NULL, TAILBOXBG },
 	    { "textbox", no_argument, NULL, TEXTBOX },
 	    { "timebox", no_argument, NULL, TIMEBOX },
 	    { "treeview", no_argument, NULL, TREEVIEW },
@@ -542,26 +488,14 @@ int main(int argc, char *argv[argc])
 		case BUILDLIST:
 			widgetbuilder = buildlist_builder;
 			break;
-		case CALENDAR:
-			widgetbuilder = calendar_builder;
-			break;
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
 		case DATEBOX:
 			widgetbuilder = datebox_builder;
 			break;
-		case DSELECT:
-			widgetbuilder = dselect_builder;
-			break;
-		case EDITBOX:
-			widgetbuilder = editbox_builder;
-			break;
 		case FORM:
 			widgetbuilder = form_builder;
-			break;
-		case FSELECT:
-			widgetbuilder = fselect_builder;
 			break;
 		case GAUGE:
 			widgetbuilder = gauge_builder;
@@ -571,9 +505,6 @@ int main(int argc, char *argv[argc])
 			break;
 		case INPUTBOX:
 			widgetbuilder = inputbox_builder;
-			break;
-		case INPUTMENU:
-			widgetbuilder = inputmenu_builder;
 			break;
 		case MENU:
 			widgetbuilder = menu_builder;
@@ -596,26 +527,11 @@ int main(int argc, char *argv[argc])
 		case PASSWORDFORM:
 			widgetbuilder = passwordform_builder;
 			break;
-		case PRGBOX:
-			widgetbuilder = prgbox_builder;
-			break;
-		case PROGRAMBOX:
-			widgetbuilder = programbox_builder;
-			break;
-		case PROGRESSBOX:
-			widgetbuilder = progressbox_builder;
-			break;
 		case RADIOLIST:
 			widgetbuilder = radiolist_builder;
 			break;
 		case RANGEBOX:
 			widgetbuilder = rangebox_builder;
-			break;
-		case TAILBOX:
-			widgetbuilder = tailbox_builder;
-			break;
-		case TAILBOXBG:
-			widgetbuilder = tailboxbg_builder;
 			break;
 		case TEXTBOX:
 			widgetbuilder = textbox_builder;
@@ -709,82 +625,7 @@ int main(int argc, char *argv[argc])
 	return (output);
 }
 
-int calendar_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = datebox_builder(conf, text, rows, cols, argc, argv);
-
-	return (output);
-}
-
-int datebox_builder(BUILDER_ARGS)
-{
-	int output;
-	unsigned int yy, mm, dd;
-	time_t cal;
-	struct tm *localtm;
-	char stringdate[1024];
-
-	time(&cal);
-	localtm = localtime(&cal);
-	yy = localtm->tm_year + 1900;
-	mm = localtm->tm_mon + 1;
-	dd = localtm->tm_mday;
-
-	/* --calendar text h w [year month day] */
-	if (argc == 3) {
-		yy = atoi(argv[0]);
-		mm = atoi(argv[1]);
-		dd = atoi(argv[2]);
-	}
-
-	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
-	if (output != BSDDIALOG_YESOK)
-		return (output);
-
-	if (date_fmt_flag == NULL) {
-		dprintf(output_fd_flag, "%u/%u/%u", yy, mm, dd);
-	}
-	else {
-		time(&cal);
-		localtm = localtime(&cal);
-		localtm->tm_year = yy - 1900;
-		localtm->tm_mon  = mm;
-		localtm->tm_mday = dd;
-		strftime(stringdate, 1024, date_fmt_flag, localtm);
-		dprintf(output_fd_flag, "%s", stringdate);
-	}
-
-	return (output);
-}
-
-int dselect_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_dselect(conf, text, rows, cols);
-
-	return (output);
-}
-
-int editbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_editbox(conf, text, rows, cols);
-
-	return (output);
-}
-
-int fselect_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_fselect(conf, text, rows, cols);
-
-	return (output);
-}
+/* Widgets */
 
 int gauge_builder(BUILDER_ARGS)
 {
@@ -806,12 +647,6 @@ int infobox_builder(BUILDER_ARGS)
 	output = bsddialog_infobox(conf, text, rows, cols);
 
 	return (output);
-}
-
-int inputmenu_builder(BUILDER_ARGS)
-{
-
-	return (BSDDIALOG_ERROR);
 }
 
 int mixedgauge_builder(BUILDER_ARGS)
@@ -857,39 +692,6 @@ int pause_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int prgbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	if (argc < 1) {
-		usage();
-		return (BSDDIALOG_ERROR);
-	}
-
-	output = bsddialog_prgbox(conf, strlen(text) == 0 ? NULL : text, rows,
-	    cols, argv[0]);
-
-	return (output);
-}
-
-int programbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_programbox(conf, strlen(text) == 0 ? NULL : text, rows, cols);
-
-	return (output);
-}
-
-int progressbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_progressbox(conf, strlen(text) == 0 ? NULL : text, rows, cols);
-
-	return (output);
-}
-
 int rangebox_builder(BUILDER_ARGS)
 {
 	int output, min, max, value;
@@ -915,24 +717,6 @@ int rangebox_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int tailbox_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_tailbox(conf, text, rows, cols);
-
-	return (output);
-}
-
-int tailboxbg_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_tailboxbg(conf, text, rows, cols);
-
-	return output;
-}
-
 int textbox_builder(BUILDER_ARGS)
 {
 	int output;
@@ -940,6 +724,57 @@ int textbox_builder(BUILDER_ARGS)
 	output = bsddialog_textbox(conf, text, rows, cols);
 
 	return output;
+}
+
+int yesno_builder(BUILDER_ARGS)
+{
+	int output;
+
+	output = bsddialog_yesno(conf, text, rows, cols);
+
+	return output;
+}
+
+/* DATE and TIME */
+int datebox_builder(BUILDER_ARGS)
+{
+	int output;
+	unsigned int yy, mm, dd;
+	time_t cal;
+	struct tm *localtm;
+	char stringdate[1024];
+
+	time(&cal);
+	localtm = localtime(&cal);
+	yy = localtm->tm_year + 1900;
+	mm = localtm->tm_mon + 1;
+	dd = localtm->tm_mday;
+
+	/* --calendar text h w [year month day] */
+	if (argc == 3) {
+		yy = atoi(argv[0]);
+		mm = atoi(argv[1]);
+		dd = atoi(argv[2]);
+	}
+
+	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
+	if (output != BSDDIALOG_YESOK)
+		return (output);
+
+	if (date_fmt_flag == NULL) {
+		dprintf(output_fd_flag, "%u/%u/%u", yy, mm, dd);
+	}
+	else {
+		time(&cal);
+		localtm = localtime(&cal);
+		localtm->tm_year = yy - 1900;
+		localtm->tm_mon  = mm;
+		localtm->tm_mday = dd;
+		strftime(stringdate, 1024, date_fmt_flag, localtm);
+		dprintf(output_fd_flag, "%s", stringdate);
+	}
+
+	return (output);
 }
 
 int timebox_builder(BUILDER_ARGS)
@@ -981,15 +816,6 @@ int timebox_builder(BUILDER_ARGS)
 	}
 
 	return (output);
-}
-
-int yesno_builder(BUILDER_ARGS)
-{
-	int output;
-
-	output = bsddialog_yesno(conf, text, rows, cols);
-
-	return output;
 }
 
 /* MENU */

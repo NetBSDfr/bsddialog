@@ -42,6 +42,8 @@
 #include "bsddialog_theme.h"
 
 #define REDRAWFORM 14021986 /* magic number */
+#define ISFIELDHIDDEN(item)   (item.flags & BSDDIALOG_FIELDHIDDEN)
+#define ISFIELDREADONLY(item) (item.flags & BSDDIALOG_FIELDREADONLY)
 
 /* "Form": inputbox - passwordbox - form - passwordform - mixedform */
 
@@ -58,17 +60,6 @@ struct myfield {
 };
 #define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
 #define GETMYFIELD2(form) ((struct myfield*)field_userptr(current_field(form)))
-
-int
-bsddialog_inputmenu(struct bsddialog_conf conf, char* text, int rows, int cols)
-{
-	text = "Inputbox unimplemented";
-	bsddialog_msgbox(conf, text, rows, cols);
-	RETURN_ERROR(text);
-}
-
-#define ISFIELDHIDDEN(item) (item.flags & BSDDIALOG_FIELDHIDDEN)
-#define ISFIELDREADONLY(item) (item.flags & BSDDIALOG_FIELDREADONLY)
 
 static void insertch(struct myfield *mf, int ch)
 {

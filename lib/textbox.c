@@ -40,13 +40,11 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
-/* "Text": tailbox - tailboxbg - textbox */
+/* "Text": textbox */
 
 #define BUTTON_TEXTBOX "HELP"
 
 extern struct bsddialog_theme t;
-
-enum textmode { TAILMODE, TAILBGMODE, TEXTMODE};
 
 static void
 textbox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
@@ -85,8 +83,8 @@ static int textbox_checksize(int rows, int cols, int hpad)
 	return 0;
 }
 
-static int
-do_textbox(enum textmode mode, struct bsddialog_conf conf, char* path, int rows, int cols)
+int
+bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols)
 {
 	WINDOW *widget, *pad, *shadow;
 	int i, input, y, x, h, w, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
@@ -95,22 +93,9 @@ do_textbox(enum textmode mode, struct bsddialog_conf conf, char* path, int rows,
 	bool loop;
 	int output;
 
-	if (mode == TAILMODE || mode == TAILBGMODE) {
-		bsddialog_msgbox(conf, "Tailbox and Tailboxbg unimplemented", rows, cols);
-		RETURN_ERROR("Tailbox and Tailboxbg unimplemented");
-	}
-
-	if ((fp = fopen(path, "r")) == NULL)
+	if ((fp = fopen(file, "r")) == NULL)
 		RETURN_ERROR("Cannot open file");
-	/*if (mode == TAILMODE) {
-		fseek (fp, 0, SEEK_END);
-		i = nlines = 0;
-		while (i < hpad) {
-			line = ;
-		}
-		for (i=hpad-1; i--; i>=0) {
-		}
-	}*/
+
 	hpad = 1;
 	wpad = 1;
 	pad = newpad(hpad, wpad);
@@ -258,23 +243,3 @@ do_textbox(enum textmode mode, struct bsddialog_conf conf, char* path, int rows,
 
 	return output;
 }
-
-int bsddialog_tailbox(struct bsddialog_conf conf, char* text, int rows, int cols)
-{
-
-	return (do_textbox(TAILMODE, conf, text, rows, cols));
-}
-
-int bsddialog_tailboxbg(struct bsddialog_conf conf, char* text, int rows, int cols)
-{
-
-	return (do_textbox(TAILBGMODE, conf, text, rows, cols));
-}
-
-
-int bsddialog_textbox(struct bsddialog_conf conf, char* text, int rows, int cols)
-{
-
-	return (do_textbox(TEXTMODE, conf, text, rows, cols));
-}
-
