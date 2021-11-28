@@ -245,7 +245,7 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *formwin
 
 static void
 form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
-    char *text, int linelen, unsigned int *menurows, int nitems,
+    char *text, int linelen, unsigned int *formheight, int nitems,
     struct buttons bs)
 {
 	int textrow, menusize;
@@ -270,27 +270,27 @@ form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = HBORDERS + 2 /* buttons */ + textrow;
 
-		if (*menurows == 0) {
+		if (*formheight == 0) {
 			*h += nitems + 2;
 			*h = MIN(*h, widget_max_height(conf));
 			menusize = MIN(nitems + 2, *h - (HBORDERS + 2 + textrow));
 			menusize -=2;
-			*menurows = menusize < 0 ? 0 : menusize;
+			*formheight = menusize < 0 ? 0 : menusize;
 		}
-		else /* h autosize with a fixed menurows */
-			*h = *h + *menurows + 2;
+		else /* h autosize with a fixed formheight */
+			*h = *h + *formheight + 2;
 
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}
 	else {
-		if (*menurows == 0)
-			*menurows = MIN(rows-6-textrow, nitems);
+		if (*formheight == 0)
+			*formheight = MIN(rows-6-textrow, nitems);
 	}
 }
 
 static int
-form_checksize(int rows, int cols, char *text, int menurows, int nitems,
+form_checksize(int rows, int cols, char *text, int formheight, int nitems,
     struct buttons bs)
 {
 	int mincols, textrow, menusize;
@@ -308,8 +308,8 @@ form_checksize(int rows, int cols, char *text, int menurows, int nitems,
 
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
-	if (nitems > 0 && menurows == 0)
-		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "\
+	if (nitems > 0 && formheight == 0)
+		RETURN_ERROR("items > 0 but formheight == 0, probably terminal "\
 		    "too small");
 
 	menusize = nitems > 0 ? 3 : 0;
