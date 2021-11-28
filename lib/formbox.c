@@ -41,6 +41,8 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
+#define REDRAWFORM 14021986 /* magic number */
+
 /* "Form": inputbox - passwordbox - form - passwordform - mixedform */
 
 extern struct bsddialog_theme t;
@@ -99,8 +101,9 @@ static void shiftleft(struct myfield *mf)
 }
 
 static int
-form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *formwin,
-    FORM *form, FIELD **cfield, int nfields, struct bsddialog_formfield *fields)
+form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
+    struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nfields,
+    struct bsddialog_formfield *fields)
 {
 	bool loop, buttupdate, informwin = true;
 	int i, input, output;
@@ -215,6 +218,16 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *formwin
 			mf = GETMYFIELD2(form);
 			if (mf->len-1 >= mf->pos)
 				shiftleft(mf);
+			break;
+		case KEY_F(1):
+			if (conf.hfile == NULL)
+				break;
+			if (f1help(conf) != 0)
+				return BSDDIALOG_ERROR;
+			/* No Break */
+		case KEY_RESIZE:
+			output = REDRAWFORM;
+			loop = false;
 			break;
 		default:
 			/*
@@ -421,8 +434,23 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	wrefresh(formwin);
 
-	output = form_handler(widget, h-2, w, bs, formwin, form, cfield,
-	    nfields, fields);
+	do {
+		output = form_handler(conf, widget, h-2, w, bs, formwin, form,
+		    cfield, nfields, fields);
+
+		if(update_widget_withtextpad(conf, shadow, widget, h, w,
+		    RAISED, textpad, &htextpad, text, true) != 0)
+		return BSDDIALOG_ERROR;
+			
+		draw_buttons(widget, h-2, w, bs, true);
+		wrefresh(widget);
+
+		prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
+		    y + h - formheight, x + 1 + w - t.texthmargin);
+
+		draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
+		/* wrefresh(formwin); */
+	} while (output == REDRAWFORM);
 
 	unpost_form(form);
 	free_form(form);
