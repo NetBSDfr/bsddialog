@@ -97,10 +97,10 @@ static void shiftleft(struct myfield *mf)
 }
 
 static int
-form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
+form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *formwin,
     FORM *form, FIELD **cfield, int nfields, struct bsddialog_formfield *fields)
 {
-	bool loop, buttupdate, inentry = true;
+	bool loop, buttupdate, informwin = true;
 	int i, input, output;
 	struct myfield *mf;
 
@@ -111,16 +111,16 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 	form_driver(form, REQ_END_LINE);
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(widget, y, cols, bs, !inentry);
+			draw_buttons(widget, y, cols, bs, !informwin);
 			wrefresh(widget);
 			buttupdate = false;
 		}
-		wrefresh(entry);
+		wrefresh(formwin);
 		input = getch();
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			if (inentry)
+			if (informwin)
 				break;
 			output = bs.value[bs.curr];
 			if (output != BSDDIALOG_YESOK)
@@ -138,15 +138,15 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			loop = false;
 			break;
 		case '\t': /* TAB */
-			if (inentry) {
+			if (informwin) {
 				bs.curr = 0;
-				inentry = false;
+				informwin = false;
 				curs_set(0);
 			} else {
 				bs.curr++;
-				inentry = bs.curr >= (int) bs.nbuttons ?
+				informwin = bs.curr >= (int) bs.nbuttons ?
 				    true : false;
-				if (inentry) {
+				if (informwin) {
 					curs_set(2);
 					pos_form_cursor(form);
 				}
@@ -154,7 +154,7 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			buttupdate = true;
 			break;
 		case KEY_LEFT:
-			if (inentry) {
+			if (informwin) {
 				form_driver(form, REQ_PREV_CHAR);
 				mf = GETMYFIELD2(form);
 				if (mf->pos > 0)
@@ -167,7 +167,7 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			}
 			break;
 		case KEY_RIGHT:
-			if (inentry) {
+			if (informwin) {
 				mf = GETMYFIELD2(form);
 				if (mf->pos >= mf->len)
 					break;
@@ -215,7 +215,7 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 				shiftleft(mf);
 			break;
 		default:
-			if (inentry) {
+			if (informwin) {
 				mf = GETMYFIELD2(form);
 				if (mf->secure)
 					form_driver(form, mf->securech);
@@ -245,7 +245,7 @@ int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     int formheight, int nfields, struct bsddialog_formfield *fields)
 {
-	WINDOW *widget, *entry, *shadow;
+	WINDOW *widget, *formwin, *shadow;
 	int i, output, color, y, x;
 	FIELD **cfield;
 	FORM *form;
@@ -256,7 +256,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    true) <0)
 		return -1;
 
-	entry = new_boxed_window(conf, y + rows - 3 - formheight -2, x +1,
+	formwin = new_boxed_window(conf, y + rows - 3 - formheight -2, x +1,
 	    formheight+2, cols-2, LOWERED);
 
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
@@ -310,16 +310,16 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	}
 
 	form = new_form(cfield);
-	set_form_win(form, entry);
-	set_form_sub(form, derwin(entry, nfields, cols-4, 1, 1));
+	set_form_win(form, formwin);
+	set_form_sub(form, derwin(formwin, formheight/*nfields*/, cols-4, 1, 1));
 	post_form(form);
 
 	for (i=0; i < nfields; i++)
-		mvwaddstr(entry, fields[i].ylabel, fields[i].xlabel, fields[i].label);
+		mvwaddstr(formwin, fields[i].ylabel, fields[i].xlabel, fields[i].label);
 
-	wrefresh(entry);
+	wrefresh(formwin);
 
-	output = form_handler(widget, rows-2, cols, bs, entry, form, cfield,
+	output = form_handler(widget, rows-2, cols, bs, formwin, form, cfield,
 	    nfields, fields);
 
 	unpost_form(form);
@@ -331,7 +331,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	}
 	free(cfield);
 
-	delwin(entry);
+	delwin(formwin);
 	end_widget(conf, widget, rows, cols, shadow);
 
 	return output;
