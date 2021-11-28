@@ -896,6 +896,9 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			startleft = true;
 	}
 
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
+
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
 	if (buildlist_autosize(rows, cols) != 0)
@@ -928,9 +931,6 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	rightpad = newpad(nitems, pos.line);
 	wbkgd(leftpad, t.widgetcolor);
 	wbkgd(rightpad, t.widgetcolor);
-
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	currH = 0;
 	currV = startleft ? LEFT : RIGHT;

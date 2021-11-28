@@ -328,14 +328,16 @@ form_checksize(int rows, int cols, char *text, int formheight, int nfields,
 
 int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int formheight, int nfields, struct bsddialog_formfield *fields)
+    unsigned int formheight, unsigned int nfields,
+    struct bsddialog_formfield *fields)
 {
 	WINDOW *widget, *formwin, *textpad, *shadow;
-	int i, output, color, y, x, h, w, htextpad, maxline;
+	int i, output, color, y, x, h, w, htextpad;
 	FIELD **cfield;
 	FORM *form;
 	struct buttons bs;
 	struct myfield *myfields;
+	unsigned long maxline;
 
 	/* disable form scrolling like dialog */
 	if (formheight < nfields)
@@ -344,7 +346,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	maxline = 0;
 	myfields = malloc(nfields * sizeof(struct myfield));
 	cfield = calloc(nfields + 1, sizeof(FIELD*));
-	for (i=0; i < nfields; i++) {
+	for (i=0; i < (int)nfields; i++) {
 		cfield[i] = new_field(1, fields[i].formlen, fields[i].yform-1,
 		    fields[i].xform-1, 0, 0);
 		field_opts_off(cfield[i], O_STATIC);
@@ -421,7 +423,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	set_form_sub(form, derwin(formwin, nfields, w-4, 1, 1));
 	post_form(form);
 
-	for (i=0; i < nfields; i++)
+	for (i=0; i < (int)nfields; i++)
 		mvwaddstr(formwin, fields[i].ylabel, fields[i].xlabel, fields[i].label);
 
 	wrefresh(formwin);
@@ -446,7 +448,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	unpost_form(form);
 	free_form(form);
-	for (i=0; i < nfields; i++) {
+	for (i=0; i < (int)nfields; i++) {
 		free_field(cfield[i]);
 		free(myfields[i].buf);
 	}

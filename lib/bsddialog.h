@@ -168,7 +168,8 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int formheight, int nfields, struct bsddialog_formfield *fields);
+    unsigned int formheight, unsigned int nfields,
+    struct bsddialog_formfield *fields);
 
 int
 bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
