@@ -143,10 +143,10 @@ struct bsddialog_formfield {
 	unsigned int xlabel;
 
 	char *init;
-	unsigned int yvalue;
-	unsigned int xvalue;
-	unsigned int maxvaluelen;
+	unsigned int yform;
+	unsigned int xform;
 	int formlen;
+	unsigned int maxvaluelen;
 #define BSDDIALOG_FIELDHIDDEN   0x1
 #define BSDDIALOG_FIELDREADONLY 0x2
 	unsigned int flags;

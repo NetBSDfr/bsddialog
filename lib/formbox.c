@@ -263,8 +263,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	myfields = malloc(nfields * sizeof(struct myfield));
 	cfield = calloc(nfields + 1, sizeof(FIELD*));
 	for (i=0; i < nfields; i++) {
-		cfield[i] = new_field(1, fields[i].formlen, fields[i].yvalue-1,
-		    fields[i].xvalue-1, 0, 0);
+		cfield[i] = new_field(1, fields[i].formlen, fields[i].yform-1,
+		    fields[i].xform-1, 0, 0);
 		field_opts_off(cfield[i], O_STATIC);
 		set_max_field(cfield[i], fields[i].maxvaluelen);
 		set_field_buffer(cfield[i], 0, fields[i].init);

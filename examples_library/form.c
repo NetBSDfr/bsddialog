@@ -21,13 +21,14 @@ int main()
 	int i, output;
 	struct bsddialog_conf conf;
 	struct bsddialog_formfield fields[3] = {
-		{"Input:",    1, 1, "value",     1, 11, 50, 20, 0      },
-		{"Input:",    2, 1, "read only", 2, 11, 50, 20, RO     },
-		{"Password:", 3, 1, "",          3, 11, 50, 20, HIDDEN }
+		{"Input:",    1, 1, "value",     1, 11, 20, 50, 0      },
+		{"Input:",    2, 1, "read only", 2, 11, 20, 50, RO     },
+		{"Password:", 3, 1, "",          3, 11, 20, 50, HIDDEN }
 	};
 
 	bsddialog_initconf(&conf);
 	conf.title = "form";
+	conf.form.securech = '*';
 	
 	if (bsddialog_init() < 0)
 		return -1;

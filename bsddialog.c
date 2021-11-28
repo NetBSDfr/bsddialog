@@ -1260,8 +1260,8 @@ int form_builder(BUILDER_ARGS)
 		fields[i].ylabel	   = atoi(argv[8*i+1]);
 		fields[i].xlabel	   = atoi(argv[8*i+2]);
 		fields[i].init	   = argv[8*i+3];
-		fields[i].yvalue	   = atoi(argv[8*i+4]);
-		fields[i].xvalue	   = atoi(argv[8*i+5]);
+		fields[i].yform	   = atoi(argv[8*i+4]);
+		fields[i].xform	   = atoi(argv[8*i+5]);
 
 		formlen = atoi(argv[8*i+6]);
 		fields[i].formlen   = abs(formlen);
@@ -1289,8 +1289,8 @@ int inputbox_builder(BUILDER_ARGS)
 	field.ylabel	= 0;
 	field.xlabel	= 0;
 	field.init	= argc > 0 ? argv[0] : "";
-	field.yvalue	= 1;
-	field.xvalue	= 1;
+	field.yform	= 1;
+	field.xform	= 1;
 	field.formlen	= cols-4;
 	field.maxvaluelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	field.flags	= 0;
@@ -1322,8 +1322,8 @@ int mixedform_builder(BUILDER_ARGS)
 		fields[i].ylabel	   = atoi(argv[9*i+1]);
 		fields[i].xlabel	   = atoi(argv[9*i+2]);
 		fields[i].init	   = argv[9*i+3];
-		fields[i].yvalue	   = atoi(argv[9*i+4]);
-		fields[i].xvalue	   = atoi(argv[9*i+5]);
+		fields[i].yform	   = atoi(argv[9*i+4]);
+		fields[i].xform	   = atoi(argv[9*i+5]);
 		fields[i].formlen   = atoi(argv[9*i+6]);
 		fields[i].maxvaluelen  = atoi(argv[9*i+7]);
 		fields[i].flags = atoi(argv[9*i+8]);
@@ -1345,8 +1345,8 @@ int passwordbox_builder(BUILDER_ARGS)
 	field.ylabel	= 0;
 	field.xlabel	= 0;
 	field.init	= argc > 0 ? argv[0] : "";
-	field.yvalue	= 1;
-	field.xvalue	= 1;
+	field.yform	= 1;
+	field.xform	= 1;
 	field.formlen	= cols-4;
 	field.maxvaluelen	= max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	field.flags	= BSDDIALOG_FIELDHIDDEN;
@@ -1379,8 +1379,8 @@ int passwordform_builder(BUILDER_ARGS)
 		fields[i].ylabel	   = atoi(argv[8*i+1]);
 		fields[i].xlabel	   = atoi(argv[8*i+2]);
 		fields[i].init	   = argv[8*i+3];
-		fields[i].yvalue	   = atoi(argv[8*i+4]);
-		fields[i].xvalue	   = atoi(argv[8*i+5]);
+		fields[i].yform	   = atoi(argv[8*i+4]);
+		fields[i].xform	   = atoi(argv[8*i+5]);
 
 		formlen = atoi(argv[8*i+6]);
 		fields[i].formlen   = abs(formlen);
