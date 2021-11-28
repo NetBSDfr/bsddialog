@@ -375,8 +375,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		if (ISFIELDHIDDEN(fields[i])) {
 			/* field_opts_off(field[i], O_PUBLIC); old hidden */
 			myfields[i].secure = true;
-			myfields[i].securech = conf.form.securech != '\0' ?
-			    conf.form.securech : ' ';
+			if (conf.form.securech == '\0')
+				conf.form.securech = ' ';
 		}
 		else myfields[i].secure = false;
 
@@ -406,7 +406,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	form_autosize(conf, rows, cols, &h, &w, text, /*cols-2*/maxline, &formheight,
+	form_autosize(conf, rows, cols, &h, &w, text, maxline, &formheight,
 	    nfields, bs);
 	if (form_checksize(h, w, text, formheight, nfields, bs) != 0)
 		return BSDDIALOG_ERROR;
