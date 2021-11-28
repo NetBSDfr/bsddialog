@@ -831,13 +831,57 @@ bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	return output;
 }
 
+/* todo */
+static int buildlist_autosize(int rows, int cols)
+{
+
+	if (cols == BSDDIALOG_AUTOSIZE)
+		RETURN_ERROR("Unimplemented cols autosize for buildlist");
+
+	if (rows == BSDDIALOG_AUTOSIZE)
+		RETURN_ERROR("Unimplemented rows autosize for buildlist");
+
+	return 0;
+}
+
+/* to improve */
+static int
+buildlist_checksize(int rows, int cols, char *text, int menurows, int nitems,
+    struct buttons bs)
+{
+	int mincols, textrow, menusize;
+
+	mincols = VBORDERS;
+	/* buttons */
+	mincols += bs.nbuttons * bs.sizebutton;
+	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
+	/* line, comment to permet some cols hidden */
+	/* mincols = MAX(mincols, linelen); */
+
+	if (cols < mincols)
+		RETURN_ERROR("Few cols, width < size buttons or "\
+		    "name+descripion of the items");
+
+	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
+
+	if (nitems > 0 && menurows == 0)
+		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "\
+		    "too small");
+
+	menusize = nitems > 0 ? 3 : 0;
+	if (rows < 2 + 2 + menusize + textrow)
+		RETURN_ERROR("Few lines for this menus");
+
+	return 0;
+}
+
 int
 bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem)
 {
-	WINDOW *widget, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
-	int output, i, x, y, input;
+	WINDOW *widget, *textpad, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
+	int output, i, x, y, h, w, htextpad, input;
 	bool loop, buttupdate, padsupdate, startleft;
 	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols, curr;
 	enum side {LEFT, RIGHT} currV;
@@ -852,22 +896,34 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			startleft = true;
 	}
 
-	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true) <0)
-		return -1;
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
+	if (buildlist_autosize(rows, cols) != 0)
+		return BSDDIALOG_ERROR;
+	if (buildlist_checksize(h, w, text, menurows, nitems, bs) != 0)
+		return BSDDIALOG_ERROR;
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
+		return BSDDIALOG_ERROR;
 
-	winsy = y + rows - 5 - menurows;
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
+	    &textpad, &htextpad, text, true) != 0)
+		return BSDDIALOG_ERROR;
+
+	prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
+	    y + h - menurows, x + 1 + w - t.texthmargin);
+
+	winsy = y + h - 5 - menurows;
 	leftwinx = x+2;
-	leftwin = new_boxed_window(conf, winsy, leftwinx, menurows+2, (cols-5)/2,
+	leftwin = new_boxed_window(conf, winsy, leftwinx, menurows+2, (w-5)/2,
 	    LOWERED);
-	rightwinx = x + cols - 2 -(cols-5)/2;
+	rightwinx = x + w - 2 -(w-5)/2;
 	rightwin = new_boxed_window(conf, winsy, rightwinx, menurows+2,
-	    (cols-5)/2, LOWERED);
+	    (w-5)/2, LOWERED);
 
 	wrefresh(leftwin);
 	wrefresh(rightwin);
 
-	padscols = (cols-5)/2 - 2;
+	padscols = (w-5)/2 - 2;
 	leftpad  = newpad(nitems, pos.line);
 	rightpad = newpad(nitems, pos.line);
 	wbkgd(leftpad, t.widgetcolor);
@@ -881,7 +937,7 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	loop = buttupdate = padsupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(widget, rows-2, cols, bs, true);
+			draw_buttons(widget, h-2, w, bs, true);
 			wrefresh(widget);
 			buttupdate = false;
 		}
@@ -915,15 +971,16 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 		input = getch();
 		switch(input) {
-		case 10: // Enter
-			output = bs.value[bs.curr]; // -> buttvalues[selbutton]
+		case KEY_ENTER:
+		case 10: /* Enter */
+			output = bs.value[bs.curr];
 			loop = false;
 			break;
-		case 27: // Esc
+		case 27: /* Esc */
 			output = BSDDIALOG_ERROR;
 			loop = false;
 			break;
-		case '\t': // TAB
+		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
@@ -958,7 +1015,7 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 				currH = (currH < nrights-1)? currH +1 : currH;
 			padsupdate = true;
 			break;
-		case ' ': // Space
+		case ' ': /* Space */
 			items[curr].on = ! items[curr].on;
 			if (currV == LEFT) {
 				if (nlefts > 1)
@@ -990,7 +1047,7 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	delwin(leftwin);
 	delwin(rightpad);
 	delwin(rightwin);
-	end_widget(conf, widget, rows, cols, shadow);
+	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
 	return output;
 }
