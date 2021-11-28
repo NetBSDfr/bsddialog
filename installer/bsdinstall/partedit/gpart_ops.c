@@ -49,6 +49,9 @@ gpart_show_error(const char *title, const char *explanation, const char *errstr)
 	char *errmsg;
 	char message[512];
 	int error;
+	struct bsddialog_conf conf;
+
+	bsddialog_confinit(&conf);
 
 	if (explanation == NULL)
 		explanation = "";
@@ -66,7 +69,8 @@ gpart_show_error(const char *title, const char *explanation, const char *errstr)
 		sprintf(message, "%s%s", explanation, errmsg);
 	}
 
-	dialog_msgbox(title, message, 0, 0, TRUE);
+	conf.title = title;
+	bsddialog_msgbox(title, message, 0, 0);
 }
 
 static int

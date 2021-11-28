@@ -33,6 +33,15 @@
 
 #include <inttypes.h>
 
+
+#define BCREATE BSDDIALOG_YESOK
+#define BDELETE BSDDIALOG_NOCANCEL
+#define BMODIFY BSDDIALOG_HELP
+#define BREVERT BSDDIALOG_EXTRA
+#define BAUTO   BSDDIALOG_GENERIC1
+#define BFINISH BSDDIALOG_GENERIC2
+
+
 struct partedit_item {
 	int indentation;
 	const char *name;
