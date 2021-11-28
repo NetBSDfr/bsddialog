@@ -173,7 +173,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int perc);
+    unsigned int perc);
 
 int
 bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
@@ -185,7 +185,7 @@ bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int perc, int argc, char **argv);
+    unsigned int mainperc, unsigned int nminbars, char **minibars);
 
 int
 bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
