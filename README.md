@@ -114,6 +114,10 @@ Use Cases:
 
 ## TODO
 
+**fix:**
+
+cols autosize inputbox: *bsddialog --inputbox test 8 0 init*
+
 
 **bsdinstall:**
 
