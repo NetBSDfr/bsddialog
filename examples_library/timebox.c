@@ -41,16 +41,16 @@ int main()
 
 	switch (output) {
 	case BSDDIALOG_YESOK:
-		printf("Time: [%u:%u:%u]", hh, mm, ss);
+		printf("Time: [%u:%u:%u]\n", hh, mm, ss);
 		break;
 	case BSDDIALOG_ESC:
 		printf("ESC\n");
 		break;
 	case BSDDIALOG_NOCANCEL:
-		printf("Cancel");
+		printf("Cancel\n");
 		break;
 	case BSDDIALOG_ERROR:
-		printf("Error: %s", bsddialog_geterror());
+		printf("Error: %s\n", bsddialog_geterror());
 		break;
 	}
 
