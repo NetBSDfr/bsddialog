@@ -311,7 +311,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	form = new_form(cfield);
 	set_form_win(form, formwin);
-	set_form_sub(form, derwin(formwin, formheight/*nfields*/, cols-4, 1, 1));
+	/* should be formheight */
+	set_form_sub(form, derwin(formwin, nfields, cols-4, 1, 1));
 	post_form(form);
 
 	for (i=0; i < nfields; i++)
@@ -327,9 +328,9 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	for (i=0; i < nfields; i++) {
 		free_field(cfield[i]);
 		free(myfields[i].buf);
-		/* free(&(myfields[i])); */
 	}
 	free(cfield);
+	free(myfields);
 
 	delwin(formwin);
 	end_widget(conf, widget, rows, cols, shadow);
