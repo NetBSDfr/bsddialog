@@ -330,6 +330,9 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	struct buttons bs;
 	struct myfield *myfields;
 
+	/* disable form scrolling like dialog */
+	if (formheight < nfields)
+		formheight = nfield
 
 	myfields = malloc(nfields * sizeof(struct myfield));
 	cfield = calloc(nfields + 1, sizeof(FIELD*));
