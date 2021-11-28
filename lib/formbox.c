@@ -293,7 +293,7 @@ static int
 form_checksize(int rows, int cols, char *text, int formheight, int nfields,
     struct buttons bs)
 {
-	int mincols, textrow, menusize;
+	int mincols, textrow, formrows;
 
 	mincols = VBORDERS;
 	/* buttons */
@@ -304,16 +304,16 @@ form_checksize(int rows, int cols, char *text, int formheight, int nfields,
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, width < size buttons or "\
-		    "name+descripion of the items");
+		    "labels + forms");
 
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (nfields > 0 && formheight == 0)
-		RETURN_ERROR("items > 0 but formheight == 0, probably terminal "\
+		RETURN_ERROR("fields > 0 but formheight == 0, probably terminal "\
 		    "too small");
 
-	menusize = nfields > 0 ? 3 : 0;
-	if (rows < 2  + 2 + menusize + textrow)
+	formrows = nfields > 0 ? 3 : 0;
+	if (rows < 2  + 2 + formrows + textrow)
 		RETURN_ERROR("Few lines for this menus");
 
 	return 0;
@@ -332,7 +332,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	/* disable form scrolling like dialog */
 	if (formheight < nfields)
-		formheight = nfield
+		formheight = nfields;
 
 	myfields = malloc(nfields * sizeof(struct myfield));
 	cfield = calloc(nfields + 1, sizeof(FIELD*));
