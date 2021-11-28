@@ -1,10 +1,8 @@
 #!/bin/sh
 
 libpath=../lib
-#examples="buildlist menu treeview checklist radiolist mixedlist theme \
-#	infobox yesno msgbox datebox form"
-
-examples=form
+examples="buildlist menu treeview checklist radiolist mixedlist theme \
+	infobox yesno msgbox datebox form"
 
 for e in $examples
 do
