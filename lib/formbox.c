@@ -220,7 +220,6 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *formwin
 			/*
 			 * user input, add unicode chars to "public" buffer
 			 */
-			
 			if (informwin) {
 				mf = GETMYFIELD2(form);
 				if (mf->secure)
