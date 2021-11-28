@@ -959,11 +959,8 @@ int timebox_builder(BUILDER_ARGS)
 	/* --timebox text h w [hour minute second] */
 	if (argc == 3) {
 		hh = atoi(argv[0]);
-		hh = hh > 23 ? 23 : hh;
 		mm = atoi(argv[1]);
-		mm = mm > 60 ? 60 : mm;
 		ss = atoi(argv[2]);
-		ss = ss > 60 ? 60 : ss;
 	}
 
 	output = bsddialog_timebox(conf, text, rows, cols, &hh, &mm, &ss);

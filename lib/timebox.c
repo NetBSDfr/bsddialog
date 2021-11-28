@@ -99,7 +99,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 		case 10: /* Enter */
 			output = bs.value[bs.curr];
 			if (output == BSDDIALOG_YESOK) {
-				*hh = c[0].curr - 1900;
+				*hh = c[0].curr;
 				*mm = c[1].curr;
 				*ss = c[2].curr;
 			}
@@ -408,7 +408,7 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 			draw_borders(conf, c[2].win, 3, 4, LOWERED);
 			wrefresh(c[2].win);
 
-			/* Important to fix grey lines expanding screen */
+			/* Important to avoid grey lines expanding screen */
 			refresh();
 			break;
 		default:
