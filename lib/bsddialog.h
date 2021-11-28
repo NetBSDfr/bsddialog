@@ -187,7 +187,7 @@ int
 bsddialog_editbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nfields, struct bsddialog_formfield *fields);
+    unsigned int formheight, int nfields, struct bsddialog_formfield *fields);
 
 int
 bsddialog_fselect(struct bsddialog_conf conf, char* text, int rows, int cols);

@@ -25,6 +25,8 @@
  * SUCH DAMAGE.
  */
 
+#include <sys/param.h>
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
@@ -241,26 +243,93 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *formwin
 	return output;
 }
 
+static void
+form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+    char *text, int linelen, unsigned int *menurows, int nitems,
+    struct buttons bs)
+{
+	int textrow, menusize;
+
+	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
+
+	if (cols == BSDDIALOG_AUTOSIZE) {
+		*w = VBORDERS;
+		/* buttons size */
+		*w += bs.nbuttons * bs.sizebutton;
+		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
+		/* line size */
+		*w = MAX(*w, linelen + 6);
+		/*
+		* avoid terminal overflow,
+		* -1 fix false negative with big menu over the terminal and
+		* autosize, for example "portconfig /usr/ports/www/apache24/".
+		*/
+		*w = MIN(*w, widget_max_width(conf)-1);
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE) {
+		*h = HBORDERS + 2 /* buttons */ + textrow;
+
+		if (*menurows == 0) {
+			*h += nitems + 2;
+			*h = MIN(*h, widget_max_height(conf));
+			menusize = MIN(nitems + 2, *h - (HBORDERS + 2 + textrow));
+			menusize -=2;
+			*menurows = menusize < 0 ? 0 : menusize;
+		}
+		else /* h autosize with a fixed menurows */
+			*h = *h + *menurows + 2;
+
+		/* avoid terminal overflow */
+		*h = MIN(*h, widget_max_height(conf));
+	}
+	else {
+		if (*menurows == 0)
+			*menurows = MIN(rows-6-textrow, nitems);
+	}
+}
+
+static int
+form_checksize(int rows, int cols, char *text, int menurows, int nitems,
+    struct buttons bs)
+{
+	int mincols, textrow, menusize;
+
+	mincols = VBORDERS;
+	/* buttons */
+	mincols += bs.nbuttons * bs.sizebutton;
+	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
+	/* line, comment to permet some cols hidden */
+	/* mincols = MAX(mincols, linelen); */
+
+	if (cols < mincols)
+		RETURN_ERROR("Few cols, width < size buttons or "\
+		    "name+descripion of the items");
+
+	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
+
+	if (nitems > 0 && menurows == 0)
+		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "\
+		    "too small");
+
+	menusize = nitems > 0 ? 3 : 0;
+	if (rows < 2  + 2 + menusize + textrow)
+		RETURN_ERROR("Few lines for this menus");
+
+	return 0;
+}
+
 int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int formheight, int nfields, struct bsddialog_formfield *fields)
+    unsigned int formheight, int nfields, struct bsddialog_formfield *fields)
 {
-	WINDOW *widget, *formwin, *shadow;
-	int i, output, color, y, x;
+	WINDOW *widget, *formwin, *textpad, *shadow;
+	int i, output, color, y, x, h, w, htextpad;
 	FIELD **cfield;
 	FORM *form;
 	struct buttons bs;
 	struct myfield *myfields;
 
-	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true) <0)
-		return -1;
-
-	formwin = new_boxed_window(conf, y + rows - 3 - formheight -2, x +1,
-	    formheight+2, cols-2, LOWERED);
-
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	myfields = malloc(nfields * sizeof(struct myfield));
 	cfield = calloc(nfields + 1, sizeof(FIELD*));
@@ -308,11 +377,33 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		set_field_fore(cfield[0], t.widgetcolor);
 		set_field_back(cfield[0], t.widgetcolor);
 	}
+	
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
+	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
+
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
+	form_autosize(conf, rows, cols, &h, &w, text, cols-2/*pos.line*/, &formheight,
+	    nfields, bs);
+	if (form_checksize(h, w, text, formheight, nfields, bs) != 0)
+		return BSDDIALOG_ERROR;
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
+		return BSDDIALOG_ERROR;
+
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
+	    &textpad, &htextpad, text, true) != 0)
+		return BSDDIALOG_ERROR;
+
+	prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
+	    y + h - formheight, x + 1 + w - t.texthmargin);
+	
+	formwin = new_boxed_window(conf, y + h - 3 - formheight -2, x +1,
+	    formheight+2, w-2, LOWERED);
 
 	form = new_form(cfield);
 	set_form_win(form, formwin);
 	/* should be formheight */
-	set_form_sub(form, derwin(formwin, nfields, cols-4, 1, 1));
+	set_form_sub(form, derwin(formwin, nfields, w-4, 1, 1));
 	post_form(form);
 
 	for (i=0; i < nfields; i++)
@@ -320,7 +411,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	wrefresh(formwin);
 
-	output = form_handler(widget, rows-2, cols, bs, formwin, form, cfield,
+	output = form_handler(widget, h-2, w, bs, formwin, form, cfield,
 	    nfields, fields);
 
 	unpost_form(form);
@@ -333,7 +424,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	free(myfields);
 
 	delwin(formwin);
-	end_widget(conf, widget, rows, cols, shadow);
+	end_widget(conf, widget, h, w, shadow);
 
 	return output;
 }
