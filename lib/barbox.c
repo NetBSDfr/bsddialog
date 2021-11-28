@@ -228,7 +228,7 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	wrefresh(bar);
 
-	/* getch(); good for BASE ncurses non ports */
+	/* getch(); port ncurses shows nothing */
 
 	delwin(bar);
 	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
