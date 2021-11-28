@@ -309,8 +309,8 @@ form_checksize(int rows, int cols, char *text, int formheight, int nfields,
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (nfields > 0 && formheight == 0)
-		RETURN_ERROR("fields > 0 but formheight == 0, probably terminal "\
-		    "too small");
+		RETURN_ERROR("fields > 0 but formheight == 0, probably "\
+		    "terminal too small");
 
 	formrows = nfields > 0 ? 3 : 0;
 	if (rows < 2  + 2 + formrows + textrow)
