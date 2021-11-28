@@ -29,7 +29,7 @@
 #define _LIBBSDDIALOG_UTIL_H_
 
 /*
- * Utils to implement widgets - Internal library  API
+ * Utils to implement widgets - Internal library  API - Dafult values
  */
 
 #define HBORDERS	2
