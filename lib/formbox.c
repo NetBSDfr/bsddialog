@@ -258,7 +258,7 @@ form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*w += bs.nbuttons * bs.sizebutton;
 		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 		/* line size */
-		*w = MAX(*w, linelen + 6);
+		*w = MAX(*w, linelen + 3);
 		/*
 		* avoid terminal overflow,
 		* -1 fix false negative with big menu over the terminal and
@@ -324,7 +324,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int formheight, int nfields, struct bsddialog_formfield *fields)
 {
 	WINDOW *widget, *formwin, *textpad, *shadow;
-	int i, output, color, y, x, h, w, htextpad;
+	int i, output, color, y, x, h, w, htextpad, maxline;
 	FIELD **cfield;
 	FORM *form;
 	struct buttons bs;
@@ -334,6 +334,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	if (formheight < nfields)
 		formheight = nfields;
 
+	maxline = 0;
 	myfields = malloc(nfields * sizeof(struct myfield));
 	cfield = calloc(nfields + 1, sizeof(FIELD*));
 	for (i=0; i < nfields; i++) {
@@ -372,6 +373,9 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 		set_field_fore(cfield[i], color);
 		set_field_back(cfield[i], color);
+
+		maxline = MAX(maxline, fields[i].xlabel + strlen(fields[i].label));
+		maxline = MAX(maxline, fields[i].xform + fields[i].formlen);
 	}
 	cfield[i] = NULL;
 
@@ -386,7 +390,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	form_autosize(conf, rows, cols, &h, &w, text, cols-2/*pos.line*/, &formheight,
+	form_autosize(conf, rows, cols, &h, &w, text, /*cols-2*/maxline, &formheight,
 	    nfields, bs);
 	if (form_checksize(h, w, text, formheight, nfields, bs) != 0)
 		return BSDDIALOG_ERROR;
