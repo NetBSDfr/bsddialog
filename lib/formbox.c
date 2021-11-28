@@ -123,6 +123,8 @@ form_handler(WINDOW *widget, int y, int cols, struct buttons bs, WINDOW *entry,
 			if (inentry)
 				break;
 			output = bs.value[bs.curr];
+			if (output != BSDDIALOG_YESOK)
+				break;
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
 			for (i=0; i<nfields; i++) {
