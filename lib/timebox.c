@@ -94,10 +94,10 @@ datetime_checksize(int rows, int cols, char *text, int minw, struct buttons bs)
 	mincols = MAX(minw, mincols);
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols for this calendar");
+		RETURN_ERROR("Few cols for this timebox/datebox");
 
 	if (rows < MINHEIGHT + (strlen(text) > 0 ? 1 : 0))
-		RETURN_ERROR("Few rows for this calendar");
+		RETURN_ERROR("Few rows for this timebox/datebox");
 
 	return 0;
 }
