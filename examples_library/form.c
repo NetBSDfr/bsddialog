@@ -42,7 +42,7 @@ int main()
 
 	printf("Values:\n");
 	for (i=0; i<3; i++)
-		printf("%s %s\n", fields[i].label, fields[i].value);
+		printf("%s \"%s\"\n", fields[i].label, fields[i].value);
 	
 	return output;
 }
