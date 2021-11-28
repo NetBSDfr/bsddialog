@@ -375,8 +375,9 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		if (ISFIELDHIDDEN(fields[i])) {
 			/* field_opts_off(field[i], O_PUBLIC); old hidden */
 			myfields[i].secure = true;
-			if (conf.form.securech == '\0')
-				conf.form.securech = ' ';
+			myfields[i].securech = ' ';
+			if (conf.form.securech != '\0')
+				myfields[i].securech = conf.form.securech;
 		}
 		else myfields[i].secure = false;
 
