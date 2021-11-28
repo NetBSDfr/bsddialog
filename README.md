@@ -110,14 +110,14 @@ Use Cases:
  
  Without resize:
  
- form, inputbox, mixedform, passwordbox, passwordform
+ form, inputbox, mixedform, passwordbox, passwordform.
 
 ## TODO
 
 
 **bsdinstall:**
 
-NULL string for *text*, ~~generic buttons for sade(8),~~ complete forms,
+NULL string for *text*, ~~generic buttons for sade(8),~~ ~~complete forms,~~
 improve --timebox, add --column-separator
 
 
@@ -152,7 +152,7 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 | --gauge        | In progress | todo autosize                                 |
 | --pause        | In progress | todo autosize, resize, F1                     |
 | --prgbox       | In progress | add command opts                              |
-| --programbox   | Coding      |                                               |
+| --programbox   | In progress |                                               |
 | --progressbox  |             |                                               |
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
 | --timebox      | In progress | todo autosize, resize, F1                     |
