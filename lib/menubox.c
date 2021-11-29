@@ -742,16 +742,14 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			else if (currmode == CHECKLISTMODE)
 				item->on = !item->on;
 			else { /* RADIOLISTMODE */
-				if (item->on == true)
-					break;
 				for (i=0; i < (int) groups[g].nitems; i++)
-					if (groups[g].items[i].on == true) {
+					if (groups[g].items[i].on == true && i != rel) {
 						groups[g].items[i].on = false;
 						drawitem(conf, menupad,
 						    abs - rel + i, groups[g].items[i],
 						    currmode, pos, false);
 					}
-				item->on = true;
+				item->on = !item->on;
 			}
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
