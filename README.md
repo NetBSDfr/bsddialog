@@ -107,11 +107,18 @@ Use Cases:
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
  checklist, radiolist, menu, mixedlist, treeview, textbox, mixedgauge, datebox,
  timebox.
- 
- 
+
+
  Without resize:
- 
+
  form, inputbox, mixedform, passwordbox, passwordform.
+
+
+ Without autosize, resize, F1:
+
+ buildlist
+
+
 
 ## TODO
 
@@ -153,7 +160,6 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
-| --buildlist    | In progress | todo autosize, resize, F1                     |
 | --gauge        | In progress | todo autosize                                 |
 | --pause        | In progress | todo autosize, resize, F1                     |
 | --rangebox     | In progress | todo autosize, resize, F1                     |
