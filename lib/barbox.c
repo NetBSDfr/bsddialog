@@ -246,7 +246,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 	WINDOW *widget, *bar, *shadow;
 	int y, x;
 	bool loop, buttupdate, barupdate;
-	int input, currvalue, output, sizebar;
+	int input, currvalue, output, sizebar, bigchange;
 	float perc;
 	int positions = max - min + 1;
 	struct buttons bs;
@@ -261,10 +261,15 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
 	if (value == NULL)
-		RETURN_ERROR("*value == NULL");
+		RETURN_ERROR("*value cannot be NULL");
+
+	if (min >= max)
+		RETURN_ERROR("min >= max");
 	
 	currvalue = *value;
 	sizebar = cols - 16;
+	bigchange = MAX(1, sizebar/10);
+
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
@@ -284,7 +289,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			output = bs.value[bs.curr]; // values -> outputs
+			output = bs.value[bs.curr];
 			*value = currvalue;
 			loop = false;
 			break;
@@ -307,6 +312,26 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 				bs.curr++;
 				buttupdate = true;
 			}
+			break;
+		case KEY_HOME:
+			currvalue = max;
+			barupdate = true;
+			break;
+		case KEY_END:
+			currvalue = min;
+			barupdate = true;
+			break;
+		case KEY_NPAGE:
+			currvalue -= bigchange;
+			if (currvalue < min)
+				currvalue = min;
+			barupdate = true;
+			break;
+		case KEY_PPAGE:
+			currvalue += bigchange;
+			if (currvalue > max)
+				currvalue = max;
+			barupdate = true;
 			break;
 		case KEY_UP:
 			if (currvalue < max) {

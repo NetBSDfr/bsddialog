@@ -108,6 +108,7 @@ Use Cases:
  checklist, radiolist, menu, mixedlist, treeview, textbox, mixedgauge, datebox,
  timebox.
  
+ 
  Without resize:
  
  form, inputbox, mixedform, passwordbox, passwordform.
@@ -155,7 +156,7 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 | --buildlist    | In progress | todo autosize, resize, F1                     |
 | --gauge        | In progress | todo autosize                                 |
 | --pause        | In progress | todo autosize, resize, F1                     |
-| --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
+| --rangebox     | In progress | todo autosize, resize, F1                     |
 
 
 To evaluate / Not planned in the short term:
