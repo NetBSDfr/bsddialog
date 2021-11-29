@@ -160,7 +160,7 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 		RETURN_ERROR("Mixedgauge wants a pair name/perc");
 
 	max_minbarlen = 0;
-	for (i=0; i < (nminbars/2); i++)
+	for (i=0; i < (int)(nminbars/2); i++)
 		max_minbarlen = MAX(max_minbarlen, (int) strlen(minibars[i*2]));
 	max_minbarlen += 3 + 16 /* seps + [...] or mainbar */;
 
@@ -186,7 +186,7 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 	/* mixedgauge checksize */
 	if (w < max_minbarlen + 2)
 		RETURN_ERROR("Few cols for this mixedgauge");
-	if (h < 5 + nminbars/2 + (strlen(text) > 0 ? 1 : 0))
+	if (h < 5 + (int)nminbars/2 + (strlen(text) > 0 ? 1 : 0))
 		RETURN_ERROR("Few rows for this mixedgauge");
 
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
@@ -198,7 +198,7 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 		return output;
 
 	/* mini bars */
-	for (i=0; i < (nminbars/2); i++) {
+	for (i=0; i < (int)nminbars/2; i++) {
 		miniperc = atol(minibars[i*2 + 1]);
 		if (miniperc == 8)
 			continue;
@@ -217,7 +217,7 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	wrefresh(widget);
 	ypad =  y + h - 5 - htextpad;
-	ypad = ypad < y+nminbars/2 ? y+nminbars/2 : ypad;
+	ypad = ypad < y+(int)nminbars/2 ? y+nminbars/2 : ypad;
 	prefresh(textpad, 0, 0, ypad, x+2, y+h-4, x+w-2);
 	
 	/* main bar */
