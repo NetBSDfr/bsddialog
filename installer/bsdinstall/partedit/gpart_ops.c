@@ -36,8 +36,14 @@
 #include <inttypes.h>
 
 #include <libgeom.h>
-#include <dialog.h>
-#include <dlg_keys.h>
+//#include <dialog.h>
+//#include <dlg_keys.h>
+#include <bsddialog.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <stdio.h>
+#include <string.h>
+
 
 #include "partedit.h"
 
@@ -51,7 +57,7 @@ gpart_show_error(const char *title, const char *explanation, const char *errstr)
 	int error;
 	struct bsddialog_conf conf;
 
-	bsddialog_confinit(&conf);
+	bsddialog_initconf(&conf);
 
 	if (explanation == NULL)
 		explanation = "";
@@ -70,7 +76,7 @@ gpart_show_error(const char *title, const char *explanation, const char *errstr)
 	}
 
 	conf.title = title;
-	bsddialog_msgbox(title, message, 0, 0);
+	bsddialog_msgbox(conf, message, 0, 0);
 }
 
 static int
@@ -87,34 +93,40 @@ scheme_supports_labels(const char *scheme)
 static void
 newfs_command(const char *fstype, char *command, int use_default)
 {
+	struct bsddialog_conf conf;
+
+	bsddialog_initconf(&conf);
+
 	if (strcmp(fstype, "freebsd-ufs") == 0) {
 		int i;
-		DIALOG_LISTITEM items[] = {
-			{"UFS1", "UFS Version 1",
+		struct bsddialog_menuitem items[4] = {
+			{"", false, 0, "UFS1", "UFS Version 1",
 			    "Use version 1 of the UFS file system instead "
-			    "of version 2 (not recommended)", 0 },
-			{"SU", "Softupdates",
-			    "Enable softupdates (default)", 1 },
-			{"SUJ", "Softupdates journaling",
+			    "of version 2 (not recommended)"},
+			{"", true, 0, "SU", "Softupdates",
+			    "Enable softupdates (default)"},
+			{"", true, 0, "SUJ", "Softupdates journaling",
 			    "Enable file system journaling (default - "
-			    "turn off for SSDs)", 1 },
-			{"TRIM", "Enable SSD TRIM support",
-			    "Enable TRIM support, useful on solid-state drives",
-			    0 },
+			    "turn off for SSDs)"},
+			{"", false, 0, "TRIM", "Enable SSD TRIM support",
+			    "Enable TRIM support, useful on solid-state "
+			    "drives"},
 		};
 
 		if (!use_default) {
 			int choice;
-			choice = dlg_checklist("UFS Options", "", 0, 0, 0,
-			    nitems(items), items, NULL,
-			    FLAG_CHECK, &i);
-			if (choice == 1) /* Cancel */
+			conf.title = "UFS Options";
+			choice = bsddialog_checklist(conf, "", 0, 0, 0, 4,
+			    items, NULL);
+			    //FLAG_CHECK, &i); check at least 1 selected?
+			//if (choice == 1) /* Cancel */
+			if (choice == BSDDIALOG_NOCANCEL) /* Cancel */
 				return;
 		}
 
 		strcpy(command, "newfs ");
-		for (i = 0; i < (int)nitems(items); i++) {
-			if (items[i].state == 0)
+		for (i = 0; i < 4; i++) {
+			if (items[i].on == false)
 				continue;
 			if (strcmp(items[i].name, "UFS1") == 0)
 				strcat(command, "-O1 ");
@@ -127,26 +139,30 @@ newfs_command(const char *fstype, char *command, int use_default)
 		}
 	} else if (strcmp(fstype, "freebsd-zfs") == 0) {
 		int i;
-		DIALOG_LISTITEM items[] = {
-			{"fletcher4", "checksum algorithm: fletcher4",
+		struct bsddialog_menuitem items[4] = {
+			{"", 0, true, "fletcher4",
+			    "checksum algorithm: fletcher4",
 			    "Use fletcher4 for data integrity checking. "
-			    "(default)", 1 },
-			{"fletcher2", "checksum algorithm: fletcher2",
+			    "(default)"},
+			{"", 0, false, "fletcher2",
+			    "checksum algorithm: fletcher2",
 			    "Use fletcher2 for data integrity checking. "
-			    "(not recommended)", 0 },
-			{"sha256", "checksum algorithm: sha256",
+			    "(not recommended)"},
+			{"", 0, false, "sha256", "checksum algorithm: sha256",
 			    "Use sha256 for data integrity checking. "
-			    "(not recommended)", 0 },
-			{"atime", "Update atimes for files",
-			    "Disable atime update", 0 },
+			    "(not recommended)"},
+			{"", 0, false, "atime", "Update atimes for files",
+			    "Disable atime update"},
 		};
 
 		if (!use_default) {
 			int choice;
-			choice = dlg_checklist("ZFS Options", "", 0, 0, 0,
-			    nitems(items), items, NULL,
-			    FLAG_CHECK, &i);
-			if (choice == 1) /* Cancel */
+			conf.title = "ZFS Options";
+			choice = bsddialog_checklist(conf, "", 0, 0, 0,
+			    4, items, NULL);
+			    //FLAG_CHECK, &i);
+			//if (choice == 1) /* Cancel */
+			if (choice == BSDDIALOG_NOCANCEL) /* Cancel */
 				return;
 		}
 
@@ -160,8 +176,8 @@ newfs_command(const char *fstype, char *command, int use_default)
 			sprintf(command, "%s -o cachefile=%s/zpool.cache ",
 			    command, zfsboot_path);
 		}
-		for (i = 0; i < (int)nitems(items); i++) {
-			if (items[i].state == 0)
+		for (i = 0; i < 4; i++) {
+			if (items[i].on == false)
 				continue;
 			if (strcmp(items[i].name, "fletcher4") == 0)
 				strcat(command, "-O checksum=fletcher4 ");
@@ -175,7 +191,7 @@ newfs_command(const char *fstype, char *command, int use_default)
 	} else if (strcmp(fstype, "fat32") == 0 || strcmp(fstype, "efi") == 0 ||
 	     strcmp(fstype, "ms-basic-data") == 0) {
 		int i;
-		DIALOG_LISTITEM items[] = {
+		struct bsddialog_menuitem items[4] = {
 			{"FAT32", "FAT Type 32",
 			    "Create a FAT32 filesystem (default)", 1 },
 			{"FAT16", "FAT Type 16",
@@ -186,9 +202,10 @@ newfs_command(const char *fstype, char *command, int use_default)
 
 		if (!use_default) {
 			int choice;
+			//choice = dlg_checklist("FAT Options", "", 0, 0, 0,
 			choice = dlg_checklist("FAT Options", "", 0, 0, 0,
 			    nitems(items), items, NULL,
-			    FLAG_RADIO, &i);
+			    //FLAG_RADIO, &i);
 			if (choice == 1) /* Cancel */
 				return;
 		}
