@@ -12,6 +12,8 @@ examples_library/theme
 examples_library/treeview
 examples_library/infobox
 examples_library/msgbox
+examples_library/pause
+examples_library/rangebox
 examples_library/sade
 examples_library/timebox
 examples_library/yesno

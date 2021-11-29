@@ -61,14 +61,19 @@ Examples library:
 % cd examples_library
 % sh compile
 % ./buildlist
+% ./compile
 % ./datebox
 % ./form
 % ./infobox
 % ./menu
 % ./mixedlist
 % ./msgbox
+% ./pause
 % ./radiolist
+% ./rangebox
+% ./sade
 % ./theme
+% ./timebox
 % ./treeview
 % ./yesno
 ```
