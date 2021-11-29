@@ -282,7 +282,8 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 		input = getch();
 		switch(input) {
-		case 10: // Enter
+		case KEY_ENTER:
+		case 10: /* Enter */
 			output = bs.value[bs.curr]; // values -> outputs
 			*value = currvalue;
 			loop = false;
@@ -291,7 +292,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
-		case '\t': // TAB
+		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
@@ -379,15 +380,16 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 			}
 		}
 		switch(input) {
-		case 10: // Enter
-			output = bs.value[bs.curr]; // values -> outputs
+		case KEY_ENTER:
+		case 10: /* Enter */
+			output = bs.value[bs.curr];
 			loop = false;
 			break;
 		case 27: /* Esc */
 			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
-		case '\t': // TAB
+		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
 			buttupdate = true;
 			break;
