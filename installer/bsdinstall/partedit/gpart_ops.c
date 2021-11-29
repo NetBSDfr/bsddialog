@@ -191,28 +191,29 @@ newfs_command(const char *fstype, char *command, int use_default)
 	} else if (strcmp(fstype, "fat32") == 0 || strcmp(fstype, "efi") == 0 ||
 	     strcmp(fstype, "ms-basic-data") == 0) {
 		int i;
-		struct bsddialog_menuitem items[4] = {
-			{"FAT32", "FAT Type 32",
-			    "Create a FAT32 filesystem (default)", 1 },
-			{"FAT16", "FAT Type 16",
-			    "Create a FAT16 filesystem", 0 },
-			{"FAT12", "FAT Type 12",
-			    "Create a FAT12 filesystem", 0 },
+		struct bsddialog_menuitem items[3] = {
+			{"", true, 0, "FAT32", "FAT Type 32",
+			    "Create a FAT32 filesystem (default)"},
+			{"", false, 0, "FAT16", "FAT Type 16",
+			    "Create a FAT16 filesystem"},
+			{"", false, 0, "FAT12", "FAT Type 12",
+			    "Create a FAT12 filesystem"},
 		};
 
 		if (!use_default) {
 			int choice;
 			//choice = dlg_checklist("FAT Options", "", 0, 0, 0,
-			choice = dlg_checklist("FAT Options", "", 0, 0, 0,
-			    nitems(items), items, NULL,
+			conf.title = "FAT Options";
+			choice = bsddialog_radiolist(conf, "", 0, 0, 0,
+			    3, items, NULL);
 			    //FLAG_RADIO, &i);
 			if (choice == 1) /* Cancel */
 				return;
 		}
 
 		strcpy(command, "newfs_msdos ");
-		for (i = 0; i < (int)nitems(items); i++) {
-			if (items[i].state == 0)
+		for (i = 0; i < 3; i++) {
+			if (items[i].on == false)
 				continue;
 			if (strcmp(items[i].name, "FAT32") == 0)
 				strcat(command, "-F 32 -c 1");
@@ -222,9 +223,11 @@ newfs_command(const char *fstype, char *command, int use_default)
 				strcat(command, "-F 12 ");
 		}
 	} else {
-		if (!use_default)
-			dialog_msgbox("Error", "No configurable options exist "
-			    "for this filesystem.", 0, 0, TRUE);
+		if (!use_default) {
+			conf.title = "Error";
+			bsddialog_msgbox(conf, "No configurable options exist "
+			    "for this filesystem.", 0, 0);
+		}
 		command[0] = '\0';
 	}
 }
@@ -234,26 +237,29 @@ choose_part_type(const char *def_scheme)
 {
 	int cancel, choice;
 	const char *scheme = NULL;
-
-	DIALOG_LISTITEM items[] = {
-		{"APM", "Apple Partition Map",
-		    "Bootable on PowerPC Apple Hardware", 0 },
-		{"BSD", "BSD Labels",
-		    "Bootable on most x86 systems", 0 },
-		{"GPT", "GUID Partition Table",
-		    "Bootable on most x86 systems and EFI aware ARM64", 0 },
-		{"MBR", "DOS Partitions",
-		    "Bootable on most x86 systems", 0 },
+	struct bsddialog_conf conf;
+	struct bsddialog_menuitem items[4] = {
+		{"", false, 0, "APM", "Apple Partition Map",
+		    "Bootable on PowerPC Apple Hardware" },
+		{"", false, 0, "BSD", "BSD Labels",
+		    "Bootable on most x86 systems" },
+		{"", false, 0, "GPT", "GUID Partition Table",
+		    "Bootable on most x86 systems and EFI aware ARM64" },
+		{"", false, 0, "MBR", "DOS Partitions",
+		    "Bootable on most x86 systems" },
 	};
 
 parttypemenu:
-	dialog_vars.default_item = __DECONST(char *, def_scheme);
-	cancel = dlg_menu("Partition Scheme",
-	    "Select a partition scheme for this volume:", 0, 0, 0,
-	    nitems(items), items, &choice, NULL);
-	dialog_vars.default_item = NULL;
+	//dialog_vars.default_item = __DECONST(char *, def_scheme);
+	conf.menu.default_item =  __DECONST(char *, def_scheme);
+	conf.title = "Partition Scheme";
+	cancel = bsddialog_menu(conf,
+	    "Select a partition scheme for this volume:", 0, 0, 0, 4, items,
+	    &choice);
+	//dialog_vars.default_item = NULL;
+	conf.menu.default_item = NULL;
 
-	if (cancel)
+	if (cancel == BSDDIALOG_NOCANCEL)
 		return NULL;
 
 	if (!is_scheme_bootable(items[choice].name)) {
@@ -261,10 +267,11 @@ parttypemenu:
 		sprintf(message, "This partition scheme (%s) is not "
 		    "bootable on this platform. Are you sure you want "
 		    "to proceed?", items[choice].name);
-		dialog_vars.defaultno = TRUE;
-		cancel = dialog_yesno("Warning", message, 0, 0);
-		dialog_vars.defaultno = FALSE;
-		if (cancel) /* cancel */
+		conf.button.defaultno = true;
+		conf.title = "Warning";
+		cancel = bsddialog_yesno(conf, message, 0, 0);
+		conf.button.defaultno = false;
+		if (cancel == BSDDIALOG_NOCANCEL) /* cancel */
 			goto parttypemenu;
 	}
 
@@ -279,6 +286,9 @@ gpart_partition(const char *lg_name, const char *scheme)
 	int cancel;
 	struct gctl_req *r;
 	const char *errstr;
+	struct bsddialog_conf conf;
+
+	bsddialog_initconf(&conf);
 
 schememenu:
 	if (scheme == NULL) {
@@ -292,10 +302,13 @@ schememenu:
 			sprintf(message, "This partition scheme (%s) is not "
 			    "bootable on this platform. Are you sure you want "
 			    "to proceed?", scheme);
-			dialog_vars.defaultno = TRUE;
-			cancel = dialog_yesno("Warning", message, 0, 0);
-			dialog_vars.defaultno = FALSE;
-			if (cancel) { /* cancel */
+			//dialog_vars.defaultno = TRUE;
+			conf.button.defaultno = true;
+			conf.title = "Warning";
+			cancel = bsddialog_yesno(conf, message, 0, 0);
+			//dialog_vars.defaultno = FALSE;
+			conf.button.defaultno = false;
+			if (cancel == BSDDIALOG_NOCANCEL) { /* cancel */
 				/* Reset scheme so user can choose another */
 				scheme = NULL;
 				goto schememenu;
@@ -400,6 +413,9 @@ gpart_bootcode(struct ggeom *gp)
 	uint8_t *boot;
 	size_t bootsize, bytes;
 	int bootfd;
+	struct bsddialog_conf conf;
+
+	bsddialog_initconf(&conf);
 
 	/*
 	 * Write default bootcode to the newly partitioned disk, if that
@@ -418,8 +434,8 @@ gpart_bootcode(struct ggeom *gp)
 
 	bootfd = open(bootcode, O_RDONLY);
 	if (bootfd < 0) {
-		dialog_msgbox("Bootcode Error", strerror(errno), 0, 0,
-		    TRUE);
+		conf.title = "Bootcode Error";
+		bsddialog_msgbox(conf, strerror(errno), 0, 0);
 		return;
 	}
 
@@ -451,6 +467,9 @@ gpart_partcode(struct gprovider *pp, const char *fstype)
 	const char *scheme;
 	const char *indexstr;
 	char message[255], command[255];
+	struct bsddialog_conf conf;
+
+	bsddialog_initconf(&conf);
 
 	LIST_FOREACH(gc, &pp->lg_geom->lg_config, lg_config) {
 		if (strcmp(gc->lg_name, "scheme") == 0) {
@@ -476,7 +495,8 @@ gpart_partcode(struct gprovider *pp, const char *fstype)
 	if (system(command) != 0) {
 		sprintf(message, "Error installing partcode on partition %s",
 		    pp->lg_name);
-		dialog_msgbox("Error", message, 0, 0, TRUE);
+		conf.title = "Error"
+		dialog_msgbox(conf, message, 0, 0, TRUE);
 	}
 }
 
