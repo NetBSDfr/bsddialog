@@ -155,13 +155,10 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 | --buildlist    | In progress | todo autosize, resize, F1                     |
 | --gauge        | In progress | todo autosize                                 |
 | --pause        | In progress | todo autosize, resize, F1                     |
-| --prgbox       | In progress | add command opts                              |
-| --programbox   | In progress |                                               |
-| --progressbox  |             |                                               |
 | --rangebox     | In progress | todo autosize, resize, F1, PAGE-UP/PAGE-DOWN/HOME/END keys |
 
 
 To evaluate / Not planned in the short term:
 
 tailbox (textbox/fseek), tailboxbg, dselect, fselect, inputmenu, editbox,
-calendar (use datebox).
+calendar (use datebox), prgbox, programbox, progressbox.
