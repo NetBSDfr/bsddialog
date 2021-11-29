@@ -396,7 +396,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 		if(input < 0) {
 			currvalue--;
 			if (currvalue < 0) {
-				output = BSDDIALOG_ERROR;
+				output = BSDDIALOG_TIMEOUT;
 				break;
 			}
 			else {

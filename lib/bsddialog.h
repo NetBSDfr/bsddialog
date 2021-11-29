@@ -39,9 +39,10 @@
 #define BSDDIALOG_HELP		 2
 #define BSDDIALOG_EXTRA		 3
 #define BSDDIALOG_ITEM_HELP	 4
-#define BSDDIALOG_ESC		 5
-#define BSDDIALOG_GENERIC1       6
-#define BSDDIALOG_GENERIC2       7
+#define BSDDIALOG_TIMEOUT        5
+#define BSDDIALOG_ESC		 6
+#define BSDDIALOG_GENERIC1       7
+#define BSDDIALOG_GENERIC2       8
 
 /* size and position */
 #define BSDDIALOG_FULLSCREEN	-1
