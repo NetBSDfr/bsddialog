@@ -197,6 +197,7 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 			set_field_back(current_field(form), t.form.f_fieldcolor);
 			break;
 		case KEY_BACKSPACE:
+		case 127: /* Backspace */
 			form_driver(form, REQ_DEL_PREV);
 			mf = GETMYFIELD2(form);
 			if (mf->pos > 0) {
