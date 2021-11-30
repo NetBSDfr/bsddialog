@@ -8,7 +8,9 @@
  *   <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <bsddialog.h>
@@ -21,9 +23,9 @@ int main()
 	int i, output;
 	struct bsddialog_conf conf;
 	struct bsddialog_formfield fields[3] = {
-		{"Input:",    1, 1, "value",     1, 11, 20, 50, 0      },
-		{"Input:",    2, 1, "read only", 2, 11, 20, 50, RO     },
-		{"Password:", 3, 1, "",          3, 11, 20, 50, HIDDEN }
+		{"Input:",    1, 1, "value",     1, 11, 20, 50, 0      ,NULL},
+		{"Input:",    2, 1, "read only", 2, 11, 20, 50, RO     ,NULL},
+		{"Password:", 3, 1, "",          3, 11, 20, 50, HIDDEN ,NULL}
 	};
 
 	bsddialog_initconf(&conf);
@@ -41,8 +43,10 @@ int main()
 		printf("Error: %s", bsddialog_geterror());
 
 	printf("Values:\n");
-	for (i=0; i<3; i++)
+	for (i=0; i<3; i++) {
 		printf("%s \"%s\"\n", fields[i].label, fields[i].value);
+		free(fields[i].value);
+	}
 	
 	return output;
 }
