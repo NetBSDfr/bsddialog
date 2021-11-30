@@ -30,6 +30,7 @@
 
 #include <sys/param.h>
 #include <sys/stat.h>
+#include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <libutil.h>
@@ -43,6 +44,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 
 #include "partedit.h"
@@ -495,8 +497,8 @@ gpart_partcode(struct gprovider *pp, const char *fstype)
 	if (system(command) != 0) {
 		sprintf(message, "Error installing partcode on partition %s",
 		    pp->lg_name);
-		conf.title = "Error"
-		dialog_msgbox(conf, message, 0, 0, TRUE);
+		conf.title = "Error";
+		bsddialog_msgbox(conf, message, 0, 0);
 	}
 }
 
@@ -556,20 +558,22 @@ gpart_edit(struct gprovider *pp)
 	intmax_t idx;
 	int hadlabel, choice, junk, nitems;
 	unsigned i;
+	struct bsddialog_conf conf;
 
-	DIALOG_FORMITEM items[] = {
-		{0, "Type:", 5, 0, 0, FALSE, "", 11, 0, 12, 15, 0,
-		    FALSE, "Filesystem type (e.g. freebsd-ufs, freebsd-zfs, "
-		    "freebsd-swap)", FALSE},
-		{0, "Size:", 5, 1, 0, FALSE, "", 11, 1, 12, 0, 0,
-		    FALSE, "Partition size. Append K, M, G for kilobytes, "
-		    "megabytes or gigabytes.", FALSE},
-		{0, "Mountpoint:", 11, 2, 0, FALSE, "", 11, 2, 12, 15, 0,
-		    FALSE, "Path at which to mount this partition (leave blank "
-		    "for swap, set to / for root filesystem)", FALSE},
-		{0, "Label:", 7, 3, 0, FALSE, "", 11, 3, 12, 15, 0, FALSE,
-		    "Partition name. Not all partition schemes support this.",
-		    FALSE},
+	bsddialog_initconf(&conf);
+
+	struct bsddialog_formfield items[4] = {
+		{ "Type:", 0, 0, "", 0, 11, 12, 15, 0
+		    /*"Filesystem type (e.g. freebsd-ufs, freebsd-zfs, "
+		    "freebsd-swap)"*/},
+		{ "Size:", 1, 0, "", 1, 11, 12, 12, 0
+		    /*"Partition size. Append K, M, G for kilobytes, "
+		    "megabytes or gigabytes."*/},
+		{ "Mountpoint:", 2, 0, "", 11, 12, 15, 0
+		    /*"Path at which to mount this partition (leave blank "
+		    "for swap, set to / for root filesystem)"*/},
+		{ "Label:", 3, 0, "", 3, 11, 12, 15, 0
+		    /*"Partition name. Not all partition schemes support this."*/},
 	};
 
 	/*
@@ -627,11 +631,13 @@ gpart_edit(struct gprovider *pp)
 	LIST_FOREACH(gc, &pp->lg_config, lg_config) {
 		if (strcmp(gc->lg_name, "type") == 0) {
 			oldtype = gc->lg_val;
-			items[0].text = gc->lg_val;
+			//items[0].text = gc->lg_val;
+			items[0].value = gc->lg_val;
 		}
 		if (strcmp(gc->lg_name, "label") == 0 && gc->lg_val != NULL) {
 			hadlabel = 1;
-			items[3].text = gc->lg_val;
+			//items[3].text = gc->lg_val;
+			items[3].value = gc->lg_val;
 		}
 		if (strcmp(gc->lg_name, "index") == 0)
 			idx = atoi(gc->lg_val);
@@ -640,39 +646,47 @@ gpart_edit(struct gprovider *pp)
 	TAILQ_FOREACH(md, &part_metadata, metadata) {
 		if (md->name != NULL && strcmp(md->name, pp->lg_name) == 0) {
 			if (md->fstab != NULL)
-				items[2].text = md->fstab->fs_file;
+				//items[2].text = md->fstab->fs_file;
+				items[2].value = md->fstab->fs_file;
 			break;
 		}
 	}
 
 	humanize_number(sizestr, 7, pp->lg_mediasize, "B", HN_AUTOSCALE,
 	    HN_NOSPACE | HN_DECIMAL);
-	items[1].text = sizestr;
+	items[1].value = sizestr;
 
 editpart:
-	choice = dlg_form("Edit Partition", "", 0, 0, 0, nitems, items, &junk);
+	conf.title = "Edit Partition";
+	choice = bsddialog_form(conf, "", 0, 0, 0, nitems, items);
 
-	if (choice) /* Cancel pressed */
+	if (choice == BSDDIALOG_NOCANCEL) /* Cancel pressed */
 		goto endedit;
 
 	/* If this is the root partition, check that this fs is bootable */
-	if (strcmp(items[2].text, "/") == 0 && !is_fs_bootable(scheme,
-	    items[0].text)) {
+	//if (strcmp(items[2].text, "/") == 0 && !is_fs_bootable(scheme,
+	//    items[0].text)) {
+	if (strcmp(items[2].value, "/") == 0 && !is_fs_bootable(scheme,
+	    items[0].value)) {
 		char message[512];
 		sprintf(message, "This file system (%s) is not bootable "
 		    "on this system. Are you sure you want to proceed?",
-		    items[0].text);
-		dialog_vars.defaultno = TRUE;
-		choice = dialog_yesno("Warning", message, 0, 0);
-		dialog_vars.defaultno = FALSE;
-		if (choice == 1) /* cancel */
+		    items[0].value);
+		//dialog_vars.defaultno = TRUE;
+		conf.button.defaultno = true;
+		conf.title = "Warning";
+		choice = bsddialog_yesno(conf, message, 0, 0);
+		//dialog_vars.defaultno = FALSE;
+		conf.button.defaultno = false;
+		if (choice == BSDDIALOG_NOCANCEL) /* cancel */
 			goto editpart;
 	}
 
 	/* Check if the label has a / in it */
-	if (strchr(items[3].text, '/') != NULL) {
-		dialog_msgbox("Error", "Label contains a /, which is not an "
-		    "allowed character.", 0, 0, TRUE);
+	if (strchr(items[3].value, '/') != NULL) {
+		conf.title = "Error";
+		bsddialog_msgbox(conf, "Label contains a /, which is not an "
+		    "allowed character.", 0, 0);
 		goto editpart;
 	}
 
@@ -682,9 +696,9 @@ editpart:
 	gctl_ro_param(r, "flags", -1, GPART_FLAGS);
 	gctl_ro_param(r, "verb", -1, "modify");
 	gctl_ro_param(r, "index", sizeof(idx), &idx);
-	if (hadlabel || items[3].text[0] != '\0')
-		gctl_ro_param(r, "label", -1, items[3].text);
-	gctl_ro_param(r, "type", -1, items[0].text);
+	if (hadlabel || items[3].value[0] != '\0')
+		gctl_ro_param(r, "label", -1, items[3].value);
+	gctl_ro_param(r, "type", -1, items[0].value);
 	errstr = gctl_issue(r);
 	if (errstr != NULL && errstr[0] != '\0') {
 		gpart_show_error("Error", NULL, errstr);
@@ -693,21 +707,21 @@ editpart:
 	}
 	gctl_free(r);
 
-	newfs_command(items[0].text, newfs, 1);
-	set_default_part_metadata(pp->lg_name, scheme, items[0].text,
-	    items[2].text, (strcmp(oldtype, items[0].text) != 0) ?
+	newfs_command(items[0].value, newfs, 1);
+	set_default_part_metadata(pp->lg_name, scheme, items[0].value,
+	    items[2].value, (strcmp(oldtype, items[0].value) != 0) ?
 	    newfs : NULL);
 
 endedit:
-	if (strcmp(oldtype, items[0].text) != 0 && cp != NULL)
+	if (strcmp(oldtype, items[0].value) != 0 && cp != NULL)
 		gpart_destroy(cp->lg_geom);
-	if (strcmp(oldtype, items[0].text) != 0 && strcmp(items[0].text,
+	if (strcmp(oldtype, items[0].value) != 0 && strcmp(items[0].value,
 	    "freebsd") == 0)
 		gpart_partition(pp->lg_name, "BSD");
 
-	for (i = 0; i < nitems(items); i++)
+	/*for (i = 0; i < nitems(items); i++)
 		if (items[i].text_free)
-			free(items[i].text);
+			free(items[i].value); free .value! */
 }
 
 void
@@ -972,15 +986,16 @@ add_boot_partition(struct ggeom *geom, struct gprovider *pp,
 		return (0);
 	}
 
-	if (interactive)
-		choice = dialog_yesno("Boot Partition",
+	if (interactive) {
+		conf.title = "Boot Partition"
+		choice = dialog_yesno(conf,
 		    "This partition scheme requires a boot partition "
 		    "for the disk to be bootable. Would you like to "
 		    "make one now?", 0, 0);
-	else
-		choice = 0;
+	} else
+		choice = BSDDIALOG_YESOK;
 
-	if (choice == 0) { /* yes */
+	if (choice == BSDDIALOG_YESOK) { /* yes */
 		struct partition_metadata *md;
 		const char *bootmount = NULL;
 		char *bootpartname = NULL;
