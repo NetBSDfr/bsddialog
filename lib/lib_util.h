@@ -111,6 +111,10 @@ void
 print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx,
     int maxx, char *text);
 
+int
+print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols,
+    char *text);
+
 enum elevation { RAISED, LOWERED };
 
 void

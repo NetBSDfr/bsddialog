@@ -567,8 +567,9 @@ get_text_properties(struct bsddialog_conf conf, char *text, int *maxword,
 	return 0;
 }
 
-static int
-print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols, char *text)
+int
+print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols,
+    char *text)
 {
 	char *buf, *string;
 	int i, j, x, y;

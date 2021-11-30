@@ -40,6 +40,11 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
+#define BARMARGIN	3
+#define MINBARWIDTH	10
+#define MINWIDTH	(VBORDERS + MINBARWIDTH + BARMARGIN * 2)
+#define MINHEIGHT	7 /* without text */
+
 /* "Bar": gauge - mixedgauge - rangebox - pause */
 
 extern struct bsddialog_theme t;
@@ -75,28 +80,97 @@ draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
 	}
 }
 
+static int
+bar_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+    char *text, struct buttons *bs)
+{
+	int maxword, maxline, nlines, buttonswidth;
+
+	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
+		return BSDDIALOG_ERROR;
+
+	buttonswidth = 0;
+	if (bs != NULL) { /* gauge has not buttons */
+		buttonswidth= bs->nbuttons * bs->sizebutton;
+		if (bs->nbuttons > 0)
+			buttonswidth += (bs->nbuttons-1) * t.button.space;
+	}
+
+	if (cols == BSDDIALOG_AUTOSIZE) {
+		*w = VBORDERS;
+		/* buttons size */
+		*w += buttonswidth;
+		/* bar size */
+		*w = MAX(*w, MINWIDTH);
+		/* text size*/
+		*w = MAX(maxline + VBORDERS + t.texthmargin * 2, *w);
+		/* avoid terminal overflow */
+		*w = MIN(*w, widget_max_width(conf));
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE) {
+		*h = MINHEIGHT;
+		if (maxword > 0)
+			*h += 1;
+		/* avoid terminal overflow */
+		*h = MIN(*h, widget_max_height(conf));
+	}
+
+	return (0);
+}
+
+static int
+bar_checksize(char *text, int rows, int cols, struct buttons *bs)
+{
+	int minheight, minwidth;
+
+	minwidth = 0;
+	if (bs != NULL) { /* gauge has not buttons */
+		minwidth = bs->nbuttons * bs->sizebutton;
+		if (bs->nbuttons > 0)
+			minwidth += (bs->nbuttons-1) * t.button.space;
+	}
+	minwidth = MAX(minwidth + VBORDERS, MINBARWIDTH);
+
+	if (cols< minwidth)
+		RETURN_ERROR("Few cols for this widget");
+
+	minheight = MINHEIGHT + (text != NULL && strlen(text) > 0) ? 1 : 0;
+	if (rows < minheight)
+		RETURN_ERROR("Few rows for this mixedgauge");
+
+	return 0;
+}
+
 int
 bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
     unsigned int perc)
 {
-	WINDOW *widget, *bar, *shadow;
-	char input[2048];
-	int i, y, x;
-	bool mainloop = true;
+	WINDOW *widget, *textpad, *bar, *shadow;
+	char input[2048], ntext[2048], *pntext;
+	int y, x, h, w, htextpad;
+	bool mainloop;
 
-	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    false) <0)
-		return -1;
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
+	if (bar_autosize(conf, rows, cols, &h, &w, text, NULL) != 0)
+		return BSDDIALOG_ERROR;
+	if (bar_checksize(text, h, w, NULL) != 0)
+		return BSDDIALOG_ERROR;
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
+		return BSDDIALOG_ERROR;
 
-	bar = new_boxed_window(conf, y+rows -4, x+3, 3, cols-6, RAISED);
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
+	    &textpad, &htextpad, text, false) != 0)
+		return BSDDIALOG_ERROR;
 
-	wrefresh(widget);
-	wrefresh(bar);
+	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
 
+	mainloop = true;
 	while (mainloop) {
-		draw_perc_bar(bar, 1, 1, cols-8, perc, false, -1 /*unused*/);
-
 		wrefresh(widget);
+		prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-4, x+w-1-t.texthmargin);
+		draw_perc_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
 
 		while (true) {
@@ -111,9 +185,10 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 		scanf("%d", &perc);
 		perc = perc < 0 ? 0 : perc;
 		perc = perc > 100 ? 100 : perc;
-		i = 2;
-		wmove(widget, 1, 1);
-		wclrtoeol(widget);
+		htextpad = 1;
+		wclear(textpad);
+		pntext = &ntext[0];
+		ntext[0] = '\0';
 		while (true) {
 			scanf("%s", input);
 			if (strcmp(input,"EOF") == 0) {
@@ -122,15 +197,16 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 			}
 			if (strcmp(input,"XXX") == 0)
 				break;
-			//print_text(conf, widget, 1, 1, cols-2, input);
-			mvwaddstr(widget, 1, i, input);
-			i = i + strlen(input) + 1;
-			wrefresh(widget);
+			pntext[0] = ' ';
+			pntext++;
+			strcpy(pntext, input);
+			pntext += strlen(input);
 		}
+		print_textpad(conf, textpad, &htextpad, w - 2 - t.texthmargin *2, ntext);
 	}
 
 	delwin(bar);
-	end_widget(conf, widget, rows, cols, shadow);
+	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
 	return BSDDIALOG_YESOK;
 }
