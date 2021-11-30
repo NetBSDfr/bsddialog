@@ -103,7 +103,7 @@ bar_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		/* bar size */
 		*w = MAX(*w, MINWIDTH);
 		/* text size*/
-		*w = MAX(maxline + VBORDERS + t.texthmargin * 2, *w);
+		*w = MAX((int)(maxline + VBORDERS + t.texthmargin * 2), *w);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf));
 	}
@@ -135,7 +135,7 @@ bar_checksize(char *text, int rows, int cols, struct buttons *bs)
 	if (cols< minwidth)
 		RETURN_ERROR("Few cols for this widget");
 
-	minheight = MINHEIGHT + (text != NULL && strlen(text) > 0) ? 1 : 0;
+	minheight = MINHEIGHT + ((text != NULL && strlen(text) > 0) ? 1 : 0);
 	if (rows < minheight)
 		RETURN_ERROR("Few rows for this mixedgauge");
 
