@@ -67,7 +67,7 @@ draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
 		sprintf(labelstr, "%3d%%", perc);
 	wmove(win, y, x + size/2 - 2);
 	for (i=0; i < (int) strlen(labelstr); i++) {
-		color = ( (blue_x + 1) <= (size/2 - (int) strlen(labelstr)/2 + i) ) ?
+		color = (blue_x + 1 <= size/2 - (int)strlen(labelstr)/2 + i ) ?
 		    t.bar.color : t.bar.f_color;
 		wattron(win, color);
 		waddch(win, labelstr[i]);
