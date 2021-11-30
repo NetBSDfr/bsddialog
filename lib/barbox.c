@@ -515,4 +515,3 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 
 	return output;
 }
-
