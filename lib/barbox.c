@@ -376,7 +376,6 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	sizebar = cols-16;
 	nodelay(stdscr, TRUE);
 	timeout(1000);
-	//wtimeout(buttwin, 2);
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
@@ -393,7 +392,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 		}
 
 		input = getch();
-		if(input < 0) {
+		if(input < 0) { /* timeout */
 			currvalue--;
 			if (currvalue < 0) {
 				output = BSDDIALOG_TIMEOUT;
