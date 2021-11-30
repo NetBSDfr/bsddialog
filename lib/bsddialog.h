@@ -50,7 +50,6 @@
 #define BSDDIALOG_CENTER	-1
 
 struct bsddialog_conf {
-
 	bool ascii_lines;
 	int aspect_ratio;
 	int x;
