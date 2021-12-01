@@ -129,7 +129,7 @@ bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols)
 
 	exitbutt = conf.button.exit_label == NULL ? BUTTON_TEXTBOX : conf.button.exit_label;
 	draw_button(widget, h-2, (w-2)/2 - strlen(exitbutt)/2, strlen(exitbutt)+2,
-	    exitbutt, true, true);
+	    exitbutt, true, false);
 
 	wrefresh(widget);
 
@@ -229,7 +229,7 @@ bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols)
 			return BSDDIALOG_ERROR;
 
 			draw_button(widget, h-2, (w-2)/2 - strlen(exitbutt)/2,
-			    strlen(exitbutt)+2, exitbutt, true, true);
+			    strlen(exitbutt)+2, exitbutt, true, false);
 
 			wrefresh(widget); /* for button */
 
