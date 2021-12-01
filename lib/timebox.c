@@ -73,7 +73,7 @@ datetime_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = 7;
+		*h = MINHEIGHT;
 		if (maxword > 0)
 			*h += MAX(nlines, (*w / GET_ASPECT_RATIO(conf)));
 		/* avoid terminal overflow */
