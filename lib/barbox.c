@@ -354,6 +354,9 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
+	prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
+			    x+w-1-t.texthmargin);
+
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 	bigchange = MAX(1, sizebar/10);
 
@@ -479,6 +482,9 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
+
+			prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
+			    x+w-1-t.texthmargin);
 			
 			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
 
@@ -526,6 +532,9 @@ bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
 	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
+	
+	prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
+	    x+w-1-t.texthmargin);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARMARGIN, 3,
@@ -631,6 +640,9 @@ bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
+
+			prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
+			    x+w-1-t.texthmargin);
 			
 			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
 
