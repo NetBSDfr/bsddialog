@@ -169,10 +169,64 @@ int yesno_builder(BUILDER_ARGS);
 void usage(void)
 {
 
-	printf("usage: bsddialog --help\n"\
-	       "       bsddialog --version\n"\
-	       "       bsddialog [--<common-opts>] --<widget> <text> "\
+	printf("usage: bsddialog --help\n"
+	       "       bsddialog --version\n"
+	       "       bsddialog [--<common-options>] --<widget> <text> "
 	       "<height> <width> [--<widget-opts>]\n");
+	printf("\n");
+	printf("Common Options:\n");
+	printf("--ascii-lines, --aspect <ratio>, --backtitle <backtitle>, "
+		"--begin-x <x>, --begin-y <y>, --cancel-label <string>, "
+		"-clear, --colors, --date-format <format>, "
+		"--default-button <label>, --defaultno, --default-item <name>,"
+		"--exit-label <label>, --extra-button, --extra-label <label>,"
+		"--hfile <filename>, --help, --help-button, "
+		"--help-label <label>, --help-status, --help-tags, "
+		"--hline string, --ignore, --insecure, --item-help, "
+		"--max-input <size>, --no-cancel, --nocancel, "
+		"--no-label <label>, --no-items, --no-lines, --no-ok, --nook, "
+		"--no-shadow, --no-tags, --ok-label <label>, --output-fd <fd>, "
+		"--output-separator <sep>, --print-version, --print-size, "
+		"--quoted, --print-maxsize, --shadow, --single-quoted, "
+		"--separator <sep>, --separate-output, --sleep <secs>, "
+		"--stderr, --stdout, "
+		"--theme <bsddialog|dialog|blackwhite|magenta, "
+		"--time-format <format>, --title <title>, --version, "
+		"--yes-label string.\n");
+	printf("\n");
+	printf("Widgets:\n");
+	printf("buildlist_builder <text> <rows> <cols> <menurows> <name> "
+	    "<desc> <on|off> ...\n");
+	printf("checklist_builder <text> <rows> <cols> <menurows> <name> "
+	    "<desc> <on|off> ...\n");
+	printf("datebox_builder <text> <rows> <cols> [<yy> <mm> <dd>]\n");
+	printf("form_builder <text> <rows> <cols> <label> <ylabel> <xlabe> "
+	    "<form-init> <yform> <xform> <formlen> <maxvalue> ...\n");
+	printf("gauge_builder <text> <rows> <cols> [<perc\\nl> [<text> ...] "
+	    "XXX] ... EOF\n");
+	printf("infobox_builder <text> <rows> <cols>\n");
+	printf("inputbox_builder <text> <rows> <cols> [form-init]\n");
+	printf("menu_builder <text> <rows> <cols> <menurows> <name> <desc> "
+	    "...\n");
+	printf("mixedform_builder <text> <rows> <cols> <label> <ylabel> "
+	    "<xlabe> <form-init> <yform> <xform> <formlen> <maxvalue> <0|1|2> "
+	    "...\n");
+	printf("mixedgauge_builder <text> <rows> <cols> <main-perc> [<label> "
+	    "<01234567| -perx>] ...\n");
+	printf("msgbox_builder <text> <rows> <cols>\n");
+	printf("passwordbox_builder <text> <rows> <cols>\n");
+	printf("passwordform_builder <text> <rows> <cols> <label> <ylabel> "
+	    "<xlabe> <form-init> <yform> <xform> <formlen> <maxvalue> ...\n");
+	printf("pause_builder <text> <rows> <cols> <secs>\n");
+	printf("radiolist_builder <text> <rows> <cols> <menurows> <name> "
+	    "<desc> <on|off> ...\n");
+	printf("rangebox_builder <text> <rows> <cols> <min> <max> <default>\n");
+	printf("textbox_builder <file> <rows> <cols>\n");
+	printf("timebox_builder <text> <rows> <cols> [<hh> <mm> <ss>]\n");
+	printf("treeview_builder <text> <rows> <cols> <menurows> <depth> "
+	    "<name> <desc> <on|off> ...\n");
+	printf("yesno_builder <text> <rows> <cols>\n");
+	
 }
 
 int main(int argc, char *argv[argc])

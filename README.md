@@ -93,7 +93,7 @@ Use Cases:
 --colors, --date-format *format*, --default-button *string*, --defaultno,
 --default-item *string*, 
 --exit-label *string*, --extra-button, --extra-label *string*,
---hfile *filename* (for completed widgets), n--help-button,
+--hfile *filename* (for completed widgets), --help, --help-button,
 --help-label *string*, --help-status, --help-tags, --hline *string*, --ignore,
 --insecure, --item-help, --max-input *size*, --no-cancel, --nocancel,
 --no-label *string*, --no-items, --no-lines, --no-ok,
@@ -144,7 +144,6 @@ NULL string for *text*, ~~generic buttons for sade(8),~~ ~~complete forms,~~
 | ---------------------------- | ----------- | ------------------------------- |
 | --column-separator *string*  |             | menu                            |
 | --cr-wrap                    | In progress | text                            |
-| --help                       | In progress | utility                         |
 | --input-fd *fd*              |             | gauge                           |
 | --no-collapse                | In progress | text                            |
 | --no-nl-expand               | In progress | text                            |
