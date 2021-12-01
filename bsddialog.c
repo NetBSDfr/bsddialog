@@ -144,7 +144,7 @@ static int output_fd_flag;
 void usage(void);
 /* widgets */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
-	int cols, int argc, char **argv
+	int cols, int argc, char **argv, char *errbuf
 int buildlist_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
 int datebox_builder(BUILDER_ARGS);
@@ -212,7 +212,7 @@ void usage(void)
 	    "<xlabe> <form-init> <yform> <xform> <formlen> <maxvalue> <0|1|2> "
 	    "...\n");
 	printf("mixedgauge_builder <text> <rows> <cols> <main-perc> [<label> "
-	    "<01234567| -perx>] ...\n");
+	    "<01234567| -perc>] ...\n");
 	printf("msgbox_builder <text> <rows> <cols>\n");
 	printf("passwordbox_builder <text> <rows> <cols>\n");
 	printf("passwordform_builder <text> <rows> <cols> <label> <ylabel> "
@@ -231,7 +231,7 @@ void usage(void)
 
 int main(int argc, char *argv[argc])
 {
-	char *text, *backtitle_flag;
+	char *text, *backtitle_flag, errorbuilder[1024];
 	int input, rows, cols, output, getH, getW;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
 	bool ignore_flag, print_maxsize_flag;
@@ -246,6 +246,7 @@ int main(int argc, char *argv[argc])
 	output_fd_flag = STDERR_FILENO;
 	print_maxsize_flag = false;
 	ignore_flag = false;
+	errorbuilder[0] = '\0';
 
 	item_output_sepnl_flag = item_singlequote_flag = false;
 	item_prefix_flag = item_bottomdesc_flag = false;
@@ -640,6 +641,7 @@ int main(int argc, char *argv[argc])
 	argc -= 3;
 	argv += 3;
 
+	/* bsddialog terminal mode */
 	if(bsddialog_init() != 0) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (BSDDIALOG_ERROR);
@@ -653,9 +655,11 @@ int main(int argc, char *argv[argc])
 
 	output = BSDDIALOG_YESOK;
 	if (widgetbuilder != NULL)
-		output = widgetbuilder(conf, text, rows, cols, argc, argv);
+		output = widgetbuilder(conf, text, rows, cols, argc, argv,
+		    errorbuilder);
 
 	bsddialog_end();
+	/* end bsddialog terminal mode*/
 
 	if (conf.get_height != NULL && conf.get_width != NULL &&
 	    output != BSDDIALOG_ERROR)
@@ -676,8 +680,12 @@ int main(int argc, char *argv[argc])
 	}
 	printf("\n");
 
-	if (output == BSDDIALOG_ERROR)
-		printf("Error: %s\n", bsddialog_geterror());
+	if (output == BSDDIALOG_ERROR) {
+		if (errorbuilder[0] != '\0')
+			printf("Error: %s\n", errorbuilder);
+		else
+			printf("Error: %s\n", bsddialog_geterror());
+	}
 
 	return (output);
 }
@@ -686,11 +694,15 @@ int main(int argc, char *argv[argc])
 
 int gauge_builder(BUILDER_ARGS)
 {
-	int output /* always BSDDIALOG_YESOK */, perc;
+	int output, perc;
 
-	perc = argc > 0 ? atoi (argv[0]) : 0;
-	perc = perc < 0 ? 0 : perc;
-	perc = perc > 100 ? 100 : perc;
+	if (argc > 0) {
+		perc = argc > 0 ? atoi (argv[0]) : 0;
+		perc = perc < 0 ? 0 : perc;
+		perc = perc > 100 ? 100 : perc;
+	}
+	else
+		perc = 0;
 
 	output = bsddialog_gauge(conf, text, rows, cols, perc);
 
@@ -699,7 +711,7 @@ int gauge_builder(BUILDER_ARGS)
 
 int infobox_builder(BUILDER_ARGS)
 {
-	int output; /* always BSDDIALOG_YESOK */
+	int output;
 
 	output = bsddialog_infobox(conf, text, rows, cols);
 
@@ -708,10 +720,10 @@ int infobox_builder(BUILDER_ARGS)
 
 int mixedgauge_builder(BUILDER_ARGS)
 {
-	int output /* always BSDDIALOG_YESOK */, perc;
+	int output, perc;
 
 	if (argc < 1 || (((argc-1) % 2) != 0) ) {
-		usage();
+		strcpy(errbuf, "bad --mixedgauge arguments\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -739,7 +751,7 @@ int pause_builder(BUILDER_ARGS)
 	int output, sec;
 
 	if (argc < 1) {
-		usage();
+		strcpy(errbuf, "not <seconds> argument for --pause\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -753,8 +765,11 @@ int rangebox_builder(BUILDER_ARGS)
 {
 	int output, min, max, value;
 
-	if (argc < 2)
+	if (argc < 2) {
+		strcpy(errbuf, "usage --rangebox <text> <rows> <cols> <min> "
+		    "<max> [<init>]\n");
 		return (BSDDIALOG_ERROR);
+	}
 
 	min = atoi(argv[0]);
 	max = atoi(argv[1]);
@@ -877,9 +892,9 @@ int timebox_builder(BUILDER_ARGS)
 
 /* MENU */
 static int
-get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
-    bool setname, bool setdesc, bool setstatus, bool sethelp, int *nitems,
-    struct bsddialog_menuitem *items)
+get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
+    bool setdepth, bool setname, bool setdesc, bool setstatus, bool sethelp,
+    int *nitems, struct bsddialog_menuitem *items)
 {
 	int i, j, sizeitem;
 
@@ -891,7 +906,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 	if (setstatus) sizeitem++;
 	if (sethelp)   sizeitem++;
 	if ((argc % sizeitem) != 0) {
-		printf("Error: Menu/Checklist/Treeview/Radiolist bad #args\n");
+		strcpy(errbuf, "bad number of arguments for this menu\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -975,14 +990,14 @@ int buildlist_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
-		usage();
+		strcpy(errbuf, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
    
-	output = get_menu_items(argc-1, argv+1, item_prefix_flag, false, true,
-	    true, true, item_bottomdesc_flag, &nitems, items);
+	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
+	    true, true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
 		return (output);
 
@@ -1002,14 +1017,14 @@ int checklist_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
-		usage();
+		strcpy(errbuf, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, item_prefix_flag, false, true,
-	    true, true, item_bottomdesc_flag, &nitems, items);
+	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
+	    true, true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1027,14 +1042,14 @@ int menu_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
-		usage();
+		strcpy(errbuf, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, item_prefix_flag, false, true,
-	    true, false, item_bottomdesc_flag, &nitems, items);
+	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
+	    true, true, false, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1052,14 +1067,14 @@ int radiolist_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
-		usage();
+		strcpy(errbuf, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, item_prefix_flag, false, true,
-	    true, true, item_bottomdesc_flag, &nitems, items);
+	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
+	    true, true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1077,14 +1092,14 @@ int treeview_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem items[100];
 
 	if (argc < 1) {
-		usage();
+		strcpy(errbuf, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = atoi(argv[0]);
 
-	output = get_menu_items(argc-1, argv+1, item_prefix_flag, true, true,
-	    true, true, item_bottomdesc_flag, &nitems, items);
+	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, true,
+	    true, true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
 		return output;
 
@@ -1122,7 +1137,7 @@ int form_builder(BUILDER_ARGS)
 	unsigned int flags = 0;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
-		usage();
+		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1130,9 +1145,6 @@ int form_builder(BUILDER_ARGS)
 
 	argc--;
 	argv++;
-
-	if ((argc % 8) != 0)
-		return (-1);
 
 	nfields = argc / 8;
 	for (i=0; i<nfields; i++) {
@@ -1184,10 +1196,10 @@ int inputbox_builder(BUILDER_ARGS)
 int mixedform_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nfields;
-	struct bsddialog_formfield fields[100];
+	struct bsddialog_formfield fields[1024];
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
-		usage();
+		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1240,11 +1252,11 @@ int passwordbox_builder(BUILDER_ARGS)
 int passwordform_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nfields, formlen, valuelen;
-	struct bsddialog_formfield fields[100];
+	struct bsddialog_formfield fields[1024];
 	unsigned int flags = BSDDIALOG_FIELDHIDDEN;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
-		usage();
+		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
 
