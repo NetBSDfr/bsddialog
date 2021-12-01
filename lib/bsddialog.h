@@ -197,7 +197,7 @@ bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols);
 
 int
 bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
-    int sec);
+    unsigned int sec);
 
 int
 bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,

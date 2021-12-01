@@ -351,7 +351,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 
 	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, false) != 0)
+	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
@@ -477,7 +477,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 			wresize(bar, 3, sizebar + 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, textpad, &htextpad, text, false) != 0)
+			    RAISED, textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 			
 			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
@@ -500,47 +500,59 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 	return output;
 }
 
-int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, int sec)
+int
+bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
+    unsigned int sec)
 {
-	WINDOW *widget, *bar, *shadow;
-	int output, y, x;
+	WINDOW *widget, *textpad, *bar, *shadow;
+	int i, output, y, x, h, w, htextpad;
 	bool loop, buttupdate, barupdate;
-	int input, currvalue, sizebar;
+	int input, tout, sizebar;
 	float perc;
 	struct buttons bs;
-
-	if (new_widget(conf, &widget, &y, &x, text, &rows, &cols, &shadow,
-	    true) <0)
-		return -1;
-
-	bar = new_boxed_window(conf, y + rows - 6, x +7, 3, cols-14, RAISED);
 
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
 	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
 
-	currvalue = sec;
-	sizebar = cols-16;
+	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+		return BSDDIALOG_ERROR;
+	if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
+		return BSDDIALOG_ERROR;
+	if (bar_checksize(text, h, w, &bs) != 0)
+		return BSDDIALOG_ERROR;
+	if (set_widget_position(conf, &y, &x, h, w) != 0)
+		return BSDDIALOG_ERROR;
+
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
+	    &textpad, &htextpad, text, true) != 0)
+		return BSDDIALOG_ERROR;
+
+	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
+	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARMARGIN, 3,
+	    sizebar + 2, RAISED);
+
+	tout = sec;
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
-			perc = (float)currvalue * 100 / sec;
-			draw_perc_bar(bar, 1, 1, sizebar, perc, true, currvalue);
+			perc = (float)tout * 100 / sec;
+			draw_perc_bar(bar, 1, 1, sizebar, perc, true, tout);
 			barupdate = false;
 			wrefresh(bar);
 		}
 
 		if (buttupdate) {
-			draw_buttons(widget, rows-2, cols, bs, true);
+			draw_buttons(widget, h-2, w, bs, true);
 			wrefresh(widget);
 			buttupdate = false;
 		}
 
 		input = getch();
 		if(input < 0) { /* timeout */
-			currvalue--;
-			if (currvalue < 0) {
+			tout--;
+			if (tout < 0) {
 				output = BSDDIALOG_TIMEOUT;
 				break;
 			}
@@ -575,13 +587,69 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 				buttupdate = true;
 			}
 			break;
+		case KEY_F(1):
+			if (conf.hfile == NULL)
+				break;
+			if (f1help(conf) != 0)
+				return BSDDIALOG_ERROR;
+			/* No break! the terminal size can change */
+		case KEY_RESIZE:
+			hide_widget(y, x, h, w,conf.shadow);
+
+			/*
+			 * Unnecessary, but, when the columns decrease the
+			 * following "refresh" seem not work
+			 */
+			refresh();
+			
+			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+				return BSDDIALOG_ERROR;
+			if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
+				return BSDDIALOG_ERROR;
+			if (bar_checksize(text, h, w, &bs) != 0)
+				return BSDDIALOG_ERROR;
+			if (set_widget_position(conf, &y, &x, h, w) != 0)
+				return BSDDIALOG_ERROR;
+		
+			wclear(shadow);
+			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
+			wresize(shadow, h, w);
+
+			wclear(widget);
+			mvwin(widget, y, x);
+			wresize(widget, h, w);
+
+			htextpad = 1;
+			wclear(textpad);
+			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+
+			sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
+			wclear(bar);
+			mvwin(bar, y + h - 6, x + 1 + BARMARGIN);
+			wresize(bar, 3, sizebar + 2);
+
+			if(update_widget_withtextpad(conf, shadow, widget, h, w,
+			    RAISED, textpad, &htextpad, text, true) != 0)
+				return BSDDIALOG_ERROR;
+			
+			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
+
+			barupdate = true;
+			buttupdate = true;
+			break;
+		default:
+			for (i = 0; i < (int) bs.nbuttons; i++)
+				if (tolower(input) == tolower((bs.label[i])[0])) {
+					output = bs.value[i];
+					loop = false;
+			}
 		}
 	}
 
 	nodelay(stdscr, FALSE);
 
 	delwin(bar);
-	end_widget(conf, widget, rows, cols, shadow);
+	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
 	return output;
 }
