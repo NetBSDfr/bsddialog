@@ -231,17 +231,18 @@ void usage(void)
 
 int main(int argc, char *argv[argc])
 {
-	char *text, *backtitle_flag, *theme_flag;
+	char *text, *backtitle_flag;
 	int input, rows, cols, output, getH, getW;
 	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
 	bool ignore_flag, print_maxsize_flag;
 	struct winsize ws;
 	struct bsddialog_conf conf;
+	enum bsddialog_default_theme theme_flag;
 
 	bsddialog_initconf(&conf);
 
 	backtitle_flag = NULL;
-	theme_flag = NULL;
+	theme_flag = -1;
 	output_fd_flag = STDERR_FILENO;
 	print_maxsize_flag = false;
 	ignore_flag = false;
@@ -520,7 +521,19 @@ int main(int argc, char *argv[argc])
 			output_fd_flag = STDOUT_FILENO;
 			break;
 		case THEME:
-			theme_flag = optarg;
+			if (strcmp(optarg, "bsddialog") == 0)
+				theme_flag = BSDDIALOG_THEME_BSDDIALOG;
+			else if (strcmp(optarg, "blackwhite") == 0)
+				theme_flag = BSDDIALOG_THEME_BLACKWHITE;
+			else if (strcmp(optarg, "dialog") == 0)
+				theme_flag = BSDDIALOG_THEME_DIALOG;
+			else if (strcmp(optarg, "magenta") == 0)
+				theme_flag = BSDDIALOG_THEME_MAGENTA;
+			else {
+				printf("Unknow theme, possible values: ");
+				printf("bsddialog, blackwhite, dialog, magenta");
+				return (1);
+			}
 			break;
 		case TIME_FORMAT:
 			time_fmt_flag = optarg;
@@ -632,18 +645,8 @@ int main(int argc, char *argv[argc])
 		return (BSDDIALOG_ERROR);
 	}
 
-	if (theme_flag != NULL) {
-		if (strcmp(theme_flag, "bsddialog") == 0)
-			bsddialog_set_default_theme(BSDDIALOG_THEME_BSDDIALOG);
-		else if (strcmp(theme_flag, "blackwhite") == 0)
-			bsddialog_set_default_theme(BSDDIALOG_THEME_BLACKWHITE);
-		else if (strcmp(theme_flag, "dialog") == 0)
-			bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG);
-		else if (strcmp(theme_flag, "magenta") == 0)
-			bsddialog_set_default_theme(BSDDIALOG_THEME_MAGENTA);
-		else
-			bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG);
-	}
+	if (theme_flag >= 0)
+		bsddialog_set_default_theme(theme_flag);
 
 	if (backtitle_flag != NULL)
 		bsddialog_backtitle(conf, backtitle_flag);
