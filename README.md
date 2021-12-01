@@ -111,7 +111,7 @@ Use Cases:
  infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
  checklist, radiolist, menu, mixedlist, treeview, textbox, mixedgauge, datebox,
- timebox, gauge.
+ timebox, gauge, rangebox.
 
 
  Without resize:
@@ -166,7 +166,6 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 | Widget         | Status      | Note                                          |
 |--------------- | ----------- | ----------------------------------------------|
 | --pause        | In progress | todo autosize, resize, F1                     |
-| --rangebox     | In progress | todo autosize, resize, F1                     |
 
 
 To evaluate / Not planned in the short term:
