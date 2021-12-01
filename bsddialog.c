@@ -414,7 +414,7 @@ int main(int argc, char *argv[argc])
 		case HELP:
 			usage();
 			printf("\n");
-			printf("See \'man 1 bsddialog\' for more information.\n");
+			printf("Sorry no manual for now.\n");
 			return (BSDDIALOG_YESOK);
 		case HELP_BUTTON:
 			conf.button.help_button = true;
