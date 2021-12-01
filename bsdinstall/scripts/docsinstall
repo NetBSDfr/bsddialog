@@ -116,7 +116,8 @@ dialog_menu_main()
 	                             \"\$hline\"  \
 	                             $check_list
 	local selected
-	selected=$( eval $DIALOG \
+	#selected=$( eval $DIALOG \
+	selected=$( eval ../../bsddialog \
 		--title \"\$title\"             \
 		--backtitle \"\$btitle\"        \
 		--separate-output               \
