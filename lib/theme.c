@@ -47,7 +47,7 @@ static struct bsddialog_theme bsddialogtheme = {
 	.shadow.w        = 2,
 
 	.terminal.color  = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
-	.surroundtitle   = true,
+	.delimtitle   = true,
 	.titlecolor      = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.lineraisecolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.linelowercolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
@@ -90,7 +90,7 @@ static struct bsddialog_theme blackwhite = {
 	.shadow.w        = 2,
 
 	.terminal.color  = GET_COLOR(fg, bk),
-	.surroundtitle   = true,
+	.delimtitle   = true,
 	.titlecolor      = GET_COLOR(fg, bk),
 	.lineraisecolor  = GET_COLOR(fg, bk),
 	.linelowercolor  = GET_COLOR(fg, bk),
@@ -131,7 +131,7 @@ static struct bsddialog_theme dialogtheme = {
 	.shadow.w        = 2,
 
 	.terminal.color  = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
-	.surroundtitle   = false,
+	.delimtitle   = false,
 	.titlecolor      = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
 	.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_WHITE) | A_BOLD,
 	.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
@@ -172,7 +172,7 @@ static struct bsddialog_theme magentatheme = {
 	.shadow.w        = 2,
 
 	.terminal.color  = GET_COLOR(COLOR_WHITE, COLOR_MAGENTA) | A_BOLD,
-	.surroundtitle   = true,
+	.delimtitle   = true,
 	.titlecolor      = GET_COLOR(COLOR_RED,   COLOR_CYAN),
 	.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
 	.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
@@ -214,7 +214,7 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 	t.shadow.w        = newtheme.shadow.w;
 
 	t.terminal.color  = newtheme.terminal.color;
-	t.surroundtitle   = newtheme.surroundtitle;
+	t.delimtitle      = newtheme.delimtitle;
 	t.titlecolor      = newtheme.titlecolor;
 	t.lineraisecolor  = newtheme.lineraisecolor;
 	t.linelowercolor  = newtheme.linelowercolor;

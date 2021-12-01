@@ -683,7 +683,7 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 	draw_borders(conf, widget, h, w, elev);
 
 	if (conf.title != NULL) {
-		if (t.surroundtitle && conf.no_lines == false) {
+		if (t.delimtitle && conf.no_lines == false) {
 			wattron(widget, colorsurroundtitle);
 			mvwaddch(widget, 0, w/2 - strlen(conf.title)/2 - 1, rtee);
 			wattroff(widget, colorsurroundtitle);
@@ -691,7 +691,7 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 		wattron(widget, t.titlecolor);
 		mvwaddstr(widget, 0, w/2 - strlen(conf.title)/2, conf.title);
 		wattroff(widget, t.titlecolor);
-		if (t.surroundtitle && conf.no_lines == false) {
+		if (t.delimtitle && conf.no_lines == false) {
 			wattron(widget, colorsurroundtitle);
 			waddch(widget, ltee);
 			wattroff(widget, colorsurroundtitle);

@@ -51,7 +51,7 @@ struct bsddialog_theme {
 		unsigned int w;
 	} shadow;
 
-	bool surroundtitle;
+	bool delimtitle;
 	int titlecolor;
 	int lineraisecolor;
 	int linelowercolor;
