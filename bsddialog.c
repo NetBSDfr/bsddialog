@@ -987,7 +987,7 @@ print_menu_items(struct bsddialog_conf conf, int output, int nitems,
 int buildlist_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[100];
+	struct bsddialog_menuitem items[1024];
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1014,7 +1014,7 @@ int buildlist_builder(BUILDER_ARGS)
 int checklist_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[100];
+	struct bsddialog_menuitem items[1024];
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1039,7 +1039,7 @@ int checklist_builder(BUILDER_ARGS)
 int menu_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[100];
+	struct bsddialog_menuitem items[1024];
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1064,7 +1064,7 @@ int menu_builder(BUILDER_ARGS)
 int radiolist_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[100];
+	struct bsddialog_menuitem items[1024];
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1089,7 +1089,7 @@ int radiolist_builder(BUILDER_ARGS)
 int treeview_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[100];
+	struct bsddialog_menuitem items[1024];
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1133,7 +1133,7 @@ print_form_items(struct bsddialog_conf conf, int output, int nfields,
 int form_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nfields, formlen, valuelen;
-	struct bsddialog_formfield fields[100];
+	struct bsddialog_formfield fields[1024];
 	unsigned int flags = 0;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
