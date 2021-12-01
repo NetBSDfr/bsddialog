@@ -351,7 +351,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
-			perc = ((float)(currvalue - min)*100) / ((float)positions-1);
+			perc = ((float)(currvalue - min)*100) / (positions-1);
 			draw_perc_bar(bar, 1, 1, sizebar, perc, true, currvalue);
 			barupdate = false;
 			wrefresh(bar);
@@ -457,7 +457,7 @@ int bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols, 
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (barupdate) {
-			perc = ((float)(currvalue*100)) / ((float)sec);
+			perc = (float)currvalue * 100 / sec;
 			draw_perc_bar(bar, 1, 1, sizebar, perc, true, currvalue);
 			barupdate = false;
 			wrefresh(bar);
