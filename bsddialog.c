@@ -41,7 +41,7 @@
 
 enum OPTS {
 	/* Common options */
-	ASCII_LINES,
+	ASCII_LINES = '?' + 1,
 	ASPECT_RATIO,
 	BACKTITLE,
 	BEGIN_X,
@@ -601,10 +601,10 @@ int main(int argc, char *argv[argc])
 			break;
 		/* Error */
 		default:
-			if (ignore_flag == false) {
-				usage();
-				return (BSDDIALOG_ERROR);
-			}
+			if (ignore_flag == true) 
+				break;
+			usage();
+			return (BSDDIALOG_ERROR);
 		}
 	}
 	argc -= optind;
