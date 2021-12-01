@@ -78,7 +78,8 @@ dialog_hostname()
 	f_dialog_inputbox_size height width \
 		"$DIALOG_TITLE" "$DIALOG_BACKTITLE" "$prompt" "$value" "$hline"
 
-	$DIALOG \
+	#$DIALOG \
+	../../bsddialog \
 		--title "$DIALOG_TITLE"         \
 		--backtitle "$DIALOG_BACKTITLE" \
 		--hline "$hline"                \
