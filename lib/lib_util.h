@@ -107,10 +107,6 @@ int
 set_widget_position(struct bsddialog_conf conf, int *y, int *x, int h, int w);
 
 /* widget builders */
-void
-print_text(struct bsddialog_conf conf, WINDOW *pad, int starty, int minx,
-    int maxx, char *text);
-
 int
 print_textpad(struct bsddialog_conf conf, WINDOW *pad, int *rows, int cols,
     char *text);
@@ -138,13 +134,5 @@ update_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 void
 end_widget_withtextpad(struct bsddialog_conf conf, WINDOW *window, int h, int w,
     WINDOW *textpad, WINDOW *shadow);
-
-int
-new_widget(struct bsddialog_conf conf, WINDOW **widget, int *y, int *x, 
-    char *text, int *h, int *w, WINDOW **shadow, bool buttons);
-
-void
-end_widget(struct bsddialog_conf conf, WINDOW *window, int h, int w, 
-    WINDOW *shadow);
 
 #endif
