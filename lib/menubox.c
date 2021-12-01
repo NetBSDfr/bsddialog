@@ -294,25 +294,25 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 {
 	int color, colorname, linech;
 
-	color = curr ? t.curritemcolor : t.itemcolor;
-	colorname = curr ? t.currtagcolor : t.tagcolor;
+	color = curr ? t.menu.f_desccolor : t.menu.desccolor;
+	colorname = curr ? t.menu.f_namecolor : t.menu.namecolor;
 
 	if (mode == SEPARATORMODE) {
 		if (conf.no_lines == false) {
-			wattron(pad, t.itemcolor);
+			wattron(pad, t.menu.desccolor);
 			linech = conf.ascii_lines ? '-' : ACS_HLINE;
 			mvwhline(pad, y, 0, linech, pos.line);
-			wattroff(pad, t.itemcolor);
+			wattroff(pad, t.menu.desccolor);
 		}
 		wmove(pad, y, pos.line/2 - (strlen(item.name)+strlen(item.desc))/2);
-		wattron(pad, t.namesepcolor);
+		wattron(pad, t.menu.namesepcolor);
 		waddstr(pad, item.name);
-		wattroff(pad, t.namesepcolor);
+		wattroff(pad, t.menu.namesepcolor);
 		if (strlen(item.name) > 0 && strlen(item.desc) > 0)
 			waddch(pad, ' ');
-		wattron(pad, t.descsepcolor);
+		wattron(pad, t.menu.descsepcolor);
 		waddstr(pad, item.desc);
-		wattroff(pad, t.descsepcolor);
+		wattroff(pad, t.menu.descsepcolor);
 		return;
 	}
 
@@ -339,7 +339,7 @@ drawitem(struct bsddialog_conf conf, WINDOW *pad, int y,
 	/* description */
 	if (conf.menu.no_items == false) {
 		if ((mode == BUILDLISTMODE || conf.menu.no_tags) && curr == false)
-			color = item.on ? t.tagcolor : t.itemcolor;
+			color = item.on ? t.menu.namecolor : t.menu.desccolor;
 		wattron(pad, color);
 		if (conf.menu.no_tags)
 			mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.desc);

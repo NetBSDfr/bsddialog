@@ -60,12 +60,14 @@ struct bsddialog_theme {
 
 	unsigned int texthmargin;
 
-	int curritemcolor;
-	int itemcolor;
-	int currtagcolor;
-	int tagcolor;
-	int namesepcolor;
-	int descsepcolor;
+	struct {
+		int f_namecolor;
+		int namecolor;
+		int f_desccolor;
+		int desccolor;
+		int namesepcolor;
+		int descsepcolor;
+	} menu;
 
 	struct {
 		int f_fieldcolor;
