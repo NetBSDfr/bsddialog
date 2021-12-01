@@ -229,35 +229,29 @@ get_buttons(struct bsddialog_conf conf, struct buttons *bs, char *yesoklabel,
 }
 
 /* Text */
+static bool is_ncurses_attr(char *text)
+{
+
+	if (strnlen(text, 3) < 3)
+		return false;
+
+	if (text[0] != '\\' || text[1] != 'Z')
+		return false;
+
+	return (strchr("nbBrRuU01234567", text[2]) == NULL ? false : true);
+}
+
 static bool check_set_ncurses_attr(WINDOW *win, char *text)
 {
-	bool isattr;
-	int colors[8] = {
-	    COLOR_BLACK,
-	    COLOR_RED,
-	    COLOR_GREEN,
-	    COLOR_YELLOW,
-	    COLOR_BLUE,
-	    COLOR_MAGENTA,
-	    COLOR_CYAN,
-	    COLOR_WHITE
-	};
-
-	if (text[0] == '\0' || text[0] != '\\')
-		return false;
-	if (text[1] == '\0' || text[1] != 'Z')
-		return false;
-	if (text[2] == '\0')
+	
+	if (is_ncurses_attr(text) == false)
 		return false;
 
-	if ((text[2] - 48) >= 0 && (text[2] - 48) < 8) {
-		// tocheck: import BSD_COLOR
-		// tofix color background
-		wattron(win, COLOR_PAIR(colors[text[2] - 48] * 8 + COLOR_WHITE + 1));
+	if ((text[2] - '0') >= 0 && (text[2] - '0') < 8) {
+		wattron(win, bsddialog_color( text[2] - '0', COLOR_WHITE) );
 		return true;
 	}
 
-	isattr = true;
 	switch (text[2]) {
 	case 'n':
 		wattrset(win, A_NORMAL);
@@ -280,31 +274,9 @@ static bool check_set_ncurses_attr(WINDOW *win, char *text)
 	case 'U':
 		wattroff(win, A_UNDERLINE);
 		break;
-	default:
-		isattr = false;
 	}
 
-	return isattr;
-}
-
-static bool is_ncurses_attr(char *text)
-{
-	bool isattr;
-
-	if (strnlen(text, 3) < 3)
-		return false;
-
-	if (text[0] != '\\' || text[1] != 'Z')
-		return false;
-
-	if ((text[2] - '0') >= 0 && (text[2] - '0') < 8)
-		return true;
-
-	isattr = text[2] == 'n' || text[2] == 'b' || text[2] == 'B' ||
-	    text[2] == 'r' || text[2] == 'R' || text[2] == 'u' ||
-	    text[2] == 'U';
-
-	return isattr;
+	return true;
 }
 
 static void
