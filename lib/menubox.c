@@ -444,14 +444,14 @@ update_menuwin(struct bsddialog_conf conf, WINDOW *menuwin, int h, int w,
 		draw_borders(conf, menuwin, h, w, LOWERED);
 
 		if (ymenupad > 0) {
-			wattron(menuwin, t.lineraisecolor);
+			wattron(menuwin, t.widget.lineraisecolor);
 			mvwprintw(menuwin, 0, 2, "^^");
-			wattroff(menuwin, t.lineraisecolor);
+			wattroff(menuwin, t.widget.lineraisecolor);
 		}
 		if ((int) (ymenupad + menurows) < totnitems) {
-			wattron(menuwin, t.linelowercolor);
+			wattron(menuwin, t.widget.linelowercolor);
 			mvwprintw(menuwin, h-1, 2, "vv");
-			wattroff(menuwin, t.linelowercolor);
+			wattroff(menuwin, t.widget.linelowercolor);
 		}
 
 		mvwprintw(menuwin, h-1, w-10, "%3d%%",
@@ -537,7 +537,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    menurows+2, w-4, LOWERED);
 
 	menupad = newpad(totnitems, pos.line);
-	wbkgd(menupad, t.widgetcolor);
+	wbkgd(menupad, t.widget.color);
 
 	getfirst_with_default(conf, ngroups, groups, &abs, &g, &rel);
 	ymenupad = 0;
@@ -927,8 +927,8 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	padscols = (w-5)/2 - 2;
 	leftpad  = newpad(nitems, pos.line);
 	rightpad = newpad(nitems, pos.line);
-	wbkgd(leftpad, t.widgetcolor);
-	wbkgd(rightpad, t.widgetcolor);
+	wbkgd(leftpad, t.widget.color);
+	wbkgd(rightpad, t.widget.color);
 
 	currH = 0;
 	currV = startleft ? LEFT : RIGHT;

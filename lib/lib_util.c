@@ -626,8 +626,8 @@ draw_borders(struct bsddialog_conf conf, WINDOW *win, int rows, int cols,
 			ts = bs = '-';
 			tl = tr = bl = br = ltee = rtee = '+';
 		}
-		leftcolor  = elev == RAISED ? t.lineraisecolor : t.linelowercolor;
-		rightcolor = elev == RAISED ? t.linelowercolor : t.lineraisecolor;
+		leftcolor  = elev == RAISED ? t.widget.lineraisecolor : t.widget.linelowercolor;
+		rightcolor = elev == RAISED ? t.widget.linelowercolor : t.widget.lineraisecolor;
 		wattron(win, leftcolor);
 		wborder(win, ls, rs, ts, bs, tl, tr, bl, br);
 		wattroff(win, leftcolor);
@@ -652,7 +652,7 @@ new_boxed_window(struct bsddialog_conf conf, int y, int x, int rows, int cols,
 		return NULL;
 	}
 
-	wbkgd(win, t.widgetcolor);
+	wbkgd(win, t.widget.color);
 
 	draw_borders(conf, win, rows, cols, elev);
 
@@ -674,7 +674,7 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 	ts = conf.ascii_lines ? '-' : ACS_HLINE;
 	ltee = conf.ascii_lines ? '+' : ACS_LTEE;
 	rtee = conf.ascii_lines ? '+' : ACS_RTEE;
-	colorsurroundtitle = elev == RAISED ? t.lineraisecolor : t.linelowercolor;
+	colorsurroundtitle = elev == RAISED ? t.widget.lineraisecolor : t.widget.linelowercolor;
 
 	if (shadow != NULL)
 		wnoutrefresh(shadow);
@@ -683,15 +683,15 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 	draw_borders(conf, widget, h, w, elev);
 
 	if (conf.title != NULL) {
-		if (t.delimtitle && conf.no_lines == false) {
+		if (t.widget.delimtitle && conf.no_lines == false) {
 			wattron(widget, colorsurroundtitle);
 			mvwaddch(widget, 0, w/2 - strlen(conf.title)/2 - 1, rtee);
 			wattroff(widget, colorsurroundtitle);
 		}
-		wattron(widget, t.titlecolor);
+		wattron(widget, t.widget.titlecolor);
 		mvwaddstr(widget, 0, w/2 - strlen(conf.title)/2, conf.title);
-		wattroff(widget, t.titlecolor);
-		if (t.delimtitle && conf.no_lines == false) {
+		wattroff(widget, t.widget.titlecolor);
+		if (t.widget.delimtitle && conf.no_lines == false) {
 			wattron(widget, colorsurroundtitle);
 			waddch(widget, ltee);
 			wattroff(widget, colorsurroundtitle);
@@ -699,26 +699,26 @@ draw_widget_withtextpad(struct bsddialog_conf conf, WINDOW *shadow,
 	}
 
 	if (conf.hline != NULL) {
-		wattron(widget, t.bottomtitlecolor);
+		wattron(widget, t.widget.bottomtitlecolor);
 		wmove(widget, h - 1, w/2 - strlen(conf.hline)/2 - 1);
 		waddch(widget, '[');
 		waddstr(widget, conf.hline);
 		waddch(widget, ']');
-		wattroff(widget, t.bottomtitlecolor);
+		wattroff(widget, t.widget.bottomtitlecolor);
 	}
 
 	//if (textpad == NULL && text != NULL) /* no pad, text null for textbox */
 	//	print_text(conf, widget, 1, 2, w-3, text);
 
 	if (buttons && conf.no_lines == false) {
-		wattron(widget, t.lineraisecolor);
+		wattron(widget, t.widget.lineraisecolor);
 		mvwaddch(widget, h-3, 0, ltee);
 		mvwhline(widget, h-3, 1, ts, w-2);
-		wattroff(widget, t.lineraisecolor);
+		wattroff(widget, t.widget.lineraisecolor);
 
-		wattron(widget, t.linelowercolor);
+		wattron(widget, t.widget.linelowercolor);
 		mvwaddch(widget, h-3, w-1, rtee);
-		wattroff(widget, t.linelowercolor);
+		wattroff(widget, t.widget.linelowercolor);
 	}
 
 	wnoutrefresh(widget);
@@ -792,7 +792,7 @@ new_widget_withtextpad(struct bsddialog_conf conf, WINDOW **shadow,
 				delwin(*shadow);
 			RETURN_ERROR("Cannot build the pad window for text");
 		}
-		wbkgd(*textpad, t.widgetcolor);
+		wbkgd(*textpad, t.widget.color);
 	}
 
 	error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w, elev,

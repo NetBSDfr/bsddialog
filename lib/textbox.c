@@ -99,7 +99,7 @@ bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols)
 	hpad = 1;
 	wpad = 1;
 	pad = newpad(hpad, wpad);
-	wbkgd(pad, t.widgetcolor);
+	wbkgd(pad, t.widget.color);
 	i = 0;
 	while(fgets(buf, BUFSIZ, fp) != NULL) {
 		if ((int) strlen(buf) > wpad) {

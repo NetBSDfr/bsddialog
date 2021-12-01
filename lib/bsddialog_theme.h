@@ -51,12 +51,14 @@ struct bsddialog_theme {
 		unsigned int w;
 	} shadow;
 
-	bool delimtitle;
-	int titlecolor;
-	int lineraisecolor;
-	int linelowercolor;
-	int widgetcolor;
-	int bottomtitlecolor;
+	struct {
+		int  color;
+		bool delimtitle;
+		int  titlecolor;
+		int  lineraisecolor;
+		int  linelowercolor;
+		int  bottomtitlecolor;
+	} widget;
 
 	struct {
 		unsigned int hmargin;
