@@ -146,9 +146,10 @@ int bsddialog_init(void);
 int bsddialog_end(void);
 int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 const char *bsddialog_geterror(void);
+void bsddialog_initconf(struct bsddialog_conf *conf);
+/* funcs for tzsetup, they will be deleted in the future */
 int bsddialog_terminalheight(void);
 int bsddialog_terminalwidth(void);
-void bsddialog_initconf(struct bsddialog_conf *conf);
 
 /* widgets */
 int
