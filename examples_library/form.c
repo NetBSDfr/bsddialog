@@ -15,17 +15,17 @@
 
 #include <bsddialog.h>
 
-#define HIDDEN  BSDDIALOG_FIELDHIDDEN
-#define RO      BSDDIALOG_FIELDREADONLY
+#define H   BSDDIALOG_FIELDHIDDEN
+#define RO  BSDDIALOG_FIELDREADONLY
 
 int main()
 {
 	int i, output;
 	struct bsddialog_conf conf;
-	struct bsddialog_formfield fields[3] = {
-		{"Input:",    1, 1, "value",     1, 11, 20, 50, 0      ,NULL},
-		{"Input:",    2, 1, "read only", 2, 11, 20, 50, RO     ,NULL},
-		{"Password:", 3, 1, "",          3, 11, 20, 50, HIDDEN ,NULL}
+	struct bsddialog_formitem items[3] = {
+		{"Input:",    1, 1, "value",     1, 11, 20, 50, NULL, 0,  "desc 1"},
+		{"Input:",    2, 1, "read only", 2, 11, 20, 50, NULL, RO, "desc 2"},
+		{"Password:", 3, 1, "",          3, 11, 20, 50, NULL, H,  "desc 3"}
 	};
 
 	bsddialog_initconf(&conf);
@@ -35,17 +35,16 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_form(conf, "Forms", 20, 50, 3, 3, fields);
+	output = bsddialog_form(conf, "Example", 10, 50, 3, 3, items);
 
 	bsddialog_end();
 	
 	if (output == BSDDIALOG_ERROR)
 		printf("Error: %s", bsddialog_geterror());
 
-	printf("Values:\n");
 	for (i=0; i<3; i++) {
-		printf("%s \"%s\"\n", fields[i].label, fields[i].value);
-		free(fields[i].value);
+		printf("%s \"%s\"\n", items[i].label, items[i].value);
+		free(items[i].value);
 	}
 	
 	return output;

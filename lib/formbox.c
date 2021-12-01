@@ -93,8 +93,8 @@ static void shiftleft(struct myfield *mf)
 
 static int
 form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
-    struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nfields,
-    struct bsddialog_formfield *fields)
+    struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
+    struct bsddialog_formitem *items)
 {
 	bool loop, buttupdate, informwin = true;
 	int i, input, output;
@@ -123,9 +123,9 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 				break;
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			for (i=0; i<nfields; i++) {
+			for (i=0; i<nitems; i++) {
 				mf = GETMYFIELD(cfield[i]);
-				fields[i].value = strdup(mf->buf);
+				items[i].value = strdup(mf->buf);
 			}
 			loop = false;
 			break;
@@ -177,7 +177,7 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 			}
 			break;
 		case KEY_UP:
-			if (nfields < 2)
+			if (nitems < 2)
 				break;
 			set_field_fore(current_field(form), t.form.fieldcolor);
 			set_field_back(current_field(form), t.form.fieldcolor);
@@ -187,7 +187,7 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 			set_field_back(current_field(form), t.form.f_fieldcolor);
 			break;
 		case KEY_DOWN:
-			if (nfields < 2)
+			if (nitems < 2)
 				break;
 			set_field_fore(current_field(form), t.form.fieldcolor);
 			set_field_back(current_field(form), t.form.fieldcolor);
@@ -253,7 +253,7 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 
 static void
 form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
-    char *text, int linelen, unsigned int *formheight, int nfields,
+    char *text, int linelen, unsigned int *formheight, int nitems,
     struct buttons bs)
 {
 	int textrow, menusize;
@@ -279,9 +279,9 @@ form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*h = HBORDERS + 2 /* buttons */ + textrow;
 
 		if (*formheight == 0) {
-			*h += nfields + 2;
+			*h += nitems + 2;
 			*h = MIN(*h, widget_max_height(conf));
-			menusize = MIN(nfields + 2, *h - (HBORDERS + 2 + textrow));
+			menusize = MIN(nitems + 2, *h - (HBORDERS + 2 + textrow));
 			menusize -=2;
 			*formheight = menusize < 0 ? 0 : menusize;
 		}
@@ -293,12 +293,12 @@ form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 	}
 	else {
 		if (*formheight == 0)
-			*formheight = MIN(rows-6-textrow, nfields);
+			*formheight = MIN(rows-6-textrow, nitems);
 	}
 }
 
 static int
-form_checksize(int rows, int cols, char *text, int formheight, int nfields,
+form_checksize(int rows, int cols, char *text, int formheight, int nitems,
     struct buttons bs)
 {
 	int mincols, textrow, formrows;
@@ -316,11 +316,11 @@ form_checksize(int rows, int cols, char *text, int formheight, int nfields,
 
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
-	if (nfields > 0 && formheight == 0)
+	if (nitems > 0 && formheight == 0)
 		RETURN_ERROR("fields > 0 but formheight == 0, probably "\
 		    "terminal too small");
 
-	formrows = nfields > 0 ? 3 : 0;
+	formrows = nitems > 0 ? 3 : 0;
 	if (rows < 2  + 2 + formrows + textrow)
 		RETURN_ERROR("Few lines for this menus");
 
@@ -329,8 +329,8 @@ form_checksize(int rows, int cols, char *text, int formheight, int nfields,
 
 int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int formheight, unsigned int nfields,
-    struct bsddialog_formfield *fields)
+    unsigned int formheight, unsigned int nitems,
+    struct bsddialog_formitem *items)
 {
 	WINDOW *widget, *formwin, *textpad, *shadow;
 	int i, output, color, y, x, h, w, htextpad;
@@ -341,32 +341,32 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	unsigned long maxline;
 
 	/* disable form scrolling like dialog */
-	if (formheight < nfields)
-		formheight = nfields;
+	if (formheight < nitems)
+		formheight = nitems;
 
 	maxline = 0;
-	myfields = malloc(nfields * sizeof(struct myfield));
-	cfield = calloc(nfields + 1, sizeof(FIELD*));
-	for (i=0; i < (int)nfields; i++) {
-		cfield[i] = new_field(1, fields[i].formlen, fields[i].yform-1,
-		    fields[i].xform-1, 0, 0);
+	myfields = malloc(nitems * sizeof(struct myfield));
+	cfield = calloc(nitems + 1, sizeof(FIELD*));
+	for (i=0; i < (int)nitems; i++) {
+		cfield[i] = new_field(1, items[i].fieldlen, items[i].yfield-1,
+		    items[i].xfield-1, 0, 0);
 		field_opts_off(cfield[i], O_STATIC);
-		set_max_field(cfield[i], fields[i].maxvaluelen);
-		set_field_buffer(cfield[i], 0, fields[i].init);
+		set_max_field(cfield[i], items[i].maxvaluelen);
+		set_field_buffer(cfield[i], 0, items[i].init);
 
-		myfields[i].pos  = strlen(fields[i].init);
-		myfields[i].len  = strlen(fields[i].init);
-		myfields[i].size = fields[i].maxvaluelen;
+		myfields[i].pos  = strlen(items[i].init);
+		myfields[i].len  = strlen(items[i].init);
+		myfields[i].size = items[i].maxvaluelen;
 		myfields[i].buf  = malloc(myfields[i].size);
 		memset(myfields[i].buf, 0, myfields[i].size);
-		strcpy(myfields[i].buf, fields[i].init);
+		strcpy(myfields[i].buf, items[i].init);
 		set_field_userptr(cfield[i], &myfields[i]);
 
 		field_opts_off(cfield[i], O_AUTOSKIP);
 		field_opts_off(cfield[i], O_BLANK);
 		/* field_opts_off(field[i], O_BS_OVERLOAD); */
 
-		if (ISFIELDHIDDEN(fields[i])) {
+		if (ISFIELDHIDDEN(items[i])) {
 			/* field_opts_off(field[i], O_PUBLIC); old hidden */
 			myfields[i].secure = true;
 			myfields[i].securech = ' ';
@@ -375,7 +375,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		}
 		else myfields[i].secure = false;
 
-		if (ISFIELDREADONLY(fields[i])) {
+		if (ISFIELDREADONLY(items[i])) {
 			field_opts_off(cfield[i], O_EDIT);
 			field_opts_off(cfield[i], O_ACTIVE);
 			color = t.form.readonlycolor;
@@ -385,13 +385,13 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		set_field_fore(cfield[i], color);
 		set_field_back(cfield[i], color);
 
-		maxline = MAX(maxline, fields[i].xlabel + strlen(fields[i].label));
-		maxline = MAX(maxline, fields[i].xform + fields[i].formlen);
+		maxline = MAX(maxline, items[i].xlabel + strlen(items[i].label));
+		maxline = MAX(maxline, items[i].xfield + items[i].fieldlen);
 	}
 	cfield[i] = NULL;
 
 	 /* disable focus with 1 item (and inputbox or passwordbox) */
-	if (nfields == 1) {
+	if (nitems == 1) {
 		set_field_fore(cfield[0], t.widget.color);
 		set_field_back(cfield[0], t.widget.color);
 	}
@@ -402,8 +402,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
 	form_autosize(conf, rows, cols, &h, &w, text, maxline, &formheight,
-	    nfields, bs);
-	if (form_checksize(h, w, text, formheight, nfields, bs) != 0)
+	    nitems, bs);
+	if (form_checksize(h, w, text, formheight, nitems, bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
@@ -421,17 +421,17 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	form = new_form(cfield);
 	set_form_win(form, formwin);
 	/* should be formheight */
-	set_form_sub(form, derwin(formwin, nfields, w-4, 1, 1));
+	set_form_sub(form, derwin(formwin, nitems, w-4, 1, 1));
 	post_form(form);
 
-	for (i=0; i < (int)nfields; i++)
-		mvwaddstr(formwin, fields[i].ylabel, fields[i].xlabel, fields[i].label);
+	for (i=0; i < (int)nitems; i++)
+		mvwaddstr(formwin, items[i].ylabel, items[i].xlabel, items[i].label);
 
 	wrefresh(formwin);
 
 	do {
 		output = form_handler(conf, widget, h-2, w, bs, formwin, form,
-		    cfield, nfields, fields);
+		    cfield, nitems, items);
 
 		if(update_widget_withtextpad(conf, shadow, widget, h, w,
 		    RAISED, textpad, &htextpad, text, true) != 0)
@@ -449,7 +449,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	unpost_form(form);
 	free_form(form);
-	for (i=0; i < (int)nfields; i++) {
+	for (i=0; i < (int)nitems; i++) {
 		free_field(cfield[i]);
 		free(myfields[i].buf);
 	}

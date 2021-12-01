@@ -124,20 +124,20 @@ struct bsddialog_menugroup {
 	struct bsddialog_menuitem *items;
 };
 
-struct bsddialog_formfield {
+struct bsddialog_formitem {
 	char *label;
 	unsigned int ylabel;
 	unsigned int xlabel;
 
 	char *init;
-	unsigned int yform;
-	unsigned int xform;
-	unsigned int formlen;
+	unsigned int yfield;
+	unsigned int xfield;
+	unsigned int fieldlen;
 	unsigned int maxvaluelen;
+	char *value; /* allocated memory, to free */
 #define BSDDIALOG_FIELDHIDDEN   0x1
 #define BSDDIALOG_FIELDREADONLY 0x2
 	unsigned int flags;
-	char *value; /* allocated memory, to free */
 
 	char *bottomdesc; /* unimplemented for now */
 };
@@ -168,8 +168,8 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 int
 bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
-    unsigned int formheight, unsigned int nfields,
-    struct bsddialog_formfield *fields);
+    unsigned int formheight, unsigned int nitems, 
+    struct bsddialog_formitem *items);
 
 int
 bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
