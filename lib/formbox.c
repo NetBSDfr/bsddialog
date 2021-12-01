@@ -412,8 +412,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
-	    y + h - formheight, x + 1 + w - t.texthmargin);
+	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
+	    y + h - formheight, x + 1 + w - t.text.hmargin);
 	
 	formwin = new_boxed_window(conf, y + h - 3 - formheight -2, x +1,
 	    formheight+2, w-2, LOWERED);
@@ -440,8 +440,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 		draw_buttons(widget, h-2, w, bs, true);
 		wrefresh(widget);
 
-		prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
-		    y + h - formheight, x + 1 + w - t.texthmargin);
+		prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
+		    y + h - formheight, x + 1 + w - t.text.hmargin);
 
 		draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
 		/* wrefresh(formwin); */

@@ -530,8 +530,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
-	    y + h - menurows, x + 1 + w - t.texthmargin);
+	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
+	    y + h - menurows, x + 1 + w - t.text.hmargin);
 
 	menuwin = new_boxed_window(conf, y + h - 5 - menurows, x + 2,
 	    menurows+2, w-4, LOWERED);
@@ -644,7 +644,7 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 			htextpad = 1;
 			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)
@@ -653,8 +653,8 @@ do_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 			draw_buttons(widget, h-2, w, bs, true);
 			wrefresh(widget);
 
-			prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
-			    y + h - menurows, x + 1 + w - t.texthmargin);
+			prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
+			    y + h - menurows, x + 1 + w - t.text.hmargin);
 
 			wclear(menuwin);
 			mvwin(menuwin, y + h - 5 - menurows, x + 2);
@@ -910,8 +910,8 @@ bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	prefresh(textpad, 0, 0, y + 1, x + 1 + t.texthmargin,
-	    y + h - menurows, x + 1 + w - t.texthmargin);
+	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
+	    y + h - menurows, x + 1 + w - t.text.hmargin);
 
 	winsy = y + h - 5 - menurows;
 	leftwinx = x+2;

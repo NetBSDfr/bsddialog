@@ -53,7 +53,7 @@ static struct bsddialog_theme bsddialogtheme = {
 	.linelowercolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.widgetcolor     = GET_COLOR(COLOR_BLACK,  bgwidget),
 
-	.texthmargin     = 1,
+	.text.hmargin    = 1,
 
 	.menu.f_desccolor= GET_COLOR(COLOR_WHITE,  bgcurr),
 	.menu.desccolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
@@ -96,7 +96,7 @@ static struct bsddialog_theme blackwhite = {
 	.linelowercolor  = GET_COLOR(fg, bk),
 	.widgetcolor     = GET_COLOR(fg, bk),
 
-	.texthmargin     = 1,
+	.text.hmargin    = 1,
 
 	.menu.f_desccolor= GET_COLOR(fg, bk) | A_REVERSE,
 	.menu.desccolor  = GET_COLOR(fg, bk),
@@ -137,7 +137,7 @@ static struct bsddialog_theme dialogtheme = {
 	.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 	.widgetcolor     = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 
-	.texthmargin     = 1,
+	.text.hmargin    = 1,
 
 	.menu.f_desccolor= GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
 	.menu.desccolor  = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
@@ -178,7 +178,7 @@ static struct bsddialog_theme magentatheme = {
 	.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 	.widgetcolor     = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 
-	.texthmargin     = 1,
+	.text.hmargin    = 1,
 
 	.menu.f_desccolor= GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
 	.menu.desccolor  = GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD,
@@ -220,7 +220,7 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 	t.linelowercolor  = newtheme.linelowercolor;
 	t.widgetcolor     = newtheme.widgetcolor;
 
-	t.texthmargin     = newtheme.texthmargin;
+	t.text.hmargin     = newtheme.text.hmargin;
 
 	t.menu.f_desccolor= newtheme.menu.f_desccolor;
 	t.menu.desccolor  = newtheme.menu.desccolor;

@@ -58,7 +58,9 @@ struct bsddialog_theme {
 	int widgetcolor;
 	int bottomtitlecolor;
 
-	unsigned int texthmargin;
+	struct {
+		unsigned int hmargin;
+	} text;
 
 	struct {
 		int f_namecolor;

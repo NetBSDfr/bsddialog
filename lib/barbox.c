@@ -104,7 +104,7 @@ bar_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		/* bar size */
 		*w = MAX(*w, MINWIDTH);
 		/* text size*/
-		*w = MAX((int)(maxline + VBORDERS + t.texthmargin * 2), *w);
+		*w = MAX((int)(maxline + VBORDERS + t.text.hmargin * 2), *w);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf));
 	}
@@ -170,8 +170,8 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 	mainloop = true;
 	while (mainloop) {
 		wrefresh(widget);
-		prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-4,
-		    x+w-1-t.texthmargin);
+		prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-4,
+		    x+w-1-t.text.hmargin);
 		draw_perc_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
 
@@ -204,7 +204,7 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 			strcpy(pntext, input);
 			pntext += strlen(input);
 		}
-		print_textpad(conf, textpad, &htextpad, w-2-t.texthmargin*2,
+		print_textpad(conf, textpad, &htextpad, w-2-t.text.hmargin*2,
 		    ntext);
 	}
 
@@ -354,8 +354,8 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
-			    x+w-1-t.texthmargin);
+	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
+			    x+w-1-t.text.hmargin);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 	bigchange = MAX(1, sizebar/10);
@@ -471,7 +471,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 			htextpad = 1;
 			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 			bigchange = MAX(1, sizebar/10);
@@ -483,8 +483,8 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 			    RAISED, textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 
-			prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
-			    x+w-1-t.texthmargin);
+			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
+			    x+w-1-t.text.hmargin);
 			
 			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
 
@@ -533,8 +533,8 @@ bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
 	    &textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 	
-	prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
-	    x+w-1-t.texthmargin);
+	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
+	    x+w-1-t.text.hmargin);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARMARGIN, 3,
@@ -630,7 +630,7 @@ bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 			htextpad = 1;
 			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 			wclear(bar);
@@ -641,8 +641,8 @@ bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
 			    RAISED, textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 
-			prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-7, 
-			    x+w-1-t.texthmargin);
+			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
+			    x+w-1-t.text.hmargin);
 			
 			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
 

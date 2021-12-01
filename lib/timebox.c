@@ -63,8 +63,8 @@ datetime_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
 		*w += bs.nbuttons * bs.sizebutton;
 		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 		/* text size */
-		line = maxline + VBORDERS + t.texthmargin * 2;
-		line = MAX(line, (int) (maxword + VBORDERS + t.texthmargin * 2));
+		line = maxline + VBORDERS + t.text.hmargin * 2;
+		line = MAX(line, (int) (maxword + VBORDERS + t.text.hmargin * 2));
 		*w = MAX(*w, line);
 		/* date windows */
 		*w = MAX(*w, minw);
@@ -245,7 +245,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 
 			htextpad = 1;
 			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)
@@ -479,7 +479,7 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 			htextpad = 1;
 			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)

@@ -67,8 +67,8 @@ message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
 		*w += bs.nbuttons * bs.sizebutton;
 		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 		/* text size */
-		line = MIN(maxline + VBORDERS + t.texthmargin * 2, AUTO_WIDTH);
-		line = MAX(line, (int) (maxword + VBORDERS + t.texthmargin * 2));
+		line = MIN(maxline + VBORDERS + t.text.hmargin * 2, AUTO_WIDTH);
+		line = MAX(line, (int) (maxword + VBORDERS + t.text.hmargin * 2));
 		*w = MAX(*w, line);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf));
@@ -200,7 +200,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols,
 
 			htextpad = 1;
 			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.texthmargin * 2);
+			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
 			    RAISED, textpad, &htextpad, text, true) != 0)
