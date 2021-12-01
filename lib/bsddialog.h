@@ -135,12 +135,14 @@ struct bsddialog_formfield {
 	char *init;
 	unsigned int yform;
 	unsigned int xform;
-	int formlen;
+	unsigned int formlen;
 	unsigned int maxvaluelen;
 #define BSDDIALOG_FIELDHIDDEN   0x1
 #define BSDDIALOG_FIELDREADONLY 0x2
 	unsigned int flags;
 	char *value; /* allocated memory, to free */
+
+	char *bottomdesc; /* unimplemented for now */
 };
 
 int bsddialog_init(void);
