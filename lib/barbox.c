@@ -169,7 +169,8 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 	mainloop = true;
 	while (mainloop) {
 		wrefresh(widget);
-		prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-4, x+w-1-t.texthmargin);
+		prefresh(textpad, 0, 0, y+1, x+1+t.texthmargin, y+h-4,
+		    x+w-1-t.texthmargin);
 		draw_perc_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
 
@@ -202,7 +203,8 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 			strcpy(pntext, input);
 			pntext += strlen(input);
 		}
-		print_textpad(conf, textpad, &htextpad, w - 2 - t.texthmargin *2, ntext);
+		print_textpad(conf, textpad, &htextpad, w-2-t.texthmargin*2,
+		    ntext);
 	}
 
 	delwin(bar);
