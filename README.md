@@ -132,23 +132,13 @@ Use Cases:
 cols autosize inputbox: *bsddialog --inputbox test 8 0 init*
 
 
-**bsdinstall:**
-
-NULL string for *text*, ~~generic buttons for sade(8),~~ ~~complete forms,~~
-~~improve --timebox,~~ add --column-separator
-
-
 **Common Options:**
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
-| --column-separator *string*  |             | menu                            |
 | --cr-wrap                    | In progress | text                            |
-| --input-fd *fd*              |             | gauge                           |
 | --no-collapse                | In progress | text                            |
 | --no-nl-expand               | In progress | text                            |
-| --tab-correct                |             | textbox (and text)              |
-| --tab-len *n*                |             | textbox (and text)              |
 | --trim                       | In progress | text                            |
 
 
@@ -157,7 +147,8 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 --create-rc *file*, --iso-week, --no-mouse, --print-text-only *str h w*,
 --print-text-size *str h w*, --reorder, -scrollbar, --separate-widget *string*,
 --size-err, --timeout *secs*,--trace *filename*, --visit-items,
---week-start *day*, --keep-tite, --keep-window, --last-key, --no-kill
+--week-start *day*, --keep-tite, --keep-window, --last-key, --no-kill,
+--column-separator *string*, --input-fd *fd*, --tab-correct, --tab-len *n*
 
 
 **Widgets:**

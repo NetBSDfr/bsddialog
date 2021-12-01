@@ -59,7 +59,6 @@ struct bsddialog_conf {
 	int  *get_width;
 	char *hfile;
 	char *hline;
-	/* int input_fd; */
 	bool no_lines;
 	bool shadow;
 	int  sleep;
@@ -67,17 +66,15 @@ struct bsddialog_conf {
 
 	struct {
 		bool colors;
+		/* following members could be deletet in the future*/
 		bool cr_wrap;
 		bool no_collapse;
 		bool no_nl_expand;
-		/* bool tab_correct; textbox? */
-		/* int tab_len; textbox? */
 		bool trim;
 	} text;
 
 	struct {
 		bool align_left;
-		/* char *colums_separator; sade(8)? */
 		char *default_item;
 		bool no_items;
 		bool no_tags;

@@ -49,7 +49,6 @@ enum OPTS {
 	CANCEL_LABEL,
 	CLEAR,
 	COLORS,
-	/*COLUMN_SEPARATOR,*/
 	CR_WRAP,
 	DATE_FORMAT,
 	DEFAULTNO,
@@ -66,7 +65,6 @@ enum OPTS {
 	HFILE,	
 	HLINE,
 	IGNORE,
-	/*INPUT_FD,*/
 	INSECURE,
 	ITEM_HELP,
 	ITEM_PREFIX,
@@ -96,8 +94,6 @@ enum OPTS {
 	SLEEP,
 	STDERR,
 	STDOUT,
-	/*TAB_CORRECT,*/
-	/*TAB_LEN,*/
 	THEME,
 	TIME_FORMAT,
 	TITLE,
@@ -269,7 +265,6 @@ int main(int argc, char *argv[argc])
 	    {"cancel-label",    required_argument, NULL, CANCEL_LABEL },
 	    {"clear",           no_argument,       NULL, CLEAR },
 	    {"colors",          no_argument,       NULL, COLORS },
-	    /*{"column-separator", required_argument, NULL, COLUMN_SEPARATOR },*/
 	    {"cr-wrap",         no_argument,       NULL, CR_WRAP },
 	    {"date-format",     required_argument, NULL, DATE_FORMAT },
 	    {"defaultno",       no_argument,       NULL, DEFAULTNO },
@@ -286,7 +281,6 @@ int main(int argc, char *argv[argc])
 	    {"hfile",           required_argument, NULL, HFILE },
 	    {"hline",           required_argument, NULL, HLINE },
 	    {"ignore",          no_argument,       NULL, IGNORE },
-	    /*{"input-fd",     required_argument, NULL, INPUT_FD },*/
 	    {"insecure",        no_argument,       NULL, INSECURE },
 	    {"item-help",       no_argument,       NULL, ITEM_HELP },
 	    {"max-input",       required_argument, NULL, MAX_INPUT },
@@ -315,8 +309,6 @@ int main(int argc, char *argv[argc])
 	    {"sleep",           required_argument, NULL, SLEEP },
 	    {"stderr",          no_argument,       NULL, STDERR },
 	    {"stdout",          no_argument,       NULL, STDOUT },
-	    /*{"tab-correct",  no_argument,       NULL, TAB_CORRECT },*/
-	    /*{"tab-len",      required_argument, NULL, TAB_LEN },*/
 	    {"theme_flag",      required_argument, NULL, THEME },
 	    {"time-format",     required_argument, NULL, TIME_FORMAT },
 	    {"title",           required_argument, NULL, TITLE },
