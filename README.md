@@ -55,6 +55,24 @@ Examples utility:
 % ./bsddialog --backtitle "TITLE" --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % ./bsddialog --extra-button --help-button --defaultno --yesno "Hello World!" 0 0
 ```
+and
+```
+% sh ./examples_utility/buildlist.sh
+% sh ./examples_utility/checklist.sh
+% sh ./examples_utility/form.sh
+% sh ./examples_utility/gauge.sh
+% sh ./examples_utility/infobox.sh
+% sh ./examples_utility/inputbox.sh
+% sh ./examples_utility/menu.sh
+% sh ./examples_utility/mixedform.sh
+% sh ./examples_utility/mixedgauge.sh
+% sh ./examples_utility/msgbox.sh
+% sh ./examples_utility/passwordbox.sh
+% sh ./examples_utility/passwordform.sh
+% sh ./examples_utility/radiolist.sh
+% sh ./examples_utility/treeview.sh
+% sh ./examples_utility/yesno.sh
+```
 
 Examples library:
 ```
