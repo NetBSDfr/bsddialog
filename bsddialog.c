@@ -1169,15 +1169,15 @@ int inputbox_builder(BUILDER_ARGS)
 	int output;
 	struct bsddialog_formitem item;
 
-	item.label	= "";
-	item.ylabel	= 0;
-	item.xlabel	= 0;
-	item.init	= argc > 0 ? argv[0] : "";
-	item.yfield	= 1;
-	item.xfield	= 1;
-	item.fieldlen	= cols-4;
+	item.label	 = "";
+	item.ylabel	 = 0;
+	item.xlabel	 = 0;
+	item.init	 = argc > 0 ? argv[0] : "";
+	item.yfield	 = 1;
+	item.xfield	 = 1;
+	item.fieldlen    = 2048;
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
-	item.flags	= 0;
+	item.flags	 = 0;
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(conf, output, 1, &item);
@@ -1202,15 +1202,15 @@ int mixedform_builder(BUILDER_ARGS)
 
 	nitems = argc / 9;
 	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[9*i];
-		items[i].ylabel   = atoi(argv[9*i+1]);
-		items[i].xlabel   = atoi(argv[9*i+2]);
-		items[i].init	   = argv[9*i+3];
-		items[i].yfield	   = atoi(argv[9*i+4]);
-		items[i].xfield	   = atoi(argv[9*i+5]);
-		items[i].fieldlen  = atoi(argv[9*i+6]);
-		items[i].maxvaluelen  = atoi(argv[9*i+7]);
-		items[i].flags = atoi(argv[9*i+8]);
+		items[i].label	     = argv[9*i];
+		items[i].ylabel      = atoi(argv[9*i+1]);
+		items[i].xlabel      = atoi(argv[9*i+2]);
+		items[i].init	     = argv[9*i+3];
+		items[i].yfield	     = atoi(argv[9*i+4]);
+		items[i].xfield	     = atoi(argv[9*i+5]);
+		items[i].fieldlen    = atoi(argv[9*i+6]);
+		items[i].maxvaluelen = atoi(argv[9*i+7]);
+		items[i].flags       = atoi(argv[9*i+8]);
 	}
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
@@ -1225,15 +1225,15 @@ int passwordbox_builder(BUILDER_ARGS)
 	int output;
 	struct bsddialog_formitem item;
 
-	item.label	= "";
-	item.ylabel	= 0;
-	item.xlabel	= 0;
-	item.init	= argc > 0 ? argv[0] : "";
-	item.yfield	= 1;
-	item.xfield	= 1;
-	item.fieldlen	= cols-4;
+	item.label	 = "";
+	item.ylabel	 = 0;
+	item.xlabel	 = 0;
+	item.init	 = argc > 0 ? argv[0] : "";
+	item.yfield	 = 1;
+	item.xfield	 = 1;
+	item.fieldlen	 = cols-4;
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
-	item.flags	= BSDDIALOG_FIELDHIDDEN;
+	item.flags       = BSDDIALOG_FIELDHIDDEN;
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(conf, output, 1, &item);
@@ -1259,12 +1259,12 @@ int passwordform_builder(BUILDER_ARGS)
 
 	nitems = argc / 8;
 	for (i=0; i<nitems; i++) {
-		items[i].label	   = argv[8*i];
-		items[i].ylabel   = atoi(argv[8*i+1]);
-		items[i].xlabel   = atoi(argv[8*i+2]);
-		items[i].init	   = argv[8*i+3];
-		items[i].yfield	   = atoi(argv[8*i+4]);
-		items[i].xfield	   = atoi(argv[8*i+5]);
+		items[i].label	= argv[8*i];
+		items[i].ylabel = atoi(argv[8*i+1]);
+		items[i].xlabel = atoi(argv[8*i+2]);
+		items[i].init	= argv[8*i+3];
+		items[i].yfield	= atoi(argv[8*i+4]);
+		items[i].xfield	= atoi(argv[8*i+5]);
 
 		fieldlen = atoi(argv[8*i+6]);
 		items[i].fieldlen   = abs(fieldlen);
