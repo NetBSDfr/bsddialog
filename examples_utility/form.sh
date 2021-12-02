@@ -8,5 +8,12 @@
 # worldwide. This software is distributed without any warranty, see:
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+./bsddialog --title " form " --form "Hello World!" 12 40 5 \
+	Label1:	1	1	Value1		1	9	18	25 \
+	Label2:	2	1	Value2		2	9	18	25 \
+	Label3:	3	1	Value3		3	9	18	25 \
+	Label4:	4	1	Value4		4	9	18	25 \
+	Label5:	5	1	Value5		5	9	18	25 \
+	2>out.txt ; cat out.txt ; rm out.txt
 
-./bsddialog --sleep 5 --title infobox --infobox "Hello World!\n5 seconds" 6 20
+

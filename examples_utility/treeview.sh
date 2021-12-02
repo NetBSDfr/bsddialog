@@ -8,5 +8,10 @@
 # worldwide. This software is distributed without any warranty, see:
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-
-./bsddialog --sleep 5 --title infobox --infobox "Hello World!\n5 seconds" 6 20
+./bsddialog --title treeview --treeview "Hello World!" 15 40 5 \
+	0 "Tag 1" "DESC 1 xyz" off \
+	1 "Tag 2" "DESC 2 xyz" off \
+	2 "Tag 3" "DESC 3 xyz" on  \
+	1 "Tag 4" "DESC 4 xyz" off \
+	1 "Tag 5" "DESC 5 xyz" off \
+	2>out.txt ; cat out.txt ; rm out.txt

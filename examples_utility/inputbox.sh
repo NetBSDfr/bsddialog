@@ -8,5 +8,5 @@
 # worldwide. This software is distributed without any warranty, see:
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-
-./bsddialog --sleep 5 --title infobox --infobox "Hello World!\n5 seconds" 6 20
+./bsddialog --title " inputbox " --inputbox "Hello World!" 12 40 init \
+	2>out.txt ; cat out.txt ; rm out.txt

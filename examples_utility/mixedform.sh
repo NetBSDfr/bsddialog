@@ -8,5 +8,10 @@
 # worldwide. This software is distributed without any warranty, see:
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-
-./bsddialog --sleep 5 --title infobox --infobox "Hello World!\n5 seconds" 6 20
+./bsddialog --title " mixedform " --mixedform "Hello World!" 12 40 5 \
+	Label:    1	1	Entry		1	11	18	25	0 \
+	Label:    2	1	Read-Only	2	11	18	25	2 \
+	Password: 3	1	Value2		3	11	18	25	1 \
+	Password: 4	1	Value4		4	11	18	25	3 \
+	Label5:   5	1	Value5		5	11	18	25	4 \
+	2>out.txt ; cat out.txt ; rm out.txt
