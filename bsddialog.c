@@ -167,7 +167,7 @@ void usage(void)
 
 	printf("usage: bsddialog --help\n"
 	       "       bsddialog --version\n"
-	       "       bsddialog [--<common-options>] --<widget> <text> "
+	       "       bsddialog [--<common-opts>] --<widget> <text> "
 	       "<height> <width> [--<widget-opts>]\n");
 	printf("\n");
 	printf("Common Options:\n");
@@ -176,50 +176,51 @@ void usage(void)
 		"-clear, --colors, --date-format <format>, "
 		"--default-button <label>, --defaultno, --default-item <name>,"
 		"--exit-label <label>, --extra-button, --extra-label <label>,"
-		"--hfile <filename>, --help, --help-button, "
-		"--help-label <label>, --help-status, --help-tags, "
-		"--hline string, --ignore, --insecure, --item-help, "
-		"--max-input <size>, --no-cancel, --nocancel, "
-		"--no-label <label>, --no-items, --no-lines, --no-ok, --nook, "
-		"--no-shadow, --no-tags, --ok-label <label>, --output-fd <fd>, "
-		"--output-separator <sep>, --print-version, --print-size, "
-		"--quoted, --print-maxsize, --shadow, --single-quoted, "
-		"--separator <sep>, --separate-output, --sleep <secs>, "
-		"--stderr, --stdout, "
-		"--theme <bsddialog|dialog|blackwhite|magenta, "
-		"--time-format <format>, --title <title>, --version, "
-		"--yes-label string.\n");
+		"--hfile <filename>, --help-button, --help-label <label>, "
+		"--help-status, --help-tags, --hline string, --ignore, "
+		"--insecure, --item-help, --max-input <size>, --no-cancel, "
+		"--nocancel, --no-label <label>, --no-items, --no-lines, "
+		"--no-ok, --nook, --no-shadow, --no-tags, --ok-label <label>, "
+		"--output-fd <fd>, --output-separator <sep>, --print-version, "
+		"--print-size, --quoted, --print-maxsize, --shadow, "
+		"--single-quoted, --separator <sep>, --separate-output, "
+		"--sleep <secs>, --stderr, --stdout, "
+		"--theme <bsddialog|dialog|blackwhite|magenta>, "
+		"--time-format <format>, --title <title>, "
+		"--yes-label <string>.\n");
 	printf("\n");
 	printf("Widgets:\n");
-	printf("--buildlist <text> <rows> <cols> <menurows> <name> <desc> "
-		    "<on|off> ...\n"
-		"--checklist <text> <rows> <cols> <menurows> <name> <desc> "
-		    "<on|off> ...\n"
+	printf("--buildlist <text> <rows> <cols> <menurows> [<name> <desc> "
+		    "<on|off> ...]\n"
+		"--checklist <text> <rows> <cols> <menurows> [<name> <desc> "
+		    "<on|off> ...]\n"
 		"--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n"
-		"--form <text> <rows> <cols> <label> <ylabel> <xlabe> "
-		    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n"
-		"--gauge <text> <rows> <cols> [<perc\\nl> [<text> ...] XXX] "
-		    "... EOF\n"
+		"--form <text> <rows> <cols> <formrows> [<label> <ylabel> "
+		    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxvalue> "
+		    "...]\n"
+		"--gauge <text> <rows> <cols> [<perc\\n> [<text> ...] XXX "
+		    "...] EOF\n"
 		"--infobox <text> <rows> <cols>\n"
-		"--inputbox <text> <rows> <cols> [form-init]\n"
-		"--menu <text> <rows> <cols> <menurows> <name> <desc> ...\n"
-		"--mixedform <text> <rows> <cols> <label> <ylabel> <xlabe> "
-		    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> "
-		    "<0|1|2> ...\n"
-		"--mixedgauge <text> <rows> <cols> <main-perc> [<label> "
-		    "<01234567| -perc>] ...\n"
+		"--inputbox <text> <rows> <cols> [init]\n"
+		"--menu <text> <rows> <cols> <menurows> [<name> <desc> ...]\n"
+		"--mixedform <text> <rows> <cols> <formrows> [<label> <ylabel> "
+		    "<xlabe> <init> <yfield> <xfield> <fieldlen> <maxvalue> "
+		    "<0|1|2> ...]\n"
+		"--mixedgauge <text> <rows> <cols> <mainperc> [<label> "
+		    "<01234567|-perc> ...]\n"
 		"--msgbox <text> <rows> <cols>\n"
 		"--passwordbox <text> <rows> <cols>\n"
-		"--passwordform <text> <rows> <cols> <label> <ylabel> <xlabe> "
-		    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n"
+		"--passwordform <text> <rows> <cols> <formrows> [<label> "
+		    "<ylabel> <xlabe> <init> <yfield> <xfield> <fieldlen> "
+		    "<maxvalue> ...]\n"
 		"--pause <text> <rows> <cols> <secs>\n"
-		"--radiolist <text> <rows> <cols> <menurows> <name> <desc> "
-		    "<on|off> ...\n"
+		"--radiolist <text> <rows> <cols> <menurows> [<name> <desc> "
+		    "<on|off> ...]\n"
 		"--rangebox <text> <rows> <cols> <min> <max> <default>\n"
 		"--textbox <file> <rows> <cols>\n"
 		"--timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n"
-		"--treeview <text> <rows> <cols> <menurows> <depth> <name> "
-		    "<desc> <on|off> ...\n"
+		"--treeview <text> <rows> <cols> <menurows> [<depth> <name> "
+		    "<desc> <on|off> ...]\n"
 		"--yesno <text> <rows> <cols>\n");
 		
 	
@@ -523,7 +524,7 @@ int main(int argc, char *argv[argc])
 			else if (strcmp(optarg, "magenta") == 0)
 				theme_flag = BSDDIALOG_THEME_MAGENTA;
 			else {
-				printf("Unknow theme, possible values: ");
+				printf("Unknown theme, possible values: ");
 				printf("bsddialog, blackwhite, dialog, magenta");
 				return (1);
 			}
