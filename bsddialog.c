@@ -1148,7 +1148,7 @@ int form_builder(BUILDER_ARGS)
 		items[i].xfield	= atoi(argv[8*i+5]);
 
 		fieldlen = atoi(argv[8*i+6]);
-		items[i].fieldlen   = abs(fieldlen);
+		items[i].fieldlen = abs(fieldlen);
 
 		valuelen = atoi(argv[8*i+7]);
 		items[i].maxvaluelen = valuelen == 0 ? abs(fieldlen) : valuelen;
