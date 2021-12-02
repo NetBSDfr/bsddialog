@@ -192,35 +192,36 @@ void usage(void)
 	printf("\n");
 	printf("Widgets:\n");
 	printf("--buildlist <text> <rows> <cols> <menurows> <name> <desc> "
-	    "<on|off> ...\n");
-	printf("--checklist <text> <rows> <cols> <menurows> <name> <desc> "
-	    "<on|off> ...\n");
-	printf("--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
-	printf("--form <text> <rows> <cols> <label> <ylabel> <xlabe> "
-	    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n");
-	printf("--gauge <text> <rows> <cols> [<perc\\nl> [<text> ...] XXX] ... "
-	    "EOF\n");
-	printf("--infobox <text> <rows> <cols>\n");
-	printf("--inputbox <text> <rows> <cols> [form-init]\n");
-	printf("--menu <text> <rows> <cols> <menurows> <name> <desc> ...\n");
-	printf("--mixedform <text> <rows> <cols> <label> <ylabel> <xlabe> "
-	    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> <0|1|2> "
-	    "...\n");
-	printf("--mixedgauge <text> <rows> <cols> <main-perc> [<label> "
-	    "<01234567| -perc>] ...\n");
-	printf("--msgbox <text> <rows> <cols>\n");
-	printf("--passwordbox <text> <rows> <cols>\n");
-	printf("--passwordform <text> <rows> <cols> <label> <ylabel> <xlabe> "
-	    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n");
-	printf("--pause <text> <rows> <cols> <secs>\n");
-	printf("--radiolist <text> <rows> <cols> <menurows> <name> <desc> "
-	    "<on|off> ...\n");
-	printf("--rangebox <text> <rows> <cols> <min> <max> <default>\n");
-	printf("--textbox <file> <rows> <cols>\n");
-	printf("--timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n");
-	printf("--treeview <text> <rows> <cols> <menurows> <depth> <name> "
-	    "<desc> <on|off> ...\n");
-	printf("--yesno <text> <rows> <cols>\n");
+		    "<on|off> ...\n"
+		"--checklist <text> <rows> <cols> <menurows> <name> <desc> "
+		    "<on|off> ...\n"
+		"--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n"
+		"--form <text> <rows> <cols> <label> <ylabel> <xlabe> "
+		    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n"
+		"--gauge <text> <rows> <cols> [<perc\\nl> [<text> ...] XXX] "
+		    "... EOF\n"
+		"--infobox <text> <rows> <cols>\n"
+		"--inputbox <text> <rows> <cols> [form-init]\n"
+		"--menu <text> <rows> <cols> <menurows> <name> <desc> ...\n"
+		"--mixedform <text> <rows> <cols> <label> <ylabel> <xlabe> "
+		    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> "
+		    "<0|1|2> ...\n"
+		"--mixedgauge <text> <rows> <cols> <main-perc> [<label> "
+		    "<01234567| -perc>] ...\n"
+		"--msgbox <text> <rows> <cols>\n"
+		"--passwordbox <text> <rows> <cols>\n"
+		"--passwordform <text> <rows> <cols> <label> <ylabel> <xlabe> "
+		    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n"
+		"--pause <text> <rows> <cols> <secs>\n"
+		"--radiolist <text> <rows> <cols> <menurows> <name> <desc> "
+		    "<on|off> ...\n"
+		"--rangebox <text> <rows> <cols> <min> <max> <default>\n"
+		"--textbox <file> <rows> <cols>\n"
+		"--timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n"
+		"--treeview <text> <rows> <cols> <menurows> <depth> <name> "
+		    "<desc> <on|off> ...\n"
+		"--yesno <text> <rows> <cols>\n");
+		
 	
 }
 
