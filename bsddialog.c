@@ -1175,7 +1175,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.init	 = argc > 0 ? argv[0] : "";
 	item.yfield	 = 1;
 	item.xfield	 = 1;
-	item.fieldlen    = 2048;
+	item.fieldlen    = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	item.flags	 = 0;
 
@@ -1231,7 +1231,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.init	 = argc > 0 ? argv[0] : "";
 	item.yfield	 = 1;
 	item.xfield	 = 1;
-	item.fieldlen	 = cols-4;
+	item.fieldlen	 = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	item.flags       = BSDDIALOG_FIELDHIDDEN;
 
