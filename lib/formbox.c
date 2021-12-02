@@ -392,8 +392,9 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	}
 	cfield[i] = NULL;
 
-	 /* disable focus with 1 item (and inputbox or passwordbox) */
-	if (nitems == 1) {
+	 /* disable focus with 1 item (inputbox or passwordbox) */
+	if (formheight == 1 && nitems == 1 && strlen(items[0].label) == 0 &&
+	    items[0].xfield == 1 ) {
 		set_field_fore(cfield[0], t.widget.color);
 		set_field_back(cfield[0], t.widget.color);
 	}
