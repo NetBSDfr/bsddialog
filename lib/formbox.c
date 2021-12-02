@@ -94,7 +94,7 @@ static void shiftleft(struct myfield *mf)
 static int
 form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
     struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
-    struct bsddialog_formitem *items)
+    struct bsddialog_formitem *items, bool redraw)
 {
 	bool loop, buttupdate, informwin = true;
 	int i, input, output;
@@ -104,7 +104,8 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 	pos_form_cursor(form);
 	loop = buttupdate = true;
 	bs.curr = -1;
-	form_driver(form, REQ_END_LINE);
+	if (redraw == false)
+		form_driver(form, REQ_END_LINE);
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(widget, y, cols, bs, !informwin);
@@ -339,6 +340,7 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 	struct buttons bs;
 	struct myfield *myfields;
 	unsigned long maxline;
+	bool redraw;
 
 	/* disable form scrolling like dialog */
 	if (formheight < nitems)
@@ -429,9 +431,11 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 
 	wrefresh(formwin);
 
+	redraw = false;
 	do {
 		output = form_handler(conf, widget, h-2, w, bs, formwin, form,
-		    cfield, nitems, items);
+		    cfield, nitems, items, redraw);
+		redraw = true;
 
 		if(update_widget_withtextpad(conf, shadow, widget, h, w,
 		    RAISED, textpad, &htextpad, text, true) != 0)
