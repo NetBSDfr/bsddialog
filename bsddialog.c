@@ -191,37 +191,36 @@ void usage(void)
 		"--yes-label string.\n");
 	printf("\n");
 	printf("Widgets:\n");
-	printf("buildlist_builder <text> <rows> <cols> <menurows> <name> "
-	    "<desc> <on|off> ...\n");
-	printf("checklist_builder <text> <rows> <cols> <menurows> <name> "
-	    "<desc> <on|off> ...\n");
-	printf("datebox_builder <text> <rows> <cols> [<yy> <mm> <dd>]\n");
-	printf("form_builder <text> <rows> <cols> <label> <ylabel> <xlabe> "
+	printf("--buildlist <text> <rows> <cols> <menurows> <name> <desc> "
+	    "<on|off> ...\n");
+	printf("--checklist <text> <rows> <cols> <menurows> <name> <desc> "
+	    "<on|off> ...\n");
+	printf("--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
+	printf("--form <text> <rows> <cols> <label> <ylabel> <xlabe> "
 	    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n");
-	printf("gauge_builder <text> <rows> <cols> [<perc\\nl> [<text> ...] "
-	    "XXX] ... EOF\n");
-	printf("infobox_builder <text> <rows> <cols>\n");
-	printf("inputbox_builder <text> <rows> <cols> [form-init]\n");
-	printf("menu_builder <text> <rows> <cols> <menurows> <name> <desc> "
+	printf("--gauge <text> <rows> <cols> [<perc\\nl> [<text> ...] XXX] ... "
+	    "EOF\n");
+	printf("--infobox <text> <rows> <cols>\n");
+	printf("--inputbox <text> <rows> <cols> [form-init]\n");
+	printf("--menu <text> <rows> <cols> <menurows> <name> <desc> ...\n");
+	printf("--mixedform <text> <rows> <cols> <label> <ylabel> <xlabe> "
+	    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> <0|1|2> "
 	    "...\n");
-	printf("mixedform_builder <text> <rows> <cols> <label> <ylabel> "
-	    "<xlabe> <form-init> <yfield> <xfield> <fieldlen> <maxvalue> <0|1|2> "
-	    "...\n");
-	printf("mixedgauge_builder <text> <rows> <cols> <main-perc> [<label> "
+	printf("--mixedgauge <text> <rows> <cols> <main-perc> [<label> "
 	    "<01234567| -perc>] ...\n");
-	printf("msgbox_builder <text> <rows> <cols>\n");
-	printf("passwordbox_builder <text> <rows> <cols>\n");
-	printf("passwordform_builder <text> <rows> <cols> <label> <ylabel> "
-	    "<xlabe> <form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n");
-	printf("pause_builder <text> <rows> <cols> <secs>\n");
-	printf("radiolist_builder <text> <rows> <cols> <menurows> <name> "
+	printf("--msgbox <text> <rows> <cols>\n");
+	printf("--passwordbox <text> <rows> <cols>\n");
+	printf("--passwordform <text> <rows> <cols> <label> <ylabel> <xlabe> "
+	    "<form-init> <yfield> <xfield> <fieldlen> <maxvalue> ...\n");
+	printf("--pause <text> <rows> <cols> <secs>\n");
+	printf("--radiolist <text> <rows> <cols> <menurows> <name> <desc> "
+	    "<on|off> ...\n");
+	printf("--rangebox <text> <rows> <cols> <min> <max> <default>\n");
+	printf("--textbox <file> <rows> <cols>\n");
+	printf("--timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n");
+	printf("--treeview <text> <rows> <cols> <menurows> <depth> <name> "
 	    "<desc> <on|off> ...\n");
-	printf("rangebox_builder <text> <rows> <cols> <min> <max> <default>\n");
-	printf("textbox_builder <file> <rows> <cols>\n");
-	printf("timebox_builder <text> <rows> <cols> [<hh> <mm> <ss>]\n");
-	printf("treeview_builder <text> <rows> <cols> <menurows> <depth> "
-	    "<name> <desc> <on|off> ...\n");
-	printf("yesno_builder <text> <rows> <cols>\n");
+	printf("--yesno <text> <rows> <cols>\n");
 	
 }
 
