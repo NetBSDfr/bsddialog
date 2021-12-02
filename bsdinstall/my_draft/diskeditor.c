@@ -55,7 +55,7 @@ diskeditor_show(const char *title, const char *cprompt,
 		bsditems[i].prefix = "";
 		bsditems[i].depth = items[i].indentation;
 		bsditems[i].name = items[i].name;
-		snprintf(desc, "%llu %s %m", items[i].size, items[i].type, items[i].mountpoint);
+		snprintf(desc, 1024, "%jd %s %s", items[i].size, items[i].type, items[i].mountpoint);
 		bsditems[i].desc = strdup(desc);
 		bsditems[i].bottomdesc = "";
 		bsditems[i].on = false;
