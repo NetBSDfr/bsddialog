@@ -66,7 +66,7 @@ struct bsddialog_conf {
 
 	struct {
 		bool colors;
-		/* following members could be deletet in the future*/
+		/* following members could be deleted in the future */
 		bool cr_wrap;
 		bool no_collapse;
 		bool no_nl_expand;
@@ -134,7 +134,7 @@ struct bsddialog_formitem {
 	unsigned int xfield;
 	unsigned int fieldlen;
 	unsigned int maxvaluelen;
-	char *value; /* allocated memory, to free */
+	char *value; /* allocated memory */
 #define BSDDIALOG_FIELDHIDDEN   0x1
 #define BSDDIALOG_FIELDREADONLY 0x2
 	unsigned int flags;
@@ -147,7 +147,7 @@ int bsddialog_end(void);
 int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
 const char *bsddialog_geterror(void);
 void bsddialog_initconf(struct bsddialog_conf *conf);
-/* funcs for tzsetup, they will be deleted in the future */
+/* funcs for tzsetup(8), they will be deleted */
 int bsddialog_terminalheight(void);
 int bsddialog_terminalwidth(void);
 
