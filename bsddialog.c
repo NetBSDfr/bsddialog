@@ -673,7 +673,7 @@ int main(int argc, char *argv[argc])
 			printf("Error: %s\n", bsddialog_geterror());
 	}
 
-	if (&conf.get_height != NULL && conf.get_width != NULL)
+	if (conf.get_height != NULL && conf.get_width != NULL)
 		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
 
