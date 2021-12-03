@@ -37,7 +37,7 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
-#define BSDDIALOG_VERSION "0.1-devel"
+#define BSDDIALOG_VERSION "0.0.1"
 
 enum OPTS {
 	/* Common options */
