@@ -25,7 +25,7 @@ int main()
 		return -1;
 
 	value = 5;
-	output = bsddialog_rangebox(conf, "Example", 8, 50, 0, 10, &value);
+	output = bsddialog_rangebox(&conf, "Example", 8, 50, 0, 10, &value);
 
 	bsddialog_end();
 

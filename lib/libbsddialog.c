@@ -100,12 +100,12 @@ int bsddialog_end(void)
 	return 0;
 }
 
-int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle)
+int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle)
 {
 
 	mvaddstr(0, 1, backtitle);
-	if (conf.no_lines != true)
-		mvhline(1, 1, conf.ascii_lines ? '-' : ACS_HLINE, COLS-2);
+	if (conf->no_lines != true)
+		mvhline(1, 1, conf->ascii_lines ? '-' : ACS_HLINE, COLS-2);
 
 	refresh();
 

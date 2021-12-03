@@ -35,7 +35,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_datebox(conf, "Example", 10, 50, &yy, &mm, &dd);
+	output = bsddialog_datebox(&conf, "Example", 10, 50, &yy, &mm, &dd);
 	
 	bsddialog_end();
 

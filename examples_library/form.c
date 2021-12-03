@@ -35,7 +35,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_form(conf, "Example", 10, 50, 3, 3, items);
+	output = bsddialog_form(&conf, "Example", 10, 50, 3, 3, items);
 
 	bsddialog_end();
 	

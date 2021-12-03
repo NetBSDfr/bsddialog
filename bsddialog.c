@@ -642,7 +642,7 @@ int main(int argc, char *argv[argc])
 		bsddialog_set_default_theme(theme_flag);
 
 	if (backtitle_flag != NULL)
-		bsddialog_backtitle(conf, backtitle_flag);
+		bsddialog_backtitle(&conf, backtitle_flag);
 
 	output = BSDDIALOG_YESOK;
 	if (widgetbuilder != NULL)
@@ -673,7 +673,7 @@ int main(int argc, char *argv[argc])
 			printf("Error: %s\n", bsddialog_geterror());
 	}
 
-	if (conf.get_height != NULL && conf.get_width != NULL)
+	if (&conf.get_height != NULL && conf.get_width != NULL)
 		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
 
@@ -694,7 +694,7 @@ int gauge_builder(BUILDER_ARGS)
 	else
 		perc = 0;
 
-	output = bsddialog_gauge(conf, text, rows, cols, perc);
+	output = bsddialog_gauge(&conf, text, rows, cols, perc);
 
 	return (output);
 }
@@ -703,7 +703,7 @@ int infobox_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_infobox(conf, text, rows, cols);
+	output = bsddialog_infobox(&conf, text, rows, cols);
 
 	return (output);
 }
@@ -721,7 +721,7 @@ int mixedgauge_builder(BUILDER_ARGS)
 	perc = perc < 0 ? 0 : perc;
 	perc = perc > 100 ? 100 : perc;
 
-	output = bsddialog_mixedgauge(conf, text, rows, cols, perc,
+	output = bsddialog_mixedgauge(&conf, text, rows, cols, perc,
 	    argc-1, argv + 1);
 
 	return (output);
@@ -731,7 +731,7 @@ int msgbox_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_msgbox(conf, text, rows, cols);
+	output = bsddialog_msgbox(&conf, text, rows, cols);
 
 	return (output);
 }
@@ -746,7 +746,7 @@ int pause_builder(BUILDER_ARGS)
 	}
 
 	sec = atoi(argv[0]);
-	output = bsddialog_pause(conf, text, rows, cols, sec);
+	output = bsddialog_pause(&conf, text, rows, cols, sec);
 
 	return (output);
 }
@@ -772,7 +772,7 @@ int rangebox_builder(BUILDER_ARGS)
 	else
 		value = min;
 
-	output = bsddialog_rangebox(conf, text, rows, cols, min, max, &value);
+	output = bsddialog_rangebox(&conf, text, rows, cols, min, max, &value);
 
 	dprintf(output_fd_flag, "%d", value);
 
@@ -783,7 +783,7 @@ int textbox_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_textbox(conf, text, rows, cols);
+	output = bsddialog_textbox(&conf, text, rows, cols);
 
 	return (output);
 }
@@ -792,7 +792,7 @@ int yesno_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_yesno(conf, text, rows, cols);
+	output = bsddialog_yesno(&conf, text, rows, cols);
 
 	return (output);
 }
@@ -819,7 +819,7 @@ int datebox_builder(BUILDER_ARGS)
 		dd = atoi(argv[2]);
 	}
 
-	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
+	output = bsddialog_datebox(&conf, text, rows, cols, &yy, &mm, &dd);
 	if (output != BSDDIALOG_YESOK)
 		return (output);
 
@@ -860,7 +860,7 @@ int timebox_builder(BUILDER_ARGS)
 		ss = atoi(argv[2]);
 	}
 
-	output = bsddialog_timebox(conf, text, rows, cols, &hh, &mm, &ss);
+	output = bsddialog_timebox(&conf, text, rows, cols, &hh, &mm, &ss);
 	if (output != BSDDIALOG_YESOK)
 		return (output);
 
@@ -918,7 +918,7 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 }
 
 static void
-print_menu_items(struct bsddialog_conf conf, int output, int nitems,
+print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
     struct bsddialog_menuitem *items, int focusitem)
 {
 	int i;
@@ -991,12 +991,12 @@ int buildlist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	output = bsddialog_buildlist(conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_buildlist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 	if (output == BSDDIALOG_ERROR)
 		return (BSDDIALOG_ERROR);
 
-	print_menu_items(conf, output, nitems, items, focusitem);
+	print_menu_items(&conf, output, nitems, items, focusitem);
 
 	return (output);
 }
@@ -1018,10 +1018,10 @@ int checklist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_checklist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(conf, output, nitems, items, focusitem);
+	print_menu_items(&conf, output, nitems, items, focusitem);
 
 	return (output);
 }
@@ -1043,10 +1043,10 @@ int menu_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_menu(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(conf, output, nitems, items, focusitem);
+	print_menu_items(&conf, output, nitems, items, focusitem);
 
 	return (output);
 }
@@ -1068,10 +1068,10 @@ int radiolist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(conf, output, nitems, items, focusitem);
+	print_menu_items(&conf, output, nitems, items, focusitem);
 
 	return (output);
 }
@@ -1096,17 +1096,17 @@ int treeview_builder(BUILDER_ARGS)
 	conf.menu.no_tags = true;
 	conf.menu.align_left = true;
 
-	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 	
-	print_menu_items(conf, output, nitems, items, focusitem);
+	print_menu_items(&conf, output, nitems, items, focusitem);
 
 	return (output);
 }
 
 /* FORM */
 static void
-print_form_items(struct bsddialog_conf conf, int output, int nitems,
+print_form_items(struct bsddialog_conf *conf, int output, int nitems,
     struct bsddialog_formitem *items)
 {
 	int i;
@@ -1155,9 +1155,9 @@ int form_builder(BUILDER_ARGS)
 		items[i].flags = flags;
 	}
 
-	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
+	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(conf, output, nitems, items);
+	print_form_items(&conf, output, nitems, items);
 
 	return (output);
 }
@@ -1177,8 +1177,8 @@ int inputbox_builder(BUILDER_ARGS)
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	item.flags	 = 0;
 
-	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
-	print_form_items(conf, output, 1, &item);
+	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
+	print_form_items(&conf, output, 1, &item);
 
 	return (output);
 }
@@ -1211,9 +1211,9 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].flags       = atoi(argv[9*i+8]);
 	}
 
-	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
+	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(conf, output, nitems, items);
+	print_form_items(&conf, output, nitems, items);
 
 	return (output);
 }
@@ -1233,8 +1233,8 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	item.flags       = BSDDIALOG_FIELDHIDDEN;
 
-	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
-	print_form_items(conf, output, 1, &item);
+	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
+	print_form_items(&conf, output, 1, &item);
 
 	return (output);
 }
@@ -1274,9 +1274,9 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].flags = flags;
 	}
 
-	output = bsddialog_form(conf, text, rows, cols, formheight,
+	output = bsddialog_form(&conf, text, rows, cols, formheight,
 	    nitems, items);
-	print_form_items(conf, output, nitems, items);
+	print_form_items(&conf, output, nitems, items);
 
 	return (output);
 }

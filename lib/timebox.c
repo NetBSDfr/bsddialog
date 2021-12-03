@@ -49,7 +49,7 @@
 extern struct bsddialog_theme t;
 
 static int
-datetime_autosize(struct bsddialog_conf conf, int rows, int cols, int *h,
+datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, int minw, char *text, struct buttons bs)
 {
 	int maxword, maxline, nlines, line;
@@ -102,7 +102,7 @@ datetime_checksize(int rows, int cols, char *text, int minw, struct buttons bs)
 	return 0;
 }
 
-int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int *hh, unsigned int *mm, unsigned int *ss)
 {
 	WINDOW *widget, *textpad, *shadow;
@@ -210,7 +210,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 			c[sel].value = c[sel].value > 0 ? c[sel].value - 1 : c[sel].max;
 			break;
 		case KEY_F(1):
-			if (conf.hfile == NULL)
+			if (conf->hfile == NULL)
 				break;
 			curs_set(0);
 			if (f1help(conf) != 0)
@@ -218,7 +218,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 			curs_set(2);
 			/* No break! the terminal size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf.shadow);
+			hide_widget(y, x, h, w,conf->shadow);
 
 			/*
 			 * Unnecessary, but, when the columns decrease the
@@ -297,7 +297,7 @@ int bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols
 }
 
 int
-bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
 	WINDOW *widget, *textpad, *shadow;
@@ -444,7 +444,7 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 				c[2].value = c[2].max;
 			break;
 		case KEY_F(1):
-			if (conf.hfile == NULL)
+			if (conf->hfile == NULL)
 				break;
 			curs_set(0);
 			if (f1help(conf) != 0)
@@ -452,7 +452,7 @@ bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 			curs_set(2);
 			/* No break! the terminal size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf.shadow);
+			hide_widget(y, x, h, w,conf->shadow);
 
 			/*
 			 * Unnecessary, but, when the columns decrease the

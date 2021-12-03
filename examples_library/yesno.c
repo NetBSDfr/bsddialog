@@ -24,7 +24,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_yesno(conf, "Example", 7, 25);
+	output = bsddialog_yesno(&conf, "Example", 7, 25);
 
 	bsddialog_end();
 

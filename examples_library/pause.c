@@ -24,7 +24,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_pause(conf, "Example", 8, 50, 10);
+	output = bsddialog_pause(&conf, "Example", 8, 50, 10);
 
 	bsddialog_end();
 

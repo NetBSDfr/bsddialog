@@ -82,7 +82,7 @@ draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
 }
 
 static int
-bar_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons *bs)
 {
 	int maxword, maxline, nlines, buttonswidth;
@@ -144,7 +144,7 @@ bar_checksize(char *text, int rows, int cols, struct buttons *bs)
 }
 
 int
-bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int perc)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -215,7 +215,7 @@ bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int mainperc, unsigned int nminbars, char **minibars)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -319,7 +319,7 @@ bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     int min, int max, int *value)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -438,13 +438,13 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 			}
 			break;
 		case KEY_F(1):
-			if (conf.hfile == NULL)
+			if (conf->hfile == NULL)
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
 			/* No break! the terminal size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf.shadow);
+			hide_widget(y, x, h, w,conf->shadow);
 
 			/*
 			 * Unnecessary, but, when the columns decrease the
@@ -507,7 +507,7 @@ bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int sec)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -597,13 +597,13 @@ bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
 			}
 			break;
 		case KEY_F(1):
-			if (conf.hfile == NULL)
+			if (conf->hfile == NULL)
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
 			/* No break! the terminal size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf.shadow);
+			hide_widget(y, x, h, w,conf->shadow);
 
 			/*
 			 * Unnecessary, but, when the columns decrease the

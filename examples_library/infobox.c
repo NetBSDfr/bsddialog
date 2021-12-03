@@ -24,7 +24,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_infobox(conf, "Example", 7, 20);
+	output = bsddialog_infobox(&conf, "Example", 7, 20);
 
 	bsddialog_end();
 

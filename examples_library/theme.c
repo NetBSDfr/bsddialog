@@ -34,9 +34,9 @@ int main()
 		return BSDDIALOG_ERROR;
 
 	while (true) {
-		bsddialog_backtitle(conf, "Theme Example");
+		bsddialog_backtitle(&conf, "Theme Example");
 
-		output = bsddialog_menu(conf, "Choose theme", 15, 40, 5, 5, items, NULL);
+		output = bsddialog_menu(&conf, "Choose theme", 15, 40, 5, 5, items, NULL);
 
 		if (output != BSDDIALOG_YESOK || items[4].on)
 			break;

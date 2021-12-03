@@ -92,7 +92,7 @@ static void shiftleft(struct myfield *mf)
 }
 
 static int
-form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
+form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
     struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
     struct bsddialog_formitem *items)
 {
@@ -220,7 +220,7 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 				shiftleft(mf);
 			break;
 		case KEY_F(1):
-			if (conf.hfile == NULL)
+			if (conf->hfile == NULL)
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
@@ -260,7 +260,7 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 }
 
 static void
-form_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     char *text, int linelen, unsigned int *formheight, int nitems,
     struct buttons bs)
 {
@@ -336,7 +336,7 @@ form_checksize(int rows, int cols, char *text, int formheight, int nitems,
 }
 
 int
-bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *items)
 {
@@ -378,8 +378,8 @@ bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
 			/* field_opts_off(field[i], O_PUBLIC); old hidden */
 			myfields[i].secure = true;
 			myfields[i].securech = ' ';
-			if (conf.form.securech != '\0')
-				myfields[i].securech = conf.form.securech;
+			if (conf->form.securech != '\0')
+				myfields[i].securech = conf->form.securech;
 		}
 		else myfields[i].secure = false;
 

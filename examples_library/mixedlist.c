@@ -47,7 +47,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_mixedlist(conf, "dialog4ports", 20, 30, 11, 3, group,
+	output = bsddialog_mixedlist(&conf, "dialog4ports", 20, 30, 11, 3, group,
 	    NULL,NULL);
 
 	bsddialog_end();

@@ -35,7 +35,7 @@ int main()
 	if (bsddialog_init() < 0)
 		return -1;
 
-	output = bsddialog_timebox(conf, "Example", 10, 50, &hh, &mm, &ss);
+	output = bsddialog_timebox(&conf, "Example", 10, 50, &hh, &mm, &ss);
 	
 	bsddialog_end();
 

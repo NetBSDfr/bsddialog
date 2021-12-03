@@ -27,7 +27,7 @@ int main()
 		printf("Error: %s\n", bsddialog_geterror());
 		return -1;
 	}
-	input = bsddialog_msgbox(conf, "Example", 7, 20);
+	input = bsddialog_msgbox(&conf, "Example", 7, 20);
 	bsddialog_end();
 
 	/* User Input */

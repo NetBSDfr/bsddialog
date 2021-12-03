@@ -53,7 +53,7 @@
 extern struct bsddialog_theme t;
 
 static int
-message_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons bs)
 {
 	int maxword, maxline, nlines, line;
@@ -126,7 +126,7 @@ textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
 }
 
 static int
-do_widget(struct bsddialog_conf conf, char *text, int rows, int cols,
+do_widget(struct bsddialog_conf *conf, char *text, int rows, int cols,
     struct buttons bs, bool shortkey)
 {
 	WINDOW *widget, *textpad, *shadow;
@@ -167,13 +167,13 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols,
 			buttonsupdate(widget, h, w, bs, shortkey);
 			break;
 		case KEY_F(1):
-			if (conf.hfile == NULL)
+			if (conf->hfile == NULL)
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
 			/* No break! the terminal size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf.shadow);
+			hide_widget(y, x, h, w,conf->shadow);
 
 			/*
 			 * Unnecessary, but, when the columns decrease the
@@ -256,7 +256,7 @@ do_widget(struct bsddialog_conf conf, char *text, int rows, int cols,
 /* API */
 
 int
-bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
+bsddialog_msgbox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
@@ -267,7 +267,7 @@ bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols)
 }
 
 int
-bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols)
+bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 

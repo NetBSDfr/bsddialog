@@ -47,7 +47,7 @@
 extern struct bsddialog_theme t;
 
 static void
-textbox_autosize(struct bsddialog_conf conf, int rows, int cols, int *h, int *w,
+textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     int hpad, int wpad)
 {
 
@@ -84,7 +84,7 @@ static int textbox_checksize(int rows, int cols, int hpad)
 }
 
 int
-bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols)
+bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 {
 	WINDOW *widget, *pad, *shadow;
 	int i, input, y, x, h, w, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
@@ -127,7 +127,7 @@ bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols)
 	    NULL, NULL, NULL, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	exitbutt = conf.button.exit_label == NULL ? BUTTON_TEXTBOX : conf.button.exit_label;
+	exitbutt = conf->button.exit_label == NULL ? BUTTON_TEXTBOX : conf->button.exit_label;
 	draw_button(widget, h-2, (w-2)/2 - strlen(exitbutt)/2, strlen(exitbutt)+2,
 	    exitbutt, true, false);
 
@@ -187,13 +187,13 @@ bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols)
 			ypad = ypad + printrows <= hpad -1 ? ypad + 1 : ypad;
 			break;
 		case KEY_F(1):
-			if (conf.hfile == NULL)
+			if (conf->hfile == NULL)
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
 			/* No break! the terminal size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf.shadow);
+			hide_widget(y, x, h, w,conf->shadow);
 
 			/*
 			 * Unnecessary, but, when the columns decrease the

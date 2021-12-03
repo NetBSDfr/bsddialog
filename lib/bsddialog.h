@@ -144,7 +144,7 @@ struct bsddialog_formitem {
 
 int bsddialog_init(void);
 int bsddialog_end(void);
-int bsddialog_backtitle(struct bsddialog_conf conf, char *backtitle);
+int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle);
 const char *bsddialog_geterror(void);
 void bsddialog_initconf(struct bsddialog_conf *conf);
 /* funcs for tzsetup(8), they will be deleted */
@@ -153,68 +153,68 @@ int bsddialog_terminalwidth(void);
 
 /* widgets */
 int
-bsddialog_buildlist(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
 
 int
-bsddialog_checklist(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_checklist(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
 
 int
-bsddialog_datebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int *yy, unsigned int *mm, unsigned int *dd);
 
 int
-bsddialog_form(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int formheight, unsigned int nitems, 
     struct bsddialog_formitem *items);
 
 int
-bsddialog_gauge(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int perc);
 
 int
-bsddialog_infobox(struct bsddialog_conf conf, char* text, int rows, int cols);
+bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols);
 
 int
-bsddialog_menu(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_menu(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
 
 int
-bsddialog_mixedgauge(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int mainperc, unsigned int nminbars, char **minibars);
 
 int
-bsddialog_mixedlist(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups,
     int *focuslist, int *focusitem);
 
 int
-bsddialog_msgbox(struct bsddialog_conf conf, char* text, int rows, int cols);
+bsddialog_msgbox(struct bsddialog_conf *conf, char* text, int rows, int cols);
 
 int
-bsddialog_pause(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int sec);
 
 int
-bsddialog_radiolist(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_radiolist(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
 
 int
-bsddialog_rangebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     int min, int max, int *value);
 
 int
-bsddialog_textbox(struct bsddialog_conf conf, char* file, int rows, int cols);
+bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols);
 
 int
-bsddialog_timebox(struct bsddialog_conf conf, char* text, int rows, int cols,
+bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int *hh, unsigned int *mm, unsigned int *ss);
 
-int bsddialog_yesno(struct bsddialog_conf conf, char* text, int rows, int cols);
+int bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols);
 
 #endif
