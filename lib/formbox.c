@@ -205,12 +205,13 @@ form_handler(struct bsddialog_conf conf, WINDOW *widget, int y, int cols,
 			break;
 		case KEY_BACKSPACE:
 		case 127: /* Backspace */
+			mf = GETMYFIELD2(form);
+			if (mf->pos <= 0)
+				break;
 			form_driver(form, REQ_DEL_PREV);
 			mf = GETMYFIELD2(form);
-			if (mf->pos > 0) {
-				mf->pos -= 1;
-				shiftleft(mf);
-			}
+			mf->pos -= 1;
+			shiftleft(mf);
 			break;
 		case KEY_DC:
 			form_driver(form, REQ_DEL_CHAR);
