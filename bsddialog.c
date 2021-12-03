@@ -37,7 +37,7 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
-#define BSDDIALOG_VERSION "0.1-devel"
+#define BSDDIALOG_VERSION "0.0.1"
 
 enum OPTS {
 	/* Common options */
@@ -653,7 +653,7 @@ int main(int argc, char *argv[argc])
 	/* end bsddialog terminal mode */
 
 	/* debug & devel */
-	printf("[Debug] Exit status: %d ", output);
+	/*printf("[Debug] Exit status: %d ", output);
 	switch (output) {
 	case BSDDIALOG_ERROR: 	  printf("ERROR");    break;
 	case BSDDIALOG_YESOK: 	  printf("YESOK");    break;
@@ -664,7 +664,7 @@ int main(int argc, char *argv[argc])
 	case BSDDIALOG_ESC: 	  printf("ESC");      break;
 	default: 		  printf("Unknow status! Bug!"); break;
 	}
-	printf("\n");
+	printf("\n");*/
 
 	if (output == BSDDIALOG_ERROR) {
 		if (errorbuilder[0] != '\0')
