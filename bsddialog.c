@@ -524,7 +524,7 @@ int main(int argc, char *argv[argc])
 			else {
 				printf("Unknown theme, possible values: ");
 				printf("bsddialog, blackwhite, dialog, magenta");
-				return (1);
+				return (BSDDIALOG_ERROR);
 			}
 			break;
 		case TIME_FORMAT:
@@ -785,7 +785,7 @@ int textbox_builder(BUILDER_ARGS)
 
 	output = bsddialog_textbox(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 int yesno_builder(BUILDER_ARGS)
@@ -794,7 +794,7 @@ int yesno_builder(BUILDER_ARGS)
 
 	output = bsddialog_yesno(conf, text, rows, cols);
 
-	return output;
+	return (output);
 }
 
 /* DATE and TIME */
@@ -862,7 +862,7 @@ int timebox_builder(BUILDER_ARGS)
 
 	output = bsddialog_timebox(conf, text, rows, cols, &hh, &mm, &ss);
 	if (output != BSDDIALOG_YESOK)
-		return output;
+		return (output);
 
 	if (time_fmt_flag == NULL) {
 		dprintf(output_fd_flag, "%u:%u:%u", hh, mm, ss);
@@ -998,7 +998,7 @@ int buildlist_builder(BUILDER_ARGS)
 
 	print_menu_items(conf, output, nitems, items, focusitem);
 
-	return output;
+	return (output);
 }
 
 int checklist_builder(BUILDER_ARGS)
@@ -1016,14 +1016,14 @@ int checklist_builder(BUILDER_ARGS)
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
 	    true, true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
-		return output;
+		return (output);
 
 	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
 	print_menu_items(conf, output, nitems, items, focusitem);
 
-	return output;
+	return (output);
 }
 
 int menu_builder(BUILDER_ARGS)
@@ -1041,14 +1041,14 @@ int menu_builder(BUILDER_ARGS)
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
 	    true, true, false, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
-		return output;
+		return (output);
 
 	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
 	print_menu_items(conf, output, nitems, items, focusitem);
 
-	return output;
+	return (output);
 }
 
 int radiolist_builder(BUILDER_ARGS)
@@ -1066,14 +1066,14 @@ int radiolist_builder(BUILDER_ARGS)
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
 	    true, true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
-		return output;
+		return (output);
 
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
 	print_menu_items(conf, output, nitems, items, focusitem);
 
-	return output;
+	return (output);
 }
 
 int treeview_builder(BUILDER_ARGS)
@@ -1091,7 +1091,7 @@ int treeview_builder(BUILDER_ARGS)
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, true,
 	    true, true, true, item_bottomdesc_flag, &nitems, items);
 	if (output != 0)
-		return output;
+		return (output);
 
 	conf.menu.no_tags = true;
 	conf.menu.align_left = true;
@@ -1101,7 +1101,7 @@ int treeview_builder(BUILDER_ARGS)
 	
 	print_menu_items(conf, output, nitems, items, focusitem);
 
-	return output;
+	return (output);
 }
 
 /* FORM */
