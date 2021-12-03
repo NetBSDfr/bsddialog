@@ -9,4 +9,4 @@
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 
-./bsddialog --sleep 5 --title infobox --infobox "Hello World!\n5 seconds" 6 20
+./bsddialog --sleep 3 --title infobox --infobox "Hello World!\n3 seconds" 6 20
