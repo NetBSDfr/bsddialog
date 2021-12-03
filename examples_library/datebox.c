@@ -53,6 +53,7 @@ int main()
 		printf("Error: %s", bsddialog_geterror());
 		break;
 	}
+	printf("\n");
 
 	return output;
 }
