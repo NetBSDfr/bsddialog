@@ -209,7 +209,7 @@ void usage(void)
 		"--mixedgauge <text> <rows> <cols> <mainperc> [<label> "
 		    "<01234567|-perc> ...]\n"
 		"--msgbox <text> <rows> <cols>\n"
-		"--passwordbox <text> <rows> <cols>\n"
+		"--passwordbox <text> <rows> <cols> [init]\n"
 		"--passwordform <text> <rows> <cols> <formrows> [<label> "
 		    "<ylabel> <xlabe> <init> <yfield> <xfield> <fieldlen> "
 		    "<maxvalue> ...]\n"
@@ -408,8 +408,6 @@ int main(int argc, char *argv[argc])
 			break;
 		case HELP:
 			usage();
-			printf("\n");
-			printf("Sorry no manual for now.\n");
 			return (BSDDIALOG_YESOK);
 		case HELP_BUTTON:
 			conf.button.help_button = true;
