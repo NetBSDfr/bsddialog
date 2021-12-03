@@ -8,7 +8,7 @@
 # worldwide. This software is distributed without any warranty, see:
 # <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-./bsddialog --title " passwordform " --passwordform "Hello World!" 12 40 5 \
+./bsddialog --insecure --title " passwordform " --passwordform "Example" 12 40 5 \
 	Password1:	1	1	Value1		1	12	18	25 \
 	Password2:	2	1	Value2		2	12	18	25 \
 	Password3:	3	1	Value3		3	12	18	25 \
