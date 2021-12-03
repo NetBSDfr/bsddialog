@@ -650,12 +650,7 @@ int main(int argc, char *argv[argc])
 		    errorbuilder);
 
 	bsddialog_end();
-	/* end bsddialog terminal mode*/
-
-	if (conf.get_height != NULL && conf.get_width != NULL &&
-	    output != BSDDIALOG_ERROR)
-		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
-		    *conf.get_height, *conf.get_width);
+	/* end bsddialog terminal mode */
 
 	/* debug & devel */
 	printf("[Debug] Exit status: %d ", output);
@@ -677,6 +672,10 @@ int main(int argc, char *argv[argc])
 		else
 			printf("Error: %s\n", bsddialog_geterror());
 	}
+
+	if (conf.get_height != NULL && conf.get_width != NULL)
+		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
+		    *conf.get_height, *conf.get_width);
 
 	return (output);
 }
