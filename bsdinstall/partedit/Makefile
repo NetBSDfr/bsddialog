@@ -4,8 +4,8 @@
 # Written by Alfonso Sabato Siciliano
 
 OUTPUT=  sade
-# arch: partedit_powerpc.c partedit_efi.c partedit_generic.c
-SOURCES= diskeditor.c gpart_ops.c part_wizard.c  partedit_x86.c partedit.c \
+# arch: partedit_powerpc.c partedit_efi.c partedit_generic.c diskeditor.c
+SOURCES= diskmenu.c gpart_ops.c part_wizard.c  partedit_x86.c partedit.c \
 	 scripted.c 
 OBJECTS= ${SOURCES:.c=.o}
 #LIBPATH= ${.CURDIR}../../../lib

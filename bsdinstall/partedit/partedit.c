@@ -41,7 +41,7 @@
 #include <stdlib.h>
 #include <sysexits.h>
 
-#include "diskeditor.h"
+#include "diskmenu.h"
 #include "partedit.h"
 
 struct pmetadata_head part_metadata;
@@ -78,7 +78,7 @@ main(int argc, const char **argv)
 	const char *progname, *prompt;
 	struct partedit_item *items = NULL;
 	struct gmesh mesh;
-	int i, op, nitems, nscroll;
+	int i, op, nitems;
 	int error;
 
 	progname = getprogname();
@@ -93,7 +93,7 @@ main(int argc, const char **argv)
 	if (!sade_mode)
 		dialog_vars.backtitle = __DECONST(char *, "FreeBSD Installer");
 	dialog_vars.item_help = TRUE;
-	nscroll = i = 0;
+	i = 0;
 
 	/* Revert changes on SIGINT */
 	signal(SIGINT, sigint_handler);
@@ -138,8 +138,8 @@ main(int argc, const char **argv)
 
 		if (i >= nitems)
 			i = nitems - 1;
-		op = diskeditor_show("Partition Editor", prompt,
-		    items, nitems, &i, &nscroll);
+		end_dialog();op = diskmenu_show("Partition Editor", prompt,
+		    items, nitems, &i);init_dialog(stdin, stdout);
 
 		switch (op) {
 		case 0: /* Create */
