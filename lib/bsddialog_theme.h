@@ -65,6 +65,7 @@ struct bsddialog_theme {
 	} text;
 
 	struct {
+		int arrowcolor;
 		int f_namecolor;
 		int namecolor;
 		int f_desccolor;

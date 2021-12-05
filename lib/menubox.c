@@ -443,16 +443,15 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 	if (totnitems > (int) menurows) {
 		draw_borders(conf, menuwin, h, w, LOWERED);
 
-		if (ymenupad > 0) {
-			wattron(menuwin, t.widget.lineraisecolor);
-			mvwprintw(menuwin, 0, 2, "^^");
-			wattroff(menuwin, t.widget.lineraisecolor);
-		}
-		if ((int) (ymenupad + menurows) < totnitems) {
-			wattron(menuwin, t.widget.linelowercolor);
-			mvwprintw(menuwin, h-1, 2, "vv");
-			wattroff(menuwin, t.widget.linelowercolor);
-		}
+		wattron(menuwin, t.menu.arrowcolor);
+
+		if (ymenupad > 0)
+			mvwprintw(menuwin, 0, 2, "^^^");
+
+		if ((int) (ymenupad + menurows) < totnitems)
+			mvwprintw(menuwin, h-1, 2, "vvv");
+
+		wattroff(menuwin, t.menu.arrowcolor);
 
 		mvwprintw(menuwin, h-1, w-10, "%3d%%",
 		    100 * (ymenupad + menurows) / totnitems);

@@ -55,6 +55,7 @@ static struct bsddialog_theme bsddialogtheme = {
 
 	.text.hmargin    = 1,
 
+	.menu.arrowcolor   = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.menu.f_desccolor  = GET_COLOR(COLOR_WHITE,  bgcurr),
 	.menu.desccolor    = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.menu.f_namecolor  = GET_COLOR(COLOR_BLACK,  bgcurr),
@@ -98,6 +99,7 @@ static struct bsddialog_theme blackwhite = {
 
 	.text.hmargin    = 1,
 
+	.menu.arrowcolor   = GET_COLOR(fg, bk),
 	.menu.f_desccolor  = GET_COLOR(fg, bk) | A_REVERSE,
 	.menu.desccolor    = GET_COLOR(fg, bk),
 	.menu.f_namecolor  = GET_COLOR(fg, bk) | A_REVERSE,
@@ -139,6 +141,7 @@ static struct bsddialog_theme dialogtheme = {
 
 	.text.hmargin    = 1,
 
+	.menu.arrowcolor   = GET_COLOR(COLOR_GREEN, COLOR_WHITE),
 	.menu.f_desccolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
 	.menu.desccolor    = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 	.menu.f_namecolor  = GET_COLOR(COLOR_YELLOW,COLOR_BLUE)  | A_BOLD,
@@ -222,6 +225,7 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 
 	t.text.hmargin     = newtheme.text.hmargin;
 
+	t.menu.arrowcolor   = newtheme.menu.arrowcolor;
 	t.menu.f_desccolor  = newtheme.menu.f_desccolor;
 	t.menu.desccolor    = newtheme.menu.desccolor;
 	t.menu.f_namecolor  = newtheme.menu.f_namecolor;
