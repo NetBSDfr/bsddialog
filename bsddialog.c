@@ -440,7 +440,7 @@ int main(int argc, char *argv[argc])
 			max_input_form_flag = atoi(optarg);
 			break;
 		case NO_ITEMS:
-			conf.menu.no_items = true;
+			conf.menu.no_desc = true;
 			break;
 		case ITEM_PREFIX:
 			item_prefix_flag = true;
@@ -466,7 +466,7 @@ int main(int argc, char *argv[argc])
 			conf.button.no_ok = true;
 			break;
 		case NO_TAGS:
-			conf.menu.no_tags = true;
+			conf.menu.no_name = true;
 			break;
 		case NO_SHADOW:
 			conf.shadow = false;
@@ -1093,7 +1093,7 @@ int treeview_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	conf.menu.no_tags = true;
+	conf.menu.no_name = true;
 	conf.menu.align_left = true;
 
 	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,

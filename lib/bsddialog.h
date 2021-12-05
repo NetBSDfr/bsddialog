@@ -76,8 +76,8 @@ struct bsddialog_conf {
 	struct {
 		bool align_left;
 		char *default_item;
-		bool no_items;
-		bool no_tags;
+		bool no_desc;
+		bool no_name;
 	} menu;
 
 	struct {

@@ -330,18 +330,18 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	wattroff(pad, color);
 
 	/* name */
-	if (mode != BUILDLISTMODE && conf->menu.no_tags == false) {
+	if (mode != BUILDLISTMODE && conf->menu.no_name == false) {
 		wattron(pad, colorname);
 		mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.name);
 		wattroff(pad, colorname);
 	}
 
 	/* description */
-	if (conf->menu.no_items == false) {
-		if ((mode == BUILDLISTMODE || conf->menu.no_tags) && curr == false)
+	if (conf->menu.no_desc == false) {
+		if ((mode == BUILDLISTMODE || conf->menu.no_name) && curr == false)
 			color = item.on ? t.menu.namecolor : t.menu.desccolor;
 		wattron(pad, color);
-		if (conf->menu.no_tags)
+		if (conf->menu.no_name)
 			mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.desc);
 		else
 			mvwaddstr(pad, y, pos.xdesc, item.desc);
@@ -503,8 +503,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			pos.maxdesc   = MAX(pos.maxdesc, strlen(item->desc));
 		}
 	}
-	pos.maxname = conf->menu.no_tags ? 0 : pos.maxname;
-	pos.maxdesc = conf->menu.no_items ? 0 : pos.maxdesc;
+	pos.maxname = conf->menu.no_name ? 0 : pos.maxname;
+	pos.maxdesc = conf->menu.no_desc ? 0 : pos.maxdesc;
 	pos.maxdepth *= DEPTHSPACE;
 
 	pos.xselector = pos.maxprefix + (pos.maxprefix != 0 ? 1 : 0);
