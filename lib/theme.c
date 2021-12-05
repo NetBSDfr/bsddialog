@@ -169,47 +169,6 @@ static struct bsddialog_theme dialogtheme = {
 	.widget.bottomtitlecolor   = GET_COLOR(COLOR_BLACK,  COLOR_WHITE)  | A_BOLD
 };
 
-static struct bsddialog_theme magentatheme = {
-	.shadow.color    = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadow.h        = 1,
-	.shadow.w        = 2,
-
-	.terminal.color    = GET_COLOR(COLOR_WHITE, COLOR_MAGENTA) | A_BOLD,
-	.widget.delimtitle = true,
-	.widget.titlecolor = GET_COLOR(COLOR_RED, COLOR_CYAN),
-	.widget.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
-	.widget.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
-	.widget.color    = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
-
-	.text.hmargin    = 1,
-
-	.menu.f_desccolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
-	.menu.desccolor    = GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD,
-	.menu.f_namecolor  = GET_COLOR(COLOR_YELLOW,COLOR_BLUE) | A_BOLD,
-	.menu.namecolor    = GET_COLOR(COLOR_BLUE,  COLOR_CYAN) | A_BOLD,
-	.menu.namesepcolor = GET_COLOR(COLOR_RED,   COLOR_CYAN) | A_BOLD,
-	.menu.descsepcolor = GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD,
-
-	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE) | A_BOLD,
-	.form.fieldcolor    = GET_COLOR(COLOR_WHITE,  COLOR_CYAN) | A_BOLD,
-	.form.readonlycolor = GET_COLOR(COLOR_CYAN,COLOR_WHITE)   | A_BOLD,
-
-	.bar.f_color     = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
-	.bar.color       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
-
-	.button.space    = 3,
-	.button.leftch   = '<',
-	.button.rightch  = '>',
-	.button.f_delimcolor = GET_COLOR(COLOR_WHITE, COLOR_RED)    | A_BOLD,
-	.button.delimcolor   = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
-	.button.f_color      = GET_COLOR(COLOR_WHITE, COLOR_RED),
-	.button.color        = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
-	.button.f_shortcutcolor = GET_COLOR(COLOR_WHITE, COLOR_RED) | A_BOLD,
-	.button.shortcutcolor   = GET_COLOR(COLOR_BLACK,  COLOR_CYAN),
-
-	.widget.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_CYAN) | A_BOLD
-};
-
 void bsddialog_set_theme(struct bsddialog_theme newtheme)
 {
 	t.shadow.color    = newtheme.shadow.color;
@@ -268,8 +227,6 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 		bsddialog_set_theme(blackwhite);
 	else if (newtheme == BSDDIALOG_THEME_DIALOG)
 		bsddialog_set_theme(dialogtheme);
-	else if (newtheme == BSDDIALOG_THEME_MAGENTA)
-		bsddialog_set_theme(magentatheme);
 	else
 		RETURN_ERROR("Unknow default theme");
 

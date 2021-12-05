@@ -185,7 +185,7 @@ void usage(void)
 		"--print-size, --quoted, --print-maxsize, --shadow, "
 		"--single-quoted, --separator <sep>, --separate-output, "
 		"--sleep <secs>, --stderr, --stdout, "
-		"--theme <bsddialog|dialog|blackwhite|magenta>, "
+		"--theme <blackwhite|bsddialog|dialog>, "
 		"--time-format <format>, --title <title>, "
 		"--yes-label <string>.\n");
 	printf("\n");
@@ -519,11 +519,9 @@ int main(int argc, char *argv[argc])
 				theme_flag = BSDDIALOG_THEME_BLACKWHITE;
 			else if (strcmp(optarg, "dialog") == 0)
 				theme_flag = BSDDIALOG_THEME_DIALOG;
-			else if (strcmp(optarg, "magenta") == 0)
-				theme_flag = BSDDIALOG_THEME_MAGENTA;
 			else {
 				printf("Unknown theme, possible values: ");
-				printf("bsddialog, blackwhite, dialog, magenta");
+				printf("blackwhite, bsddialog, blackwhite");
 				return (BSDDIALOG_ERROR);
 			}
 			break;
