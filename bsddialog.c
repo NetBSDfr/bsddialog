@@ -521,7 +521,7 @@ int main(int argc, char *argv[argc])
 				theme_flag = BSDDIALOG_THEME_DIALOG;
 			else {
 				printf("Unknown theme, possible values: ");
-				printf("blackwhite, bsddialog, blackwhite");
+				printf("blackwhite, bsddialog, dialog");
 				return (BSDDIALOG_ERROR);
 			}
 			break;
