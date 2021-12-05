@@ -42,18 +42,19 @@ struct bsddialog_theme t;
 static struct bsddialog_theme bsddialogtheme = {
 #define bgwidget  COLOR_WHITE
 #define bgcurr    COLOR_YELLOW
-	.shadow.color    = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadow.h        = 1,
-	.shadow.w        = 2,
+	.shadow.color = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.h     = 1,
+	.shadow.w     = 2,
 
-	.terminal.color    = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
-	.widget.delimtitle = true,
-	.widget.titlecolor = GET_COLOR(COLOR_YELLOW, bgwidget),
-	.widget.lineraisecolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
-	.widget.linelowercolor  = GET_COLOR(COLOR_BLACK,  bgwidget),
-	.widget.color      = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.terminal.color          = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
+	.widget.delimtitle       = true,
+	.widget.titlecolor       = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.widget.lineraisecolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.widget.linelowercolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.widget.color            = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.widget.bottomtitlecolor = GET_COLOR(COLOR_BLACK,  bgwidget),
 
-	.text.hmargin    = 1,
+	.text.hmargin = 1,
 
 	.menu.arrowcolor   = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.menu.f_desccolor  = GET_COLOR(COLOR_WHITE,  bgcurr),
@@ -67,37 +68,36 @@ static struct bsddialog_theme bsddialogtheme = {
 	.form.fieldcolor    = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
 	.form.readonlycolor = GET_COLOR(COLOR_CYAN,COLOR_WHITE),
 
-	.bar.f_color     = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
-	.bar.color       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
+	.bar.f_color = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
+	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
 
-	.button.space    = 3,
-	.button.leftch   = '[',
-	.button.rightch  = ']',
+	.button.space        = 3,
+	.button.leftch       = '[',
+	.button.rightch      = ']',
 	.button.f_delimcolor = GET_COLOR(COLOR_WHITE,  bgcurr),
 	.button.delimcolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.button.f_color      = GET_COLOR(COLOR_WHITE,  bgcurr)    | A_UNDERLINE,
 	.button.color        = GET_COLOR(COLOR_BLACK,  bgwidget)  | A_UNDERLINE,
 	.button.f_shortcutcolor = GET_COLOR(COLOR_BLACK, bgcurr)  | A_UNDERLINE,
-	.button.shortcutcolor= GET_COLOR(COLOR_YELLOW, bgwidget)  | A_UNDERLINE,
-
-	.widget.bottomtitlecolor= GET_COLOR(COLOR_BLACK, bgwidget)
+	.button.shortcutcolor = GET_COLOR(COLOR_YELLOW, bgwidget) | A_UNDERLINE
 };
 
 static struct bsddialog_theme blackwhite = {
 #define bk  COLOR_BLACK
 #define fg  COLOR_WHITE
-	.shadow.color    = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadow.h        = 1,
-	.shadow.w        = 2,
+	.shadow.color = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.h     = 1,
+	.shadow.w     = 2,
 
 	.terminal.color          = GET_COLOR(fg, bk),
-	.widget.delimtitle      = true,
-	.widget.titlecolor      = GET_COLOR(fg, bk),
-	.widget.lineraisecolor  = GET_COLOR(fg, bk),
-	.widget.linelowercolor  = GET_COLOR(fg, bk),
-	.widget.color           = GET_COLOR(fg, bk),
+	.widget.delimtitle       = true,
+	.widget.titlecolor       = GET_COLOR(fg, bk),
+	.widget.lineraisecolor   = GET_COLOR(fg, bk),
+	.widget.linelowercolor   = GET_COLOR(fg, bk),
+	.widget.color            = GET_COLOR(fg, bk),
+	.widget.bottomtitlecolor = GET_COLOR(fg, bk),
 
-	.text.hmargin    = 1,
+	.text.hmargin = 1,
 
 	.menu.arrowcolor   = GET_COLOR(fg, bk),
 	.menu.f_desccolor  = GET_COLOR(fg, bk) | A_REVERSE,
@@ -111,35 +111,34 @@ static struct bsddialog_theme blackwhite = {
 	.form.fieldcolor    = GET_COLOR(fg, bk),
 	.form.readonlycolor = GET_COLOR(fg, bk),
 
-	.bar.f_color     = GET_COLOR(fg, bk) | A_REVERSE,
-	.bar.color       = GET_COLOR(fg, bk),
+	.bar.f_color = GET_COLOR(fg, bk) | A_REVERSE,
+	.bar.color   = GET_COLOR(fg, bk),
 
-	.button.space        = 3,
-	.button.leftch       = '[',
-	.button.rightch      = ']',
-	.button.f_delimcolor = GET_COLOR(fg, bk),
-	.button.delimcolor   = GET_COLOR(fg, bk),
-	.button.f_color      = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
-	.button.color        = GET_COLOR(fg, bk) | A_UNDERLINE,
+	.button.space           = 3,
+	.button.leftch          = '[',
+	.button.rightch         = ']',
+	.button.f_delimcolor    = GET_COLOR(fg, bk),
+	.button.delimcolor      = GET_COLOR(fg, bk),
+	.button.f_color         = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
+	.button.color           = GET_COLOR(fg, bk) | A_UNDERLINE,
 	.button.f_shortcutcolor = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
-	.button.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE,
-
-	.widget.bottomtitlecolor= GET_COLOR(fg, bk)
+	.button.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE
 };
 
 static struct bsddialog_theme dialogtheme = {
-	.shadow.color    = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadow.h        = 1,
-	.shadow.w        = 2,
+	.shadow.color = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.h     = 1,
+	.shadow.w     = 2,
 
-	.terminal.color    = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
-	.widget.delimtitle = false,
-	.widget.titlecolor = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
-	.widget.lineraisecolor  = GET_COLOR(COLOR_WHITE, COLOR_WHITE) | A_BOLD,
-	.widget.linelowercolor  = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
-	.widget.color           = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
+	.terminal.color          = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
+	.widget.delimtitle       = false,
+	.widget.titlecolor       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
+	.widget.lineraisecolor   = GET_COLOR(COLOR_WHITE, COLOR_WHITE) | A_BOLD,
+	.widget.linelowercolor   = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
+	.widget.color            = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
+	.widget.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 
-	.text.hmargin    = 1,
+	.text.hmargin = 1,
 
 	.menu.arrowcolor   = GET_COLOR(COLOR_GREEN, COLOR_WHITE),
 	.menu.f_desccolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
@@ -153,36 +152,35 @@ static struct bsddialog_theme dialogtheme = {
 	.form.fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
 	.form.readonlycolor = GET_COLOR(COLOR_CYAN,  COLOR_WHITE)| A_BOLD,
 
-	.bar.f_color     = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
-	.bar.color       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
+	.bar.f_color = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
+	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
 
-	.button.space    = 3,
-	.button.leftch   = '<',
-	.button.rightch  = '>',
-	.button.f_delimcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)   | A_BOLD,
-	.button.delimcolor   = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.button.f_color      = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)   | A_BOLD,
-	.button.color        = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.button.f_shortcutcolor = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
-	.button.shortcutcolor = GET_COLOR(COLOR_RED,    COLOR_WHITE)  | A_BOLD,
-
-	.widget.bottomtitlecolor   = GET_COLOR(COLOR_BLACK,  COLOR_WHITE)  | A_BOLD
+	.button.space           = 3,
+	.button.leftch          = '<',
+	.button.rightch         = '>',
+	.button.f_delimcolor    = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)  | A_BOLD,
+	.button.delimcolor      = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
+	.button.f_color         = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)  | A_BOLD,
+	.button.color           = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
+	.button.f_shortcutcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)  | A_BOLD,
+	.button.shortcutcolor   = GET_COLOR(COLOR_RED,    COLOR_WHITE) | A_BOLD
 };
 
 void bsddialog_set_theme(struct bsddialog_theme newtheme)
 {
-	t.shadow.color    = newtheme.shadow.color;
-	t.shadow.h        = newtheme.shadow.h;
-	t.shadow.w        = newtheme.shadow.w;
+	t.shadow.color = newtheme.shadow.color;
+	t.shadow.h     = newtheme.shadow.h;
+	t.shadow.w     = newtheme.shadow.w;
 
-	t.terminal.color         = newtheme.terminal.color;
-	t.widget.delimtitle      = newtheme.widget.delimtitle;
-	t.widget.titlecolor      = newtheme.widget.titlecolor;
-	t.widget.lineraisecolor  = newtheme.widget.lineraisecolor;
-	t.widget.linelowercolor  = newtheme.widget.linelowercolor;
-	t.widget.color           = newtheme.widget.color;
+	t.terminal.color          = newtheme.terminal.color;
+	t.widget.delimtitle       = newtheme.widget.delimtitle;
+	t.widget.titlecolor       = newtheme.widget.titlecolor;
+	t.widget.lineraisecolor   = newtheme.widget.lineraisecolor;
+	t.widget.linelowercolor   = newtheme.widget.linelowercolor;
+	t.widget.color            = newtheme.widget.color;
+	t.widget.bottomtitlecolor = newtheme.widget.bottomtitlecolor;
 
-	t.text.hmargin     = newtheme.text.hmargin;
+	t.text.hmargin = newtheme.text.hmargin;
 
 	t.menu.arrowcolor   = newtheme.menu.arrowcolor;
 	t.menu.f_desccolor  = newtheme.menu.f_desccolor;
@@ -196,8 +194,8 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 	t.form.fieldcolor    = newtheme.form.fieldcolor;
 	t.form.readonlycolor = newtheme.form.readonlycolor;
 
-	t.bar.f_color     = newtheme.bar.f_color;
-	t.bar.color       = newtheme.bar.color;
+	t.bar.f_color = newtheme.bar.f_color;
+	t.bar.color   = newtheme.bar.color;
 
 	t.button.space           = newtheme.button.space;
 	t.button.leftch          = newtheme.button.leftch;
@@ -208,8 +206,6 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 	t.button.color           = newtheme.button.color;
 	t.button.f_shortcutcolor = newtheme.button.f_shortcutcolor;
 	t.button.shortcutcolor   = newtheme.button.shortcutcolor;
-
-	t.widget.bottomtitlecolor = newtheme.widget.bottomtitlecolor;
 
 	bkgd(t.terminal.color);
 
@@ -234,7 +230,8 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 }
 
 int
-bsddialog_color(enum bsddialog_color background, enum bsddialog_color foreground)
+bsddialog_color(enum bsddialog_color background,
+    enum bsddialog_color foreground)
 {
 
 	return GET_COLOR(background, foreground);
