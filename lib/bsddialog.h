@@ -65,11 +65,11 @@ struct bsddialog_conf {
 	char *title;
 	struct {
 		bool colors;
-		/* following members could be deleted in the future */
-		bool cr_wrap;
-		bool no_collapse;
-		bool no_nl_expand;
-		bool trim;
+		/* following members could be deleted, lib -> utility */
+		bool __cr_wrap;
+		bool __no_collapse;
+		bool __no_nl_expand;
+		bool __trim;
 	} text;
 	struct {
 		bool align_left;
@@ -142,8 +142,8 @@ int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle);
 const char *bsddialog_geterror(void);
 void bsddialog_initconf(struct bsddialog_conf *conf);
 /* funcs for tzsetup(8), they will be deleted */
-int bsddialog_terminalheight(void);
-int bsddialog_terminalwidth(void);
+int __bsddialog_terminalheight(void);
+int __bsddialog_terminalwidth(void);
 
 /* widgets */
 int

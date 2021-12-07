@@ -336,7 +336,7 @@ static void prepare_text(struct bsddialog_conf *conf, char *text, char *buf)
 				i++;
 				break;
 			case 'n':
-				if (conf->text.no_nl_expand) {
+				if (conf->text.__no_nl_expand) {
 					j++;
 					buf[j] = 'n';
 				} else
@@ -344,7 +344,7 @@ static void prepare_text(struct bsddialog_conf *conf, char *text, char *buf)
 				i++;
 				break;
 			case 't':
-				if (conf->text.no_collapse) {
+				if (conf->text.__no_collapse) {
 					j++;
 					buf[j] = 't';
 				} else
@@ -354,16 +354,16 @@ static void prepare_text(struct bsddialog_conf *conf, char *text, char *buf)
 			}
 			break;
 		case '\n':
-			buf[j] = conf->text.cr_wrap ? ' ' : '\n';
+			buf[j] = conf->text.__cr_wrap ? ' ' : '\n';
 			break;
 		case '\t':
-			buf[j] = conf->text.no_collapse ? '\t' : ' ';
+			buf[j] = conf->text.__no_collapse ? '\t' : ' ';
 			break;
 		default:
 			buf[j] = text[i];
 		}
 		i++;
-		j += (buf[j] == ' ' && conf->text.trim && j > 0 && buf[j-1] == ' ') ?
+		j += (buf[j] == ' ' && conf->text.__trim && j > 0 && buf[j-1] == ' ') ?
 		    0 : 1;
 	}
 	buf[j] = '\0';
