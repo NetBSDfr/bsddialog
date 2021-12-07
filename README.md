@@ -9,7 +9,7 @@ Description:
 <https://www.freebsd.org/status/report-2021-04-2021-06/#_bsddialog_tui_widgets>
 
 Screenshots:
-<https://alfonsosiciliano.gitlab.io/posts/2021-12-07-bsddialog.html>
+<https://www.flickr.com/photos/alfonsosiciliano/albums/72157720215006074>
 
 
 ## Getting Started
