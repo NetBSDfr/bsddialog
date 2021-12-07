@@ -70,10 +70,10 @@ diskmenu_show(const char *title, const char *text, struct partedit_item *items,
 	 * "Exit partitioner (will ask whether to save changes)",
 	 */
 	conf.button.ok_label       = "Create";	
-	conf.button.extra_button   = true;
+	conf.button.with_extra     = true;
 	conf.button.extra_label    = "Delete";
-	conf.button.no_label       = "Modify";
-	conf.button.help_button    = true;
+	conf.button.cancel_label   = "Modify";
+	conf.button.with_help      = true;
 	conf.button.help_label     = "Revert";
 	conf.button.generic1_label = "Auto";
 	conf.button.generic2_label = "Finish";

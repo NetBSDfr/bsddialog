@@ -186,14 +186,14 @@ main(int argc, const char **argv)
 		error = 0;
 		if (op == BUTTONFINISH) { /* Finished */
 			//dialog_vars.ok_label = __DECONST(char *, "Commit");
-			conf.button.yes_label = __DECONST(char *, "Commit");
+			conf.button.ok_label = __DECONST(char *, "Commit");
 			//dialog_vars.extra_label =
 			//    __DECONST(char *, "Revert & Exit");
 			conf.button.extra_label = __DECONST(char *, "Revert & Exit");
 			//dialog_vars.extra_button = TRUE;
-			conf.button.extra_button = true;;
+			conf.button.with_extra = true;;
 			//dialog_vars.cancel_label = __DECONST(char *, "Back");
-			conf.button.no_label =  __DECONST(char *, "Back");
+			conf.button.cancel_label =  __DECONST(char *, "Back");
 			conf.title = "Confirmation";
 			conf.clear = true;
 			op = bsddialog_yesno(&conf, "Your changes will now be "
@@ -203,12 +203,12 @@ main(int argc, const char **argv)
 			//dialog_vars.ok_label = NULL;
 			conf.button.ok_label = NULL;
 			//dialog_vars.extra_button = FALSE;
-			conf.button.extra_button = false;
+			conf.button.with_extra = false;
 			//dialog_vars.cancel_label = NULL;
 			conf.button.cancel_label = NULL;
 			conf.clear = false;
 
-			if (op == BSDDIALOG_YESOK && validate_setup()) { /* Save */
+			if (op == BSDDIALOG_OK && validate_setup()) { /* Save */
 				error = apply_changes(&mesh);
 				if (!error)
 					apply_workaround(&mesh);
@@ -315,7 +315,7 @@ validate_setup(void)
 	 */
 	if (root->newfs == NULL && !sade_mode) {
 		//dialog_vars.defaultno = TRUE;
-		conf.button.defaultno = true;
+		conf.button.default_cancel = true;
 		conf.title = "Warning";
 		button = bsddialog_yesno(&conf, "The chosen root partition "
 		    "has a preexisting filesystem. If it contains an existing "
@@ -325,7 +325,7 @@ validate_setup(void)
 		    "and recreating it. Are you sure you want to proceed?",
 		    0, 0);
 		//dialog_vars.defaultno = FALSE;
-		if (button == BSDDIALOG_NOCANCEL)
+		if (button == BSDDIALOG_CANCEL)
 			return (false);
 	}
 
