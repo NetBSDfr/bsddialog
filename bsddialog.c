@@ -395,13 +395,13 @@ int main(int argc, char *argv[argc])
 			conf.menu.default_item = optarg;
 			break;
 		case DEFAULTNO:
-			conf.button.defaultno = true;
+			conf.button.default_cancel = true;
 			break;
 		case EXIT_LABEL:
 			conf.button.exit_label = optarg;
 			break;
 		case EXTRA_BUTTON:
-			conf.button.extra_button = true;
+			conf.button.with_extra = true;
 			break;
 		case EXTRA_LABEL:
 			conf.button.extra_label = optarg;
@@ -410,7 +410,7 @@ int main(int argc, char *argv[argc])
 			usage();
 			return (BSDDIALOG_OK);
 		case HELP_BUTTON:
-			conf.button.help_button = true;
+			conf.button.with_help = true;
 			break;
 		case HELP_LABEL:
 			conf.button.help_label = optarg;
@@ -447,7 +447,7 @@ int main(int argc, char *argv[argc])
 			break;
 		case NOCANCEL:
 		case NO_CANCEL:
-			conf.button.no_cancel = true;
+			conf.button.without_cancel = true;
 			break;
 		case NO_COLLAPSE:
 			conf.text.no_collapse = true;
@@ -463,7 +463,7 @@ int main(int argc, char *argv[argc])
 			break;
 		case NOOK:
 		case NO_OK:
-			conf.button.no_ok = true;
+			conf.button.without_ok = true;
 			break;
 		case NO_TAGS:
 			conf.menu.no_name = true;

@@ -85,19 +85,19 @@ struct bsddialog_conf {
 	} form;
 
 	struct {
-		char *cancel_label;
-		bool defaultno;
-		char *default_label;
-		char *exit_label;
-		bool extra_button;
+		bool without_ok;
+		char *ok_label;
+		bool with_extra;
 		char *extra_label;
+		bool without_cancel;
+		char *cancel_label;
+		bool default_cancel;
+		bool with_help;
+		char *help_label;
+		char *exit_label;
 		char *generic1_label;
 		char *generic2_label;
-		bool help_button;
-		char *help_label;
-		bool no_cancel;
-		bool no_ok;
-		char *ok_label;
+		char *default_label;
 	} button;
 };
 
