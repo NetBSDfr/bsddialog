@@ -35,8 +35,7 @@
 #include <string.h>
 
 #include <libgeom.h>
-#include <dialog.h>
-#include <dlg_keys.h>
+#include <bsddialog.h>
 
 #include "partedit.h"
 
@@ -61,22 +60,22 @@ part_wizard(const char *fsreq)
 startwizard:
 	error = geom_gettree(&mesh);
 
-	dlg_put_backtitle();
+	//dlg_put_backtitle(); "FreeBSD Installer" in parted.c should be sufficient
 	error = geom_gettree(&mesh);
 	disk = boot_disk_select(&mesh);
 	if (disk == NULL)
 		return (1);
 
-	dlg_clear();
-	dlg_put_backtitle();
+	//dlg_clear();
+	//dlg_put_backtitle();
 	schemeroot = wizard_partition(&mesh, disk);
 	free(disk);
 	if (schemeroot == NULL)
 		return (1);
 
 	geom_deletetree(&mesh);
-	dlg_clear();
-	dlg_put_backtitle();
+	//dlg_clear();
+	//dlg_put_backtitle();
 	error = geom_gettree(&mesh);
 
 	error = wizard_makeparts(&mesh, schemeroot, fstype, 1);

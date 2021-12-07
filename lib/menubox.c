@@ -497,7 +497,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			}
 
 			pos.maxprefix = MAX(pos.maxprefix, strlen(item->prefix));
-			pos.maxdepth  = MAX((int) pos.maxdepth, item->depth);
+			pos.maxdepth  = MAX(pos.maxdepth, item->depth);
 			pos.maxname   = MAX(pos.maxname, strlen(item->name));
 			pos.maxdesc   = MAX(pos.maxdesc, strlen(item->desc));
 		}
