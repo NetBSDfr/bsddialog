@@ -33,10 +33,10 @@ __FBSDID("$FreeBSD$");
 #include <sys/param.h>
 #include <ctype.h>
 #include <err.h>
-#include <dialog.h>
+#include <bsddialog.h>
 #include <errno.h>
+#include <stdio.h> //before fetch.h for FILE
 #include <fetch.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -52,6 +52,7 @@ main(void)
 	int ndists = 0;
 	int nfetched;
 	char error[PATH_MAX + 512];
+	struct bsddialog_conf conf;
 
 	if (getenv("DISTRIBUTIONS") == NULL)
 		errx(EXIT_FAILURE, "DISTRIBUTIONS variable is not set");
@@ -68,9 +69,12 @@ main(void)
 		errx(EXIT_FAILURE, "Out of memory!");
 	}
 
-	init_dialog(stdin, stdout);
-	dialog_vars.backtitle = __DECONST(char *, "FreeBSD Installer");
-	dlg_put_backtitle();
+	//init_dialog(stdin, stdout);
+	bsddialog_init();
+	//dialog_vars.backtitle = __DECONST(char *, "FreeBSD Installer");
+	//dlg_put_backtitle();
+	bsddialog_initconf(&conf);
+	bsddialog_backtitle(&conf, __DECONST(char *, "FreeBSD Installer"));
 
 	for (i = 0; i < ndists; i++) {
 		urls[i] = malloc(PATH_MAX);
@@ -82,14 +86,15 @@ main(void)
 		snprintf(error, sizeof(error),
 		    "Could not change to directory %s: %s\n",
 		    getenv("BSDINSTALL_DISTDIR"), strerror(errno));
-		dialog_msgbox("Error", error, 0, 0, TRUE);
-		end_dialog();
+		conf.title = "Error";
+		bsddialog_msgbox(&conf, error, 0, 0);
+		bsddialog_end();
 		return (EXIT_FAILURE);
 	}
 
 	nfetched = fetch_files(ndists, urls);
 
-	end_dialog();
+	bsddialog_end();
 
 	free(diststring);
 	for (i = 0; i < ndists; i++) 
@@ -117,6 +122,7 @@ fetch_files(int nfiles, char **urls)
 	struct url_stat ustat;
 	char errormsg[PATH_MAX + 512];
 	uint8_t block[4096];
+	struct bsddialog_conf conf;
 
 	/* Make the transfer list for dialog */
 	items = calloc(sizeof(char *), nfiles * 2);
@@ -132,7 +138,8 @@ fetch_files(int nfiles, char **urls)
 		items[i*2 + 1] = "Pending";
 	}
 
-	dialog_msgbox("", "Connecting to server.\nPlease wait...", 0, 0, FALSE);
+	bsddialog_initconf(&conf);
+	bsddialog_infobox(&conf, "Connecting to server.\nPlease wait...", 0, 0);
 
 	/* Try to stat all the files */
 	total_bytes = 0;
@@ -154,8 +161,8 @@ fetch_files(int nfiles, char **urls)
 			    "Error while fetching %s: %s\n", urls[i],
 			    fetchLastErrString);
 			items[i*2 + 1] = "Failed";
-			dialog_msgbox("Fetch Error", errormsg, 0, 0,
-			    TRUE);
+			conf.title = "Fetch Error";
+			bsddialog_msgbox(&conf, errormsg, 0, 0);
 			continue;
 		}
 
@@ -167,8 +174,8 @@ fetch_files(int nfiles, char **urls)
 			    "Error while fetching %s: %s\n",
 			    urls[i], strerror(errno));
 			items[i*2 + 1] = "Failed";
-			dialog_msgbox("Fetch Error", errormsg, 0, 0,
-			    TRUE);
+			conf.title = "Fetch Error";
+			bsddialog_msgbox(&conf, errormsg, 0, 0);
 			fclose(fetch_out);
 			continue;
 		}
@@ -192,11 +199,13 @@ fetch_files(int nfiles, char **urls)
 				items[i*2 + 1] = status;
 			}
 
-			if (progress > last_progress)
-				dialog_mixedgauge("Fetching Distribution",
+			if (progress > last_progress) {
+				conf.title = "Fetching Distribution";
+				bsddialog_mixedgauge(&conf,
 				    "Fetching distribution files...", 0, 0,
 				    progress, nfiles,
 				    __DECONST(char **, items));
+			}
 		}
 
 		if (ustat.size > 0 && fsize < ustat.size) {
@@ -209,8 +218,8 @@ fetch_files(int nfiles, char **urls)
 				    "Error while fetching %s: %s\n",
 				    urls[i], fetchLastErrString);
 			items[i*2 + 1] = "Failed";
-			dialog_msgbox("Fetch Error", errormsg, 0, 0,
-				    TRUE);
+			conf.title = "Fetch Error";
+			bsddialog_msgbox(&conf, errormsg, 0, 0);
 		} else {
 			items[i*2 + 1] = "Done";
 			nsuccess++;
