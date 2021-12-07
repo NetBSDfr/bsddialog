@@ -453,7 +453,7 @@ int main(int argc, char *argv[argc])
 			conf.text.no_collapse = true;
 			break;
 		case NO_LABEL:
-			conf.button.no_label = optarg;
+			conf.button.cancel_label = optarg;
 			break;
 		case NO_LINES:
 			conf.no_lines = true;
@@ -539,7 +539,7 @@ int main(int argc, char *argv[argc])
 			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
 			return (BSDDIALOG_YESOK);
 		case YES_LABEL:
-			conf.button.yes_label = optarg;
+			conf.button.ok_label = optarg;
 			break;
 		/* Widgets */
 		case BUILDLIST:

@@ -271,8 +271,11 @@ bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
-	get_buttons(conf, &bs, BUTTONLABEL(yes_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(no_label), BUTTONLABEL(help_label));
+	get_buttons(conf, &bs,
+	    conf->button.ok_label == NULL ? "Yes" : conf->button.ok_label,
+	    BUTTONLABEL(extra_label),
+	    conf->button.cancel_label == NULL ? "No" : conf->button.cancel_label,
+	    BUTTONLABEL(help_label));
 
 	return (do_widget(conf, text, rows, cols, bs, true));
 }

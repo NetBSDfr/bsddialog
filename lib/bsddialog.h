@@ -96,10 +96,8 @@ struct bsddialog_conf {
 		bool help_button;
 		char *help_label;
 		bool no_cancel;
-		char *no_label;
 		bool no_ok;
 		char *ok_label;
-		char *yes_label;
 	} button;
 };
 
