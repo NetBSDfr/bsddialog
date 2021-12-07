@@ -63,7 +63,6 @@ struct bsddialog_conf {
 	bool shadow;
 	int  sleep;
 	char *title;
-
 	struct {
 		bool colors;
 		/* following members could be deleted in the future */
@@ -72,18 +71,15 @@ struct bsddialog_conf {
 		bool no_nl_expand;
 		bool trim;
 	} text;
-
 	struct {
 		bool align_left;
 		char *default_item;
 		bool no_desc;
 		bool no_name;
 	} menu;
-
 	struct {
 		int securech;
 	} form;
-
 	struct {
 		bool without_ok;
 		char *ok_label;
