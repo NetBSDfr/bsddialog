@@ -36,8 +36,7 @@
 #include <inttypes.h>
 
 #include <libgeom.h>
-#include <dialog.h>
-#include <dlg_keys.h>
+#include <bsddialog.h>
 
 #include "partedit.h"
 
@@ -49,6 +48,9 @@ gpart_show_error(const char *title, const char *explanation, const char *errstr)
 	char *errmsg;
 	char message[512];
 	int error;
+	struct bsddialog_conf conf;
+
+	bsddialog_confint(&conf);
 
 	if (explanation == NULL)
 		explanation = "";
@@ -66,7 +68,8 @@ gpart_show_error(const char *title, const char *explanation, const char *errstr)
 		sprintf(message, "%s%s", explanation, errmsg);
 	}
 
-	dialog_msgbox(title, message, 0, 0, TRUE);
+	conf.title = title;
+	dialog_msgbox(&conf, message, 0, 0);
 }
 
 static int
