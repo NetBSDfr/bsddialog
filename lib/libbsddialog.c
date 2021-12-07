@@ -134,6 +134,7 @@ void bsddialog_initconf(struct bsddialog_conf *conf)
 {
 
 	memset(conf, 0, sizeof(struct bsddialog_conf));
-	conf->x = conf->y = BSDDIALOG_CENTER;
+	conf->y = BSDDIALOG_CENTER;
+	conf->x = BSDDIALOG_CENTER;
 	conf->shadow = true;
 }
