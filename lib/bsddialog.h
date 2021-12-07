@@ -53,7 +53,7 @@
 
 struct bsddialog_conf {
 	bool ascii_lines;
-	int  aspect_ratio;
+	unsigned int aspect_ratio;
 	int  x;
 	int  y;
 	bool clear;
@@ -63,7 +63,7 @@ struct bsddialog_conf {
 	char *hline;
 	bool no_lines;
 	bool shadow;
-	int  sleep;
+	unsigned int sleep;
 	char *title;
 	struct {
 		bool colors;
@@ -102,7 +102,7 @@ struct bsddialog_conf {
 struct bsddialog_menuitem {
 	char *prefix;
 	bool on;
-	int  depth;
+	unsigned int depth;
 	char *name;
 	char *desc;
 	char *bottomdesc;
