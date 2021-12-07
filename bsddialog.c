@@ -408,7 +408,7 @@ int main(int argc, char *argv[argc])
 			break;
 		case HELP:
 			usage();
-			return (BSDDIALOG_YESOK);
+			return (BSDDIALOG_OK);
 		case HELP_BUTTON:
 			conf.button.help_button = true;
 			break;
@@ -537,7 +537,7 @@ int main(int argc, char *argv[argc])
 		case VERSION:
 			printf("bsddialog %s (libbsddialog %s).\n",
 			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
-			return (BSDDIALOG_YESOK);
+			return (BSDDIALOG_OK);
 		case YES_LABEL:
 			conf.button.ok_label = optarg;
 			break;
@@ -617,7 +617,7 @@ int main(int argc, char *argv[argc])
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
 		dprintf(output_fd_flag, "MaxSize: %d, %d\n", ws.ws_row, ws.ws_col);
 		if (argc == 0)
-			return (BSDDIALOG_YESOK);
+			return (BSDDIALOG_OK);
 	}
 
 	if (argc < 3) {
@@ -642,7 +642,7 @@ int main(int argc, char *argv[argc])
 	if (backtitle_flag != NULL)
 		bsddialog_backtitle(&conf, backtitle_flag);
 
-	output = BSDDIALOG_YESOK;
+	output = BSDDIALOG_OK;
 	if (widgetbuilder != NULL)
 		output = widgetbuilder(conf, text, rows, cols, argc, argv,
 		    errorbuilder);
@@ -818,7 +818,7 @@ int datebox_builder(BUILDER_ARGS)
 	}
 
 	output = bsddialog_datebox(&conf, text, rows, cols, &yy, &mm, &dd);
-	if (output != BSDDIALOG_YESOK)
+	if (output != BSDDIALOG_OK)
 		return (output);
 
 	if (date_fmt_flag == NULL) {
@@ -859,7 +859,7 @@ int timebox_builder(BUILDER_ARGS)
 	}
 
 	output = bsddialog_timebox(&conf, text, rows, cols, &hh, &mm, &ss);
-	if (output != BSDDIALOG_YESOK)
+	if (output != BSDDIALOG_OK)
 		return (output);
 
 	if (time_fmt_flag == NULL) {
@@ -912,7 +912,7 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 		items[i].bottomdesc = sethelp ? argv[j++] : nostring;
 	}
 
-	return (BSDDIALOG_YESOK);
+	return (BSDDIALOG_OK);
 }
 
 static void
@@ -948,7 +948,7 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		sep = true;
 	}
 
-	if (output != BSDDIALOG_YESOK && list_items_on_flag == false)
+	if (output != BSDDIALOG_OK && list_items_on_flag == false)
 		return;
 
 	for (i = 0; i < nitems; i++) {

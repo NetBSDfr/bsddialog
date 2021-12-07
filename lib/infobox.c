@@ -109,6 +109,6 @@ bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 
 	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
-	return (BSDDIALOG_YESOK);
+	return (BSDDIALOG_OK);
 }
 

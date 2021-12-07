@@ -211,7 +211,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(bar);
 	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
-	return BSDDIALOG_YESOK;
+	return BSDDIALOG_OK;
 }
 
 int
@@ -315,7 +315,7 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols
 	delwin(bar);
 	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
-	return BSDDIALOG_YESOK;
+	return BSDDIALOG_OK;
 }
 
 int

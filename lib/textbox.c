@@ -146,7 +146,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			output = BSDDIALOG_YESOK;
+			output = BSDDIALOG_OK;
 			loop = false;
 			break;
 		case 27: /* Esc */

@@ -175,7 +175,7 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 		case KEY_ENTER:
 		case 10: /* Enter */
 			output = bs.value[bs.curr];
-			if (output == BSDDIALOG_YESOK) {
+			if (output == BSDDIALOG_OK) {
 				*hh = c[0].value;
 				*mm = c[1].value;
 				*ss = c[2].value;
@@ -393,7 +393,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		case KEY_ENTER:
 		case 10: /* Enter */
 			output = bs.value[bs.curr];
-			if (output == BSDDIALOG_YESOK) {
+			if (output == BSDDIALOG_OK) {
 				*yy = c[0].value;
 				*mm = c[1].value;
 				*dd = c[2].value;

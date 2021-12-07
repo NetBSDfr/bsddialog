@@ -164,7 +164,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 	int i;
 #define SIZEBUTTON  8
 #define DEFAULT_BUTTON_LABEL	LABEL_ok_label
-#define DEFAULT_BUTTON_VALUE	BSDDIALOG_YESOK
+#define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
 
 
 	bs->nbuttons = 0;
@@ -173,7 +173,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 
 	if (yesoklabel != NULL && conf->button.no_ok == false) {
 		bs->label[0] = yesoklabel;
-		bs->value[0] = BSDDIALOG_YESOK;
+		bs->value[0] = BSDDIALOG_OK;
 		bs->nbuttons += 1;
 	}
 
@@ -185,7 +185,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 
 	if (nocancellabel != NULL && conf->button.no_cancel == false) {
 		bs->label[bs->nbuttons] = nocancellabel;
-		bs->value[bs->nbuttons] = BSDDIALOG_NOCANCEL;
+		bs->value[bs->nbuttons] = BSDDIALOG_CANCEL;
 		if (conf->button.defaultno)
 			bs->curr = bs->nbuttons;
 		bs->nbuttons += 1;

@@ -34,8 +34,8 @@
 
 /* Exit status */
 #define BSDDIALOG_ERROR		-1
-#define BSDDIALOG_YESOK		 0
-#define BSDDIALOG_NOCANCEL	 1
+#define BSDDIALOG_OK             0
+#define BSDDIALOG_CANCEL         1
 #define BSDDIALOG_HELP		 2
 #define BSDDIALOG_EXTRA		 3
 #define BSDDIALOG_ITEM_HELP	 4

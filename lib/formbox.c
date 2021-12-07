@@ -122,7 +122,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 			if (informwin)
 				break;
 			output = bs.value[bs.curr];
-			if (output == BSDDIALOG_YESOK) {
+			if (output == BSDDIALOG_OK) {
 				form_driver(form, REQ_NEXT_FIELD);
 				form_driver(form, REQ_PREV_FIELD);
 				for (i=0; i<nitems; i++) {
