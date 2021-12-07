@@ -44,13 +44,11 @@ struct bsddialog_theme {
 	struct {
 		int color;
 	} terminal;
-
 	struct {
 		int color;
 		unsigned int h;
 		unsigned int w;
 	} shadow;
-
 	struct {
 		int  color;
 		bool delimtitle;
@@ -59,11 +57,9 @@ struct bsddialog_theme {
 		int  linelowercolor;
 		int  bottomtitlecolor;
 	} widget;
-
 	struct {
 		unsigned int hmargin;
 	} text;
-
 	struct {
 		int arrowcolor;
 		int f_namecolor;
@@ -73,18 +69,15 @@ struct bsddialog_theme {
 		int namesepcolor;
 		int descsepcolor;
 	} menu;
-
 	struct {
 		int f_fieldcolor;
 		int fieldcolor;
 		int readonlycolor;
 	} form;
-
 	struct {
 		int f_color;
 		int color;
 	} bar;
-
 	struct {
 		unsigned int space;
 		int leftch;
