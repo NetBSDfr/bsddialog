@@ -62,12 +62,15 @@ struct bsddialog_theme {
 	} text;
 	struct {
 		int arrowcolor;
+		int selectorcolor;
 		int f_namecolor;
 		int namecolor;
 		int f_desccolor;
 		int desccolor;
 		int namesepcolor;
 		int descsepcolor;
+		int f_shortcutcolor;
+		int shortcutcolor;
 	} menu;
 	struct {
 		int f_fieldcolor;

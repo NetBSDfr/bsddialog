@@ -56,13 +56,16 @@ static struct bsddialog_theme bsddialogtheme = {
 
 	.text.hmargin = 1,
 
-	.menu.arrowcolor   = GET_COLOR(COLOR_YELLOW, bgwidget),
-	.menu.f_desccolor  = GET_COLOR(COLOR_WHITE,  bgcurr),
-	.menu.desccolor    = GET_COLOR(COLOR_BLACK,  bgwidget),
-	.menu.f_namecolor  = GET_COLOR(COLOR_BLACK,  bgcurr),
-	.menu.namecolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
-	.menu.namesepcolor = GET_COLOR(COLOR_YELLOW, bgwidget),
-	.menu.descsepcolor = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.menu.arrowcolor      = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  bgwidget) | A_BOLD,
+	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE,  bgcurr),
+	.menu.desccolor       = GET_COLOR(COLOR_BLACK,  bgwidget),
+	.menu.f_namecolor     = GET_COLOR(COLOR_BLACK,  bgcurr),
+	.menu.namecolor       = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.menu.namesepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.menu.descsepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
+	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    bgwidget),
+	.menu.shortcutcolor   = GET_COLOR(COLOR_GREEN,  bgwidget),
 
 	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
 	.form.fieldcolor    = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
@@ -99,13 +102,16 @@ static struct bsddialog_theme blackwhite = {
 
 	.text.hmargin = 1,
 
-	.menu.arrowcolor   = GET_COLOR(fg, bk),
-	.menu.f_desccolor  = GET_COLOR(fg, bk) | A_REVERSE,
-	.menu.desccolor    = GET_COLOR(fg, bk),
-	.menu.f_namecolor  = GET_COLOR(fg, bk) | A_REVERSE,
-	.menu.namecolor    = GET_COLOR(fg, bk),
-	.menu.namesepcolor = GET_COLOR(fg, bk),
-	.menu.descsepcolor = GET_COLOR(fg, bk),
+	.menu.arrowcolor      = GET_COLOR(fg, bk),
+	.menu.selectorcolor   = GET_COLOR(fg, bk),
+	.menu.f_desccolor     = GET_COLOR(fg, bk) | A_REVERSE,
+	.menu.desccolor       = GET_COLOR(fg, bk),
+	.menu.f_namecolor     = GET_COLOR(fg, bk) | A_REVERSE,
+	.menu.namecolor       = GET_COLOR(fg, bk),
+	.menu.namesepcolor    = GET_COLOR(fg, bk),
+	.menu.descsepcolor    = GET_COLOR(fg, bk),
+	.menu.f_shortcutcolor = GET_COLOR(fg, bk) | A_UNDERLINE,
+	.menu.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE,
 
 	.form.f_fieldcolor  = GET_COLOR(fg, bk) | A_REVERSE,
 	.form.fieldcolor    = GET_COLOR(fg, bk),
@@ -140,13 +146,16 @@ static struct bsddialog_theme dialogtheme = {
 
 	.text.hmargin = 1,
 
-	.menu.arrowcolor   = GET_COLOR(COLOR_GREEN, COLOR_WHITE),
-	.menu.f_desccolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
-	.menu.desccolor    = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
-	.menu.f_namecolor  = GET_COLOR(COLOR_YELLOW,COLOR_BLUE)  | A_BOLD,
-	.menu.namecolor    = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
-	.menu.namesepcolor = GET_COLOR(COLOR_RED,   COLOR_WHITE),
-	.menu.descsepcolor = GET_COLOR(COLOR_RED,   COLOR_WHITE),
+	.menu.arrowcolor      = GET_COLOR(COLOR_GREEN,  COLOR_WHITE),
+	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  bgwidget)    | A_BOLD,
+	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)  | A_BOLD,
+	.menu.desccolor       = GET_COLOR(COLOR_BLACK,  COLOR_WHITE) | A_BOLD,
+	.menu.f_namecolor     = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)  | A_BOLD,
+	.menu.namecolor       = GET_COLOR(COLOR_BLUE,   COLOR_WHITE) | A_BOLD,
+	.menu.namesepcolor    = GET_COLOR(COLOR_RED,    COLOR_WHITE),
+	.menu.descsepcolor    = GET_COLOR(COLOR_RED,    COLOR_WHITE),
+	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    bgwidget),
+	.menu.shortcutcolor   = GET_COLOR(COLOR_GREEN,  bgwidget),
 
 	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
 	.form.fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
@@ -182,13 +191,16 @@ void bsddialog_set_theme(struct bsddialog_theme newtheme)
 
 	t.text.hmargin = newtheme.text.hmargin;
 
-	t.menu.arrowcolor   = newtheme.menu.arrowcolor;
-	t.menu.f_desccolor  = newtheme.menu.f_desccolor;
-	t.menu.desccolor    = newtheme.menu.desccolor;
-	t.menu.f_namecolor  = newtheme.menu.f_namecolor;
-	t.menu.namecolor    = newtheme.menu.namecolor;
-	t.menu.namesepcolor = newtheme.menu.namesepcolor;
-	t.menu.descsepcolor = newtheme.menu.descsepcolor;
+	t.menu.arrowcolor      = newtheme.menu.arrowcolor;
+	t.menu.selectorcolor   = newtheme.menu.selectorcolor;
+	t.menu.f_desccolor     = newtheme.menu.f_desccolor;
+	t.menu.desccolor       = newtheme.menu.desccolor;
+	t.menu.f_namecolor     = newtheme.menu.f_namecolor;
+	t.menu.namecolor       = newtheme.menu.namecolor;
+	t.menu.namesepcolor    = newtheme.menu.namesepcolor;
+	t.menu.descsepcolor    = newtheme.menu.descsepcolor;
+	t.menu.f_shortcutcolor = newtheme.menu.f_shortcutcolor;
+	t.menu.shortcutcolor   = newtheme.menu.shortcutcolor;
 
 	t.form.f_fieldcolor  = newtheme.form.f_fieldcolor;
 	t.form.fieldcolor    = newtheme.form.fieldcolor;

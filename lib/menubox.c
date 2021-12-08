@@ -292,10 +292,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
     struct bsddialog_menuitem item, enum menumode mode, struct lineposition pos,
     bool curr)
 {
-	int color, colorname, linech;
-
-	color = curr ? t.menu.f_desccolor : t.menu.desccolor;
-	colorname = curr ? t.menu.f_namecolor : t.menu.namecolor;
+	int colordesc, colorname, linech;
 
 	if (mode == SEPARATORMODE) {
 		if (conf->no_lines == false) {
@@ -322,14 +319,15 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 
 	/* selector */
 	wmove(pad, y, pos.xselector);
-	wattron(pad, color);
+	wattron(pad, t.menu.selectorcolor);
 	if (mode == CHECKLISTMODE)
 		wprintw(pad, "[%c]", item.on ? 'X' : ' ');
 	if (mode == RADIOLISTMODE)
 		wprintw(pad, "(%c)", item.on ? '*' : ' ');
-	wattroff(pad, color);
+	wattroff(pad, t.menu.selectorcolor);
 
 	/* name */
+	colorname = curr ? t.menu.f_namecolor : t.menu.namecolor;
 	if (mode != BUILDLISTMODE && conf->menu.no_name == false) {
 		wattron(pad, colorname);
 		mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.name);
@@ -337,16 +335,35 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	}
 
 	/* description */
-	if (conf->menu.no_desc == false) {
-		if ((mode == BUILDLISTMODE || conf->menu.no_name) && curr == false)
-			color = item.on ? t.menu.namecolor : t.menu.desccolor;
-		wattron(pad, color);
+	if (mode == BUILDLISTMODE) {
+		if (curr == false)
+			colordesc = item.on ? t.menu.namecolor : t.menu.desccolor;
+		else
+			colordesc = t.menu.f_namecolor;
+	}
+	else {
+		if (conf->menu.no_name)
+			colordesc = curr ? t.menu.f_namecolor : t.menu.namecolor;
+		else
+			colordesc = curr ? t.menu.f_desccolor : t.menu.desccolor;
+	}
+	if (mode == BUILDLISTMODE || conf->menu.no_desc == false) {
+		wattron(pad, colordesc);
 		if (conf->menu.no_name)
 			mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.desc);
 		else
 			mvwaddstr(pad, y, pos.xdesc, item.desc);
-		wattroff(pad, color);
+		wattroff(pad, colordesc);
 	}
+
+	/* shortcut */
+	/*color = curr ? t.menu.f_shortcut : t.menu.shortcut;
+	if (mode == BUILDLISTMODE || conf.menu.no_name) {
+		
+	}
+	else {
+	}*/
+	
 
 	/* bottom desc (item help) */
 	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
@@ -568,7 +585,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	wrefresh(menuwin);
 	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 	
-	draw_buttons(widget, h-2, w, bs, true);
+	draw_buttons(widget, h-2, w, bs, false);
 	wrefresh(widget);
 
 	item = &groups[g].items[rel];
@@ -590,20 +607,20 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, h-2, w, bs, false);
 			wrefresh(widget);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, h-2, w, bs, true);
+				draw_buttons(widget, h-2, w, bs, false);
 				wrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, h-2, w, bs, true);
+				draw_buttons(widget, h-2, w, bs, false);
 				wrefresh(widget);
 			}
 			break;
@@ -649,7 +666,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			    RAISED, textpad, &htextpad, text, true) != 0)
 			return BSDDIALOG_ERROR;
 			
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, h-2, w, bs, false);
 			wrefresh(widget);
 
 			prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
