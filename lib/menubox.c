@@ -271,6 +271,61 @@ getfastprev(int menurows, struct bsddialog_menugroup *groups, int *abs,
 	} while (*abs != a && *abs > start - menurows && i > 0);
 }
 
+static bool
+getnextshortcut(struct bsddialog_conf *conf, enum menumode mode, int ngroups,
+    struct bsddialog_menugroup *groups, int *abs, int *group, int *rel,
+    int key)
+{
+	int i, j, a, ch, ng, nr, na;
+	bool mainloop;
+
+	if (*abs < 0 || ngroups < 0 || *rel < 0)
+		return false;
+
+	na = a = -1;
+	mainloop = true;
+	for (i = 0; i < ngroups && mainloop; i++) {
+		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+			a += groups[i].nitems;
+			continue;
+		}
+		for (j = 0; j < groups[i].nitems; j++) {
+			a++;
+			if (a == *abs)
+				continue;
+
+			if (mode == BUILDLISTMODE || conf->menu.no_name)
+				ch = groups[i].items[j].desc[0];
+			else
+				ch = groups[i].items[j].name[0];
+	
+			if (ch == key) {
+				if (a < *abs && na == -1) {
+					na = a;
+					ng = i;
+					nr = j;
+				}
+				if (a > *abs) {
+					na = a;
+					ng = i;
+					nr = j;
+					mainloop = false;
+					break;
+				}
+			}
+		}
+	}
+
+	if (na != -1) {
+		*abs = na;
+		*group = ng;
+		*rel = nr;
+		return (true);
+	}
+
+	return (false);
+}
+
 static enum menumode
 getmode(enum menumode mode, struct bsddialog_menugroup group)
 {
@@ -361,15 +416,12 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	colorshortcut = curr ? t.menu.f_shortcutcolor : t.menu.shortcutcolor;
 	wattron(pad, colorshortcut);
 	if (mode != BUILDLISTMODE) {
-		if (conf->menu.no_name) {
+		if (conf->menu.no_name)
 			shortcut = item.desc;
-			wmove(pad, y, pos.xname + item.depth * DEPTHSPACE);
-		}
-		else {
+		else
 			shortcut = item.name;
-			wmove(pad, y, pos.xname);
-		}
 	}
+	wmove(pad, y, pos.xname + item.depth * DEPTHSPACE);
 	if (shortcut != NULL && shortcut[0] != '\0')
 		waddch(pad, shortcut[0]);
 	wattroff(pad, colorshortcut);
@@ -706,12 +758,6 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			refresh();
 
 			break;
-		default:
-			for (i = 0; i < (int) bs.nbuttons; i++)
-				if (tolower(input) == tolower((bs.label[i])[0])) {
-					output = bs.value[i];
-					loop = false;
-			}
 		}
 
 		if (abs < 0)
@@ -777,6 +823,21 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				item->on = !item->on;
 			}
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
+			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+		default:
+			drawitem(conf, menupad, abs, *item, currmode, pos, false);
+			getnextshortcut(conf, currmode, ngroups, groups, &abs,
+			    &g, &rel, input);
+			item = &groups[g].items[rel];
+			currmode = getmode(mode, groups[g]);
+			drawitem(conf, menupad, abs, *item, currmode, pos, true);
+			if (ymenupad > abs && ymenupad > 0)
+				ymenupad = abs;
+			if ((int)(ymenupad + menurows) <= abs)
+				ymenupad = abs - menurows + 1;
+			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
+			    menurows, ymenupad);
+			wrefresh(menuwin);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 		}
 	}
