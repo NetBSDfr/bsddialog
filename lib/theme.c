@@ -64,8 +64,8 @@ static struct bsddialog_theme bsddialogtheme = {
 	.menu.namecolor       = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.menu.namesepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.menu.descsepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
-	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    bgwidget),
-	.menu.shortcutcolor   = GET_COLOR(COLOR_GREEN,  bgwidget),
+	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    bgcurr),
+	.menu.shortcutcolor   = GET_COLOR(COLOR_RED,    bgwidget),
 
 	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
 	.form.fieldcolor    = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
@@ -110,7 +110,7 @@ static struct bsddialog_theme blackwhite = {
 	.menu.namecolor       = GET_COLOR(fg, bk),
 	.menu.namesepcolor    = GET_COLOR(fg, bk),
 	.menu.descsepcolor    = GET_COLOR(fg, bk),
-	.menu.f_shortcutcolor = GET_COLOR(fg, bk) | A_UNDERLINE,
+	.menu.f_shortcutcolor = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
 	.menu.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE,
 
 	.form.f_fieldcolor  = GET_COLOR(fg, bk) | A_REVERSE,
@@ -154,8 +154,8 @@ static struct bsddialog_theme dialogtheme = {
 	.menu.namecolor       = GET_COLOR(COLOR_BLUE,   COLOR_WHITE) | A_BOLD,
 	.menu.namesepcolor    = GET_COLOR(COLOR_RED,    COLOR_WHITE),
 	.menu.descsepcolor    = GET_COLOR(COLOR_RED,    COLOR_WHITE),
-	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    bgwidget),
-	.menu.shortcutcolor   = GET_COLOR(COLOR_GREEN,  bgwidget),
+	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    COLOR_BLUE)  | A_BOLD,
+	.menu.shortcutcolor   = GET_COLOR(COLOR_RED,    COLOR_WHITE) | A_BOLD,
 
 	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
 	.form.fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,

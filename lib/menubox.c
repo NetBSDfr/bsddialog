@@ -292,7 +292,8 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
     struct bsddialog_menuitem item, enum menumode mode, struct lineposition pos,
     bool curr)
 {
-	int colordesc, colorname, linech;
+	int colordesc, colorname, colorshortcut, linech;
+	char *shortcut;
 
 	if (mode == SEPARATORMODE) {
 		if (conf->no_lines == false) {
@@ -357,13 +358,21 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	}
 
 	/* shortcut */
-	/*color = curr ? t.menu.f_shortcut : t.menu.shortcut;
-	if (mode == BUILDLISTMODE || conf.menu.no_name) {
-		
+	colorshortcut = curr ? t.menu.f_shortcutcolor : t.menu.shortcutcolor;
+	wattron(pad, colorshortcut);
+	if (mode != BUILDLISTMODE) {
+		if (conf->menu.no_name) {
+			shortcut = item.desc;
+			wmove(pad, y, pos.xname + item.depth * DEPTHSPACE);
+		}
+		else {
+			shortcut = item.name;
+			wmove(pad, y, pos.xname);
+		}
 	}
-	else {
-	}*/
-	
+	if (shortcut != NULL && shortcut[0] != '\0')
+		waddch(pad, shortcut[0]);
+	wattroff(pad, colorshortcut);
 
 	/* bottom desc (item help) */
 	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
