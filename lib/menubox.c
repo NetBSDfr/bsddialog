@@ -413,18 +413,19 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	}
 
 	/* shortcut */
-	colorshortcut = curr ? t.menu.f_shortcutcolor : t.menu.shortcutcolor;
-	wattron(pad, colorshortcut);
 	if (mode != BUILDLISTMODE) {
+		colorshortcut = curr ? t.menu.f_shortcutcolor : t.menu.shortcutcolor;
+		wattron(pad, colorshortcut);
+
 		if (conf->menu.no_name)
 			shortcut = item.desc;
 		else
 			shortcut = item.name;
-	}
-	wmove(pad, y, pos.xname + item.depth * DEPTHSPACE);
-	if (shortcut != NULL && shortcut[0] != '\0')
-		waddch(pad, shortcut[0]);
+		wmove(pad, y, pos.xname + item.depth * DEPTHSPACE);
+		if (shortcut != NULL && shortcut[0] != '\0')
+			waddch(pad, shortcut[0]);
 	wattroff(pad, colorshortcut);
+}
 
 	/* bottom desc (item help) */
 	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
