@@ -427,12 +427,11 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	wattroff(pad, colorshortcut);
 }
 
-	/* bottom desc (item help) */
-	if (item.bottomdesc != NULL && item.bottomdesc[0] != '\0') {
-		move(LINES-1, 2);
-		clrtoeol();
+	/* bottom description */
+	move(LINES-1, 2);
+	clrtoeol();
+	if (item.bottomdesc != NULL) {
 		addstr(item.bottomdesc);
-
 		refresh();
 	}
 }
