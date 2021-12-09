@@ -289,7 +289,7 @@ getnextshortcut(struct bsddialog_conf *conf, enum menumode mode, int ngroups,
 			a += groups[i].nitems;
 			continue;
 		}
-		for (j = 0; j < groups[i].nitems; j++) {
+		for (j = 0; j < (int)groups[i].nitems; j++) {
 			a++;
 			if (a == *abs)
 				continue;
