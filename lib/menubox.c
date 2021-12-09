@@ -617,17 +617,20 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	menupad = newpad(totnitems, pos.line);
 	wbkgd(menupad, t.widget.color);
 
-	getfirst_with_default(conf, ngroups, groups, &abs, &g, &rel);
 	ymenupad = 0;
 	for (i=0; i<ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
 		for (j=0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			drawitem(conf, menupad, ymenupad, *item, currmode,
-			    pos, ymenupad == abs);
+			drawitem(conf, menupad, ymenupad, *item, currmode, pos,
+			    false);
 			ymenupad++;
 		}
 	}
+	getfirst_with_default(conf, ngroups, groups, &abs, &g, &rel);
+	currmode = getmode(mode, groups[g]);
+	item = &groups[g].items[rel];
+	drawitem(conf, menupad, abs, *item, currmode, pos, true);
 
 	ys = y + h - 5 - menurows + 1;
 	ye = y + h - 5 ;
@@ -650,8 +653,6 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	draw_buttons(widget, h-2, w, bs, false);
 	wrefresh(widget);
 
-	item = &groups[g].items[rel];
-	currmode = getmode(mode, groups[g]);
 	loop = true;
 	while(loop) {
 		input = getch();
