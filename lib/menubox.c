@@ -279,7 +279,7 @@ getnextshortcut(struct bsddialog_conf *conf, enum menumode mode, int ngroups,
 	int i, j, a, ch, ng, nr, na;
 	bool mainloop;
 
-	if (*abs < 0 || ngroups < 0 || *rel < 0)
+	if (*abs < 0 || ngroups < 0 || *rel < 0 || mode == BUILDLISTMODE)
 		return false;
 
 	na = a = -1;
@@ -294,7 +294,7 @@ getnextshortcut(struct bsddialog_conf *conf, enum menumode mode, int ngroups,
 			if (a == *abs)
 				continue;
 
-			if (mode == BUILDLISTMODE || conf->menu.no_name)
+			if (conf->menu.no_name)
 				ch = groups[i].items[j].desc[0];
 			else
 				ch = groups[i].items[j].name[0];
