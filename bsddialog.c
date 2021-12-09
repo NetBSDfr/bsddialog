@@ -173,7 +173,7 @@ void usage(void)
 	printf("Common Options:\n");
 	printf("--ascii-lines, --aspect <ratio>, --backtitle <backtitle>, "
 		"--begin-x <x>, --begin-y <y>, --cancel-label <string>, "
-		"-clear, --colors, --date-format <format>, "
+		"--clear, --colors, --date-format <format>, "
 		"--default-button <label>, --defaultno, --default-item <name>,"
 		"--exit-label <label>, --extra-button, --extra-label <label>,"
 		"--hfile <filename>, --help-button, --help-label <label>, "
