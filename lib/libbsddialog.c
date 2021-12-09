@@ -88,7 +88,7 @@ int bsddialog_init(void)
 	if (bsddialog_set_default_theme(BSDDIALOG_THEME_DIALOG) != 0)
 		error = BSDDIALOG_ERROR;
 
-	return error;
+	return (error);
 }
 
 int bsddialog_end(void)
@@ -97,7 +97,7 @@ int bsddialog_end(void)
 	if (endwin() != OK)
 		RETURN_ERROR("Cannot end ncurses (endwin)");
 
-	return 0;
+	return (0);
 }
 
 int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle)
@@ -109,25 +109,25 @@ int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle)
 
 	refresh();
 
-	return 0;
+	return (0);
 }
 
 const char *bsddialog_geterror(void)
 {
 
-	return get_error_string();
+	return (get_error_string());
 }
 
 int bsddialog_terminalheight(void)
 {
 
-	return LINES;
+	return (LINES);
 }
 
 int bsddialog_terminalwidth(void)
 {
 
-	return COLS;
+	return (COLS);
 }
 
 void bsddialog_initconf(struct bsddialog_conf *conf)
@@ -146,5 +146,5 @@ int bsddialog_clearterminal(void)
 		RETURN_ERROR("Cannot clear the terminal");
 	refresh();
 
-	return 0;
+	return (0);
 }
