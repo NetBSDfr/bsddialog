@@ -138,3 +138,13 @@ void bsddialog_initconf(struct bsddialog_conf *conf)
 	conf->x = BSDDIALOG_CENTER;
 	conf->shadow = true;
 }
+
+int bsddialog_clearterminal(void)
+{
+
+	if (clear() != OK)
+		RETURN_ERROR("Cannot clear the terminal");
+	refresh();
+
+	return 0;
+}
