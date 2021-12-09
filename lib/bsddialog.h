@@ -61,6 +61,7 @@ struct bsddialog_conf {
 	int  *get_width;
 	char *hfile;
 	char *hline;
+	unsigned int min_width;
 	bool no_lines;
 	bool shadow;
 	unsigned int sleep;
@@ -68,10 +69,10 @@ struct bsddialog_conf {
 	struct {
 		bool colors;
 		/* following members could be deleted, lib -> utility */
-		bool __cr_wrap;
-		bool __no_collapse;
-		bool __no_nl_expand;
-		bool __trim;
+		bool _cr_wrap;
+		bool _no_collapse;
+		bool _no_nl_expand;
+		bool _trim;
 	} text;
 	struct {
 		bool align_left;
@@ -144,8 +145,8 @@ int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle);
 const char *bsddialog_geterror(void);
 void bsddialog_initconf(struct bsddialog_conf *conf);
 /* funcs for tzsetup(8), they will be deleted */
-int __bsddialog_terminalheight(void);
-int __bsddialog_terminalwidth(void);
+int _bsddialog_terminalheight(void);
+int _bsddialog_terminalwidth(void);
 
 /* widgets */
 int

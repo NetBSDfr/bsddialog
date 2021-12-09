@@ -383,7 +383,7 @@ int main(int argc, char *argv[argc])
 			conf.text.colors = true;
 			break;
 		case CR_WRAP:
-			conf.text.__cr_wrap = true;
+			conf.text._cr_wrap = true;
 			break;
 		case DATE_FORMAT:
 			date_fmt_flag = optarg;
@@ -450,7 +450,7 @@ int main(int argc, char *argv[argc])
 			conf.button.without_cancel = true;
 			break;
 		case NO_COLLAPSE:
-			conf.text.__no_collapse = true;
+			conf.text._no_collapse = true;
 			break;
 		case NO_LABEL:
 			conf.button.cancel_label = optarg;
@@ -459,7 +459,7 @@ int main(int argc, char *argv[argc])
 			conf.no_lines = true;
 			break;
 		case NO_NL_EXPAND:
-			conf.text.__no_nl_expand = true;
+			conf.text._no_nl_expand = true;
 			break;
 		case NOOK:
 		case NO_OK:
@@ -532,7 +532,7 @@ int main(int argc, char *argv[argc])
 			conf.title = optarg;
 			break;
 		case TRIM:
-			conf.text.__trim = true;
+			conf.text._trim = true;
 			break;
 		case VERSION:
 			printf("bsddialog %s (libbsddialog %s).\n",
