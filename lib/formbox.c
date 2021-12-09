@@ -57,6 +57,7 @@ struct myfield {
 	int size;
 	bool secure;
 	int securech;
+	char *bottomdesc;
 };
 #define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
 #define GETMYFIELD2(form) ((struct myfield*)field_userptr(current_field(form)))
@@ -91,6 +92,17 @@ static void shiftleft(struct myfield *mf)
 		mf->len = last;
 }
 
+static void print_bottomdesc(struct myfield *mf)
+{
+
+	move(LINES-1, 2);
+	clrtoeol();
+	if (mf->bottomdesc != NULL) {
+		addstr(mf->bottomdesc);
+		refresh();
+	}
+}
+
 static int
 form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
     struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
@@ -107,6 +119,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 	form_driver(form, REQ_END_LINE);
 	form_driver(form, REQ_END_LINE);
 	mf = GETMYFIELD2(form);
+	print_bottomdesc(mf);
 	mf->pos = mf->len;
 	while(loop) {
 		if (buttupdate) {
@@ -187,6 +200,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 			form_driver(form, REQ_PREV_FIELD);
 			form_driver(form, REQ_END_LINE);
 			mf = GETMYFIELD2(form);
+			print_bottomdesc(mf);
 			mf->pos = mf->len;
 			set_field_fore(current_field(form), t.form.f_fieldcolor);
 			set_field_back(current_field(form), t.form.f_fieldcolor);
@@ -199,6 +213,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_END_LINE);
 			mf = GETMYFIELD2(form);
+			print_bottomdesc(mf);
 			mf->pos = mf->len;
 			set_field_fore(current_field(form), t.form.f_fieldcolor);
 			set_field_back(current_field(form), t.form.f_fieldcolor);
@@ -368,6 +383,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		myfields[i].buf  = malloc(myfields[i].size);
 		memset(myfields[i].buf, 0, myfields[i].size);
 		strcpy(myfields[i].buf, items[i].init);
+		myfields[i].bottomdesc = items[i].bottomdesc;
 		set_field_userptr(cfield[i], &myfields[i]);
 
 		field_opts_off(cfield[i], O_AUTOSKIP);
