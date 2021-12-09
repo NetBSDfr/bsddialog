@@ -39,7 +39,7 @@ enum bsddialog_color {
 	BSDDIALOG_WHITE,
 };
 
-/* f_ for focus/selected/active/current element */
+/* f_ for focus/active/current element */
 struct bsddialog_theme {
 	struct {
 		int color;
