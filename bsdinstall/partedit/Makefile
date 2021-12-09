@@ -13,7 +13,7 @@ LIBPATH= ../../lib
 LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
 CFLAGS= -Wall -I${LIBPATH}
-LDFLAGS= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog -lgeom -lncursesw -lutil -ldialog -lm
+LDFLAGS= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog -lgeom -lutil -lm
 
 BINDIR= /usr/local/bin
 MAN= ${OUTPUT}.1
