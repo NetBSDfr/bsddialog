@@ -700,11 +700,11 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 		}
 	}
 
-	if (conf->hline != NULL) {
+	if (conf->bottomtitle != NULL) {
 		wattron(widget, t.widget.bottomtitlecolor);
-		wmove(widget, h - 1, w/2 - strlen(conf->hline)/2 - 1);
+		wmove(widget, h - 1, w/2 - strlen(conf->bottomtitle)/2 - 1);
 		waddch(widget, '[');
-		waddstr(widget, conf->hline);
+		waddstr(widget, conf->bottomtitle);
 		waddch(widget, ']');
 		wattroff(widget, t.widget.bottomtitlecolor);
 	}

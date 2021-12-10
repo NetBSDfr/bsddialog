@@ -425,7 +425,7 @@ int main(int argc, char *argv[argc])
 			conf.f1_file = optarg;
 			break;
 		case HLINE:
-			conf.hline = optarg;
+			conf.bottomtitle = optarg;
 			break;
 		case IGNORE:
 			ignore_flag = true;
