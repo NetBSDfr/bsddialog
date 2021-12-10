@@ -137,7 +137,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 			output = bs.value[bs.curr];
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			if (output != BSDDIALOG_OK ||
+			if (output == BSDDIALOG_OK ||
 			    (output == BSDDIALOG_HELP && conf->form.value_withhelp) ||
 	    		    (output == BSDDIALOG_EXTRA && conf->form.value_withextra)) {
 				for (i=0; i<nitems; i++) {
