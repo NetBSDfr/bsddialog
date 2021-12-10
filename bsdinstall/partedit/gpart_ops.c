@@ -1123,7 +1123,14 @@ gpart_create(struct gprovider *pp, const char *default_type,
 		items[0].bottomdesc = "Filesystem type (e.g. freebsd, fat32)";
 	}
 
-	nitems = scheme_supports_labels(scheme) ? 4 : 3;
+	//nitems = scheme_supports_labels(scheme) ? 4 : 3;
+	if (scheme_supports_labels(scheme)) {
+		nitems = 4;
+	}
+	else {
+		nitems = 3;
+		items[3].value = strdup("");
+	}
 
 	if (default_type != NULL)
 		items[0].value = (char *)default_type;
@@ -1143,8 +1150,7 @@ addpartform:
 		//dialog_vars.extra_button = TRUE;
 		conf.button.with_extra = true;
 		conf.title = "Add Partition";
-		//to check sizes!
-		choice = bsddialog_form(&conf, "", 20, 30, 4, nitems, items);
+		choice = bsddialog_form(&conf, "", 0, 0, 0, nitems, items);
 		//dialog_vars.extra_button = FALSE;
 		conf.button.extra_label = NULL;
 		conf.button.with_extra = false;
