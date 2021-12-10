@@ -422,7 +422,7 @@ int main(int argc, char *argv[argc])
 			item_tag_help_flag = true;
 			break;
 		case HFILE:
-			conf.hfile = optarg;
+			conf.f1_file = optarg;
 			break;
 		case HLINE:
 			conf.hline = optarg;

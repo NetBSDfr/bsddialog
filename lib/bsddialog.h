@@ -59,7 +59,7 @@ struct bsddialog_conf {
 	bool clear;
 	int  *get_height;
 	int  *get_width;
-	char *hfile;
+	char *f1_file;
 	char *hline;
 	unsigned int min_width;
 	bool no_lines;

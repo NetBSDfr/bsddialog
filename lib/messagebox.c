@@ -167,7 +167,7 @@ do_widget(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			buttonsupdate(widget, h, w, bs, shortkey);
 			break;
 		case KEY_F(1):
-			if (conf->hfile == NULL)
+			if (conf->f1_file == NULL)
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;

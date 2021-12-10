@@ -250,7 +250,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 				shiftleft(mf);
 			break;
 		case KEY_F(1):
-			if (conf->hfile == NULL)
+			if (conf->f1_file == NULL)
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;

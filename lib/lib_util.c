@@ -83,11 +83,11 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 /* F1 help */
 int f1help(struct bsddialog_conf *conf)
 {
-	char *file = conf->hfile;
+	char *file = conf->f1_file;
 	char *title = conf->title;
 	int output;
 
-	conf->hfile = NULL;
+	conf->f1_file = NULL;
 	conf->clear = true;
 	conf->y = BSDDIALOG_CENTER;
 	conf->x = BSDDIALOG_CENTER;
@@ -96,7 +96,7 @@ int f1help(struct bsddialog_conf *conf)
 
 	output = bsddialog_textbox(conf, file, BSDDIALOG_AUTOSIZE,
 	    BSDDIALOG_AUTOSIZE);
-	conf->hfile = file;
+	conf->f1_file = file;
 	conf->title = title;
 
 	return output;
