@@ -86,15 +86,17 @@ int f1help(struct bsddialog_conf *conf)
 	char *file = conf->f1_file;
 	char *title = conf->title;
 	int output;
+	struct bsddialog_conf hconf;
 
-	conf->f1_file = NULL;
-	conf->clear = true;
-	conf->y = BSDDIALOG_CENTER;
-	conf->x = BSDDIALOG_CENTER;
-	conf->title = "HELP";
-	conf->sleep = 0;
+	memcpy(&hconf, conf, sizeof(struct bsddialog_conf));
+	hconf.f1_file = NULL;
+	hconf.clear = true;
+	hconf.y = BSDDIALOG_CENTER;
+	hconf.x = BSDDIALOG_CENTER;
+	hconf.title = "HELP";
+	hconf.sleep = 0;
 
-	output = bsddialog_textbox(conf, file, BSDDIALOG_AUTOSIZE,
+	output = bsddialog_textbox(&hconf, file, BSDDIALOG_AUTOSIZE,
 	    BSDDIALOG_AUTOSIZE);
 	conf->f1_file = file;
 	conf->title = title;
