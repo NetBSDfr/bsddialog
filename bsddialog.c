@@ -615,7 +615,8 @@ int main(int argc, char *argv[argc])
 
 	if (print_maxsize_flag) {
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-		dprintf(output_fd_flag, "MaxSize: %d, %d\n", ws.ws_row, ws.ws_col);
+		dprintf(output_fd_flag, "MaxSize: %d, %d\n",
+		    ws.ws_row, ws.ws_col);
 		if (argc == 0)
 			return (BSDDIALOG_OK);
 	}
@@ -906,7 +907,8 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 		items[i].name = setname ? argv[j++] : nostring;
 		items[i].desc = setdesc ? argv[j++] : nostring;
 		if (setstatus)
-			items[i].on = strcmp(argv[j++], "on") == 0 ? true : false;
+			items[i].on = strcmp(argv[j++], "on") == 0 ?
+			    true : false;
 		else
 			items[i].on = false;
 		items[i].bottomdesc = sethelp ? argv[j++] : nostring;
@@ -934,7 +936,8 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		if (item_bottomdesc_flag && item_tag_help_flag == false)
 			helpvalue = items[focusitem].bottomdesc;
 
-		toquote = item_always_quote_flag || strchr(helpvalue, ' ') != NULL;
+		toquote = item_always_quote_flag ||
+		    strchr(helpvalue, ' ') != NULL;
 
 		if (toquote)
 			dprintf(output_fd_flag, "%c", quotech);
@@ -962,7 +965,8 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		}
 		sep = true;
 
-		toquote = item_always_quote_flag || strchr(items[i].name, ' ') != NULL;
+		toquote = item_always_quote_flag ||
+		    strchr(items[i].name, ' ') != NULL;
 
 		if (toquote)
 			dprintf(output_fd_flag, "%c", quotech);
