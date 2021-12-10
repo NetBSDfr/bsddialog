@@ -655,6 +655,7 @@ gpart_edit(struct gprovider *pp)
 	items[1].init = sizestr;
 
 editpart:
+	conf.form.value_withcancel = true;
 	conf.title = "Edit Partition";
 	choice = bsddialog_form(&conf, "", 0, 0, 0, nitems, items);
 
