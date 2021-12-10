@@ -30,7 +30,7 @@ int main()
 
 	bsddialog_initconf(&conf);
 	conf.title = "datebox";
-	conf.hline = "Press TAB and arrows";
+	conf.bottomtitle = "Press TAB and arrows";
 	
 	if (bsddialog_init() < 0)
 		return -1;
