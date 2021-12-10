@@ -134,21 +134,31 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 		case 10: /* Enter */
 			if (informwin)
 				break;
+			loop = false;
 			output = bs.value[bs.curr];
+			if (output == BSDDIALOG_HELP &&
+			    conf->form.value_withhelp == false)
+				break;
+	    		if (output == BSDDIALOG_EXTRA &&
+			    conf->form.value_withextra == false)
+				break;
+	    		if (output == BSDDIALOG_CANCEL &&
+			    conf->form.value_withcancel == false)
+				break;
+			if (output == BSDDIALOG_GENERIC1 ||
+			    output == BSDDIALOG_GENERIC2)
+				break;
+			
+			/* BSDDIALOG_OK */
 			form_driver(form, REQ_NEXT_FIELD);
 			form_driver(form, REQ_PREV_FIELD);
-			if (output == BSDDIALOG_OK ||
-			    (output == BSDDIALOG_HELP && conf->form.value_withhelp) ||
-	    		    (output == BSDDIALOG_EXTRA && conf->form.value_withextra)) {
-				for (i=0; i<nitems; i++) {
-					mf = GETMYFIELD(cfield[i]);
-					items[i].value = strdup(mf->buf);
-					if (items[i].value == NULL)
-						RETURN_ERROR("Cannot allocate "
-						    "memory for form value");
-				}
+			for (i=0; i<nitems; i++) {
+				mf = GETMYFIELD(cfield[i]);
+				items[i].value = strdup(mf->buf);
+				if (items[i].value == NULL)
+					RETURN_ERROR("Cannot allocate memory "
+					    "for form value");
 			}
-			loop = false;
 			break;
 		case 27: /* Esc */
 			output = BSDDIALOG_ESC;
