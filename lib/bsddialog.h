@@ -81,7 +81,9 @@ struct bsddialog_conf {
 		bool no_name;
 	} menu;
 	struct {
-		int securech;
+		int  securech;
+		bool value_withextra;
+		bool value_withhelp;
 	} form;
 	struct {
 		bool without_ok;
