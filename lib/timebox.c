@@ -210,7 +210,7 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 			c[sel].value = c[sel].value > 0 ? c[sel].value - 1 : c[sel].max;
 			break;
 		case KEY_F(1):
-			if (conf->f1_file == NULL)
+			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			curs_set(0);
 			if (f1help(conf) != 0)
@@ -444,7 +444,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				c[2].value = c[2].max;
 			break;
 		case KEY_F(1):
-			if (conf->f1_file == NULL)
+			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			curs_set(0);
 			if (f1help(conf) != 0)
