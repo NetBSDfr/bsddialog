@@ -563,10 +563,10 @@ gpart_edit(struct gprovider *pp)
 		{ "Size:", 2, 1, "", 2, 12, 12, 15, NULL, 0,
 		    "Partition size. Append K, M, G for kilobytes, "
 		    "megabytes or gigabytes."},
-		{ "Mountpoint:", 3, 3, "", 1, 12, 12, 15, NULL, 0,
+		{ "Mountpoint:", 3, 1, "", 3, 12, 12, 15, NULL, 0,
 		    "Path at which to mount this partition (leave blank "
 		    "for swap, set to / for root filesystem)"},
-		{ "Label:", 4, 1, "", 4, 11, 12, 15, NULL, 0,
+		{ "Label:", 4, 1, "", 4, 12, 12, 15, NULL, 0,
 		    "Partition name. Not all partition schemes support this."},
 	};
 
@@ -618,18 +618,25 @@ gpart_edit(struct gprovider *pp)
 		}
 	}
 
-	nitems = scheme_supports_labels(scheme) ? 4 : 3;
+	//nitems = scheme_supports_labels(scheme) ? 4 : 3;
+	if (scheme_supports_labels(scheme)) {
+		nitems = 4;
+	}
+	else {
+		nitems = 3;
+		items[3].value = strdup("");
+	}
 
 	/* Edit editable parameters of a partition */
 	hadlabel = 0;
 	LIST_FOREACH(gc, &pp->lg_config, lg_config) {
 		if (strcmp(gc->lg_name, "type") == 0) {
 			oldtype = gc->lg_val;
-			items[0].value = gc->lg_val;
+			items[0].init = gc->lg_val;
 		}
 		if (strcmp(gc->lg_name, "label") == 0 && gc->lg_val != NULL) {
 			hadlabel = 1;
-			items[3].value = gc->lg_val;
+			items[3].init = gc->lg_val;
 		}
 		if (strcmp(gc->lg_name, "index") == 0)
 			idx = atoi(gc->lg_val);
@@ -638,18 +645,18 @@ gpart_edit(struct gprovider *pp)
 	TAILQ_FOREACH(md, &part_metadata, metadata) {
 		if (md->name != NULL && strcmp(md->name, pp->lg_name) == 0) {
 			if (md->fstab != NULL)
-				items[2].value = md->fstab->fs_file;
+				items[2].init = md->fstab->fs_file;
 			break;
 		}
 	}
 
 	humanize_number(sizestr, 7, pp->lg_mediasize, "B", HN_AUTOSCALE,
 	    HN_NOSPACE | HN_DECIMAL);
-	items[1].value = sizestr;
+	items[1].init = sizestr;
 
 editpart:
 	conf.title = "Edit Partition";
-	choice = bsddialog_form(&conf, "", 20, 50, 4, nitems, items);
+	choice = bsddialog_form(&conf, "", 0, 0, 0, nitems, items);
 
 	if (choice == BSDDIALOG_CANCEL) /* Cancel pressed */
 		goto endedit;
@@ -708,7 +715,7 @@ endedit:
 	    "freebsd") == 0)
 		gpart_partition(pp->lg_name, "BSD");
 
-	for (i = 0; i < nitems(items); i++)
+	for (i = 0; i < 4/*nitems(items)*/; i++)
 		//if (items[i].text_free)
 		if (items[i].value != NULL)
 			free(items[i].value);
@@ -987,9 +994,9 @@ add_boot_partition(struct ggeom *geom, struct gprovider *pp,
 		    "make one now?", 0, 0);
 	}
 	else
-		choice = 0;
+		choice = BSDDIALOG_YES;
 
-	if (choice == 0) { /* yes */
+	if (choice == BSDDIALOG_YES) { /* yes */
 		struct partition_metadata *md;
 		const char *bootmount = NULL;
 		char *bootpartname = NULL;
@@ -1038,6 +1045,7 @@ gpart_create(struct gprovider *pp, const char *default_type,
 	uint64_t bytes;
 	int nitems, choice, junk;
 	unsigned i;
+	bool init_allocated;
 	struct bsddialog_conf conf;
 
 	bsddialog_initconf(&conf);
@@ -1114,11 +1122,11 @@ gpart_create(struct gprovider *pp, const char *default_type,
 
 	humanize_number(sizestr, 7, size*sector, "B", HN_AUTOSCALE,
 	    HN_NOSPACE | HN_DECIMAL);
-	items[1].value = sizestr;
+	items[1].init = sizestr;
 
 	/* Special-case the MBR default type for nested partitions */
 	if (strcmp(scheme, "MBR") == 0) {
-		items[0].value = "freebsd";
+		items[0].init = "freebsd";
 		/* bsddialog_formitem.bottomdesc unimplemeted! */
 		items[0].bottomdesc = "Filesystem type (e.g. freebsd, fat32)";
 	}
@@ -1133,27 +1141,31 @@ gpart_create(struct gprovider *pp, const char *default_type,
 	}
 
 	if (default_type != NULL)
-		items[0].value = (char *)default_type;
+		items[0].init = (char *)default_type;
 	if (default_size != NULL)
-		items[1].value = (char *)default_size;
+		items[1].init = (char *)default_size;
 	if (default_mountpoint != NULL)
-		items[2].value = (char *)default_mountpoint;
+		items[2].init = (char *)default_mountpoint;
 
 	/* Default options */
-	strncpy(options_fstype, items[0].value,
+	strncpy(options_fstype, items[0].init,
 	    sizeof(options_fstype));
 	newfs_command(options_fstype, newfs, 1);
+
+	init_allocated = false;
 addpartform:
 	if (interactive) {
 		//dialog_vars.extra_label = "Options";
 		conf.button.extra_label = "Option";
 		//dialog_vars.extra_button = TRUE;
 		conf.button.with_extra = true;
+		conf.form.value_withextra = true;
 		conf.title = "Add Partition";
 		choice = bsddialog_form(&conf, "", 0, 0, 0, nitems, items);
 		//dialog_vars.extra_button = FALSE;
 		conf.button.extra_label = NULL;
 		conf.button.with_extra = false;
+		conf.form.value_withextra = false;
 		switch (choice) {
 		case BSDDIALOG_OK: /* OK */
 			break;
@@ -1163,6 +1175,12 @@ addpartform:
 			strncpy(options_fstype, items[0].value,
 			    sizeof(options_fstype));
 			newfs_command(options_fstype, newfs, 0);
+			for (i = 0; i < nitems(items); i++) {
+				if (init_allocated)
+					free(items[i].init);
+				items[i].init = items[i].value;
+			}
+			init_allocated = true;
 			goto addpartform;
 		}
 	}
@@ -1329,10 +1347,11 @@ addpartform:
 		set_default_part_metadata(newpartname, scheme,
 		    items[0].value, items[2].value, newfs);
 
-	for (i = 0; i < nitems(items); i++)
-		//if (items[i].value_free)
-		if (items[i].value != NULL) // useful?
-			free(items[i].value);
+	for (i = 0; i < 4/*nitems(items)*/; i++) {
+		if (init_allocated)
+			free(items[i].init);
+		free(items[i].value);
+	}
 
 	if (partname != NULL)
 		*partname = strdup(newpartname);
