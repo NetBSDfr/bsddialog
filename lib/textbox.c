@@ -42,7 +42,7 @@
 
 /* "Text": textbox */
 
-#define BUTTON_TEXTBOX "HELP"
+#define BUTTON_TEXTBOX "EXIT"
 
 extern struct bsddialog_theme t;
 
