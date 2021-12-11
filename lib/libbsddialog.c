@@ -118,13 +118,13 @@ const char *bsddialog_geterror(void)
 	return (get_error_string());
 }
 
-int bsddialog_terminalheight(void)
+int _bsddialog_terminalheight(void)
 {
 
 	return (LINES);
 }
 
-int bsddialog_terminalwidth(void)
+int _bsddialog_terminalwidth(void)
 {
 
 	return (COLS);
