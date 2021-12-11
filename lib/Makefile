@@ -12,7 +12,12 @@ SOURCES = barbox.c formbox.c infobox.c libbsddialog.c lib_util.c menubox.c \
 OBJECTS= ${SOURCES:.c=.o}
 FBSDFLAGS= -O2 -pipe -std=gnu99 -Wno-format-zero-length \
 	-fstack-protector-strong -Qunused-arguments
-CFLAGS = -I/usr/local/include -fPIC -Wall -Wextra ${FBSDFLAGS}
+CFLAGS = -I/usr/local/include -fPIC -Wall -Wextra
+.if defined(DEBUG)
+CFLAGS += -g
+.else
+CFLAGS += ${FBSDFLAGS}
+.endif
 LDFLAGS = -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} 
 

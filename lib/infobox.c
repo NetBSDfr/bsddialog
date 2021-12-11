@@ -56,7 +56,7 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w
 		/* text size */
 		*w =  maxline + VBORDERS + t.text.hmargin * 2;
 		/* conf.auto_minwidth */
-		*w = MAX(*w, conf->auto_minwidth);
+		*w = MAX(*w, (int)conf->auto_minwidth);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf));
 	}
@@ -67,7 +67,7 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w
 			*h += MIN(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
 		*h = MAX(*h, MIN_HEIGHT);
 		/* conf.auto_minheight */
-		*h = MAX(*h, conf->auto_minheight);
+		*h = MAX(*h, (int)conf->auto_minheight);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}

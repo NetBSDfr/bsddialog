@@ -306,7 +306,7 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		/* line size */
 		*w = MAX(*w, linelen + 3);
 		/* conf.auto_minwidth */
-		*w = MAX(*w, conf->auto_minwidth);
+		*w = MAX(*w, (int)conf->auto_minwidth);
 		/*
 		* avoid terminal overflow,
 		* -1 fix false negative with big menu over the terminal and
@@ -329,7 +329,7 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 			*h = *h + *formheight + 2;
 
 		/* conf.auto_minheight */
-		*h = MAX(*h, conf->auto_minheight);
+		*h = MAX(*h, (int)conf->auto_minheight);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}
