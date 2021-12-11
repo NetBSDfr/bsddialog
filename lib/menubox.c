@@ -616,7 +616,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	    menurows+2, w-4, LOWERED);
 
 	menupad = newpad(totnitems, pos.line);
-	wbkgd(menupad, t.widget.color);
+	wbkgd(menupad, t.dialog.color);
 
 	ymenupad = 0;
 	for (i=0; i<ngroups; i++) {
@@ -1027,8 +1027,8 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	padscols = (w-5)/2 - 2;
 	leftpad  = newpad(nitems, pos.line);
 	rightpad = newpad(nitems, pos.line);
-	wbkgd(leftpad, t.widget.color);
-	wbkgd(rightpad, t.widget.color);
+	wbkgd(leftpad, t.dialog.color);
+	wbkgd(rightpad, t.dialog.color);
 
 	currH = 0;
 	currV = startleft ? LEFT : RIGHT;

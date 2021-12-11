@@ -432,8 +432,8 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	 /* disable focus with 1 item (inputbox or passwordbox) */
 	if (formheight == 1 && nitems == 1 && strlen(items[0].label) == 0 &&
 	    items[0].xfield == 1 ) {
-		set_field_fore(cfield[0], t.widget.color);
-		set_field_back(cfield[0], t.widget.color);
+		set_field_fore(cfield[0], t.dialog.color);
+		set_field_back(cfield[0], t.dialog.color);
 	}
 	
 	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
