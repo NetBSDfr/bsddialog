@@ -105,6 +105,8 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*w = MAX(*w, MINWIDTH);
 		/* text size*/
 		*w = MAX((int)(maxline + VBORDERS + t.text.hmargin * 2), *w);
+		/* conf.auto_minwidth */
+		*w = MAX(*w, conf->auto_minwidth);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf));
 	}
@@ -113,6 +115,8 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*h = MINHEIGHT;
 		if (maxword > 0)
 			*h += 1;
+		/* conf.auto_minheight */
+		*h = MAX(*h, conf->auto_minheight);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}
@@ -253,12 +257,14 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		w = max_minbarlen + HBORDERS;
 		w = MAX(max_minbarlen, maxline + 4);
+		w = MAX(w, conf->auto_minwidth);
 		w = MIN(w, widget_max_width(conf) - 1);
 	}
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		h = 5; /* borders + mainbar */
 		h += nminbars/2;
 		h += (strlen(text) > 0 ? 3 : 0);
+		h = MAX(h, conf->auto_minheight);
 		h = MIN(h, widget_max_height(conf) -1);
 	}
 

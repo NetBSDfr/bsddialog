@@ -68,6 +68,8 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*w = MAX(*w, line);
 		/* date windows */
 		*w = MAX(*w, minw);
+		/* conf.auto_minwidth */
+		*w = MAX(*w, conf->auto_minwidth);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf) -1);
 	}
@@ -76,6 +78,8 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*h = MINHEIGHT;
 		if (maxword > 0)
 			*h += MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
+		/* conf.auto_minheight */
+		*h = MAX(*h, conf->auto_minheight);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf) -1);
 	}

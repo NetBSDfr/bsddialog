@@ -452,6 +452,8 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 		/* line size */
 		*w = MAX(*w, linelen + 6);
+		/* conf.auto_minwidth */
+		*w = MAX(*w, conf->auto_minwidth);
 		/*
 		* avoid terminal overflow,
 		* -1 fix false negative with big menu over the terminal and
@@ -473,6 +475,8 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		else /* h autosize with a fixed menurows */
 			*h = *h + *menurows + 2;
 
+		/* conf.auto_minheight */
+		*h = MAX(*h, conf->auto_minheight);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}

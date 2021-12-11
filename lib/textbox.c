@@ -57,12 +57,16 @@ textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w
 		*w += strlen(BUTTON_TEXTBOX) + 2 /* text delims*/;
 		/* text size */
 		*w = MAX(*w, wpad + VBORDERS);
+		/* conf.auto_minwidth */
+		*w = MAX(*w, conf->auto_minwidth);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf)-1); /* again -1, fix util.c */
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = hpad + 4; /* HBORDERS + button border */
+		/* conf.auto_minheight */
+		*h = MAX(*h, conf->auto_minheight);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}

@@ -70,6 +70,8 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w
 		line = MIN(maxline + VBORDERS + t.text.hmargin * 2, AUTO_WIDTH);
 		line = MAX(line, (int) (maxword + VBORDERS + t.text.hmargin * 2));
 		*w = MAX(*w, line);
+		/* conf.auto_minwidth */
+		*w = MAX(*w, conf->auto_minwidth);
 		/* avoid terminal overflow */
 		*w = MIN(*w, widget_max_width(conf));
 	}
@@ -79,6 +81,8 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w
 		if (maxword > 0)
 			*h += MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
 		*h = MAX(*h, MIN_HEIGHT);
+		/* conf.auto_minheight */
+		*h = MAX(*h, conf->auto_minheight);
 		/* avoid terminal overflow */
 		*h = MIN(*h, widget_max_height(conf));
 	}

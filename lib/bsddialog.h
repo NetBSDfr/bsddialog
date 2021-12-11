@@ -62,7 +62,8 @@ struct bsddialog_conf {
 	char *f1_file;
 	char *f1_message;
 	char *bottomtitle;
-	unsigned int min_width;
+	unsigned int auto_minheight;
+	unsigned int auto_minwidth;
 	bool no_lines;
 	bool shadow;
 	unsigned int sleep;
