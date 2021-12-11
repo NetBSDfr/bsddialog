@@ -13,6 +13,9 @@ LIBPATH= ../../lib
 LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
 CFLAGS= -Wall -I${LIBPATH}
+.if defined(DEBUG)
+CFLAGS += -g
+.endif
 LDFLAGS= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog -lgeom -lutil -lm
 
 BINDIR= /usr/local/bin
