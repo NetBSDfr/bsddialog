@@ -80,6 +80,7 @@ struct bsddialog_conf {
 		char *default_item;
 		bool no_desc;
 		bool no_name;
+		bool shortcut_buttons;
 	} menu;
 	struct {
 		int  securech;
