@@ -96,14 +96,14 @@ int f1help(struct bsddialog_conf *conf)
 	hconf.shadow = conf->shadow;
 	hconf.text.colors = conf->text.colors;
 
-	output = 0;
+	output = BSDDIALOG_OK;
 	if (conf->f1_message != NULL)
 		output = bsddialog_msgbox(&hconf, conf->f1_message, 0, 0);
 
-	if (output == 0 && conf->f1_file != NULL)
+	if (output != BSDDIALOG_ERROR && conf->f1_file != NULL)
 		output = bsddialog_textbox(&hconf, conf->f1_file, 0, 0);
 
-	return output;
+	return (output == BSDDIALOG_ERROR ? BSDDIALOG_ERROR : 0);
 }
 
 /* Buttons */
