@@ -90,6 +90,7 @@ int f1help(struct bsddialog_conf *conf)
 	bsddialog_initconf(&hconf);
 	hconf.title = "HELP";
 	hconf.button.ok_label = "EXIT";
+	hconf.clear = true;
 	hconf.ascii_lines = conf->ascii_lines;
 	hconf.no_lines = conf->no_lines;
 	hconf.shadow = conf->shadow;
