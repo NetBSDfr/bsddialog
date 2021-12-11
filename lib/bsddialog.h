@@ -141,7 +141,7 @@ struct bsddialog_formitem {
 #define BSDDIALOG_FIELDREADONLY 0x2
 	unsigned int flags;
 
-	char *bottomdesc; /* unimplemented for now */
+	char *bottomdesc;
 };
 
 int bsddialog_init(void);
