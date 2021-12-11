@@ -120,8 +120,8 @@ main(int argc, const char **argv)
 			return (error);
 		}
 	} else {
-		prompt = "Create partitions for FreeBSD. No changes will be "
-		    "made until you select Finish.";
+		prompt = "Create partitions for FreeBSD, F1 for help.\n"
+			"No changes will be made until you select Finish.";
 	}
 
 	/* Show the part editor either immediately, or to confirm wizard */

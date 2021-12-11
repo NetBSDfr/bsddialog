@@ -61,14 +61,15 @@ diskmenu_show(const char *title, const char *text, struct partedit_item *items,
 
 	bsddialog_initconf(&conf);
 	conf.title = __DECONST(char *, title);
+	conf.text.colors = true;
 	conf.menu.align_left = true;
-	/*
-	 * libbsddialog does not provides bottom description for buttons.
-	 * "Add a new partition", "Delete selected partition or partitions",
-	 * "Change partition type or mountpoint",
-	 * "Revert changes to disk setup", "Use guided partitioning tool",
-	 * "Exit partitioner (will ask whether to save changes)",
-	 */
+	conf.f1_message="Create: add a new partition\n"
+		"Delete: selected partition or partitions\n"
+		"Change: partition type or mountpoint\n"
+		"Revert: changes to disk setup\n"
+		"Auto:   use guided partitioning tool\n"
+		"Exit:   partitioner (will ask whether to save changes)";
+	conf.menu.shortcut_buttons = true;
 	conf.button.ok_label       = "Create";	
 	conf.button.with_extra     = true;
 	conf.button.extra_label    = "Delete";
