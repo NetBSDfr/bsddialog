@@ -137,8 +137,8 @@ struct bsddialog_formitem {
 	unsigned int fieldlen;
 	unsigned int maxvaluelen;
 	char *value; /* allocated memory */
-#define BSDDIALOG_FIELDHIDDEN   0x1
-#define BSDDIALOG_FIELDREADONLY 0x2
+#define BSDDIALOG_FIELDHIDDEN    1U
+#define BSDDIALOG_FIELDREADONLY  2U
 	unsigned int flags;
 
 	char *bottomdesc;
@@ -218,6 +218,7 @@ int
 bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int *hh, unsigned int *mm, unsigned int *ss);
 
-int bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols);
+int
+bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols);
 
 #endif
