@@ -518,9 +518,9 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
     int totnitems, unsigned int menurows, int ymenupad)
 {
 
-	if (totnitems > (int) menurows) {
-		draw_borders(conf, menuwin, h, w, LOWERED);
+	draw_borders(conf, menuwin, h, w, LOWERED);
 
+	if (totnitems > (int) menurows) {
 		wattron(menuwin, t.menu.arrowcolor);
 
 		if (ymenupad > 0)
