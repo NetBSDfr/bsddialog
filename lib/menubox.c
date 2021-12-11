@@ -832,6 +832,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				for (i = 0; i < (int) bs.nbuttons; i++)
 					if (tolower(input) == tolower((bs.label[i])[0])) {
 						output = bs.value[i];
+						if (currmode == MENUMODE)
+							item->on = true;
 						loop = false;
 					}
 				break;
