@@ -24,3 +24,4 @@ BSDDIALOG.tags
 *.core
 bsdinstall/partedit/sade
 bsdinstall/distfetch/distfetch
+tzsetup/tzsetup
