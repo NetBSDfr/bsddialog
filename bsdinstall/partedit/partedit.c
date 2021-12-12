@@ -353,8 +353,8 @@ apply_changes(struct gmesh *mesh)
 {
 	struct partition_metadata *md;
 	char message[512];
-	int i, nitems, error;
-	const char **items;
+	int i, nitems, error, *miniperc;
+	const char **minilabel;
 	const char *fstab_path;
 	FILE *fstab;
 	struct bsddialog_conf conf;
@@ -364,17 +364,18 @@ apply_changes(struct gmesh *mesh)
 		if (md->newfs != NULL)
 			nitems++;
 	}
-	items = calloc(nitems * 2, sizeof(const char *));
-	items[0] = "Writing partition tables";
-	items[1] = "7"; /* In progress */
+	minilabel = calloc(nitems, sizeof(const char *));
+	miniperc  = calloc(nitems, sizeof(int));
+	minilabel[0] = "Writing partition tables";
+	miniperc[0]  = 7; //"7"; /* In progress */
 	i = 1;
 	TAILQ_FOREACH(md, &part_metadata, metadata) {
 		if (md->newfs != NULL) {
 			char *item;
 			item = malloc(255);
 			sprintf(item, "Initializing %s", md->name);
-			items[i*2] = item;
-			items[i*2 + 1] = "Pending";
+			minilabel[i] = item;
+			miniperc[i]  = 10; //"Pending";
 			i++;
 		}
 	}
@@ -384,9 +385,10 @@ apply_changes(struct gmesh *mesh)
 	conf.title = "Initializing";
 	bsddialog_mixedgauge(&conf,
 	    "Initializing file systems. Please wait.", 0, 0, i*100/nitems,
-	    nitems, __DECONST(char **, items));
+	    nitems, minilabel, miniperc);//__DECONST(char **, items));
 	gpart_commit(mesh);
-	items[i*2 + 1] = "3";
+	//items[i*2 + 1] = "3";
+	miniparc[i] = 3;
 	i++;
 
 	if (getenv("BSDINSTALL_LOG") == NULL) 
@@ -394,25 +396,32 @@ apply_changes(struct gmesh *mesh)
 
 	TAILQ_FOREACH(md, &part_metadata, metadata) {
 		if (md->newfs != NULL) {
-			items[i*2 + 1] = "7"; /* In progress */
+			//items[i*2 + 1] = "7"; /* In progress */
+			miniperc[i] = 7; //"7"; /* In progress */
 			bsddialog_mixedgauge(&conf,
 			    "Initializing file systems. Please wait.", 0, 0,
-			    i*100/nitems, nitems, __DECONST(char **, items));
+			    //i*100/nitems, nitems, __DECONST(char **, items));
+			    i*100/nitems, nitems, minilabel, miniperc);
 			sprintf(message, "(echo %s; %s) >>%s 2>>%s",
 			    md->newfs, md->newfs, getenv("BSDINSTALL_LOG"),
 			    getenv("BSDINSTALL_LOG"));
 			error = system(message);
-			items[i*2 + 1] = (error == 0) ? "3" : "1";
+			//items[i*2 + 1] = (error == 0) ? "3" : "1";
+			miniperc[i] = (error == 0) ? 3 : 1;//;"3" : "1";
 			i++;
 		}
 	}
 	bsddialog_mixedgauge(&conf,
 	    "Initializing file systems. Please wait.", 0, 0,
-	    i*100/nitems, nitems, __DECONST(char **, items));
+	    //i*100/nitems, nitems, __DECONST(char **, items));
+	    i*100/nitems, nitems, minilabel, miniperc);
 
 	for (i = 1; i < nitems; i++)
-		free(__DECONST(char *, items[i*2]));
-	free(items);
+		//free(__DECONST(char *, items[i*2]));
+		free(minilabel[i]);
+	//free(items);
+	free(minilabel);
+	free(miniperc);
 
 	/* Sort filesystems for fstab so that mountpoints are ordered */
 	{
