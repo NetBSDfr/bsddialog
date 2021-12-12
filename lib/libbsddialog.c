@@ -118,18 +118,6 @@ const char *bsddialog_geterror(void)
 	return (get_error_string());
 }
 
-int _bsddialog_terminalheight(void)
-{
-
-	return (LINES);
-}
-
-int _bsddialog_terminalwidth(void)
-{
-
-	return (COLS);
-}
-
 void bsddialog_initconf(struct bsddialog_conf *conf)
 {
 
