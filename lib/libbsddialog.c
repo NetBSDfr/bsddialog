@@ -40,10 +40,10 @@
 #include "bsddialog_theme.h"
 
 /*
- * This file implements some public function not related to a specific widget.
- * utils.h/c provides private functions to implement the library.
- * theme.h/c is public API related to theme.
- * Widgets implementation:
+ * This file implements public functions not related to a specific dialog.
+ * utils.h/c: private functions to implement the library.
+ * theme.h/c: public API related to themes.
+ * Dialogs implementation:
  *  infobox.c    infobox
  *  messgebox.c  msgbox - yesno
  *  menubox.c    buildlist - checklist - menu - mixedlist - radiolist
