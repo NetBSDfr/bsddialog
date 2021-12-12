@@ -29,7 +29,7 @@ GZIP = gzip -cn
 LDCONFIG = /sbin/ldconfig -m
 
 .if defined(PORTNCURSES)
-# PORT ncurses `make -DPORTNCURSES` or `make -D PORTNCURSES`
+# PORT ncurses `make -DPORTNCURSES` 
 CFLAGS += -DPORTNCURSES -I/usr/local/include
 LDFLAGS += -L/usr/local/lib -lform -lncurses -ltinfo
 .else
