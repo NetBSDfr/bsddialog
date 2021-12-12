@@ -453,7 +453,8 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 		    string[j] == '\t' || string[j] == ' ') {
 			if (j != 0) {
 				string[j] = '\0';
-				print_str(pad, rows, &y, &x, cols, string, conf->text.colors);
+				print_str(pad, rows, &y, &x, cols, string,
+				    conf->text.colors);
 			}
 		}
 
@@ -630,8 +631,10 @@ draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
 			ts = bs = '-';
 			tl = tr = bl = br = ltee = rtee = '+';
 		}
-		leftcolor  = elev == RAISED ? t.dialog.lineraisecolor : t.dialog.linelowercolor;
-		rightcolor = elev == RAISED ? t.dialog.linelowercolor : t.dialog.lineraisecolor;
+		leftcolor  = elev == RAISED ?
+		    t.dialog.lineraisecolor : t.dialog.linelowercolor;
+		rightcolor = elev == RAISED ?
+		    t.dialog.linelowercolor : t.dialog.lineraisecolor;
 		wattron(win, leftcolor);
 		wborder(win, ls, rs, ts, bs, tl, tr, bl, br);
 		wattroff(win, leftcolor);
@@ -673,12 +676,13 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
     WINDOW *textpad, int *htextpad, char *text, bool buttons)
 {
 	int ts, ltee, rtee;
-	int colorsurroundtitle;
+	int colordelimtitle;
 
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
 	ltee = conf->ascii_lines ? '+' : ACS_LTEE;
 	rtee = conf->ascii_lines ? '+' : ACS_RTEE;
-	colorsurroundtitle = elev == RAISED ? t.dialog.lineraisecolor : t.dialog.linelowercolor;
+	colordelimtitle = elev == RAISED ?
+	    t.dialog.lineraisecolor : t.dialog.linelowercolor;
 
 	if (shadow != NULL)
 		wnoutrefresh(shadow);
@@ -688,17 +692,17 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 
 	if (conf->title != NULL) {
 		if (t.dialog.delimtitle && conf->no_lines == false) {
-			wattron(widget, colorsurroundtitle);
+			wattron(widget, colordelimtitle);
 			mvwaddch(widget, 0, w/2 - strlen(conf->title)/2 - 1, rtee);
-			wattroff(widget, colorsurroundtitle);
+			wattroff(widget, colordelimtitle);
 		}
 		wattron(widget, t.dialog.titlecolor);
 		mvwaddstr(widget, 0, w/2 - strlen(conf->title)/2, conf->title);
 		wattroff(widget, t.dialog.titlecolor);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
-			wattron(widget, colorsurroundtitle);
+			wattron(widget, colordelimtitle);
 			waddch(widget, ltee);
-			wattroff(widget, colorsurroundtitle);
+			wattroff(widget, colordelimtitle);
 		}
 	}
 
