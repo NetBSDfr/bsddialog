@@ -227,18 +227,18 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 	int i, output, miniperc, y, x, h, w, max_minbarlen;
 	int maxword, maxline, nlines, htextpad, ypad;
 	char states[12][16] = {
-	    "[  Succeeded  ]",
-	    "[   Failed    ]",
-	    "[   Passed    ]",
-	    "[  Completed  ]",
-	    "[   Checked   ]",
-	    "[    Done     ]",
-	    "[   Skipped   ]",
-	    "[ In Progress ]",
-	    "(blank)        ",
-	    "[     N/A     ]",
-	    "[   Pending   ]",
-	    "[   UNKNOWN   ]",
+	    "[  Succeeded  ]", /*  0  */
+	    "[   Failed    ]", /*  1  */
+	    "[   Passed    ]", /*  2  */
+	    "[  Completed  ]", /*  3  */
+	    "[   Checked   ]", /*  4  */
+	    "[    Done     ]", /*  5  */
+	    "[   Skipped   ]", /*  6  */
+	    "[ In Progress ]", /*  7  */
+	    "(blank)        ", /*  8  */
+	    "[     N/A     ]", /*  9  */
+	    "[   Pending   ]", /* 10  */
+	    "[   UNKNOWN   ]", /* 10+ */
 	};
 
 	max_minbarlen = 0;
