@@ -16,7 +16,7 @@ for i in $input
 do
         perc="$(expr $(expr $curr "*" 100 ) "/" $total )"
         curr=`expr $curr + 1`
-	./bsddialog --title " mixedgauge " --mixedgauge "Example" 20 38 $perc \
+	./bsddialog --sleep 1 --title " mixedgauge " --mixedgauge "Example" 20 38 $perc \
 		"Hidden!" 8	\
 		"Label 1" 0	\
 		"Label 2" 1	\
@@ -28,6 +28,6 @@ do
 		"Label 8" 7	\
 		"Label 9" 9	\
 		"Label X" -- -$perc
-	sleep 1
+	#sleep 1
 done
 
