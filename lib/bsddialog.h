@@ -143,9 +143,9 @@ struct bsddialog_formitem {
 int bsddialog_init(void);
 int bsddialog_end(void);
 int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle);
-const char *bsddialog_geterror(void);
-void bsddialog_initconf(struct bsddialog_conf *conf);
+int bsddialog_initconf(struct bsddialog_conf *conf);
 int bsddialog_clearterminal(void);
+const char *bsddialog_geterror(void);
 
 /* widgets */
 int

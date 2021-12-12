@@ -118,13 +118,20 @@ const char *bsddialog_geterror(void)
 	return (get_error_string());
 }
 
-void bsddialog_initconf(struct bsddialog_conf *conf)
+int bsddialog_initconf(struct bsddialog_conf *conf)
 {
+
+	if (conf == NULL)
+		RETURN_ERROR("conf is NULL");
+	if (sizeof(*conf) != sizeof(struct bsddialog_conf))
+		RETURN_ERROR("Bad conf size");
 
 	memset(conf, 0, sizeof(struct bsddialog_conf));
 	conf->y = BSDDIALOG_CENTER;
 	conf->x = BSDDIALOG_CENTER;
 	conf->shadow = true;
+
+	return (0);
 }
 
 int bsddialog_clearterminal(void)
