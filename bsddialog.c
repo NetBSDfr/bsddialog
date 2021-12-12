@@ -771,10 +771,12 @@ int mixedgauge_builder(BUILDER_ARGS)
 	argv++;
 
 	nminibars  = argc / 2;
-	minilabels = malloc(sizeof(char*) * nminibars);
-	minipercs  = malloc(sizeof(int) * nminibars);
-	if (*minilabels == NULL || minipercs == NULL) {
-		strcpy(errbuf, "Cannot allocate memory for minibars\n");
+	if ((minilabels = calloc(nminibars, sizeof(char*))) == NULL) {
+		strcpy(errbuf, "Cannot allocate memory for minilabels\n");
+		return BSDDIALOG_ERROR;
+	}
+	if ((minipercs = calloc(nminibars, sizeof(int))) == NULL) {
+		strcpy(errbuf, "Cannot allocate memory for minipercs\n");
 		return BSDDIALOG_ERROR;
 	}
 
