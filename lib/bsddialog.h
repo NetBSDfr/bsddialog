@@ -70,11 +70,6 @@ struct bsddialog_conf {
 	int  x;
 	struct {
 		bool colors;
-		/* following members could be deleted, lib -> utility */
-		bool _cr_wrap;
-		bool _no_collapse;
-		bool _no_nl_expand;
-		bool _trim;
 	} text;
 	struct {
 		bool align_left;

@@ -326,77 +326,24 @@ print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool colo
 	}
 }
 
-static void prepare_text(struct bsddialog_conf *conf, char *text, char *buf)
-{
-	int i, j;
-
-	i = j = 0;
-	while (text[i] != '\0') {
-		switch (text[i]) {
-		case '\\':
-			buf[j] = '\\';
-			switch (text[i+1]) {
-			case '\\':
-				i++;
-				break;
-			case 'n':
-				if (conf->text._no_nl_expand) {
-					j++;
-					buf[j] = 'n';
-				} else
-					buf[j] = '\n';
-				i++;
-				break;
-			case 't':
-				if (conf->text._no_collapse) {
-					j++;
-					buf[j] = 't';
-				} else
-					buf[j] = '\t';
-				i++;
-				break;
-			}
-			break;
-		case '\n':
-			buf[j] = conf->text._cr_wrap ? ' ' : '\n';
-			break;
-		case '\t':
-			buf[j] = conf->text._no_collapse ? '\t' : ' ';
-			break;
-		default:
-			buf[j] = text[i];
-		}
-		i++;
-		j += (buf[j] == ' ' && conf->text._trim && j > 0 && buf[j-1] == ' ') ?
-		    0 : 1;
-	}
-	buf[j] = '\0';
-}
-
 int
 get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
     int *maxline, int *nlines)
 {
-	char *buf;
 	int i, buflen, wordlen, linelen;
 
-	if ((buf = malloc(strlen(text) + 1)) == NULL)
-		RETURN_ERROR("Cannot building a buffer to find the properties "\
-		    "of the text properties");
 
-	prepare_text(conf, text, buf);
-
-	buflen = strlen(buf) + 1;
+	buflen = strlen(text) + 1;
 	*maxword = 0;
 	wordlen = 0;
 	for (i=0; i < buflen; i++) {
-		if (buf[i] == '\t' || buf[i] == '\n' || buf[i] == ' ' || buf[i] == '\0')
+		if (text[i] == '\t' || text[i] == '\n' || text[i] == ' ' || text[i] == '\0')
 			if (wordlen != 0) {
 				*maxword = MAX(*maxword, wordlen);
 				wordlen = 0;
 				continue;
 			}
-		if (conf->text.colors && is_ncurses_attr(buf + i))
+		if (conf->text.colors && is_ncurses_attr(text + i))
 			i += 3;
 		else
 			wordlen++;
@@ -405,7 +352,7 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 	*maxline = linelen = 0;
 	*nlines = 1;
 	for (i=0; i < buflen; i++) {
-		switch (buf[i]) {
+		switch (text[i]) {
 		case '\n':
 			*nlines = *nlines + 1;
 		case '\0':
@@ -413,7 +360,7 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 			linelen = 0;
 			break;
 		default:
-			if (conf->text.colors && is_ncurses_attr(buf + i))
+			if (conf->text.colors && is_ncurses_attr(text + i))
 				i += 3;
 			else
 				linelen++;
@@ -422,7 +369,7 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 	if (*nlines == 1 && *maxline == 0)
 		*nlines = 0;
 
-	free(buf);
+	//free(buf);
 
 	return 0;
 }
@@ -431,23 +378,17 @@ int
 print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
     char *text)
 {
-	char *buf, *string;
+	char *string;
 	int i, j, x, y;
 	bool loop;
 
-	if ((buf = malloc(strlen(text) + 1)) == NULL)
+	if ((string = malloc(strlen(text) + 1)) == NULL)
 		RETURN_ERROR("Cannot build (analyze) text");
 
-	prepare_text(conf, text, buf);
-
-	if ((string = malloc(strlen(text) + 1)) == NULL) {
-		free(buf);
-		RETURN_ERROR("Cannot build (analyze) text");
-	}
 	i = j = x = y = 0;
 	loop = true;
 	while (loop) {
-		string[j] = buf[i];
+		string[j] = text[i];
 
 		if (string[j] == '\0' || string[j] == '\n' ||
 		    string[j] == '\t' || string[j] == ' ') {
@@ -458,7 +399,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 			}
 		}
 
-		switch (buf[i]) {
+		switch (text[i]) {
 		case '\0':
 			loop = false;
 			break;
@@ -496,7 +437,6 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 	}
 
 	free(string);
-	free(buf);
 
 	return 0;
 }

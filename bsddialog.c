@@ -162,6 +162,55 @@ int timebox_builder(BUILDER_ARGS);
 int treeview_builder(BUILDER_ARGS);
 int yesno_builder(BUILDER_ARGS);
 
+static void
+custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
+    char *text, char *buf)
+{
+	int i, j;
+
+	i = j = 0;
+	while (text[i] != '\0') {
+		switch (text[i]) {
+		case '\\':
+			buf[j] = '\\';
+			switch (text[i+1]) {
+			case '\\':
+				i++;
+				break;
+			case 'n':
+				if (no_nl_expand) {
+					j++;
+					buf[j] = 'n';
+				} else
+					buf[j] = '\n';
+				i++;
+				break;
+			case 't':
+				if (no_collapse) {
+					j++;
+					buf[j] = 't';
+				} else
+					buf[j] = '\t';
+				i++;
+				break;
+			}
+			break;
+		case '\n':
+			buf[j] = cr_wrap ? ' ' : '\n';
+			break;
+		case '\t':
+			buf[j] = no_collapse ? '\t' : ' ';
+			break;
+		default:
+			buf[j] = text[i];
+		}
+		i++;
+		j += (buf[j] == ' ' && trim && j > 0 && buf[j-1] == ' ') ?
+		    0 : 1;
+	}
+	buf[j] = '\0';
+}
+
 void usage(void)
 {
 
@@ -235,6 +284,7 @@ int main(int argc, char *argv[argc])
 	struct winsize ws;
 	struct bsddialog_conf conf;
 	enum bsddialog_default_theme theme_flag;
+	bool cr_wrap_flag, no_collapse_flag, no_nl_expand_flag, trim_flag;
 
 	bsddialog_initconf(&conf);
 
@@ -244,6 +294,7 @@ int main(int argc, char *argv[argc])
 	print_maxsize_flag = false;
 	ignore_flag = false;
 	errorbuilder[0] = '\0';
+	cr_wrap_flag = no_collapse_flag = no_nl_expand_flag = trim_flag = false;
 
 	item_output_sepnl_flag = item_singlequote_flag = false;
 	item_prefix_flag = item_bottomdesc_flag = false;
@@ -384,7 +435,7 @@ int main(int argc, char *argv[argc])
 			conf.text.colors = true;
 			break;
 		case CR_WRAP:
-			conf.text._cr_wrap = true;
+			cr_wrap_flag = true;
 			break;
 		case DATE_FORMAT:
 			date_fmt_flag = optarg;
@@ -451,7 +502,7 @@ int main(int argc, char *argv[argc])
 			conf.button.without_cancel = true;
 			break;
 		case NO_COLLAPSE:
-			conf.text._no_collapse = true;
+			no_collapse_flag = true;
 			break;
 		case NO_LABEL:
 			conf.button.cancel_label = optarg;
@@ -460,7 +511,7 @@ int main(int argc, char *argv[argc])
 			conf.no_lines = true;
 			break;
 		case NO_NL_EXPAND:
-			conf.text._no_nl_expand = true;
+			no_nl_expand_flag = true;
 			break;
 		case NOOK:
 		case NO_OK:
@@ -533,7 +584,7 @@ int main(int argc, char *argv[argc])
 			conf.title = optarg;
 			break;
 		case TRIM:
-			conf.text._trim = true;
+			trim_flag = true;
 			break;
 		case VERSION:
 			printf("bsddialog %s (libbsddialog %s).\n",
@@ -626,7 +677,9 @@ int main(int argc, char *argv[argc])
 		usage();
 		return (BSDDIALOG_ERROR);
 	}
-	text = argv[0];
+	text = malloc(strlen(argv[0] + 1));
+	custom_text(cr_wrap_flag, no_collapse_flag, no_nl_expand_flag,
+	    trim_flag, argv[0], text);
 	rows = atoi(argv[1]);
 	cols = atoi(argv[2]);
 	argc -= 3;
