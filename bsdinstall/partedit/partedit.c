@@ -354,7 +354,7 @@ apply_changes(struct gmesh *mesh)
 	struct partition_metadata *md;
 	char message[512];
 	int i, nitems, error, *miniperc;
-	const char **minilabel;
+	char **minilabel;
 	const char *fstab_path;
 	FILE *fstab;
 	struct bsddialog_conf conf;
@@ -388,7 +388,7 @@ apply_changes(struct gmesh *mesh)
 	    nitems, minilabel, miniperc);//__DECONST(char **, items));
 	gpart_commit(mesh);
 	//items[i*2 + 1] = "3";
-	miniparc[i] = 3;
+	miniperc[i] = 3;
 	i++;
 
 	if (getenv("BSDINSTALL_LOG") == NULL) 
