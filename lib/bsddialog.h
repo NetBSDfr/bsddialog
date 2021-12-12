@@ -54,20 +54,20 @@
 struct bsddialog_conf {
 	bool ascii_lines;
 	unsigned int aspect_ratio;
-	int  x;
-	int  y;
-	bool clear;
-	int  *get_height;
-	int  *get_width;
-	char *f1_file;
-	char *f1_message;
-	char *bottomtitle;
 	unsigned int auto_minheight;
 	unsigned int auto_minwidth;
+	char *bottomtitle;
+	bool clear;
+	char *f1_file;
+	char *f1_message;
+	int  *get_height;
+	int  *get_width;
 	bool no_lines;
 	bool shadow;
 	unsigned int sleep;
 	char *title;
+	int  y;
+	int  x;
 	struct {
 		bool colors;
 		/* following members could be deleted, lib -> utility */
