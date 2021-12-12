@@ -226,7 +226,7 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 	WINDOW *widget, *textpad, *bar, *shadow;
 	int i, output, miniperc, y, x, h, w, max_minbarlen;
 	int maxword, maxline, nlines, htextpad, ypad;
-	char states[11][16] = {
+	char states[12][16] = {
 	    "[  Succeeded  ]",
 	    "[   Failed    ]",
 	    "[   Passed    ]",
@@ -235,8 +235,9 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 	    "[    Done     ]",
 	    "[   Skipped   ]",
 	    "[ In Progress ]",
-	    "!!!  BLANK  !!!",
+	    "(blank)        ",
 	    "[     N/A     ]",
+	    "[   Pending   ]",
 	    "[   UNKNOWN   ]",
 	};
 
@@ -286,11 +287,11 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 		if (miniperc == 8)
 			continue;
 		mvwaddstr(widget, i+1, 2, minilabels[i]);
-		if (miniperc > 9)
-			mvwaddstr(widget, i+1, w-2-15, states[10]);
-		else if (miniperc >= 0 && miniperc <= 9)
+		if (miniperc > 10)
+			mvwaddstr(widget, i+1, w-2-15, states[11]);
+		else if (miniperc >= 0 && miniperc <= 10)
 			mvwaddstr(widget, i+1, w-2-15, states[miniperc]);
-		else { //miniperc < 0
+		else { /* miniperc < 0 */
 			miniperc = abs(miniperc);
 			mvwaddstr(widget, i+1, w-2-15, "[             ]");
 			draw_perc_bar(widget, i+1, 1+w-2-15, 13, miniperc,
@@ -314,7 +315,7 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 
 	wrefresh(bar);
 
-	/* getch(); port ncurses shows nothing */getch();
+	/* getch(); port ncurses shows nothing */
 
 	delwin(bar);
 	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
