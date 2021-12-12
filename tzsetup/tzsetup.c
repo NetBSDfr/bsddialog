@@ -152,7 +152,7 @@ xdialog_menu(char *title, char *cprompt, int height, int width,
 	/* calculate height */
 	if (height < 0)
 		height = xdialog_count_rows(cprompt) + menu_height + 4 + 2;
-	if (height > _bsddialog_terminalheight())
+	if (height > _bsddialog_terminalheight() - 2)
 		height = _bsddialog_terminalheight() - 2;
 
 	/* calculate width */
@@ -173,7 +173,7 @@ xdialog_menu(char *title, char *cprompt, int height, int width,
 		width = MAX(width, tag_x + 4) + 4;
 	}
 	width = MAX(width, 24);
-	if (width > _bsddialog_terminalwidth())
+	if (width > _bsddialog_terminalwidth() - 3)
 		width = _bsddialog_terminalwidth() - 3;
 
 again:
