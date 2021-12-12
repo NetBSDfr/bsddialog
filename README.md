@@ -34,15 +34,6 @@ If you are using XFCE install
 % ./bsddialog --msgbox "Hello World!" 8 20
 ```
 
-Linux:
-
-```
-% git clone https://gitlab.com/alfix/bsddialog.git
-% cd bsddialog
-% make -GNUMakefile
-% ./bsddialog --msgbox "Hello World!" 8 20
-```
-
 Output:
 
 ![screenshot](screenshot.png)
