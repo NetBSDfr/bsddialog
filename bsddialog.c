@@ -677,9 +677,13 @@ int main(int argc, char *argv[argc])
 		usage();
 		return (BSDDIALOG_ERROR);
 	}
-	text = malloc(strlen(argv[0] + 1));
-	custom_text(cr_wrap_flag, no_collapse_flag, no_nl_expand_flag,
-	    trim_flag, argv[0], text);
+	if (widgetbuilder == textbox_builder)
+		text = argv[0];
+	else {
+		text = malloc(strlen(argv[0] + 1));
+		custom_text(cr_wrap_flag, no_collapse_flag, no_nl_expand_flag,
+		    trim_flag, argv[0], text);
+	}
 	rows = atoi(argv[1]);
 	cols = atoi(argv[2]);
 	argc -= 3;
@@ -701,6 +705,9 @@ int main(int argc, char *argv[argc])
 	if (widgetbuilder != NULL)
 		output = widgetbuilder(conf, text, rows, cols, argc, argv,
 		    errorbuilder);
+
+	if (widgetbuilder != textbox_builder)
+		free(text);
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */
