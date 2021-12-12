@@ -178,14 +178,14 @@ void usage(void)
 		"--exit-label <label>, --extra-button, --extra-label <label>,"
 		"--hfile <filename>, --help-button, --help-label <label>, "
 		"--help-status, --help-tags, --hline string, --ignore, "
-		"--insecure, --item-help, --max-input <size>, --no-cancel, "
-		"--nocancel, --no-label <label>, --no-items, --no-lines, "
-		"--no-ok, --nook, --no-shadow, --no-tags, --ok-label <label>, "
-		"--output-fd <fd>, --output-separator <sep>, --print-version, "
-		"--print-size, --quoted, --print-maxsize, --shadow, "
-		"--single-quoted, --separator <sep>, --separate-output, "
-		"--sleep <secs>, --stderr, --stdout, "
-		"--theme <blackwhite|bsddialog|dialog>, "
+		"--insecure, --item-help, --items-prefix, --max-input <size>, "
+		"--no-cancel, --nocancel, --no-label <label>, --no-items, "
+		"--no-lines, --no-ok, --nook, --no-shadow, --no-tags, "
+		"--ok-label <label>, --output-fd <fd>, "
+		"--output-separator <sep>, --print-version, --print-size, "
+		"--quoted, --print-maxsize, --shadow, --single-quoted, "
+		"--separator <sep>, --separate-output, --sleep <secs>, "
+		"--stderr, --stdout, --theme <blackwhite|bsddialog|dialog>, "
 		"--time-format <format>, --title <title>, "
 		"--yes-label <string>.\n");
 	printf("\n");
@@ -284,6 +284,7 @@ int main(int argc, char *argv[argc])
 	    {"ignore",          no_argument,       NULL, IGNORE },
 	    {"insecure",        no_argument,       NULL, INSECURE },
 	    {"item-help",       no_argument,       NULL, ITEM_HELP },
+	    {"item-prefix",     no_argument,       NULL, ITEM_PREFIX },
 	    {"max-input",       required_argument, NULL, MAX_INPUT },
 	    {"no-cancel",       no_argument,       NULL, NO_CANCEL },
 	    {"nocancel",        no_argument,       NULL, NOCANCEL },
@@ -436,14 +437,14 @@ int main(int argc, char *argv[argc])
 		case ITEM_HELP:
 			item_bottomdesc_flag = true;
 			break;
+		case ITEM_PREFIX:
+			item_prefix_flag = true;
+			break;
 		case MAX_INPUT:
 			max_input_form_flag = atoi(optarg);
 			break;
 		case NO_ITEMS:
 			conf.menu.no_desc = true;
-			break;
-		case ITEM_PREFIX:
-			item_prefix_flag = true;
 			break;
 		case NOCANCEL:
 		case NO_CANCEL:
