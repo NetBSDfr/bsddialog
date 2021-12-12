@@ -180,8 +180,9 @@ bsddialog_menu(struct bsddialog_conf *conf, char* text, int rows, int cols,
     int *focusitem);
 
 int
-bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int mainperc, unsigned int nminbars, char **minibars);
+bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
+    int cols, unsigned int mainperc, unsigned int nminibars, char **minilabels,
+    int *minipercs);
 
 int
 bsddialog_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,

@@ -756,19 +756,35 @@ int infobox_builder(BUILDER_ARGS)
 
 int mixedgauge_builder(BUILDER_ARGS)
 {
-	int output, perc;
+	int i, output, mainperc, nminibars, *minipercs;
+	char **minilabels;
 
 	if (argc < 1 || (((argc-1) % 2) != 0) ) {
 		strcpy(errbuf, "bad --mixedgauge arguments\n");
 		return (BSDDIALOG_ERROR);
 	}
 
-	perc = atoi(argv[0]);
-	perc = perc < 0 ? 0 : perc;
-	perc = perc > 100 ? 100 : perc;
+	mainperc = atoi(argv[0]);
+	mainperc = mainperc < 0 ? 0 : mainperc;
+	mainperc = mainperc > 100 ? 100 : mainperc;
+	argc--;
+	argv++;
 
-	output = bsddialog_mixedgauge(&conf, text, rows, cols, perc,
-	    argc-1, argv + 1);
+	nminibars  = argc / 2;
+	minilabels = malloc(sizeof(char*) * nminibars);
+	minipercs  = malloc(sizeof(int) * nminibars);
+	if (*minilabels == NULL || minipercs == NULL) {
+		strcpy(errbuf, "Cannot allocate memory for minibars\n");
+		return BSDDIALOG_ERROR;
+	}
+
+	for (i = 0; i < nminibars; i++) {
+		minilabels[i] = argv[i * 2];
+		minipercs[i] = atoi(argv[i * 2 + 1]);
+	}
+
+	output = bsddialog_mixedgauge(&conf, text, rows, cols, mainperc,
+	    nminibars, minilabels, minipercs);
 
 	return (output);
 }
