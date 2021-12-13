@@ -23,3 +23,4 @@ lib/libbsddialog.so*
 BSDDIALOG.geany
 BSDDIALOG.tags
 *.core
+freebsd-lab/
