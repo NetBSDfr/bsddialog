@@ -11,8 +11,8 @@ HEADERS = bsddialog.h bsddialog_theme.h
 SOURCES = barbox.c formbox.c infobox.c libbsddialog.c lib_util.c menubox.c \
 	messagebox.c textbox.c theme.c timebox.c
 OBJECTS= ${SOURCES:.c=.o}
-CFLAGS += -fPIC -Wall -Wextra
-LDFLAGS += -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
+CFLAGS = -fPIC -Wall -Wextra
+LDFLAGS = -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} 
 
 .if defined(DEBUG)
@@ -62,7 +62,7 @@ man:
 	${GZIP} ${LIBRARY}.3 > ${LIBRARY}.3.gz
 
 clean:
-	${RM} ${LIBRARY_SO}* *.a *.o *~ *.gz
+	${RM} ${LIBRARY_SO}* *.o *~ *.gz
 
 install:
 	${INSTALL} -m 644 ${HEADERS} ${INSTALL_PREFIX}/include
