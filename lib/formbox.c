@@ -387,7 +387,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (formheight < nitems)
 		formheight = nitems;
 
-	for (i = 0; i < nitems; i++) {
+	for (i = 0; i < (int)nitems; i++) {
 		if (items[i].maxvaluelen == 0)
 			RETURN_ERROR("maxvaluelen cannot be zero");
 		if (items[i].fieldlen == 0)
