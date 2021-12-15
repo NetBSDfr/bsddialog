@@ -119,7 +119,6 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 	loop = buttupdate = true;
 	bs.curr = -1;
 	form_driver(form, REQ_END_LINE);
-	form_driver(form, REQ_END_LINE);
 	mf = GETMYFIELD2(form);
 	print_bottomdesc(mf);
 	mf->pos = MIN(mf->buflen, mf->maxpos);
