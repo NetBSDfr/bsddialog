@@ -1220,6 +1220,8 @@ int form_builder(BUILDER_ARGS)
 
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
+
+		items[i].bottomdesc = nostring;
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
@@ -1243,6 +1245,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.fieldlen    = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	item.flags	 = 0;
+	item.bottomdesc = nostring;
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
 	print_form_items(&conf, output, 1, &item);
@@ -1276,6 +1279,7 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].fieldlen    = atoi(argv[9*i+6]);
 		items[i].maxvaluelen = atoi(argv[9*i+7]);
 		items[i].flags       = atoi(argv[9*i+8]);
+		items[i].bottomdesc = nostring;
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
@@ -1299,6 +1303,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.fieldlen	 = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_flag > 0 ? max_input_form_flag : 2048;
 	item.flags       = BSDDIALOG_FIELDHIDDEN;
+	item.bottomdesc = nostring;
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
 	print_form_items(&conf, output, 1, &item);
@@ -1339,6 +1344,8 @@ int passwordform_builder(BUILDER_ARGS)
 
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
+
+		items[i].bottomdesc = nostring;
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight,
