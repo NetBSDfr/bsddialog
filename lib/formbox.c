@@ -105,6 +105,36 @@ static void print_bottomdesc(struct myfield *mf)
 	}
 }
 
+int
+return_values(struct bsddialog_conf *conf, struct buttons bs, int nitems,
+    struct bsddialog_formitem *items, FORM *form, FIELD **cfield)
+{
+	int i, output;
+	struct myfield *mf;
+
+	output = bs.value[bs.curr];
+	if (output == BSDDIALOG_HELP && conf->form.value_withhelp == false)
+		return output;
+	if (output == BSDDIALOG_EXTRA && conf->form.value_withextra == false)
+		return output;
+	if (output == BSDDIALOG_CANCEL && conf->form.value_withcancel == false)
+		return output;
+	if (output == BSDDIALOG_GENERIC1 || output == BSDDIALOG_GENERIC2)
+		return output;
+
+	/* BSDDIALOG_OK */
+	form_driver(form, REQ_NEXT_FIELD);
+	form_driver(form, REQ_PREV_FIELD);
+	for (i=0; i<nitems; i++) {
+		mf = GETMYFIELD(cfield[i]);
+		items[i].value = strdup(mf->buf);
+		if (items[i].value == NULL)
+			RETURN_ERROR("Cannot allocate memory for form value");
+	}
+
+	return (output);
+}
+
 static int
 form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
     struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
@@ -136,30 +166,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 			if (informwin)
 				break;
 			loop = false;
-			output = bs.value[bs.curr];
-			if (output == BSDDIALOG_HELP &&
-			    conf->form.value_withhelp == false)
-				break;
-	    		if (output == BSDDIALOG_EXTRA &&
-			    conf->form.value_withextra == false)
-				break;
-	    		if (output == BSDDIALOG_CANCEL &&
-			    conf->form.value_withcancel == false)
-				break;
-			if (output == BSDDIALOG_GENERIC1 ||
-			    output == BSDDIALOG_GENERIC2)
-				break;
-			
-			/* BSDDIALOG_OK */
-			form_driver(form, REQ_NEXT_FIELD);
-			form_driver(form, REQ_PREV_FIELD);
-			for (i=0; i<nitems; i++) {
-				mf = GETMYFIELD(cfield[i]);
-				items[i].value = strdup(mf->buf);
-				if (items[i].value == NULL)
-					RETURN_ERROR("Cannot allocate memory "
-					    "for form value");
-			}
+			output = return_values(conf, bs, nitems, items, form, cfield);
 			break;
 		case 27: /* Esc */
 			output = BSDDIALOG_ESC;
@@ -278,7 +285,9 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 				for (i = 0; i < (int) bs.nbuttons; i++) {
 					if (tolower(input) ==
 					    tolower((bs.label[i])[0])) {
-						output = bs.value[i];
+						bs.curr = i;
+						output = return_values(conf, bs,
+						    nitems, items, form, cfield);
 						loop = false;
 					}
 				}
