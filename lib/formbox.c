@@ -114,14 +114,14 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 	int i, input, output;
 	struct myfield *mf;
 
-	curs_set(2);
-	pos_form_cursor(form);
-	loop = buttupdate = true;
-	bs.curr = -1;
-	form_driver(form, REQ_END_LINE);
 	mf = GETMYFIELD2(form);
 	print_bottomdesc(mf);
+	pos_form_cursor(form);
+	form_driver(form, REQ_END_LINE);
 	mf->pos = MIN(mf->buflen, mf->maxpos);
+	curs_set(2);
+	bs.curr = -1;
+	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
 			draw_buttons(widget, y, cols, bs, !informwin);
