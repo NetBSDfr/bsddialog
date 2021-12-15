@@ -241,7 +241,10 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 			if (mf->pos <= 0)
 				break;
 			form_driver(form, REQ_DEL_PREV);
+			form_driver(form, REQ_BEG_LINE);
 			mf->pos = mf->pos - 1;
+			for (i=0; i<mf->pos; i++)
+				form_driver(form, REQ_NEXT_CHAR);
 			shiftleft(mf);
 			break;
 		case KEY_DC:
