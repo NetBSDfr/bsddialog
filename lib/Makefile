@@ -10,18 +10,17 @@ HEADERS = bsddialog.h bsddialog_theme.h
 SOURCES = barbox.c formbox.c infobox.c libbsddialog.c lib_util.c menubox.c \
 	messagebox.c textbox.c theme.c timebox.c
 OBJECTS= ${SOURCES:.c=.o}
-FBSDFLAGS= -O2 -pipe -std=gnu99 -Wno-format-zero-length \
-	-fstack-protector-strong -Qunused-arguments
-CFLAGS = -I/usr/local/include -fPIC -Wall -Wextra ${FBSDFLAGS}
+CFLAGS = -I/usr/local/include -fPIC -Wall -Wextra
 LDFLAGS = -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} 
 
-INSTALL_PREFIX=/usr/local
-LN = ln -s -f
-RM = rm -f
-CP = cp
-GZIP = gzip -cn
-LDCONFIG = /sbin/ldconfig -m
+.if defined(DEBUG)
+# `make -DDEBUG`
+CFLAGS += -g
+.else
+CFLAGS += -O2 -pipe -std=gnu99 -Wno-format-zero-length \
+	-fstack-protector-strong -Qunused-arguments
+.endif
 
 .if defined(PORTNCURSES)
 # PORT ncurses `make -DPORTNCURSES`
@@ -32,10 +31,15 @@ LDFLAGS += -L/usr/local/lib -lform -lncurses -ltinfo
 LDFLAGS += -L/usr/lib -lform -lncurses -ltinfo
 .endif
 
+INSTALL_PREFIX=/usr/local
+LN = ln -s -f
+RM = rm -f
+CP = cp
+GZIP = gzip -cn
+LDCONFIG = /sbin/ldconfig -m
 MAN= ${OUTPUT}.3
 GZIP= gzip -cn
 MANDIR= /usr/local/share/man/man3
-
 INSTALL= install
 RM= rm -f
 
