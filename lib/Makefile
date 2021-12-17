@@ -25,10 +25,10 @@ CFLAGS += -O2 -pipe -std=gnu99 -Wno-format-zero-length \
 .if defined(PORTNCURSES)
 # PORT ncurses `make -DPORTNCURSES`
 CFLAGS += -DPORTNCURSES -I/usr/local/include
-LDFLAGS += -L/usr/local/lib -lform -lncurses -ltinfo
+LDFLAGS += -L/usr/local/lib -lformw -lncursesw -ltinfow
 .else
 # BASE ncurses
-LDFLAGS += -L/usr/lib -lform -lncurses -ltinfo
+LDFLAGS += -L/usr/lib -lformw -lncursesw -ltinfow
 .endif
 
 INSTALL_PREFIX=/usr/local
