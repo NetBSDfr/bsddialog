@@ -38,7 +38,6 @@
 #endif
 
 #include "bsddialog.h"
-#include "bsddialog_progressview.h"
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
