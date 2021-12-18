@@ -6,7 +6,7 @@
 VERSION = 0.0.1
 LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
-HEADERS = bsddialog.h bsddialog_theme.h
+HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
 SOURCES = barbox.c formbox.c infobox.c libbsddialog.c lib_util.c menubox.c \
 	messagebox.c textbox.c theme.c timebox.c
 OBJECTS= ${SOURCES:.c=.o}

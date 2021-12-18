@@ -38,6 +38,7 @@
 #endif
 
 #include "bsddialog.h"
+#include "bsddialog_progressview.h"
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
@@ -46,7 +47,11 @@
 #define MINWIDTH	(VBORDERS + MINBARWIDTH + BARMARGIN * 2)
 #define MINHEIGHT	7 /* without text */
 
-/* "Bar": gauge - mixedgauge - rangebox - pause */
+/* "Bar": gauge - mixedgauge - rangebox - pause - progressview */
+
+bool bsddialog_interruptprogview;
+bool bsddialog_abortprogview;
+int  bsddialog_total_progview;
 
 extern struct bsddialog_theme t;
 
@@ -321,6 +326,46 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
 
 	return BSDDIALOG_OK;
+}
+
+int
+bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
+    int cols, struct bsddialog_progviewconf *pvconf, unsigned int nminibar,
+    struct bsddialog_fileminibar *minibar)
+{
+	int currmini, output, totaltodo, perc;
+	int *minipercs;
+	unsigned int i;
+	char **minilabels;
+	int mainperc;
+
+	if ((minilabels = calloc(nminibar, sizeof(char*))) == NULL)
+		RETURN_ERROR("Cannot allocate memory for minilabels\n");
+	if ((minipercs = calloc(nminibar, sizeof(int))) == NULL)
+		RETURN_ERROR("Cannot allocate memory for minipercs\n");
+
+	totaltodo = 0;
+	for(i=0; i<nminibar; i++)
+		totaltodo = minibar[i].size;
+
+	bsddialog_interruptprogview = bsddialog_abortprogview = true;
+	currmini = 0;
+	while (bsddialog_interruptprogview && bsddialog_abortprogview) {
+		perc = minibar[currmini].perc;
+		if (perc <= -100 || perc == 5) {
+			minibar[i].perc = 5; /* Done */
+			currmini++;
+		}
+
+		//if (minibar[i].perc >= 100 || minibar[i].perc)
+		mainperc = bsddialog_total_progview;
+		output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
+		    nminibar, minilabels, minipercs);
+	}
+
+	free(minilabels);
+	free(minipercs);
+	return (output);
 }
 
 int

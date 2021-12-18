@@ -47,7 +47,7 @@
  *  messgebox.c  msgbox - yesno
  *  menubox.c    buildlist - checklist - menu - mixedlist - radiolist
  *  formbox.c    inputbox - passwordbox - form - passwordform - mixedform
- *  barbox.c     gauge - mixedgauge - rangebox - pause
+ *  barbox.c     gauge - mixedgauge - rangebox - pause - progressview
  *  textbox.c    textbox
  *  timebox.c    timebox - calendar
  */
