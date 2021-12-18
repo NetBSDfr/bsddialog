@@ -333,9 +333,9 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
     int cols, struct bsddialog_progviewconf *pvconf, unsigned int nminibar,
     struct bsddialog_fileminibar *minibar)
 {
-	int currmini, output, totaltodo, perc;
+	int totaltodo, perc, output;
 	int *minipercs;
-	unsigned int i;
+	unsigned int i, currmini;
 	char **minilabels;
 	int mainperc;
 
@@ -345,22 +345,30 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 		RETURN_ERROR("Cannot allocate memory for minipercs\n");
 
 	totaltodo = 0;
-	for(i=0; i<nminibar; i++)
+	for(i=0; i<nminibar; i++) {
 		totaltodo = minibar[i].size;
+		minilabels[i] = minibar[i].name;
+		minipercs[i] = minibar[i].perc;
+	}
 
 	bsddialog_interruptprogview = bsddialog_abortprogview = true;
 	currmini = 0;
 	while (bsddialog_interruptprogview && bsddialog_abortprogview) {
+		if (currmini >= nminibar)
+			break;
+
 		perc = minibar[currmini].perc;
 		if (perc <= -100 || perc == 5) {
 			minibar[i].perc = 5; /* Done */
 			currmini++;
-		}
+		} else
+			minibar[i].perc = perc;
 
-		//if (minibar[i].perc >= 100 || minibar[i].perc)
 		mainperc = bsddialog_total_progview;
 		output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
 		    nminibar, minilabels, minipercs);
+
+		minibar[currmini].perc = pvconf->callback(&minibar[i]);
 	}
 
 	free(minilabels);
