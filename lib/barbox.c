@@ -366,7 +366,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 			output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
 		    	    nminibar, minilabels, minipercs);
 			if (output == BSDDIALOG_ERROR)
-				RETURN_ERROR("Cannot run mixedgauge");
+				retun BSDDIALOG_ERROR;
 			time(&told);
 		//}
 
@@ -381,7 +381,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 		if (minibar[i].status == 5) {/* Done */
 			minipercs[i] = 5;
 			i++;
-		} else if (minibar[i].status == 1 || perc <= 0) { /* Failed */
+		} else if (minibar[i].status == 1 || perc < 0) { /* Failed */
 			minipercs[i] = 1;
 		} else if (perc == 0)
 			minipercs[i] = 7; /* In progress */
