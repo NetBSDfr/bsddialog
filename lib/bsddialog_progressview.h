@@ -35,9 +35,10 @@ extern int  bsddialog_total_progview;
 struct bsddialog_fileminibar {
 	char *path;
 	char *name;
-	int  perc;
-	unsigned int size;
-	unsigned int read;
+	int  status; /* like mixedgauge */
+	//unsigned int size;
+	long long length;
+	long long read;
 };
 
 struct bsddialog_progviewconf {

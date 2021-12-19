@@ -28,14 +28,14 @@
 #include <sys/param.h>
 
 #include <ctype.h>
-#include <stdlib.h>
-#include <string.h>
-
 #ifdef PORTNCURSES
 #include <ncurses/ncurses.h>
 #else
 #include <ncurses.h>
 #endif
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #include "bsddialog.h"
 #include "bsddialog_progressview.h"
@@ -333,11 +333,12 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
     int cols, struct bsddialog_progviewconf *pvconf, unsigned int nminibar,
     struct bsddialog_fileminibar *minibar)
 {
-	int totaltodo, perc, output;
+	int perc, output;
 	int *minipercs;
-	unsigned int i, currmini;
+	unsigned int i;
 	char **minilabels;
-	int mainperc;
+	unsigned int mainperc, totaltodo;
+	time_t told, tnew;
 
 	if ((minilabels = calloc(nminibar, sizeof(char*))) == NULL)
 		RETURN_ERROR("Cannot allocate memory for minilabels\n");
@@ -346,29 +347,45 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 
 	totaltodo = 0;
 	for(i=0; i<nminibar; i++) {
-		totaltodo = minibar[i].size;
+		//totaltodo = minibar[i].size;
+		totaltodo += minibar[i].length;
 		minilabels[i] = minibar[i].name;
-		minipercs[i] = minibar[i].perc;
+		minipercs[i] = 10; /*Pending*/
 	}
 
-	bsddialog_interruptprogview = bsddialog_abortprogview = true;
-	currmini = 0;
-	while (bsddialog_interruptprogview && bsddialog_abortprogview) {
-		if (currmini >= nminibar)
+	i = 0;
+	time(&told);
+	while (!(bsddialog_interruptprogview || bsddialog_abortprogview)) {
+		if (i >= nminibar)
+			break;
+		if (minibar[i].status == 1) /* Failed*/
 			break;
 
-		perc = minibar[currmini].perc;
-		if (perc <= -100 || perc == 5) {
-			minibar[i].perc = 5; /* Done */
-			currmini++;
-		} else
-			minibar[i].perc = perc;
+		if (bsddialog_total_progview == 0 || totaltodo == 0)
+			mainperc = 0;
+		else
+			mainperc = (bsddialog_total_progview * 100) / totaltodo;
 
-		mainperc = bsddialog_total_progview;
-		output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
-		    nminibar, minilabels, minipercs);
+		time(&tnew);
+		//if (told < tnew) {
+			output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
+		    	    nminibar, minilabels, minipercs);
+			if (output == BSDDIALOG_ERROR)
+				RETURN_ERROR("Cannot run mixedgauge");
+			time(&told);
+		//}
 
-		minibar[currmini].perc = pvconf->callback(&minibar[i]);
+		perc = pvconf->callback(&minibar[i]);
+
+		if (minibar[i].status == 5 || perc >= 100) {/* Done */
+			minipercs[i] = 5;
+			i++;
+		} else if (minibar[i].status == 1 || perc <= 0) { /* Failed */
+			minipercs[i] = 1;
+		} else if (perc == 0)
+			minipercs[i] = 7; /* In progress */
+		else
+			minipercs[i] = - (int)(minibar[i].read * 100 / minibar[i].length);
 	}
 
 	free(minilabels);
