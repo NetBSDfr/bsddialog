@@ -339,6 +339,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 	char **minilabels;
 	unsigned int mainperc, totaltodo;
 	time_t told, tnew;
+	bool update;
 
 	if ((minilabels = calloc(nminibar, sizeof(char*))) == NULL)
 		RETURN_ERROR("Cannot allocate memory for minilabels\n");
@@ -354,6 +355,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 	}
 
 	i = 0;
+	update = true;
 	time(&told);
 	while (!(bsddialog_interruptprogview || bsddialog_abortprogview)) {
 		if (bsddialog_total_progview == 0 || totaltodo == 0)
@@ -362,13 +364,14 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 			mainperc = (bsddialog_total_progview * 100) / totaltodo;
 
 		time(&tnew);
-		//if (told < tnew) {
+		if (update || told < tnew) {
 			output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
 		    	    nminibar, minilabels, minipercs);
 			if (output == BSDDIALOG_ERROR)
-				retun BSDDIALOG_ERROR;
+				return BSDDIALOG_ERROR;
 			time(&told);
-		//}
+			update = false;
+		}
 
 		if (i >= nminibar)
 			break;
@@ -377,12 +380,13 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 
 		perc = pvconf->callback(&minibar[i]);
 
-		//if (minibar[i].status == 5 || perc >= 100) {/* Done */
-		if (minibar[i].status == 5) {/* Done */
+		if (minibar[i].status == 5) {/* ||prec >= 100) Done */
 			minipercs[i] = 5;
+			update = true;
 			i++;
 		} else if (minibar[i].status == 1 || perc < 0) { /* Failed */
 			minipercs[i] = 1;
+			update = true;
 		} else if (perc == 0)
 			minipercs[i] = 7; /* In progress */
 		else
