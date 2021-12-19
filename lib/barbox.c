@@ -348,10 +348,9 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 
 	totaltodo = 0;
 	for(i=0; i<nminibar; i++) {
-		//totaltodo = minibar[i].size;
-		totaltodo += minibar[i].length;
-		minilabels[i] = minibar[i].name;
-		minipercs[i] = 10; /*Pending*/
+		totaltodo     += minibar[i].size;
+		minilabels[i] = minibar[i].label;
+		minipercs[i]  = 10; /*Pending*/
 	}
 
 	i = 0;

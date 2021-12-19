@@ -34,16 +34,15 @@ extern int  bsddialog_total_progview;
 
 struct bsddialog_fileminibar {
 	char *path;
-	char *name;
-	int  status; /* like mixedgauge */
-	//unsigned int size;
-	long long length;
+	char *label;
+	int  status; /* mixedgauge: 1 failed - 5 done - 7 in progress*/
+	long long size;
 	long long read;
 };
 
 struct bsddialog_progviewconf {
-	char *fmtbottom_single;
-	char *fmtbottom_multi;
+	char *fmtbottom;
+	unsigned int refresh; /* in seconds */
 	int (*callback)(struct bsddialog_fileminibar *minibar);
 };
 
