@@ -249,8 +249,8 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	    "   UNKNOWN   ", /* 10+ */
 	};
 
-	red =   bsddialog_color(BSDDIALOG_RED,   BSDDIALOG_WHITE, 0);
-	green = bsddialog_color(BSDDIALOG_GREEN, BSDDIALOG_WHITE, 0);
+	red   = bsddialog_color(BSDDIALOG_WHITE,BSDDIALOG_RED,  BSDDIALOG_BOLD);
+	green = bsddialog_color(BSDDIALOG_WHITE,BSDDIALOG_GREEN,BSDDIALOG_BOLD);
 
 	max_minbarlen = 0;
 	for (i=0; i < (int)nminibars; i++)
@@ -307,14 +307,14 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			mvwaddstr(widget, i+1, w-2-15, states[11]);
 		else if (miniperc >= 0 && miniperc <= 10) {
 			mvwaddstr(widget, i+1, w-2-15, "[             ]");
-			if (miniperc == 1) /* Failed */
+			if (color && miniperc == 1) /* Failed */
 				colorperc = red;
-			if (miniperc == 5) /* Done */
+			if (color && miniperc == 5) /* Done */
 				colorperc = green;
-			if (miniperc == 1 || miniperc == 5)
+			if (color && (miniperc == 1 || miniperc == 5))
 				wattron(widget, colorperc);
 			mvwaddstr(widget, i+1, 1+w-2-15, states[miniperc]);
-			if (miniperc == 1 || miniperc == 5)
+			if (color && (miniperc == 1 || miniperc == 5))
 				wattroff(widget, colorperc);
 		}
 		else { /* miniperc < 0 */
