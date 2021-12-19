@@ -338,8 +338,9 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 	unsigned int i;
 	char **minilabels;
 	unsigned int mainperc, totaltodo;
-	time_t told, tnew;
+	time_t tstart, told, tnew;
 	bool update;
+	float readforsec;
 
 	if ((minilabels = calloc(nminibar, sizeof(char*))) == NULL)
 		RETURN_ERROR("Cannot allocate memory for minilabels\n");
@@ -356,6 +357,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 	i = 0;
 	update = true;
 	time(&told);
+	tstart = told;
 	while (!(bsddialog_interruptprogview || bsddialog_abortprogview)) {
 		if (bsddialog_total_progview == 0 || totaltodo == 0)
 			mainperc = 0;
@@ -371,7 +373,10 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 
 			move(LINES-1, 2);
 			clrtoeol();
-			printw(pvconf->fmtbottomstr, bsddialog_total_progview, 10);
+			readforsec = bsddialog_total_progview == 0 ?
+			    0 : bsddialog_total_progview / (tnew - tstart);
+			printw(pvconf->fmtbottomstr, bsddialog_total_progview,
+			    readforsec);
 			refresh();
 
 			time(&told);
