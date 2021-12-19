@@ -356,11 +356,6 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 	i = 0;
 	time(&told);
 	while (!(bsddialog_interruptprogview || bsddialog_abortprogview)) {
-		if (i >= nminibar)
-			break;
-		if (minibar[i].status == 1) /* Failed*/
-			break;
-
 		if (bsddialog_total_progview == 0 || totaltodo == 0)
 			mainperc = 0;
 		else
@@ -375,9 +370,15 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 			time(&told);
 		//}
 
+		if (i >= nminibar)
+			break;
+		if (minibar[i].status == 1) /* Failed*/
+			break;
+
 		perc = pvconf->callback(&minibar[i]);
 
-		if (minibar[i].status == 5 || perc >= 100) {/* Done */
+		//if (minibar[i].status == 5 || perc >= 100) {/* Done */
+		if (minibar[i].status == 5) {/* Done */
 			minipercs[i] = 5;
 			i++;
 		} else if (minibar[i].status == 1 || perc <= 0) { /* Failed */
