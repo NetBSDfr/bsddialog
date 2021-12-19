@@ -389,8 +389,8 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 			update = true;
 		} else if (perc == 0)
 			minipercs[i] = 7; /* In progress */
-		else
-			minipercs[i] = - (int)(minibar[i].read * 100 / minibar[i].length);
+		else /* perc > 0 */
+			minipercs[i] = -(perc);
 	}
 
 	free(minilabels);
