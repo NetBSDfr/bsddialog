@@ -223,28 +223,34 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	return BSDDIALOG_OK;
 }
 
-int
-bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
-    int cols, unsigned int mainperc, unsigned int nminibars, char **minilabels,
-    int *minipercs)
+
+/* Mixedgauge */
+static int
+mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
+    unsigned int mainperc, unsigned int nminibars, char **minilabels,
+    int *minipercs, bool color)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
 	int i, output, miniperc, y, x, h, w, max_minbarlen;
 	int maxword, maxline, nlines, htextpad, ypad;
-	char states[12][16] = {
-	    "[  Succeeded  ]", /*  0  */
-	    "[   Failed    ]", /*  1  */
-	    "[   Passed    ]", /*  2  */
-	    "[  Completed  ]", /*  3  */
-	    "[   Checked   ]", /*  4  */
-	    "[    Done     ]", /*  5  */
-	    "[   Skipped   ]", /*  6  */
-	    "[ In Progress ]", /*  7  */
-	    "(blank)        ", /*  8  */
-	    "[     N/A     ]", /*  9  */
-	    "[   Pending   ]", /* 10  */
-	    "[   UNKNOWN   ]", /* 10+ */
+	int colorperc, red, green;
+	char states[12][14] = {
+	    "  Succeeded  ", /*  0  */
+	    "   Failed    ", /*  1  */
+	    "   Passed    ", /*  2  */
+	    "  Completed  ", /*  3  */
+	    "   Checked   ", /*  4  */
+	    "    Done     ", /*  5  */
+	    "   Skipped   ", /*  6  */
+	    " In Progress ", /*  7  */
+	    "(blank)      ", /*  8  */
+	    "     N/A     ", /*  9  */
+	    "   Pending   ", /* 10  */
+	    "   UNKNOWN   ", /* 10+ */
 	};
+
+	red =   bsddialog_color(BSDDIALOG_RED,   BSDDIALOG_WHITE, 0);
+	green = bsddialog_color(BSDDIALOG_GREEN, BSDDIALOG_WHITE, 0);
 
 	max_minbarlen = 0;
 	for (i=0; i < (int)nminibars; i++)
@@ -291,11 +297,26 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 		miniperc = minipercs[i];
 		if (miniperc == 8)
 			continue;
+		/* label */
+		if (color && (miniperc == 7 || miniperc < 0))
+			wattron(widget, A_BOLD);
 		mvwaddstr(widget, i+1, 2, minilabels[i]);
+			wattroff(widget, A_BOLD);
+		/* perc */
 		if (miniperc > 10)
 			mvwaddstr(widget, i+1, w-2-15, states[11]);
-		else if (miniperc >= 0 && miniperc <= 10)
-			mvwaddstr(widget, i+1, w-2-15, states[miniperc]);
+		else if (miniperc >= 0 && miniperc <= 10) {
+			mvwaddstr(widget, i+1, w-2-15, "[             ]");
+			if (miniperc == 1) /* Failed */
+				colorperc = red;
+			if (miniperc == 5) /* Done */
+				colorperc = green;
+			if (miniperc == 1 || miniperc == 5)
+				wattron(widget, colorperc);
+			mvwaddstr(widget, i+1, 1+w-2-15, states[miniperc]);
+			if (miniperc == 1 || miniperc == 5)
+				wattroff(widget, colorperc);
+		}
 		else { /* miniperc < 0 */
 			miniperc = abs(miniperc);
 			mvwaddstr(widget, i+1, w-2-15, "[             ]");
@@ -329,6 +350,19 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
 }
 
 int
+bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
+    int cols, unsigned int mainperc, unsigned int nminibars, char **minilabels,
+    int *minipercs)
+{
+	int output;
+
+	output = mixedgauge(conf, text, rows, cols, mainperc, nminibars,
+	    minilabels, minipercs, false);
+
+	return (output);
+}
+
+int
 bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
     int cols, struct bsddialog_progviewconf *pvconf, unsigned int nminibar,
     struct bsddialog_fileminibar *minibar)
@@ -354,6 +388,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 		minipercs[i]  = 10; /*Pending*/
 	}
 
+	output = BSDDIALOG_OK;
 	i = 0;
 	update = true;
 	time(&told);
@@ -366,14 +401,14 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 
 		time(&tnew);
 		if (update || told < tnew) {
-			output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
-		    	    nminibar, minilabels, minipercs);
+			output = mixedgauge(conf, text, rows, cols, mainperc,
+			    nminibar, minilabels, minipercs, true);
 			if (output == BSDDIALOG_ERROR)
 				return BSDDIALOG_ERROR;
 
 			move(LINES-1, 2);
 			clrtoeol();
-			readforsec = bsddialog_total_progview == 0 ?
+			readforsec = ((tnew - tstart) == 0) ?
 			    0 : bsddialog_total_progview / (tnew - tstart);
 			printw(pvconf->fmtbottomstr, bsddialog_total_progview,
 			    readforsec);
