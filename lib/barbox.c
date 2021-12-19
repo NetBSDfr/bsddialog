@@ -368,6 +368,12 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 		    	    nminibar, minilabels, minipercs);
 			if (output == BSDDIALOG_ERROR)
 				return BSDDIALOG_ERROR;
+
+			move(LINES-1, 2);
+			clrtoeol();
+			printw(pvconf->fmtbottomstr, bsddialog_total_progview, 10);
+			refresh();
+
 			time(&told);
 			update = false;
 		}

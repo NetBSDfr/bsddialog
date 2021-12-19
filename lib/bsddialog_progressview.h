@@ -41,7 +41,7 @@ struct bsddialog_fileminibar {
 };
 
 struct bsddialog_progviewconf {
-	char *fmtbottom;
+	char *fmtbottomstr;
 	unsigned int refresh; /* in seconds */
 	int (*callback)(struct bsddialog_fileminibar *minibar);
 };
