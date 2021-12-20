@@ -409,7 +409,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 			move(LINES-1, 2);
 			clrtoeol();
 			readforsec = ((tnew - tstart) == 0) ?
-			    0 : bsddialog_total_progview / (tnew - tstart);
+			    0 : bsddialog_total_progview / (float)(tnew - tstart);
 			printw(pvconf->fmtbottomstr, bsddialog_total_progview,
 			    readforsec);
 			refresh();
