@@ -150,6 +150,7 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 		doupdate();
 		input = getch();
 		switch (input) {
+		case KEY_ENTER:
 		case 10: /* Enter */
 			output = bs.value[bs.curr];
 			loop = false;
