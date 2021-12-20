@@ -372,7 +372,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 	unsigned int i;
 	char **minilabels;
 	unsigned int mainperc, totaltodo;
-	time_t tstart, told, tnew;
+	time_t tstart, told, tnew, refresh;
 	bool update;
 	float readforsec;
 
@@ -388,6 +388,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 		minipercs[i]  = 10; /*Pending*/
 	}
 
+	refresh = pvconf->refresh == 0 ? 0 : pvconf->refresh - 1;
 	output = BSDDIALOG_OK;
 	i = 0;
 	update = true;
@@ -400,7 +401,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 			mainperc = (bsddialog_total_progview * 100) / totaltodo;
 
 		time(&tnew);
-		if (update || told < tnew) {
+		if (update || tnew > told + refresh) {
 			output = mixedgauge(conf, text, rows, cols, mainperc,
 			    nminibar, minilabels, minipercs, true);
 			if (output == BSDDIALOG_ERROR)
