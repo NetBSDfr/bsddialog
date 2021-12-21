@@ -138,8 +138,8 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	textrow = 0;
@@ -200,7 +200,7 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, textpad, &htextpad, text, true) != 0)
+			    textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 
 			buttonsupdate(widget, h, w, bs);

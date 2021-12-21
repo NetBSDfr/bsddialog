@@ -475,8 +475,8 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
@@ -501,7 +501,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		    cfield, nitems, items);
 
 		if(update_widget_withtextpad(conf, shadow, widget, h, w,
-		    RAISED, textpad, &htextpad, text, true) != 0)
+		    textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 			
 		draw_buttons(widget, h-2, w, bs, true);

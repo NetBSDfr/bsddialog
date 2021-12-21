@@ -144,8 +144,8 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 	
 	draw_buttons(widget, h-2, w, bs, true);
@@ -251,7 +251,7 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, textpad, &htextpad, text, true) != 0)
+			    textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 				
 			mvwaddch(widget, h - 5, w/2 - 3, ':');
@@ -360,8 +360,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	draw_buttons(widget, h-2, w, bs, true);
@@ -485,7 +485,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, textpad, &htextpad, text, true) != 0)
+			    textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 				
 			mvwaddch(widget, h - 5, w/2 - 5, '/');

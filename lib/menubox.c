@@ -612,8 +612,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
@@ -734,7 +734,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, textpad, &htextpad, text, true) != 0)
+			    textpad, &htextpad, text, true) != 0)
 			return BSDDIALOG_ERROR;
 			
 			draw_buttons(widget, h-2, w, bs, shortcut_buttons);
@@ -1013,8 +1013,8 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,

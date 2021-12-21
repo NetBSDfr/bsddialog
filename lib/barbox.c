@@ -170,8 +170,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, false) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, false) != 0)
 		return BSDDIALOG_ERROR;
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
@@ -288,7 +288,7 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 
 	output = new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w,
-	    RAISED, &textpad, &htextpad, text, false);
+	    &textpad, &htextpad, text, false);
 	if (output == BSDDIALOG_ERROR)
 		return output;
 
@@ -476,8 +476,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
@@ -606,7 +606,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			wresize(bar, 3, sizebar + 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, textpad, &htextpad, text, true) != 0)
+			    textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 
 			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
@@ -655,8 +655,8 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 	
 	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
@@ -764,7 +764,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			wresize(bar, 3, sizebar + 2);
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, textpad, &htextpad, text, true) != 0)
+			    textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 
 			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 

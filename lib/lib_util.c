@@ -605,43 +605,35 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 	return win;
 }
 
-/*
- * `enum elevation elev` could be useless because it should be always RAISED,
- * to check at the end.
- */
 static int
 draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
-    WINDOW *widget, int h, int w, enum elevation elev,
-    WINDOW *textpad, int *htextpad, char *text, bool buttons)
+    WINDOW *widget, int h, int w, WINDOW *textpad, int *htextpad, char *text,
+    bool buttons)
 {
 	int ts, ltee, rtee;
-	int colordelimtitle;
-
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
 	ltee = conf->ascii_lines ? '+' : ACS_LTEE;
 	rtee = conf->ascii_lines ? '+' : ACS_RTEE;
-	colordelimtitle = elev == RAISED ?
-	    t.dialog.lineraisecolor : t.dialog.linelowercolor;
 
 	if (shadow != NULL)
 		wnoutrefresh(shadow);
 
 	// move / resize now or the caller?
-	draw_borders(conf, widget, h, w, elev);
+	draw_borders(conf, widget, h, w, RAISED);
 
 	if (conf->title != NULL) {
 		if (t.dialog.delimtitle && conf->no_lines == false) {
-			wattron(widget, colordelimtitle);
+			wattron(widget, t.dialog.lineraisecolor);
 			mvwaddch(widget, 0, w/2 - strlen(conf->title)/2 - 1, rtee);
-			wattroff(widget, colordelimtitle);
+			wattroff(widget, t.dialog.lineraisecolor);
 		}
 		wattron(widget, t.dialog.titlecolor);
 		mvwaddstr(widget, 0, w/2 - strlen(conf->title)/2, conf->title);
 		wattroff(widget, t.dialog.titlecolor);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
-			wattron(widget, colordelimtitle);
+			wattron(widget, t.dialog.lineraisecolor);
 			waddch(widget, ltee);
-			wattroff(widget, colordelimtitle);
+			wattroff(widget, t.dialog.lineraisecolor);
 		}
 	}
 
@@ -681,33 +673,25 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 	return 0;
 }
 
-/*
- * `enum elevation elev` could be useless because it should be always RAISED,
- * to check at the end.
- */
 int
 update_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
-    WINDOW *widget, int h, int w, enum elevation elev,
-    WINDOW *textpad, int *htextpad, char *text, bool buttons)
+    WINDOW *widget, int h, int w, WINDOW *textpad, int *htextpad, char *text,
+    bool buttons)
 {
 	int error;
 
 	/* nothing for now */
 
 	error =  draw_widget_withtextpad(conf, shadow, widget, h, w,
-	    elev, textpad, htextpad, text, buttons);
+	    textpad, htextpad, text, buttons);
 
 	return error;
 }
 
-/*
- * `enum elevation elev` could be useless because it should be always RAISED,
- * to check at the end.
- */
 int
 new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
-    WINDOW **widget, int y, int x, int h, int w, enum elevation elev,
-    WINDOW **textpad, int *htextpad, char *text, bool buttons)
+    WINDOW **widget, int y, int x, int h, int w, WINDOW **textpad, 
+    int *htextpad, char *text, bool buttons)
 {
 	int error;
 
@@ -718,7 +702,7 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 		wbkgd(*shadow, t.shadow.color);
 	}
 
-	if ((*widget = new_boxed_window(conf, y, x, h, w, elev)) == NULL) {
+	if ((*widget = new_boxed_window(conf, y, x, h, w, RAISED)) == NULL) {
 		if (conf->shadow)
 			delwin(*shadow);
 		return BSDDIALOG_ERROR;
@@ -726,7 +710,7 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 
 	if (textpad == NULL) { /* widget_init() */
 		error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w,
-		    elev, NULL, NULL, text, buttons);
+		    NULL, NULL, text, buttons);
 		return error;
 	}
 
@@ -742,8 +726,8 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 		wbkgd(*textpad, t.dialog.color);
 	}
 
-	error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w, elev,
-	    *textpad, htextpad, text, buttons);
+	error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w, *textpad,
+	    htextpad, text, buttons);
 
 	return error;
 }

@@ -126,8 +126,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    NULL, NULL, NULL, true) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, NULL,
+	    NULL, NULL, true) != 0)
 		return BSDDIALOG_ERROR;
 
 	exitbutt = conf->button.exit_label == NULL ? BUTTON_TEXTBOX : conf->button.exit_label;
@@ -228,7 +228,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			printrows = h - 4;
 
 			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    RAISED, NULL, NULL, NULL, true) != 0)
+			    NULL, NULL, NULL, true) != 0)
 			return BSDDIALOG_ERROR;
 
 			draw_button(widget, h-2, (w-2)/2 - strlen(exitbutt)/2,

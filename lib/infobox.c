@@ -103,8 +103,8 @@ bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, RAISED,
-	    &textpad, &htextpad, text, false) != 0)
+	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
+	    &htextpad, text, false) != 0)
 		return BSDDIALOG_ERROR;
 
 	pnoutrefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-2, x+w-t.text.hmargin);
