@@ -162,13 +162,14 @@ draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 
 void
 get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
-    char *extralabel, char *nocancellabel, char *helplabel)
+    char *nocancellabel)
 {
 	int i;
 #define SIZEBUTTON  8
 #define DEFAULT_BUTTON_LABEL	LABEL_ok_label
 #define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
-
+#define EXTRA_LABEL	"Extra"
+#define HELP_LABEL	"Help"
 
 	bs->nbuttons = 0;
 	bs->curr = 0;
@@ -180,8 +181,9 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 		bs->nbuttons += 1;
 	}
 
-	if (extralabel != NULL && conf->button.with_extra) {
-		bs->label[bs->nbuttons] = extralabel;
+	if (conf->button.with_extra) {
+		bs->label[bs->nbuttons] = conf->button.extra_label != NULL ? 
+			conf->button.extra_label : EXTRA_LABEL;
 		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
 		bs->nbuttons += 1;
 	}
@@ -194,8 +196,9 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 		bs->nbuttons += 1;
 	}
 
-	if (helplabel != NULL && conf->button.with_help) {
-		bs->label[bs->nbuttons] = helplabel;
+	if (conf->button.with_help) {
+		bs->label[bs->nbuttons] = conf->button.help_label != NULL ?
+			conf->button.help_label : HELP_LABEL;
 		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
 		bs->nbuttons += 1;
 	}

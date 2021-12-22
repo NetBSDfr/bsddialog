@@ -61,9 +61,7 @@ void set_error_string(char *string);
 
 /* Buttons */
 #define LABEL_cancel_label	"Cancel"
-#define LABEL_exit_label	"EXIT"
-#define LABEL_extra_label	"Extra"
-#define LABEL_help_label	"Help"
+//#define LABEL_exit_label	"EXIT"
 #define LABEL_ok_label		"OK"
 #define BUTTONLABEL(l) (conf->button.l != NULL ? conf->button.l : LABEL_ ##l)
 
@@ -78,7 +76,7 @@ struct buttons {
 
 void
 get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
-    char *extralabel, char *nocancellabel, char *helplabel);
+    char *nocancellabel);
 
 void
 draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,

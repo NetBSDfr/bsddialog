@@ -464,8 +464,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	currvalue = *value;
 	positions = max - min + 1;
 
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(cancel_label));
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
@@ -643,8 +642,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	float perc;
 	struct buttons bs;
 
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(cancel_label));
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;

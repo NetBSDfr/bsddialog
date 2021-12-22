@@ -600,8 +600,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
 
 
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(cancel_label));
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
@@ -1001,8 +1000,7 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			startleft = true;
 	}
 
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(extra_label),
-	    BUTTONLABEL(cancel_label), BUTTONLABEL(help_label));
+	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(cancel_label));
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
