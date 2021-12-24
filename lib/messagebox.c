@@ -253,7 +253,7 @@ bsddialog_msgbox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
-	get_buttons(conf, &bs, "OK", NULL);
+	get_buttons(conf, &bs, BUTTON_OK_LABEL, NULL);
 
 	return (do_dialog(conf, text, rows, cols, bs));
 }
@@ -263,7 +263,7 @@ bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols)
 {
 	struct buttons bs;
 
-	get_buttons(conf, &bs, "Yes", "No");
+	get_buttons(conf, &bs, BUTTON_YES_LABEL, BUTTON_NO_LABEL);
 
 	return (do_dialog(conf, text, rows, cols, bs));
 }
