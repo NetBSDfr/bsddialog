@@ -59,13 +59,13 @@ void set_error_string(char *string);
 	return BSDDIALOG_ERROR;			\
 } while (0)
 
-/* Buttons */
-#define LABEL_cancel_label	"Cancel"
-//#define LABEL_exit_label	"EXIT"
-#define LABEL_ok_label		"OK"
-#define BUTTONLABEL(l) (conf->button.l != NULL ? conf->button.l : LABEL_ ##l)
-
-#define MAXBUTTONS	6 /* yes|ok + extra + no|cancel + help + 2 generics */
+#define BUTTON_OK_LABEL      "OK"
+#define BUTTON_YES_LABEL     "Yes"
+#define BUTTON_EXTRA_LABEL   "Extra"
+#define BUTTON_CANCEL_LABEL  "Cancel"
+#define BUTTON_NO_LABEL      "No"
+#define BUTTON_HELP_LABEL    "Help"
+#define MAXBUTTONS    6 /* ok + extra + cancel + help + 2 generics */
 struct buttons {
 	unsigned int nbuttons;
 	char *label[MAXBUTTONS];

@@ -132,7 +132,7 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 			c[i].value = c[i].max;
 	}
 
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(cancel_label));
+	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
@@ -347,7 +347,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (c[2].value > c[2].max)
 		c[2].value = c[2].max;
 
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(cancel_label));
+	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;

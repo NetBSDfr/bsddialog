@@ -463,7 +463,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		set_field_back(cfield[0], t.dialog.color);
 	}
 	
-	get_buttons(conf, &bs, BUTTONLABEL(ok_label), BUTTONLABEL(cancel_label));
+	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;

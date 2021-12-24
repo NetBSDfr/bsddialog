@@ -166,30 +166,30 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 {
 	int i;
 #define SIZEBUTTON  8
-#define DEFAULT_BUTTON_LABEL	LABEL_ok_label
+#define DEFAULT_BUTTON_LABEL	BUTTON_OK_LABEL
 #define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
-#define EXTRA_LABEL	"Extra"
-#define HELP_LABEL	"Help"
 
 	bs->nbuttons = 0;
 	bs->curr = 0;
 	bs->sizebutton = 0;
 
 	if (yesoklabel != NULL && conf->button.without_ok == false) {
-		bs->label[0] = yesoklabel;
+		bs->label[0] = conf->button.ok_label != NULL ?
+		    conf->button.ok_label : yesoklabel;
 		bs->value[0] = BSDDIALOG_OK;
 		bs->nbuttons += 1;
 	}
 
 	if (conf->button.with_extra) {
 		bs->label[bs->nbuttons] = conf->button.extra_label != NULL ? 
-			conf->button.extra_label : EXTRA_LABEL;
+		    conf->button.extra_label : BUTTON_EXTRA_LABEL;
 		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
 		bs->nbuttons += 1;
 	}
 
 	if (nocancellabel != NULL && conf->button.without_cancel == false) {
-		bs->label[bs->nbuttons] = nocancellabel;
+		bs->label[bs->nbuttons] = conf->button.cancel_label ?
+		    conf->button.cancel_label : nocancellabel;
 		bs->value[bs->nbuttons] = BSDDIALOG_CANCEL;
 		if (conf->button.default_cancel)
 			bs->curr = bs->nbuttons;
@@ -198,7 +198,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 
 	if (conf->button.with_help) {
 		bs->label[bs->nbuttons] = conf->button.help_label != NULL ?
-			conf->button.help_label : HELP_LABEL;
+		    conf->button.help_label : BUTTON_HELP_LABEL;
 		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
 		bs->nbuttons += 1;
 	}
