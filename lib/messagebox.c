@@ -175,7 +175,7 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 			/* No break, screen size can change */
 		case KEY_RESIZE:
-			/* Importante for decreasing screen */
+			/* Important for decreasing screen */
 			hide_widget(y, x, h, w,conf->shadow);
 			refresh();
 
