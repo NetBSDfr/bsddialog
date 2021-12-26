@@ -125,9 +125,9 @@ static int
 do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
     struct buttons bs)
 {
-	WINDOW *widget, *textpad, *shadow;
 	bool loop;
 	int i, y, x, h, w, input, output, htextpad, textrow;
+	WINDOW *widget, *textpad, *shadow;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
