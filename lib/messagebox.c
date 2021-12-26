@@ -110,15 +110,15 @@ buttonsupdate(WINDOW *widget, int h, int w, struct buttons bs)
 
 static void
 textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
-    int htextpad, int textrow)
+    int htextpad, int ytextpad)
 {
 	if (htextpad > h - 4) {
 		mvwprintw(widget, h-3, w-6, "%3d%%",
-		    100 * (textrow+h-4)/ htextpad);
+		    100 * (ytextpad+h-4)/ htextpad);
 		wnoutrefresh(widget);
 	}
 
-	pnoutrefresh(textpad, textrow, 0, y+1, x+2, y+h-4, x+w-2);
+	pnoutrefresh(textpad, ytextpad, 0, y+1, x+2, y+h-4, x+w-2);
 }
 
 static int
@@ -126,7 +126,7 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool loop;
-	int i, y, x, h, w, input, output, htextpad, textrow;
+	int i, y, x, h, w, input, output, htextpad, ytextpad;
 	WINDOW *widget, *textpad, *shadow;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -142,10 +142,10 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	textrow = 0;
+	ytextpad = 0;
 	loop = true;
 	buttonsupdate(widget, h, w, bs);
-	textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
+	textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
 	while(loop) {
 		doupdate();
 		input = getch();
@@ -200,22 +200,22 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 
 			buttonsupdate(widget, h, w, bs);
-			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
+			textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
 
 			/* Important to fix grey lines expanding screen */
 			refresh();
 			break;
 		case KEY_UP:
-			if (textrow == 0)
+			if (ytextpad == 0)
 				break;
-			textrow--;
-			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
+			ytextpad--;
+			textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
 			break;
 		case KEY_DOWN:
-			if (textrow + h - 4 >= htextpad)
+			if (ytextpad + h - 4 >= htextpad)
 				break;
-			textrow++;
-			textupdate(widget, y, x, h, w, textpad, htextpad, textrow);
+			ytextpad++;
+			textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
