@@ -27,7 +27,6 @@
 
 #include <sys/param.h>
 
-#include <ctype.h>
 #ifdef PORTNCURSES
 #include <ncurses/ncurses.h>
 #else
@@ -130,7 +129,7 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool loop;
-	int i, y, x, h, w, input, output, htextpad, ytextpad;
+	int y, x, h, w, input, output, htextpad, ytextpad;
 	WINDOW *widget, *textpad, *shadow;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -225,10 +224,9 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			textupdate(widget, textpad, htextpad, ytextpad);
 			break;
 		default:
-			for (i = 0; i < (int) bs.nbuttons; i++)
-				if (tolower(input) == tolower(bs.label[i][0])) {
-					output = bs.value[i];
-					loop = false;
+			if (shortcut_buttons(input, &bs)) {
+				output = bs.curr;
+				loop = false;
 			}
 		}
 	}

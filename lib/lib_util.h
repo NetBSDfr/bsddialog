@@ -87,6 +87,8 @@ draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey);
 
 bool move_button(int key, struct buttons *bs);
 
+bool shortcut_buttons(int key, struct buttons *bs);
+
 /* help window with F1 key */
 int f1help(struct bsddialog_conf *conf);
 

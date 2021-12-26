@@ -27,6 +27,7 @@
 
 #include <sys/param.h>
 
+#include <ctype.h>
 #ifdef PORTNCURSES
 #include <ncurses/ncurses.h>
 #else
@@ -259,6 +260,23 @@ bool move_button(int key, struct buttons *bs)
 	}
 
 	return (update);
+}
+
+bool shortcut_buttons(int key, struct buttons *bs)
+{
+	bool match;
+	unsigned int i;
+
+	match = false;
+	for (i = 0; i < bs->nbuttons; i++) {
+		if (tolower(key) == tolower(bs->label[i][0])) {
+			bs->curr = i;
+			match = true;
+			break;
+		}
+	}
+
+	return (match);
 }
 
 /* Text */
