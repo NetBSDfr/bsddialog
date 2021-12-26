@@ -36,7 +36,7 @@ int main()
 	while (true) {
 		bsddialog_backtitle(&conf, "Theme Example");
 
-		output = bsddialog_menu(&conf, "Choose theme", 15, 40, 4, 4, items, NULL);
+		output = bsddialog_menu(&conf, "Choose theme", 15, 40, 5, 5, items, NULL);
 
 		if (output != BSDDIALOG_OK || items[4].on)
 			break;
