@@ -109,9 +109,13 @@ buttonsupdate(WINDOW *widget, int h, int w, struct buttons bs)
 }
 
 static void
-textupdate(WINDOW *widget, int y, int x, int h, int w, WINDOW *textpad,
-    int htextpad, int ytextpad)
+textupdate(WINDOW *widget, WINDOW *textpad, int htextpad, int ytextpad)
 {
+	int y, x, h, w;
+
+	getbegyx(widget, y, x);
+	getmaxyx(widget, h, w);
+
 	if (htextpad > h - 4) {
 		mvwprintw(widget, h-3, w-6, "%3d%%",
 		    100 * (ytextpad+h-4)/ htextpad);
@@ -145,7 +149,7 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 	ytextpad = 0;
 	loop = true;
 	buttonsupdate(widget, h, w, bs);
-	textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
+	textupdate(widget, textpad, htextpad, ytextpad);
 	while(loop) {
 		doupdate();
 		input = getch();
@@ -202,7 +206,7 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 
 			buttonsupdate(widget, h, w, bs);
-			textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
+			textupdate(widget, textpad, htextpad, ytextpad);
 
 			/* Important to fix grey lines expanding screen */
 			refresh();
@@ -211,13 +215,13 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			if (ytextpad == 0)
 				break;
 			ytextpad--;
-			textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
+			textupdate(widget, textpad, htextpad, ytextpad);
 			break;
 		case KEY_DOWN:
 			if (ytextpad + h - 4 >= htextpad)
 				break;
 			ytextpad++;
-			textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
+			textupdate(widget, textpad, htextpad, ytextpad);
 			break;
 		default:
 			for (i = 0; i < (int) bs.nbuttons; i++)
