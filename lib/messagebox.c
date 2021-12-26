@@ -126,7 +126,7 @@ textupdate(WINDOW *widget, WINDOW *textpad, int htextpad, int ytextpad)
 }
 
 static int
-do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
+do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool loop;
@@ -182,7 +182,8 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
-			if (message_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
+			if (message_autosize(conf, rows, cols, &h, &w, text,
+			    bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (message_checksize(h, w, bs) != 0)
 				return BSDDIALOG_ERROR;
@@ -245,7 +246,7 @@ bsddialog_msgbox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, NULL);
 
-	return (do_dialog(conf, text, rows, cols, bs));
+	return (do_message(conf, text, rows, cols, bs));
 }
 
 int
@@ -255,5 +256,5 @@ bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols)
 
 	get_buttons(conf, &bs, BUTTON_YES_LABEL, BUTTON_NO_LABEL);
 
-	return (do_dialog(conf, text, rows, cols, bs));
+	return (do_message(conf, text, rows, cols, bs));
 }
