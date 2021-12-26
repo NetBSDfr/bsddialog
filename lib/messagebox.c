@@ -168,9 +168,9 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
-			/* No break, the terminal size can change */
+			/* No break, screen size can change */
 		case KEY_RESIZE:
-			/* Importante for decreasing terminal */
+			/* Importante for decreasing screen */
 			hide_widget(y, x, h, w,conf->shadow);
 			refresh();
 
