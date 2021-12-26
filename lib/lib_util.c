@@ -540,7 +540,7 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 	else if (rows > BSDDIALOG_AUTOSIZE) {
 		if ((*h = rows) > maxheight)
 			RETURN_ERROR("Height too big (> terminal height - "\
-			    "shadow");
+			    "shadow)");
 	}
 	/* rows == AUTOSIZE: each widget has to set its size */
 
