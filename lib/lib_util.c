@@ -234,6 +234,33 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 	bs->sizebutton += 2;
 }
 
+bool move_button(int key, struct buttons *bs)
+{
+	bool update;
+
+	update = false;
+	switch (key) {
+	case KEY_LEFT:
+		if (bs->curr > 0) {
+			bs->curr--;
+			update = true;
+		}
+		break;
+	case KEY_RIGHT:
+		if (bs->curr < (int) bs->nbuttons - 1) {
+			bs->curr++;
+			update = true;
+		}
+		break;
+	case '\t': /* TAB */
+		bs->curr = (bs->curr + 1) % bs->nbuttons;
+		update = true;
+		break;
+	}
+
+	return (update);
+}
+
 /* Text */
 static bool is_ncurses_attr(char *text)
 {

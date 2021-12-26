@@ -159,9 +159,11 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
+		case KEY_LEFT:
+		case KEY_RIGHT:
 		case '\t': /* TAB */
-			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			buttonsupdate(widget, h, w, bs);
+			if (move_button(input, &bs))
+				buttonsupdate(widget, h, w, bs);
 			break;
 		case KEY_F(1):
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
@@ -216,18 +218,6 @@ do_dialog(struct bsddialog_conf *conf, char *text, int rows, int cols,
 				break;
 			ytextpad++;
 			textupdate(widget, y, x, h, w, textpad, htextpad, ytextpad);
-			break;
-		case KEY_LEFT:
-			if (bs.curr > 0) {
-				bs.curr--;
-				buttonsupdate(widget, h, w, bs);
-			}
-			break;
-		case KEY_RIGHT:
-			if (bs.curr < (int) bs.nbuttons - 1) {
-				bs.curr++;
-				buttonsupdate(widget, h, w, bs);
-			}
 			break;
 		default:
 			for (i = 0; i < (int) bs.nbuttons; i++)
