@@ -28,6 +28,11 @@
 #ifndef _LIBBSDDIALOG_PROGRESSVIEW_H_
 #define _LIBBSDDIALOG_PROGRESSVIEW_H_
 
+/*
+ * Please consider this file file private: it is used by bsdinstall/distextract,
+ * could be deleted or changed in the future.
+ */
+
 extern bool bsddialog_interruptprogview;
 extern bool bsddialog_abortprogview;
 extern int  bsddialog_total_progview;
