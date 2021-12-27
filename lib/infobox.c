@@ -79,7 +79,7 @@ static int infobox_checksize(int rows, int cols)
 {
 
 	if (cols < HBORDERS + 1 + (int) t.text.hmargin * 2)
-		RETURN_ERROR("Few cols, infobox needs at least width 3 + text "\
+		RETURN_ERROR("Few cols, infobox needs at least width 3 + text "
 		    "margins");
 
 	if (rows < 3)
