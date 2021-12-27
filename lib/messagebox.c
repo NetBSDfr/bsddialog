@@ -133,9 +133,9 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 
 	ytextpad = 0;
-	loop = true;
 	buttonsupdate(widget, h, w, bs);
 	textupdate(widget, textpad, htextpad, ytextpad);
+	loop = true;
 	while(loop) {
 		doupdate();
 		input = getch();
