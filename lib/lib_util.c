@@ -522,6 +522,67 @@ int widget_max_width(struct bsddialog_conf *conf)
 }
 
 int
+widget_min_height(struct bsddialog_conf *conf, bool withbuttons, int minwidget)
+{
+	int min;
+
+	min = 0;
+
+	/* buttons */
+	if (withbuttons)
+		min += 2; /* buttons and border */
+
+	/* specific widget min height */
+	min += minwidget;
+
+	/* dialog borders */
+	min += HBORDERS;
+	/* conf.auto_minheight */
+	min = MAX(min, (int)conf->auto_minheight);
+	/* avoid terminal overflow */
+	min = MIN(min, widget_max_height(conf));
+
+	return min;
+}
+
+int
+widget_min_width(struct bsddialog_conf *conf, struct buttons *bs,
+    int minwidget)
+{
+	int min, delimtitle;
+
+	min = 0;
+
+	/* buttons */
+	if (bs != NULL) {
+		min += bs->nbuttons * bs->sizebutton;
+		min += bs->nbuttons > 0 ? (bs->nbuttons-1) * t.button.space : 0;
+	}
+
+	/* title */
+	if (conf->title != NULL) {
+		delimtitle = t.dialog.delimtitle ? 2 : 0;
+		min = MAX(min, strlen(conf->title) + 2 + delimtitle);
+	}
+
+	/* bottom title */
+	if (conf->bottomtitle != NULL)
+		min = MAX(min, strlen(conf->bottomtitle) + 4);
+
+	/* specific widget min width */
+	min = MAX(min, minwidget);
+
+	/* dialog borders */
+	min += VBORDERS;
+	/* conf.auto_minwidth */
+	min = MAX(min, (int)conf->auto_minwidth);
+	/* avoid terminal overflow */
+	min = MIN(min, widget_max_width(conf));
+
+	return min;
+}
+
+int
 set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 {
 	int maxheight, maxwidth;

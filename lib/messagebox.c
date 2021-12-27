@@ -54,29 +54,16 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = VBORDERS;
-		/* buttons size */
-		*w += bs.nbuttons * bs.sizebutton;
-		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
-		/* text size */
 		line = MIN(maxline + VBORDERS + t.text.hmargin * 2, AUTO_WIDTH);
 		line = MAX(line, (int) (maxword + VBORDERS + t.text.hmargin * 2));
-		*w = MAX(*w, line);
-		/* conf.auto_minwidth */
-		*w = MAX(*w, (int)conf->auto_minwidth);
-		/* avoid terminal overflow */
-		*w = MIN(*w, widget_max_width(conf));
+		*w = widget_min_width(conf, &bs, line);
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = MIN_HEIGHT - 1;
+		*h = 1; /* MIN_HEIGHT comment */
 		if (maxword > 0)
-			*h += MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
-		*h = MAX(*h, MIN_HEIGHT);
-		/* conf.auto_minheight */
-		*h = MAX(*h, (int)conf->auto_minheight);
-		/* avoid terminal overflow */
-		*h = MIN(*h, widget_max_height(conf));
+			*h = MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
+		*h = widget_min_height(conf, true, *h);
 	}
 
 	return 0;
@@ -91,7 +78,7 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "\
+		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "
 		    "for borders, buttons and spaces between buttons");
 
 	if (rows < MIN_HEIGHT)
