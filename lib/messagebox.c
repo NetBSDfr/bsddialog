@@ -54,8 +54,8 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		line = MIN(maxline + VBORDERS + t.text.hmargin * 2, AUTO_WIDTH);
-		line = MAX(line, (int) (maxword + VBORDERS + t.text.hmargin * 2));
+		line = MIN(maxline + t.text.hmargin * 2, AUTO_WIDTH);
+		line = MAX(line, (int)(maxword + t.text.hmargin * 2));
 		*w = widget_min_width(conf, &bs, line);
 	}
 

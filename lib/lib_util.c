@@ -559,6 +559,9 @@ widget_min_width(struct bsddialog_conf *conf, struct buttons *bs,
 		min += bs->nbuttons > 0 ? (bs->nbuttons-1) * t.button.space : 0;
 	}
 
+	/* specific widget min width */
+	min = MAX(min, minwidget);
+
 	/* title */
 	if (conf->title != NULL) {
 		delimtitle = t.dialog.delimtitle ? 2 : 0;
@@ -568,9 +571,6 @@ widget_min_width(struct bsddialog_conf *conf, struct buttons *bs,
 	/* bottom title */
 	if (conf->bottomtitle != NULL)
 		min = MAX(min, strlen(conf->bottomtitle) + 4);
-
-	/* specific widget min width */
-	min = MAX(min, minwidget);
 
 	/* dialog borders */
 	min += VBORDERS;
