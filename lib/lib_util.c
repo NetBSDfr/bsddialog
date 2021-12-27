@@ -489,38 +489,34 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 }
 
 /* autosize */
-
-/*
- * max y, that is from 0 to LINES - 1 - t.shadowrows,
- * could not be max height but avoids problems with checksize
- */
 int widget_max_height(struct bsddialog_conf *conf)
 {
 	int maxheight;
 
-	if ((maxheight = conf->shadow ? LINES - 1 - t.shadow.h : LINES - 1) <= 0)
+	if ((maxheight = conf->shadow ? LINES - t.shadow.h : LINES) <= 0)
 		RETURN_ERROR("Terminal too small, LINES - shadow <= 0");
 
-	if (conf->y > 0)
-		if ((maxheight -= conf->y) <=0)
+	if (conf->y > 0) {
+		maxheight -= conf->y;
+		if (maxheight <= 0)
 			RETURN_ERROR("Terminal too small, LINES - shadow - y <= 0");
+	}
 
 	return maxheight;
 }
 
-/*
- * max x, that is from 0 to COLS - 1 - t.shadowcols,
- *  * could not be max height but avoids problems with checksize
- */
 int widget_max_width(struct bsddialog_conf *conf)
 {
 	int maxwidth;
 
-	if ((maxwidth = conf->shadow ? COLS - 1 - t.shadow.w : COLS - 1)  <= 0)
+	if ((maxwidth = conf->shadow ? COLS - t.shadow.w : COLS)  <= 0)
 		RETURN_ERROR("Terminal too small, COLS - shadow <= 0");
-	if (conf->x > 0)
-		if ((maxwidth -= conf->x) <=0)
+
+	if (conf->x > 0) {
+		maxwidth -= conf->x;
+		if (maxwidth <= 0)
 			RETURN_ERROR("Terminal too small, COLS - shadow - x <= 0");
+	}
 
 	return maxwidth;
 }
@@ -565,7 +561,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 {
 
 	if (conf->y == BSDDIALOG_CENTER)
-		*y = LINES/2 - h/2;
+		*y = LINES/2 - (h + t.shadow.h)/2;
 	else if (conf->y < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin y (less than -1)");
 	else if (conf->y >= LINES)
@@ -579,7 +575,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 
 
 	if (conf->x == BSDDIALOG_CENTER)
-		*x = COLS/2 - w/2;
+		*x = COLS/2 - (w + t.shadow.w)/2;
 	else if (conf->x < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin x (less than -1)");
 	else if (conf->x >= COLS)

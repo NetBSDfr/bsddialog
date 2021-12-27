@@ -454,12 +454,8 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*w = MAX(*w, linelen + 6);
 		/* conf.auto_minwidth */
 		*w = MAX(*w, (int)conf->auto_minwidth);
-		/*
-		* avoid terminal overflow,
-		* -1 fix false negative with big menu over the terminal and
-		* autosize, for example "portconfig /usr/ports/www/apache24/".
-		*/
-		*w = MIN(*w, widget_max_width(conf)-1);
+		/* avoid terminal overflow */
+		*w = MIN(*w, widget_max_width(conf));
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
