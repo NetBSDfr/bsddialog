@@ -44,8 +44,8 @@
 extern struct bsddialog_theme t;
 
 static int
-infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    char *text)
+infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
+    int *w, char *text)
 {
 	int maxword, maxline, nlines;
 
@@ -107,7 +107,8 @@ bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 	    &htextpad, text, false) != 0)
 		return BSDDIALOG_ERROR;
 
-	pnoutrefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-2, x+w-t.text.hmargin);
+	pnoutrefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-2,
+	    x+w-t.text.hmargin);
 
 	doupdate();
 
