@@ -29,7 +29,7 @@
 #define _LIBBSDDIALOG_PROGRESSVIEW_H_
 
 /*
- * Please consider this file file private: it is used by bsdinstall/distextract,
+ * Please consider this file/API private: it is used by bsdinstall/distextract,
  * could be deleted or changed in the future.
  */
 
