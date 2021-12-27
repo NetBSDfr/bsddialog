@@ -53,23 +53,15 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		/* text size */
-		*w =  maxline + VBORDERS + t.text.hmargin * 2;
-		/* conf.auto_minwidth */
-		*w = MAX(*w, (int)conf->auto_minwidth);
-		/* avoid terminal overflow */
-		*w = MIN(*w, widget_max_width(conf));
+		*w = maxline + + t.text.hmargin * 2;
+		*w = widget_min_width(conf, NULL, *w);
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = MIN_HEIGHT - 1;
+		*h = 1;
 		if (maxword > 0)
-			*h += MIN(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
-		*h = MAX(*h, MIN_HEIGHT);
-		/* conf.auto_minheight */
-		*h = MAX(*h, (int)conf->auto_minheight);
-		/* avoid terminal overflow */
-		*h = MIN(*h, widget_max_height(conf));
+			*h = MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
+		*h = widget_min_height(conf, false, *h);
 	}
 
 	return 0;
@@ -91,8 +83,8 @@ static int infobox_checksize(int rows, int cols)
 int
 bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 {
-	WINDOW *shadow, *widget, *textpad;
 	int y, x, h, w, htextpad;
+	WINDOW *shadow, *widget, *textpad;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
