@@ -251,7 +251,7 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		w = MAX(max_minbarlen, maxline + t.text.hmargin * 2);
+		w = MAX(max_minbarlen, (int)(maxline + t.text.hmargin * 2));
 		w = widget_min_width(conf, NULL, w);
 	}
 	if (rows == BSDDIALOG_AUTOSIZE) {
