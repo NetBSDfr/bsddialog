@@ -86,15 +86,14 @@ int f1help(struct bsddialog_conf *conf)
 	int output;
 	struct bsddialog_conf hconf;
 
-	//memcpy(&hconf, conf, sizeof(struct bsddialog_conf));
 	bsddialog_initconf(&hconf);
-	hconf.title = "HELP";
+	hconf.title           = "HELP";
 	hconf.button.ok_label = "EXIT";
-	hconf.clear = true;
-	hconf.ascii_lines = conf->ascii_lines;
-	hconf.no_lines = conf->no_lines;
-	hconf.shadow = conf->shadow;
-	hconf.text.colors = conf->text.colors;
+	hconf.clear           = true;
+	hconf.ascii_lines     = conf->ascii_lines;
+	hconf.no_lines        = conf->no_lines;
+	hconf.shadow          = conf->shadow;
+	hconf.text.colors     = conf->text.colors;
 
 	output = BSDDIALOG_OK;
 	if (conf->f1_message != NULL)
