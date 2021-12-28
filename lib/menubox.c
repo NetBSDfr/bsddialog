@@ -547,13 +547,13 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
 	int i, j, y, x, h, w, htextpad, output, input;
 	int ymenupad, ys, ye, xs, xe, abs, g, rel, totnitems;
-	bool loop, automenurows, shortcut_buttons;
+	bool loop, automenurows, shortcut_butts;
 	struct buttons bs;
 	struct bsddialog_menuitem *item;
 	enum menumode currmode;
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	shortcut_buttons = conf->menu.shortcut_buttons;
+	shortcut_butts = conf->menu.shortcut_buttons;
 
 	automenurows = menurows == BSDDIALOG_AUTOSIZE ? true : false;
 
@@ -653,7 +653,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	wrefresh(menuwin);
 	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 	
-	draw_buttons(widget, h-2, w, bs, shortcut_buttons);
+	draw_buttons(widget, h-2, w, bs, shortcut_butts);
 	wrefresh(widget);
 
 	loop = true;
@@ -673,20 +673,20 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			draw_buttons(widget, h-2, w, bs, shortcut_buttons);
+			draw_buttons(widget, h-2, w, bs, shortcut_butts);
 			wrefresh(widget);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, h-2, w, bs, shortcut_buttons);
+				draw_buttons(widget, h-2, w, bs, shortcut_butts);
 				wrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, h-2, w, bs, shortcut_buttons);
+				draw_buttons(widget, h-2, w, bs, shortcut_butts);
 				wrefresh(widget);
 			}
 			break;
@@ -732,7 +732,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			    textpad, &htextpad, text, true) != 0)
 			return BSDDIALOG_ERROR;
 			
-			draw_buttons(widget, h-2, w, bs, shortcut_buttons);
+			draw_buttons(widget, h-2, w, bs, shortcut_butts);
 			wrefresh(widget);
 
 			prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
@@ -830,14 +830,13 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 		default:
-			if (shortcut_buttons) {
-				for (i = 0; i < (int) bs.nbuttons; i++)
-					if (tolower(input) == tolower((bs.label[i])[0])) {
-						output = bs.value[i];
-						if (currmode == MENUMODE)
+			if (shortcut_butts) {
+				if (shortcut_buttons(input, &bs)) {
+					output = bs.curr;
+					if (currmode == MENUMODE)
 							item->on = true;
-						loop = false;
-					}
+					loop = false;
+				}
 				break;
 			}
 

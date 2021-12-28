@@ -449,7 +449,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     int min, int max, int *value)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
-	int i, y, x, h, w, htextpad;
+	int y, x, h, w, htextpad;
 	bool loop, buttupdate, barupdate;
 	int input, currvalue, output, sizebar, bigchange, positions;
 	float perc;
@@ -617,10 +617,9 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			buttupdate = true;
 			break;
 		default:
-			for (i = 0; i < (int) bs.nbuttons; i++)
-				if (tolower(input) == tolower((bs.label[i])[0])) {
-					output = bs.value[i];
-					loop = false;
+			if (shortcut_buttons(input, &bs)) {
+				output = bs.curr;
+				loop = false;
 			}
 		}
 	}
@@ -636,7 +635,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int sec)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
-	int i, output, y, x, h, w, htextpad;
+	int output, y, x, h, w, htextpad;
 	bool loop, buttupdate, barupdate;
 	int input, tout, sizebar;
 	float perc;
@@ -774,10 +773,9 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			buttupdate = true;
 			break;
 		default:
-			for (i = 0; i < (int) bs.nbuttons; i++)
-				if (tolower(input) == tolower((bs.label[i])[0])) {
-					output = bs.value[i];
-					loop = false;
+			if (shortcut_buttons(input, &bs)) {
+				output = bs.curr;
+				loop = false;
 			}
 		}
 	}

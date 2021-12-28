@@ -269,9 +269,6 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 			loop = false;
 			break;
 		default:
-			/*
-			 * user input, add unicode chars to "public" buffer
-			 */
 			if (informwin) {
 				mf = GETMYFIELD2(form);
 				if (mf->secure)
@@ -281,14 +278,10 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 				insertch(mf, input);
 			}
 			else {
-				for (i = 0; i < (int) bs.nbuttons; i++) {
-					if (tolower(input) ==
-					    tolower((bs.label[i])[0])) {
-						bs.curr = i;
-						output = return_values(conf, bs,
-						    nitems, items, form, cfield);
-						loop = false;
-					}
+				if (shortcut_buttons(input, &bs)) {
+					output = return_values(conf, bs, nitems,
+					    items, form, cfield);
+					loop = false;
 				}
 			}
 			break;
