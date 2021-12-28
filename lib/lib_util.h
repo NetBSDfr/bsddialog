@@ -28,9 +28,7 @@
 #ifndef _LIBBSDDIALOG_UTIL_H_
 #define _LIBBSDDIALOG_UTIL_H_
 
-/*
- * Utils to implement widgets - Internal library  API - Dafult values
- */
+/* Utils to implement widgets - Internal library  API - Dafult values */
 
 #define HBORDER		1
 #define HBORDERS	(HBORDER + HBORDER)
@@ -59,12 +57,14 @@ void set_error_string(char *string);
 	return BSDDIALOG_ERROR;			\
 } while (0)
 
+/* buttons */
 #define BUTTON_OK_LABEL      "OK"
 #define BUTTON_YES_LABEL     "Yes"
 #define BUTTON_EXTRA_LABEL   "Extra"
 #define BUTTON_CANCEL_LABEL  "Cancel"
 #define BUTTON_NO_LABEL      "No"
 #define BUTTON_HELP_LABEL    "Help"
+
 #define MAXBUTTONS    6 /* ok + extra + cancel + help + 2 generics */
 struct buttons {
 	unsigned int nbuttons;
