@@ -153,7 +153,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
 	loop = buttupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(widget, y, cols, bs, !informwin);
+			draw_buttons(widget, bs, !informwin);
 			wrefresh(widget);
 			buttupdate = false;
 		}
@@ -474,7 +474,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		    textpad, &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 			
-		draw_buttons(widget, h-2, w, bs, true);
+		draw_buttons(widget, bs, true);
 		wrefresh(widget);
 
 		prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,

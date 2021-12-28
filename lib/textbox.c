@@ -121,7 +121,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 	    NULL, NULL, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	draw_buttons(widget, h-2, w, bs, true);
+	draw_buttons(widget, bs, true);
 
 	ys = y + 1;
 	xs = x + 1;
@@ -217,7 +217,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			    NULL, NULL, NULL, true) != 0)
 			return BSDDIALOG_ERROR;
 
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, bs, true);
 
 			/* Important to fix grey lines expanding screen */
 			refresh();

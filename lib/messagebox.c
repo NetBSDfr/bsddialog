@@ -89,7 +89,7 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 static void
 buttonsupdate(WINDOW *widget, int h, int w, struct buttons bs)
 {
-	draw_buttons(widget, h-2, w, bs, true);
+	draw_buttons(widget, bs, true);
 	wnoutrefresh(widget);
 }
 

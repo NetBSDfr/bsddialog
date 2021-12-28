@@ -472,7 +472,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	loop = buttupdate = barupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, bs, true);
 			wrefresh(widget);
 			buttupdate = false;
 		}
@@ -657,7 +657,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		}
 
 		if (buttupdate) {
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, bs, true);
 			wrefresh(widget);
 			buttupdate = false;
 		}

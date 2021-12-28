@@ -134,7 +134,7 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 	
-	draw_buttons(widget, h-2, w, bs, true);
+	draw_buttons(widget, bs, true);
 
 	wrefresh(widget);
 
@@ -181,14 +181,14 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, h-2, w, bs, true);
+				draw_buttons(widget, bs, true);
 				wrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, h-2, w, bs, true);
+				draw_buttons(widget, bs, true);
 				wrefresh(widget);
 			}
 			break;
@@ -243,7 +243,7 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 			mvwaddch(widget, h - 5, w/2 - 3, ':');
 			mvwaddch(widget, h - 5, w/2 + 2, ':');
 			
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, bs, true);
 
 			wrefresh(widget);
 
@@ -348,7 +348,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	    &htextpad, text, true) != 0)
 		return BSDDIALOG_ERROR;
 
-	draw_buttons(widget, h-2, w, bs, true);
+	draw_buttons(widget, bs, true);
 
 	wrefresh(widget);
 
@@ -397,14 +397,14 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, h-2, w, bs, true);
+				draw_buttons(widget, bs, true);
 				wrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, h-2, w, bs, true);
+				draw_buttons(widget, bs, true);
 				wrefresh(widget);
 			}
 			break;
@@ -475,7 +475,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			mvwaddch(widget, h - 5, w/2 - 5, '/');
 			mvwaddch(widget, h - 5, w/2 + 7, '/');
 			
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, bs, true);
 
 			wrefresh(widget);
 

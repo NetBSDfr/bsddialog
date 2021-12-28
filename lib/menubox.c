@@ -635,7 +635,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	wrefresh(menuwin);
 	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 	
-	draw_buttons(widget, h-2, w, bs, shortcut_butts);
+	draw_buttons(widget, bs, shortcut_butts);
 	wrefresh(widget);
 
 	loop = true;
@@ -655,20 +655,20 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			draw_buttons(widget, h-2, w, bs, shortcut_butts);
+			draw_buttons(widget, bs, shortcut_butts);
 			wrefresh(widget);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, h-2, w, bs, shortcut_butts);
+				draw_buttons(widget, bs, shortcut_butts);
 				wrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, h-2, w, bs, shortcut_butts);
+				draw_buttons(widget, bs, shortcut_butts);
 				wrefresh(widget);
 			}
 			break;
@@ -714,7 +714,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			    textpad, &htextpad, text, true) != 0)
 			return BSDDIALOG_ERROR;
 			
-			draw_buttons(widget, h-2, w, bs, shortcut_butts);
+			draw_buttons(widget, bs, shortcut_butts);
 			wrefresh(widget);
 
 			prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
@@ -1020,7 +1020,7 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	loop = buttupdate = padsupdate = true;
 	while(loop) {
 		if (buttupdate) {
-			draw_buttons(widget, h-2, w, bs, true);
+			draw_buttons(widget, bs, true);
 			wrefresh(widget);
 			buttupdate = false;
 		}
