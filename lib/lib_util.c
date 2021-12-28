@@ -826,7 +826,7 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 		*htextpad = 1;
 		*textpad = newpad(*htextpad, w - HBORDERS - t.text.hmargin * 2);
 		if (*textpad == NULL) {
-			delwin(*textpad);
+			delwin(*widget);
 			if (conf->shadow)
 				delwin(*shadow);
 			RETURN_ERROR("Cannot build the pad window for text");
