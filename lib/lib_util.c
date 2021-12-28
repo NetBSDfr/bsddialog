@@ -59,7 +59,7 @@ void set_error_string(char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
-/* cleaner */
+/* Clear */
 int hide_widget(int y, int x, int h, int w, bool withshadow)
 {
 	WINDOW *clear;
