@@ -258,6 +258,9 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 	if (newtheme == BSDDIALOG_THEME_DEFAULT) {
 		bsddialog_set_theme(&dialogtheme);
 		t.dialog.lineraisecolor = t.dialog.linelowercolor;
+		t.dialog.delimtitle     = true;
+		t.button.leftch          = '[';
+		t.button.rightch         = ']';
 	}
 	else if (newtheme == BSDDIALOG_THEME_BSDDIALOG)
 		bsddialog_set_theme(&bsddialogtheme);
