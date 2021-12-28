@@ -87,13 +87,6 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 }
 
 static void
-buttonsupdate(WINDOW *widget, int h, int w, struct buttons bs)
-{
-	draw_buttons(widget, bs, true);
-	wnoutrefresh(widget);
-}
-
-static void
 textupdate(WINDOW *widget, WINDOW *textpad, int htextpad, int ytextpad)
 {
 	int y, x, h, w;
@@ -132,7 +125,8 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 
 	ytextpad = 0;
-	buttonsupdate(widget, h, w, bs);
+	draw_buttons(widget, bs, true);
+	wnoutrefresh(widget);
 	textupdate(widget, textpad, htextpad, ytextpad);
 	loop = true;
 	while(loop) {
@@ -151,8 +145,10 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 		case KEY_LEFT:
 		case KEY_RIGHT:
 		case '\t': /* TAB */
-			if (move_button(input, &bs))
-				buttonsupdate(widget, h, w, bs);
+			if (move_button(input, &bs)) {
+				draw_buttons(widget, bs, true);
+				wnoutrefresh(widget);
+			}
 			break;
 		case KEY_F(1):
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
@@ -191,7 +187,8 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			    textpad, &htextpad, text, true) != 0)
 				return BSDDIALOG_ERROR;
 
-			buttonsupdate(widget, h, w, bs);
+			draw_buttons(widget, bs, true);
+			wnoutrefresh(widget);
 			textupdate(widget, textpad, htextpad, ytextpad);
 
 			/* Important to fix grey lines expanding screen */
