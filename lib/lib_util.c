@@ -723,7 +723,6 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 	if (shadow != NULL)
 		wnoutrefresh(shadow);
 
-	// move / resize now or the caller?
 	draw_borders(conf, widget, h, w, RAISED);
 
 	if (conf->title != NULL) {
@@ -751,9 +750,6 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 		wattroff(widget, t.dialog.bottomtitlecolor);
 	}
 
-	//if (textpad == NULL && text != NULL) /* no pad, text null for textbox */
-	//	print_text(conf, widget, 1, 2, w-3, text);
-
 	if (withbuttons && conf->no_lines == false) {
 		wattron(widget, t.dialog.lineraisecolor);
 		mvwaddch(widget, h-3, 0, ltee);
@@ -767,10 +763,7 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 
 	wnoutrefresh(widget);
 
-	if (textpad == NULL)
-		return 0; /* widget_init() ends */
-
-	if (text != NULL) /* programbox etc */
+	if (textpad!= NULL && text != NULL) /* textbox */
 		if (print_textpad(conf, textpad, htextpad,
 		    w - HBORDERS - t.text.hmargin * 2, text) !=0)
 			return BSDDIALOG_ERROR;
@@ -787,7 +780,7 @@ update_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 
 	/* nothing for now */
 
-	error =  draw_widget_withtextpad(conf, shadow, widget, h, w,
+	error = draw_widget_withtextpad(conf, shadow, widget, h, w,
 	    textpad, htextpad, text, withbuttons);
 
 	return error;
@@ -813,13 +806,7 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 		return BSDDIALOG_ERROR;
 	}
 
-	if (textpad == NULL) { /* widget_init() */
-		error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w,
-		    NULL, NULL, text, withbuttons);
-		return error;
-	}
-
-	if (text != NULL) { /* programbox etc */
+	if (textpad != NULL && text != NULL) { /* textbox */
 		*htextpad = 1;
 		*textpad = newpad(*htextpad, w - HBORDERS - t.text.hmargin * 2);
 		if (*textpad == NULL) {
@@ -831,8 +818,8 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 		wbkgd(*textpad, t.dialog.color);
 	}
 
-	error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w, *textpad,
-	    htextpad, text, withbuttons);
+	error = draw_widget_withtextpad(conf, *shadow, *widget, h, w,
+	    textpad == NULL ? NULL : *textpad, htextpad, text, withbuttons);
 
 	return error;
 }
