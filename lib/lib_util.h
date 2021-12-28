@@ -130,12 +130,12 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 int
 new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
     WINDOW **widget, int y, int x, int h, int w, WINDOW **textpad,
-    int *htextpad, char *text, bool buttons);
+    int *htextpad, char *text, bool withbuttons);
 
 int
 update_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
     WINDOW *widget, int h, int w, WINDOW *textpad, int *htextpad, char *text,
-    bool buttons);
+    bool withbuttons);
 
 void
 end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,

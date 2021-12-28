@@ -713,7 +713,7 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 static int
 draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
     WINDOW *widget, int h, int w, WINDOW *textpad, int *htextpad, char *text,
-    bool buttons)
+    bool withbuttons)
 {
 	int ts, ltee, rtee;
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
@@ -754,7 +754,7 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 	//if (textpad == NULL && text != NULL) /* no pad, text null for textbox */
 	//	print_text(conf, widget, 1, 2, w-3, text);
 
-	if (buttons && conf->no_lines == false) {
+	if (withbuttons && conf->no_lines == false) {
 		wattron(widget, t.dialog.lineraisecolor);
 		mvwaddch(widget, h-3, 0, ltee);
 		mvwhline(widget, h-3, 1, ts, w-2);
@@ -781,14 +781,14 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 int
 update_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
     WINDOW *widget, int h, int w, WINDOW *textpad, int *htextpad, char *text,
-    bool buttons)
+    bool withbuttons)
 {
 	int error;
 
 	/* nothing for now */
 
 	error =  draw_widget_withtextpad(conf, shadow, widget, h, w,
-	    textpad, htextpad, text, buttons);
+	    textpad, htextpad, text, withbuttons);
 
 	return error;
 }
@@ -796,7 +796,7 @@ update_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 int
 new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
     WINDOW **widget, int y, int x, int h, int w, WINDOW **textpad, 
-    int *htextpad, char *text, bool buttons)
+    int *htextpad, char *text, bool withbuttons)
 {
 	int error;
 
@@ -815,7 +815,7 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 
 	if (textpad == NULL) { /* widget_init() */
 		error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w,
-		    NULL, NULL, text, buttons);
+		    NULL, NULL, text, withbuttons);
 		return error;
 	}
 
@@ -832,7 +832,7 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 	}
 
 	error =  draw_widget_withtextpad(conf, *shadow, *widget, h, w, *textpad,
-	    htextpad, text, buttons);
+	    htextpad, text, withbuttons);
 
 	return error;
 }
