@@ -39,7 +39,6 @@
 #include "bsddialog_theme.h"
 
 #define AUTO_WIDTH	(COLS / 3U)
-/* at least 1 line text for its pad building in widget_withtextpad_init() */
 #define MIN_HEIGHT	(HBORDERS + 2 /*buttons*/ + 1 /*text*/)
 
 extern struct bsddialog_theme t;
@@ -60,7 +59,7 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = 1; /* MIN_HEIGHT comment */
+		*h = 1;
 		if (maxword > 0)
 			*h = MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
 		*h = widget_min_height(conf, true, *h);
