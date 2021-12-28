@@ -135,8 +135,8 @@ return_values(struct bsddialog_conf *conf, struct buttons bs, int nitems,
 }
 
 static int
-form_handler(struct bsddialog_conf *conf, WINDOW *widget, int y, int cols,
-    struct buttons bs, WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
+form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
+    WINDOW *formwin, FORM *form, FIELD **cfield, int nitems, 
     struct bsddialog_formitem *items)
 {
 	bool loop, buttupdate, informwin = true;
@@ -467,8 +467,8 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	wrefresh(formwin);
 
 	do {
-		output = form_handler(conf, widget, h-2, w, bs, formwin, form,
-		    cfield, nitems, items);
+		output = form_handler(conf, widget, bs, formwin, form, cfield,
+		    nitems, items);
 
 		if(update_dialog(conf, shadow, widget, y, x, h, w, textpad,
 		    text, &bs, true) != 0)
