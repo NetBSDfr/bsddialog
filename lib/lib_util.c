@@ -107,7 +107,7 @@ int f1help(struct bsddialog_conf *conf)
 }
 
 /* Buttons */
-void
+static void
 draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
     bool shortkey)
 {
