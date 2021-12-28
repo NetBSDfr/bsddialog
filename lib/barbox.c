@@ -548,14 +548,10 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
-			/* No break! the terminal size can change */
+			/* No break, screen size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf->shadow);
-
-			/*
-			 * Unnecessary, but, when the columns decrease the
-			 * following "refresh" seem not work
-			 */
+			/* Important for decreasing screen */
+			hide_widget(y, x, h, w, conf->shadow);
 			refresh();
 			
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -705,14 +701,10 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				break;
 			if (f1help(conf) != 0)
 				return BSDDIALOG_ERROR;
-			/* No break! the terminal size can change */
+			/* No break, screen size can change */
 		case KEY_RESIZE:
-			hide_widget(y, x, h, w,conf->shadow);
-
-			/*
-			 * Unnecessary, but, when the columns decrease the
-			 * following "refresh" seem not work
-			 */
+			/* Important for decreasing screen */
+			hide_widget(y, x, h, w, conf->shadow);
 			refresh();
 			
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
