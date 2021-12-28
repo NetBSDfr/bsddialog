@@ -148,13 +148,10 @@ draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
 void
 draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
 {
-	int i, x, start_x, y, cols, unused;
+	int i, x, start_x, y, rows, cols;
 
-	getbegyx(window, y, unused);
-	getmaxyx(window, unused, cols);
-	unused++; /* fix not used compilatyor error */
-	
-	y -= 2;
+	getmaxyx(window, rows, cols);
+	y = rows - 2;
 
 	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.button.space;
 	start_x = cols/2 - start_x/2;
