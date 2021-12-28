@@ -79,7 +79,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
     char *nocancellabel);
 
 void
-draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey);
+draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortcut);
 
 bool move_button(int key, struct buttons *bs);
 

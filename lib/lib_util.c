@@ -108,7 +108,7 @@ int f1help(struct bsddialog_conf *conf)
 /* Buttons */
 static void
 draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
-    bool shortkey)
+    bool shortcut)
 {
 	int i, color_arrows, color_shortkey, color_button;
 
@@ -138,7 +138,7 @@ draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
 	mvwaddstr(window, y, x, text);
 	wattroff(window, color_button);
 
-	if (shortkey) {
+	if (shortcut) {
 		wattron(window, color_shortkey);
 		mvwaddch(window, y, x, text[0]);
 		wattroff(window, color_shortkey);
@@ -146,7 +146,7 @@ draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
 }
 
 void
-draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
+draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortcut)
 {
 	int i, x, start_x;
 
@@ -156,7 +156,7 @@ draw_buttons(WINDOW *window, int y, int cols, struct buttons bs, bool shortkey)
 	for (i = 0; i < (int) bs.nbuttons; i++) {
 		x = i * (bs.sizebutton + t.button.space);
 		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
-		    i == bs.curr, shortkey);
+		    i == bs.curr, shortcut);
 	}
 }
 
