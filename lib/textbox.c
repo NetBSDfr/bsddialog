@@ -230,7 +230,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 		}
 	}
 
-	end_widget_withtextpad(conf, shadow, widget, pad);
+	end_dialog(conf, shadow, widget, pad);
 
 	return output;
 }

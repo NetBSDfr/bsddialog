@@ -494,7 +494,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	free(myfields);
 
 	delwin(formwin);
-	end_widget_withtextpad(conf, shadow, widget, textpad);
+	end_dialog(conf, shadow, widget, textpad);
 
 	return output;
 }

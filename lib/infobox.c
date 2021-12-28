@@ -104,7 +104,7 @@ bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 
 	doupdate();
 
-	end_widget_withtextpad(conf, shadow, widget, textpad);
+	end_dialog(conf, shadow, widget, textpad);
 
 	return (BSDDIALOG_OK);
 }

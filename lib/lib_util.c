@@ -838,8 +838,8 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 }
 
 void
-end_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
-    WINDOW *widget, WINDOW *textpad)
+end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
+    WINDOW *textpad)
 {
 	int y, x, h, w;
 
