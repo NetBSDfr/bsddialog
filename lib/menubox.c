@@ -443,43 +443,25 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 {
 	int textrow, menusize;
 
+	if (cols == BSDDIALOG_AUTOSIZE)
+		*w = widget_min_width(conf, &bs, linelen + 6);
+
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
-
-	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = VBORDERS;
-		/* buttons size */
-		*w += bs.nbuttons * bs.sizebutton;
-		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
-		/* line size */
-		*w = MAX(*w, linelen + 6);
-		/* conf.auto_minwidth */
-		*w = MAX(*w, (int)conf->auto_minwidth);
-		/* avoid terminal overflow */
-		*w = MIN(*w, widget_max_width(conf));
-	}
-
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = HBORDERS + 2 /* buttons */ + textrow;
-
 		if (*menurows == 0) {
-			*h += nitems + 2;
-			*h = MIN(*h, widget_max_height(conf));
-			menusize = MIN(nitems + 2, *h - (HBORDERS + 2 + textrow));
-			menusize -=2;
-			*menurows = menusize < 0 ? 0 : menusize;
+			menusize = widget_max_height(conf) - HBORDERS -
+			     2 /*buttons*/ - textrow;
+			menusize = MIN(menusize, nitems + 2);
+			*menurows = menusize - 2 < 0 ? 0 : menusize - 2;
 		}
-		else /* h autosize with a fixed menurows */
-			*h = *h + *menurows + 2;
+		else /* h autosize with fixed menurows */
+			menusize = *menurows + 2;
 
-		/* conf.auto_minheight */
-		*h = MAX(*h, (int)conf->auto_minheight);
-		/* avoid terminal overflow */
-		*h = MIN(*h, widget_max_height(conf));
+		*h = widget_min_height(conf, true, menusize + textrow);
 		/* avoid menurows overflow */
 		/* manual: with rows=autosize menurows!=0 is maxmenurows */
 		*menurows = MIN(*h - 6 - textrow, (int)*menurows);
-	}
-	else {
+	} else {
 		if (*menurows == 0)
 			*menurows = MIN(rows-6-textrow, nitems);
 	}
@@ -495,7 +477,7 @@ menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	/* buttons */
 	mincols += bs.nbuttons * bs.sizebutton;
 	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
-	/* line, comment to permet some cols hidden */
+	/* linelen, comment to allow some hidden col */
 	/* mincols = MAX(mincols, linelen); */
 
 	if (cols < mincols)

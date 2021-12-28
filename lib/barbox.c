@@ -44,7 +44,7 @@
 
 #define BARMARGIN	3
 #define MINBARWIDTH	10
-#define MINWIDTH	(VBORDERS + MINBARWIDTH + BARMARGIN * 2)
+#define MINWIDTH	(MINBARWIDTH + BARMARGIN * 2)
 #define MINHEIGHT	7 /* without text */
 
 /* "Bar": gauge - mixedgauge - rangebox - pause - progressview */
@@ -90,40 +90,26 @@ static int
 bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     char *text, struct buttons *bs)
 {
-	int maxword, maxline, nlines, buttonswidth;
+	int maxword, maxline, nlines;
 
 	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
 		return BSDDIALOG_ERROR;
 
-	buttonswidth = 0;
-	if (bs != NULL) { /* gauge has not buttons */
-		buttonswidth= bs->nbuttons * bs->sizebutton;
-		if (bs->nbuttons > 0)
-			buttonswidth += (bs->nbuttons-1) * t.button.space;
-	}
-
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = VBORDERS;
-		/* buttons size */
-		*w += buttonswidth;
 		/* bar size */
-		*w = MAX(*w, MINWIDTH);
+		*w = MINWIDTH;
 		/* text size*/
-		*w = MAX((int)(maxline + VBORDERS + t.text.hmargin * 2), *w);
-		/* conf.auto_minwidth */
-		*w = MAX(*w, (int)conf->auto_minwidth);
-		/* avoid terminal overflow */
-		*w = MIN(*w, widget_max_width(conf));
+		*w = MAX(*w, (int)(maxline + t.text.hmargin * 2));
+
+		*w = widget_min_width(conf, bs, *w);
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = MINHEIGHT;
 		if (maxword > 0)
 			*h += 1;
-		/* conf.auto_minheight */
-		*h = MAX(*h, (int)conf->auto_minheight);
-		/* avoid terminal overflow */
-		*h = MIN(*h, widget_max_height(conf));
+
+		*h = widget_min_height(conf, bs != NULL, *h);
 	}
 
 	return (0);
@@ -265,17 +251,12 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		w = max_minbarlen + HBORDERS;
-		w = MAX(w, maxline + 4);
-		w = MAX(w, (int)conf->auto_minwidth);
-		w = MIN(w, widget_max_width(conf) - 1);
+		w = MAX(max_minbarlen, maxline + t.text.hmargin * 2);
+		w = widget_min_width(conf, NULL, w);
 	}
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		h = 5; /* borders + mainbar */
-		h += nminibars;
-		h += (strlen(text) > 0 ? 3 : 0);
-		h = MAX(h, (int)conf->auto_minheight);
-		h = MIN(h, widget_max_height(conf) -1);
+		h = nminibars + 3 /* mainbar */ + (strlen(text) > 0 ? 3 : 0);
+		h = widget_min_height(conf, false, h);
 	}
 
 	/* mixedgauge checksize */

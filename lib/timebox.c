@@ -39,9 +39,9 @@
 #include "lib_util.h"
 #include "bsddialog_theme.h"
 
-#define MINWDATE 25 /* 23 wins + 2 VBORDERS */
-#define MINWTIME 16 /*14 wins + 2 VBORDERS */
-#define MINHEIGHT 8 /* 2 for text */
+#define MINWDATE   23 /* 3 windows and their borders */
+#define MINWTIME   14 /* 3 windows and their borders */
+#define MINHEIGHT   7 /* button + borders + windows  */
 
 /* "Time": timebox - datebox */
 
@@ -57,30 +57,17 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = VBORDERS;
-		/* buttons size */
-		*w += bs.nbuttons * bs.sizebutton;
-		*w += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
-		/* text size */
-		line = maxline + VBORDERS + t.text.hmargin * 2;
-		line = MAX(line, (int) (maxword + VBORDERS + t.text.hmargin * 2));
-		*w = MAX(*w, line);
-		/* date windows */
-		*w = MAX(*w, minw);
-		/* conf.auto_minwidth */
-		*w = MAX(*w, (int)conf->auto_minwidth);
-		/* avoid terminal overflow */
-		*w = MIN(*w, widget_max_width(conf) -1);
+		line = maxline + t.text.hmargin * 2;
+		line = MAX(line, (int) (maxword + t.text.hmargin * 2));
+		minw = MAX(minw, line);
+		*w = widget_min_width(conf, &bs, minw);
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = MINHEIGHT;
+		*h = 3; /* windows and borders */
 		if (maxword > 0)
 			*h += MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
-		/* conf.auto_minheight */
-		*h = MAX(*h, (int)conf->auto_minheight);
-		/* avoid terminal overflow */
-		*h = MIN(*h, widget_max_height(conf) -1);
+		*h = widget_min_height(conf, true, *h);
 	}
 
 	return 0;
