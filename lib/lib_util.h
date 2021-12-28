@@ -138,7 +138,7 @@ update_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
     bool buttons);
 
 void
-end_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *window, int h, int w,
-    WINDOW *textpad, WINDOW *shadow);
+end_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
+    WINDOW *widget, WINDOW *textpad);
 
 #endif

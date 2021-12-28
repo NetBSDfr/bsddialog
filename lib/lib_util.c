@@ -839,12 +839,13 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 }
 
 void
-end_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *window, int h, int w,
-    WINDOW *textpad, WINDOW *shadow)
+end_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
+    WINDOW *widget, WINDOW *textpad)
 {
-	int y, x;
+	int y, x, h, w;
 
-	getbegyx(window, y, x); /* for clear, add y & x to args? */
+	getbegyx(widget, y, x);
+	getmaxyx(widget, h, w);
 
 	if (conf->sleep > 0)
 		sleep(conf->sleep);
@@ -852,7 +853,7 @@ end_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *window, int h, int w
 	if (textpad != NULL)
 		delwin(textpad);
 
-	delwin(window);
+	delwin(widget);
 
 	if (conf->shadow)
 		delwin(shadow);

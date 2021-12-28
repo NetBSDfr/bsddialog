@@ -279,7 +279,7 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
+	end_widget_withtextpad(conf, shadow, widget, textpad);
 
 	return output;
 }
@@ -511,7 +511,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 	for (i=0; i<3; i++)
 		delwin(c[i].win);
-	end_widget_withtextpad(conf, widget, h, w, textpad, shadow);
+	end_widget_withtextpad(conf, shadow, widget, textpad);
 
 	return output;
 }
