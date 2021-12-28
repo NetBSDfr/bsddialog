@@ -55,7 +55,6 @@ const char *get_error_string(void)
 
 void set_error_string(char *str)
 {
-
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
