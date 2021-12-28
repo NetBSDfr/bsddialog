@@ -331,7 +331,8 @@ static bool check_set_ncurses_attr(WINDOW *win, char *text)
 }
 
 static void
-print_str(WINDOW *win, int *rows, int *y, int *x, int cols, char *str, bool color)
+print_string(WINDOW *win, int *rows, int *y, int *x, int cols, char *str,
+    bool color)
 {
 	int i, j, len, reallen;
 
@@ -441,7 +442,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 		    string[j] == '\t' || string[j] == ' ') {
 			if (j != 0) {
 				string[j] = '\0';
-				print_str(pad, rows, &y, &x, cols, string,
+				print_string(pad, rows, &y, &x, cols, string,
 				    conf->text.colors);
 			}
 		}
