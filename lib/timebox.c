@@ -268,10 +268,9 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 			refresh();
 			break;
 		default:
-			for (i = 0; i < (int) bs.nbuttons; i++)
-				if (tolower(input) == tolower((bs.label[i])[0])) {
-					output = bs.value[i];
-					loop = false;
+			if (shortcut_buttons(input, &bs)) {
+				output = bs.value[bs.curr];
+				loop = false;
 			}
 		}
 	}
@@ -501,10 +500,9 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			refresh();
 			break;
 		default:
-			for (i = 0; i < (int) bs.nbuttons; i++)
-				if (tolower(input) == tolower((bs.label[i])[0])) {
-					output = bs.value[i];
-					loop = false;
+			if (shortcut_buttons(input, &bs)) {
+				output = bs.value[bs.curr];
+				loop = false;
 			}
 		}
 	}

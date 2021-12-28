@@ -814,9 +814,10 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		default:
 			if (shortcut_butts) {
 				if (shortcut_buttons(input, &bs)) {
-					output = bs.curr;
-					if (currmode == MENUMODE)
-							item->on = true;
+					output = bs.value[bs.curr];
+					if (currmode == MENUMODE &&
+					    output == BSDDIALOG_OK)
+						item->on = true;
 					loop = false;
 				}
 				break;
@@ -1115,8 +1116,10 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			padsupdate = true;
 			break;
 		default:
-
-			break;
+			if (shortcut_buttons(input, &bs)) {
+				output = bs.value[bs.curr];
+				loop = false;
+			}
 		}
 	}
 

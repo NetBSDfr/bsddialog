@@ -224,7 +224,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.curr;
+				output = bs.value[bs.curr];
 				loop = false;
 			}
 		}

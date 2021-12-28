@@ -212,7 +212,7 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.curr;
+				output = bs.value[bs.curr];
 				loop = false;
 			}
 		}
