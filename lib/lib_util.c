@@ -382,7 +382,6 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 {
 	int i, buflen, wordlen, linelen;
 
-
 	buflen = strlen(text) + 1;
 	*maxword = 0;
 	wordlen = 0;
@@ -418,8 +417,6 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 	}
 	if (*nlines == 1 && *maxline == 0)
 		*nlines = 0;
-
-	//free(buf);
 
 	return 0;
 }
