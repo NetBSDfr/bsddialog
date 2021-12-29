@@ -54,7 +54,7 @@ int  bsddialog_total_progview;
 extern struct bsddialog_theme t;
 
 static void
-draw_perc_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
+draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, 
     int label)
 {
 	char labelstr[128];
@@ -161,7 +161,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-4,
 		    x+w-1-t.text.hmargin);
-		draw_perc_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
+		draw_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
 
 		while (true) {
@@ -295,8 +295,8 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		else { /* miniperc < 0 */
 			miniperc = abs(miniperc);
 			mvwaddstr(widget, i+1, w-2-15, "[             ]");
-			draw_perc_bar(widget, i+1, 1+w-2-15, 13, miniperc,
-			    false, -1 /*unused*/);
+			draw_bar(widget, i+1, 1+w-2-15, 13, miniperc, false,
+			    -1 /*unused*/);
 		}
 	}
 
@@ -309,7 +309,7 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	/* main bar */
 	bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED);
 	
-	draw_perc_bar(bar, 1, 1, w-8, mainperc, false, -1 /*unused*/);
+	draw_bar(bar, 1, 1, w-8, mainperc, false, -1 /*unused*/);
 
 	wattron(bar, t.bar.color);
 	mvwaddstr(bar, 0, 2, "Overall Progress");
@@ -475,7 +475,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		}
 		if (barupdate) {
 			perc = ((float)(currvalue - min)*100) / (positions-1);
-			draw_perc_bar(bar, 1, 1, sizebar, perc, true, currvalue);
+			draw_bar(bar, 1, 1, sizebar, perc, true, currvalue);
 			barupdate = false;
 			wrefresh(bar);
 		}
@@ -553,7 +553,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
-			if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
+			if (bar_autosize(conf, rows, cols, &h, &w, text,
+			    &bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (bar_checksize(text, h, w, &bs) != 0)
 				return BSDDIALOG_ERROR;
@@ -634,7 +635,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	while(loop) {
 		if (barupdate) {
 			perc = (float)tout * 100 / sec;
-			draw_perc_bar(bar, 1, 1, sizebar, perc, true, tout);
+			draw_bar(bar, 1, 1, sizebar, perc, true, tout);
 			barupdate = false;
 			wrefresh(bar);
 		}
@@ -696,7 +697,8 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
-			if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
+			if (bar_autosize(conf, rows, cols, &h, &w, text,
+			    &bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (bar_checksize(text, h, w, &bs) != 0)
 				return BSDDIALOG_ERROR;
