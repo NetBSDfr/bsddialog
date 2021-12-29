@@ -801,9 +801,6 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			if (shortcut_butts) {
 				if (shortcut_buttons(input, &bs)) {
 					output = bs.value[bs.curr];
-					/* uncomment and update diskmenu.c
-					if (currmode == MENUMODE &&
-					    output == BSDDIALOG_OK) */
 					if (currmode == MENUMODE)
 						item->on = true;
 					loop = false;
