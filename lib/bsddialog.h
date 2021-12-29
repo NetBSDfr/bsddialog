@@ -121,6 +121,9 @@ struct bsddialog_menugroup {
 	struct bsddialog_menuitem *items;
 };
 
+#define BSDDIALOG_FIELDHIDDEN    1U
+#define BSDDIALOG_FIELDREADONLY  2U
+
 struct bsddialog_formitem {
 	char *label;
 	unsigned int ylabel;
@@ -132,8 +135,7 @@ struct bsddialog_formitem {
 	unsigned int fieldlen;
 	unsigned int maxvaluelen;
 	char *value;
-#define BSDDIALOG_FIELDHIDDEN    1U
-#define BSDDIALOG_FIELDREADONLY  2U
+
 	unsigned int flags;
 
 	char *bottomdesc;
