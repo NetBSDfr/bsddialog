@@ -92,13 +92,14 @@ datetime_checksize(int rows, int cols, char *text, int minw, struct buttons bs)
 	return 0;
 }
 
-int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
+int
+bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int *hh, unsigned int *mm, unsigned int *ss)
 {
-	WINDOW *widget, *textpad, *shadow;
-	int i, input, output, y, x, h, w, sel, htextpad;
-	struct buttons bs;
 	bool loop;
+	int i, input, output, y, x, h, w, sel;
+	WINDOW *widget, *textpad, *shadow;
+	struct buttons bs;
 	struct myclockstruct {
 		unsigned int max;
 		unsigned int value;
@@ -130,22 +131,19 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
+	    true) != 0)
 		return BSDDIALOG_ERROR;
-	
-	draw_buttons(widget, bs, true);
 
-	wrefresh(widget);
+	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
+	doupdate();
 
-	prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
-
-	c[0].win = new_boxed_window(conf, y + h - 6, x + w/2 - 7, 3, 4, LOWERED);
+	c[0].win = new_boxed_window(conf, y+h-6, x + w/2 - 7, 3, 4, LOWERED);
 	mvwaddch(widget, h - 5, w/2 - 3, ':');
-	c[1].win = new_boxed_window(conf, y + h - 6, x + w/2 - 2, 3, 4, LOWERED);
+	c[1].win = new_boxed_window(conf, y+h-6, x + w/2 - 2, 3, 4, LOWERED);
 	mvwaddch(widget, h - 5, w/2 + 2, ':');
-	c[2].win = new_boxed_window(conf, y + h - 6, x + w/2 + 3, 3, 4, LOWERED);
-
+	c[2].win = new_boxed_window(conf, y+h-6, x + w/2 + 3, 3, 4, LOWERED);
+	
 	wrefresh(widget);
 
 	sel = 0;
@@ -220,27 +218,14 @@ int bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int col
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
 
-			wclear(shadow);
-			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
-			wresize(shadow, h, w);
-
-			wclear(widget);
-			mvwin(widget, y, x);
-			wresize(widget, h, w);
-
-			htextpad = 1;
-			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
-
-			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    textpad, &htextpad, text, true) != 0)
+			if(update_dialog(conf, shadow, widget, y, x, h, w,
+			    textpad, text, &bs, true) != 0)
 				return BSDDIALOG_ERROR;
+
+			doupdate();
 				
 			mvwaddch(widget, h - 5, w/2 - 3, ':');
 			mvwaddch(widget, h - 5, w/2 + 2, ':');
-			
-			draw_buttons(widget, bs, true);
-
 			wrefresh(widget);
 
 			prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
@@ -284,10 +269,10 @@ int
 bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
-	WINDOW *widget, *textpad, *shadow;
-	int i, input, output, y, x, h, w, sel, htextpad;
-	struct buttons bs;
 	bool loop;
+	int i, input, output, y, x, h, w, sel;
+	WINDOW *widget, *textpad, *shadow;
+	struct buttons bs;
 	struct calendar {
 		int max;
 		int value;
@@ -340,21 +325,18 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
+	    true) != 0)
 		return BSDDIALOG_ERROR;
 
-	draw_buttons(widget, bs, true);
+	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
+	doupdate();
 
-	wrefresh(widget);
-
-	prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
-
-	c[0].win = new_boxed_window(conf, y + h - 6, x + w/2 - 11, 3, 6, LOWERED);
+	c[0].win = new_boxed_window(conf, y+h-6, x + w/2 - 11, 3, 6, LOWERED);
 	mvwaddch(widget, h - 5, w/2 - 5, '/');
-	c[1].win = new_boxed_window(conf, y + h - 6, x + w/2 - 4, 3, 11, LOWERED);
+	c[1].win = new_boxed_window(conf, y+h-6, x + w/2 - 4, 3, 11, LOWERED);
 	mvwaddch(widget, h - 5, w/2 + 7, '/');
-	c[2].win = new_boxed_window(conf, y + h - 6, x + w/2 + 8, 3, 4, LOWERED);
+	c[2].win = new_boxed_window(conf, y+h-6, x + w/2 + 8, 3, 4, LOWERED);
 	
 	wrefresh(widget);
 
@@ -441,34 +423,21 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
-			if (datetime_autosize(conf, rows, cols, &h, &w, MINWDATE, text, bs) != 0)
+			if (datetime_autosize(conf, rows, cols, &h, &w,
+			    MINWDATE, text, bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (datetime_checksize(h, w, text, MINWDATE, bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
 
-			wclear(shadow);
-			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
-			wresize(shadow, h, w);
-
-			wclear(widget);
-			mvwin(widget, y, x);
-			wresize(widget, h, w);
-
-			htextpad = 1;
-			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
-
-			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    textpad, &htextpad, text, true) != 0)
+			if(update_dialog(conf, shadow, widget, y, x, h, w,
+			    textpad, text, &bs, true) != 0)
 				return BSDDIALOG_ERROR;
-				
+			doupdate();
+
 			mvwaddch(widget, h - 5, w/2 - 5, '/');
 			mvwaddch(widget, h - 5, w/2 + 7, '/');
-			
-			draw_buttons(widget, bs, true);
-
 			wrefresh(widget);
 
 			prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);

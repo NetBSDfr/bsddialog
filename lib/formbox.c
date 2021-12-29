@@ -357,7 +357,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
     struct bsddialog_formitem *items)
 {
 	WINDOW *widget, *formwin, *textpad, *shadow;
-	int i, output, color, y, x, h, w, htextpad;
+	int i, output, color, y, x, h, w;
 	FIELD **cfield;
 	FORM *form;
 	struct buttons bs;
@@ -445,8 +445,8 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
+	    true) != 0)
 		return BSDDIALOG_ERROR;
 
 	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
@@ -470,18 +470,20 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		output = form_handler(conf, widget, h-2, w, bs, formwin, form,
 		    cfield, nitems, items);
 
-		if(update_widget_withtextpad(conf, shadow, widget, h, w,
-		    textpad, &htextpad, text, true) != 0)
-		return BSDDIALOG_ERROR;
-			
-		draw_buttons(widget, bs, true);
+		if(update_dialog(conf, shadow, widget, y, x, h, w, textpad,
+		    text, &bs, true) != 0)
+			return BSDDIALOG_ERROR;
+
+		doupdate();
 		wrefresh(widget);
 
 		prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
 		    y + h - formheight, x + 1 + w - t.text.hmargin);
 
 		draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
-		/* wrefresh(formwin); */
+		wrefresh(formwin);
+
+		refresh();
 	} while (output == REDRAWFORM);
 
 	unpost_form(form);

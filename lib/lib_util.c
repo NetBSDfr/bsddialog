@@ -709,9 +709,9 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 }
 
 static int
-draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
-    WINDOW *widget, int h, int w, WINDOW *textpad, int *htextpad, char *text,
-    bool withbuttons)
+draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
+    int w, WINDOW *textpad, char *text, struct buttons *bs,
+    bool shortcutbuttons)
 {
 	int ts, ltee, rtee;
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
@@ -739,6 +739,20 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 		}
 	}
 
+	if (bs != NULL) {
+		if (conf->no_lines == false) {
+			wattron(widget, t.dialog.lineraisecolor);
+			mvwaddch(widget, h-3, 0, ltee);
+			mvwhline(widget, h-3, 1, ts, w-2);
+			wattroff(widget, t.dialog.lineraisecolor);
+
+			wattron(widget, t.dialog.linelowercolor);
+			mvwaddch(widget, h-3, w-1, rtee);
+			wattroff(widget, t.dialog.linelowercolor);
+		}
+		draw_buttons(widget, *bs, shortcutbuttons);
+	}
+
 	if (conf->bottomtitle != NULL) {
 		wattron(widget, t.dialog.bottomtitlecolor);
 		wmove(widget, h - 1, w/2 - strlen(conf->bottomtitle)/2 - 1);
@@ -748,21 +762,11 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 		wattroff(widget, t.dialog.bottomtitlecolor);
 	}
 
-	if (withbuttons && conf->no_lines == false) {
-		wattron(widget, t.dialog.lineraisecolor);
-		mvwaddch(widget, h-3, 0, ltee);
-		mvwhline(widget, h-3, 1, ts, w-2);
-		wattroff(widget, t.dialog.lineraisecolor);
-
-		wattron(widget, t.dialog.linelowercolor);
-		mvwaddch(widget, h-3, w-1, rtee);
-		wattroff(widget, t.dialog.linelowercolor);
-	}
-
 	wnoutrefresh(widget);
 
+	int htextpad = 1; //delete!
 	if (textpad!= NULL && text != NULL) /* textbox */
-		if (print_textpad(conf, textpad, htextpad,
+		if (print_textpad(conf, textpad, &htextpad,
 		    w - HBORDERS - t.text.hmargin * 2, text) !=0)
 			return BSDDIALOG_ERROR;
 
@@ -770,24 +774,37 @@ draw_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
 }
 
 int
-update_widget_withtextpad(struct bsddialog_conf *conf, WINDOW *shadow,
-    WINDOW *widget, int h, int w, WINDOW *textpad, int *htextpad, char *text,
-    bool withbuttons)
+update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
+    int y, int x, int h, int w, WINDOW *textpad, char *text, struct buttons *bs,
+    bool shortcutbuttons)
 {
 	int error;
 
-	/* nothing for now */
+	if (shadow != NULL) {
+		wclear(shadow);
+		mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
+		wresize(shadow, h, w);
+	}
 
-	error = draw_widget_withtextpad(conf, shadow, widget, h, w,
-	    textpad, htextpad, text, withbuttons);
+	wclear(widget);
+	mvwin(widget, y, x);
+	wresize(widget, h, w);
+
+	if (textpad != NULL) {
+		wclear(textpad);
+		wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
+	}
+
+	error = draw_dialog(conf, shadow, widget, h, w, textpad, text, bs,
+	    shortcutbuttons);
 
 	return error;
 }
 
 int
-new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
-    WINDOW **widget, int y, int x, int h, int w, WINDOW **textpad, 
-    int *htextpad, char *text, bool withbuttons)
+new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
+    int x, int h, int w, WINDOW **textpad, char *text, struct buttons *bs,
+    bool shortcutbuttons)
 {
 	int error;
 
@@ -805,8 +822,7 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 	}
 
 	if (textpad != NULL && text != NULL) { /* textbox */
-		*htextpad = 1;
-		*textpad = newpad(*htextpad, w - HBORDERS - t.text.hmargin * 2);
+		*textpad = newpad(1, w - HBORDERS - t.text.hmargin * 2);
 		if (*textpad == NULL) {
 			delwin(*widget);
 			if (conf->shadow)
@@ -816,8 +832,8 @@ new_widget_withtextpad(struct bsddialog_conf *conf, WINDOW **shadow,
 		wbkgd(*textpad, t.dialog.color);
 	}
 
-	error = draw_widget_withtextpad(conf, *shadow, *widget, h, w,
-	    textpad == NULL ? NULL : *textpad, htextpad, text, withbuttons);
+	error = draw_dialog(conf, *shadow, *widget, h, w,
+	    textpad == NULL ? NULL : *textpad, text, bs, shortcutbuttons);
 
 	return error;
 }

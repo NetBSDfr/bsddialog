@@ -70,6 +70,7 @@ textbox_checksize(int rows, int cols, int hpad, struct buttons bs)
 	return 0;
 }
 
+/* API */
 int
 bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 {
@@ -117,11 +118,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, NULL,
-	    NULL, NULL, true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, NULL, NULL, &bs,
+	    true) != 0)
 		return BSDDIALOG_ERROR;
-
-	draw_buttons(widget, bs, true);
 
 	ys = y + 1;
 	xs = x + 1;
@@ -198,14 +197,6 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
 
-			wclear(shadow);
-			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
-			wresize(shadow, h, w);
-
-			wclear(widget);
-			mvwin(widget, y, x);
-			wresize(widget, h, w);
-
 			ys = y + 1;
 			xs = x + 1;
 			ye = ys + h - 5;
@@ -213,11 +204,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			ypad = xpad = 0;
 			printrows = h - 4;
 
-			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    NULL, NULL, NULL, true) != 0)
-			return BSDDIALOG_ERROR;
-
-			draw_buttons(widget, bs, true);
+			if(update_dialog(conf, shadow, widget, y, x, h, w,
+			    NULL, NULL, &bs, true) != 0)
+				return BSDDIALOG_ERROR;
 
 			/* Important to fix grey lines expanding screen */
 			refresh();

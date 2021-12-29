@@ -80,10 +80,11 @@ static int infobox_checksize(int rows, int cols)
 	return 0;
 }
 
+/* API */
 int
 bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 {
-	int y, x, h, w, htextpad;
+	int y, x, h, w;
 	WINDOW *shadow, *widget, *textpad;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -95,8 +96,8 @@ bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, false) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
+	    NULL, false) != 0)
 		return BSDDIALOG_ERROR;
 
 	pnoutrefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-2,
@@ -108,4 +109,3 @@ bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 
 	return (BSDDIALOG_OK);
 }
-

@@ -142,10 +142,10 @@ int
 bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int perc)
 {
+	bool mainloop;
+	int y, x, h, w, htextpad;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char input[2048], ntext[2048], *pntext;
-	int y, x, h, w, htextpad;
-	bool mainloop;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
@@ -156,8 +156,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, false) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL,
+	    false) != 0)
 		return BSDDIALOG_ERROR;
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
@@ -216,10 +216,10 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int mainperc, unsigned int nminibars, char **minilabels,
     int *minipercs, bool color)
 {
-	WINDOW *widget, *textpad, *bar, *shadow;
 	int i, output, miniperc, y, x, h, w, max_minbarlen;
-	int maxword, maxline, nlines, htextpad, ypad;
+	int maxword, maxline, nlines, ypad, htextpad;
 	int colorperc, red, green;
+	WINDOW *widget, *textpad, *bar, *shadow;
 	char states[12][14] = {
 	    "  Succeeded  ", /*  0  */
 	    "   Failed    ", /*  1  */
@@ -268,8 +268,8 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	output = new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w,
-	    &textpad, &htextpad, text, false);
+	output = new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
+	    NULL, false);
 	if (output == BSDDIALOG_ERROR)
 		return output;
 
@@ -307,6 +307,7 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	}
 
 	wrefresh(widget);
+	getmaxyx(textpad, htextpad, i /* unused */);
 	ypad =  y + h - 5 - htextpad;
 	ypad = ypad < y+(int)nminibars ? y+nminibars : ypad;
 	prefresh(textpad, 0, 0, ypad, x+2, y+h-4, x+w-2);
@@ -430,7 +431,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
     int min, int max, int *value)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
-	int y, x, h, w, htextpad;
+	int y, x, h, w;
 	bool loop, buttupdate, barupdate;
 	int input, currvalue, output, sizebar, bigchange, positions;
 	float perc;
@@ -456,12 +457,14 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
+	    true) != 0)
 		return BSDDIALOG_ERROR;
 
+	doupdate();
+
 	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
-			    x+w-1-t.text.hmargin);
+	    x+w-1-t.text.hmargin);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 	bigchange = MAX(1, sizebar/10);
@@ -562,36 +565,24 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
-		
-			wclear(shadow);
-			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
-			wresize(shadow, h, w);
 
-			wclear(widget);
-			mvwin(widget, y, x);
-			wresize(widget, h, w);
+			if(update_dialog(conf, shadow, widget,y, x, h, w,
+			    textpad, text, &bs, true) != 0)
+				return BSDDIALOG_ERROR;
 
-			htextpad = 1;
-			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
+			doupdate();
 
 			sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 			bigchange = MAX(1, sizebar/10);
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARMARGIN);
 			wresize(bar, 3, sizebar + 2);
-
-			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    textpad, &htextpad, text, true) != 0)
-				return BSDDIALOG_ERROR;
+			draw_borders(conf, bar, 3, sizebar+2, RAISED);
 
 			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
 			    x+w-1-t.text.hmargin);
-			
-			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
 
 			barupdate = true;
-			buttupdate = true;
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
@@ -612,7 +603,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int sec)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
-	int output, y, x, h, w, htextpad;
+	int output, y, x, h, w;
 	bool loop, buttupdate, barupdate;
 	int input, tout, sizebar;
 	float perc;
@@ -629,9 +620,11 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
+	    true) != 0)
 		return BSDDIALOG_ERROR;
+
+	doupdate();
 	
 	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
 	    x+w-1-t.text.hmargin);
@@ -715,35 +708,23 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
-		
-			wclear(shadow);
-			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
-			wresize(shadow, h, w);
 
-			wclear(widget);
-			mvwin(widget, y, x);
-			wresize(widget, h, w);
+			if(update_dialog(conf, shadow, widget,y, x, h, w,
+			    textpad, text, &bs, true) != 0)
+				return BSDDIALOG_ERROR;
 
-			htextpad = 1;
-			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
+			doupdate();
 
 			sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARMARGIN);
 			wresize(bar, 3, sizebar + 2);
-
-			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    textpad, &htextpad, text, true) != 0)
-				return BSDDIALOG_ERROR;
+			draw_borders(conf, bar, 3, sizebar+2, LOWERED);
 
 			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
 			    x+w-1-t.text.hmargin);
-			
-			draw_borders(conf, bar, 3, sizebar + 2, RAISED);
 
 			barupdate = true;
-			buttupdate = true;
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {

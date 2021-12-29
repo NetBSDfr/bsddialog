@@ -108,7 +108,7 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool loop;
-	int y, x, h, w, input, output, htextpad, ytextpad;
+	int y, x, h, w, input, output, ytextpad, htextpad, unused;
 	WINDOW *widget, *textpad, *shadow;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -120,13 +120,13 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return BSDDIALOG_ERROR;
 
-	if (new_widget_withtextpad(conf, &shadow, &widget, y, x, h, w, &textpad,
-	    &htextpad, text, true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
+	    true) != 0)
 		return BSDDIALOG_ERROR;
 
 	ytextpad = 0;
-	draw_buttons(widget, bs, true);
-	wnoutrefresh(widget);
+	getmaxyx(textpad, htextpad, unused);
+	unused++; /* fix unused error */
 	textupdate(widget, textpad, htextpad, ytextpad);
 	loop = true;
 	while(loop) {
@@ -171,24 +171,11 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
 
-			wclear(shadow);
-			mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
-			wresize(shadow, h, w);
-
-			wclear(widget);
-			mvwin(widget, y, x);
-			wresize(widget, h, w);
-
-			htextpad = 1;
-			wclear(textpad);
-			wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
-
-			if(update_widget_withtextpad(conf, shadow, widget, h, w,
-			    textpad, &htextpad, text, true) != 0)
+			if(update_dialog(conf, shadow, widget, y, x, h, w, 
+			    textpad, text, &bs, true) != 0)
 				return BSDDIALOG_ERROR;
 
-			draw_buttons(widget, bs, true);
-			wnoutrefresh(widget);
+			getmaxyx(textpad, htextpad, unused);
 			textupdate(widget, textpad, htextpad, ytextpad);
 
 			/* Important to fix grey lines expanding screen */
