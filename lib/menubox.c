@@ -653,8 +653,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = conf->key.esc_cancelvalue ?
-				    BSDDIALOG_CANCEL : BSDDIALOG_ESC;
+				output = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;

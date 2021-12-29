@@ -82,7 +82,6 @@ struct bsddialog_conf {
 	int  x;
 	struct {
 		bool enable_esc;
-		bool esc_cancelvalue;
 	} key;
 	struct {
 		bool colors;

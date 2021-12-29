@@ -54,6 +54,8 @@ enum OPTS {
 	DEFAULTNO,
 	DEFAULT_BUTTON,
 	DEFAULT_ITEM,
+	DISABLE_ESC,
+	ESC_CANCELVALUE,
 	EXIT_LABEL,
 	EXTRA_BUTTON,
 	EXTRA_LABEL,
@@ -223,7 +225,8 @@ void usage(void)
 		"--begin-x <x>, --begin-y <y>, --cancel-label <string>, "
 		"--clear, --colors, --date-format <format>, "
 		"--default-button <label>, --defaultno, --default-item <name>,"
-		"--exit-label <label>, --extra-button, --extra-label <label>,"
+		"--disable-esc, --esc-cancelvalue, --exit-label <label>, "
+		"--extra-button, --extra-label <label>, "
 		"--hfile <filename>, --help-button, --help-label <label>, "
 		"--help-status, --help-tags, --hline string, --ignore, "
 		"--insecure, --item-depth, --item-help, --items-prefix, "
@@ -281,6 +284,7 @@ int main(int argc, char *argv[argc])
 	struct bsddialog_conf conf;
 	enum bsddialog_default_theme theme_flag;
 	bool cr_wrap_flag, no_collapse_flag, no_nl_expand_flag, trim_flag;
+	bool esc_cancelvalue_flag;
 
 	bsddialog_initconf(&conf);
 
@@ -291,6 +295,8 @@ int main(int argc, char *argv[argc])
 	ignore_flag = false;
 	errorbuilder[0] = '\0';
 	cr_wrap_flag = no_collapse_flag = no_nl_expand_flag = trim_flag = false;
+	conf.key.enable_esc = true;
+	esc_cancelvalue_flag = false;
 
 	item_output_sepnl_flag = item_singlequote_flag = false;
 	item_prefix_flag = item_bottomdesc_flag = item_depth_flag = false;
@@ -318,6 +324,8 @@ int main(int argc, char *argv[argc])
 	    {"defaultno",       no_argument,       NULL, DEFAULTNO },
 	    {"default-button",  required_argument, NULL, DEFAULT_BUTTON },
 	    {"default-item",    required_argument, NULL, DEFAULT_ITEM },
+	    {"disable-esc",     no_argument,       NULL, DISABLE_ESC },
+	    {"esc-cancelvalue", no_argument,       NULL, ESC_CANCELVALUE },
 	    {"exit-label",      required_argument, NULL, EXIT_LABEL },
 	    {"extra-button",    no_argument,       NULL, EXTRA_BUTTON },
 	    {"extra-label",     required_argument, NULL, EXTRA_LABEL },
@@ -444,6 +452,12 @@ int main(int argc, char *argv[argc])
 			break;
 		case DEFAULTNO:
 			conf.button.default_cancel = true;
+			break;
+		case DISABLE_ESC:
+			conf.key.enable_esc = false;
+			break;
+		case ESC_CANCELVALUE:
+			esc_cancelvalue_flag = true;
 			break;
 		case EXIT_LABEL:
 			conf.button.exit_label = optarg;
@@ -718,6 +732,9 @@ int main(int argc, char *argv[argc])
 	if (conf.get_height != NULL && conf.get_width != NULL)
 		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
+
+	if (output == BSDDIALOG_ESC && esc_cancelvalue_flag)
+		output = BSDDIALOG_CANCEL;
 
 	return (output);
 }

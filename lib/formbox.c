@@ -167,8 +167,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = conf->key.esc_cancelvalue ?
-				    BSDDIALOG_CANCEL : BSDDIALOG_ESC;
+				output = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
