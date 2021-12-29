@@ -139,8 +139,11 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			loop = false;
 			break;
 		case 27: /* Esc */
-			output = BSDDIALOG_ESC;
-			loop = false;
+			if (conf->key.enable_esc) {
+				output = conf->key.esc_cancelvalue ?
+				    BSDDIALOG_CANCEL : BSDDIALOG_ESC;
+				loop = false;
+			}
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;

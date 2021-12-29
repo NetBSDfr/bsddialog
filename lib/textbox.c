@@ -139,8 +139,11 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			loop = false;
 			break;
 		case 27: /* Esc */
-			output = BSDDIALOG_ESC;
-			loop = false;
+			if (conf->key.enable_esc) {
+				output = conf->key.esc_cancelvalue ?
+				    BSDDIALOG_CANCEL : BSDDIALOG_ESC;
+				loop = false;
+			}
 			break;
 		case KEY_HOME:
 			ypad = 0;
