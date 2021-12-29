@@ -270,7 +270,7 @@ getfastprev(int menurows, struct bsddialog_menugroup *groups, int *abs,
 }
 
 static bool
-getnextshortcut(struct bsddialog_conf *conf, enum menumode mode, int ngroups,
+getnextshortcut(struct bsddialog_conf *conf, int ngroups,
     struct bsddialog_menugroup *groups, int *abs, int *group, int *rel,
     int key)
 {
@@ -811,8 +811,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			}
 
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
-			getnextshortcut(conf, currmode, ngroups, groups, &abs,
-			    &g, &rel, input);
+			getnextshortcut(conf, ngroups, groups, &abs, &g, &rel,
+			    input);
 			item = &groups[g].items[rel];
 			currmode = getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
