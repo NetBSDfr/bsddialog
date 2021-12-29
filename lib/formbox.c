@@ -93,7 +93,6 @@ static void shiftleft(struct myfield *mf)
 
 static void print_bottomdesc(struct myfield *mf)
 {
-
 	move(LINES-1, 2);
 	clrtoeol();
 	if (mf->bottomdesc != NULL) {
@@ -163,7 +162,8 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			if (informwin)
 				break;
 			loop = false;
-			output = return_values(conf, bs, nitems, items, form, cfield);
+			output = return_values(conf, bs, nitems, items, form,
+			    cfield);
 			break;
 		case 27: /* Esc */
 			output = BSDDIALOG_ESC;
@@ -458,7 +458,8 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	post_form(form);
 
 	for (i=0; i < (int)nitems; i++)
-		mvwaddstr(formwin, items[i].ylabel, items[i].xlabel, items[i].label);
+		mvwaddstr(formwin, items[i].ylabel, items[i].xlabel,
+		    items[i].label);
 
 	wrefresh(formwin);
 
