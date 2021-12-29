@@ -615,9 +615,11 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		}
 	}
 	getfirst_with_default(conf, ngroups, groups, &abs, &g, &rel);
-	currmode = getmode(mode, groups[g]);
-	item = &groups[g].items[rel];
-	drawitem(conf, menupad, abs, *item, currmode, pos, true);
+	if (abs >= 0) {
+		currmode = getmode(mode, groups[g]);
+		item = &groups[g].items[rel];
+		drawitem(conf, menupad, abs, *item, currmode, pos, true);
+	}
 
 	ys = y + h - 5 - menurows + 1;
 	ye = y + h - 5 ;
@@ -645,7 +647,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		case KEY_ENTER:
 		case 10: /* Enter */
 			output = bs.value[bs.curr];
-			if (currmode == MENUMODE)
+			if (abs >= 0 && currmode == MENUMODE)
 				item->on = true;
 			loop = false;
 			break;
