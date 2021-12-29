@@ -146,17 +146,17 @@ draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
 void
 draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
 {
-	int i, x, start_x, y, rows, cols;
+	int i, x, startx, y, rows, cols;
 
 	getmaxyx(window, rows, cols);
 	y = rows - 2;
 
-	start_x = bs.sizebutton * bs.nbuttons + (bs.nbuttons - 1) * t.button.space;
-	start_x = cols/2 - start_x/2;
+	startx = bs.sizebutton * bs.nbuttons + (bs.nbuttons-1) * t.button.space;
+	startx = cols/2 - startx/2;
 
 	for (i = 0; i < (int) bs.nbuttons; i++) {
 		x = i * (bs.sizebutton + t.button.space);
-		draw_button(window, y, start_x + x, bs.sizebutton, bs.label[i],
+		draw_button(window, y, startx + x, bs.sizebutton, bs.label[i],
 		    i == bs.curr, shortcut);
 	}
 }
@@ -224,7 +224,8 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 
 	if (conf->button.default_label != NULL) {
 		for (i=0; i<(int)bs->nbuttons; i++) {
-			if (strcmp(conf->button.default_label, bs->label[i]) == 0)
+			if (strcmp(conf->button.default_label,
+			    bs->label[i]) == 0)
 				bs->curr = i;
 		}
 	}
@@ -282,7 +283,6 @@ bool shortcut_buttons(int key, struct buttons *bs)
 /* Text */
 static bool is_ncurses_attr(char *text)
 {
-
 	if (strnlen(text, 3) < 3)
 		return false;
 
@@ -294,7 +294,6 @@ static bool is_ncurses_attr(char *text)
 
 static bool check_set_ncurses_attr(WINDOW *win, char *text)
 {
-	
 	if (is_ncurses_attr(text) == false)
 		return false;
 
@@ -384,12 +383,15 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 	*maxword = 0;
 	wordlen = 0;
 	for (i=0; i < buflen; i++) {
-		if (text[i] == '\t' || text[i] == '\n' || text[i] == ' ' || text[i] == '\0')
+		if (text[i] == '\t' || text[i] == '\n' || text[i] == ' ' ||
+		    text[i] == '\0') {
 			if (wordlen != 0) {
 				*maxword = MAX(*maxword, wordlen);
 				wordlen = 0;
 				continue;
 			}
+		}
+
 		if (conf->text.colors && is_ncurses_attr(text + i))
 			i += 3;
 		else
@@ -497,7 +499,8 @@ int widget_max_height(struct bsddialog_conf *conf)
 	if (conf->y > 0) {
 		maxheight -= conf->y;
 		if (maxheight <= 0)
-			RETURN_ERROR("Terminal too small, LINES - shadow - y <= 0");
+			RETURN_ERROR("Terminal too small, LINES - shadow - y "
+			    "<= 0");
 	}
 
 	return maxheight;
@@ -513,7 +516,8 @@ int widget_max_width(struct bsddialog_conf *conf)
 	if (conf->x > 0) {
 		maxwidth -= conf->x;
 		if (maxwidth <= 0)
-			RETURN_ERROR("Terminal too small, COLS - shadow - x <= 0");
+			RETURN_ERROR("Terminal too small, COLS - shadow - x "
+			    "<= 0");
 	}
 
 	return maxwidth;
@@ -594,7 +598,7 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 		RETURN_ERROR("Negative (less than -1) height");
 	else if (rows > BSDDIALOG_AUTOSIZE) {
 		if ((*h = rows) > maxheight)
-			RETURN_ERROR("Height too big (> terminal height - "\
+			RETURN_ERROR("Height too big (> terminal height - "
 			    "shadow)");
 	}
 	/* rows == AUTOSIZE: each widget has to set its size */
@@ -608,7 +612,8 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 		RETURN_ERROR("Negative (less than -1) width");
 	else if (cols > BSDDIALOG_AUTOSIZE) {
 		if ((*w = cols) > maxwidth)
-			RETURN_ERROR("Width too big (> terminal width - shadow)");
+			RETURN_ERROR("Width too big (> terminal width - "
+			    "shadow)");
 	}
 	/* cols == AUTOSIZE: each widget has to set its size */
 
@@ -629,7 +634,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 		*y = conf->y;
 
 	if ((*y + h + (conf->shadow ? (int) t.shadow.h : 0)) > LINES)
-		RETURN_ERROR("The lower of the box under the terminal "\
+		RETURN_ERROR("The lower of the box under the terminal "
 		    "(begin Y + height (+ shadow) > terminal lines)");
 
 
@@ -643,7 +648,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 		*x = conf->x;
 
 	if ((*x + w + (conf->shadow ? (int) t.shadow.w : 0)) > COLS)
-		RETURN_ERROR("The right of the box over the terminal "\
+		RETURN_ERROR("The right of the box over the terminal "
 		    "(begin X + width (+ shadow) > terminal cols)");
 
 	return 0;
@@ -726,7 +731,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
 	if (conf->title != NULL) {
 		if (t.dialog.delimtitle && conf->no_lines == false) {
 			wattron(widget, t.dialog.lineraisecolor);
-			mvwaddch(widget, 0, w/2 - strlen(conf->title)/2 - 1, rtee);
+			mvwaddch(widget, 0, w/2-strlen(conf->title)/2-1, rtee);
 			wattroff(widget, t.dialog.lineraisecolor);
 		}
 		wattron(widget, t.dialog.titlecolor);

@@ -139,8 +139,10 @@ getfirst_with_default(struct bsddialog_conf *conf, int ngroups,
 		}
 		for (j = 0; j < (int) groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			if (conf->menu.default_item != NULL && item->name != NULL) {
-				if (strcmp(item->name, conf->menu.default_item) == 0) {
+			if (conf->menu.default_item != NULL &&
+			    item->name != NULL) {
+				if (strcmp(item->name,
+				    conf->menu.default_item) == 0) {
 					*abs = a;
 					*group = i;
 					*rel = j;
@@ -354,7 +356,8 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 			mvwhline(pad, y, 0, linech, pos.line);
 			wattroff(pad, t.menu.desccolor);
 		}
-		wmove(pad, y, pos.line/2 - (strlen(item.name)+strlen(item.desc))/2);
+		wmove(pad, y,
+		    pos.line/2 - (strlen(item.name) + strlen(item.desc)) / 2 );
 		wattron(pad, t.menu.namesepcolor);
 		waddstr(pad, item.name);
 		wattroff(pad, t.menu.namesepcolor);
@@ -403,7 +406,8 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	if (mode == BUILDLISTMODE || conf->menu.no_desc == false) {
 		wattron(pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE, item.desc);
+			mvwaddstr(pad, y, pos.xname + item.depth * DEPTHSPACE,
+			    item.desc);
 		else
 			mvwaddstr(pad, y, pos.xdesc, item.desc);
 		wattroff(pad, colordesc);
@@ -411,7 +415,8 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 
 	/* shortcut */
 	if (mode != BUILDLISTMODE && conf->menu.shortcut_buttons == false) {
-		colorshortcut = curr ? t.menu.f_shortcutcolor : t.menu.shortcutcolor;
+		colorshortcut = curr ?
+		    t.menu.f_shortcutcolor : t.menu.shortcutcolor;
 		wattron(pad, colorshortcut);
 
 		if (conf->menu.no_name)
@@ -478,13 +483,13 @@ menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	/* mincols = MAX(mincols, linelen); */
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols, width < size buttons or "\
-		    "name+descripion of the items");
+		RETURN_ERROR("Few cols, width < size buttons or "
+		    "name + descripion of the items");
 
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (nitems > 0 && menurows == 0)
-		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "\
+		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "
 		    "too small");
 
 	menusize = nitems > 0 ? 3 : 0;
@@ -569,7 +574,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	pos.maxdepth *= DEPTHSPACE;
 
 	pos.xselector = pos.maxprefix + (pos.maxprefix != 0 ? 1 : 0);
-	pos.xname = pos.xselector + pos.selectorlen + (pos.selectorlen > 0 ? 1 : 0);
+	pos.xname = pos.xselector + pos.selectorlen +
+	    (pos.selectorlen > 0 ? 1 : 0);
 	pos.xdesc = pos.maxdepth + pos.xname + pos.maxname;
 	pos.xdesc += (pos.maxname != 0 ? 1 : 0);
 	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
@@ -630,7 +636,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	ymenupad = 0; /* now ymenupad is pminrow for prefresh() */
 	if ((int)(ymenupad + menurows) - 1 < abs)
 		ymenupad = abs - menurows + 1;
-	update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows, ymenupad);
+	update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows,
+	    ymenupad);
 	wrefresh(menuwin);
 	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 	
@@ -688,7 +695,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			menurows = automenurows ? 0 : menurows;
 			menu_autosize(conf, rows, cols, &h, &w, text, pos.line,
 			    &menurows, totnitems, bs);
-			if (menu_checksize(h, w, text, menurows, totnitems, bs) != 0)
+			if (menu_checksize(h, w, text, menurows, totnitems,
+			    bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return BSDDIALOG_ERROR;
@@ -705,8 +713,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			wclear(menuwin);
 			mvwin(menuwin, y + h - 5 - menurows, x + 2);
 			wresize(menuwin,menurows+2, w-4);
-			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
-			    menurows, ymenupad);
+			update_menuwin(conf, menuwin, menurows+2, w-4,
+			    totnitems, menurows, ymenupad);
 			wrefresh(menuwin);
 			
 			ys = y + h - 5 - menurows + 1;
@@ -761,11 +769,13 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				break; /* useless, just to save cpu refresh */
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			if (input == KEY_END)
-				getlast(totnitems, ngroups, groups, &abs, &g, &rel);
+				getlast(totnitems, ngroups, groups, &abs, &g,
+				    &rel);
 			else if (input == KEY_DOWN)
 				getnext(ngroups, groups, &abs, &g, &rel);
 			else /* input == KEY_NPAGE*/
-				getfastnext(menurows, ngroups, groups, &abs, &g, &rel);
+				getfastnext(menurows, ngroups, groups, &abs, &g,
+				    &rel);
 			item = &groups[g].items[rel];
 			currmode= getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
@@ -783,10 +793,12 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				item->on = !item->on;
 			else { /* RADIOLISTMODE */
 				for (i=0; i < (int) groups[g].nitems; i++)
-					if (groups[g].items[i].on == true && i != rel) {
+					if (groups[g].items[i].on == true &&
+					    i != rel) {
 						groups[g].items[i].on = false;
 						drawitem(conf, menupad,
-						    abs - rel + i, groups[g].items[i],
+						    abs - rel + i,
+						    groups[g].items[i],
 						    currmode, pos, false);
 					}
 				item->on = !item->on;
@@ -817,8 +829,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				ymenupad = abs;
 			if ((int)(ymenupad + menurows) <= abs)
 				ymenupad = abs - menurows + 1;
-			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
-			    menurows, ymenupad);
+			update_menuwin(conf, menuwin, menurows+2, w-4,
+			    totnitems, menurows, ymenupad);
 			wrefresh(menuwin);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 		}
@@ -840,7 +852,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
  * API
  */
 
-int bsddialog_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
+int
+bsddialog_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups,
     int *focuslist, int *focusitem)
 {
@@ -925,13 +938,13 @@ buildlist_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	/* mincols = MAX(mincols, linelen); */
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols, width < size buttons or "\
+		RETURN_ERROR("Few cols, width < size buttons or "
 		    "name+descripion of the items");
 
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (nitems > 0 && menurows == 0)
-		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "\
+		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "
 		    "too small");
 
 	menusize = nitems > 0 ? 3 : 0;
@@ -946,7 +959,8 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem)
 {
-	WINDOW *widget, *textpad, *leftwin, *leftpad, *rightwin, *rightpad, *shadow;
+	WINDOW *widget, *textpad, *shadow;
+	WINDOW *leftwin, *leftpad, *rightwin, *rightpad;
 	int output, i, x, y, h, w, input;
 	bool loop, buttupdate, padsupdate, startleft;
 	int nlefts, nrights, leftwinx, rightwinx, winsy, padscols, curr;
@@ -1018,14 +1032,16 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				if (items[i].on == false) {
 					if (currV == LEFT && currH == nlefts)
 						curr = i;
-					drawitem(conf, leftpad, nlefts, items[i],
-					    BUILDLISTMODE, pos, curr == i);
+					drawitem(conf, leftpad, nlefts,
+					    items[i], BUILDLISTMODE, pos,
+					    curr == i);
 					nlefts++;
 				} else {
 					if (currV == RIGHT && currH == nrights)
 						curr = i;
-					drawitem(conf, rightpad, nrights, items[i],
-					    BUILDLISTMODE, pos, curr == i);
+					drawitem(conf, rightpad, nrights,
+					    items[i], BUILDLISTMODE, pos,
+					    curr == i);
 					nrights++;
 				}
 			}

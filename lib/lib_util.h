@@ -107,7 +107,8 @@ widget_min_width(struct bsddialog_conf *conf, struct buttons *bs,
     int minwidget);
 
 int
-set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w);
+set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h,
+    int *w);
 
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);

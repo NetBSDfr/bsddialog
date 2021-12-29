@@ -122,7 +122,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	if (datetime_autosize(conf, rows, cols, &h, &w, MINWTIME, text, bs) != 0)
+	if (datetime_autosize(conf, rows, cols, &h, &w, MINWTIME, text,
+	    bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (datetime_checksize(h, w, text, MINWTIME, bs) != 0)
 		return BSDDIALOG_ERROR;
@@ -189,10 +190,12 @@ bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			}
 			break;
 		case KEY_UP:
-			c[sel].value = c[sel].value < c[sel].max ? c[sel].value + 1 : 0;
+			c[sel].value = c[sel].value < c[sel].max ?
+			    c[sel].value + 1 : 0;
 			break;
 		case KEY_DOWN:
-			c[sel].value = c[sel].value > 0 ? c[sel].value - 1 : c[sel].max;
+			c[sel].value = c[sel].value > 0 ?
+			    c[sel].value - 1 : c[sel].max;
 			break;
 		case KEY_F(1):
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
@@ -209,7 +212,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
-			if (datetime_autosize(conf, rows, cols, &h, &w, MINWTIME, text, bs) != 0)
+			if (datetime_autosize(conf, rows, cols, &h, &w,
+			    MINWTIME, text, bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (datetime_checksize(h, w, text, MINWTIME, bs) != 0)
 				return BSDDIALOG_ERROR;
@@ -316,7 +320,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return BSDDIALOG_ERROR;
-	if (datetime_autosize(conf, rows, cols, &h, &w, MINWDATE, text, bs) != 0)
+	if (datetime_autosize(conf, rows, cols, &h, &w, MINWDATE, text,
+	    bs) != 0)
 		return BSDDIALOG_ERROR;
 	if (datetime_checksize(h, w, text, MINWDATE, bs) != 0)
 		return BSDDIALOG_ERROR;
@@ -385,7 +390,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			}
 			break;
 		case KEY_UP:
-			c[sel].value = c[sel].value > 1 ? c[sel].value - 1 : c[sel].max ;
+			c[sel].value = c[sel].value > 1 ?
+			    c[sel].value - 1 : c[sel].max ;
 			/* if mount change */
 			c[2].max = m[c[1].value -1].days;
 			/* if year change */
@@ -396,7 +402,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				c[2].value = c[2].max;
 			break;
 		case KEY_DOWN:
-			c[sel].value = c[sel].value < c[sel].max ? c[sel].value + 1 : 1;
+			c[sel].value = c[sel].value < c[sel].max ?
+			    c[sel].value + 1 : 1;
 			/* if mount change */
 			c[2].max = m[c[1].value -1].days;
 			/* if year change */

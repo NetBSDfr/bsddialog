@@ -333,13 +333,13 @@ form_checksize(int rows, int cols, char *text, int formheight, int nitems,
 	/* mincols = MAX(mincols, linelen); */
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols, width < size buttons or "\
+		RETURN_ERROR("Few cols, width < size buttons or "
 		    "labels + forms");
 
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (nitems > 0 && formheight == 0)
-		RETURN_ERROR("fields > 0 but formheight == 0, probably "\
+		RETURN_ERROR("fields > 0 but formheight == 0, probably "
 		    "terminal too small");
 
 	formrows = nitems > 0 ? 3 : 0;

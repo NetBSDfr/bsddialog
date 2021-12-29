@@ -189,7 +189,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return BSDDIALOG_ERROR;
-			textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad, bs);
+			textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad,
+			    bs);
 			if (textbox_checksize(h, w, hpad, bs) != 0)
 				return BSDDIALOG_ERROR;
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
