@@ -784,8 +784,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				item->on = !item->on;
 			else { /* RADIOLISTMODE */
 				for (i=0; i < (int) groups[g].nitems; i++)
-					if (groups[g].items[i].on == true &&
-					    i != rel) {
+					if (groups[g].items[i].on && i != rel) {
 						groups[g].items[i].on = false;
 						drawitem(conf, menupad,
 						    abs - rel + i,
