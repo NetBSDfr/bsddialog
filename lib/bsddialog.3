@@ -52,13 +52,11 @@
 .Nm bsddialog_textbox ,
 .Nm bsddialog_timebox ,
 .Nm bsddialog_yesno
-.Nd terminal dialogs and widgets
+.Nd terminal dialogs
 .Sh LIBRARY
 .Lb libbsddialog
 .Sh SYNOPSIS
 .In bsddialog.h
-
-.Fd #define LIBBSDDIALOG_VERSION
 
 .Fd #define BSDDIALOG_ERROR
 .Fd #define BSDDIALOG_OK
@@ -67,7 +65,6 @@
 .Fd #define BSDDIALOG_NO
 .Fd #define BSDDIALOG_HELP
 .Fd #define BSDDIALOG_EXTRA
-.Fd #define BSDDIALOG_ITEM_HELP
 .Fd #define BSDDIALOG_TIMEOUT
 .Fd #define BSDDIALOG_ESC
 .Fd #define BSDDIALOG_GENERIC1
@@ -76,6 +73,9 @@
 .Fd #define BSDDIALOG_FULLSCREEN
 .Fd #define BSDDIALOG_AUTOSIZE
 .Fd #define BSDDIALOG_CENTER
+
+.Fd #define BSDDIALOG_FIELDHIDDEN
+.Fd #define BSDDIALOG_FIELDREADONLY
 
 .Fd struct bsddialog_conf
 .Fd struct bsddialog_menuitem
@@ -272,16 +272,16 @@
 .Sh DESCRIPTION
 The
 .Nm BSDDialog
-library is an API to write a tools with a Text User Interface. It can build
-dialogs and widgets: to show messages, to get input and to inform about a
-computation status.
+library provides ans API to build Text User Interface dialogs: to display
+messages, to get input and to inform about a computation status.
+.Pp
+.Fn bsddialog_init
+initialize the terminal and should be the first called before each other
+library function, after 
+.Fn bsddialog_end
+restore the terminal 
 .Pp
 .Bd -literal -offset indent -compact
-/* size and position */
-#define BSDDIALOG_FULLSCREEN	-1
-#define BSDDIALOG_AUTOSIZE	 0
-#define BSDDIALOG_CENTER	-1
-
 struct bsddialog_conf {
 	bool ascii_lines;
 	unsigned int aspect_ratio;
@@ -369,8 +369,6 @@ struct bsddialog_formitem {
 	unsigned int fieldlen;
 	unsigned int maxvaluelen;
 	char *value; /* allocated memory */
-#define BSDDIALOG_FIELDHIDDEN    1U
-#define BSDDIALOG_FIELDREADONLY  2U
 	unsigned int flags;
 
 	char *bottomdesc;
