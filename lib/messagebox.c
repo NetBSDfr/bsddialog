@@ -142,10 +142,21 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			output = BSDDIALOG_ESC;
 			loop = false;
 			break;
-		case KEY_LEFT:
-		case KEY_RIGHT:
 		case '\t': /* TAB */
-			if (move_button(input, &bs)) {
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
+			draw_buttons(widget, bs, true);
+			wnoutrefresh(widget);
+			break;
+		case KEY_LEFT:
+			if (bs.curr > 0) {
+				bs.curr--;
+				draw_buttons(widget, bs, true);
+				wnoutrefresh(widget);
+			}
+			break;
+		case KEY_RIGHT:
+			if (bs.curr < (int)bs.nbuttons - 1) {
+				bs.curr++;
 				draw_buttons(widget, bs, true);
 				wnoutrefresh(widget);
 			}

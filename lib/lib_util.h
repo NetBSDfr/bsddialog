@@ -28,16 +28,11 @@
 #ifndef _LIBBSDDIALOG_UTIL_H_
 #define _LIBBSDDIALOG_UTIL_H_
 
-/* Utils to implement widgets - Internal library  API - Dafult values */
-
 #define HBORDER		1
 #define HBORDERS	(HBORDER + HBORDER)
 #define VBORDER		1
 #define VBORDERS	(VBORDER + VBORDER)
 #define PADDING(p)	(p)
-
-/* ncurses has not a Ctrl key macro */
-#define KEY_CTRL(x) ((x) & 0x1f)
 
 /* Set default aspect ratio to 9 */
 #define GET_ASPECT_RATIO(conf) (conf->aspect_ratio > 0 ? conf->aspect_ratio : 9)
@@ -80,8 +75,6 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 
 void
 draw_buttons(WINDOW *window, struct buttons bs, bool shortcut);
-
-bool move_button(int key, struct buttons *bs);
 
 bool shortcut_buttons(int key, struct buttons *bs);
 
