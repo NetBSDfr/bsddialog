@@ -452,8 +452,10 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 			menusize = *menurows + 2;
 
 		*h = widget_min_height(conf, true, menusize + textrow);
-		/* avoid menurows overflow */
-		/* manual: with rows=autosize menurows!=0 is maxmenurows */
+		/* 
+		 * avoid menurows overflow and
+		 * with rows=AUTOSIZE menurows!=0 becomes max-menurows
+		 */
 		*menurows = MIN(*h - 6 - textrow, (int)*menurows);
 	} else {
 		if (*menurows == 0)
@@ -471,7 +473,10 @@ menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	/* buttons */
 	mincols += bs.nbuttons * bs.sizebutton;
 	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
-	/* linelen, comment to allow some hidden col */
+	/*
+	 * linelen check, comment to allow some hidden col otherwise portconfig
+	 * could not show big menus like www/apache24
+	 */
 	/* mincols = MAX(mincols, linelen); */
 
 	if (cols < mincols)
