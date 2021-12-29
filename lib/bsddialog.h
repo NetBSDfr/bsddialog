@@ -50,6 +50,19 @@
 #define BSDDIALOG_AUTOSIZE	 0
 #define BSDDIALOG_CENTER	-1
 
+/* Mixedgauge */
+#define BSDDIALOG_MG_SUCCEEDED   -1
+#define BSDDIALOG_MG_FAILED      -2
+#define BSDDIALOG_MG_PASSED      -3
+#define BSDDIALOG_MG_COMPLETED   -4
+#define BSDDIALOG_MG_CHECKED     -5
+#define BSDDIALOG_MG_DONE        -6
+#define BSDDIALOG_MG_SKIPPED     -7
+#define BSDDIALOG_MG_INPROGRESS  -8
+#define BSDDIALOG_MG_BLANK       -9
+#define BSDDIALOG_MG_NA          -10
+#define BSDDIALOG_MG_PENDING     -11
+
 struct bsddialog_conf {
 	bool ascii_lines;
 	unsigned int aspect_ratio;
