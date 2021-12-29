@@ -36,14 +36,12 @@
 #include <string.h>
 
 #include "bsddialog.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
+#include "lib_util.h"
 
 #define MINWDATE   23 /* 3 windows and their borders */
 #define MINWTIME   14 /* 3 windows and their borders */
 #define MINHEIGHT   7 /* button + borders + windows  */
-
-/* "Time": timebox - datebox */
 
 extern struct bsddialog_theme t;
 

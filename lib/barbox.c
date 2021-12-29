@@ -39,15 +39,13 @@
 
 #include "bsddialog.h"
 #include "bsddialog_progressview.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
+#include "lib_util.h"
 
 #define BARMARGIN	3
 #define MINBARWIDTH	10
 #define MINWIDTH	(MINBARWIDTH + BARMARGIN * 2)
 #define MINHEIGHT	7 /* without text */
-
-/* "Bar": gauge - mixedgauge - rangebox - pause - progressview */
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -96,11 +94,7 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		return BSDDIALOG_ERROR;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		/* bar size */
-		*w = MINWIDTH;
-		/* text size*/
-		*w = MAX(*w, (int)(maxline + t.text.hmargin * 2));
-
+		*w = MAX(MINWIDTH, (int)(maxline + t.text.hmargin * 2));
 		*w = widget_min_width(conf, bs, *w);
 	}
 
@@ -391,8 +385,8 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 
 			move(LINES-1, 2);
 			clrtoeol();
-			readforsec = ((tnew - tstart) == 0) ?
-			    0 : bsddialog_total_progview / (float)(tnew - tstart);
+			readforsec = ((tnew - tstart) == 0) ? 0 :
+			    bsddialog_total_progview / (float)(tnew - tstart);
 			printw(pvconf->fmtbottomstr, bsddialog_total_progview,
 			    readforsec);
 			refresh();

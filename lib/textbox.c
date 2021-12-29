@@ -36,10 +36,8 @@
 #include <string.h>
 
 #include "bsddialog.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
-
-/* "Text": textbox */
+#include "lib_util.h"
 
 extern struct bsddialog_theme t;
 

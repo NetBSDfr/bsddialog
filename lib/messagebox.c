@@ -35,8 +35,8 @@
 #include <string.h>
 
 #include "bsddialog.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
+#include "lib_util.h"
 
 #define AUTO_WIDTH	(COLS / 3U)
 #define MIN_HEIGHT	(HBORDERS + 2 /*buttons*/ + 1 /*text*/)

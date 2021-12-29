@@ -35,12 +35,9 @@
 #endif
 #include <string.h>
 
-
 #include "bsddialog.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
-
-/* "Menu": checklist - menu - mixedlist - radiolist - buildlist */
+#include "lib_util.h"
 
 #define DEPTHSPACE	4
 #define MIN_HEIGHT	VBORDERS + 6 /* 2 buttons 1 text 3 menu */

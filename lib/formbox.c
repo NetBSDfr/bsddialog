@@ -37,25 +37,23 @@
 #include <string.h>
 
 #include "bsddialog.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
+#include "lib_util.h"
 
-#define REDRAWFORM 14021986 /* magic number */
+#define REDRAWFORM 19860214 /* magic number */
 #define ISFIELDHIDDEN(item)   (item.flags & BSDDIALOG_FIELDHIDDEN)
 #define ISFIELDREADONLY(item) (item.flags & BSDDIALOG_FIELDREADONLY)
 
-/* "Form": inputbox - passwordbox - form - passwordform - mixedform */
-
 extern struct bsddialog_theme t;
 
-/* util struct for private buffer and view options */
+/* field_userptr for private buffer and view options */
 struct myfield {
-	int buflen;
+	int  buflen;
 	char *buf;
-	int pos;
-	int maxpos;
+	int  pos;
+	int  maxpos;
 	bool secure;
-	int securech;
+	int  securech;
 	char *bottomdesc;
 };
 #define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
@@ -388,7 +386,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		set_field_buffer(cfield[i], 0, items[i].init);
 
 		myfields[i].buf = malloc(items[i].maxvaluelen + 1);
-		memset(myfields[i].buf, 0, items[i].maxvaluelen + 1); // end with '\0' for strdup
+		memset(myfields[i].buf, 0, items[i].maxvaluelen + 1);
 		strncpy(myfields[i].buf, items[i].init, items[i].maxvaluelen);
 
 		myfields[i].buflen = strlen(myfields[i].buf);
@@ -401,10 +399,8 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 		field_opts_off(cfield[i], O_AUTOSKIP);
 		field_opts_off(cfield[i], O_BLANK);
-		/* field_opts_off(field[i], O_BS_OVERLOAD); */
 
 		if (ISFIELDHIDDEN(items[i])) {
-			/* field_opts_off(field[i], O_PUBLIC); old hidden */
 			myfields[i].secure = true;
 			myfields[i].securech = ' ';
 			if (conf->form.securech != '\0')

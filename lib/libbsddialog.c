@@ -35,8 +35,8 @@
 #include <unistd.h>
 
 #include "bsddialog.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
+#include "lib_util.h"
 
 /*
  * This file implements public functions not related to a specific dialog.

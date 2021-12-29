@@ -34,10 +34,8 @@
 #endif
 
 #include "bsddialog.h"
-#include "lib_util.h"
 #include "bsddialog_theme.h"
-
-/* "Info": infobox */
+#include "lib_util.h"
 
 #define MIN_HEIGHT	3
 
