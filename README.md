@@ -51,7 +51,6 @@ Examples utility:
 ```
 and
 ```
-% sh ./examples_utility/buildlist.sh
 % sh ./examples_utility/checklist.sh
 % sh ./examples_utility/form.sh
 % sh ./examples_utility/gauge.sh
@@ -72,7 +71,6 @@ Examples library:
 ```
 % cd examples_library
 % sh compile
-% ./buildlist
 % ./compile
 % ./datebox
 % ./form
@@ -83,7 +81,6 @@ Examples library:
 % ./pause
 % ./radiolist
 % ./rangebox
-% ./sade
 % ./theme
 % ./timebox
 % ./treeview
@@ -118,7 +115,7 @@ Use Cases:
 --stdout, --theme *string* ("bsddialog", "dialog", "blackwhite"),
 --time-format *format*, --title *title*, --version, --yes-label *string*.
 
-**Widgets:**
+**Dialogs:**
  
  infobox (do not clear the screen), msgbox,
  yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
@@ -131,16 +128,13 @@ Use Cases:
  form, inputbox, mixedform, passwordbox, passwordform.
 
 
- Without autosize, resize, F1:
-
- buildlist
-
-
 
 ## TODO
 
 
 **Common Options:**
+
+ - Autosize for *text*
 
 |  Option                      | Status      | Note                            |
 | ---------------------------- | ----------- | ------------------------------- |
@@ -159,9 +153,11 @@ To evaluate / Not planned in the short term / not in bsdinstall:
 --column-separator *string*, --input-fd *fd*, --tab-correct, --tab-len *n*
 
 
-**Widgets:**
+**Dialogs:**
 
 To evaluate / Not planned in the short term:
 
 tailbox (textbox/fseek), tailboxbg, dselect, fselect, inputmenu, editbox,
-calendar (use datebox), prgbox, programbox, progressbox.
+calendar (use datebox), prgbox, programbox, progressbox, buildlist (use
+checklist).
+

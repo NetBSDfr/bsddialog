@@ -29,7 +29,6 @@
 .Nm bsddialog_backtitle ,
 .Nm bsddialog_clearterminal ,
 .Nm bsddialog_color ,
-.Nm bsddialog_buildlist ,
 .Nm bsddialog_checklist ,
 .Nm bsddialog_datebox ,
 .Nm bsddialog_end ,
@@ -85,17 +84,6 @@
 
 .Ft int
 .Fn bsddialog_backtitle "struct bsddialog_conf *conf" "char *backtitle"
-.Ft int
-.Fo bsddialog_buildlist
-.Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
-.Fa "int rows"
-.Fa "int cols"
-.Fa "unsigned int menurows"
-.Fa "int nitems"
-.Fa "struct bsddialog_menuitem *items"
-.Fa "int *focusitem"
-.Fc
 .Ft int
 .Fo bsddialog_checklist
 .Fa "struct bsddialog_conf *conf"

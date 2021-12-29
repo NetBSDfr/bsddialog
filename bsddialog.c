@@ -102,7 +102,6 @@ enum OPTS {
 	VERSION,
 	YES_LABEL,
 	/* Widgets */
-	BUILDLIST,
 	CHECKLIST,
 	DATEBOX,
 	FORM,
@@ -142,7 +141,6 @@ void usage(void);
 /* widgets */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
 	int cols, int argc, char **argv, char *errbuf
-int buildlist_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
 int datebox_builder(BUILDER_ARGS);
 int form_builder(BUILDER_ARGS);
@@ -241,9 +239,7 @@ void usage(void)
 		"--yes-label <string>.\n");
 	printf("\n");
 	printf("Widgets:\n");
-	printf("--buildlist <text> <rows> <cols> <menurows> [<name> <desc> "
-		    "<on|off> ...]\n"
-		"--checklist <text> <rows> <cols> <menurows> [<name> <desc> "
+	printf("--checklist <text> <rows> <cols> <menurows> [<name> <desc> "
 		    "<on|off> ...]\n"
 		"--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n"
 		"--form <text> <rows> <cols> <formrows> [<label> <ylabel> "
@@ -370,7 +366,6 @@ int main(int argc, char *argv[argc])
 	    {"version",         no_argument,       NULL, VERSION },
 	    {"yes-label",       required_argument, NULL, YES_LABEL },
 	    /* Widgets */
-	    {"buildlist",    no_argument, NULL, BUILDLIST },
 	    {"checklist",    no_argument, NULL, CHECKLIST },
 	    {"datebox",      no_argument, NULL, DATEBOX },
 	    {"form",         no_argument, NULL, FORM },
@@ -598,9 +593,6 @@ int main(int argc, char *argv[argc])
 			conf.button.ok_label = optarg;
 			break;
 		/* Widgets */
-		case BUILDLIST:
-			widgetbuilder = buildlist_builder;
-			break;
 		case CHECKLIST:
 			widgetbuilder = checklist_builder;
 			break;
@@ -1043,33 +1035,6 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		if (toquote)
 			dprintf(output_fd_flag, "%c", quotech);
 	}
-}
-
-int buildlist_builder(BUILDER_ARGS)
-{
-	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[1024];
-
-	if (argc < 1) {
-		strcpy(errbuf, "<menurows> not provided");
-		return (BSDDIALOG_ERROR);
-	}
-
-	menurows = atoi(argv[0]);
-   
-	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, false,
-	    true, true, true, item_bottomdesc_flag, &nitems, items);
-	if (output != 0)
-		return (output);
-
-	output = bsddialog_buildlist(&conf, text, rows, cols, menurows, nitems,
-	    items, &focusitem);
-	if (output == BSDDIALOG_ERROR)
-		return (BSDDIALOG_ERROR);
-
-	print_menu_items(&conf, output, nitems, items, focusitem);
-
-	return (output);
 }
 
 int checklist_builder(BUILDER_ARGS)

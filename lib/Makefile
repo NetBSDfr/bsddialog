@@ -7,8 +7,8 @@ VERSION = 0.0.2
 LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
 HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
-SOURCES = barbox.c buildlist.c formbox.c infobox.c libbsddialog.c lib_util.c \
-	menubox.c messagebox.c textbox.c theme.c timebox.c
+SOURCES = barbox.c formbox.c infobox.c libbsddialog.c lib_util.c menubox.c \
+	messagebox.c textbox.c theme.c timebox.c
 OBJECTS= ${SOURCES:.c=.o}
 CFLAGS = -I/usr/local/include -fPIC -Wall -Wextra
 LDFLAGS = -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \

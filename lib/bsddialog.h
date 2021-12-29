@@ -163,11 +163,6 @@ const char *bsddialog_geterror(void);
 
 /* Dialogs */
 int
-bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
-    int *focusitem);
-
-int
 bsddialog_checklist(struct bsddialog_conf *conf, char* text, int rows, int cols,
     unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
     int *focusitem);
