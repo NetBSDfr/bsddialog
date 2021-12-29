@@ -65,7 +65,7 @@ textbox_checksize(int rows, int cols, int hpad, struct buttons bs)
 	if (rows < 4 /* HBORDERS + button*/ + (hpad > 0 ? 1 : 0))
 		RETURN_ERROR("Few rows for the textbox");
 
-	return 0;
+	return (0);
 }
 
 /* API */
@@ -109,16 +109,16 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 	bs.sizebutton = strlen(bs.label[0]) + 2;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad, bs);
 	if (textbox_checksize(h, w, hpad, bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, NULL, NULL, &bs,
 	    true) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	ys = y + 1;
 	xs = x + 1;
@@ -180,7 +180,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			if (f1help(conf) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -188,13 +188,13 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 			refresh();
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad,
 			    bs);
 			if (textbox_checksize(h, w, hpad, bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			ys = y + 1;
 			xs = x + 1;
@@ -205,7 +205,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 
 			if(update_dialog(conf, shadow, widget, y, x, h, w,
 			    NULL, NULL, &bs, true) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			/* Important to fix grey lines expanding screen */
 			refresh();
@@ -220,5 +220,5 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 
 	end_dialog(conf, shadow, widget, pad);
 
-	return output;
+	return (output);
 }

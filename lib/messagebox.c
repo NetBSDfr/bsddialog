@@ -50,7 +50,7 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	int maxword, maxline, nlines, line;
 
 	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		line = MIN(maxline + t.text.hmargin * 2, AUTO_WIDTH);
@@ -65,7 +65,7 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*h = widget_min_height(conf, true, *h);
 	}
 
-	return 0;
+	return (0);
 }
 
 static int message_checksize(int rows, int cols, struct buttons bs)
@@ -83,7 +83,7 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 	if (rows < MIN_HEIGHT)
 		RETURN_ERROR("Msgbox and Yesno need at least height 5");
 
-	return 0;
+	return (0);
 }
 
 static void
@@ -112,17 +112,17 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 	WINDOW *widget, *textpad, *shadow;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (message_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (message_checksize(h, w, bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
 	    true) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	ytextpad = 0;
 	getmaxyx(textpad, htextpad, unused);
@@ -165,7 +165,7 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			if (f1help(conf) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -173,18 +173,18 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 			refresh();
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (message_autosize(conf, rows, cols, &h, &w, text,
 			    bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (message_checksize(h, w, bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			if(update_dialog(conf, shadow, widget, y, x, h, w, 
 			    textpad, text, &bs, true) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			getmaxyx(textpad, htextpad, unused);
 			textupdate(widget, textpad, htextpad, ytextpad);
@@ -214,7 +214,7 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 
 	end_dialog(conf, shadow, widget, textpad);
 
-	return output;
+	return (output);
 }
 
 /* API */

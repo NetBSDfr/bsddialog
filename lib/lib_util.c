@@ -50,7 +50,7 @@ static char errorbuffer[ERRBUFLEN];
 
 const char *get_error_string(void)
 {
-	return errorbuffer;
+	return (errorbuffer);
 }
 
 void set_error_string(char *str)
@@ -75,7 +75,7 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 
 	delwin(clear);
 
-	return 0;
+	return (0);
 }
 
 /* F1 help */
@@ -257,10 +257,10 @@ bool shortcut_buttons(int key, struct buttons *bs)
 static bool is_ncurses_attr(char *text)
 {
 	if (strnlen(text, 3) < 3)
-		return false;
+		return (false);
 
 	if (text[0] != '\\' || text[1] != 'Z')
-		return false;
+		return (false);
 
 	return (strchr("nbBrRuU01234567", text[2]) == NULL ? false : true);
 }
@@ -268,11 +268,11 @@ static bool is_ncurses_attr(char *text)
 static bool check_set_ncurses_attr(WINDOW *win, char *text)
 {
 	if (is_ncurses_attr(text) == false)
-		return false;
+		return (false);
 
 	if ((text[2] - '0') >= 0 && (text[2] - '0') < 8) {
 		wattron(win, bsddialog_color( text[2] - '0', COLOR_WHITE, 0));
-		return true;
+		return (true);
 	}
 
 	switch (text[2]) {
@@ -299,7 +299,7 @@ static bool check_set_ncurses_attr(WINDOW *win, char *text)
 		break;
 	}
 
-	return true;
+	return (true);
 }
 
 static void
@@ -391,7 +391,7 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 	if (*nlines == 1 && *maxline == 0)
 		*nlines = 0;
 
-	return 0;
+	return (0);
 }
 
 int
@@ -458,7 +458,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 
 	free(string);
 
-	return 0;
+	return (0);
 }
 
 /* autosize */
@@ -476,7 +476,7 @@ int widget_max_height(struct bsddialog_conf *conf)
 			    "<= 0");
 	}
 
-	return maxheight;
+	return (maxheight);
 }
 
 int widget_max_width(struct bsddialog_conf *conf)
@@ -493,7 +493,7 @@ int widget_max_width(struct bsddialog_conf *conf)
 			    "<= 0");
 	}
 
-	return maxwidth;
+	return (maxwidth);
 }
 
 int
@@ -517,7 +517,7 @@ widget_min_height(struct bsddialog_conf *conf, bool withbuttons, int minwidget)
 	/* avoid terminal overflow */
 	min = MIN(min, widget_max_height(conf));
 
-	return min;
+	return (min);
 }
 
 int
@@ -554,7 +554,7 @@ widget_min_width(struct bsddialog_conf *conf, struct buttons *bs,
 	/* avoid terminal overflow */
 	min = MIN(min, widget_max_width(conf));
 
-	return min;
+	return (min);
 }
 
 int
@@ -563,7 +563,7 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 	int maxheight, maxwidth;
 
 	if ((maxheight = widget_max_height(conf)) == BSDDIALOG_ERROR)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (rows == BSDDIALOG_FULLSCREEN)
 		*h = maxheight;
@@ -577,7 +577,7 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 	/* rows == AUTOSIZE: each widget has to set its size */
 
 	if ((maxwidth = widget_max_width(conf)) == BSDDIALOG_ERROR)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_FULLSCREEN)
 		*w = maxwidth;
@@ -590,7 +590,7 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 	}
 	/* cols == AUTOSIZE: each widget has to set its size */
 
-	return 0;
+	return (0);
 }
 
 int
@@ -624,7 +624,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 		RETURN_ERROR("The right of the box over the terminal "
 		    "(begin X + width (+ shadow) > terminal cols)");
 
-	return 0;
+	return (0);
 }
 
 /* Widgets builders */
@@ -676,14 +676,14 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 
 	if ((win = newwin(rows, cols, y, x)) == NULL) {
 		set_error_string("Cannot build boxed window");
-		return NULL;
+		return (NULL);
 	}
 
 	wbkgd(win, t.dialog.color);
 
 	draw_borders(conf, win, rows, cols, elev);
 
-	return win;
+	return (win);
 }
 
 static int
@@ -746,9 +746,9 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
 	if (textpad!= NULL && text != NULL) /* textbox */
 		if (print_textpad(conf, textpad, &htextpad,
 		    w - HBORDERS - t.text.hmargin * 2, text) !=0)
-			return BSDDIALOG_ERROR;
+			return (BSDDIALOG_ERROR);
 
-	return 0;
+	return (0);
 }
 
 int
@@ -776,7 +776,7 @@ update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	error = draw_dialog(conf, shadow, widget, h, w, textpad, text, bs,
 	    shortcutbuttons);
 
-	return error;
+	return (error);
 }
 
 int
@@ -796,7 +796,7 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 	if ((*widget = new_boxed_window(conf, y, x, h, w, RAISED)) == NULL) {
 		if (conf->shadow)
 			delwin(*shadow);
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	}
 
 	if (textpad != NULL && text != NULL) { /* textbox */
@@ -813,7 +813,7 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 	error = draw_dialog(conf, *shadow, *widget, h, w,
 	    textpad == NULL ? NULL : *textpad, text, bs, shortcutbuttons);
 
-	return error;
+	return (error);
 }
 
 void

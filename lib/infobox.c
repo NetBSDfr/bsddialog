@@ -48,7 +48,7 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	int maxword, maxline, nlines;
 
 	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		*w = maxline + + t.text.hmargin * 2;
@@ -62,7 +62,7 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*h = widget_min_height(conf, false, *h);
 	}
 
-	return 0;
+	return (0);
 }
 
 static int infobox_checksize(int rows, int cols)
@@ -75,7 +75,7 @@ static int infobox_checksize(int rows, int cols)
 	if (rows < 3)
 		RETURN_ERROR("Infobox needs at least height 3");
 
-	return 0;
+	return (0);
 }
 
 /* API */
@@ -86,17 +86,17 @@ bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 	WINDOW *shadow, *widget, *textpad;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (infobox_autosize(conf, rows, cols, &h, &w, text) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (infobox_checksize(h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
 	    NULL, false) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	pnoutrefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-2,
 	    x+w-t.text.hmargin);

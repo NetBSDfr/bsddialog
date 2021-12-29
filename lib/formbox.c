@@ -110,13 +110,13 @@ return_values(struct bsddialog_conf *conf, struct buttons bs, int nitems,
 
 	output = bs.value[bs.curr];
 	if (output == BSDDIALOG_HELP && conf->form.value_withhelp == false)
-		return output;
+		return (output);
 	if (output == BSDDIALOG_EXTRA && conf->form.value_withextra == false)
-		return output;
+		return (output);
 	if (output == BSDDIALOG_CANCEL && conf->form.value_withcancel == false)
-		return output;
+		return (output);
 	if (output == BSDDIALOG_GENERIC1 || output == BSDDIALOG_GENERIC2)
-		return output;
+		return (output);
 
 	/* BSDDIALOG_OK */
 	form_driver(form, REQ_NEXT_FIELD);
@@ -260,7 +260,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			if (f1help(conf) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			/* No Break */
 		case KEY_RESIZE:
 			output = REDRAWFORM;
@@ -288,7 +288,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 
 	curs_set(0);
 
-	return output;
+	return (output);
 }
 
 static void
@@ -346,7 +346,7 @@ form_checksize(int rows, int cols, char *text, int formheight, int nitems,
 	if (rows < 2  + 2 + formrows + textrow)
 		RETURN_ERROR("Few lines for this menus");
 
-	return 0;
+	return (0);
 }
 
 int
@@ -433,17 +433,17 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	form_autosize(conf, rows, cols, &h, &w, text, maxline, &formheight,
 	    nitems, bs);
 	if (form_checksize(h, w, text, formheight, nitems, bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
 	    true) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
 	    y + h - formheight, x + 1 + w - t.text.hmargin);
@@ -469,7 +469,7 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 		if(update_dialog(conf, shadow, widget, y, x, h, w, textpad,
 		    text, &bs, true) != 0)
-			return BSDDIALOG_ERROR;
+			return (BSDDIALOG_ERROR);
 
 		doupdate();
 		wrefresh(widget);
@@ -495,5 +495,5 @@ bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(formwin);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return output;
+	return (output);
 }

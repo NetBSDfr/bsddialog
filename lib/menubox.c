@@ -278,7 +278,7 @@ getnextshortcut(struct bsddialog_conf *conf, enum menumode mode, int ngroups,
 	bool mainloop;
 
 	if (*abs < 0 || ngroups < 0 || *rel < 0)
-		return false;
+		return (false);
 
 	na = a = -1;
 	mainloop = true;
@@ -337,7 +337,7 @@ getmode(enum menumode mode, struct bsddialog_menugroup group)
 			mode = CHECKLISTMODE;
 	}
 
-	return mode;
+	return (mode);
 }
 
 static void
@@ -493,7 +493,7 @@ menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	if (rows < 2  + 2 + menusize + textrow)
 		RETURN_ERROR("Few lines for this menus");
 
-	return 0;
+	return (0);
 }
 
 /* the caller has to call prefresh(menupad, ymenupad, 0, ys, xs, ye, xe); */
@@ -581,17 +581,17 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	menu_autosize(conf, rows, cols, &h, &w, text, pos.line, &menurows,
 	    totnitems, bs);
 	if (menu_checksize(h, w, text, menurows, totnitems, bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
 	     shortcut_butts) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	doupdate();
 
@@ -676,7 +676,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			if (f1help(conf) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -684,19 +684,19 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			refresh();
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			menurows = automenurows ? 0 : menurows;
 			menu_autosize(conf, rows, cols, &h, &w, text, pos.line,
 			    &menurows, totnitems, bs);
 			if (menu_checksize(h, w, text, menurows, totnitems,
 			    bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			if(update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs, shortcut_butts) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			
 			doupdate();
 
@@ -837,7 +837,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(menuwin);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return output;
+	return (output);
 }
 
 /* API */
@@ -851,7 +851,7 @@ bsddialog_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	output = do_mixedlist(conf, text, rows, cols, menurows, MIXEDLISTMODE,
 	    ngroups, groups, focuslist, focusitem);
 
-	return output;
+	return (output);
 }
 
 int
@@ -866,7 +866,7 @@ bsddialog_checklist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	output = do_mixedlist(conf, text, rows, cols, menurows, CHECKLISTMODE,
 	    1, &group, NULL, focusitem);
 
-	return output;
+	return (output);
 }
 
 int
@@ -881,7 +881,7 @@ bsddialog_menu(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	output = do_mixedlist(conf, text, rows, cols, menurows, MENUMODE, 1,
 	    &group, NULL, focusitem);
 
-	return output;
+	return (output);
 }
 
 int
@@ -896,5 +896,5 @@ bsddialog_radiolist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	output = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
 	    1, &group, NULL, focusitem);
 
-	return output;
+	return (output);
 }

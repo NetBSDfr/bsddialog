@@ -49,7 +49,7 @@ void set_error_string(char *string);
 
 #define RETURN_ERROR(str) do {			\
 	set_error_string(str);			\
-	return BSDDIALOG_ERROR;			\
+	return (BSDDIALOG_ERROR);		\
 } while (0)
 
 /* buttons */

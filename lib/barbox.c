@@ -91,7 +91,7 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 	int maxword, maxline, nlines;
 
 	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		*w = MAX(MINWIDTH, (int)(maxline + t.text.hmargin * 2));
@@ -129,7 +129,7 @@ bar_checksize(char *text, int rows, int cols, struct buttons *bs)
 	if (rows < minheight)
 		RETURN_ERROR("Few rows for this mixedgauge");
 
-	return 0;
+	return (0);
 }
 
 int
@@ -142,17 +142,17 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	char input[2048], ntext[2048], *pntext;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (bar_autosize(conf, rows, cols, &h, &w, text, NULL) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (bar_checksize(text, h, w, NULL) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL,
 	    false) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
 
@@ -200,7 +200,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return BSDDIALOG_OK;
+	return (BSDDIALOG_OK);
 }
 
 
@@ -238,11 +238,11 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	max_minbarlen += 3 + 16 /* seps + [...] or mainbar */;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	/* mixedgauge autosize */
 	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		w = MAX(max_minbarlen, (int)(maxline + t.text.hmargin * 2));
@@ -260,12 +260,12 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		RETURN_ERROR("Few rows for this mixedgauge");
 
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	output = new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
 	    NULL, false);
 	if (output == BSDDIALOG_ERROR)
-		return output;
+		return (output);
 
 	/* mini bars */
 	for (i=0; i < (int)nminibars; i++) {
@@ -322,7 +322,7 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return BSDDIALOG_OK;
+	return (BSDDIALOG_OK);
 }
 
 int
@@ -381,7 +381,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 			output = mixedgauge(conf, text, rows, cols, mainperc,
 			    nminibar, minilabels, minipercs, true);
 			if (output == BSDDIALOG_ERROR)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			move(LINES-1, 2);
 			clrtoeol();
@@ -443,17 +443,17 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (bar_checksize(text, h, w, &bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
 	    true) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	doupdate();
 
@@ -544,7 +544,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			if (f1help(conf) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -552,18 +552,18 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			refresh();
 			
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (bar_autosize(conf, rows, cols, &h, &w, text,
 			    &bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (bar_checksize(text, h, w, &bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			if(update_dialog(conf, shadow, widget,y, x, h, w,
 			    textpad, text, &bs, true) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			doupdate();
 
@@ -590,7 +590,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return output;
+	return (output);
 }
 
 int
@@ -607,17 +607,17 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (bar_checksize(text, h, w, &bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
 	    true) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	doupdate();
 	
@@ -688,7 +688,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			if (conf->f1_file == NULL && conf->f1_message == NULL)
 				break;
 			if (f1help(conf) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -696,18 +696,18 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			refresh();
 			
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (bar_autosize(conf, rows, cols, &h, &w, text,
 			    &bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (bar_checksize(text, h, w, &bs) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			if(update_dialog(conf, shadow, widget,y, x, h, w,
 			    textpad, text, &bs, true) != 0)
-				return BSDDIALOG_ERROR;
+				return (BSDDIALOG_ERROR);
 
 			doupdate();
 
@@ -735,5 +735,5 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return output;
+	return (output);
 }

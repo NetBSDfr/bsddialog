@@ -100,7 +100,7 @@ static int buildlist_autosize(int rows, int cols)
 	if (rows == BSDDIALOG_AUTOSIZE)
 		RETURN_ERROR("Unimplemented rows autosize for buildlist");
 
-	return 0;
+	return (0);
 }
 
 /* to improve */
@@ -131,7 +131,7 @@ buildlist_checksize(int rows, int cols, char *text, int menurows, int nitems,
 	if (rows < 2 + 2 + menusize + textrow)
 		RETURN_ERROR("Few lines for this menus");
 
-	return 0;
+	return (0);
 }
 
 int
@@ -159,17 +159,17 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (buildlist_autosize(rows, cols) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (buildlist_checksize(h, w, text, menurows, nitems, bs) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
 	    &bs, true) != 0)
-		return BSDDIALOG_ERROR;
+		return (BSDDIALOG_ERROR);
 
 	doupdate();
 
@@ -312,5 +312,5 @@ bsddialog_buildlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	delwin(rightwin);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return output;
+	return (output);
 }
