@@ -28,11 +28,8 @@
 #ifndef _LIBBSDDIALOG_UTIL_H_
 #define _LIBBSDDIALOG_UTIL_H_
 
-#define HBORDER		1
-#define HBORDERS	(HBORDER + HBORDER)
-#define VBORDER		1
-#define VBORDERS	(VBORDER + VBORDER)
-#define PADDING(p)	(p)
+#define HBORDERS	2
+#define VBORDERS	2
 
 /* Set default aspect ratio to 9 */
 #define GET_ASPECT_RATIO(conf) (conf->aspect_ratio > 0 ? conf->aspect_ratio : 9)
