@@ -590,7 +590,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		return BSDDIALOG_ERROR;
 
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	     true) != 0)
+	     shortcut_butts) != 0)
 		return BSDDIALOG_ERROR;
 
 	doupdate();
@@ -637,9 +637,6 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	    ymenupad);
 	wrefresh(menuwin);
 	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
-	
-	draw_buttons(widget, bs, shortcut_butts);
-	wrefresh(widget);
 
 	loop = true;
 	while(loop) {
@@ -698,7 +695,7 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				return BSDDIALOG_ERROR;
 
 			if(update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs, shortcut_butts) != 0)
 				return BSDDIALOG_ERROR;
 			
 			doupdate();
