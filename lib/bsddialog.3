@@ -57,18 +57,11 @@
 .Sh SYNOPSIS
 .In bsddialog.h
 
-.Fd #define BSDDIALOG_FULLSCREEN
-.Fd #define BSDDIALOG_AUTOSIZE
 .Fd #define BSDDIALOG_CENTER
 
-.Fd #define BSDDIALOG_FIELDHIDDEN
-.Fd #define BSDDIALOG_FIELDREADONLY
-
-.Fd struct bsddialog_conf
 .Fd struct bsddialog_menuitem
 .Fd enum bsddialog_grouptype
 .Fd struct bsddialog_menugroup
-.Fd struct bsddialog_formitem
 
 .Ft int
 .Fn bsddialog_backtitle "struct bsddialog_conf *conf" "char *backtitle"
@@ -225,14 +218,6 @@
 
 .In bsddialog_theme.h
 
-.Fd #define BSDDIALOG_BOLD
-.Fd #define BSDDIALOG_REVERSE
-.Fd #define BSDDIALOG_UNDERLINE
-
-.Fd enum bsddialog_color
-.Fd enum bsddialog_default_theme
-.Fd struct bsddialog_theme
-
 .Ft int
 .Fo bsddialog_color
 .Fa "enum bsddialog_color background"
@@ -248,7 +233,7 @@
 .Sh DESCRIPTION
 The
 .Nm BSDDialog
-library provides ans API to build Text User Interface dialogs: to display
+library provides an API to build Text User Interface dialogs: to display
 messages, to get input and to inform about a computation status.
 .Pp
 .Fn bsddialog_init
@@ -272,18 +257,41 @@ prints
 on the top of the screen,
 .Fa conf
 is described later in
-.Sx Dialogs ,
+.Sx Dialogs
+subsection,
 .Fn bsddialog_backtitle
 handles
 .Fa ascii_lines
 and
 .Fa no_lines .
-.Ss Dialogs
-.Fa row
-.Fa cols
-.Fa text
+Each
+.Fa char*
+argument has to be a well terminated string, can be an empty string,
+e.g.,
+.Dq
+but not
+.Dv NULL .
 .Pp
+.Ss Dialogs
+Common arguments for each dialog:
+.Fa conf ,
+.Fa text ,
+.Fa rows
+and
+.Fa cols .
+.Fa text
+is a well terminated string printed inside the dialog.
+.Fa rows
+and
+.Fa cols
+are height and width, the possible value are from
+.Dv 0
+to screen size,
+.Dv BSDDIALOG_AUTOSIZE or
+.Dv BSDDIALOG_FULLSCREEN .
 .Fa conf
+is a struct to customize the 
+.Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
 	bool ascii_lines;
@@ -302,6 +310,9 @@ struct bsddialog_conf {
 	char *title;
 	int  y;
 	int  x;
+	struct {
+		bool enable_esc;
+	} key;
 	struct {
 		bool colors;
 	} text;
@@ -366,18 +377,6 @@ to
 .Fn bsddialog_checklist
 .Fn bsddialog_menu
 .Fn bsddialog_radiolist
-.Fn bsddialog_mixedlist
-
-.Fn bsddialog_form
-
-.Fn bsddialog_gauge
-.Fn bsddialog_mixedgauge
-
-.Fn bsddialog_rangebox sono importanti i tasti
-
-.Fn bsddialog_textbox
-
-.Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
 	char *prefix;
@@ -387,7 +386,9 @@ struct bsddialog_menuitem {
 	char *desc;
 	char *bottomdesc;
 };
-
+.Ed
+.Fn bsddialog_mixedlist
+.Bd -literal -offset indent -compact
 enum bsddialog_grouptype {
 	BSDDIALOG_CHECKLIST,
 	BSDDIALOG_RADIOLIST,
@@ -399,7 +400,12 @@ struct bsddialog_menugroup {
 	unsigned int nitems;
 	struct bsddialog_menuitem *items;
 };
+.Ed
 
+.Fn bsddialog_form
+.Dv BSDDIALOG_FIELDHIDDEN
+.Dv BSDDIALOG_FIELDREADONLY
+.Bd -literal -offset indent -compact
 struct bsddialog_formitem {
 	char *label;
 	unsigned int ylabel;
@@ -410,12 +416,22 @@ struct bsddialog_formitem {
 	unsigned int xfield;
 	unsigned int fieldlen;
 	unsigned int maxvaluelen;
-	char *value; /* allocated memory */
+	char *value;
+
 	unsigned int flags;
 
 	char *bottomdesc;
 };
 .Ed
+
+
+.Fn bsddialog_gauge
+.Fn bsddialog_mixedgauge
+
+.Fn bsddialog_rangebox sono importanti i tasti
+
+.Fn bsddialog_textbox
+
 .Pp
 
 .Ss Theme
@@ -427,7 +443,6 @@ set() global.
 .Fn bsddialog_get_theme
 .Pp
 .Bd -literal -offset indent -compact
-/* f_ focus/active element */
 struct bsddialog_theme {
 	struct {
 		int color;
