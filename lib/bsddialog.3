@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd December 16, 2021
+.Dd December 30, 2021
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -56,18 +56,6 @@
 .Lb libbsddialog
 .Sh SYNOPSIS
 .In bsddialog.h
-
-.Fd #define BSDDIALOG_ERROR
-.Fd #define BSDDIALOG_OK
-.Fd #define BSDDIALOG_YES
-.Fd #define BSDDIALOG_CANCEL
-.Fd #define BSDDIALOG_NO
-.Fd #define BSDDIALOG_HELP
-.Fd #define BSDDIALOG_EXTRA
-.Fd #define BSDDIALOG_TIMEOUT
-.Fd #define BSDDIALOG_ESC
-.Fd #define BSDDIALOG_GENERIC1
-.Fd #define BSDDIALOG_GENERIC2
 
 .Fd #define BSDDIALOG_FULLSCREEN
 .Fd #define BSDDIALOG_AUTOSIZE
@@ -469,20 +457,47 @@ enum bsddialog_color {
 .Pp
 
 .Sh RETURN VALUES
-The sysctlmif_oidbyname(),	sysctlmif_oidextendedbyname(),
-     sysctlmif_name(), sysctlmif_desc(), sysctlmif_descbyname(),
-     sysctlmif_label(),	sysctlmif_labelbyname(), sysctlmif_fmt(),
-     sysctlmif_fmtbyname(), sysctlmif_oidbyname0(), sysctlmif_oidbyname1(),
-     sysctlmif_oidbyname2(), sysctlmif_oidbyname3(), sysctlmif_oidbyname4(),
-     sysctlmif_oidbyname5(), sysctlmif_oidbyname6(), and
-     sysctlmif_oidbyname7() functions return the value 0 if successful;	other-
-     wise the value -1 is returned and the global variable errno is set	to in-
-     dicate the	error.
-     
-     
-functions return NULL upon	error or a pointer to allo-
-     cated memory for success.
-     
+The
+.Fn bsddialog_backtitle ,
+.Fn bsddialog_clearterminal ,
+.Fn bsddialog_checklist ,
+.Fn bsddialog_datebox ,
+.Fn bsddialog_end ,
+.Fn bsddialog_form ,
+.Fn bsddialog_gauge ,
+.Fn bsddialog_get_theme ,
+.Fn bsddialog_infobox ,
+.Fn bsddialog_init ,
+.Fn bsddialog_initconf ,
+.Fn bsddialog_menu ,
+.Fn bsddialog_mixedgauge ,
+.Fn bsddialog_mixedlist ,
+.Fn bsddialog_msgbox ,
+.Fn bsddialog_pause ,
+.Fn bsddialog_radiolist ,
+.Fn bsddialog_rangebox ,
+.Fn bsddialog_set_theme ,
+.Fn bsddialog_set_default_theme ,
+.Fn bsddialog_textbox ,
+.Fn bsddialog_timebox
+and
+.Fn bsddialog_yesno
+return the value
+.Dv BSDDIALOG_ERROR
+if unsuccessful;
+otherwise, depending on the pressed button or key the following values can be
+returned:
+.Dv BSDDIALOG_OK ,
+.Dv BSDDIALOG_YES ,
+.Dv BSDDIALOG_CANCEL ,
+.Dv BSDDIALOG_NO ,
+.Dv BSDDIALOG_HELP,
+.Dv BSDDIALOG_EXTRA ,
+.Dv BSDDIALOG_TIMEOUT ,
+.Dv BSDDIALOG_ESC ,
+.Dv BSDDIALOG_GENERIC1
+or
+.Dv BSDDIALOG_GENERIC2 .
 .Sh EXAMPLES
 Complete set of examples:
 .Lk https://gitlab.com/alfix/bsddialog/-/blob/main/examples_library/
@@ -512,9 +527,6 @@ case BSDDIALOG_YES:
 case BSDDIALOG_NO
 	printf("NO\\n");
 	break;
-case BSDDIALOG_ESC;
-	printf("ESC\\n");
-	break;
 case BSDDIALOG_ERROR:
 	printf("Error: %s\\n", bsddialog_geterror());
 }
@@ -530,9 +542,8 @@ library first appeared in
 .Nm bsddialog
 was written by
 .An Alfonso Sabato Siciliano Aq Mt alf.siciliano@gmail.com .
-.Sh CAVEATS
-See
-.Xr bsddialog 
 .Sh BUGS
-See
-.Xr bsddialog 1
+Height autosize assigns only one line to
+.Fa text .
+.Fn bsddialog_form does not handle screen resize and dose not provids the
+scrolling.
