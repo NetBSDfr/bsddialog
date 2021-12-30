@@ -278,7 +278,12 @@ handles
 .Fa ascii_lines
 and
 .Fa no_lines .
+.Ss Dialogs
+.Fa row
+.Fa cols
+.Fa text
 .Pp
+.Fa conf
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
 	bool ascii_lines;
@@ -330,9 +335,48 @@ struct bsddialog_conf {
 	} button;
 };
 .Ed
+
+
+.Fa conf
+local to the dialog (not gobal to the library).
+initconf() disabilita tutto tranne shadow e setta y e x al centro.
+.Fn bsddialog_initconf
+initializes (disabling) each memer of
+.Fa conf
+except
+.F1 shadow
+and set
+.Fa y
+and
+.Fa
+x
+to
+.Dv BSDDIALOG_CENTER
+
 .Pp
 
-.Ss Dialogs
+.Fn bsddialog_infobox
+.Fn bsddialog_msgbox
+.Fn bsddialog_yesno
+.Fn bsddialog_pause
+
+.Fn bsddialog_datebox
+.Fn bsddialog_timebox
+
+.Fn bsddialog_checklist
+.Fn bsddialog_menu
+.Fn bsddialog_radiolist
+.Fn bsddialog_mixedlist
+
+.Fn bsddialog_form
+
+.Fn bsddialog_gauge
+.Fn bsddialog_mixedgauge
+
+.Fn bsddialog_rangebox sono importanti i tasti
+
+.Fn bsddialog_textbox
+
 .Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
@@ -375,6 +419,12 @@ struct bsddialog_formitem {
 .Pp
 
 .Ss Theme
+set() global.
+
+.Fn bsddialog_color
+.Fn bsddialog_set_theme
+.Fn bsddialog_set_default_theme
+.Fn bsddialog_get_theme
 .Pp
 .Bd -literal -offset indent -compact
 /* f_ focus/active element */
