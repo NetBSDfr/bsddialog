@@ -58,7 +58,7 @@ man:
 	${GZIP} ${LIBRARY}.3 > ${LIBRARY}.3.gz
 
 clean:
-	${RM} ${LIBRARY_SO}* *.o *~ *.gz
+	${RM} ${LIBRARY_SO}* *.o *~ *.gz ${LIBRARY_A}
 
 
 install:
