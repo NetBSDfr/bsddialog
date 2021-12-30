@@ -23,17 +23,6 @@ FreeBSD:
 % ./bsddialog --msgbox "Hello World!" 8 20
 ```
 
-If you are using XFCE install 
-[devel/ncurses](https://www.freshports.org/devel/ncurses/)
-
-```
-% sudo pkg install ncurses
-% git clone https://gitlab.com/alfix/bsddialog.git
-% cd bsddialog
-% make -DPORTNCURSES
-% ./bsddialog --msgbox "Hello World!" 8 20
-```
-
 Output:
 
 ![screenshot](screenshot.png)

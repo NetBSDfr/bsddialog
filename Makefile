@@ -9,8 +9,8 @@ OBJECTS= ${SOURCES:.c=.o}
 LIBPATH= ${.CURDIR}/lib
 LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
-CFLAGS= -Wall -I${LIBPATH}
-LDFLAGS= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
+CFLAGS+= -Wall -I${LIBPATH}
+LDFLAGS+= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
 
 BINDIR= /usr/local/bin
 MAN= ${OUTPUT}.1
@@ -26,11 +26,7 @@ ${OUTPUT}: ${LIBBSDDIALOG} ${OBJECTS}
 	${CC} ${LDFLAGS} ${OBJECTS} -o ${.PREFIX}
 
 ${LIBBSDDIALOG}:
-.if defined(PORTNCURSES)
-	make -C ${LIBPATH} -DPORTNCURSES
-.else
 	make -C ${LIBPATH}
-.endif
 
 .c.o:
 	${CC} ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}

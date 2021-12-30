@@ -25,11 +25,7 @@
  * SUCH DAMAGE.
  */
 
-#ifdef PORTNCURSES
-#include <ncurses/ncurses.h>
-#else
 #include <ncurses.h>
-#endif
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -37,20 +33,6 @@
 #include "bsddialog.h"
 #include "bsddialog_theme.h"
 #include "lib_util.h"
-
-/*
- * This file implements public functions not related to a specific dialog.
- * lib_utils.h/c: private functions to implement the library.
- * theme.h/c: public API related to themes.
- * Dialogs implementation:
- *  infobox.c    infobox
- *  messgebox.c  msgbox - yesno
- *  menubox.c    buildlist - checklist - menu - mixedlist - radiolist
- *  formbox.c    inputbox - passwordbox - form - passwordform - mixedform
- *  barbox.c     gauge - mixedgauge - rangebox - pause - progressview
- *  textbox.c    textbox
- *  timebox.c    timebox - calendar
- */
 
 extern struct bsddialog_theme t;
 

@@ -28,11 +28,7 @@
 #include <sys/param.h>
 
 #include <ctype.h>
-#ifdef PORTNCURSES
-#include <ncurses/form.h>
-#else
 #include <form.h>
-#endif
 #include <stdlib.h>
 #include <string.h>
 
