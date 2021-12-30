@@ -264,10 +264,32 @@ library provides ans API to build Text User Interface dialogs: to display
 messages, to get input and to inform about a computation status.
 .Pp
 .Fn bsddialog_init
-initialize the terminal and should be the first called before each other
-library function, after 
+initializes the library, the only functions that can be called before is
+.Fn bsddialog_initconf .
+After the initialization the input and output should be managed via the library
+API.
 .Fn bsddialog_end
-restore the terminal 
+restores the terminal like before
+.Fn bsddialog_init .
+.Pp
+.Fn bsddialog_error
+returns a string to describe the error, it shoud be called after a
+.Dv BSDDIALOG_ERROR
+returned value.
+.Fn bsddialog_clearterminal
+clears the screen.
+.Fn bsddialog_backtitle
+prints
+.Fa backtitle
+on the top of the screen,
+.Fa conf
+is described later in
+.Sx Dialogs ,
+.Fn bsddialog_backtitle
+handles
+.Fa ascii_lines
+and
+.Fa no_lines .
 .Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
