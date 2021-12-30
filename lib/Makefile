@@ -1,4 +1,4 @@
-# Any copyright is dedicated to the Public Domain, see:
+# Any copyright is dedicated to the Public Domain, NO WARRANTY, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>
 #
 # Written in 2021 by Alfonso Sabato Siciliano
@@ -10,9 +10,10 @@ HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
 SOURCES = barbox.c formbox.c infobox.c libbsddialog.c lib_util.c menubox.c \
 	messagebox.c textbox.c theme.c timebox.c
 OBJECTS= ${SOURCES:.c=.o}
-CFLAGS = -I/usr/local/include -fPIC -Wall -Wextra
+CFLAGS = -fPIC -Wall -Wextra
 LDFLAGS = -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
-	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} 
+	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} \
+	-L/usr/lib -lformw -lncursesw -ltinfow
 
 .if defined(DEBUG)
 # `make -DDEBUG`
@@ -20,15 +21,6 @@ CFLAGS += -g
 .else
 CFLAGS += -O2 -pipe -std=gnu99 -Wno-format-zero-length \
 	-fstack-protector-strong -Qunused-arguments
-.endif
-
-.if defined(PORTNCURSES)
-# PORT ncurses `make -DPORTNCURSES`
-CFLAGS += -DPORTNCURSES -I/usr/local/include
-LDFLAGS += -L/usr/local/lib -lformw -lncursesw -ltinfow
-.else
-# BASE ncurses
-LDFLAGS += -L/usr/lib -lformw -lncursesw -ltinfow
 .endif
 
 INSTALL_PREFIX=/usr/local

@@ -27,11 +27,7 @@
 
 #include <sys/param.h>
 
-#ifdef PORTNCURSES
-#include <ncurses/ncurses.h>
-#else
 #include <ncurses.h>
-#endif
 
 #include "bsddialog.h"
 #include "bsddialog_theme.h"
