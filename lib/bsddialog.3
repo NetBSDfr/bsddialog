@@ -51,18 +51,11 @@
 .Nm bsddialog_textbox ,
 .Nm bsddialog_timebox ,
 .Nm bsddialog_yesno
-.Nd terminal dialogs
+.Nd TUI dialogs
 .Sh LIBRARY
 .Lb libbsddialog
 .Sh SYNOPSIS
 .In bsddialog.h
-
-.Fd #define BSDDIALOG_CENTER
-
-.Fd struct bsddialog_menuitem
-.Fd enum bsddialog_grouptype
-.Fd struct bsddialog_menugroup
-
 .Ft int
 .Fn bsddialog_backtitle "struct bsddialog_conf *conf" "char *backtitle"
 .Ft int
@@ -232,7 +225,7 @@
 .Fn bsddialog_set_theme "struct bsddialog_theme *theme"
 .Sh DESCRIPTION
 The
-.Nm BSDDialog
+.Nm bsddialog
 library provides an API to build Text User Interface dialogs: to display
 messages, to get input and to inform about a computation status.
 .Pp
@@ -264,11 +257,11 @@ handles
 .Fa ascii_lines
 and
 .Fa no_lines .
+.Pp
 Each
 .Fa char*
-argument has to be a well terminated string, can be an empty string,
-e.g.,
-.Dq
+argument has to be a well terminated string, can be empty
+.Pq Dq
 but not
 .Dv NULL .
 .Pp
@@ -287,8 +280,10 @@ and
 are height and width, the possible value are from
 .Dv 0
 to screen size,
-.Dv BSDDIALOG_AUTOSIZE or
-.Dv BSDDIALOG_FULLSCREEN .
+.Dv BSDDIALOG_AUTOSIZE
+or
+.Dv BSDDIALOG_FULLSCREEN
+
 .Fa conf
 is a struct to customize the 
 .Pp
