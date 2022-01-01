@@ -50,7 +50,7 @@ int  bsddialog_total_progview;
 extern struct bsddialog_theme t;
 
 static void
-draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel, 
+draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
     int label)
 {
 	char labelstr[128];
@@ -304,7 +304,7 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 	
 	/* main bar */
 	bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED);
-	
+
 	draw_bar(bar, 1, 1, w-8, mainperc, false, -1 /*unused*/);
 
 	wattron(bar, t.bar.color);
@@ -398,7 +398,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 
 		perc = pvconf->callback(&minibar[i]);
 
-		if (minibar[i].status == 5) {/* ||prec >= 100) Done */
+		if (minibar[i].status == 5) { /* ||prec >= 100) Done */
 			minipercs[i] = 5;
 			update = true;
 			i++;
@@ -453,7 +453,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 	doupdate();
 
-	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
+	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7,
 	    x+w-1-t.text.hmargin);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
@@ -572,7 +572,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 			wresize(bar, 3, sizebar + 2);
 			draw_borders(conf, bar, 3, sizebar+2, RAISED);
 
-			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
+			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7,
 			    x+w-1-t.text.hmargin);
 
 			barupdate = true;
@@ -619,7 +619,7 @@ bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 	doupdate();
 	
-	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
+	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7,
 	    x+w-1-t.text.hmargin);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
