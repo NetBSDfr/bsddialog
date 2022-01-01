@@ -266,27 +266,19 @@ but not
 .Dv NULL .
 .Pp
 .Ss Dialogs
-Common arguments for each dialog:
-.Fa conf ,
-.Fa text ,
-.Fa rows
-and
-.Fa cols .
+Each dialog has common arguments:
 .Fa text
-is a well terminated string printed inside the dialog.
+is a well terminated string printed inside the dialog,
 .Fa rows
 and
 .Fa cols
-are height and width, the possible value are from
-.Dv 0
-to screen size,
+are height and width between 2 and the screen size,
 .Dv BSDDIALOG_AUTOSIZE
 or
-.Dv BSDDIALOG_FULLSCREEN
-
+.Dv
+BSDDIALOG_FULLSCREEN .
 .Fa conf
-is a struct to customize the 
-.Pp
+is a struct to customize the dialog:
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
 	bool ascii_lines;
@@ -341,24 +333,77 @@ struct bsddialog_conf {
 	} button;
 };
 .Ed
-
-
 .Fa conf
-local to the dialog (not gobal to the library).
-initconf() disabilita tutto tranne shadow e setta y e x al centro.
-.Fn bsddialog_initconf
-initializes (disabling) each memer of
-.Fa conf
-except
-.F1 shadow
-and set
-.Fa y
+is local to a dialog, it does not set global properties to the library.
+.Fa conf.ascii_lines
+uses ascii characters to draw borders.
+.Fa conf.aspect_ratio
+with
+.BSDDIALOG_AUTOSIZE
+sets an aspect ratio between width and height, default 9.
+.Fa conf.auto_minheight
 and
-.Fa
-x
-to
-.Dv BSDDIALOG_CENTER
+.Fa conf.auto_minwidth
+set the minimum height and height with
+.Dv BSDDIALOG_AUTOSIZE .
+.Fa conf.bottomtitle
+is subtitle.
+.Fa conf.clear
+hides the dialog at exit.
+.Fa conf.f1_file
+and
+.Fa conf.f1_message
+open an help message if
+.Dv F1
+is pressed,
+.Fa conf.f1_file
+is an file while
+.Fa conf.f1_message
+is a string,
+.fa f1_message
+it is displayed before
+.fa f1_file .
+If
+.Fa conf.get_height
+and
+.Fa conf.get_width
+are not
+.Dv NULL
+they are set like the dialog height and width.
+.Fa conf.no_lines
+does not draw borders.
+.Fa conf.shadow
+draws a shadow.
+.Fa conf.sleep
+the dialog function waits before to return, the time is in seconds,
+.Fa conf.title
+sets a title
+.Fa conf.y
+and
+.Fa conf.x
+are the position of the dialog, the top-left side is
+Dq Dv 0 Dv 0 ,
+can be set to
+.Dv BSDDIALOG_CENTER .
+.Fa conf.key.enable_esc
+enables the
+.Dv ESC
+key to close the dialog.
+.Fa conf.text.colors
+enables the colors.
 
+.Pp
+.Fa bsddialog_initconf
+initializes
+.Fa conf
+disabling each property, except
+.Fa conf.shadow
+and
+.Fa conf.y
+and
+.Fa conf.x
+set to
+.Dv BSDDIALOG_CENTER .
 .Pp
 
 .Fn bsddialog_infobox
