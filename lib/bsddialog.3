@@ -161,7 +161,7 @@
 .Fa "char* text"
 .Fa "int rows"
 .Fa "int cols"
-.Fa "unsigned int sec"
+.Fa "unsigned int timeout"
 .Fc
 .Ft int
 .Fo bsddialog_radiolist
@@ -383,11 +383,12 @@ dialog y position, top side is 0, can be
 .It Fa conf.x
 dialog x position, left size is 0, can be
 .Dv BSDDIALOG_CENTER .
-.It Fa conf.key.enable_esc
+.Ed
+.Pp
+It Fa conf.key.enable_esc
 enables
 .Dv ESC
 key to close the dialog.
-.Ed
 .Pp
 .Fa conf.text.colors
 enables the colors in
@@ -469,15 +470,32 @@ and
 set to
 .Dv BSDDIALOG_CENTER .
 .Pp
-
 .Fn bsddialog_infobox
+builds a dialog only with
+.Fa text and returs instantly.
 .Fn bsddialog_msgbox
+creates a dialog an
+.Dq OK
+button to show a message.
 .Fn bsddialog_yesno
+provides a dialog for a 
+.Dq Yes-No
+question, the labels for buttons are
+.Dq YES
+and
+.Dq No
+instead of
+.Dq OK
+and
+.Dq Cancel.
 .Fn bsddialog_pause
-
+builds a dialog to show a message, waiting until
+.Fa timeout ,
+in seconds, expires.
+.Pp
 .Fn bsddialog_datebox
 .Fn bsddialog_timebox
-
+.Pp
 .Fn bsddialog_checklist
 .Fn bsddialog_menu
 .Fn bsddialog_radiolist
