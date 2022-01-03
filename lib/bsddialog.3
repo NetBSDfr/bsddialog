@@ -376,31 +376,85 @@ draws a dialog shadow.
 .It Fa conf.sleep
 the dialog function waits before to return, the time is in seconds,
 .It Fa conf.title
-title
+title.
 .It Fa conf.y
-and
+dialog y position, top side is 0, can be
+.Dv BSDDIALOG_CENTER .
 .It Fa conf.x
-are the position of the dialog, the top-left side is
-.Dv 0 - Dv 0 ,
-can be set to
+dialog x position, left size is 0, can be
 .Dv BSDDIALOG_CENTER .
 .It Fa conf.key.enable_esc
-enables the
+enables
 .Dv ESC
 key to close the dialog.
 .Ed
-
+.Pp
 .Fa conf.text.colors
-enables the colors, poperly
-.Dq \\Zx
-is escape sequence where
-.Em x
-cab be
+enables the colors in
+.Fa text ,
+properly the following escapes:
 .Bl -column -compact
-.It 1
+.It Dq \eZ0
+black.
+.It Dq \eZ1
 red.
-.It 2
-bluew.
+.It Dq \eZ2
+green.
+.It Dq \eZ3
+yellow.
+.It Dq \eZ4
+blue.
+.It Dq \eZ5
+magenta.
+.It Dq \eZ6
+cyan.
+.It Dq \eZ7
+white.
+.It Dq \eZr
+reverse colors between foreground and background.
+.It Dq \eZR
+disable reverse.
+.It Dq \eZb
+bold.
+.It Dq \eZB
+disable blod.
+.It Dq \eZu
+underline.
+.It Dq \eZU
+disable underline.
+.It Dq \eZn
+disable customization.
+.Ed
+.Pp
+.Bl -column -compact
+.It Fa conf.button.without_ok
+disable
+.Dq OK
+button.
+.It Fa conf.button.ok_label
+set label for
+.Dq OK
+button.
+.It Fa conf.button.with_extra
+add an extra button.
+.It Fa conf.button.extra_label
+set a label for extra button.
+.It Fa conf.button.without_cancel
+disable cancel button.
+.It Fa conf.button.cancel_label
+sets label for cancel button.
+.It Fa conf.button.default_cancel
+on startup focus on the cancel button.
+.It Fa conf.button.with_help
+add help  button.
+.It Fa conf.button.help_label
+set label for help button.
+.It Fa conf.button.generic1_label
+add a button with the specified label.
+.It Fa conf.button.generic2_label
+add a button with specified label.
+.It Fa conf.button.default_label
+on startup set focus on the button with label.
 .Ed
 .Pp
 .Fa bsddialog_initconf
