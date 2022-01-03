@@ -109,7 +109,6 @@ struct bsddialog_conf {
 		bool default_cancel;
 		bool with_help;
 		char *help_label;
-		char *exit_label;
 		char *generic1_label;
 		char *generic2_label;
 		char *default_label;
