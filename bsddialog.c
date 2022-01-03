@@ -460,7 +460,7 @@ int main(int argc, char *argv[argc])
 			esc_cancelvalue_flag = true;
 			break;
 		case EXIT_LABEL:
-			conf.button.exit_label = optarg;
+			conf.button.ok_label = optarg;
 			break;
 		case EXTRA_BUTTON:
 			conf.button.with_extra = true;

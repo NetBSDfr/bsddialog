@@ -100,6 +100,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
 
 	bs.nbuttons = 1;
 	bs.label[0] = "EXIT";
+	if (conf->button.ok_label != NULL)
+		bs.label[0] = conf->button.ok_label;
 	bs.value[0] = BSDDIALOG_OK;
 	bs.curr = 0;
 	bs.sizebutton = strlen(bs.label[0]) + 2;
