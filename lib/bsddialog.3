@@ -335,63 +335,73 @@ struct bsddialog_conf {
 .Ed
 .Fa conf
 is local to a dialog, it does not set global properties to the library.
-.Fa conf.ascii_lines
-uses ascii characters to draw borders.
-.Fa conf.aspect_ratio
-with
+
+.Bl -column -compact
+.It Fa conf.ascii_lines
+ascii characters to draw borders.
+.It Fa conf.aspect_ratio
+takes effects only with
 .BSDDIALOG_AUTOSIZE
-sets an aspect ratio between width and height, default 9.
-.Fa conf.auto_minheight
-and
-.Fa conf.auto_minwidth
-set the minimum height and height with
+for infobox, msgbox and yesnobox.
+.It Fa conf.auto_minheight
+minimum height if
+.Fa rows
+is
 .Dv BSDDIALOG_AUTOSIZE .
-.Fa conf.bottomtitle
-is subtitle.
-.Fa conf.clear
+.It Fa conf.auto_minwidth
+minimum width if
+.Fa cols
+is
+.Dv BSDDIALOG_AUTOSIZE .
+.It Fa conf.bottomtitle
+subtitle.
+.It Fa conf.clear
 hides the dialog at exit.
-.Fa conf.f1_file
-and
-.Fa conf.f1_message
-open an help message if
-.Dv F1
-is pressed,
-.Fa conf.f1_file
-is an file while
-.Fa conf.f1_message
-is a string,
-.fa f1_message
-it is displayed before
-.fa f1_file .
-If
-.Fa conf.get_height
-and
-.Fa conf.get_width
-are not
+.It Fa conf.f1_file
+open the file if F1 is pressed.
+.It Fa conf.f1_message
+display the message if F1 is pressed.
+.It Fa conf.get_height
+if not
 .Dv NULL
-they are set like the dialog height and width.
-.Fa conf.no_lines
-does not draw borders.
-.Fa conf.shadow
-draws a shadow.
-.Fa conf.sleep
+is set like the dialog height.
+.It Fa conf.get_width
+if not
+.Dv NULL
+is set like the dialog width.
+.It Fa conf.no_lines
+not draw borders.
+.It Fa conf.shadow
+draws a dialog shadow.
+.It Fa conf.sleep
 the dialog function waits before to return, the time is in seconds,
-.Fa conf.title
-sets a title
-.Fa conf.y
+.It Fa conf.title
+title
+.It Fa conf.y
 and
-.Fa conf.x
+.It Fa conf.x
 are the position of the dialog, the top-left side is
-Dq Dv 0 Dv 0 ,
+.Dv 0 - Dv 0 ,
 can be set to
 .Dv BSDDIALOG_CENTER .
-.Fa conf.key.enable_esc
+.It Fa conf.key.enable_esc
 enables the
 .Dv ESC
 key to close the dialog.
-.Fa conf.text.colors
-enables the colors.
+.Ed
 
+.Fa conf.text.colors
+enables the colors, poperly
+.Dq \\Zx
+is escape sequence where
+.Em x
+cab be
+.Bl -column -compact
+.It 1
+red.
+.It 2
+bluew.
+.Ed
 .Pp
 .Fa bsddialog_initconf
 initializes
