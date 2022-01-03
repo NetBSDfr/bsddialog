@@ -208,9 +208,7 @@
 .Fa "int rows"
 .Fa "int cols"
 .Fc
-
 .In bsddialog_theme.h
-
 .Ft int
 .Fo bsddialog_color
 .Fa "enum bsddialog_color background"
@@ -239,7 +237,7 @@ restores the terminal like before
 .Fn bsddialog_init .
 .Pp
 .Fn bsddialog_error
-returns a string to describe the error, it shoud be called after a
+returns a string to describe the error, it should be called after a
 .Dv BSDDIALOG_ERROR
 returned value.
 .Fn bsddialog_clearterminal
@@ -471,13 +469,13 @@ set to
 .Pp
 .Fn bsddialog_infobox
 builds a dialog only with
-.Fa text and returs instantly.
+.Fa text and returns instantly.
 .Fn bsddialog_msgbox
 creates a dialog an
 .Dq OK
 button to show a message.
 .Fn bsddialog_yesno
-provides a dialog for a 
+provides a dialog for a
 .Dq Yes-No
 question, the labels for buttons are
 .Dq YES
@@ -493,14 +491,14 @@ builds a dialog to show a message, waiting until
 in seconds, expires or a button is pressed.
 .Pp
 .Fn bsddialog_datebox
-allows to select a date,
+to select a date,
 .Fa yy ,
 .Fa mm ,
 and
 .Fa dd
 specify a date on startup and are set like the user choose on return.
 .Fn bsddialog_timebox
-allows to chose a time time
+to choose a time
 .Fa hh ,
 .Fa mm ,
 and
@@ -511,7 +509,7 @@ specify a time on startup and are set like the user choose on return.
 .Fn bsddialog_menu
 and
 .Fn bsddialog_radiolist
-allow to choose 0,1, or more items from a list.
+to choose 0,1, or more items from a list.
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
 	char *prefix;
@@ -524,7 +522,7 @@ struct bsddialog_menuitem {
 .Ed
 .Pp
 .Fn bsddialog_mixedlist
-allows to create a menu with checklists and radiolists.
+to create a menu with checklists and radiolists.
 .Fa menurows
 are the rows to show the items.
 .Bd -literal -offset indent -compact
@@ -562,7 +560,6 @@ struct bsddialog_formitem {
 	char *bottomdesc;
 };
 .Ed
-
 .Fn bsddialog_gauge
 .Fn bsddialog_mixedgauge
 minier can bu a value betwwen 0 and 100 or
@@ -578,11 +575,10 @@ minier can bu a value betwwen 0 and 100 or
 .Dv BSDDIALOG_MG_NA
 or
 .Dv BSDDIALOG_MG_PENDING .
-
+.Pp
 .Fn bsddialog_rangebox
-allows to select a value in a range,
-
-
+to select a value in a range,
+.Pp
 .Fn bsddialog_textbox
 open
 .Fa file
@@ -597,7 +593,7 @@ The
 .Fa struct bsddialog_theme
 represents graphical properties, it is global to the library,
 .Nm BSDDialog
-allows to set it at runtime via
+to set it at runtime via
 .Sx Theme
 API.
 .Pp
@@ -656,7 +652,7 @@ struct bsddialog_theme {
 	} button;
 };
 .Ed
-The member wirh the prefix
+The member with the prefix
 .Dq d_
 refers to elements with focus.
 .Pp
@@ -670,7 +666,6 @@ this function gets
 .Fa background
 and
 .Fa foreground
-
 .Dv BSDDIALOG_BLACK ,
 .Dv BSDDIALOG_RED ,
 .Dv BSDDIALOG_GREEN ,
@@ -680,16 +675,15 @@ and
 .Dv BSDDIALOG_CYAN ,
 and
 .Dv BSDDIALOG_WHITE
-
 .Dv BSDDIALOG_BOLD ,
 .Dv BSDDIALOG_REVERSE
 and
 .Dv BSDDIALOG_UNDERLINE .
-
+.Pp
 .Fn bsddialog_set_theme
 sets
 .Fa theme like current theme
-
+.Pp
 .Nm BSDDialog
 provides predefined themes
 .Fa nsddialog_default_theme,
