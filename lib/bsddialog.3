@@ -335,7 +335,6 @@ struct bsddialog_conf {
 .Ed
 .Fa conf
 is local to a dialog, it does not set global properties to the library.
-
 .Bl -column -compact
 .It Fa conf.ascii_lines
 ascii characters to draw borders.
@@ -491,14 +490,28 @@ and
 .Fn bsddialog_pause
 builds a dialog to show a message, waiting until
 .Fa timeout ,
-in seconds, expires.
+in seconds, expires or a button is pressed.
 .Pp
 .Fn bsddialog_datebox
+allows to select a date,
+.Fa yy ,
+.Fa mm ,
+and
+.Fa dd
+specify a date on startup and are set like the user choose on return.
 .Fn bsddialog_timebox
+allows to chose a time time
+.Fa hh ,
+.Fa mm ,
+and
+.Fa ss
+specify a time on startup and are set like the user choose on return.
 .Pp
-.Fn bsddialog_checklist
+.Fn bsddialog_checklist ,
 .Fn bsddialog_menu
+and
 .Fn bsddialog_radiolist
+allow to choose 0,1, or more items from a list.
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
 	char *prefix;
@@ -509,7 +522,11 @@ struct bsddialog_menuitem {
 	char *bottomdesc;
 };
 .Ed
+.Pp
 .Fn bsddialog_mixedlist
+allows to create a menu with checklists and radiolists.
+.Fa menurows
+are the rows to show the items.
 .Bd -literal -offset indent -compact
 enum bsddialog_grouptype {
 	BSDDIALOG_CHECKLIST,
@@ -523,7 +540,7 @@ struct bsddialog_menugroup {
 	struct bsddialog_menuitem *items;
 };
 .Ed
-
+.Pp
 .Fn bsddialog_form
 .Dv BSDDIALOG_FIELDHIDDEN
 .Dv BSDDIALOG_FIELDREADONLY
@@ -546,16 +563,35 @@ struct bsddialog_formitem {
 };
 .Ed
 
-
 .Fn bsddialog_gauge
 .Fn bsddialog_mixedgauge
+minier can bu a value betwwen 0 and 100 or
+.Dv BSDDIALOG_MG_SUCCEEDED ,
+.Dv BSDDIALOG_MG_FAILED ,
+.Dv BSDDIALOG_MG_PASSED ,
+.Dv BSDDIALOG_MG_COMPLETED ,
+.Dv BSDDIALOG_MG_CHECKED ,
+.Dv BSDDIALOG_MG_DONE ,
+.Dv BSDDIALOG_MG_SKIPPED ,
+.Dv BSDDIALOG_MG_INPROGRESS ,
+.Dv BSDDIALOG_MG_BLANK ,
+.Dv BSDDIALOG_MG_NA
+or
+.Dv BSDDIALOG_MG_PENDING .
 
-.Fn bsddialog_rangebox sono importanti i tasti
+.Fn bsddialog_rangebox
+allows to select a value in a range,
+
 
 .Fn bsddialog_textbox
-
+open
+.Fa file
+and shows it,
+the
+.Dq OK
+button is rename
+.Dq EXIT.
 .Pp
-
 .Ss Theme
 The
 .Fa struct bsddialog_theme
