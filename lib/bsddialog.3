@@ -509,7 +509,7 @@ specify a time on startup and are set like the user choose on return.
 .Fn bsddialog_menu
 and
 .Fn bsddialog_radiolist
-to choose 0,1, or more items from a list.
+to choose 0, 1 or more items from a list.
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
 	char *prefix;
@@ -539,9 +539,21 @@ struct bsddialog_menugroup {
 };
 .Ed
 .Pp
+menus can be costomizated by:
+.Bl -column -compact
+.It Fa conf.menu.align_left
+aligns items to left, default center.
+.It Fa conf.menu.default_item
+on startup focus on a specified item.
+.It Fa conf.menu.no_desc.
+hide description
+.It Fa conf.menu.no_name
+hode name.
+.It Fa conf.menu.shortcut_buttons
+enable shortcut keys on buttons, default on items.
+.Ed
+.Pp
 .Fn bsddialog_form
-.Dv BSDDIALOG_FIELDHIDDEN
-.Dv BSDDIALOG_FIELDREADONLY
 .Bd -literal -offset indent -compact
 struct bsddialog_formitem {
 	char *label;
@@ -560,9 +572,16 @@ struct bsddialog_formitem {
 	char *bottomdesc;
 };
 .Ed
+.Dv BSDDIALOG_FIELDHIDDEN
+.Dv BSDDIALOG_FIELDREADONLY
+.Fa conf.form.securech
+.Fa conf.form.value_withcancel
+.Fa conf.form.value_withextra
+.Fa conf.form.value_withhelp
+.Pp
 .Fn bsddialog_gauge
 .Fn bsddialog_mixedgauge
-minier can bu a value betwwen 0 and 100 or
+minibar can be a value between 0 and 100 or
 .Dv BSDDIALOG_MG_SUCCEEDED ,
 .Dv BSDDIALOG_MG_FAILED ,
 .Dv BSDDIALOG_MG_PASSED ,
