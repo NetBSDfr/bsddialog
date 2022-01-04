@@ -575,13 +575,42 @@ struct bsddialog_formitem {
 .Dv BSDDIALOG_FIELDHIDDEN
 .Dv BSDDIALOG_FIELDREADONLY
 .Fa conf.form.securech
-.Fa conf.form.value_withcancel
+If the Ok button is pressed each
+.Fa value
+is allocated with its current field, it is possible enabling
+.Fa conf.form.value_withcancel ,
 .Fa conf.form.value_withextra
+and
 .Fa conf.form.value_withhelp
+to get values.
 .Pp
 .Fn bsddialog_gauge
+opens a dialog with a
+.Fa perc
+bar, if
+.Fa separator
+is not
+.Dv NULL
+.Fn bsddialog_gaude
+waits to read
+.Fa separator
+from the standard input, then the first string is used like a new
+.Fa perc
+and the next strings are like new
+.Fa text ,
+the loop ends reading
+.Dv EOF .
+.Pp
 .Fn bsddialog_mixedgauge
-minibar can be a value between 0 and 100 or
+draw a main bar with
+.Fa mainperc
+percentage and
+.Fa nminibars
+mini percentages, each one with a
+.Fa minilabel
+and
+.fa miniperc
+with a value between 0 and 100 or
 .Dv BSDDIALOG_MG_SUCCEEDED ,
 .Dv BSDDIALOG_MG_FAILED ,
 .Dv BSDDIALOG_MG_PASSED ,
@@ -593,10 +622,18 @@ minibar can be a value between 0 and 100 or
 .Dv BSDDIALOG_MG_BLANK ,
 .Dv BSDDIALOG_MG_NA
 or
-.Dv BSDDIALOG_MG_PENDING .
+.Dv BSDDIALOG_MG_PENDING
+to print a descriptive string.
 .Pp
 .Fn bsddialog_rangebox
-to select a value in a range,
+to select a value between
+.Fa min
+and
+.Fa max .
+.Fa value
+is the default value on startup and the selected value at exit.
+The current value is printed inside a bar, UP, DOWN, HOME, END, PAGEUP and
+PAGEDOWN keys can change.
 .Pp
 .Fn bsddialog_textbox
 open
