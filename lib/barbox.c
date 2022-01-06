@@ -130,7 +130,7 @@ bar_checksize(char *text, int rows, int cols, struct buttons *bs)
 
 int
 bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int perc)
+    unsigned int perc, const char *sep)
 {
 	bool mainloop;
 	int y, x, h, w, htextpad;
@@ -152,7 +152,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
 
-	mainloop = true;
+	mainloop = (sep == NULL) ? false : true;
 	while (mainloop) {
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-4,
@@ -166,7 +166,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				mainloop = false;
 				break;
 			}
-			if (strcmp(input,"XXX") == 0)
+			if (strcmp(input, sep) == 0)
 				break;
 		}
 		scanf("%d", &perc);
@@ -182,7 +182,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 				mainloop = false;
 				break;
 			}
-			if (strcmp(input,"XXX") == 0)
+			if (strcmp(input, sep) == 0)
 				break;
 			pntext[0] = ' ';
 			pntext++;
