@@ -650,6 +650,8 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
 				output = BSDDIALOG_ESC;
+				if (abs >= 0 && currmode == MENUMODE)
+					item->on = true;
 				loop = false;
 			}
 			break;
