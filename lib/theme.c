@@ -38,7 +38,7 @@ struct bsddialog_theme t;
 static struct bsddialog_theme bsddialogtheme = {
 #define bgwidget  COLOR_WHITE
 #define bgcurr    COLOR_YELLOW
-	.terminal.color = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
+	.screen.color = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
 
 	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadow.h       = 1,
@@ -85,7 +85,7 @@ static struct bsddialog_theme bsddialogtheme = {
 static struct bsddialog_theme blackwhite = {
 #define fg  COLOR_WHITE
 #define bk  COLOR_BLACK
-	.terminal.color = GET_COLOR(fg, bk),
+	.screen.color = GET_COLOR(fg, bk),
 
 	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadow.h       = 1,
@@ -130,7 +130,7 @@ static struct bsddialog_theme blackwhite = {
 };
 
 static struct bsddialog_theme dialogtheme = {
-	.terminal.color = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
+	.screen.color = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
 
 	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadow.h       = 1,
@@ -177,11 +177,12 @@ static struct bsddialog_theme dialogtheme = {
 static void
 set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 {
+	dst->screen.color = src->screen.color;
+
 	dst->shadow.color = src->shadow.color;
 	dst->shadow.h     = src->shadow.h;
 	dst->shadow.w     = src->shadow.w;
 
-	dst->terminal.color          = src->terminal.color;
 	dst->dialog.delimtitle       = src->dialog.delimtitle;
 	dst->dialog.titlecolor       = src->dialog.titlecolor;
 	dst->dialog.lineraisecolor   = src->dialog.lineraisecolor;
@@ -219,7 +220,7 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->button.f_shortcutcolor = src->button.f_shortcutcolor;
 	dst->button.shortcutcolor   = src->button.shortcutcolor;
 
-	bkgd(dst->terminal.color);
+	bkgd(dst->screen.color);
 	refresh();
 }
 

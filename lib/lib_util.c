@@ -61,7 +61,7 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 
 	if ((clear = newwin(h, w, y + t.shadow.h, x + t.shadow.w)) == NULL)
 		RETURN_ERROR("Cannot hide the widget");
-	wbkgd(clear, t.terminal.color);
+	wbkgd(clear, t.screen.color);
 
 	if (withshadow)
 		wrefresh(clear);

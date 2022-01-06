@@ -32,7 +32,7 @@
 struct bsddialog_theme {
 	struct {
 		int color;
-	} terminal;
+	} screen;
 	struct {
 		int color;
 		unsigned int h;
