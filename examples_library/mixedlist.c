@@ -54,7 +54,7 @@ int main()
 
 	printf("Mixedlist:\n");
 	for (i=0; i<3; i++) {
-		for (j=0; j<group[i].nitems; j++) {
+		for (j=0; j<(int)group[i].nitems; j++) {
 			item = group[i].items[j];
 			if (group[i].type == BSDDIALOG_SEPARATOR)
 				printf("----- %s -----\n", item.name);
