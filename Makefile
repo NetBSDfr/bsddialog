@@ -9,7 +9,7 @@ OBJECTS= ${SOURCES:.c=.o}
 LIBPATH= ${.CURDIR}/lib
 LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
-CFLAGS+= -Wall -Wextra -I${LIBPATH}
+CFLAGS+= -Wall -I${LIBPATH}
 LDFLAGS+= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
 
 BINDIR= /usr/local/bin
