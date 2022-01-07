@@ -545,8 +545,6 @@ a negative value is no item is focused.
 .Fn bsddialog_mixedlist
 builds a dialog with a collections of checklists, radiolists and separators.
 A collection is a set defined like:
-.Fa menurows
-are the rows to show the items.
 .Pp
 .Bd -literal -offset indent -compact
 enum bsddialog_grouptype {
@@ -593,6 +591,13 @@ enable shortcut keys on buttons, default on items.
 .Ed
 .Pp
 .Fn bsddialog_form
+builds a dialog with a form to get user input, it is drawn in a square and
+.Fa formheight
+is its height.
+.Fa nitems
+is the size of
+.Fa items
+the array of items for a form, an item is defined by:
 .Bd -literal -offset indent -compact
 struct bsddialog_formitem {
 	const char *label;
@@ -612,13 +617,39 @@ struct bsddialog_formitem {
 };
 .Ed
 .Pp
+.Fa label
+is a string to describe the request to the user,
+.Fa ylabel
+and
+.Fa xlabel
+represent the position in the form square,
+.Fa ylabel
+has to be between 1 and
+.Fa formheight .
+.Fa yfield
+and
+.Fa xfield
+represent the position for the field,
+.Fa yfield
+has to be between 0 and
+.Fa formheight .
+.Fa fieldlen
+is the graphical size of the field, while
+.Fa maxvalelen
+is the maximun size of the user input.
+.Fa init
+is a string printed in the field as a default value.
 .It Fa value
-is allocated with the current field it the OK button is pressed.
+is allocated memory with the current field if the OK button is pressed.
+.Fa flags
+are OR-flags to set the field
 .Dv BSDDIALOG_FIELDHIDDEN
 and
-.Dv BSDDIALOG_FIELDREADONLY
-are OK-flags for
-.Fa flags .
+.Dv BSDDIALOG_FIELDREADONLY .
+Finally,
+.Fa bottomdesc
+is printed on the bottom side of the screen if the item is focused.
+is 
 .Pp
 .Fn bsddialog_form
 can be customized by:
