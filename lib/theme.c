@@ -147,8 +147,8 @@ static struct bsddialog_theme dialogtheme = {
 
 	.menu.arrowcolor      = GET_COLOR(COLOR_GREEN,  COLOR_WHITE),
 	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  bgwidget)    | A_BOLD,
-	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)  | A_BOLD,
-	.menu.desccolor       = GET_COLOR(COLOR_BLACK,  COLOR_WHITE) | A_BOLD,
+	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
+	.menu.desccolor       = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
 	.menu.f_namecolor     = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)  | A_BOLD,
 	.menu.namecolor       = GET_COLOR(COLOR_BLUE,   COLOR_WHITE) | A_BOLD,
 	.menu.namesepcolor    = GET_COLOR(COLOR_RED,    COLOR_WHITE),
