@@ -61,7 +61,7 @@
 .Ft int
 .Fo bsddialog_checklist
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -74,7 +74,7 @@
 .Ft int
 .Fo bsddialog_datebox"
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int *yy"
@@ -86,7 +86,7 @@
 .Ft int
 .Fo bsddialog_form
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int formheight"
@@ -96,7 +96,7 @@
 .Ft int
 .Fo bsddialog_gauge
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int perc"
@@ -107,7 +107,7 @@
 .Ft int
 .Fo bsddialog_infobox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
@@ -118,7 +118,7 @@
 .Ft int
 .Fo bsddialog_menu
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -129,7 +129,7 @@
 .Ft int
 .Fo bsddialog_mixedgauge
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int mainperc"
@@ -140,7 +140,7 @@
 .Ft int
 .Fo bsddialog_mixedlist
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -152,14 +152,14 @@
 .Ft int
 .Fo bsddialog_msgbox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
 .Ft int
 .Fo bsddialog_pause
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int seconds"
@@ -167,7 +167,7 @@
 .Ft int
 .Fo bsddialog_radiolist
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -178,7 +178,7 @@
 .Ft int
 .Fo bsddialog_rangebox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "int min"
@@ -188,14 +188,14 @@
 .Ft int
 .Fo bsddialog_textbox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* file"
+.Fa "char *file"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
 .Ft int
 .Fo bsddialog_timebox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int *hh"
@@ -205,7 +205,7 @@
 .Ft int
 .Fo bsddialog_yesno
 .Fa "struct bsddialog_conf *conf"
-.Fa "char* text"
+.Fa "char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
@@ -490,11 +490,25 @@ and
 .Fa ss
 specify a time on startup and are set like the user choice on return.
 .Pp
+
+.Ft int
+.Fo bsddialog_radiolist
+.Fa "struct bsddialog_conf *conf"
+.Fa "char *text"
+.Fa "int rows"
+.Fa "int cols"
+.Fa "unsigned int menurows"
+.Fa "int nitems"
+.Fa "struct bsddialog_menuitem *items"
+.Fa "int *focusitem"
+.Fc
+
 .Fn bsddialog_checklist ,
 .Fn bsddialog_menu
 and
 .Fn bsddialog_radiolist
-to choose 0, 1 or more items from a list.
+to choose some item from a list, properly an array of
+.Fa items :
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
 	char *prefix;
@@ -505,6 +519,8 @@ struct bsddialog_menuitem {
 	char *bottomdesc;
 };
 .Ed
+.Fa nitems
+is the size of the array,
 .Pp
 .Fn bsddialog_mixedlist
 to create a menu with checklists and radiolists.
@@ -627,9 +643,9 @@ in a dialog, the UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to
 navigate the file. OK button is renamed EXIT.
 .Pp
 .Ss Theme
+The graphical properties are global to the library, they are represented by
 .Fa struct bsddialog_theme
-represents the graphical properties, it is global to the library,
-allows to customize it at runtime via the
+and can be customized at runtime via the
 .In bsddialog_theme.h
 API.
 .Pp
@@ -688,21 +704,23 @@ struct bsddialog_theme {
 	} button;
 };
 .Ed
-The members with the
+.Pp
+A member with the
 .Dq f_
-prefix refer to an element with focus.
+prefix refers to an element with focus.
 .Pp
 .Fn bsddialog_get_theme
 sets
 .Fa theme
-like the current theme, the members
-.Dq color
-can be set by the value returned by
+like the current theme.
+.Pp
+A color can be set by the value returned by
 .Fn bsddialog_color ,
-this function gets
+Possible values for
 .Fa background
 and
 .Fa foreground
+are:
 .Dv BSDDIALOG_BLACK ,
 .Dv BSDDIALOG_RED ,
 .Dv BSDDIALOG_GREEN ,
@@ -711,7 +729,9 @@ and
 .Dv BSDDIALOG_MAGENTA ,
 .Dv BSDDIALOG_CYAN ,
 and
-.Dv BSDDIALOG_WHITE
+.Dv BSDDIALOG_WHITE ,
+.Fa flags
+specifies OR-flags, possible values:
 .Dv BSDDIALOG_BOLD ,
 .Dv BSDDIALOG_REVERSE
 and
@@ -719,19 +739,18 @@ and
 .Pp
 .Fn bsddialog_set_theme
 sets
-.Fa theme like current theme
+.Fa theme
+like current theme, the changes takes effect only for dialogs built after the
+call.
 .Pp
-.Nm BSDDialog
-provides predefined themes
-.Fa nsddialog_default_theme,
-it can be set via
-.Fn bsddialog_set_default_theme ,
-possible values:
-.Fa BSDDIALOG_THEME_BLACKWHITE ,
-.Fa BSDDIALOG_THEME_BSDDIALOG ,
-.Fa BSDDIALOG_THEME_DEFAULT
+The library provides predefined themes:
+.Dv BSDDIALOG_THEME_BLACKWHITE ,
+.Dv BSDDIALOG_THEME_BSDDIALOG ,
+.Dv BSDDIALOG_THEME_DEFAULT
 and
-.Fa BSDDIALOG_THEME_DIALOG .
+.Dv BSDDIALOG_THEME_DIALOG ,
+they can be set via
+.Fn bsddialog_set_default_theme .
 .Pp
 .Sh RETURN VALUES
 The functions return the value
@@ -767,7 +786,8 @@ returns
 if the timeout expires.
 .Sh EXAMPLES
 .Pp
-"Yes-No Question" Example:
+.Dq Yes-No Question
+Example:
 .Pp
 .Bd -literal -offset indent -compact
 int output;
@@ -793,8 +813,35 @@ case BSDDIALOG_ERROR:
 	printf("Error: %s\\n", bsddialog_geterror());
 }
 .Ed
+.Pp
+Theme Example:
+.Pp
+.Bd -literal -offset indent -compact
+struct bsddialog_conf conf;
+struct bsddialog_theme theme;
+
+bsddialog_initconf(&conf);
+
+if (bsddialog_init() == BSDDIALOG_ERROR)
+	return (1);
+
+bsddialog_msgbox(&conf, "Default theme", 7, 25);
+
+bsddialog_get_theme(&theme);
+theme.screen.color = bsddialog_color(BSDDIALOG_RED, BSDDIALOG_GREEN,
+    BSDDIALOG_BOLD);
+bsddialog_set_theme(&theme);
+bsddialog_backtitle(&conf, "Red foreground and Green background");
+bsddialog_msgbox(&conf, "Change screen color", 7, 25);
+
+bsddialog_set_default_theme(BSDDIALOG_THEME_BLACKWHITE);
+bsddialog_msgbox(&conf, "Black and White theme", 7, 25);
+
+bsddialog_end();
+.Ed
 .Sh SEE ALSO
-.Xr bsddialog 1
+.Xr bsddialog 1 ,
+.Xr ncurses 3 .
 .Sh HISTORY
 The
 .Nm bsddialog
