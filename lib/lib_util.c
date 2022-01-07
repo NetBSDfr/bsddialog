@@ -87,7 +87,7 @@ int f1help(struct bsddialog_conf *conf)
 	hconf.ascii_lines     = conf->ascii_lines;
 	hconf.no_lines        = conf->no_lines;
 	hconf.shadow          = conf->shadow;
-	hconf.text.colors     = conf->text.colors;
+	hconf.text.highlight  = conf->text.highlight;
 
 	output = BSDDIALOG_OK;
 	if (conf->f1_message != NULL)
@@ -361,7 +361,7 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 			}
 		}
 
-		if (conf->text.colors && is_ncurses_attr(text + i))
+		if (conf->text.highlight && is_ncurses_attr(text + i))
 			i += 3;
 		else
 			wordlen++;
@@ -378,7 +378,7 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 			linelen = 0;
 			break;
 		default:
-			if (conf->text.colors && is_ncurses_attr(text + i))
+			if (conf->text.highlight && is_ncurses_attr(text + i))
 				i += 3;
 			else
 				linelen++;
@@ -411,7 +411,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 			if (j != 0) {
 				string[j] = '\0';
 				print_string(pad, rows, &y, &x, cols, string,
-				    conf->text.colors);
+				    conf->text.highlight);
 			}
 		}
 

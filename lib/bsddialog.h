@@ -84,7 +84,7 @@ struct bsddialog_conf {
 		bool enable_esc;
 	} key;
 	struct {
-		bool colors;
+		bool highlight;
 	} text;
 	struct {
 		bool align_left;

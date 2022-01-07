@@ -436,7 +436,7 @@ int main(int argc, char *argv[argc])
 			conf.clear = true;
 			break;
 		case COLORS:
-			conf.text.colors = true;
+			conf.text.highlight = true;
 			break;
 		case CR_WRAP:
 			cr_wrap_flag = true;
