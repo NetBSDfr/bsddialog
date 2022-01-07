@@ -101,8 +101,8 @@ int f1help(struct bsddialog_conf *conf)
 
 /* Buttons */
 static void
-draw_button(WINDOW *window, int y, int x, int size, char *text, bool selected,
-    bool shortcut)
+draw_button(WINDOW *window, int y, int x, int size, const char *text,
+    bool selected, bool shortcut)
 {
 	int i, color_arrows, color_shortkey, color_button;
 
@@ -250,7 +250,7 @@ bool shortcut_buttons(int key, struct buttons *bs)
 }
 
 /* Text */
-static bool is_ncurses_attr(char *text)
+static bool is_ncurses_attr(const char *text)
 {
 	if (strnlen(text, 3) < 3)
 		return (false);
@@ -343,7 +343,7 @@ print_string(WINDOW *win, int *rows, int *y, int *x, int cols, char *str,
 }
 
 int
-get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
+get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
     int *maxline, int *nlines)
 {
 	int i, buflen, wordlen, linelen;
@@ -392,7 +392,7 @@ get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
 
 int
 print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
-    char *text)
+    const char *text)
 {
 	char *string;
 	int i, j, x, y;
@@ -684,7 +684,7 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 
 static int
 draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
-    int w, WINDOW *textpad, char *text, struct buttons *bs,
+    int w, WINDOW *textpad, const char *text, struct buttons *bs,
     bool shortcutbuttons)
 {
 	int ts, ltee, rtee;
@@ -749,8 +749,8 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
 
 int
 update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    int y, int x, int h, int w, WINDOW *textpad, char *text, struct buttons *bs,
-    bool shortcutbuttons)
+    int y, int x, int h, int w, WINDOW *textpad, const char *text,
+    struct buttons *bs, bool shortcutbuttons)
 {
 	int error;
 
@@ -777,7 +777,7 @@ update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 
 int
 new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
-    int x, int h, int w, WINDOW **textpad, char *text, struct buttons *bs,
+    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs,
     bool shortcutbuttons)
 {
 	int error;

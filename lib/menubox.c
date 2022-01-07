@@ -342,7 +342,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
     bool curr)
 {
 	int colordesc, colorname, colorshortcut, linech;
-	char *shortcut;
+	const char *shortcut;
 
 	if (mode == SEPARATORMODE) {
 		if (conf->no_lines == false) {
@@ -428,7 +428,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 
 static void
 menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    char *text, int linelen, unsigned int *menurows, int nitems,
+    const char *text, int linelen, unsigned int *menurows, int nitems,
     struct buttons bs)
 {
 	int textrow, menusize;
@@ -460,7 +460,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-menu_checksize(int rows, int cols, char *text, int menurows, int nitems,
+menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
     struct buttons bs)
 {
 	int mincols, textrow, menusize;
@@ -517,7 +517,7 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 }
 
 static int
-do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
+do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int menurows, enum menumode mode, int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
@@ -841,9 +841,9 @@ do_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 /* API */
 int
-bsddialog_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int menurows, int ngroups, struct bsddialog_menugroup *groups,
-    int *focuslist, int *focusitem)
+bsddialog_mixedlist(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int menurows, int ngroups,
+    struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
 	int output;
 
@@ -854,9 +854,9 @@ bsddialog_mixedlist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_checklist(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
-    int *focusitem)
+bsddialog_checklist(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int menurows, int nitems,
+    struct bsddialog_menuitem *items, int *focusitem)
 {
 	int output;
 	struct bsddialog_menugroup group = {
@@ -869,9 +869,9 @@ bsddialog_checklist(struct bsddialog_conf *conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_menu(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
-    int *focusitem)
+bsddialog_menu(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int menurows, int nitems,
+    struct bsddialog_menuitem *items, int *focusitem)
 {
 	int output;
 	struct bsddialog_menugroup group = {
@@ -884,9 +884,9 @@ bsddialog_menu(struct bsddialog_conf *conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_radiolist(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int menurows, int nitems, struct bsddialog_menuitem *items,
-    int *focusitem)
+bsddialog_radiolist(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int menurows, int nitems,
+    struct bsddialog_menuitem *items, int *focusitem)
 {
 	int output;
 	struct bsddialog_menugroup group = {

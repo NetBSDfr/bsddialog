@@ -50,7 +50,7 @@ struct myfield {
 	int  maxpos;
 	bool secure;
 	int  securech;
-	char *bottomdesc;
+	const char *bottomdesc;
 };
 #define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
 #define GETMYFIELD2(form) ((struct myfield*)field_userptr(current_field(form)))
@@ -291,7 +291,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 
 static void
 form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    char *text, int linelen, unsigned int *formheight, int nitems,
+    const char *text, int linelen, unsigned int *formheight, int nitems,
     struct buttons bs)
 {
 	int textrow, menusize;
@@ -318,7 +318,7 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-form_checksize(int rows, int cols, char *text, int formheight, int nitems,
+form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
     struct buttons bs)
 {
 	int mincols, textrow, formrows;
@@ -348,8 +348,8 @@ form_checksize(int rows, int cols, char *text, int formheight, int nitems,
 }
 
 int
-bsddialog_form(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int formheight, unsigned int nitems,
+bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *items)
 {
 	WINDOW *widget, *formwin, *textpad, *shadow;

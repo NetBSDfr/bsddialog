@@ -82,7 +82,7 @@ draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
 
 static int
 bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    char *text, struct buttons *bs)
+    const char *text, struct buttons *bs)
 {
 	int maxword, maxline, nlines;
 
@@ -106,7 +106,7 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-bar_checksize(char *text, int rows, int cols, struct buttons *bs)
+bar_checksize(const char *text, int rows, int cols, struct buttons *bs)
 {
 	int minheight, minwidth;
 
@@ -129,7 +129,7 @@ bar_checksize(char *text, int rows, int cols, struct buttons *bs)
 }
 
 int
-bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
+bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int perc, const char *sep)
 {
 	bool mainloop;
@@ -202,7 +202,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 
 /* Mixedgauge */
 static int
-mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
+mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int mainperc, unsigned int nminibars, char **minilabels,
     int *minipercs, bool color)
 {
@@ -322,7 +322,7 @@ mixedgauge(struct bsddialog_conf *conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_mixedgauge(struct bsddialog_conf *conf, char* text, int rows,
+bsddialog_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int mainperc, unsigned int nminibars, char **minilabels,
     int *minipercs)
 {
@@ -417,7 +417,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, char * text, int rows,
 }
 
 int
-bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
+bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     int min, int max, int *value)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -592,7 +592,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_pause(struct bsddialog_conf *conf, char* text, int rows, int cols,
+bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int sec)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;

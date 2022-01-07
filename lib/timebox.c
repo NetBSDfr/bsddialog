@@ -43,7 +43,7 @@ extern struct bsddialog_theme t;
 
 static int
 datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, int minw, char *text, struct buttons bs)
+    int *w, int minw, const char *text, struct buttons bs)
 {
 	int maxword, maxline, nlines, line;
 
@@ -68,7 +68,8 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 }
 
 static int
-datetime_checksize(int rows, int cols, char *text, int minw, struct buttons bs)
+datetime_checksize(int rows, int cols, const char *text, int minw,
+    struct buttons bs)
 {
 	int mincols;
 
@@ -87,8 +88,8 @@ datetime_checksize(int rows, int cols, char *text, int minw, struct buttons bs)
 }
 
 int
-bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int *hh, unsigned int *mm, unsigned int *ss)
+bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
+    int cols, unsigned int *hh, unsigned int *mm, unsigned int *ss)
 {
 	bool loop;
 	int i, input, output, y, x, h, w, sel;
@@ -266,8 +267,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
 }
 
 int
-bsddialog_datebox(struct bsddialog_conf *conf, char* text, int rows, int cols,
-    unsigned int *yy, unsigned int *mm, unsigned int *dd)
+bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
 	bool loop;
 	int i, input, output, y, x, h, w, sel;

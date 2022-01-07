@@ -1001,7 +1001,8 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 {
 	int i;
 	bool sep, toquote;
-	char *sepstr, quotech, *helpvalue;
+	char *sepstr, quotech;
+	const char *helpvalue;
 
 	sep = false;
 	quotech = item_singlequote_flag ? '\'' : '"';

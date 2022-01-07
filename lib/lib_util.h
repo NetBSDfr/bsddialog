@@ -60,7 +60,7 @@ void set_error_string(char *string);
 #define MAXBUTTONS    6 /* ok + extra + cancel + help + 2 generics */
 struct buttons {
 	unsigned int nbuttons;
-	char *label[MAXBUTTONS];
+	const char *label[MAXBUTTONS];
 	int value[MAXBUTTONS];
 	int curr;
 	unsigned int sizebutton; /* including left and right delimiters */
@@ -83,7 +83,7 @@ int hide_widget(int y, int x, int h, int w, bool withshadow);
 
 /* (auto) size and (auto) position */
 int
-get_text_properties(struct bsddialog_conf *conf, char *text, int *maxword,
+get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
     int *maxline, int *nlines);
 
 int widget_max_height(struct bsddialog_conf *conf);
@@ -106,7 +106,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
 /* widget builders */
 int
 print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
-    char *text);
+    const char *text);
 
 enum elevation { RAISED, LOWERED };
 
@@ -120,13 +120,13 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 
 int
 new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
-    int x, int h, int w, WINDOW **textpad, char *text, struct buttons *bs,
+    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs,
     bool shortcutbuttons);
 
 int
 update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    int y, int x, int h, int w, WINDOW *textpad, char *text, struct buttons *bs,
-    bool shortcutbuttons);
+    int y, int x, int h, int w, WINDOW *textpad, const char *text,
+    struct buttons *bs, bool shortcutbuttons);
 
 void
 end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,

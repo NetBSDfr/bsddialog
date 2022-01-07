@@ -39,7 +39,7 @@ extern struct bsddialog_theme t;
 
 static int
 infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, char *text)
+    int *w, const char *text)
 {
 	int maxword, maxline, nlines;
 
@@ -76,7 +76,8 @@ static int infobox_checksize(int rows, int cols)
 
 /* API */
 int
-bsddialog_infobox(struct bsddialog_conf *conf, char* text, int rows, int cols)
+bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols)
 {
 	int y, x, h, w;
 	WINDOW *shadow, *widget, *textpad;

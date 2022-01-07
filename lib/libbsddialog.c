@@ -84,7 +84,7 @@ int bsddialog_end(void)
 	return (BSDDIALOG_OK);
 }
 
-int bsddialog_backtitle(struct bsddialog_conf *conf, char *backtitle)
+int bsddialog_backtitle(struct bsddialog_conf *conf, const char *backtitle)
 {
 	mvaddstr(0, 1, backtitle);
 	if (conf->no_lines != true)

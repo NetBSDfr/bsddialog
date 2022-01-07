@@ -66,7 +66,8 @@ textbox_checksize(int rows, int cols, int hpad, struct buttons bs)
 
 /* API */
 int
-bsddialog_textbox(struct bsddialog_conf *conf, char* file, int rows, int cols)
+bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
+    int cols)
 {
 	bool loop;
 	int i, output, input;

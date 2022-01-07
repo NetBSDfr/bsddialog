@@ -41,7 +41,7 @@ extern struct bsddialog_theme t;
 
 static int
 message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, char *text, struct buttons bs)
+    int *w, const char *text, struct buttons bs)
 {
 	int maxword, maxline, nlines, line;
 
@@ -100,7 +100,7 @@ textupdate(WINDOW *widget, WINDOW *textpad, int htextpad, int ytextpad)
 }
 
 static int
-do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
+do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool loop;
@@ -217,7 +217,8 @@ do_message(struct bsddialog_conf *conf, char *text, int rows, int cols,
 
 /* API */
 int
-bsddialog_msgbox(struct bsddialog_conf *conf, char* text, int rows, int cols)
+bsddialog_msgbox(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols)
 {
 	struct buttons bs;
 
@@ -227,7 +228,8 @@ bsddialog_msgbox(struct bsddialog_conf *conf, char* text, int rows, int cols)
 }
 
 int
-bsddialog_yesno(struct bsddialog_conf *conf, char* text, int rows, int cols)
+bsddialog_yesno(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols)
 {
 	struct buttons bs;
 
