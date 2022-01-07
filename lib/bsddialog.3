@@ -260,7 +260,6 @@ argument has to be a well terminated string, can be empty
 .Pq Dq
 but not
 .Dv NULL .
-.Pp
 .Ss Dialogs
 The dialogs have common arguments.
 .Fa text
@@ -475,14 +474,14 @@ builds a dialog waiting until the timeout in
 expires or a button is pressed.
 .Pp
 .Fn bsddialog_datebox
-allows to select a date, on startup
+builds a dialog to select a date, on startup
 .Fa yy ,
 .Fa mm ,
 and
 .Fa dd
 specify a date on startup and are set like the user choice on return.
 .Fn bsddialog_timebox
-allows to choose a time,
+builds a dialog to choose a time,
 .Fa hh ,
 .Fa mm ,
 and
@@ -495,7 +494,7 @@ and
 .Fn bsddialog_radiolist
 to choose some item from a menu,
 .Fa menurows
-is the graphical size of the menu, 
+is the graphical size of the menu,
 is the size properly an array of
 .Fa items :
 .Fa nitems
@@ -654,8 +653,8 @@ UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys can change it.
 opens and prints
 .Fa file ,
 in a dialog, the UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to
-navigate the file. OK button is renamed EXIT.
-.Pp
+navigate the file.
+OK button is renamed EXIT.
 .Ss Theme
 The graphical properties are global to the library, they are represented by
 .Fa struct bsddialog_theme
