@@ -17,18 +17,18 @@ do
         perc="$(expr $(expr $curr "*" 100 ) "/" $total )"
         curr=`expr $curr + 1`
 	./bsddialog --sleep 1 --title " mixedgauge " --mixedgauge "Example" 25 50  $perc \
-		"Hidden!"     8	\
-		"Label   1"   0	\
-		"Label   2"   1	\
-		"Label   3"   2	\
-		"Label   4"   3 \
-		"Label   5"   4	\
-		"Label   6"   5	\
-		"Label   7"   6	\
-		"Label   8"   7	\
-		"Label   9"   9	\
-		"Label  10"  10	\
-		"Label   X"  " -$perc"
+		"Hidden!"     " -9"  \
+		"Label   1"   " -1"  \
+		"Label   2"   " -2"  \
+		"Label   3"   " -3"  \
+		"Label   4"   " -4"  \
+		"Label   5"   " -5"  \
+		"Label   6"   " -6"  \
+		"Label   7"   " -7"  \
+		"Label   8"   " -8"  \
+		"Label   9"   " -10" \
+		"Label  10"   " -11" \
+		"Label   X"   $perc
 	#sleep 1
 done
 

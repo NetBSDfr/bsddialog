@@ -193,8 +193,8 @@ bsddialog_menu(struct bsddialog_conf *conf, const char *text, int rows,
 
 int
 bsddialog_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int mainperc, unsigned int nminibars, char **minilabels,
-    int *minipercs);
+    int cols, unsigned int mainperc, unsigned int nminibars,
+    const char **minilabels, int *minipercs);
 
 int
 bsddialog_mixedlist(struct bsddialog_conf *conf, const char *text, int rows,

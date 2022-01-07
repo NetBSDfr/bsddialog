@@ -770,7 +770,7 @@ int infobox_builder(BUILDER_ARGS)
 int mixedgauge_builder(BUILDER_ARGS)
 {
 	int i, output, mainperc, nminibars, *minipercs;
-	char **minilabels;
+	const char **minilabels;
 
 	if (argc < 1 || (((argc-1) % 2) != 0) ) {
 		strcpy(errbuf, "bad --mixedgauge arguments\n");
