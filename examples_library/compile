@@ -6,5 +6,5 @@ examples="menu treeview checklist radiolist mixedlist theme \
 
 for e in $examples
 do
-	cc -g -Wall -I$libpath ${e}.c -o $e -L$libpath -lbsddialog -Wl,-rpath=$libpath
+	cc -g -Wall -Wextra -I$libpath ${e}.c -o $e -L$libpath -lbsddialog -Wl,-rpath=$libpath
 done
