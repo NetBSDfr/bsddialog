@@ -303,7 +303,6 @@ struct bsddialog_conf {
 	} text;
 	struct {
 		bool align_left;
-		char *default_item;
 		bool no_desc;
 		bool no_name;
 		bool shortcut_buttons;
@@ -490,25 +489,18 @@ and
 .Fa ss
 specify a time on startup and are set like the user choice on return.
 .Pp
-
-.Ft int
-.Fo bsddialog_radiolist
-.Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
-.Fa "int rows"
-.Fa "int cols"
-.Fa "unsigned int menurows"
-.Fa "int nitems"
-.Fa "struct bsddialog_menuitem *items"
-.Fa "int *focusitem"
-.Fc
-
 .Fn bsddialog_checklist ,
 .Fn bsddialog_menu
 and
 .Fn bsddialog_radiolist
-to choose some item from a list, properly an array of
+to choose some item from a menu,
+.Fa menurows
+is the graphical size of the menu, 
+is the size properly an array of
 .Fa items :
+.Fa nitems
+.Fa menurows
+.Fa focusitem
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
 	char *prefix;
@@ -519,20 +511,30 @@ struct bsddialog_menuitem {
 	char *bottomdesc;
 };
 .Ed
-.Fa nitems
-is the size of the array,
+for each item is printed:
+.Fa prefix ,
+.Fa name
+and
+.Fa desc
+on its row,
+.Fa bottomdesc
+is printed on the bottom side of the screen if the item is focused,
+.Fa depth
+is a margin between the
+.Fa prefix
+and
+.Fa name
+it is useful to implement a treeview,
+.Fa on
+is set to true if the user selects the item, false otherwise; before the call
+.Fa on
+can specifies the items selected by default.
 .Pp
 .Fn bsddialog_mixedlist
 to create a menu with checklists and radiolists.
 .Fa menurows
 are the rows to show the items.
 .Bd -literal -offset indent -compact
-enum bsddialog_grouptype {
-	BSDDIALOG_CHECKLIST,
-	BSDDIALOG_RADIOLIST,
-	BSDDIALOG_SEPARATOR,
-};
-
 struct bsddialog_menugroup {
 	enum bsddialog_grouptype type;
 	unsigned int nitems;
@@ -540,16 +542,29 @@ struct bsddialog_menugroup {
 };
 .Ed
 .Pp
-menus can be costomizated by:
+where a group is an array of nitems of type
+.Pp
+.Bd -literal -offset indent -compact
+enum bsddialog_grouptype {
+	BSDDIALOG_CHECKLIST,
+	BSDDIALOG_RADIOLIST,
+	BSDDIALOG_SEPARATOR,
+};
+.Ed
+.Pp
+.Fn bsddialog_checklist ,
+.Fn bsddialog_menu ,
+.Fn bsddialog_mixedlist
+and
+.Fn bsddialog_radiolist
+can be costomizated by:
 .Bl -column -compact
 .It Fa conf.menu.align_left
 aligns items to left, default center.
-.It Fa conf.menu.default_item
-on startup focus on a specified item.
 .It Fa conf.menu.no_desc.
-hide description
+hide description.
 .It Fa conf.menu.no_name
-hode name.
+hide names.
 .It Fa conf.menu.shortcut_buttons
 enable shortcut keys on buttons, default on items.
 .Ed
@@ -592,8 +607,7 @@ bar, if
 .Fa separator
 is not
 .Dv NULL
-.Fn bsddialog_gaude
-waits to read
+the dialog waits to read
 .Fa separator
 from the standard input, then the first string is used like a new
 .Fa perc
@@ -607,9 +621,9 @@ draw a main bar with
 .Fa mainperc
 percentage and
 .Fa nminibars
-mini percentages, each one with a
+each one with a
 .Fa minilabel
-and
+and a
 .fa miniperc
 with a value between 0 and 100 or
 .Dv BSDDIALOG_MG_SUCCEEDED ,
