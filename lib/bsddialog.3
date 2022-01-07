@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2021 Alfonso Sabato Siciliano
+.\" Copyright (c) 2021-2022 Alfonso Sabato Siciliano
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd December 30, 2021
+.Dd January 7, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -100,6 +100,7 @@
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int perc"
+.Fa "const char *sep"
 .Fc
 .Ft const char *
 .Fn bsddialog_geterror "void"
@@ -161,7 +162,7 @@
 .Fa "char* text"
 .Fa "int rows"
 .Fa "int cols"
-.Fa "unsigned int timeout"
+.Fa "unsigned int seconds"
 .Fc
 .Ft int
 .Fo bsddialog_radiolist
@@ -230,11 +231,12 @@ messages, to get input and to inform about a computation status.
 .Fn bsddialog_init
 initializes the library, the only functions that can be called before is
 .Fn bsddialog_initconf .
-After the initialization the input and output should be managed via the library
+After the initialization the input and output should be handled via the library
 API.
 .Fn bsddialog_end
-restores the terminal like before
-.Fn bsddialog_init .
+restores the screen like before
+.Fn bsddialog_init ,
+then it is not possible to use the library functions.
 .Pp
 .Fn bsddialog_error
 returns a string to describe the error, it should be called after a
@@ -245,16 +247,12 @@ clears the screen.
 .Fn bsddialog_backtitle
 prints
 .Fa backtitle
-on the top of the screen,
-.Fa conf
-is described later in
-.Sx Dialogs
-subsection,
-.Fn bsddialog_backtitle
-handles
-.Fa ascii_lines
+on the top of the screen, it is possible to set
+.Fa conf.ascii_lines
 and
-.Fa no_lines .
+.Fa conf.no_lines ;
+.Fa conf
+is described later,
 .Pp
 Each
 .Fa char*
@@ -264,19 +262,21 @@ but not
 .Dv NULL .
 .Pp
 .Ss Dialogs
-Each dialog has common arguments:
+The dialogs have common arguments.
 .Fa text
-is a well terminated string printed inside the dialog,
+is a string printed inside the dialog.
 .Fa rows
 and
 .Fa cols
-are height and width between 2 and the screen size,
+are height and width, their value can be between 2 and the screen size,
 .Dv BSDDIALOG_AUTOSIZE
 or
 .Dv
 BSDDIALOG_FULLSCREEN .
 .Fa conf
-is a struct to customize the dialog:
+is a struct to customize the dialog, it does not set global properties to the
+library, it is local to its dialog.
+.Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
 	bool ascii_lines;
@@ -299,7 +299,7 @@ struct bsddialog_conf {
 		bool enable_esc;
 	} key;
 	struct {
-		bool colors;
+		bool highlight;
 	} text;
 	struct {
 		bool align_left;
@@ -324,21 +324,19 @@ struct bsddialog_conf {
 		bool default_cancel;
 		bool with_help;
 		char *help_label;
-		char *exit_label;
 		char *generic1_label;
 		char *generic2_label;
 		char *default_label;
 	} button;
 };
 .Ed
-.Fa conf
-is local to a dialog, it does not set global properties to the library.
+.Pp
 .Bl -column -compact
 .It Fa conf.ascii_lines
-ascii characters to draw borders.
+ascii characters to draw lines, default wide characters.
 .It Fa conf.aspect_ratio
-takes effects only with
-.BSDDIALOG_AUTOSIZE
+set an aspect ratio with
+.Dv BSDDIALOG_AUTOSIZE
 for infobox, msgbox and yesnobox.
 .It Fa conf.auto_minheight
 minimum height if
@@ -351,34 +349,34 @@ minimum width if
 is
 .Dv BSDDIALOG_AUTOSIZE .
 .It Fa conf.bottomtitle
-subtitle.
+subtitle at the dialog bottom side.
 .It Fa conf.clear
-hides the dialog at exit.
+hide the dialog at exit.
 .It Fa conf.f1_file
-open the file if F1 is pressed.
+path to a file to open if F1 is pressed.
 .It Fa conf.f1_message
 display the message if F1 is pressed.
 .It Fa conf.get_height
 if not
 .Dv NULL
-is set like the dialog height.
+is set like the dialog height at exit.
 .It Fa conf.get_width
 if not
 .Dv NULL
-is set like the dialog width.
+is set like the dialog width at exit.
 .It Fa conf.no_lines
-not draw borders.
+not draw lines.
 .It Fa conf.shadow
-draws a dialog shadow.
+draw a shadow.
 .It Fa conf.sleep
-the dialog function waits before to return, the time is in seconds,
+the dialog function waits before to return, the value is in seconds.
 .It Fa conf.title
-title.
+title at the top dialog side.
 .It Fa conf.y
-dialog y position, top side is 0, can be
+dialog y position, 0 it the top screen, can be
 .Dv BSDDIALOG_CENTER .
 .It Fa conf.x
-dialog x position, left size is 0, can be
+dialog x position, 0 is the left screen side, can be
 .Dv BSDDIALOG_CENTER .
 .Ed
 .Pp
@@ -387,10 +385,10 @@ enables
 .Dv ESC
 key to close the dialog.
 .Pp
-.Fa conf.text.colors
-enables the colors in
+.Fa conf.text.highlight
+enables highlights for
 .Fa text ,
-properly the following escapes:
+properly the following sequences are considered escapes:
 .Bl -column -compact
 .It Dq \eZ0
 black.
@@ -421,38 +419,34 @@ underline.
 .It Dq \eZU
 disable underline.
 .It Dq \eZn
-disable customization.
+disable each customization.
 .Ed
 .Pp
 .Bl -column -compact
 .It Fa conf.button.without_ok
-disable
-.Dq OK
-button.
+disable OK button.
 .It Fa conf.button.ok_label
-set label for
-.Dq OK
-button.
+set label for OK button.
 .It Fa conf.button.with_extra
-add an extra button.
+add Extra button.
 .It Fa conf.button.extra_label
-set a label for extra button.
+set a label for Extra button.
 .It Fa conf.button.without_cancel
-disable cancel button.
+disable Cancel button.
 .It Fa conf.button.cancel_label
-sets label for cancel button.
+sets a label for Cancel button.
 .It Fa conf.button.default_cancel
-on startup focus on the cancel button.
+on startup focus on the Cancel button.
 .It Fa conf.button.with_help
-add help  button.
+add Help button.
 .It Fa conf.button.help_label
-set label for help button.
+set a label for Help button.
 .It Fa conf.button.generic1_label
 add a button with the specified label.
 .It Fa conf.button.generic2_label
-add a button with specified label.
+add a button with the specified label.
 .It Fa conf.button.default_label
-on startup set focus on the button with label.
+focus on the button with label.
 .Ed
 .Pp
 .Fa bsddialog_initconf
@@ -460,50 +454,41 @@ initializes
 .Fa conf
 disabling each property, except
 .Fa conf.shadow
-and
+to true,
 .Fa conf.y
 and
 .Fa conf.x
-set to
+to
 .Dv BSDDIALOG_CENTER .
 .Pp
 .Fn bsddialog_infobox
-builds a dialog only with
-.Fa text and returns instantly.
+builds a dialog without buttons and returns instantly.
 .Fn bsddialog_msgbox
-creates a dialog an
-.Dq OK
-button to show a message.
+builds a dialog with only OK an button.
 .Fn bsddialog_yesno
 provides a dialog for a
-.Dq Yes-No
-question, the labels for buttons are
-.Dq YES
-and
-.Dq No
-instead of
-.Dq OK
-and
-.Dq Cancel.
+.Dq Yes-No Question ,
+the labels on buttons are Yes and No.
+.Pp
 .Fn bsddialog_pause
-builds a dialog to show a message, waiting until
-.Fa timeout ,
-in seconds, expires or a button is pressed.
+builds a dialog waiting until the timeout in
+.Fa seconds
+expires or a button is pressed.
 .Pp
 .Fn bsddialog_datebox
-to select a date,
+allows to select a date, on startup
 .Fa yy ,
 .Fa mm ,
 and
 .Fa dd
-specify a date on startup and are set like the user choose on return.
+specify a date on startup and are set like the user choice on return.
 .Fn bsddialog_timebox
-to choose a time
+allows to choose a time,
 .Fa hh ,
 .Fa mm ,
 and
 .Fa ss
-specify a time on startup and are set like the user choose on return.
+specify a time on startup and are set like the user choice on return.
 .Pp
 .Fn bsddialog_checklist ,
 .Fn bsddialog_menu
@@ -632,25 +617,20 @@ and
 .Fa max .
 .Fa value
 is the default value on startup and the selected value at exit.
-The current value is printed inside a bar, UP, DOWN, HOME, END, PAGEUP and
-PAGEDOWN keys can change.
+The current value is printed inside a bar.
+UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys can change it.
 .Pp
 .Fn bsddialog_textbox
-open
-.Fa file
-and shows it,
-the
-.Dq OK
-button is rename
-.Dq EXIT.
+opens and prints
+.Fa file ,
+in a dialog, the UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to
+navigate the file. OK button is renamed EXIT.
 .Pp
 .Ss Theme
-The
 .Fa struct bsddialog_theme
-represents graphical properties, it is global to the library,
-.Nm BSDDialog
-to set it at runtime via
-.Sx Theme
+represents the graphical properties, it is global to the library,
+allows to customize it at runtime via the
+.In bsddialog_theme.h
 API.
 .Pp
 .Bd -literal -offset indent -compact
@@ -708,13 +688,14 @@ struct bsddialog_theme {
 	} button;
 };
 .Ed
-The member with the prefix
-.Dq d_
-refers to elements with focus.
+The members with the
+.Dq f_
+prefix refer to an element with focus.
 .Pp
 .Fn bsddialog_get_theme
 sets
-.Fa theme like the current theme, the members
+.Fa theme
+like the current theme, the members
 .Dq color
 can be set by the value returned by
 .Fn bsddialog_color ,
@@ -756,25 +737,35 @@ and
 The functions return the value
 .Dv BSDDIALOG_ERROR
 if unsuccessful;
-otherwise, depending on the pressed button or key, the following values can be
+otherwise, depending on the pressed button, the following values can be
 returned:
 .Dv BSDDIALOG_OK ,
-.Dv BSDDIALOG_YES ,
 .Dv BSDDIALOG_CANCEL ,
-.Dv BSDDIALOG_NO ,
 .Dv BSDDIALOG_HELP ,
 .Dv BSDDIALOG_EXTRA ,
-.Dv BSDDIALOG_TIMEOUT ,
-.Dv BSDDIALOG_ESC ,
 .Dv BSDDIALOG_GENERIC1
 or
 .Dv BSDDIALOG_GENERIC2 .
-.Sh EXAMPLES
-Complete set of examples:
-.Lk https://gitlab.com/alfix/bsddialog/-/blob/main/examples_library/
+.Dv BSDDIALOG_YES
+and
+.Dv BSDDIALOG_NO
+are aliases for
+.Dv BSDDIALOG_OK
+and
+.Dv BSDDIALOG_CANCEL ,
+respectively.
 .Pp
-If installed:
-.Dl /usr/local/share/examples/libbsddialog
+The functions return
+.Dv BSDDIALOG_ESC
+if
+.Fa conf.key.enable_esc
+is enabled and the ESC key is pressed.
+.Pp
+.Fn bsddialog_pause
+returns
+.Dv BSDDIALOG_TIMEOUT
+if the timeout expires.
+.Sh EXAMPLES
 .Pp
 "Yes-No Question" Example:
 .Pp
@@ -814,7 +805,11 @@ library first appeared in
 was written by
 .An Alfonso Sabato Siciliano Aq Mt alf.siciliano@gmail.com .
 .Sh BUGS
-Cols autosize assigns max one line to
+If
+.Fa cols
+is
+.Dv BSDDIALOG_AUTOSIZE
+only one line is reserved to
 .Fa text ,
 the remaining part is hidden.
 .Fn bsddialog_form
