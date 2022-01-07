@@ -57,11 +57,11 @@
 .Sh SYNOPSIS
 .In bsddialog.h
 .Ft int
-.Fn bsddialog_backtitle "struct bsddialog_conf *conf" "char *backtitle"
+.Fn bsddialog_backtitle "struct bsddialog_conf *conf" "const char *backtitle"
 .Ft int
 .Fo bsddialog_checklist
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -74,7 +74,7 @@
 .Ft int
 .Fo bsddialog_datebox"
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int *yy"
@@ -86,7 +86,7 @@
 .Ft int
 .Fo bsddialog_form
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int formheight"
@@ -96,7 +96,7 @@
 .Ft int
 .Fo bsddialog_gauge
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int perc"
@@ -107,7 +107,7 @@
 .Ft int
 .Fo bsddialog_infobox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
@@ -118,7 +118,7 @@
 .Ft int
 .Fo bsddialog_menu
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -129,7 +129,7 @@
 .Ft int
 .Fo bsddialog_mixedgauge
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int mainperc"
@@ -140,7 +140,7 @@
 .Ft int
 .Fo bsddialog_mixedlist
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -152,14 +152,14 @@
 .Ft int
 .Fo bsddialog_msgbox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
 .Ft int
 .Fo bsddialog_pause
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int seconds"
@@ -167,7 +167,7 @@
 .Ft int
 .Fo bsddialog_radiolist
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
@@ -178,7 +178,7 @@
 .Ft int
 .Fo bsddialog_rangebox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "int min"
@@ -195,7 +195,7 @@
 .Ft int
 .Fo bsddialog_timebox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int *hh"
@@ -205,7 +205,7 @@
 .Ft int
 .Fo bsddialog_yesno
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *text"
+.Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
@@ -282,18 +282,18 @@ struct bsddialog_conf {
 	unsigned int aspect_ratio;
 	unsigned int auto_minheight;
 	unsigned int auto_minwidth;
-	char *bottomtitle;
+	const char *bottomtitle;
 	bool clear;
-	char *f1_file;
-	char *f1_message;
-	int  *get_height;
-	int  *get_width;
+	const char *f1_file;
+	const char *f1_message;
+	int *get_height;
+	int *get_width;
 	bool no_lines;
 	bool shadow;
 	unsigned int sleep;
-	char *title;
-	int  y;
-	int  x;
+	const char *title;
+	int y;
+	int x;
 	struct {
 		bool enable_esc;
 	} key;
@@ -314,17 +314,17 @@ struct bsddialog_conf {
 	} form;
 	struct {
 		bool without_ok;
-		char *ok_label;
+		const char *ok_label;
 		bool with_extra;
-		char *extra_label;
+		const char *extra_label;
 		bool without_cancel;
-		char *cancel_label;
+		const char *cancel_label;
 		bool default_cancel;
 		bool with_help;
-		char *help_label;
-		char *generic1_label;
-		char *generic2_label;
-		char *default_label;
+		const char *help_label;
+		const char *generic1_label;
+		const char *generic2_label;
+		const char *default_label;
 	} button;
 };
 .Ed
@@ -492,56 +492,61 @@ specify a time on startup and are set like the user choice on return.
 .Fn bsddialog_menu
 and
 .Fn bsddialog_radiolist
-to choose some item from a menu,
-.Fa menurows
-is the graphical size of the menu,
-is the size properly an array of
-.Fa items :
-.Fa nitems
-.Fa menurows
-.Fa focusitem
+build dialogs to chooce some item from a menu, properly an item is defined like:
+.Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
-	char *prefix;
+	const char *prefix;
 	bool on;
 	unsigned int depth;
-	char *name;
-	char *desc;
-	char *bottomdesc;
+	const char *name;
+	const char *desc;
+	const char *bottomdesc;
 };
 .Ed
-for each item is printed:
+.Pp
+An item has:
 .Fa prefix ,
 .Fa name
 and
 .Fa desc
-on its row,
+printed on its row,
 .Fa bottomdesc
-is printed on the bottom side of the screen if the item is focused,
+printed on the bottom side of the screen if the item is focused,
 .Fa depth
 is a margin between the
 .Fa prefix
 and
 .Fa name
-it is useful to implement a treeview,
+useful to implement a treeview,
 .Fa on
-is set to true if the user selects the item, false otherwise; before the call
-.Fa on
-can specifies the items selected by default.
+is set to
+.Dv true
+if the user selects the item,
+.Dv false
+otherwise.
+.Fa items
+is an array of items of
+.Fa nitem
+elements,
+.Fa menurows
+specifies the graphical size of the menu, if
+.Fa cols
+is set to
+.Dv BSDDIALOG_AUTOSIZE
+.Fa menirows
+specifies a maximum value not a fixed.
+Finally, if not
+.Dv NULL,
+.Fa focusitem
+specifies the default item on startup and the focused item at exit, could be
+a negative value is no item is focused.
 .Pp
 .Fn bsddialog_mixedlist
-to create a menu with checklists and radiolists.
+builds a dialog with a collections of checklists, radiolists and separators.
+A collection is a set defined like:
 .Fa menurows
 are the rows to show the items.
-.Bd -literal -offset indent -compact
-struct bsddialog_menugroup {
-	enum bsddialog_grouptype type;
-	unsigned int nitems;
-	struct bsddialog_menuitem *items;
-};
-.Ed
-.Pp
-where a group is an array of nitems of type
 .Pp
 .Bd -literal -offset indent -compact
 enum bsddialog_grouptype {
@@ -549,7 +554,26 @@ enum bsddialog_grouptype {
 	BSDDIALOG_RADIOLIST,
 	BSDDIALOG_SEPARATOR,
 };
+
+struct bsddialog_menugroup {
+	enum bsddialog_grouptype type;
+	unsigned int nitems;
+	struct bsddialog_menuitem *items;
+};
 .Ed
+.Pp
+.Fa ngroups
+is the number of collections,
+.Fa groups .
+.Fa menurows
+is the graphical height size for the menu.
+If not
+.NULL
+.Fa focuslist
+and
+.Fa focusitem
+specify the default item before the call and the focused item at exit, could be
+negative if no item is focused.
 .Pp
 .Fn bsddialog_checklist ,
 .Fn bsddialog_menu ,
@@ -571,11 +595,11 @@ enable shortcut keys on buttons, default on items.
 .Fn bsddialog_form
 .Bd -literal -offset indent -compact
 struct bsddialog_formitem {
-	char *label;
+	const char *label;
 	unsigned int ylabel;
 	unsigned int xlabel;
 
-	char *init;
+	const char *init;
 	unsigned int yfield;
 	unsigned int xfield;
 	unsigned int fieldlen;
@@ -584,20 +608,38 @@ struct bsddialog_formitem {
 
 	unsigned int flags;
 
-	char *bottomdesc;
+	const char *bottomdesc;
 };
 .Ed
+.Pp
+.It Fa value
+is allocated with the current field it the OK button is pressed.
 .Dv BSDDIALOG_FIELDHIDDEN
-.Dv BSDDIALOG_FIELDREADONLY
-.Fa conf.form.securech
-If the Ok button is pressed each
-.Fa value
-is allocated with its current field, it is possible enabling
-.Fa conf.form.value_withcancel ,
-.Fa conf.form.value_withextra
 and
-.Fa conf.form.value_withhelp
-to get values.
+.Dv BSDDIALOG_FIELDREADONLY
+are OK-flags for
+.Fa flags .
+.Pp
+.Fn bsddialog_form
+can be customized by:
+.Bl -column -compact
+.It Fa conf.form.securech
+with
+.Dv BSDDIALOG_FIELDHIDDEN
+set the charachter to hide the input.
+.It Fa conf.form.value_withcancel
+set
+.Fa value
+also if the Cancel button is pressed.
+.It Fa conf.form.value_withextra
+set
+.Fa value
+also if the Extra button is pressed.
+.It Fa conf.form.value_withhelp
+set
+.Fa value
+also if the Help button is pressed.
+.Ed
 .Pp
 .Fn bsddialog_gauge
 opens a dialog with a
@@ -623,7 +665,7 @@ percentage and
 each one with a
 .Fa minilabel
 and a
-.fa miniperc
+.Fa miniperc
 with a value between 0 and 100 or
 .Dv BSDDIALOG_MG_SUCCEEDED ,
 .Dv BSDDIALOG_MG_FAILED ,
