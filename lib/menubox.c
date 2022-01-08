@@ -130,7 +130,7 @@ getfirst_with_default(int ngroups, struct bsddialog_menugroup *groups, int *abs,
 		return;
 	if (groups[*focusgroup].type == BSDDIALOG_SEPARATOR)
 		return;
-	if (*focusitem < 0 || *focusitem >= groups[*focusgroup].nitems)
+	if (*focusitem < 0 || *focusitem >= (int)groups[*focusgroup].nitems)
 		return;
 
 	for (i = *group; i < *focusgroup; i++)
