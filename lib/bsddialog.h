@@ -149,7 +149,6 @@ struct bsddialog_formitem {
 	unsigned int fieldlen;
 	unsigned int maxvaluelen;
 	char *value;
-
 	unsigned int flags;
 
 	const char *bottomdesc;
