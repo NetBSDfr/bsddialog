@@ -129,8 +129,8 @@ bar_checksize(const char *text, int rows, int cols, struct buttons *bs)
 }
 
 int
-bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
-    unsigned int perc, const char *sep)
+bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int perc, const char *sep)
 {
 	bool mainloop;
 	int y, x, h, w, htextpad;
@@ -169,6 +169,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows, int col
 			if (strcmp(input, sep) == 0)
 				break;
 		}
+		if (mainloop == false)
+			break;
 		scanf("%d", &perc);
 		perc = perc < 0 ? 0 : perc;
 		perc = perc > 100 ? 100 : perc;
@@ -184,10 +186,10 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows, int col
 			}
 			if (strcmp(input, sep) == 0)
 				break;
-			pntext[0] = ' ';
-			pntext++;
 			strcpy(pntext, input);
 			pntext += strlen(input);
+			pntext[0] = ' ';
+			pntext++;
 		}
 		print_textpad(conf, textpad, &htextpad, w-2-t.text.hmargin*2,
 		    ntext);
