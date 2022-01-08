@@ -24,7 +24,7 @@ CFLAGS += -O2 -pipe -std=gnu99 -Wno-format-zero-length \
 	-fstack-protector-strong -Qunused-arguments
 .endif
 
-INSTALL_PREFIX=/usr/local
+LOCALBASE=/usr/local
 LN = ln -s -f
 RM = rm -f
 CP = cp
@@ -32,12 +32,11 @@ GZIP = gzip -cn
 LDCONFIG = /sbin/ldconfig -m
 MAN= ${OUTPUT}.3
 GZIP= gzip -cn
-MANDIR= /usr/local/share/man/man3
+MANDIR= ${LOCALBASE}/share/man/man3
 INSTALL= install
 RM= rm -f
 
-#all : man ${LIBRARY}
-all : ${LIBRARY}
+all : man ${LIBRARY}
 
 ${LIBRARY}: ${LIBRARY_SO} ${LIBRARY_A}
 
@@ -62,16 +61,16 @@ clean:
 
 
 install:
-	${INSTALL} -m 644 ${HEADERS} ${INSTALL_PREFIX}/include
-	${INSTALL} -m 644 -s ${LIBRARY_SO}.${VERSION} ${INSTALL_PREFIX}/lib/
-	${INSTALL} -l rs ${INSTALL_PREFIX}/lib/${LIBRARY_SO}.${VERSION} ${INSTALL_PREFIX}/lib/${LIBRARY_SO}
-	${INSTALL} -m 644 ${LIBRARY_A} ${INSTALL_PREFIX}/lib
-	${LDCONFIG} ${INSTALL_PREFIX}/lib
-	#${CP} ${LIBRARY}.3.gz ${INSTALL_PREFIX}/man/man3/
+	${INSTALL} -m 644 ${HEADERS} ${LOCALBASE}/include
+	${INSTALL} -m 644 -s ${LIBRARY_SO}.${VERSION} ${LOCALBASE}/lib/
+	${INSTALL} -l rs ${LOCALBASE}/lib/${LIBRARY_SO}.${VERSION} ${LOCALBASE}/lib/${LIBRARY_SO}
+	${INSTALL} -m 644 ${LIBRARY_A} ${LOCALBASE}/lib
+	${LDCONFIG} ${LOCALBASE}/lib
+	$${INSTALL} -m 644 ${LIBRARY}.3.gz ${MNADIR}
 
 unistall:
-	${RM} ${INSTALL_PREFIX}/include/${LIBRARY}.h
-	${RM} ${INSTALL_PREFIX}/lib/${LIBRARY_SO}
-	${RM} ${INSTALL_PREFIX}/lib/${LIBRARY_SO}.${VERSION}
-	${LDCONFIG} ${INSTALL_PREFIX}/lib
-	#${RM} ${INSTALL_PREFIX}/man/man3/${LIBRARY}.3.gz
+	${RM} ${LOCALBASE}/include/${LIBRARY}*.h
+	${RM} ${LOCALBASE}/lib/${LIBRARY_SO}
+	${RM} ${LOCALBASE}/lib/${LIBRARY_SO}.${VERSION}
+	${LDCONFIG} ${LOCALBASE}/lib
+	${RM} ${MANDIR}/${LIBRARY}.3.gz
