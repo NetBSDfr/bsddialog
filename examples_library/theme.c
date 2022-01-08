@@ -16,7 +16,7 @@
 
 int main()
 {
-	int output;
+	int output, focusitem;
 	struct bsddialog_conf conf;
 	enum bsddialog_default_theme theme;
 	struct bsddialog_menuitem items[5] = {
@@ -29,6 +29,7 @@ int main()
 
 	bsddialog_initconf(&conf);
 	conf.title = " Theme ";
+	focusitem = -1;
 	
 	if (bsddialog_init() == BSDDIALOG_ERROR)
 		return BSDDIALOG_ERROR;
@@ -36,26 +37,27 @@ int main()
 	while (true) {
 		bsddialog_backtitle(&conf, "Theme Example");
 
-		output = bsddialog_menu(&conf, "Choose theme", 15, 40, 5, 5, items, NULL);
+		output = bsddialog_menu(&conf, "Choose theme", 15, 40, 5, 5,
+		    items, &focusitem);
 
 		if (output != BSDDIALOG_OK || items[4].on)
 			break;
 
 		if (items[0].on) {
 			theme = BSDDIALOG_THEME_DEFAULT;
-			conf.menu.default_item = items[0].name;
+			focusitem = 0;
 		}
 		else if (items[1].on) {
 			theme = BSDDIALOG_THEME_DIALOG;
-			conf.menu.default_item = items[1].name;
+			focusitem = 1;
 		}
 		else if (items[2].on) {
 			theme = BSDDIALOG_THEME_BSDDIALOG;
-			conf.menu.default_item = items[2].name;
+			focusitem = 2;
 		}
 		else if (items[3].on) {
 			theme = BSDDIALOG_THEME_BLACKWHITE;
-			conf.menu.default_item = items[3].name;
+			focusitem = 3;
 		}
 
 		bsddialog_set_default_theme(theme);

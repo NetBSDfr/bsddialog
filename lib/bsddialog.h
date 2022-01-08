@@ -88,7 +88,6 @@ struct bsddialog_conf {
 	} text;
 	struct {
 		bool align_left;
-		const char *default_item; /* to delete */
 		bool no_desc;
 		bool no_name;
 		bool shortcut_buttons;

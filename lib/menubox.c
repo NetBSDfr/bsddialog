@@ -115,38 +115,30 @@ getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 }
 
 static void
-getfirst_with_default(struct bsddialog_conf *conf, int ngroups,
-    struct bsddialog_menugroup *groups, int *abs, int *group, int *rel)
+getfirst_with_default(int ngroups, struct bsddialog_menugroup *groups, int *abs,
+    int *group, int *rel, int *focusgroup, int *focusitem)
 {
-	int i, j, a;
-	struct bsddialog_menuitem *item;
+	int i;
 
 	getfirst(ngroups, groups, abs, group, rel);
 	if (*abs < 0)
 		return;
-	
-	a = *abs;
 
-	for (i=*group; i<ngroups; i++) {
-		if (groups[i].type == BSDDIALOG_SEPARATOR) {
-			a += groups[i].nitems;
-			continue;
-		}
-		for (j = 0; j < (int) groups[i].nitems; j++) {
-			item = &groups[i].items[j];
-			if (conf->menu.default_item != NULL &&
-			    item->name != NULL) {
-				if (strcmp(item->name,
-				    conf->menu.default_item) == 0) {
-					*abs = a;
-					*group = i;
-					*rel = j;
-					return;
-				}
-			}
-			a++;
-		}
-	}
+	if (focusgroup == NULL || focusitem == NULL)
+		return;
+	if (*focusgroup < 0 || *focusgroup >= ngroups)
+		return;
+	if (groups[*focusgroup].type == BSDDIALOG_SEPARATOR)
+		return;
+	if (*focusitem < 0 || *focusitem >= groups[*focusgroup].nitems)
+		return;
+
+	for (i = *group; i < *focusgroup; i++)
+		*abs += groups[i].nitems;
+
+	*abs += *focusitem;
+	*group = *focusgroup;
+	*rel = *focusitem;
 }
 
 static void
@@ -610,7 +602,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			ymenupad++;
 		}
 	}
-	getfirst_with_default(conf, ngroups, groups, &abs, &g, &rel);
+	getfirst_with_default(ngroups, groups, &abs, &g, &rel, focuslist, focusitem);
 	if (abs >= 0) {
 		currmode = getmode(mode, groups[g]);
 		item = &groups[g].items[rel];
@@ -858,12 +850,12 @@ bsddialog_checklist(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int menurows, int nitems,
     struct bsddialog_menuitem *items, int *focusitem)
 {
-	int output;
+	int output, focuslist = 0;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, CHECKLISTMODE,
-	    1, &group, NULL, focusitem);
+	    1, &group, &focuslist, focusitem);
 
 	return (output);
 }
@@ -873,12 +865,12 @@ bsddialog_menu(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int menurows, int nitems,
     struct bsddialog_menuitem *items, int *focusitem)
 {
-	int output;
+	int output, focuslist = 0;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, MENUMODE, 1,
-	    &group, NULL, focusitem);
+	    &group, &focuslist, focusitem);
 
 	return (output);
 }
@@ -888,12 +880,12 @@ bsddialog_radiolist(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int menurows, int nitems,
     struct bsddialog_menuitem *items, int *focusitem)
 {
-	int output;
+	int output, focuslist = 0;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
 	output = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
-	    1, &group, NULL, focusitem);
+	    1, &group, &focuslist, focusitem);
 
 	return (output);
 }

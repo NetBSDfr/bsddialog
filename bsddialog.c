@@ -131,7 +131,7 @@ static char *nostring = "";
 static bool item_prefix_flag, item_bottomdesc_flag, item_output_sepnl_flag;
 static bool item_singlequote_flag, list_items_on_flag, item_tag_help_flag;
 static bool item_always_quote_flag, item_depth_flag;
-static char *item_output_sep_flag;
+static char *item_output_sep_flag, *item_default_flag;
 /* Time and calendar options */
 static char *date_fmt_flag, *time_fmt_flag;
 /* Forms */
@@ -303,6 +303,7 @@ int main(int argc, char *argv[argc])
 	list_items_on_flag = item_tag_help_flag = false;
 	item_always_quote_flag = false;
 	item_output_sep_flag = NULL;
+	item_default_flag = NULL;
 
 	date_fmt_flag = time_fmt_flag = NULL;
 	
@@ -448,7 +449,7 @@ int main(int argc, char *argv[argc])
 			conf.button.default_label = optarg;
 			break;
 		case DEFAULT_ITEM:
-			conf.menu.default_item = optarg;
+			item_default_flag = optarg;
 			break;
 		case DEFAULTNO:
 			conf.button.default_cancel = true;
@@ -961,9 +962,11 @@ int timebox_builder(BUILDER_ARGS)
 static int
 get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
     bool setdepth, bool setname, bool setdesc, bool setstatus, bool sethelp,
-    int *nitems, struct bsddialog_menuitem *items)
+    int *nitems, struct bsddialog_menuitem *items, int *focusitem)
 {
 	int i, j, sizeitem;
+
+	*focusitem = -1;
 
 	sizeitem = 0;
 	if (setprefix) sizeitem++;
@@ -990,6 +993,10 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 		else
 			items[i].on = false;
 		items[i].bottomdesc = sethelp ? argv[j++] : nostring;
+
+		if (item_default_flag != NULL && *focusitem == -1)
+			if (strcmp(items[i].name, item_default_flag) == 0)
+				*focusitem = i;
 	}
 
 	return (BSDDIALOG_OK);
@@ -1069,7 +1076,7 @@ int checklist_builder(BUILDER_ARGS)
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag,
 	    item_depth_flag, true, true, true, item_bottomdesc_flag, &nitems,
-	    items);
+	    items, &focusitem);
 	if (output != 0)
 		return (output);
 
@@ -1095,7 +1102,7 @@ int menu_builder(BUILDER_ARGS)
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag,
 	    item_depth_flag, true, true, false, item_bottomdesc_flag, &nitems,
-	    items);
+	    items, &focusitem);
 	if (output != 0)
 		return (output);
 
@@ -1121,7 +1128,7 @@ int radiolist_builder(BUILDER_ARGS)
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag,
 	    item_depth_flag, true, true, true, item_bottomdesc_flag, &nitems,
-	    items);
+	    items, &focusitem);
 	if (output != 0)
 		return (output);
 
@@ -1146,7 +1153,7 @@ int treeview_builder(BUILDER_ARGS)
 	menurows = atoi(argv[0]);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_flag, true,
-	    true, true, true, item_bottomdesc_flag, &nitems, items);
+	    true, true, true, item_bottomdesc_flag, &nitems, items, &focusitem);
 	if (output != 0)
 		return (output);
 
