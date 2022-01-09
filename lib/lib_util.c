@@ -301,13 +301,10 @@ static bool check_set_ncurses_attr(WINDOW *win, char *text)
 }
 
 static void
-print_string(WINDOW *win, int *rows, int *y, int *x, int cols, char *str,
+print_string(WINDOW *win, int *rows, int cols, int *y, int *x, char *str,
     bool color)
 {
 	int i, j, len, reallen;
-
-	if(strlen(str) == 0)
-		return;
 
 	len = reallen = strlen(str);
 	if (color) {
@@ -345,49 +342,67 @@ print_string(WINDOW *win, int *rows, int *y, int *x, int cols, char *str,
 }
 
 int
-get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
-    int *maxline, int *nlines)
+print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
+    const char *text)
 {
-	int i, buflen, wordlen, linelen;
+	char *string;
+	int i, j, x, y, tablen;
+	bool loop;
 
-	buflen = strlen(text) + 1;
-	*maxword = 0;
-	wordlen = 0;
-	for (i=0; i < buflen; i++) {
-		if (text[i] == '\t' || text[i] == '\n' || text[i] == ' ' ||
-		    text[i] == '\0') {
-			if (wordlen != 0) {
-				*maxword = MAX(*maxword, wordlen);
-				wordlen = 0;
-				continue;
-			}
+	if ((string = malloc(strlen(text) + 1)) == NULL)
+		RETURN_ERROR("Cannot build (analyze) text");
+
+	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
+
+	i = j = x = y = 0;
+	loop = true;
+	while (loop) {
+		string[j] = text[i];
+
+		if (strchr("\n\t  ", string[j]) != NULL || string[j] == '\0') {
+			string[j] = '\0';
+			print_string(pad, rows, cols, &y, &x, string,
+			    conf->text.highlight);
 		}
 
-		if (conf->text.highlight && is_ncurses_attr(text + i))
-			i += 3;
-		else
-			wordlen++;
-	}
-
-	*maxline = linelen = 0;
-	*nlines = 1;
-	for (i=0; i < buflen; i++) {
 		switch (text[i]) {
-		case '\n':
-			*nlines = *nlines + 1;
 		case '\0':
-			*maxline = MAX(*maxline, linelen);
-			linelen = 0;
+			loop = false;
 			break;
-		default:
-			if (conf->text.highlight && is_ncurses_attr(text + i))
-				i += 3;
-			else
-				linelen++;
+		case '\n':
+			j = -1;
+			x = 0;
+			y++;
+			break;
+		case '\t':
+			for (j=0; j<tablen; j++) {
+				x++;
+				if (x >= cols) {
+					x = 0;
+					y++;
+				}
+			}
+			j = -1;
+			break;
+		case ' ':
+			x++;
+			if (x >= cols) {
+				x = 0;
+				y++;
+			}
+			j = -1;
 		}
+
+		if (y >= *rows) { /* check for whitespaces */
+			*rows = y + 1;
+			wresize(pad, *rows, cols);
+		}
+
+		j++;
+		i++;
 	}
-	if (*nlines == 1 && *maxline == 0)
-		*nlines = 0;
+
+	free(string);
 
 	return (0);
 }
@@ -432,7 +447,6 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		case '\t':
 			words[nword] = wordlen;
 			nword++;
-			// 4 tabs
 			for (j=0; j<tablen; j++)
 				words[nword + j] = 1;
 			nword += tablen;
@@ -467,72 +481,51 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 
 	return (0);
 }
-
+//DELETE
 int
-print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
-    const char *text)
+get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
+    int *maxline, int *nlines)
 {
-	char *string;
-	int i, j, x, y, tablen;
-	bool loop;
+	int i, buflen, wordlen, linelen;
 
-	if ((string = malloc(strlen(text) + 1)) == NULL)
-		RETURN_ERROR("Cannot build (analyze) text");
-
-	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
-
-	i = j = x = y = 0;
-	loop = true;
-	while (loop) {
-		string[j] = text[i];
-
-		if (string[j] == '\0' || string[j] == '\n' ||
-		    string[j] == '\t' || string[j] == ' ') {
-			if (j != 0) {
-				string[j] = '\0';
-				print_string(pad, rows, &y, &x, cols, string,
-				    conf->text.highlight);
+	buflen = strlen(text) + 1;
+	*maxword = 0;
+	wordlen = 0;
+	for (i=0; i < buflen; i++) {
+		if (text[i] == '\t' || text[i] == '\n' || text[i] == ' ' ||
+		    text[i] == '\0') {
+			if (wordlen != 0) {
+				*maxword = MAX(*maxword, wordlen);
+				wordlen = 0;
+				continue;
 			}
 		}
 
-		switch (text[i]) {
-		case '\0':
-			loop = false;
-			break;
-		case '\n':
-			j = -1;
-			x = 0;
-			y++;
-			break;
-		case '\t':
-			for (j=0; j<tablen; j++) {
-				x++;
-				if (x >= cols) {
-					x = 0;
-					y++;
-				}
-			}
-			j = -1;
-			break;
-		case ' ':
-			x++;
-			if (x >= cols) {
-				x = 0;
-				y++;
-			}
-			j = -1;
-		}
-
-		if (y >= *rows) { /* check for whitespaces */
-			*rows = y + 1;
-			wresize(pad, *rows, cols);
-		}
-
-		j++;
-		i++;
+		if (conf->text.highlight && is_ncurses_attr(text + i))
+			i += 3;
+		else
+			wordlen++;
 	}
 
-	free(string);
+	*maxline = linelen = 0;
+	*nlines = 1;
+	for (i=0; i < buflen; i++) {
+		switch (text[i]) {
+		case '\n':
+			*nlines = *nlines + 1;
+		case '\0':
+			*maxline = MAX(*maxline, linelen);
+			linelen = 0;
+			break;
+		default:
+			if (conf->text.highlight && is_ncurses_attr(text + i))
+				i += 3;
+			else
+				linelen++;
+		}
+	}
+	if (*nlines == 1 && *maxline == 0)
+		*nlines = 0;
 
 	return (0);
 }
