@@ -420,8 +420,8 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 }
 
 int
-bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows, int cols,
-    int min, int max, int *value)
+bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, int min, int max, int *value)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
 	int y, x, h, w;
@@ -595,8 +595,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows, int 
 }
 
 int
-bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows, int cols,
-    unsigned int sec)
+bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int sec)
 {
 	WINDOW *widget, *textpad, *bar, *shadow;
 	int output, y, x, h, w;
