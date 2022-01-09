@@ -812,7 +812,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
 	wnoutrefresh(widget);
 
 	int htextpad = 1; //delete!
-	if (textpad!= NULL && text != NULL) /* textbox */
+	if (textpad != NULL && text != NULL) /* textbox */
 		if (print_textpad(conf, textpad, &htextpad,
 		    w - HBORDERS - t.text.hmargin * 2, text) !=0)
 			return (BSDDIALOG_ERROR);
