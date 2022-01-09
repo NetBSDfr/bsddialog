@@ -346,7 +346,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
     const char *text)
 {
 	char *string;
-	int i, j, x, y, tablen;
+	int i, j, z, x, y, tablen;
 	bool loop;
 
 	if ((string = malloc(strlen(text) + 1)) == NULL)
@@ -370,17 +370,17 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 			loop = false;
 			break;
 		case '\n':
-			j = -1;
 			x = 0;
 			y++;
+			j = -1;
 			break;
 		case '\t':
-			for (j=0; j<tablen; j++) {
-				x++;
+			for (z=0; z<tablen; z++) {
 				if (x >= cols) {
 					x = 0;
 					y++;
 				}
+				x++;
 			}
 			j = -1;
 			break;
