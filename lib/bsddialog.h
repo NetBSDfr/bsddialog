@@ -85,6 +85,7 @@ struct bsddialog_conf {
 	} key;
 	struct {
 		bool highlight;
+		unsigned int tablen;
 	} text;
 	struct {
 		bool align_left;

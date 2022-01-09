@@ -250,6 +250,8 @@ bool shortcut_buttons(int key, struct buttons *bs)
 }
 
 /* Text */
+#define TABLEN 4
+
 static bool is_ncurses_attr(const char *text)
 {
 	if (strnlen(text, 3) < 3)
@@ -391,15 +393,93 @@ get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
 }
 
 int
+text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
+    int mincols, int *h, int *w)
+{
+	int i, j, nl, wordlen, nword, *words, maxword, maxwords;
+	bool loop;
+	int tablen;
+
+	nl = nword = 0;
+
+	maxwords = 1024;
+	if ((words = calloc(maxwords, sizeof(int))) == NULL)
+		RETURN_ERROR("Cannot alloc memory for text autosize");
+
+	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
+
+	nword = 0;
+	wordlen = 0;
+	maxword = 0;
+	loop = true;
+	i=0;
+	while (loop) {
+		if (conf->text.highlight && is_ncurses_attr(text + i)) {
+			i += 3;
+			continue;
+		}
+		if (nword + 4 >= maxword) {
+			maxwords += 1024;
+			if (realloc(words, maxwords * sizeof(int)) == NULL)
+				RETURN_ERROR("Cannot realloc memory for text "
+				    "autosize");
+		}
+		switch (text[i]) {
+		case '\0':
+			words[nword] = wordlen;
+			loop = false;
+			break;
+		case '\t':
+			words[nword] = wordlen;
+			nword++;
+			// 4 tabs
+			for (j=0; j<tablen; j++)
+				words[nword + j] = 1;
+			nword += tablen;
+			wordlen = 0;
+			break;
+		case '\n':
+			words[nword] = wordlen;
+			nword++;
+			words[nword] = -1;
+			nl++;
+			nword++;
+			wordlen = 0;
+			break;
+		case ' ':
+			words[nword] = wordlen;
+			nword++;
+			words[nword] = 1;
+			nword++;
+			wordlen = 0;
+			break;
+		default:
+			wordlen++;
+		}
+		i++;
+	}
+
+	BSDDIALOG_DEBUG(1,1,"h:%d|", nl);
+	for (i=0; i<=
+	nword; i++)
+		BSDDIALOG_DEBUG(2+i,1,"word[%d]:%d|", i, words[i]);
+	free(words);
+
+	return (0);
+}
+
+int
 print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
     const char *text)
 {
 	char *string;
-	int i, j, x, y;
+	int i, j, x, y, tablen;
 	bool loop;
 
 	if ((string = malloc(strlen(text) + 1)) == NULL)
 		RETURN_ERROR("Cannot build (analyze) text");
+
+	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
 
 	i = j = x = y = 0;
 	loop = true;
@@ -425,7 +505,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 			y++;
 			break;
 		case '\t':
-			for (j=0; j<4 /*tablen*/; j++) {
+			for (j=0; j<tablen; j++) {
 				x++;
 				if (x >= cols) {
 					x = 0;

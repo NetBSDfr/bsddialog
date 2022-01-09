@@ -86,6 +86,10 @@ int
 get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
     int *maxline, int *nlines);
 
+int
+text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
+    int mincols, int *h, int *w);
+
 int widget_max_height(struct bsddialog_conf *conf);
 int widget_max_width(struct bsddialog_conf *conf);
 
