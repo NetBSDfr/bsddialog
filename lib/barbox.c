@@ -133,7 +133,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int perc, const char *sep)
 {
 	bool mainloop;
-	int y, x, h, w, htextpad;
+	int y, x, h, w;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char input[2048], ntext[2048], *pntext;
 
@@ -157,6 +157,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-4,
 		    x+w-1-t.text.hmargin);
+		draw_borders(conf, bar, 3, w-6, RAISED);
 		draw_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
 
@@ -174,8 +175,6 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		scanf("%d", &perc);
 		perc = perc < 0 ? 0 : perc;
 		perc = perc > 100 ? 100 : perc;
-		htextpad = 1;
-		wclear(textpad);
 		pntext = &ntext[0];
 		ntext[0] = '\0';
 		while (true) {
@@ -191,8 +190,9 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 			pntext[0] = ' ';
 			pntext++;
 		}
-		print_textpad(conf, textpad, &htextpad, w-2-t.text.hmargin*2,
-		    ntext);
+		if(update_dialog(conf, shadow, widget, y, x, h, w, textpad,
+		    ntext, NULL, false) != 0)
+			return (BSDDIALOG_ERROR);
 	}
 
 	delwin(bar);

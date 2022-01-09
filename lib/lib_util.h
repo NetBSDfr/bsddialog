@@ -108,10 +108,6 @@ int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
 
 /* widget builders */
-int
-print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
-    const char *text);
-
 enum elevation { RAISED, LOWERED };
 
 void
