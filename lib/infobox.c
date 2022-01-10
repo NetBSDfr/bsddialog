@@ -33,30 +33,35 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MIN_HEIGHT	3
-
 extern struct bsddialog_theme t;
 
 static int
 infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, const char *text)
 {
-	int maxword, maxline, nlines;
-
-	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return (BSDDIALOG_ERROR);
+	int mincols, htext, wtext, maxhtext;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = maxline + TEXTHMARGINS;
-		*w = widget_min_width(conf, NULL, *w);
+		mincols = COLS / 2;
+	} else
+		mincols = cols - HBORDERS - TEXTHMARGINS;
+
+	if (rows == BSDDIALOG_AUTOSIZE)
+		maxhtext = widget_max_height(conf) - VBORDERS;
+	else
+		maxhtext = rows - VBORDERS;
+
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
+		if (text_autosize(conf, text, maxhtext, mincols, true, &htext,
+		    &wtext) != 0)
+			return (BSDDIALOG_ERROR);
 	}
 
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = 1;
-		if (maxword > 0)
-			*h = MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
-		*h = widget_min_height(conf, false, *h);
-	}
+	if (cols == BSDDIALOG_AUTOSIZE)
+		*w = widget_min_width(conf, NULL, TEXTHMARGINS + wtext);
+
+	if (rows == BSDDIALOG_AUTOSIZE)
+		*h = widget_min_height(conf, false, htext);
 
 	return (0);
 }
@@ -64,12 +69,11 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 static int infobox_checksize(int rows, int cols)
 {
 
-	if (cols < HBORDERS + 1 + TEXTHMARGINS)
-		RETURN_ERROR("Few cols, infobox needs at least width 3 + text "
-		    "margins");
+	if (cols < HBORDERS)
+		RETURN_ERROR("Few cols, infobox needs at least width 2");
 
-	if (rows < 3)
-		RETURN_ERROR("Infobox needs at least height 3");
+	if (rows < VBORDERS)
+		RETURN_ERROR("Infobox needs at least height 2");
 
 	return (0);
 }

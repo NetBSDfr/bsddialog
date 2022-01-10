@@ -34,8 +34,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define AUTO_WIDTH	(COLS / 3U)
-#define MIN_HEIGHT	(HBORDERS + 2 /*buttons*/ + 1 /*text*/)
 
 extern struct bsddialog_theme t;
 
@@ -43,23 +41,32 @@ static int
 message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, const char *text, struct buttons bs)
 {
-	int maxword, maxline, nlines, line;
-
-	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return (BSDDIALOG_ERROR);
+	int mincols, htext, wtext, maxhtext;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		line = MIN(maxline + TEXTHMARGINS, AUTO_WIDTH);
-		line = MAX(line, maxword + TEXTHMARGINS);
-		*w = widget_min_width(conf, &bs, line);
+		mincols = bs.nbuttons * bs.sizebutton;
+		if (bs.nbuttons > 1)
+			mincols += (bs.nbuttons-1) * t.button.space;
+		mincols = MAX(mincols, COLS / 2);
+	} else
+		mincols = cols - HBORDERS - TEXTHMARGINS;
+
+	if (rows == BSDDIALOG_AUTOSIZE)
+		maxhtext = widget_max_height(conf) - VBORDERS - 2;
+	else
+		maxhtext = rows - VBORDERS - 2;
+
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
+		if (text_autosize(conf, text, maxhtext, mincols, true, &htext,
+		    &wtext) != 0)
+			return (BSDDIALOG_ERROR);
 	}
 
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = 1;
-		if (maxword > 0)
-			*h = MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
-		*h = widget_min_height(conf, true, *h);
-	}
+	if (cols == BSDDIALOG_AUTOSIZE)
+		*w = widget_min_width(conf, &bs, TEXTHMARGINS + wtext);
+
+	if (rows == BSDDIALOG_AUTOSIZE)
+		*h = widget_min_height(conf, true, htext);
 
 	return (0);
 }
@@ -76,8 +83,8 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "
 		    "for borders, buttons and spaces between buttons");
 
-	if (rows < MIN_HEIGHT)
-		RETURN_ERROR("Msgbox and Yesno need at least height 5");
+	if (rows < HBORDERS + 2 /*buttons*/)
+		RETURN_ERROR("Msgbox and Yesno need at least height 4");
 
 	return (0);
 }

@@ -418,8 +418,6 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 #define NL -1
 #define WS -2
 
-	nword = 0;
-
 	maxwords = 1024;
 	if ((words = calloc(maxwords, sizeof(int))) == NULL)
 		RETURN_ERROR("Cannot alloc memory for text autosize");
@@ -473,20 +471,15 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		i++;
 	}
 
-	for (i=0; i<=nword; i++)
-		BSDDIALOG_DEBUG(2+i,1,"word[%d]:%d|", i, words[i]);
-
 	if (increasecols) {
 		mincols = MAX(maxwordlen, mincols);
 		mincols = MIN(maxwidth, mincols);
 	}
-int l = 0;
-line=0;
+
 	while (true) {
 		x = 0;
 		y = 1;
-		l++;
-		//mincols = 24;
+		line=0;
 		for (i=0; i<=nword; i++) {
 			if (words[i] == NL) {
 				y++;
@@ -521,11 +514,8 @@ line=0;
 		mincols++;
 	}
 
-	*h = (nword == 0 && words[i] == 0) ? 0 : y;
-	*w = MIN(mincols, line);
-	BSDDIALOG_DEBUG(LINES -4, 1, "loop:%d|", l);
-	BSDDIALOG_DEBUG(LINES -3, 1, "rows:%d|", y);
-	BSDDIALOG_DEBUG(LINES -2, 1, "cols:%d|", mincols);
+	*h = (nword == 0 && words[0] == 0) ? 0 : y;
+	*w = MIN(mincols, line); /* wtext can be less than mincols */
 
 	free(words);
 
