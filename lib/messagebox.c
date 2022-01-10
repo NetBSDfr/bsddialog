@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -49,8 +49,8 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		line = MIN(maxline + t.text.hmargin * 2, AUTO_WIDTH);
-		line = MAX(line, (int)(maxword + t.text.hmargin * 2));
+		line = MIN(maxline + TEXTHMARGINS, AUTO_WIDTH);
+		line = MAX(line, maxword + TEXTHMARGINS);
 		*w = widget_min_width(conf, &bs, line);
 	}
 

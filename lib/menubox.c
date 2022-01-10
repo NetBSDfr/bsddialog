@@ -583,8 +583,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	doupdate();
 
-	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
-	    y + h - menurows, x + 1 + w - t.text.hmargin);
+	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
+	    y + h - menurows, x + 1 + w - TEXTHMARGIN);
 
 	menuwin = new_boxed_window(conf, y + h - 5 - menurows, x + 2,
 	    menurows+2, w-4, LOWERED);
@@ -694,8 +694,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			
 			doupdate();
 
-			prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
-			    y + h - menurows, x + 1 + w - t.text.hmargin);
+			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
+			    y + h - menurows, x + 1 + w - TEXTHMARGIN);
 
 			wclear(menuwin);
 			mvwin(menuwin, y + h - 5 - menurows, x + 2);

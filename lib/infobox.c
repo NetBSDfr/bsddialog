@@ -47,7 +47,7 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = maxline + + t.text.hmargin * 2;
+		*w = maxline + TEXTHMARGINS;
 		*w = widget_min_width(conf, NULL, *w);
 	}
 
@@ -64,7 +64,7 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 static int infobox_checksize(int rows, int cols)
 {
 
-	if (cols < HBORDERS + 1 + (int) t.text.hmargin * 2)
+	if (cols < HBORDERS + 1 + TEXTHMARGINS)
 		RETURN_ERROR("Few cols, infobox needs at least width 3 + text "
 		    "margins");
 
@@ -95,8 +95,8 @@ bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
 	    NULL, false) != 0)
 		return (BSDDIALOG_ERROR);
 
-	pnoutrefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-2,
-	    x+w-t.text.hmargin);
+	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-2,
+	    x+w-TEXTHMARGIN);
 
 	doupdate();
 

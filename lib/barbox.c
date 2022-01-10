@@ -90,7 +90,7 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = MAX(MINWIDTH, (int)(maxline + t.text.hmargin * 2));
+		*w = MAX(MINWIDTH, maxline + TEXTHMARGINS);
 		*w = widget_min_width(conf, bs, *w);
 	}
 
@@ -155,8 +155,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	mainloop = (sep == NULL) ? false : true;
 	while (mainloop) {
 		wrefresh(widget);
-		prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-4,
-		    x+w-1-t.text.hmargin);
+		prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-4,
+		    x+w-1-TEXTHMARGIN);
 		draw_borders(conf, bar, 3, w-6, RAISED);
 		draw_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
@@ -244,7 +244,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		w = MAX(max_minbarlen, (int)(maxline + t.text.hmargin * 2));
+		w = MAX(max_minbarlen, maxline + TEXTHMARGINS);
 		w = widget_min_width(conf, NULL, w);
 	}
 	if (rows == BSDDIALOG_AUTOSIZE) {
@@ -456,8 +456,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	doupdate();
 
-	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7,
-	    x+w-1-t.text.hmargin);
+	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 	bigchange = MAX(1, sizebar/10);
@@ -575,8 +574,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			wresize(bar, 3, sizebar + 2);
 			draw_borders(conf, bar, 3, sizebar+2, RAISED);
 
-			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7,
-			    x+w-1-t.text.hmargin);
+			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
+			    x+w-1-TEXTHMARGIN);
 
 			barupdate = true;
 			break;
@@ -622,8 +621,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 	doupdate();
 	
-	prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7,
-	    x+w-1-t.text.hmargin);
+	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
 	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARMARGIN, 3,
@@ -720,8 +718,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			wresize(bar, 3, sizebar + 2);
 			draw_borders(conf, bar, 3, sizebar+2, LOWERED);
 
-			prefresh(textpad, 0, 0, y+1, x+1+t.text.hmargin, y+h-7, 
-			    x+w-1-t.text.hmargin);
+			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, 
+			    x+w-1-TEXTHMARGIN);
 
 			barupdate = true;
 			break;

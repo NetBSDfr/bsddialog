@@ -414,7 +414,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	int i, j, z, wordlen, maxwordlen, nword, *words, maxwords, line;
 	int tablen;
 	int x, y;
-	int maxwidth = widget_max_width(conf) - HBORDERS - 2 * t.text.hmargin;
+	int maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
 #define NL -1
 #define WS -2
 
@@ -863,8 +863,8 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
 
 	int htextpad = 1; //delete!
 	if (textpad != NULL && text != NULL) /* textbox */
-		if (print_textpad(conf, textpad, &htextpad,
-		    w - HBORDERS - t.text.hmargin * 2, text) !=0)
+		if (print_textpad(conf, textpad, &htextpad, 
+		    w - HBORDERS - TEXTHMARGINS, text) !=0)
 			return (BSDDIALOG_ERROR);
 
 	return (0);
@@ -889,7 +889,7 @@ update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 
 	if (textpad != NULL) {
 		wclear(textpad);
-		wresize(textpad, 1, w - HBORDERS - t.text.hmargin * 2);
+		wresize(textpad, 1, w - HBORDERS - TEXTHMARGINS);
 	}
 
 	error = draw_dialog(conf, shadow, widget, h, w, textpad, text, bs,
@@ -919,7 +919,7 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 	}
 
 	if (textpad != NULL && text != NULL) { /* textbox */
-		*textpad = newpad(1, w - HBORDERS - t.text.hmargin * 2);
+		*textpad = newpad(1, w - HBORDERS - TEXTHMARGINS);
 		if (*textpad == NULL) {
 			delwin(*widget);
 			if (conf->shadow)

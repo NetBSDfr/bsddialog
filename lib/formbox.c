@@ -443,8 +443,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	    true) != 0)
 		return (BSDDIALOG_ERROR);
 
-	prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
-	    y + h - formheight, x + 1 + w - t.text.hmargin);
+	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
+	    y + h - formheight, x + 1 + w - TEXTHMARGIN);
 	
 	formwin = new_boxed_window(conf, y + h - 3 - formheight -2, x +1,
 	    formheight+2, w-2, LOWERED);
@@ -472,8 +472,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		doupdate();
 		wrefresh(widget);
 
-		prefresh(textpad, 0, 0, y + 1, x + 1 + t.text.hmargin,
-		    y + h - formheight, x + 1 + w - t.text.hmargin);
+		prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
+		    y + h - formheight, x + 1 + w - TEXTHMARGIN);
 
 		draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
 		wrefresh(formwin);
