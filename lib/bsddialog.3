@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 7, 2022
+.Dd January 10, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -279,7 +279,6 @@ library, it is local to its dialog.
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
 	bool ascii_lines;
-	unsigned int aspect_ratio;
 	unsigned int auto_minheight;
 	unsigned int auto_minwidth;
 	const char *bottomtitle;
@@ -332,10 +331,6 @@ struct bsddialog_conf {
 .Bl -column -compact
 .It Fa conf.ascii_lines
 ascii characters to draw lines, default wide characters.
-.It Fa conf.aspect_ratio
-set an aspect ratio with
-.Dv BSDDIALOG_AUTOSIZE
-for infobox, msgbox and yesnobox.
 .It Fa conf.auto_minheight
 minimum height if
 .Fa rows
@@ -754,9 +749,6 @@ struct bsddialog_theme {
 		int  bottomtitlecolor;
 	} dialog;
 	struct {
-		unsigned int hmargin;
-	} text;
-	struct {
 		int arrowcolor;
 		int selectorcolor;
 		int f_namecolor;
@@ -938,12 +930,5 @@ library first appeared in
 was written by
 .An Alfonso Sabato Siciliano Aq Mt alf.siciliano@gmail.com .
 .Sh BUGS
-If
-.Fa rows
-is
-.Dv BSDDIALOG_AUTOSIZE
-only one line is reserved to
-.Fa text ,
-the remaining part is hidden.
 .Fn bsddialog_form
-does not handle screen resize and does not provides scrolling.
+does not handle screen resize and does not provides scrolling for items.
