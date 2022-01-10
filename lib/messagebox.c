@@ -41,15 +41,15 @@ static int
 message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, const char *text, struct buttons bs)
 {
-	int mincols, htext, wtext, maxhtext;
+	int htext, wtext, maxhtext, minwtext;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		mincols = bs.nbuttons * bs.sizebutton;
+		minwtext = bs.nbuttons * bs.sizebutton;
 		if (bs.nbuttons > 1)
-			mincols += (bs.nbuttons-1) * t.button.space;
-		mincols = MAX(mincols, COLS / 2);
+			minwtext += (bs.nbuttons-1) * t.button.space;
+		minwtext = MAX(minwtext, COLS / 2);
 	} else
-		mincols = cols - HBORDERS - TEXTHMARGINS;
+		minwtext = cols - HBORDERS - TEXTHMARGINS;
 
 	if (rows == BSDDIALOG_AUTOSIZE)
 		maxhtext = widget_max_height(conf) - VBORDERS - 2;
@@ -57,7 +57,7 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		maxhtext = rows - VBORDERS - 2;
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_autosize(conf, text, maxhtext, mincols, true, &htext,
+		if (text_autosize(conf, text, maxhtext, minwtext, true, &htext,
 		    &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
