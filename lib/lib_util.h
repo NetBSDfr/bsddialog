@@ -50,8 +50,8 @@ void set_error_string(char *string);
 
 /* buttons */
 struct buttons {
-#define MAXBUTTONS    6 /* ok + extra + cancel + help + 2 generics */
 	unsigned int nbuttons;
+#define MAXBUTTONS 6 /* ok + extra + cancel + help + 2 generics */
 	const char *label[MAXBUTTONS];
 	int value[MAXBUTTONS];
 	int curr;
