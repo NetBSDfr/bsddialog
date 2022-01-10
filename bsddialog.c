@@ -102,7 +102,7 @@ enum OPTS {
 	TRIM,
 	VERSION,
 	YES_LABEL,
-	/* Widgets */
+	/* Dialogs */
 	CHECKLIST,
 	DATEBOX,
 	FORM,
@@ -124,7 +124,7 @@ enum OPTS {
 	YESNO,
 };
 
-/* libbsddialog does not support NULL string for now */
+/* libbsddialog does not support NULL string */
 static char *nostring = "";
 /* Menus flags and options */
 static bool item_prefix_flag, item_bottomdesc_flag, item_output_sepnl_flag;
@@ -372,7 +372,7 @@ int main(int argc, char *argv[argc])
 	    {"trim",            no_argument,       NULL, TRIM },
 	    {"version",         no_argument,       NULL, VERSION },
 	    {"yes-label",       required_argument, NULL, YES_LABEL },
-	    /* Widgets */
+	    /* Dialogs */
 	    {"checklist",    no_argument, NULL, CHECKLIST },
 	    {"datebox",      no_argument, NULL, DATEBOX },
 	    {"form",         no_argument, NULL, FORM },
@@ -731,8 +731,7 @@ int main(int argc, char *argv[argc])
 	return (output);
 }
 
-/* Widgets */
-
+/* Dialogs */
 int gauge_builder(BUILDER_ARGS)
 {
 	int output, perc;
