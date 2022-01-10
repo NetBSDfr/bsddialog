@@ -60,7 +60,8 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		*h = 3; /* windows and borders */
 		if (maxword > 0)
-			*h += MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
+			//*h += MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
+			*h += nlines;
 		*h = widget_min_height(conf, true, *h);
 	}
 

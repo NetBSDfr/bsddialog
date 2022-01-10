@@ -42,7 +42,6 @@
 enum OPTS {
 	/* Common options */
 	ASCII_LINES = '?' + 1,
-	ASPECT_RATIO,
 	BACKTITLE,
 	BEGIN_X,
 	BEGIN_Y,
@@ -221,7 +220,7 @@ void usage(void)
 	       "<height> <width> [--<widget-opts>]\n");
 	printf("\n");
 	printf("Common Options:\n");
-	printf("--ascii-lines, --aspect <ratio>, --backtitle <backtitle>, "
+	printf("--ascii-lines, --backtitle <backtitle>, "
 		"--begin-x <x>, --begin-y <y>, --cancel-label <string>, "
 		"--clear, --colors, --date-format <format>, "
 		"--default-button <label>, --defaultno, --default-item <name>,"
@@ -313,7 +312,6 @@ int main(int argc, char *argv[argc])
 	struct option longopts[] = {
 	    /* common options */
 	    {"ascii-lines",     no_argument,       NULL, ASCII_LINES },
-	    {"aspect",          required_argument, NULL, ASPECT_RATIO },
 	    {"backtitle",       required_argument, NULL, BACKTITLE },
 	    {"begin-x",         required_argument, NULL, BEGIN_X },
 	    {"begin-y",         required_argument, NULL, BEGIN_Y },
@@ -403,13 +401,6 @@ int main(int argc, char *argv[argc])
 		/* Common options */
 		case ASCII_LINES:
 			conf.ascii_lines = true;
-			break;
-		case ASPECT_RATIO:
-			conf.aspect_ratio = atoi(optarg);
-			if (conf.aspect_ratio < 1) {
-				printf("Error: aspect cannot be < 1");
-				return (BSDDIALOG_ERROR);
-			}
 			break;
 		case BACKTITLE:
 			backtitle_flag = optarg;

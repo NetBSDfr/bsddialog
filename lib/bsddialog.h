@@ -65,7 +65,6 @@
 
 struct bsddialog_conf {
 	bool ascii_lines;
-	unsigned int aspect_ratio;
 	unsigned int auto_minheight;
 	unsigned int auto_minwidth;
 	const char *bottomtitle;
