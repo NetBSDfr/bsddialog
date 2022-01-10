@@ -341,7 +341,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, char *str,
 	}
 }
 
-int
+static int
 print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
     const char *text)
 {
@@ -409,13 +409,16 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 
 int
 text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
-    int mincols, int *h, int *w)
+    int mincols, bool increasecols, int *h, int *w)
 {
-	int i, j, nl, wordlen, nword, *words, maxword, maxwords;
-	bool loop;
+	int i, j, z, wordlen, maxwordlen, nword, *words, maxwords, line;
 	int tablen;
+	int x, y;
+	int maxwidth = widget_max_width(conf) - HBORDERS - 2 * t.text.hmargin;
+#define NL -1
+#define WS -2
 
-	nl = nword = 0;
+	nword = 0;
 
 	maxwords = 1024;
 	if ((words = calloc(maxwords, sizeof(int))) == NULL)
@@ -425,58 +428,105 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 
 	nword = 0;
 	wordlen = 0;
-	maxword = 0;
-	loop = true;
+	maxwordlen = 0;
 	i=0;
-	while (loop) {
+	while (true) {
 		if (conf->text.highlight && is_ncurses_attr(text + i)) {
 			i += 3;
 			continue;
 		}
-		if (nword + 4 >= maxword) {
+
+		if (nword + tablen >= maxwords) {
 			maxwords += 1024;
 			if (realloc(words, maxwords * sizeof(int)) == NULL)
 				RETURN_ERROR("Cannot realloc memory for text "
 				    "autosize");
 		}
-		switch (text[i]) {
-		case '\0':
+
+		if (text[i] == '\0') {
 			words[nword] = wordlen;
-			loop = false;
+			maxwordlen = MAX(wordlen, maxwordlen);
 			break;
-		case '\t':
-			words[nword] = wordlen;
-			nword++;
-			for (j=0; j<tablen; j++)
-				words[nword + j] = 1;
-			nword += tablen;
-			wordlen = 0;
-			break;
-		case '\n':
-			words[nword] = wordlen;
-			nword++;
-			words[nword] = -1;
-			nl++;
-			nword++;
-			wordlen = 0;
-			break;
-		case ' ':
-			words[nword] = wordlen;
-			nword++;
-			words[nword] = 1;
-			nword++;
-			wordlen = 0;
-			break;
-		default:
-			wordlen++;
 		}
+
+		if (strchr("\t\n  ", text[i]) != NULL) {
+			maxwordlen = MAX(wordlen, maxwordlen);
+
+			if (wordlen != 0) {
+				words[nword] = wordlen;
+				nword++;
+				wordlen = 0;
+			}
+
+			if (text[i] == '\t') {
+				for (j=0; j<tablen; j++)
+					words[nword + j] = 1;
+				nword += tablen;
+			} else {
+				words[nword] = text[i] == '\n' ? NL : WS;
+				nword++;
+			}
+		}
+		else
+			wordlen++;
+
 		i++;
 	}
 
-	BSDDIALOG_DEBUG(1,1,"h:%d|", nl);
-	for (i=0; i<=
-	nword; i++)
+	for (i=0; i<=nword; i++)
 		BSDDIALOG_DEBUG(2+i,1,"word[%d]:%d|", i, words[i]);
+
+	if (increasecols) {
+		mincols = MAX(maxwordlen, mincols);
+		mincols = MIN(maxwidth, mincols);
+	}
+int l = 0;
+line=0;
+	while (true) {
+		x = 0;
+		y = 1;
+		l++;
+		//mincols = 24;
+		for (i=0; i<=nword; i++) {
+			if (words[i] == NL) {
+				y++;
+				x = 0;
+			}
+			else if (words[i] == WS) {
+				x++;
+				if (x >= mincols) {
+					x = 0;
+					y++;
+				}
+			}
+			else {
+				if (words[i] + x <= mincols)
+					x += words[i];
+				else {
+					for (z=words[i]; z>0; ) {
+						x=0;
+						y++;
+						x = MIN(mincols, z);
+						z -= MIN(mincols, z);
+					}
+				}
+			}
+			line = MAX(line, x);
+		}
+
+		if (increasecols == false)
+			break;
+		if (y <= maxrows || mincols >= maxwidth)
+			break;
+		mincols++;
+	}
+
+	*h = (nword == 0 && words[i] == 0) ? 0 : y;
+	*w = MIN(mincols, line);
+	BSDDIALOG_DEBUG(LINES -4, 1, "loop:%d|", l);
+	BSDDIALOG_DEBUG(LINES -3, 1, "rows:%d|", y);
+	BSDDIALOG_DEBUG(LINES -2, 1, "cols:%d|", mincols);
+
 	free(words);
 
 	return (0);
