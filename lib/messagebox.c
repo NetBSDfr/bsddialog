@@ -239,6 +239,8 @@ bsddialog_yesno(struct bsddialog_conf *conf, const char *text, int rows,
     int cols)
 {
 	struct buttons bs;
+#define BUTTON_YES_LABEL     "Yes"
+#define BUTTON_NO_LABEL      "No"
 
 	get_buttons(conf, &bs, BUTTON_YES_LABEL, BUTTON_NO_LABEL);
 

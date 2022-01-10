@@ -49,15 +49,8 @@ void set_error_string(char *string);
 } while (0)
 
 /* buttons */
-#define BUTTON_OK_LABEL      "OK"
-#define BUTTON_YES_LABEL     "Yes"
-#define BUTTON_EXTRA_LABEL   "Extra"
-#define BUTTON_CANCEL_LABEL  "Cancel"
-#define BUTTON_NO_LABEL      "No"
-#define BUTTON_HELP_LABEL    "Help"
-
-#define MAXBUTTONS    6 /* ok + extra + cancel + help + 2 generics */
 struct buttons {
+#define MAXBUTTONS    6 /* ok + extra + cancel + help + 2 generics */
 	unsigned int nbuttons;
 	const char *label[MAXBUTTONS];
 	int value[MAXBUTTONS];
@@ -65,6 +58,8 @@ struct buttons {
 	unsigned int sizebutton; /* including left and right delimiters */
 };
 
+#define BUTTON_OK_LABEL      "OK"
+#define BUTTON_CANCEL_LABEL  "Cancel"
 void
 get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
     char *nocancellabel);

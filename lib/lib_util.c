@@ -163,6 +163,8 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 {
 	int i;
 #define SIZEBUTTON  8
+#define BUTTON_EXTRA_LABEL   "Extra"
+#define BUTTON_HELP_LABEL    "Help"
 #define DEFAULT_BUTTON_LABEL	BUTTON_OK_LABEL
 #define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
 
