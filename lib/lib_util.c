@@ -409,7 +409,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 	return (0);
 }
 
-int
+static int
 text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
     int mincols, bool increasecols, int *h, int *w)
 {
@@ -523,6 +523,56 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 
 	return (0);
 }
+
+int
+text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
+    struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext)
+{
+	int wbuttons, maxhtext;
+	bool changewtext;
+
+	wbuttons = 0;
+	if (bs != NULL) {
+		wbuttons = bs->nbuttons * bs->sizebutton;
+		if (bs->nbuttons > 0)
+			wbuttons += (bs->nbuttons-1) * t.button.space;
+	}
+
+	if (cols == BSDDIALOG_AUTOSIZE) {
+		startwtext = MAX(startwtext, wbuttons - TEXTHMARGINS);
+		changewtext = true;
+	} else if (cols == BSDDIALOG_FULLSCREEN) {
+		startwtext = widget_max_width(conf) - VBORDERS - TEXTHMARGINS;
+		changewtext = false;
+	} else { /* fixed */
+		startwtext = cols - VBORDERS - TEXTHMARGINS;
+		changewtext = false;
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
+		maxhtext = widget_max_height(conf) - VBORDERS - rowsnotext;
+		if (bs != NULL)
+			maxhtext -= 2;
+	} else { /* fixed */
+		maxhtext = rows - VBORDERS - rowsnotext;
+		if (bs != NULL)
+			maxhtext -= 2;
+	}
+
+	if (startwtext <= 0 && changewtext)
+		startwtext = 1;
+	if (maxhtext <= 0 || startwtext <= 0) {
+		*htext = *wtext = 0;
+		return (0);
+	}
+
+	if (text_autosize(conf, text, maxhtext, startwtext, changewtext,
+	    htext, wtext) != 0)
+		return (BSDDIALOG_ERROR);
+
+	return (0);
+}
+
 //DELETE
 int
 get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,

@@ -39,26 +39,19 @@ static int
 infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, const char *text)
 {
-	int htext, wtext, maxhtext, minwtext;
-
-	if (cols == BSDDIALOG_AUTOSIZE) {
-		minwtext = COLS / 2;
-	} else
-		minwtext = cols - HBORDERS - TEXTHMARGINS;
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		maxhtext = widget_max_height(conf) - VBORDERS;
-	else
-		maxhtext = rows - VBORDERS;
+	int htext, wtext;
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_autosize(conf, text, maxhtext, minwtext, true, &htext,
+		if (text_size(conf, rows, cols, text, NULL, 0, COLS/2, &htext,
 		    &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, NULL, TEXTHMARGINS + wtext);
+	if (cols == BSDDIALOG_AUTOSIZE) {
+		if (wtext != 0)
+			wtext += TEXTHMARGINS;
+		*w = widget_min_width(conf, NULL, wtext);
+	}
 
 	if (rows == BSDDIALOG_AUTOSIZE)
 		*h = widget_min_height(conf, false, htext);
