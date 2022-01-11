@@ -119,11 +119,11 @@ bar_checksize(const char *text, int rows, int cols, struct buttons *bs)
 	minwidth = MAX(minwidth + VBORDERS, MINBARWIDTH);
 
 	if (cols< minwidth)
-		RETURN_ERROR("Few cols for this widget");
+		RETURN_ERROR("Few cols to draw bar and/or buttons");
 
-	minheight = MINHEIGHT + ((text != NULL && strlen(text) > 0) ? 1 : 0);
+	minheight = MINHEIGHT);
 	if (rows < minheight)
-		RETURN_ERROR("Few rows for this mixedgauge");
+		RETURN_ERROR("Few rows to draw bar");
 
 	return (0);
 }
