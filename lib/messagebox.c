@@ -53,7 +53,7 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*w = widget_min_width(conf, wtext, 0, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, true, htext);
+		*h = widget_min_height(conf, htext, 0, true);
 
 	return (0);
 }

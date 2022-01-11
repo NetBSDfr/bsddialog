@@ -94,7 +94,7 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*w = widget_min_width(conf, wtext, MINBARWIDTH, bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, bs != NULL, 3 /* bar */ + htext);
+		*h = widget_min_height(conf, htext, 3 /* bar */, bs != NULL);
 
 	return (0);
 }
@@ -244,10 +244,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	}
 	if (cols == BSDDIALOG_AUTOSIZE)
 		w = widget_min_width(conf, wtext, max_minbarlen, NULL);
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		h = nminibars + 3 /* mainbar */ + htext;
-		h = widget_min_height(conf, false, h);
-	}
+	if (rows == BSDDIALOG_AUTOSIZE)
+		h = widget_min_height(conf, htext, nminibars + 3, false);
 
 	/* mixedgauge checksize */
 	if (w < max_minbarlen + 2)

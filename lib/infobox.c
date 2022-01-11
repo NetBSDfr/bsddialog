@@ -51,7 +51,7 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*w = widget_min_width(conf, wtext, 0, NULL);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, false, htext);
+		*h = widget_min_height(conf, htext, 0, false);
 
 	return (0);
 }

@@ -310,7 +310,7 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		else /* h autosize with fixed formheight */
 			menusize = *formheight + 2;
 
-		*h = widget_min_height(conf, true, menusize + textrow);
+		*h = widget_min_height(conf, textrow, menusize, true);
 	} else {
 		if (*formheight == 0)
 			*formheight = MIN(rows-6-textrow, nitems);

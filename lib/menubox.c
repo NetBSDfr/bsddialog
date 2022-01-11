@@ -439,7 +439,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		else /* h autosize with fixed menurows */
 			menusize = *menurows + 2;
 
-		*h = widget_min_height(conf, true, menusize + textrow);
+		*h = widget_min_height(conf, textrow, menusize, true);
 		/* 
 		 * avoid menurows overflow and
 		 * with rows=AUTOSIZE menurows!=0 becomes max-menurows
