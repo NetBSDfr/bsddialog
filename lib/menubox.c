@@ -426,7 +426,14 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 	int htext, wtext, menusize, notext;
 
 	notext = 2;
-	notext += (*menurows == BSDDIALOG_AUTOSIZE) ? 1 : *menurows;
+	if (*menurows == BSDDIALOG_AUTOSIZE) {
+		/* grows vertically */
+		/* notext = 1; */
+		/* grows horizontally, better with little terminals */
+		notext = nitems;
+		notext = MIN(notext, widget_max_height(conf) - HBORDERS - 3);
+	} else
+		notext = *menurows;
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
 		if (text_size(conf, rows, cols, text, &bs, notext, linelen + 6,
