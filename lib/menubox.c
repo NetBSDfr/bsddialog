@@ -429,8 +429,8 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 	notext += (*menurows == BSDDIALOG_AUTOSIZE) ? 1 : *menurows;
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, &bs, notext, linelen + 6, &htext,
-		    &wtext) != 0)
+		if (text_size(conf, rows, cols, text, &bs, notext, linelen + 6,
+		    &htext, &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 
