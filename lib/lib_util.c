@@ -573,55 +573,6 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	return (0);
 }
 
-//DELETE
-int
-get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
-    int *maxline, int *nlines)
-{
-	int i, buflen, wordlen, linelen;
-
-	buflen = strlen(text) + 1;
-	*maxword = 0;
-	wordlen = 0;
-	for (i=0; i < buflen; i++) {
-		if (text[i] == '\t' || text[i] == '\n' || text[i] == ' ' ||
-		    text[i] == '\0') {
-			if (wordlen != 0) {
-				*maxword = MAX(*maxword, wordlen);
-				wordlen = 0;
-				continue;
-			}
-		}
-
-		if (conf->text.highlight && is_ncurses_attr(text + i))
-			i += 3;
-		else
-			wordlen++;
-	}
-
-	*maxline = linelen = 0;
-	*nlines = 1;
-	for (i=0; i < buflen; i++) {
-		switch (text[i]) {
-		case '\n':
-			*nlines = *nlines + 1;
-		case '\0':
-			*maxline = MAX(*maxline, linelen);
-			linelen = 0;
-			break;
-		default:
-			if (conf->text.highlight && is_ncurses_attr(text + i))
-				i += 3;
-			else
-				linelen++;
-		}
-	}
-	if (*nlines == 1 && *maxline == 0)
-		*nlines = 0;
-
-	return (0);
-}
-
 /* autosize */
 int widget_max_height(struct bsddialog_conf *conf)
 {

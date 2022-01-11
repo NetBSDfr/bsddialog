@@ -77,10 +77,6 @@ int hide_widget(int y, int x, int h, int w, bool withshadow);
 
 /* (auto) size and (auto) position */
 int
-get_text_properties(struct bsddialog_conf *conf, const char *text, int *maxword,
-    int *maxline, int *nlines);
-
-int
 text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
     struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext);
 
