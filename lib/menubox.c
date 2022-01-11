@@ -423,8 +423,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     const char *text, int linelen, unsigned int *menurows, int nitems,
     struct buttons bs)
 {
-	int htext, wtext, menusize;
-	int notext;
+	int htext, wtext, menusize, notext;
 
 	notext = 2;
 	notext += (*menurows == BSDDIALOG_AUTOSIZE) ? 1 : *menurows;
