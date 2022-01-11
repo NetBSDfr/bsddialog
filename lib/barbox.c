@@ -38,10 +38,9 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define BARMARGIN	3
-#define MINBARWIDTH	10
-#define MINWIDTH	(MINBARWIDTH + BARMARGIN * 2)
-#define MINHEIGHT	7 /* without text */
+#define BARPADDING	3
+#define MINBARWIDTH	15
+#define MINWIDTH	(MINBARWIDTH + BARPADDING * 2)
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -84,23 +83,23 @@ static int
 bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     const char *text, struct buttons *bs)
 {
-	int maxword, maxline, nlines;
+	int htext, wtext;
 
-	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return (BSDDIALOG_ERROR);
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
+		if (text_size(conf, rows, cols, text, bs, 3, MINWIDTH, &htext,
+		    &wtext) != 0)
+			return (BSDDIALOG_ERROR);
+	}
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		*w = MAX(MINWIDTH, maxline + TEXTHMARGINS);
+		if (wtext != 0)
+			wtext += TEXTHMARGINS;
+		*w = MAX(wtext, MINWIDTH);
 		*w = widget_min_width(conf, bs, *w);
 	}
 
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = MINHEIGHT;
-		if (maxword > 0)
-			*h += 1;
-
-		*h = widget_min_height(conf, bs != NULL, *h);
-	}
+	if (rows == BSDDIALOG_AUTOSIZE)
+		*h = widget_min_height(conf, bs != NULL, 3 /* bar */ + htext);
 
 	return (0);
 }
@@ -116,12 +115,15 @@ bar_checksize(const char *text, int rows, int cols, struct buttons *bs)
 		if (bs->nbuttons > 0)
 			minwidth += (bs->nbuttons-1) * t.button.space;
 	}
-	minwidth = MAX(minwidth + VBORDERS, MINBARWIDTH);
+	minwidth = MAX(minwidth, MINWIDTH);
+	minwidth += VBORDERS;
 
-	if (cols< minwidth)
+	if (cols < minwidth)
 		RETURN_ERROR("Few cols to draw bar and/or buttons");
 
-	minheight = MINHEIGHT);
+	minheight = HBORDERS + 3;
+	if (bs != NULL)
+		minheight += 2;
 	if (rows < minheight)
 		RETURN_ERROR("Few rows to draw bar");
 
@@ -458,10 +460,10 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
-	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
+	sizebar = w - HBORDERS - 2 - BARPADDING * 2;
 	bigchange = MAX(1, sizebar/10);
 
-	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARMARGIN, 3,
+	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED);
 
 	loop = buttupdate = barupdate = true;
@@ -567,10 +569,10 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 			doupdate();
 
-			sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
+			sizebar = w - HBORDERS - 2 - BARPADDING * 2;
 			bigchange = MAX(1, sizebar/10);
 			wclear(bar);
-			mvwin(bar, y + h - 6, x + 1 + BARMARGIN);
+			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);
 			draw_borders(conf, bar, 3, sizebar+2, RAISED);
 
@@ -623,8 +625,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	
 	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
-	sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
-	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARMARGIN, 3,
+	sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED);
 
 	tout = sec;
@@ -712,9 +714,9 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 			doupdate();
 
-			sizebar = w - HBORDERS - 2 - BARMARGIN * 2;
+			sizebar = w - HBORDERS - 2 - BARPADDING * 2;
 			wclear(bar);
-			mvwin(bar, y + h - 6, x + 1 + BARMARGIN);
+			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);
 			draw_borders(conf, bar, 3, sizebar+2, LOWERED);
 
