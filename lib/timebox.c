@@ -62,8 +62,7 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 }
 
 static int
-datetime_checksize(int rows, int cols, const char *text, int minw,
-    struct buttons bs)
+datetime_checksize(int rows, int cols, int minw, struct buttons bs)
 {
 	int mincols;
 
@@ -116,7 +115,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	if (datetime_autosize(conf, rows, cols, &h, &w, MINWTIME, text,
 	    bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_checksize(h, w, text, MINWTIME, bs) != 0)
+	if (datetime_checksize(h, w, MINWTIME, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -208,7 +207,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			if (datetime_autosize(conf, rows, cols, &h, &w,
 			    MINWTIME, text, bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (datetime_checksize(h, w, text, MINWTIME, bs) != 0)
+			if (datetime_checksize(h, w, MINWTIME, bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
@@ -316,7 +315,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	if (datetime_autosize(conf, rows, cols, &h, &w, MINWDATE, text,
 	    bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_checksize(h, w, text, MINWDATE, bs) != 0)
+	if (datetime_checksize(h, w, MINWDATE, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -426,7 +425,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (datetime_autosize(conf, rows, cols, &h, &w,
 			    MINWDATE, text, bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (datetime_checksize(h, w, text, MINWDATE, bs) != 0)
+			if (datetime_checksize(h, w, MINWDATE, bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);

@@ -100,7 +100,7 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-bar_checksize(const char *text, int rows, int cols, struct buttons *bs)
+bar_checksize(int rows, int cols, struct buttons *bs)
 {
 	int minheight, minwidth;
 
@@ -138,7 +138,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		return (BSDDIALOG_ERROR);
 	if (bar_autosize(conf, rows, cols, &h, &w, text, NULL) != 0)
 		return (BSDDIALOG_ERROR);
-	if (bar_checksize(text, h, w, NULL) != 0)
+	if (bar_checksize(h, w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -442,7 +442,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 		return (BSDDIALOG_ERROR);
 	if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (bar_checksize(text, h, w, &bs) != 0)
+	if (bar_checksize(h, w, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -553,7 +553,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (bar_autosize(conf, rows, cols, &h, &w, text,
 			    &bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (bar_checksize(text, h, w, &bs) != 0)
+			if (bar_checksize(h, w, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
@@ -607,7 +607,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 		return (BSDDIALOG_ERROR);
 	if (bar_autosize(conf, rows, cols, &h, &w, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (bar_checksize(text, h, w, &bs) != 0)
+	if (bar_checksize(h, w, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -698,7 +698,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			if (bar_autosize(conf, rows, cols, &h, &w, text,
 			    &bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (bar_checksize(text, h, w, &bs) != 0)
+			if (bar_checksize(h, w, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
