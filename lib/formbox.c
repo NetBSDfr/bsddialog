@@ -289,32 +289,39 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 	return (output);
 }
 
-static void
+static int
 form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     const char *text, int linelen, unsigned int *formheight, int nitems,
     struct buttons bs)
 {
-	int textrow, menusize;
+	int htext, wtext, menusize;
+
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
+		if (text_size(conf, rows, cols, text, &bs, *formheight + 2,
+		    linelen + 6, &htext, &wtext) != 0)
+			return (BSDDIALOG_ERROR);
+	}
 
 	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, 0/*text TODO*/, linelen + 6, &bs);
+		*w = widget_min_width(conf, wtext, linelen + 6, &bs);
 
-	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		if (*formheight == 0) {
 			menusize = widget_max_height(conf) - HBORDERS -
-			     2 /*buttons*/ - textrow;
+			     2 /*buttons*/ - htext;
 			menusize = MIN(menusize, nitems + 2);
 			*formheight = menusize - 2 < 0 ? 0 : menusize - 2;
 		}
 		else /* h autosize with fixed formheight */
 			menusize = *formheight + 2;
 
-		*h = widget_min_height(conf, textrow, menusize, true);
+		*h = widget_min_height(conf, htext, menusize, true);
 	} else {
 		if (*formheight == 0)
-			*formheight = MIN(rows-6-textrow, nitems);
+			*formheight = MIN(rows-6-htext, nitems);
 	}
+
+	return (0);
 }
 
 static int
@@ -360,7 +367,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	struct myfield *myfields;
 	unsigned long maxline;
 
-	/* disable form scrolling like dialog */
+	/* disable form scrolling */
 	if (formheight < nitems)
 		formheight = nitems;
 
@@ -432,8 +439,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	form_autosize(conf, rows, cols, &h, &w, text, maxline, &formheight,
-	    nitems, bs);
+	if (form_autosize(conf, rows, cols, &h, &w, text, maxline, &formheight,
+	    nitems, bs) != 0)
+		return (BSDDIALOG_ERROR);
 	if (form_checksize(h, w, text, formheight, nitems, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
