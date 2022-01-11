@@ -37,7 +37,6 @@
 
 #define MINWDATE   23 /* 3 windows and their borders */
 #define MINWTIME   14 /* 3 windows and their borders */
-#define MINHEIGHT   7 /* button + borders + windows  */
 
 extern struct bsddialog_theme t;
 
@@ -45,25 +44,23 @@ static int
 datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, int minw, const char *text, struct buttons bs)
 {
-	int maxword, maxline, nlines, line;
+	int htext, wtext;
 
-	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return (BSDDIALOG_ERROR);
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
+		if (text_size(conf, rows, cols, text, &bs, 0, COLS/2, &htext,
+		    &wtext) != 0)
+			return (BSDDIALOG_ERROR);
+	}
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		line = maxline + TEXTHMARGINS;
-		line = MAX(line, maxword + TEXTHMARGINS);
-		minw = MAX(minw, line);
-		*w = widget_min_width(conf, &bs, minw);
+		if (wtext != 0)
+			wtext += TEXTHMARGINS;
+		*w = MAX(wtext, minw);
+		*w = widget_min_width(conf, &bs, *w);
 	}
 
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		*h = 3; /* windows and borders */
-		if (maxword > 0)
-			//*h += MAX(nlines, (int)(*w / GET_ASPECT_RATIO(conf)));
-			*h += nlines;
-		*h = widget_min_height(conf, true, *h);
-	}
+	if (rows == BSDDIALOG_AUTOSIZE)
+		*h = widget_min_height(conf, true, 3 /* windows */ + htext);
 
 	return (0);
 }
@@ -82,8 +79,8 @@ datetime_checksize(int rows, int cols, const char *text, int minw,
 	if (cols < mincols)
 		RETURN_ERROR("Few cols for this timebox/datebox");
 
-	if (rows < MINHEIGHT + (strlen(text) > 0 ? 1 : 0))
-		RETURN_ERROR("Few rows for this timebox/datebox");
+	if (rows < 7) /* 2 button + 2 borders + 3 windows */
+		RETURN_ERROR("Few rows for this timebox/datebox, at least 7");
 
 	return (0);
 }
