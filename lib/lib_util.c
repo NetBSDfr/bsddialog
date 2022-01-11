@@ -633,8 +633,9 @@ widget_min_height(struct bsddialog_conf *conf, bool withbuttons, int minwidget)
 }
 
 int
-widget_min_width(struct bsddialog_conf *conf, struct buttons *bs,
-    int minwidget)
+widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
+    struct buttons *bs)
+
 {
 	int min, delimtitle;
 
@@ -645,6 +646,10 @@ widget_min_width(struct bsddialog_conf *conf, struct buttons *bs,
 		min += bs->nbuttons * bs->sizebutton;
 		min += bs->nbuttons > 0 ? (bs->nbuttons-1) * t.button.space : 0;
 	}
+
+	/* text */
+	if (wtext > 0)
+		min = MAX(min, wtext + TEXTHMARGINS);
 
 	/* specific widget min width */
 	min = MAX(min, minwidget);

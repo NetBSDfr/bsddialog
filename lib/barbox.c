@@ -38,9 +38,8 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define BARPADDING	3
-#define MINBARWIDTH	15
-#define MINWIDTH	(MINBARWIDTH + BARPADDING * 2)
+#define BARPADDING    3
+#define MINBARWIDTH   (15 + BARPADDING * 2)
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -86,17 +85,13 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 	int htext, wtext;
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, bs, 3, MINWIDTH, &htext,
-		    &wtext) != 0)
+		if (text_size(conf, rows, cols, text, bs, 3, MINBARWIDTH,
+		    &htext, &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 
-	if (cols == BSDDIALOG_AUTOSIZE) {
-		if (wtext != 0)
-			wtext += TEXTHMARGINS;
-		*w = MAX(wtext, MINWIDTH);
-		*w = widget_min_width(conf, bs, *w);
-	}
+	if (cols == BSDDIALOG_AUTOSIZE)
+		*w = widget_min_width(conf, wtext, MINBARWIDTH, bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
 		*h = widget_min_height(conf, bs != NULL, 3 /* bar */ + htext);
@@ -115,7 +110,7 @@ bar_checksize(const char *text, int rows, int cols, struct buttons *bs)
 		if (bs->nbuttons > 0)
 			minwidth += (bs->nbuttons-1) * t.button.space;
 	}
-	minwidth = MAX(minwidth, MINWIDTH);
+	minwidth = MAX(minwidth, MINBARWIDTH);
 	minwidth += VBORDERS;
 
 	if (cols < minwidth)
@@ -247,10 +242,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		    max_minbarlen, &htext, &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
-	if (cols == BSDDIALOG_AUTOSIZE) {
-		w = MAX(max_minbarlen, wtext + TEXTHMARGINS);
-		w = widget_min_width(conf, NULL, w);
-	}
+	if (cols == BSDDIALOG_AUTOSIZE)
+		w = widget_min_width(conf, wtext, max_minbarlen, NULL);
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		h = nminibars + 3 /* mainbar */ + htext;
 		h = widget_min_height(conf, false, h);

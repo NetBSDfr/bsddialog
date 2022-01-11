@@ -42,7 +42,7 @@ textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, int hpad, int wpad, struct buttons bs)
 {
 	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, &bs, wpad);
+		*w = widget_min_width(conf, 0, wpad, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
 		*h = widget_min_height(conf, true, hpad);

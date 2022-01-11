@@ -52,12 +52,8 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 			return (BSDDIALOG_ERROR);
 	}
 
-	if (cols == BSDDIALOG_AUTOSIZE) {
-		if (wtext != 0)
-			wtext += TEXTHMARGINS;
-		*w = MAX(wtext, minw);
-		*w = widget_min_width(conf, &bs, *w);
-	}
+	if (cols == BSDDIALOG_AUTOSIZE)
+		*w = widget_min_width(conf, htext,minw, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
 		*h = widget_min_height(conf, true, 3 /* windows */ + htext);

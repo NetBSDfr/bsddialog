@@ -297,7 +297,7 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 	int textrow, menusize;
 
 	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, &bs, linelen + 6);
+		*w = widget_min_width(conf, 0/*text TODO*/, linelen + 6, &bs);
 
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 	if (rows == BSDDIALOG_AUTOSIZE) {
