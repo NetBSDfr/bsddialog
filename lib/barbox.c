@@ -210,8 +210,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int mainperc, unsigned int nminibars, const char **minilabels,
     int *minipercs, bool color)
 {
-	int i, output, miniperc, y, x, h, w, max_minbarlen;
-	int maxword, maxline, nlines, ypad, htextpad;
+	int i, output, miniperc, y, x, h, w, ypad, max_minbarlen;
+	int htextpad, htext, wtext;
 	int colorperc, red, green;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char states[12][14] = {
@@ -242,22 +242,24 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		return (BSDDIALOG_ERROR);
 
 	/* mixedgauge autosize */
-	if (get_text_properties(conf, text, &maxword, &maxline, &nlines) != 0)
-		return (BSDDIALOG_ERROR);
-
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
+		if (text_size(conf, rows, cols, text, NULL, nminibars + 3,
+		    max_minbarlen, &htext, &wtext) != 0)
+			return (BSDDIALOG_ERROR);
+	}
 	if (cols == BSDDIALOG_AUTOSIZE) {
-		w = MAX(max_minbarlen, maxline + TEXTHMARGINS);
+		w = MAX(max_minbarlen, wtext + TEXTHMARGINS);
 		w = widget_min_width(conf, NULL, w);
 	}
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		h = nminibars + 3 /* mainbar */ + (strlen(text) > 0 ? 3 : 0);
+		h = nminibars + 3 /* mainbar */ + htext;
 		h = widget_min_height(conf, false, h);
 	}
 
 	/* mixedgauge checksize */
 	if (w < max_minbarlen + 2)
 		RETURN_ERROR("Few cols for this mixedgauge");
-	if (h < 5 + (int)nminibars + (strlen(text) > 0 ? 1 : 0))
+	if (h < 5 + (int)nminibars)
 		RETURN_ERROR("Few rows for this mixedgauge");
 
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
@@ -305,7 +307,9 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	wrefresh(widget);
 	getmaxyx(textpad, htextpad, i /* unused */);
-	ypad =  y + h - 5 - htextpad;
+	BSDDIALOG_DEBUG(LINES - 3, 1, "htext:%d|", htext);
+	BSDDIALOG_DEBUG(LINES - 2, 1, "htextoad:%d|", htextpad);
+	ypad =  y + h - 4 - htextpad;
 	ypad = ypad < y+(int)nminibars ? y+nminibars : ypad;
 	prefresh(textpad, 0, 0, ypad, x+2, y+h-4, x+w-2);
 	
