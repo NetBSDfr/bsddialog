@@ -65,6 +65,7 @@ enum OPTS {
 	HELP_TAGS,
 	HFILE,	
 	HLINE,
+	HMSG,
 	IGNORE,
 	INSECURE,
 	ITEM_DEPTH,
@@ -92,6 +93,7 @@ enum OPTS {
 	SLEEP,
 	STDERR,
 	STDOUT,
+	TAB_LEN,
 	THEME,
 	TIME_FORMAT,
 	TITLE,
@@ -221,15 +223,15 @@ void usage(void)
 	    "--default-item <name>, --disable-esc, --esc-cancelvalue, "
 	    "--exit-label <label>, --extra-button, --extra-label <label>, "
 	    "--help, --help-button, --help-label <label>, "
-	    "--help-status, --help-tags, --hfile <filename>, --hline string, --ignore, --insecure, "
+	    "--help-status, --help-tags, --hfile <filename>, --hline <string>, --hmsg <string>, --ignore, --insecure, "
 	    "--item-depth, --item-help, --items-prefix, --max-input <size>, "
 	    "--no-cancel, --nocancel, no-collapse, --no-items, --no-label <label>,  "
 	    "--no-lines, --no-nl-expand, --no-ok, --nook, --no-shadow, --no-tags, "
 	    
 	    "--ok-label <label>, --output-fd <fd>, --output-separator <sep>, "
 	    "--print-maxsize, --print-size, --print-version, --quoted, "
-	    "--separate-output,  --separator <sep>, --shadow, --single-quoted,  "
-	    "--sleep <secs>, --stderr, --stdout, "
+	    "--separate-output, --separator <sep>, --shadow, --single-quoted,  "
+	    "--sleep <secs>, --stderr, --stdout, --tab-len <spaces>, "
 	    "--theme <blackwhite|bsddialog|dialog>, --time-format <format>, "
 	    "--title <title>, --trim, --version, --yes-label <string>.\n");
 	printf("\n");
@@ -329,6 +331,7 @@ int main(int argc, char *argv[argc])
 	    {"help-tags",       no_argument,       NULL, HELP_TAGS },
 	    {"hfile",           required_argument, NULL, HFILE },
 	    {"hline",           required_argument, NULL, HLINE },
+	    {"hmsg",            required_argument, NULL, HMSG },
 	    {"ignore",          no_argument,       NULL, IGNORE },
 	    {"insecure",        no_argument,       NULL, INSECURE },
 	    {"item-depth",      no_argument,       NULL, ITEM_DEPTH },
@@ -360,6 +363,7 @@ int main(int argc, char *argv[argc])
 	    {"sleep",           required_argument, NULL, SLEEP },
 	    {"stderr",          no_argument,       NULL, STDERR },
 	    {"stdout",          no_argument,       NULL, STDOUT },
+	    {"tab-len",         required_argument, NULL, TAB_LEN },
 	    {"theme",           required_argument, NULL, THEME },
 	    {"time-format",     required_argument, NULL, TIME_FORMAT },
 	    {"title",           required_argument, NULL, TITLE },
@@ -475,6 +479,9 @@ int main(int argc, char *argv[argc])
 		case HLINE:
 			conf.bottomtitle = optarg;
 			break;
+		case HMSG:
+			conf.f1_message = optarg;
+			break;
 		case IGNORE:
 			ignore_opt = true;
 			break;
@@ -556,6 +563,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case STDOUT:
 			output_fd_opt = STDOUT_FILENO;
+			break;
+		case TAB_LEN:
+			conf.text.tablen = atoi(optarg);
 			break;
 		case THEME:
 			if (strcmp(optarg, "bsddialog") == 0)
