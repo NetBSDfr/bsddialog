@@ -135,29 +135,28 @@ static int max_input_form_opt;
 /* General flags and options */
 static int output_fd_opt;
 
-void usage(void);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
 	int cols, int argc, char **argv, char *errbuf
-int checklist_builder(BUILDER_ARGS);
-int datebox_builder(BUILDER_ARGS);
-int form_builder(BUILDER_ARGS);
-int gauge_builder(BUILDER_ARGS);
-int infobox_builder(BUILDER_ARGS);
-int inputbox_builder(BUILDER_ARGS);
-int menu_builder(BUILDER_ARGS);
-int mixedform_builder(BUILDER_ARGS);
-int mixedgauge_builder(BUILDER_ARGS);
-int msgbox_builder(BUILDER_ARGS);
-int passwordbox_builder(BUILDER_ARGS);
-int passwordform_builder(BUILDER_ARGS);
-int pause_builder(BUILDER_ARGS);
-int radiolist_builder(BUILDER_ARGS);
-int rangebox_builder(BUILDER_ARGS);
-int textbox_builder(BUILDER_ARGS);
-int timebox_builder(BUILDER_ARGS);
-int treeview_builder(BUILDER_ARGS);
-int yesno_builder(BUILDER_ARGS);
+static int checklist_builder(BUILDER_ARGS);
+static int datebox_builder(BUILDER_ARGS);
+static int form_builder(BUILDER_ARGS);
+static int gauge_builder(BUILDER_ARGS);
+static int infobox_builder(BUILDER_ARGS);
+static int inputbox_builder(BUILDER_ARGS);
+static int menu_builder(BUILDER_ARGS);
+static int mixedform_builder(BUILDER_ARGS);
+static int mixedgauge_builder(BUILDER_ARGS);
+static int msgbox_builder(BUILDER_ARGS);
+static int passwordbox_builder(BUILDER_ARGS);
+static int passwordform_builder(BUILDER_ARGS);
+static int pause_builder(BUILDER_ARGS);
+static int radiolist_builder(BUILDER_ARGS);
+static int rangebox_builder(BUILDER_ARGS);
+static int textbox_builder(BUILDER_ARGS);
+static int timebox_builder(BUILDER_ARGS);
+static int treeview_builder(BUILDER_ARGS);
+static int yesno_builder(BUILDER_ARGS);
 
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
@@ -208,7 +207,7 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 	buf[j] = '\0';
 }
 
-void usage(void)
+static void usage(void)
 {
 	printf("usage: bsddialog --help\n");
 	printf("       bsddialog --version\n");
