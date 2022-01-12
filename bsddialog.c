@@ -134,7 +134,7 @@ static int max_input_form_flag;
 static int output_fd_flag;
 
 void usage(void);
-/* widgets */
+/* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
 	int cols, int argc, char **argv, char *errbuf
 int checklist_builder(BUILDER_ARGS);
@@ -583,7 +583,7 @@ int main(int argc, char *argv[argc])
 			printf("bsddialog %s (libbsddialog %s).\n",
 			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
 			return (BSDDIALOG_OK);
-		/* Widgets */
+		/* Dialogs */
 		case CHECKLIST:
 			dialogbuilder = checklist_builder;
 			break;
@@ -707,7 +707,7 @@ int main(int argc, char *argv[argc])
 	}
 
 	if (conf.get_height != NULL && conf.get_width != NULL)
-		dprintf(output_fd_flag, "Widget size: (%d - %d)\n",
+		dprintf(output_fd_flag, "Dialog size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
 
 	if (output == BSDDIALOG_ESC && esc_cancelvalue_flag)
