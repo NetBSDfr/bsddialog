@@ -243,7 +243,7 @@ void usage(void)
 	printf("--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
 	printf("--form <text> <rows> <cols> <formrows> [<label> <ylabel> "
 	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxvalue> ...]\n");
-	printf("--gauge <text> <rows> <cols> <perc>");
+	printf("--gauge <text> <rows> <cols> [<perc>]\n");
 	printf("--infobox <text> <rows> <cols>\n");
 	printf("--inputbox <text> <rows> <cols> [init]\n");
 	printf("--menu <text> <rows> <cols> <menurows> [<name> <desc> ...]\n");
