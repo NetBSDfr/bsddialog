@@ -218,7 +218,7 @@ void usage(void)
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
 	    "--begin-y <y>, --cancel-label <string>, --clear, --colors, "
-	    "--cr-wrap, --date-format <format>, --default-button <label>, --default-no, "
+	    "--cr-wrap, --date-format <format>, --defaultno, --default-button <label>, --default-no, "
 	    "--default-item <name>, --disable-esc, --esc-cancelvalue, "
 	    "--exit-label <label>, --extra-button, --extra-label <label>, "
 	    "--help, --help-button, --help-label <label>, "
@@ -313,9 +313,10 @@ int main(int argc, char *argv[argc])
 	    {"colors",          no_argument,       NULL, COLORS },
 	    {"cr-wrap",         no_argument,       NULL, CR_WRAP },
 	    {"date-format",     required_argument, NULL, DATE_FORMAT },
+	    {"defaultno",       no_argument,       NULL, DEFAULT_NO }, /* alias */
 	    {"default-button",  required_argument, NULL, DEFAULT_BUTTON },
 	    {"default-item",    required_argument, NULL, DEFAULT_ITEM },
-	    {"defaultno",       no_argument,       NULL, DEFAULT_NO },
+	    {"default-no",      no_argument,       NULL, DEFAULT_NO },
 	    {"disable-esc",     no_argument,       NULL, DISABLE_ESC },
 	    {"esc-cancelvalue", no_argument,       NULL, ESC_CANCELVALUE },
 	    {"exit-label",      required_argument, NULL, EXIT_LABEL },
