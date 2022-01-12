@@ -180,7 +180,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 	}
 
 	if (conf->button.with_extra) {
-		bs->label[bs->nbuttons] = conf->button.extra_label != NULL ? 
+		bs->label[bs->nbuttons] = conf->button.extra_label != NULL ?
 		    conf->button.extra_label : BUTTON_EXTRA_LABEL;
 		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
 		bs->nbuttons += 1;
@@ -865,7 +865,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
 
 	int htextpad = 1; //delete!
 	if (textpad != NULL && text != NULL) /* textbox */
-		if (print_textpad(conf, textpad, &htextpad, 
+		if (print_textpad(conf, textpad, &htextpad,
 		    w - HBORDERS - TEXTHMARGINS, text) !=0)
 			return (BSDDIALOG_ERROR);
 

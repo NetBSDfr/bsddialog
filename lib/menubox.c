@@ -284,7 +284,7 @@ getnextshortcut(struct bsddialog_conf *conf, int ngroups,
 				ch = groups[i].items[j].desc[0];
 			else
 				ch = groups[i].items[j].name[0];
-	
+
 			if (ch == key) {
 				if (a < *abs && na == -1) {
 					na = a;
@@ -455,7 +455,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 			menusize = *menurows + 2;
 
 		*h = widget_min_height(conf, htext, menusize, true);
-		/* 
+		/*
 		 * avoid menurows overflow and
 		 * with rows=AUTOSIZE menurows!=0 becomes max-menurows
 		 */

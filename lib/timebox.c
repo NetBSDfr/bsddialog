@@ -132,7 +132,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	c[1].win = new_boxed_window(conf, y+h-6, x + w/2 - 2, 3, 4, LOWERED);
 	mvwaddch(widget, h - 5, w/2 + 2, ':');
 	c[2].win = new_boxed_window(conf, y+h-6, x + w/2 + 3, 3, 4, LOWERED);
-	
+
 	wrefresh(widget);
 
 	sel = 0;
@@ -332,7 +332,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	c[1].win = new_boxed_window(conf, y+h-6, x + w/2 - 4, 3, 11, LOWERED);
 	mvwaddch(widget, h - 5, w/2 + 7, '/');
 	c[2].win = new_boxed_window(conf, y+h-6, x + w/2 + 8, 3, 4, LOWERED);
-	
+
 	wrefresh(widget);
 
 	sel = 2;

@@ -303,7 +303,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	ypad =  y + h - 4 - htextpad;
 	ypad = ypad < y+(int)nminibars ? y+nminibars : ypad;
 	prefresh(textpad, 0, 0, ypad, x+2, y+h-4, x+w-2);
-	
+
 	/* main bar */
 	bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED);
 
@@ -547,7 +547,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			/* Important for decreasing screen */
 			hide_widget(y, x, h, w, conf->shadow);
 			refresh();
-			
+
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
 			if (bar_autosize(conf, rows, cols, &h, &w, text,
@@ -692,7 +692,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			/* Important for decreasing screen */
 			hide_widget(y, x, h, w, conf->shadow);
 			refresh();
-			
+
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
 			if (bar_autosize(conf, rows, cols, &h, &w, text,

@@ -129,7 +129,7 @@ return_values(struct bsddialog_conf *conf, struct buttons bs, int nitems,
 
 static int
 form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
-    WINDOW *formwin, FORM *form, FIELD **cfield, int nitems, 
+    WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
     struct bsddialog_formitem *items)
 {
 	bool loop, buttupdate, informwin = true;
@@ -453,7 +453,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
 	    y + h - formheight, x + 1 + w - TEXTHMARGIN);
-	
+
 	formwin = new_boxed_window(conf, y + h - 3 - formheight -2, x +1,
 	    formheight+2, w-2, LOWERED);
 

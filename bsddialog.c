@@ -606,7 +606,7 @@ int main(int argc, char *argv[argc])
 			break;
 		/* Error */
 		default:
-			if (ignore_opt == true) 
+			if (ignore_opt == true)
 				break;
 			usage();
 			return (BSDDIALOG_ERROR);
@@ -828,7 +828,7 @@ int rangebox_builder(BUILDER_ARGS)
 
 	min = atoi(argv[0]);
 	max = atoi(argv[1]);
-	
+
 	if (argc > 2) {
 		value = atoi(argv[2]);
 		value = value < min ? min : value;
@@ -1008,7 +1008,7 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 
 	if (output == BSDDIALOG_HELP && focusitem >= 0) {
 		dprintf(output_fd_opt, "HELP ");
-		
+
 		helpvalue = items[focusitem].name;
 		if (item_bottomdesc_opt && item_tag_help_opt == false)
 			helpvalue = items[focusitem].bottomdesc;
@@ -1021,7 +1021,7 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		dprintf(output_fd_opt, "%s", helpvalue);
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
-		
+
 		if (list_items_on_opt == false)
 			return;
 
@@ -1159,7 +1159,7 @@ int treeview_builder(BUILDER_ARGS)
 
 	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
-	
+
 	print_menu_items(&conf, output, nitems, items, focusitem);
 
 	free(items);

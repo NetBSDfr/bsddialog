@@ -644,7 +644,6 @@ and
 Finally,
 .Fa bottomdesc
 is printed on the bottom side of the screen if the item is focused.
-is 
 .Pp
 .Fn bsddialog_form
 can be customized by:
@@ -938,7 +937,7 @@ struct bsddialog_menugroup group[3] = {
     { BSDDIALOG_SEPARATOR, 1, sep   },
     { BSDDIALOG_RADIOLIST, 2, radio }
 };
-	
+
 bsddialog_init();
 bsddialog_initconf(&conf);
 bsddialog_mixedlist(&conf, "Example", 20, 30, 11, 3, group, NULL,
