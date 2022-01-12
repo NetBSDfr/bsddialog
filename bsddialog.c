@@ -210,11 +210,12 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 
 void usage(void)
 {
-	printf("usage: bsddialog --help\n"
-	       "       bsddialog --version\n"
-	       "       bsddialog [--<common-opts>] --<dialog> <text> "
-	       "<height> <width> [--<dialog-opts>]\n");
+	printf("usage: bsddialog --help\n");
+	printf("       bsddialog --version\n");
+	printf("       bsddialog [--<common-opts>] --<dialog> <text> <height> "
+	    "<width> [--<dialog-opts>]\n");
 	printf("\n");
+
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
 	    "--begin-y <y>, --cancel-label <string>, --clear, --colors, "
@@ -234,6 +235,7 @@ void usage(void)
 	    "--theme <blackwhite|bsddialog|dialog>, --time-format <format>, "
 	    "--title <title>, --trim, --version, --yes-label <string>.\n");
 	printf("\n");
+
 	printf("Dialogs:\n");
 	printf("--checklist <text> <rows> <cols> <menurows> [<name> <desc> "
 	    "<on|off> ...]\n");
