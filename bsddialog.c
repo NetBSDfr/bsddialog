@@ -63,7 +63,7 @@ enum OPTS {
 	HELP_LABEL,
 	HELP_STATUS,
 	HELP_TAGS,
-	HFILE,	
+	HFILE,
 	HLINE,
 	HMSG,
 	IGNORE,
@@ -118,7 +118,7 @@ enum OPTS {
 	TEXTBOX,
 	TIMEBOX,
 	TREEVIEW,
-	YESNO,
+	YESNO
 };
 
 /* libbsddialog does not support NULL string */
@@ -253,7 +253,7 @@ int main(int argc, char *argv[argc])
 	item_default_opt = NULL;
 
 	date_fmt_opt = time_fmt_opt = NULL;
-	
+
 	max_input_form_opt = 0;
 
 	/* options descriptor */
@@ -1024,7 +1024,7 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		
 		if (list_items_on_opt == false)
 			return;
-			
+
 		sep = true;
 	}
 
@@ -1275,7 +1275,7 @@ int mixedform_builder(BUILDER_ARGS)
 	}
 
 	formheight = atoi(argv[0]);
-	
+
 	argc--;
 	argv++;
 
@@ -1337,7 +1337,7 @@ int passwordform_builder(BUILDER_ARGS)
 	}
 
 	formheight = atoi(argv[0]);
-	
+
 	argc--;
 	argv++;
 
