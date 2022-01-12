@@ -74,7 +74,6 @@ enum OPTS {
 	NO_CANCEL,
 	NO_COLLAPSE,
 	NO_ITEMS,
-	NO_LABEL,
 	NO_LINES,
 	NO_NL_EXPAND,
 	NO_OK,
@@ -98,7 +97,6 @@ enum OPTS {
 	TITLE,
 	TRIM,
 	VERSION,
-	YES_LABEL,
 	/* Dialogs */
 	CHECKLIST,
 	DATEBOX,
@@ -341,7 +339,7 @@ int main(int argc, char *argv[argc])
 	    {"nocancel",        no_argument,       NULL, NO_CANCEL }, /* alias*/
 	    {"no-collapse",     no_argument,       NULL, NO_COLLAPSE },
 	    {"no-items",        no_argument,       NULL, NO_ITEMS },
-	    {"no-label",        required_argument, NULL, NO_LABEL },
+	    {"no-label",        required_argument, NULL, CANCEL_LABEL }, /* alias */
 	    {"no-lines",        no_argument,       NULL, NO_LINES },
 	    {"no-nl-expand",    no_argument,       NULL, NO_NL_EXPAND },
 	    {"no-ok",           no_argument,       NULL, NO_OK },
@@ -367,7 +365,7 @@ int main(int argc, char *argv[argc])
 	    {"title",           required_argument, NULL, TITLE },
 	    {"trim",            no_argument,       NULL, TRIM },
 	    {"version",         no_argument,       NULL, VERSION },
-	    {"yes-label",       required_argument, NULL, YES_LABEL },
+	    {"yes-label",       required_argument, NULL, OK_LABEL }, /* alias */
 	    /* Dialogs */
 	    {"checklist",    no_argument, NULL, CHECKLIST },
 	    {"datebox",      no_argument, NULL, DATEBOX },
@@ -504,9 +502,6 @@ int main(int argc, char *argv[argc])
 		case NO_COLLAPSE:
 			no_collapse_flag = true;
 			break;
-		case NO_LABEL:
-			conf.button.cancel_label = optarg;
-			break;
 		case NO_LINES:
 			conf.no_lines = true;
 			break;
@@ -588,9 +583,6 @@ int main(int argc, char *argv[argc])
 			printf("bsddialog %s (libbsddialog %s).\n",
 			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
 			return (BSDDIALOG_OK);
-		case YES_LABEL:
-			conf.button.ok_label = optarg;
-			break;
 		/* Widgets */
 		case CHECKLIST:
 			dialogbuilder = checklist_builder;
