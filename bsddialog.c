@@ -966,7 +966,6 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 	}
 	*nitems = argc / sizeitem;
 
-	//struct bsddialog_menuitem *items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
 	*items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
 	if (items == NULL) {
 		strcpy(errbuf, "cannot allocate memory menu items\n");
