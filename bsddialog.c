@@ -877,7 +877,6 @@ int datebox_builder(BUILDER_ARGS)
 	mm = localtm->tm_mon + 1;
 	dd = localtm->tm_mday;
 
-	/* --calendar text h w [year month day] */
 	if (argc == 3) {
 		yy = atoi(argv[0]);
 		mm = atoi(argv[1]);
@@ -918,7 +917,6 @@ int timebox_builder(BUILDER_ARGS)
 	mm = localtm->tm_min;
 	ss = localtm->tm_sec;
 
-	/* --timebox text h w [hour minute second] */
 	if (argc == 3) {
 		hh = atoi(argv[0]);
 		mm = atoi(argv[1]);
