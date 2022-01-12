@@ -268,7 +268,7 @@ int main(int argc, char *argv[argc])
 	    {"colors",          no_argument,       NULL, COLORS },
 	    {"cr-wrap",         no_argument,       NULL, CR_WRAP },
 	    {"date-format",     required_argument, NULL, DATE_FORMAT },
-	    {"defaultno",       no_argument,       NULL, DEFAULT_NO }, /* alias */
+	    {"defaultno",       no_argument,       NULL, DEFAULT_NO },
 	    {"default-button",  required_argument, NULL, DEFAULT_BUTTON },
 	    {"default-item",    required_argument, NULL, DEFAULT_ITEM },
 	    {"default-no",      no_argument,       NULL, DEFAULT_NO },
@@ -292,14 +292,14 @@ int main(int argc, char *argv[argc])
 	    {"item-prefix",     no_argument,       NULL, ITEM_PREFIX },
 	    {"max-input",       required_argument, NULL, MAX_INPUT },
 	    {"no-cancel",       no_argument,       NULL, NO_CANCEL },
-	    {"nocancel",        no_argument,       NULL, NO_CANCEL }, /* alias*/
+	    {"nocancel",        no_argument,       NULL, NO_CANCEL },
 	    {"no-collapse",     no_argument,       NULL, NO_COLLAPSE },
 	    {"no-items",        no_argument,       NULL, NO_ITEMS },
-	    {"no-label",        required_argument, NULL, CANCEL_LABEL }, /* alias */
+	    {"no-label",        required_argument, NULL, CANCEL_LABEL },
 	    {"no-lines",        no_argument,       NULL, NO_LINES },
 	    {"no-nl-expand",    no_argument,       NULL, NO_NL_EXPAND },
 	    {"no-ok",           no_argument,       NULL, NO_OK },
-	    {"nook ",           no_argument,       NULL, NO_OK }, /* alias */
+	    {"nook ",           no_argument,       NULL, NO_OK },
 	    {"no-shadow",       no_argument,       NULL, NO_SHADOW },
 	    {"no-tags",         no_argument,       NULL, NO_TAGS },
 	    {"ok-label",        required_argument, NULL, OK_LABEL },
@@ -310,7 +310,7 @@ int main(int argc, char *argv[argc])
 	    {"print-version",   no_argument,       NULL, PRINT_VERSION },
 	    {"quoted",          no_argument,       NULL, QUOTED },
 	    {"separate-output", no_argument,       NULL, SEPARATE_OUTPUT },
-	    {"separator",       required_argument, NULL, OUTPUT_SEPARATOR }, /* alias */
+	    {"separator",       required_argument, NULL, OUTPUT_SEPARATOR },
 	    {"shadow",          no_argument,       NULL, SHADOW },
 	    {"single-quoted",   no_argument,       NULL, SINGLE_QUOTED },
 	    {"sleep",           required_argument, NULL, SLEEP },
@@ -322,7 +322,7 @@ int main(int argc, char *argv[argc])
 	    {"title",           required_argument, NULL, TITLE },
 	    {"trim",            no_argument,       NULL, TRIM },
 	    {"version",         no_argument,       NULL, VERSION },
-	    {"yes-label",       required_argument, NULL, OK_LABEL }, /* alias */
+	    {"yes-label",       required_argument, NULL, OK_LABEL },
 	    /* Dialogs */
 	    {"checklist",    no_argument, NULL, CHECKLIST },
 	    {"datebox",      no_argument, NULL, DATEBOX },
