@@ -566,7 +566,7 @@ int main(int argc, char *argv[argc])
 				theme_opt = BSDDIALOG_THEME_DIALOG;
 			else {
 				printf("Unknown theme, possible values: ");
-				printf("blackwhite, bsddialog, dialog");
+				printf("blackwhite, bsddialog, dialog.\n");
 				return (BSDDIALOG_ERROR);
 			}
 			break;
