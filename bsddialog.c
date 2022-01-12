@@ -947,7 +947,7 @@ int timebox_builder(BUILDER_ARGS)
 static int
 get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
     bool setdepth, bool setname, bool setdesc, bool setstatus, bool sethelp,
-    int *nitems, struct bsddialog_menuitem *items, int *focusitem)
+    int *nitems, struct bsddialog_menuitem **items, int *focusitem)
 {
 	int i, j, sizeitem;
 
@@ -964,23 +964,30 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 		strcpy(errbuf, "bad number of arguments for this menu\n");
 		return (BSDDIALOG_ERROR);
 	}
-
 	*nitems = argc / sizeitem;
+
+	//struct bsddialog_menuitem *items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
+	*items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
+	if (items == NULL) {
+		strcpy(errbuf, "cannot allocate memory menu items\n");
+		return (BSDDIALOG_ERROR);
+	}
+
 	j = 0;
 	for (i=0; i<*nitems; i++) {
-		items[i].prefix = setprefix ? argv[j++] : nostring;
-		items[i].depth = setdepth ? atoi(argv[j++]) : 0;
-		items[i].name = setname ? argv[j++] : nostring;
-		items[i].desc = setdesc ? argv[j++] : nostring;
+		(*items)[i].prefix = setprefix ? argv[j++] : nostring;
+		(*items)[i].depth = setdepth ? atoi(argv[j++]) : 0;
+		(*items)[i].name = setname ? argv[j++] : nostring;
+		(*items)[i].desc = setdesc ? argv[j++] : nostring;
 		if (setstatus)
-			items[i].on = strcmp(argv[j++], "on") == 0 ?
+			(*items)[i].on = strcmp(argv[j++], "on") == 0 ?
 			    true : false;
 		else
-			items[i].on = false;
-		items[i].bottomdesc = sethelp ? argv[j++] : nostring;
+			(*items)[i].on = false;
+		(*items)[i].bottomdesc = sethelp ? argv[j++] : nostring;
 
 		if (item_default_opt != NULL && *focusitem == -1)
-			if (strcmp(items[i].name, item_default_opt) == 0)
+			if (strcmp((*items)[i].name, item_default_opt) == 0)
 				*focusitem = i;
 	}
 
@@ -1050,7 +1057,7 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 int checklist_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[1024];
+	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1061,7 +1068,7 @@ int checklist_builder(BUILDER_ARGS)
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
-	    items, &focusitem);
+	    &items, &focusitem);
 	if (output != 0)
 		return (output);
 
@@ -1070,13 +1077,15 @@ int checklist_builder(BUILDER_ARGS)
 
 	print_menu_items(&conf, output, nitems, items, focusitem);
 
+	free(items);
+
 	return (output);
 }
 
 int menu_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[1024];
+	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1087,7 +1096,7 @@ int menu_builder(BUILDER_ARGS)
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, false, item_bottomdesc_opt, &nitems,
-	    items, &focusitem);
+	    &items, &focusitem);
 	if (output != 0)
 		return (output);
 
@@ -1096,13 +1105,15 @@ int menu_builder(BUILDER_ARGS)
 
 	print_menu_items(&conf, output, nitems, items, focusitem);
 
+	free(items);
+
 	return (output);
 }
 
 int radiolist_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[1024];
+	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1113,7 +1124,7 @@ int radiolist_builder(BUILDER_ARGS)
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
-	    items, &focusitem);
+	    &items, &focusitem);
 	if (output != 0)
 		return (output);
 
@@ -1122,13 +1133,15 @@ int radiolist_builder(BUILDER_ARGS)
 
 	print_menu_items(&conf, output, nitems, items, focusitem);
 
+	free(items);
+
 	return (output);
 }
 
 int treeview_builder(BUILDER_ARGS)
 {
 	int output, menurows, nitems, focusitem;
-	struct bsddialog_menuitem items[1024];
+	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
 		strcpy(errbuf, "<menurows> not provided");
@@ -1138,7 +1151,7 @@ int treeview_builder(BUILDER_ARGS)
 	menurows = atoi(argv[0]);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt, true,
-	    true, true, true, item_bottomdesc_opt, &nitems, items, &focusitem);
+	    true, true, true, item_bottomdesc_opt, &nitems, &items, &focusitem);
 	if (output != 0)
 		return (output);
 
@@ -1149,6 +1162,8 @@ int treeview_builder(BUILDER_ARGS)
 	    items, &focusitem);
 	
 	print_menu_items(&conf, output, nitems, items, focusitem);
+
+	free(items);
 
 	return (output);
 }
