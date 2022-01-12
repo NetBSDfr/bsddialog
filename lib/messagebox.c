@@ -34,7 +34,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-
 extern struct bsddialog_theme t;
 
 static int
