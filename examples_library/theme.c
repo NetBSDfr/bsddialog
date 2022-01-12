@@ -27,16 +27,18 @@ int main()
 	    {"", false, 0, "Quit",      "Exit",           "Quit or Cancel to exit" }
 	};
 
+	if (bsddialog_init() == BSDDIALOG_ERROR) {
+		printf("Error: %s\n", bsddialog_geterror());
+		return (1);
+	}
+
 	bsddialog_initconf(&conf);
+
+	bsddialog_backtitle(&conf, "Theme Example");
+
 	conf.title = " Theme ";
 	focusitem = -1;
-	
-	if (bsddialog_init() == BSDDIALOG_ERROR)
-		return BSDDIALOG_ERROR;
-
 	while (true) {
-		bsddialog_backtitle(&conf, "Theme Example");
-
 		output = bsddialog_menu(&conf, "Choose theme", 15, 40, 5, 5,
 		    items, &focusitem);
 
@@ -63,7 +65,7 @@ int main()
 		bsddialog_set_default_theme(theme);
 	}
 
-	bsddialog_end();	
+	bsddialog_end();
 
-	return output;
+	return (output);
 }

@@ -110,7 +110,6 @@ and
 % ./rangebox
 % ./theme
 % ./timebox
-% ./treeview
 % ./yesno
 ```
 

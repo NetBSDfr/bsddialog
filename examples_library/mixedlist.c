@@ -41,16 +41,22 @@ int main()
 	    { BSDDIALOG_RADIOLIST, 5, radio }
 	};
 
-	bsddialog_initconf(&conf);
-	conf.title = "mixedmenu";
-	
-	if (bsddialog_init() < 0)
-		return -1;
+	if (bsddialog_init() == BSDDIALOG_ERROR) {
+		printf("Error: %s\n", bsddialog_geterror());
+		return (1);
+	}
 
-	output = bsddialog_mixedlist(&conf, "dialog4ports", 20, 30, 11, 3, group,
+	bsddialog_initconf(&conf);
+	conf.title = "mixedlist";
+	output = bsddialog_mixedlist(&conf, "Example", 20, 30, 11, 3, group,
 	    NULL,NULL);
 
 	bsddialog_end();
+
+	if (output == BSDDIALOG_ERROR) {
+		printf("Error: %s\n", bsddialog_geterror());
+		return (1);
+	}
 
 	printf("Mixedlist:\n");
 	for (i=0; i<3; i++) {
@@ -59,12 +65,13 @@ int main()
 			if (group[i].type == BSDDIALOG_SEPARATOR)
 				printf("----- %s -----\n", item.name);
 			else if (group[i].type == BSDDIALOG_RADIOLIST)
-				printf(" (%c) %s\n", item.on ? '*' : ' ', item.name);
-			else /* BSDDIALOG_PORTCHECKLIST */
-				printf(" [%c] %s\n", item.on ? 'X' : ' ', item.name);
+				printf(" (%c) %s\n",
+				    item.on ? '*' : ' ', item.name);
+			else /* BSDDIALOG_CHECKLIST */
+				printf(" [%c] %s\n",
+				    item.on ? 'X' : ' ', item.name);
 		}
 	}
-		
-	
-	return output;
+
+	return (output);
 }
