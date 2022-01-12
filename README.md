@@ -81,72 +81,30 @@ Use Cases:
  - [portconfig](https://gitlab.com/alfix/portconfig)
 
 
-## Features
-
-**Common Options:**
- 
---ascii-lines, --aspect *ratio* (for infobox, msgbox and yesno),
---backtitle *backtitle*, --begin-x *x* (--begin *y y*),
-(--begin *y x*), --cancel-label *string*, -clear (test with multiple widgets),
---colors, --date-format *format*, --default-button *string*, --defaultno,
---default-item *string*, 
---exit-label *string*, --extra-button, --extra-label *string*,
---hfile *filename* (for completed widgets), --help, --help-button,
---help-label *string*, --help-status, --help-tags, --hline *string*, --ignore,
---insecure, --item-help, --max-input *size*, --no-cancel, --nocancel,
---no-label *string*, --no-items, --no-lines, --no-ok,
---nook, --no-shadow, --no-tags, --ok-label *string*, --output-fd *fd*,
---output-separator *string*, --print-version,
---print-size (todo move lib -> utility), --quoted (quotes all != dialog),
---print-maxsize, --shadow, --single-quoted (add --quote-with *ch*?), 
---separator *string* (alias --output-separator *string*),
---separate-output (rename --separate-output-withnl?), --sleep *secs*, --stderr,
---stdout, --theme *string* ("bsddialog", "dialog", "blackwhite"),
---time-format *format*, --title *title*, --version, --yes-label *string*.
-
-**Dialogs:**
- 
- infobox (do not clear the screen), msgbox,
- yesno (dialog renames "yes/no" -> "ok/cancel" with --extra-button --help-button).
- checklist, radiolist, menu, mixedlist, treeview, textbox, mixedgauge, datebox,
- timebox, gauge, rangebox, pause.
-
-
- Without resize:
-
- form, inputbox, mixedform, passwordbox, passwordform.
-
-
-
-## TODO
+## Utility Features
 
 
 **Common Options:**
-
- - Autosize for *text*
-
-|  Option                      | Status      | Note                            |
-| ---------------------------- | ----------- | ------------------------------- |
-| --cr-wrap                    | In progress | text                            |
-| --no-collapse                | In progress | text                            |
-| --no-nl-expand               | In progress | text                            |
-| --trim                       | In progress | text                            |
-
-
-To evaluate / Not planned in the short term / not in bsdinstall:
-
---create-rc *file*, --iso-week, --no-mouse, --print-text-only *str h w*,
---print-text-size *str h w*, --reorder, -scrollbar, --separate-widget *string*,
---size-err, --timeout *secs*,--trace *filename*, --visit-items,
---week-start *day*, --keep-tite, --keep-window, --last-key, --no-kill,
---column-separator *string*, --input-fd *fd*, --tab-correct, --tab-len *n*
+ 
+--ascii-lines, --backtitle *backtitle*, --begin-x *x*, --begin-y *y*,
+--cancel-label *string*, --clear, --colors, --cr-wrap, --date-format *format*,
+--defaultno, --default-button *label*, --default-no, --default-item *name*,
+--disable-esc, --esc-cancelvalue, --exit-label *label*, --extra-button,
+--extra-label *label*, --help, --help-button, --help-label *label*,
+--help-status, --help-tags, --hfile *filename*, --hline *string*,
+--hmsg *string*, --ignore, --insecure, --item-depth, --item-help,
+--items-prefix, --max-input *size*, --no-cancel, --nocancel, no-collapse,
+--no-items, --no-label *label*, --no-lines, --no-nl-expand, --no-ok, --nook,
+--no-shadow, --no-tags, --ok-label *label*, --output-fd *fd*,
+--output-separator *sep*, --print-maxsize, --print-size, --print-version,
+--quoted, --separate-output, --separator *sep*, --shadow, --single-quoted,
+--sleep *secs*, --stderr, --stdout, --tab-len *spaces*,
+--theme *blackwhite|bsddialog|dialog*, --time-format *format*, --title *title*,
+--trim, --version, --yes-label *string*.
 
 
 **Dialogs:**
 
-To evaluate / Not planned in the short term:
-
-tailbox (textbox/fseek), tailboxbg, dselect, fselect, inputmenu, editbox,
-calendar (use datebox), prgbox, programbox, progressbox, buildlist (use
-checklist).
-
+--checklist, --datebox, --form, --gauge, --inputbox, --menu, --mixedform,
+--mixedgauge, --msgbox, --passwordbox, --passwordform, --pause, --radiolist,
+--rangebox, --textbox, --timebox, --treeview, --yesno.
