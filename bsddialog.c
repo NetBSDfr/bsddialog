@@ -277,7 +277,7 @@ int main(int argc, char *argv[argc])
 {
 	char *text, *backtitle_flag, errorbuilder[1024];
 	int input, rows, cols, output, getH, getW;
-	int (*widgetbuilder)(BUILDER_ARGS) = NULL;
+	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	bool ignore_flag, print_maxsize_flag;
 	struct winsize ws;
 	struct bsddialog_conf conf;
@@ -600,61 +600,61 @@ int main(int argc, char *argv[argc])
 			break;
 		/* Widgets */
 		case CHECKLIST:
-			widgetbuilder = checklist_builder;
+			dialogbuilder = checklist_builder;
 			break;
 		case DATEBOX:
-			widgetbuilder = datebox_builder;
+			dialogbuilder = datebox_builder;
 			break;
 		case FORM:
-			widgetbuilder = form_builder;
+			dialogbuilder = form_builder;
 			break;
 		case GAUGE:
-			widgetbuilder = gauge_builder;
+			dialogbuilder = gauge_builder;
 			break;
 		case INFOBOX:
-			widgetbuilder = infobox_builder;
+			dialogbuilder = infobox_builder;
 			break;
 		case INPUTBOX:
-			widgetbuilder = inputbox_builder;
+			dialogbuilder = inputbox_builder;
 			break;
 		case MENU:
-			widgetbuilder = menu_builder;
+			dialogbuilder = menu_builder;
 			break;
 		case MIXEDFORM:
-			widgetbuilder = mixedform_builder;
+			dialogbuilder = mixedform_builder;
 			break;
 		case MIXEDGAUGE:
-			widgetbuilder = mixedgauge_builder;
+			dialogbuilder = mixedgauge_builder;
 			break;
 		case MSGBOX:
-			widgetbuilder = msgbox_builder;
+			dialogbuilder = msgbox_builder;
 			break;
 		case PAUSE:
-			widgetbuilder = pause_builder;
+			dialogbuilder = pause_builder;
 			break;
 		case PASSWORDBOX:
-			widgetbuilder = passwordbox_builder;
+			dialogbuilder = passwordbox_builder;
 			break;
 		case PASSWORDFORM:
-			widgetbuilder = passwordform_builder;
+			dialogbuilder = passwordform_builder;
 			break;
 		case RADIOLIST:
-			widgetbuilder = radiolist_builder;
+			dialogbuilder = radiolist_builder;
 			break;
 		case RANGEBOX:
-			widgetbuilder = rangebox_builder;
+			dialogbuilder = rangebox_builder;
 			break;
 		case TEXTBOX:
-			widgetbuilder = textbox_builder;
+			dialogbuilder = textbox_builder;
 			break;
 		case TIMEBOX:
-			widgetbuilder = timebox_builder;
+			dialogbuilder = timebox_builder;
 			break;
 		case TREEVIEW:
-			widgetbuilder = treeview_builder;
+			dialogbuilder = treeview_builder;
 			break;
 		case YESNO:
-			widgetbuilder = yesno_builder;
+			dialogbuilder = yesno_builder;
 			break;
 		/* Error */
 		default:
@@ -679,7 +679,7 @@ int main(int argc, char *argv[argc])
 		usage();
 		return (BSDDIALOG_ERROR);
 	}
-	if (widgetbuilder == textbox_builder)
+	if (dialogbuilder == textbox_builder)
 		text = argv[0];
 	else {
 		text = malloc(strlen(argv[0] + 1));
@@ -704,11 +704,11 @@ int main(int argc, char *argv[argc])
 		bsddialog_backtitle(&conf, backtitle_flag);
 
 	output = BSDDIALOG_OK;
-	if (widgetbuilder != NULL)
-		output = widgetbuilder(conf, text, rows, cols, argc, argv,
+	if (dialogbuilder != NULL)
+		output = dialogbuilder(conf, text, rows, cols, argc, argv,
 		    errorbuilder);
 
-	if (widgetbuilder != textbox_builder)
+	if (dialogbuilder != textbox_builder)
 		free(text);
 
 	bsddialog_end();
