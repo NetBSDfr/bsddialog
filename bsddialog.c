@@ -72,14 +72,12 @@ enum OPTS {
 	ITEM_PREFIX,
 	MAX_INPUT,
 	NO_CANCEL,
-	NOCANCEL,
 	NO_COLLAPSE,
 	NO_ITEMS,
 	NO_LABEL,
 	NO_LINES,
 	NO_NL_EXPAND,
 	NO_OK,
-	NOOK,
 	NO_SHADOW,
 	NO_TAGS,
 	OK_LABEL,
@@ -90,7 +88,6 @@ enum OPTS {
 	PRINT_VERSION,
 	QUOTED,
 	SEPARATE_OUTPUT,
-	SEPARATOR,
 	SHADOW,
 	SINGLE_QUOTED,
 	SLEEP,
@@ -338,14 +335,14 @@ int main(int argc, char *argv[argc])
 	    {"item-prefix",     no_argument,       NULL, ITEM_PREFIX },
 	    {"max-input",       required_argument, NULL, MAX_INPUT },
 	    {"no-cancel",       no_argument,       NULL, NO_CANCEL },
-	    {"nocancel",        no_argument,       NULL, NOCANCEL },
+	    {"nocancel",        no_argument,       NULL, NO_CANCEL }, /* alias*/
 	    {"no-collapse",     no_argument,       NULL, NO_COLLAPSE },
 	    {"no-items",        no_argument,       NULL, NO_ITEMS },
 	    {"no-label",        required_argument, NULL, NO_LABEL },
 	    {"no-lines",        no_argument,       NULL, NO_LINES },
 	    {"no-nl-expand",    no_argument,       NULL, NO_NL_EXPAND },
 	    {"no-ok",           no_argument,       NULL, NO_OK },
-	    {"nook ",           no_argument,       NULL, NOOK },
+	    {"nook ",           no_argument,       NULL, NO_OK }, /* alias */
 	    {"no-shadow",       no_argument,       NULL, NO_SHADOW },
 	    {"no-tags",         no_argument,       NULL, NO_TAGS },
 	    {"ok-label",        required_argument, NULL, OK_LABEL },
@@ -356,7 +353,7 @@ int main(int argc, char *argv[argc])
 	    {"print-version",   no_argument,       NULL, PRINT_VERSION },
 	    {"quoted",          no_argument,       NULL, QUOTED },
 	    {"separate-output", no_argument,       NULL, SEPARATE_OUTPUT },
-	    {"separator",       required_argument, NULL, SEPARATOR },
+	    {"separator",       required_argument, NULL, OUTPUT_SEPARATOR }, /* alias */
 	    {"shadow",          no_argument,       NULL, SHADOW },
 	    {"single-quoted",   no_argument,       NULL, SINGLE_QUOTED },
 	    {"sleep",           required_argument, NULL, SLEEP },
@@ -498,7 +495,6 @@ int main(int argc, char *argv[argc])
 		case NO_ITEMS:
 			conf.menu.no_desc = true;
 			break;
-		case NOCANCEL:
 		case NO_CANCEL:
 			conf.button.without_cancel = true;
 			break;
@@ -514,7 +510,6 @@ int main(int argc, char *argv[argc])
 		case NO_NL_EXPAND:
 			no_nl_expand_flag = true;
 			break;
-		case NOOK:
 		case NO_OK:
 			conf.button.without_ok = true;
 			break;
@@ -530,7 +525,6 @@ int main(int argc, char *argv[argc])
 		case OUTPUT_FD:
 			output_fd_flag = atoi(optarg);
 			break;
-		case SEPARATOR:
 		case OUTPUT_SEPARATOR:
 			item_output_sep_flag = optarg;
 			break;
