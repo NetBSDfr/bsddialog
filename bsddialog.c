@@ -1168,6 +1168,18 @@ int treeview_builder(BUILDER_ARGS)
 }
 
 /* FORM */
+static int
+alloc_formitems(int nitems, struct bsddialog_formitem **items, char *errbuf)
+{
+	*items = calloc(nitems, sizeof(struct bsddialog_formitem));
+	if (items == NULL) {
+		strcpy(errbuf, "cannot allocate memory for form items\n");
+		return (BSDDIALOG_ERROR);
+	}
+
+	return (BSDDIALOG_OK);
+}
+
 static void
 print_form_items(struct bsddialog_conf *conf, int output, int nitems,
     struct bsddialog_formitem *items)
@@ -1186,7 +1198,7 @@ print_form_items(struct bsddialog_conf *conf, int output, int nitems,
 int form_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nitems, fieldlen, valuelen;
-	struct bsddialog_formitem items[1024];
+	struct bsddialog_formitem *items;
 	unsigned int flags = 0;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
@@ -1200,6 +1212,8 @@ int form_builder(BUILDER_ARGS)
 	argv++;
 
 	nitems = argc / 8;
+	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
+		return (BSDDIALOG_ERROR);
 	for (i=0; i<nitems; i++) {
 		items[i].label	= argv[8*i];
 		items[i].ylabel = atoi(argv[8*i+1]);
@@ -1223,6 +1237,7 @@ int form_builder(BUILDER_ARGS)
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
 	    items);
 	print_form_items(&conf, output, nitems, items);
+	free(items);
 
 	return (output);
 }
@@ -1252,7 +1267,7 @@ int inputbox_builder(BUILDER_ARGS)
 int mixedform_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nitems;
-	struct bsddialog_formitem items[1024];
+	struct bsddialog_formitem *items;
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
@@ -1265,6 +1280,8 @@ int mixedform_builder(BUILDER_ARGS)
 	argv++;
 
 	nitems = argc / 9;
+	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
+		return (BSDDIALOG_ERROR);
 	for (i=0; i<nitems; i++) {
 		items[i].label	     = argv[9*i];
 		items[i].ylabel      = atoi(argv[9*i+1]);
@@ -1281,6 +1298,7 @@ int mixedform_builder(BUILDER_ARGS)
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
 	    items);
 	print_form_items(&conf, output, nitems, items);
+	free(items);
 
 	return (output);
 }
@@ -1310,7 +1328,7 @@ int passwordbox_builder(BUILDER_ARGS)
 int passwordform_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nitems, fieldlen, valuelen;
-	struct bsddialog_formitem items[1024];
+	struct bsddialog_formitem *items;
 	unsigned int flags = BSDDIALOG_FIELDHIDDEN;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
@@ -1324,6 +1342,8 @@ int passwordform_builder(BUILDER_ARGS)
 	argv++;
 
 	nitems = argc / 8;
+	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
+		return (BSDDIALOG_ERROR);
 	for (i=0; i<nitems; i++) {
 		items[i].label	= argv[8*i];
 		items[i].ylabel = atoi(argv[8*i+1]);
@@ -1347,6 +1367,7 @@ int passwordform_builder(BUILDER_ARGS)
 	output = bsddialog_form(&conf, text, rows, cols, formheight,
 	    nitems, items);
 	print_form_items(&conf, output, nitems, items);
+	free(items);
 
 	return (output);
 }
