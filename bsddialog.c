@@ -135,6 +135,9 @@ static int max_input_form_opt;
 /* General flags and options */
 static int output_fd_opt;
 
+static void
+custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
+    char *text, char *buf);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
 	int cols, int argc, char **argv, char *errbuf
@@ -216,55 +219,6 @@ static void usage(void)
 	printf("--treeview <text> <rows> <cols> <menurows> [<depth> <name> "
 	    "<desc> <on|off> ...]\n");
 	printf("--yesno <text> <rows> <cols>\n");
-}
-
-static void
-custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
-    char *text, char *buf)
-{
-	int i, j;
-
-	i = j = 0;
-	while (text[i] != '\0') {
-		switch (text[i]) {
-		case '\\':
-			buf[j] = '\\';
-			switch (text[i+1]) {
-			case '\\':
-				i++;
-				break;
-			case 'n':
-				if (no_nl_expand) {
-					j++;
-					buf[j] = 'n';
-				} else
-					buf[j] = '\n';
-				i++;
-				break;
-			case 't':
-				if (no_collapse) {
-					j++;
-					buf[j] = 't';
-				} else
-					buf[j] = '\t';
-				i++;
-				break;
-			}
-			break;
-		case '\n':
-			buf[j] = cr_wrap ? ' ' : '\n';
-			break;
-		case '\t':
-			buf[j] = no_collapse ? '\t' : ' ';
-			break;
-		default:
-			buf[j] = text[i];
-		}
-		i++;
-		j += (buf[j] == ' ' && trim && j > 0 && buf[j-1] == ' ') ?
-		    0 : 1;
-	}
-	buf[j] = '\0';
 }
 
 int main(int argc, char *argv[argc])
@@ -723,6 +677,55 @@ int main(int argc, char *argv[argc])
 		output = BSDDIALOG_CANCEL;
 
 	return (output);
+}
+
+void
+custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
+    char *text, char *buf)
+{
+	int i, j;
+
+	i = j = 0;
+	while (text[i] != '\0') {
+		switch (text[i]) {
+		case '\\':
+			buf[j] = '\\';
+			switch (text[i+1]) {
+			case '\\':
+				i++;
+				break;
+			case 'n':
+				if (no_nl_expand) {
+					j++;
+					buf[j] = 'n';
+				} else
+					buf[j] = '\n';
+				i++;
+				break;
+			case 't':
+				if (no_collapse) {
+					j++;
+					buf[j] = 't';
+				} else
+					buf[j] = '\t';
+				i++;
+				break;
+			}
+			break;
+		case '\n':
+			buf[j] = cr_wrap ? ' ' : '\n';
+			break;
+		case '\t':
+			buf[j] = no_collapse ? '\t' : ' ';
+			break;
+		default:
+			buf[j] = text[i];
+		}
+		i++;
+		j += (buf[j] == ' ' && trim && j > 0 && buf[j-1] == ' ') ?
+		    0 : 1;
+	}
+	buf[j] = '\0';
 }
 
 /* Dialogs */
