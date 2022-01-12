@@ -710,7 +710,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if(update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs, shortcut_butts) != 0)
 				return (BSDDIALOG_ERROR);
-			
+
 			doupdate();
 
 			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
@@ -722,7 +722,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			update_menuwin(conf, menuwin, menurows+2, w-4,
 			    totnitems, menurows, ymenupad);
 			wrefresh(menuwin);
-			
+
 			ys = y + h - 5 - menurows + 1;
 			ye = y + h - 5 ;
 			if (conf->menu.align_left || (int)pos.line > w - 6) {

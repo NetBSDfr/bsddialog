@@ -217,7 +217,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				return (BSDDIALOG_ERROR);
 
 			doupdate();
-				
+
 			mvwaddch(widget, h - 5, w/2 - 3, ':');
 			mvwaddch(widget, h - 5, w/2 + 2, ':');
 			wrefresh(widget);

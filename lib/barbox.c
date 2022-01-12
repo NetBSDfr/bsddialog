@@ -617,7 +617,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 		return (BSDDIALOG_ERROR);
 
 	doupdate();
-	
+
 	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
 	sizebar = w - HBORDERS - 2 - BARPADDING * 2;
@@ -715,7 +715,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			wresize(bar, 3, sizebar + 2);
 			draw_borders(conf, bar, 3, sizebar+2, LOWERED);
 
-			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, 
+			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
 			    x+w-1-TEXTHMARGIN);
 
 			barupdate = true;

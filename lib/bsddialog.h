@@ -33,22 +33,22 @@
 #define LIBBSDDIALOG_VERSION    "0.0.2"
 
 /* Exit status */
-#define BSDDIALOG_ERROR		-1
+#define BSDDIALOG_ERROR         -1
 #define BSDDIALOG_OK             0
 #define BSDDIALOG_YES            BSDDIALOG_OK
 #define BSDDIALOG_CANCEL         1
 #define BSDDIALOG_NO             BSDDIALOG_CANCEL
-#define BSDDIALOG_HELP		 2
-#define BSDDIALOG_EXTRA		 3
+#define BSDDIALOG_HELP           2
+#define BSDDIALOG_EXTRA          3
 #define BSDDIALOG_TIMEOUT        4
-#define BSDDIALOG_ESC		 5
+#define BSDDIALOG_ESC            5
 #define BSDDIALOG_GENERIC1       6
 #define BSDDIALOG_GENERIC2       7
 
 /* Size and position */
-#define BSDDIALOG_FULLSCREEN	-1
-#define BSDDIALOG_AUTOSIZE	 0
-#define BSDDIALOG_CENTER	-1
+#define BSDDIALOG_FULLSCREEN    -1
+#define BSDDIALOG_AUTOSIZE       0
+#define BSDDIALOG_CENTER        -1
 
 /* Mixedgauge */
 #define BSDDIALOG_MG_SUCCEEDED   -1
