@@ -50,9 +50,9 @@ enum OPTS {
 	COLORS,
 	CR_WRAP,
 	DATE_FORMAT,
-	DEFAULTNO,
 	DEFAULT_BUTTON,
 	DEFAULT_ITEM,
+	DEFAULT_NO,
 	DISABLE_ESC,
 	ESC_CANCELVALUE,
 	EXIT_LABEL,
@@ -80,8 +80,8 @@ enum OPTS {
 	NO_NL_EXPAND,
 	NO_OK,
 	NOOK,
-	NO_TAGS,
 	NO_SHADOW,
+	NO_TAGS,
 	OK_LABEL,
 	OUTPUT_FD,
 	OUTPUT_SEPARATOR,
@@ -213,7 +213,6 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 
 void usage(void)
 {
-
 	printf("usage: bsddialog --help\n"
 	       "       bsddialog --version\n"
 	       "       bsddialog [--<common-opts>] --<dialog> <text> "
@@ -222,22 +221,22 @@ void usage(void)
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
 	    "--begin-y <y>, --cancel-label <string>, --clear, --colors, "
-	    "--date-format <format>, --default-button <label>, --defaultno, "
+	    "--cr-wrap, --date-format <format>, --default-button <label>, --default-no, "
 	    "--default-item <name>, --disable-esc, --esc-cancelvalue, "
 	    "--exit-label <label>, --extra-button, --extra-label <label>, "
-	    "--hfile <filename>, --help-button, --help-label <label>, "
-	    "--help-status, --help-tags, --hline string, --ignore, --insecure, "
+	    "--help, --help-button, --help-label <label>, "
+	    "--help-status, --help-tags, --hfile <filename>, --hline string, --ignore, --insecure, "
 	    "--item-depth, --item-help, --items-prefix, --max-input <size>, "
-	    "--no-cancel, --nocancel, --no-label <label>, --no-items, "
-	    "--no-lines, --no-ok, --nook, --no-shadow, --no-tags, "
+	    "--no-cancel, --nocancel, no-collapse, --no-items, --no-label <label>,  "
+	    "--no-lines, --no-nl-expand, --no-ok, --nook, --no-shadow, --no-tags, "
+	    
 	    "--ok-label <label>, --output-fd <fd>, --output-separator <sep>, "
-	    "--print-version, --print-size, --quoted, --print-maxsize, "
-	    "--shadow, --single-quoted, --separator <sep>, --separate-output, "
+	    "--print-maxsize, --print-size, --print-version, --quoted, "
+	    "--separate-output,  --separator <sep>, --shadow, --single-quoted,  "
 	    "--sleep <secs>, --stderr, --stdout, "
 	    "--theme <blackwhite|bsddialog|dialog>, --time-format <format>, "
-	    "--title <title>, --yes-label <string>.\n");
+	    "--title <title>, --trim, --version, --yes-label <string>.\n");
 	printf("\n");
-	
 	printf("Dialogs:\n");
 	printf("--checklist <text> <rows> <cols> <menurows> [<name> <desc> "
 	    "<on|off> ...]\n");
@@ -317,9 +316,9 @@ int main(int argc, char *argv[argc])
 	    {"colors",          no_argument,       NULL, COLORS },
 	    {"cr-wrap",         no_argument,       NULL, CR_WRAP },
 	    {"date-format",     required_argument, NULL, DATE_FORMAT },
-	    {"defaultno",       no_argument,       NULL, DEFAULTNO },
 	    {"default-button",  required_argument, NULL, DEFAULT_BUTTON },
 	    {"default-item",    required_argument, NULL, DEFAULT_ITEM },
+	    {"defaultno",       no_argument,       NULL, DEFAULT_NO },
 	    {"disable-esc",     no_argument,       NULL, DISABLE_ESC },
 	    {"esc-cancelvalue", no_argument,       NULL, ESC_CANCELVALUE },
 	    {"exit-label",      required_argument, NULL, EXIT_LABEL },
@@ -347,23 +346,23 @@ int main(int argc, char *argv[argc])
 	    {"no-nl-expand",    no_argument,       NULL, NO_NL_EXPAND },
 	    {"no-ok",           no_argument,       NULL, NO_OK },
 	    {"nook ",           no_argument,       NULL, NOOK },
-	    {"no-tags",         no_argument,       NULL, NO_TAGS },
 	    {"no-shadow",       no_argument,       NULL, NO_SHADOW },
+	    {"no-tags",         no_argument,       NULL, NO_TAGS },
 	    {"ok-label",        required_argument, NULL, OK_LABEL },
 	    {"output-fd",       required_argument, NULL, OUTPUT_FD },
-	    {"separator",       required_argument, NULL, SEPARATOR },
 	    {"output-separator",required_argument, NULL, OUTPUT_SEPARATOR },
 	    {"print-maxsize",   no_argument,       NULL, PRINT_MAXSIZE },
 	    {"print-size",      no_argument,       NULL, PRINT_SIZE },
 	    {"print-version",   no_argument,       NULL, PRINT_VERSION },
 	    {"quoted",          no_argument,       NULL, QUOTED },
 	    {"separate-output", no_argument,       NULL, SEPARATE_OUTPUT },
+	    {"separator",       required_argument, NULL, SEPARATOR },
 	    {"shadow",          no_argument,       NULL, SHADOW },
 	    {"single-quoted",   no_argument,       NULL, SINGLE_QUOTED },
 	    {"sleep",           required_argument, NULL, SLEEP },
 	    {"stderr",          no_argument,       NULL, STDERR },
 	    {"stdout",          no_argument,       NULL, STDOUT },
-	    {"theme_flag",      required_argument, NULL, THEME },
+	    {"theme",           required_argument, NULL, THEME },
 	    {"time-format",     required_argument, NULL, TIME_FORMAT },
 	    {"title",           required_argument, NULL, TITLE },
 	    {"trim",            no_argument,       NULL, TRIM },
@@ -439,7 +438,7 @@ int main(int argc, char *argv[argc])
 		case DEFAULT_ITEM:
 			item_default_flag = optarg;
 			break;
-		case DEFAULTNO:
+		case DEFAULT_NO:
 			conf.button.default_cancel = true;
 			break;
 		case DISABLE_ESC:
