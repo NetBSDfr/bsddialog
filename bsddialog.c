@@ -973,7 +973,8 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 	j = 0;
 	for (i=0; i<*nitems; i++) {
 		(*items)[i].prefix = setprefix ? argv[j++] : "";
-		(*items)[i].depth = setdepth ? atoi(argv[j++]) : 0;
+		(*items)[i].depth = setdepth ?
+		    (u_int)strtoul(argv[j++], NULL, 0) : 0;
 		(*items)[i].name = setname ? argv[j++] : "";
 		(*items)[i].desc = setdesc ? argv[j++] : "";
 		if (setstatus)
