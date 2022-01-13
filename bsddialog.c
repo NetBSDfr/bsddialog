@@ -1200,16 +1200,16 @@ print_form_items(struct bsddialog_conf *conf, int output, int nitems,
 
 int form_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems, fieldlen, valuelen;
+	int i, output, fieldlen, valuelen;
+	unsigned int flags, formheight, nitems;
 	struct bsddialog_formitem *items;
-	unsigned int flags;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
 
-	formheight = atoi(argv[0]);
+	formheight = (u_int)strtoul(argv[0], NULL, 10);
 	flags = 0;
 
 	argc--;
@@ -1220,11 +1220,11 @@ int form_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	for (i=0; i<nitems; i++) {
 		items[i].label	= argv[8*i];
-		items[i].ylabel = atoi(argv[8*i+1]);
-		items[i].xlabel = atoi(argv[8*i+2]);
+		items[i].ylabel = (u_int)strtoul(argv[8*i+1], NULL, 10);
+		items[i].xlabel = (u_int)strtoul(argv[8*i+2], NULL, 10);
 		items[i].init	= argv[8*i+3];
-		items[i].yfield	= atoi(argv[8*i+4]);
-		items[i].xfield	= atoi(argv[8*i+5]);
+		items[i].yfield	= (u_int)strtoul(argv[8*i+4], NULL, 10);
+		items[i].xfield	= (u_int)strtoul(argv[8*i+5], NULL, 10);
 
 		fieldlen = atoi(argv[8*i+6]);
 		items[i].fieldlen = abs(fieldlen);
@@ -1270,7 +1270,8 @@ int inputbox_builder(BUILDER_ARGS)
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems;
+	int i, output;
+	unsigned int formheight, nitems;
 	struct bsddialog_formitem *items;
 
 	if (argc < 1 || (((argc-1) % 9) != 0) ) {
@@ -1278,7 +1279,7 @@ int mixedform_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	formheight = atoi(argv[0]);
+	formheight = (u_int)strtoul(argv[0], NULL, 10);
 
 	argc--;
 	argv++;
@@ -1288,14 +1289,14 @@ int mixedform_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	for (i=0; i<nitems; i++) {
 		items[i].label	     = argv[9*i];
-		items[i].ylabel      = atoi(argv[9*i+1]);
-		items[i].xlabel      = atoi(argv[9*i+2]);
+		items[i].ylabel      = (u_int)strtoul(argv[9*i+1], NULL, 10);
+		items[i].xlabel      = (u_int)strtoul(argv[9*i+2], NULL, 10);
 		items[i].init	     = argv[9*i+3];
-		items[i].yfield	     = atoi(argv[9*i+4]);
-		items[i].xfield	     = atoi(argv[9*i+5]);
-		items[i].fieldlen    = atoi(argv[9*i+6]);
-		items[i].maxvaluelen = atoi(argv[9*i+7]);
-		items[i].flags       = atoi(argv[9*i+8]);
+		items[i].yfield	     = (u_int)strtoul(argv[9*i+4], NULL, 10);
+		items[i].xfield	     = (u_int)strtoul(argv[9*i+5], NULL, 10);
+		items[i].fieldlen    = (u_int)strtoul(argv[9*i+6], NULL, 10);
+		items[i].maxvaluelen = (u_int)strtoul(argv[9*i+7], NULL, 10);
+		items[i].flags       = (u_int)strtoul(argv[9*i+8], NULL, 10);
 		items[i].bottomdesc  = "";
 	}
 
@@ -1331,8 +1332,8 @@ int passwordbox_builder(BUILDER_ARGS)
 
 int passwordform_builder(BUILDER_ARGS)
 {
-	int i, output, formheight, nitems, fieldlen, valuelen;
-	unsigned int flags;
+	int i, output, fieldlen, valuelen;
+	unsigned int flags, formheight, nitems;
 	struct bsddialog_formitem *items;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
@@ -1340,7 +1341,7 @@ int passwordform_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	formheight = atoi(argv[0]);
+	formheight = (u_int)strtoul(argv[0], NULL, 10);
 	flags = BSDDIALOG_FIELDHIDDEN;
 
 	argc--;
@@ -1351,11 +1352,11 @@ int passwordform_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	for (i=0; i<nitems; i++) {
 		items[i].label	= argv[8*i];
-		items[i].ylabel = atoi(argv[8*i+1]);
-		items[i].xlabel = atoi(argv[8*i+2]);
+		items[i].ylabel = (u_int)strtoul(argv[8*i+1], NULL, 10);
+		items[i].xlabel = (u_int)strtoul(argv[8*i+2], NULL, 10);
 		items[i].init	= argv[8*i+3];
-		items[i].yfield	= atoi(argv[8*i+4]);
-		items[i].xfield	= atoi(argv[8*i+5]);
+		items[i].yfield	= (u_int)strtoul(argv[8*i+4], NULL, 10);
+		items[i].xfield	= (u_int)strtoul(argv[8*i+5], NULL, 10);
 
 		fieldlen = atoi(argv[8*i+6]);
 		items[i].fieldlen = abs(fieldlen);
@@ -1369,8 +1370,8 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].bottomdesc = "";
 	}
 
-	output = bsddialog_form(&conf, text, rows, cols, formheight,
-	    nitems, items);
+	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
+	    items);
 	print_form_items(&conf, output, nitems, items);
 	free(items);
 
