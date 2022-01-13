@@ -201,8 +201,8 @@ static void usage(void)
 	printf("--mixedform <text> <rows> <cols> <formrows> [<label> <ylabel> "
 	    "<xlabe> <init> <yfield> <xfield> <fieldlen> <maxvalue> <0|1|2> "
 	    "...]\n");
-	printf("--mixedgauge <text> <rows> <cols> <mainperc> [<label> "
-	    "<01234567|-perc> ...]\n");
+	printf("--mixedgauge <text> <rows> <cols> <mainperc> [<minilabel> "
+	    "<-123456789|-10|-11|miniperc> ...]\n");
 	printf("--msgbox <text> <rows> <cols>\n");
 	printf("--passwordbox <text> <rows> <cols> [init]\n");
 	printf("--passwordform <text> <rows> <cols> <formrows> [<label> "
