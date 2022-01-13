@@ -630,7 +630,7 @@ int main(int argc, char *argv[argc])
 	if (dialogbuilder == textbox_builder)
 		text = argv[0];
 	else {
-		text = malloc(strlen(argv[0] + 1));
+		text = malloc(strlen(argv[0]) + 1);
 		custom_text(cr_wrap_opt, no_collapse_opt, no_nl_expand_opt,
 		    trim_opt, argv[0], text);
 	}
