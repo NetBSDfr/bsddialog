@@ -800,15 +800,16 @@ int msgbox_builder(BUILDER_ARGS)
 
 int pause_builder(BUILDER_ARGS)
 {
-	int output, sec;
+	int output;
+	unsigned int secs;
 
 	if (argc < 1) {
-		strcpy(errbuf, "not <seconds> argument for --pause\n");
+		strcpy(errbuf, "missing <seconds> for --pause\n");
 		return (BSDDIALOG_ERROR);
 	}
 
-	sec = atoi(argv[0]);
-	output = bsddialog_pause(&conf, text, rows, cols, sec);
+	secs = (u_int)strtoul(argv[0], NULL, 10);
+	output = bsddialog_pause(&conf, text, rows, cols, secs);
 
 	return (output);
 }
