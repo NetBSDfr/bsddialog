@@ -728,11 +728,11 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 /* Dialogs */
 int gauge_builder(BUILDER_ARGS)
 {
-	int output, perc;
+	int output;
+	unsigned int perc;
 
 	if (argc > 0) {
-		perc = argc > 0 ? atoi (argv[0]) : 0;
-		perc = perc < 0 ? 0 : perc;
+		perc = argc > 0 ? (u_int)strtoul(argv[0], NULL, 10) : 0;
 		perc = perc > 100 ? 100 : perc;
 	}
 	else
