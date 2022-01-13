@@ -36,10 +36,10 @@
 .Nm bsddialog
 .Op Fl Ar -common-opts
 .Fl Ar -widget
-.Fl Artext
-.Fl Arheight
-.Fl Arwidth
-.Op Fl Ar -widget-opts
+.Fl Ar text
+.Fl Ar rows
+.Fl Ar cols
+.Op Fl Ar -dialog-opts
 .Sh DESCRIPTION
 The
 .Nm bsddialog
@@ -48,8 +48,6 @@ messages, to get input and to inform about a computation status.
 .\" .Sh EXIT STATUS
 .\" For sections 1, 6, and 8 only.
 .\" .Sh EXAMPLES
-.\" .Sh DIAGNOSTICS
-.\" For sections 1, 4, 6, 7, 8, and 9 printf/stderr messages only.
 .Sh SEE ALSO
 .Xr bsddialog 3 .
 .Sh HISTORY
