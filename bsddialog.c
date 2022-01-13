@@ -354,7 +354,7 @@ int main(int argc, char *argv[argc])
 			backtitle_opt = optarg;
 			break;
 		case BEGIN_X:
-			conf.x = atoi(optarg);
+			conf.x = (int)strtol(optarg, NULL, 10);
 			if (conf.x < BSDDIALOG_CENTER) {
 				printf("Error: --begin-x %d, cannot be < %d",
 				    conf.x, BSDDIALOG_CENTER);
@@ -362,7 +362,7 @@ int main(int argc, char *argv[argc])
 			}
 			break;
 		case BEGIN_Y:
-			conf.y = atoi(optarg);
+			conf.y = (int)strtol(optarg, NULL, 10);
 			if (conf.y < BSDDIALOG_CENTER) {
 				printf("Error: --begin-y %d, cannot be < %d",
 				    conf.y, BSDDIALOG_CENTER);
@@ -478,7 +478,7 @@ int main(int argc, char *argv[argc])
 			conf.button.ok_label = optarg;
 			break;
 		case OUTPUT_FD:
-			output_fd_opt = atoi(optarg);
+			output_fd_opt = (int)strtol(optarg, NULL, 10);
 			break;
 		case OUTPUT_SEPARATOR:
 			item_output_sep_opt = optarg;
@@ -631,8 +631,8 @@ int main(int argc, char *argv[argc])
 		custom_text(cr_wrap_opt, no_collapse_opt, no_nl_expand_opt,
 		    trim_opt, argv[0], text);
 	}
-	rows = atoi(argv[1]);
-	cols = atoi(argv[2]);
+	rows = (int)strtol(argv[1], NULL, 10);
+	cols = (int)strtol(argv[2], NULL, 10);
 	argc -= 3;
 	argv += 3;
 
@@ -780,7 +780,7 @@ int mixedgauge_builder(BUILDER_ARGS)
 
 	for (i = 0; i < nminibars; i++) {
 		minilabels[i] = argv[i * 2];
-		minipercs[i] = atoi(argv[i * 2 + 1]);
+		minipercs[i] = (int)strtol(argv[i * 2 + 1], NULL, 10);
 	}
 
 	output = bsddialog_mixedgauge(&conf, text, rows, cols, mainperc,
@@ -824,11 +824,11 @@ int rangebox_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	min = atoi(argv[0]);
-	max = atoi(argv[1]);
+	min = (int)strtol(argv[0], NULL, 10);
+	max = (int)strtol(argv[1], NULL, 10);
 
 	if (argc > 2) {
-		value = atoi(argv[2]);
+		value = (int)strtol(argv[2], NULL, 10);
 		value = value < min ? min : value;
 		value = value > max ? max : value;
 	}
@@ -1226,10 +1226,10 @@ int form_builder(BUILDER_ARGS)
 		items[i].yfield	= (u_int)strtoul(argv[8*i+4], NULL, 10);
 		items[i].xfield	= (u_int)strtoul(argv[8*i+5], NULL, 10);
 
-		fieldlen = atoi(argv[8*i+6]);
+		fieldlen = (int)strtol(argv[8*i+6], NULL, 10);
 		items[i].fieldlen = abs(fieldlen);
 
-		valuelen = atoi(argv[8*i+7]);
+		valuelen = (int)strtol(argv[8*i+7], NULL, 10);
 		items[i].maxvaluelen = valuelen == 0 ? abs(fieldlen) : valuelen;
 
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
@@ -1358,10 +1358,10 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].yfield	= (u_int)strtoul(argv[8*i+4], NULL, 10);
 		items[i].xfield	= (u_int)strtoul(argv[8*i+5], NULL, 10);
 
-		fieldlen = atoi(argv[8*i+6]);
+		fieldlen = (int)strtol(argv[8*i+6], NULL, 10);
 		items[i].fieldlen = abs(fieldlen);
 
-		valuelen = atoi(argv[8*i+7]);
+		valuelen = (int)strtol(argv[8*i+7], NULL, 10);
 		items[i].maxvaluelen = valuelen == 0 ? abs(fieldlen) : valuelen;
 
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
