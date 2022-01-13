@@ -226,7 +226,7 @@ bsddialog_yesno(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	struct buttons bs;
 
-	get_buttons(conf, &bs, "Yes", "NO");
+	get_buttons(conf, &bs, "Yes", "No");
 
 	return (do_message(conf, text, rows, cols, bs));
 }
