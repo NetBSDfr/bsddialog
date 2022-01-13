@@ -1063,7 +1063,7 @@ int checklist_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = (u_int)strtoul(argv[0], NULL, 0);
+	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
@@ -1092,7 +1092,7 @@ int menu_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = (u_int)strtoul(argv[0], NULL, 0);
+	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, false, item_bottomdesc_opt, &nitems,
@@ -1121,7 +1121,7 @@ int radiolist_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = (u_int)strtoul(argv[0], NULL, 0);
+	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
@@ -1150,7 +1150,7 @@ int treeview_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = (u_int)strtoul(argv[0], NULL, 0);
+	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt, true,
 	    true, true, true, item_bottomdesc_opt, &nitems, &items, &focusitem);
