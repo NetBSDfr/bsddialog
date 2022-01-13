@@ -875,9 +875,9 @@ int datebox_builder(BUILDER_ARGS)
 	dd = localtm->tm_mday;
 
 	if (argc == 3) {
-		yy = atoi(argv[0]);
-		mm = atoi(argv[1]);
-		dd = atoi(argv[2]);
+		yy = (u_int)strtoul(argv[0], NULL, 10);
+		mm = (u_int)strtoul(argv[1], NULL, 10);
+		dd = (u_int)strtoul(argv[2], NULL, 10);
 	}
 
 	output = bsddialog_datebox(&conf, text, rows, cols, &yy, &mm, &dd);
@@ -915,9 +915,9 @@ int timebox_builder(BUILDER_ARGS)
 	ss = localtm->tm_sec;
 
 	if (argc == 3) {
-		hh = atoi(argv[0]);
-		mm = atoi(argv[1]);
-		ss = atoi(argv[2]);
+		hh = (u_int)strtoul(argv[0], NULL, 10);
+		mm = (u_int)strtoul(argv[1], NULL, 10);
+		ss = (u_int)strtoul(argv[2], NULL, 10);
 	}
 
 	output = bsddialog_timebox(&conf, text, rows, cols, &hh, &mm, &ss);
