@@ -122,7 +122,7 @@ enum OPTS {
 };
 
 /* libbsddialog does not support NULL string */
-static char *nostring = "";
+static char *emptystring = "";
 /* Menus flags and options */
 static bool item_prefix_opt, item_bottomdesc_opt, item_output_sepnl_opt;
 static bool item_singlequote_opt, list_items_on_opt, item_tag_help_opt;
@@ -973,16 +973,16 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 
 	j = 0;
 	for (i=0; i<*nitems; i++) {
-		(*items)[i].prefix = setprefix ? argv[j++] : nostring;
+		(*items)[i].prefix = setprefix ? argv[j++] : emptystring;
 		(*items)[i].depth = setdepth ? atoi(argv[j++]) : 0;
-		(*items)[i].name = setname ? argv[j++] : nostring;
-		(*items)[i].desc = setdesc ? argv[j++] : nostring;
+		(*items)[i].name = setname ? argv[j++] : emptystring;
+		(*items)[i].desc = setdesc ? argv[j++] : emptystring;
 		if (setstatus)
 			(*items)[i].on = strcmp(argv[j++], "on") == 0 ?
 			    true : false;
 		else
 			(*items)[i].on = false;
-		(*items)[i].bottomdesc = sethelp ? argv[j++] : nostring;
+		(*items)[i].bottomdesc = sethelp ? argv[j++] : emptystring;
 
 		if (item_default_opt != NULL && *focusitem == -1)
 			if (strcmp((*items)[i].name, item_default_opt) == 0)
@@ -1231,7 +1231,7 @@ int form_builder(BUILDER_ARGS)
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
 
-		items[i].bottomdesc = nostring;
+		items[i].bottomdesc = emptystring;
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
@@ -1247,16 +1247,16 @@ int inputbox_builder(BUILDER_ARGS)
 	int output;
 	struct bsddialog_formitem item;
 
-	item.label	 = "";
+	item.label	 = emptystring;
 	item.ylabel	 = 0;
 	item.xlabel	 = 0;
-	item.init	 = argc > 0 ? argv[0] : "";
+	item.init	 = argc > 0 ? argv[0] : emptystring;
 	item.yfield	 = 1;
 	item.xfield	 = 1;
 	item.fieldlen    = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
 	item.flags	 = 0;
-	item.bottomdesc  = nostring;
+	item.bottomdesc  = emptystring;
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
 	print_form_items(&conf, output, 1, &item);
@@ -1292,7 +1292,7 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].fieldlen    = atoi(argv[9*i+6]);
 		items[i].maxvaluelen = atoi(argv[9*i+7]);
 		items[i].flags       = atoi(argv[9*i+8]);
-		items[i].bottomdesc  = nostring;
+		items[i].bottomdesc  = emptystring;
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
@@ -1308,16 +1308,16 @@ int passwordbox_builder(BUILDER_ARGS)
 	int output;
 	struct bsddialog_formitem item;
 
-	item.label	 = "";
+	item.label	 = emptystring;
 	item.ylabel	 = 0;
 	item.xlabel	 = 0;
-	item.init	 = argc > 0 ? argv[0] : "";
+	item.init	 = argc > 0 ? argv[0] : emptystring;
 	item.yfield	 = 1;
 	item.xfield	 = 1;
 	item.fieldlen	 = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
 	item.flags       = BSDDIALOG_FIELDHIDDEN;
-	item.bottomdesc  = nostring;
+	item.bottomdesc  = emptystring;
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
 	print_form_items(&conf, output, 1, &item);
@@ -1362,7 +1362,7 @@ int passwordform_builder(BUILDER_ARGS)
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
 
-		items[i].bottomdesc = nostring;
+		items[i].bottomdesc = emptystring;
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight,
