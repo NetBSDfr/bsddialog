@@ -944,7 +944,7 @@ int timebox_builder(BUILDER_ARGS)
 static int
 get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
     bool setdepth, bool setname, bool setdesc, bool setstatus, bool sethelp,
-    int *nitems, struct bsddialog_menuitem **items, int *focusitem)
+    unsigned int *nitems, struct bsddialog_menuitem **items, int *focusitem)
 {
 	int i, j, sizeitem;
 
@@ -1052,7 +1052,8 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 
 int checklist_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems, focusitem;
+	int output, focusitem;
+	unsigned int menurows, nitems;
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
@@ -1060,7 +1061,7 @@ int checklist_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = atoi(argv[0]);
+	menurows = (u_int)strtoul(argv[0], NULL, 0);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
@@ -1080,7 +1081,8 @@ int checklist_builder(BUILDER_ARGS)
 
 int menu_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems, focusitem;
+	int output, focusitem;
+	unsigned int menurows, nitems;
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
@@ -1088,7 +1090,7 @@ int menu_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = atoi(argv[0]);
+	menurows = (u_int)strtoul(argv[0], NULL, 0);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, false, item_bottomdesc_opt, &nitems,
@@ -1108,7 +1110,8 @@ int menu_builder(BUILDER_ARGS)
 
 int radiolist_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems, focusitem;
+	int output, focusitem;
+	unsigned int menurows, nitems;
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
@@ -1116,7 +1119,7 @@ int radiolist_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = atoi(argv[0]);
+	menurows = (u_int)strtoul(argv[0], NULL, 0);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
@@ -1136,7 +1139,8 @@ int radiolist_builder(BUILDER_ARGS)
 
 int treeview_builder(BUILDER_ARGS)
 {
-	int output, menurows, nitems, focusitem;
+	int output, focusitem;
+	unsigned int menurows, nitems;
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
@@ -1144,7 +1148,7 @@ int treeview_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	menurows = atoi(argv[0]);
+	menurows = (u_int)strtoul(argv[0], NULL, 0);
 
 	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt, true,
 	    true, true, true, item_bottomdesc_opt, &nitems, &items, &focusitem);
