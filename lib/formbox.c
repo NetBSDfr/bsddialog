@@ -411,7 +411,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (conf->form.securech != '\0')
 				myfields[i].securech = conf->form.securech;
 		}
-		else myfields[i].secure = false;
+		else
+			myfields[i].secure = false;
 
 		if (ISFIELDREADONLY(items[i])) {
 			field_opts_off(cfield[i], O_EDIT);
