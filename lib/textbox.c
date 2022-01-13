@@ -203,7 +203,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			ypad = xpad = 0;
 			printrows = h - 4;
 
-			if(update_dialog(conf, shadow, widget, y, x, h, w,
+			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    NULL, NULL, &bs, true) != 0)
 				return (BSDDIALOG_ERROR);
 

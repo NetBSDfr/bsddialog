@@ -212,7 +212,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
 
-			if(update_dialog(conf, shadow, widget, y, x, h, w,
+			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs, true) != 0)
 				return (BSDDIALOG_ERROR);
 
@@ -430,7 +430,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
 
-			if(update_dialog(conf, shadow, widget, y, x, h, w,
+			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs, true) != 0)
 				return (BSDDIALOG_ERROR);
 			doupdate();

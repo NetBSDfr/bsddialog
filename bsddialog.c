@@ -640,7 +640,7 @@ int main(int argc, char *argv[argc])
 	argv += 3;
 
 	/* bsddialog terminal mode */
-	if(bsddialog_init() != 0) {
+	if (bsddialog_init() != 0) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (BSDDIALOG_ERROR);
 	}

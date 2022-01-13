@@ -473,7 +473,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		output = form_handler(conf, widget, bs, formwin, form, cfield,
 		    nitems, items);
 
-		if(update_dialog(conf, shadow, widget, y, x, h, w, textpad,
+		if (update_dialog(conf, shadow, widget, y, x, h, w, textpad,
 		    text, &bs, true) != 0)
 			return (BSDDIALOG_ERROR);
 

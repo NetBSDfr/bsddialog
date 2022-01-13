@@ -42,7 +42,7 @@ int bsddialog_init(void)
 
 	set_error_string("");
 
-	if(initscr() == NULL)
+	if (initscr() == NULL)
 		RETURN_ERROR("Cannot init ncurses (initscr)");
 
 	error = OK;
@@ -51,7 +51,7 @@ int bsddialog_init(void)
 	error += cbreak();
 	error += noecho();
 	curs_set(0);
-	if(error != OK) {
+	if (error != OK) {
 		bsddialog_end();
 		RETURN_ERROR("Cannot init ncurses (keypad and cursor)");
 	}
@@ -63,7 +63,7 @@ int bsddialog_init(void)
 			error += init_pair(c, i, j);
 			c++;
 	}
-	if(error != OK) {
+	if (error != OK) {
 		bsddialog_end();
 		RETURN_ERROR("Cannot init ncurses (colors)");
 	}
