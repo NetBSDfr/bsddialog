@@ -129,7 +129,7 @@ static char *item_output_sep_opt, *item_default_opt;
 /* Time and calendar options */
 static char *date_fmt_opt, *time_fmt_opt;
 /* Forms */
-static int max_input_form_opt;
+static int unsigned max_input_form_opt;
 /* General flags and options */
 static int output_fd_opt;
 
@@ -448,7 +448,7 @@ int main(int argc, char *argv[argc])
 			item_prefix_opt = true;
 			break;
 		case MAX_INPUT:
-			max_input_form_opt = atoi(optarg);
+			max_input_form_opt = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case NO_ITEMS:
 			conf.menu.no_desc = true;
@@ -506,7 +506,7 @@ int main(int argc, char *argv[argc])
 			item_singlequote_opt = true;
 			break;
 		case SLEEP:
-			conf.sleep = atoi(optarg);
+			conf.sleep = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case STDERR:
 			output_fd_opt = STDERR_FILENO;
@@ -515,7 +515,7 @@ int main(int argc, char *argv[argc])
 			output_fd_opt = STDOUT_FILENO;
 			break;
 		case TAB_LEN:
-			conf.text.tablen = atoi(optarg);
+			conf.text.tablen = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case THEME:
 			if (strcmp(optarg, "bsddialog") == 0)
