@@ -754,7 +754,8 @@ int infobox_builder(BUILDER_ARGS)
 
 int mixedgauge_builder(BUILDER_ARGS)
 {
-	int i, output, mainperc, nminibars, *minipercs;
+	int i, output, *minipercs;
+	unsigned int mainperc, nminibars;
 	const char **minilabels;
 
 	if (argc < 1 || (((argc-1) % 2) != 0) ) {
@@ -762,8 +763,7 @@ int mixedgauge_builder(BUILDER_ARGS)
 		return (BSDDIALOG_ERROR);
 	}
 
-	mainperc = atoi(argv[0]);
-	mainperc = mainperc < 0 ? 0 : mainperc;
+	mainperc = (u_int)strtoul(argv[0], NULL, 10);
 	mainperc = mainperc > 100 ? 100 : mainperc;
 	argc--;
 	argv++;
