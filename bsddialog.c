@@ -223,15 +223,14 @@ static void usage(void)
 
 int main(int argc, char *argv[argc])
 {
-	char *text, *backtitle_opt, errorbuilder[1024];
+	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
+	bool esc_cancelvalue_opt, ignore_opt, print_maxsize_opt;;
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
-	bool ignore_opt, print_maxsize_opt;
+	enum bsddialog_default_theme theme_opt;
+	char *text, *backtitle_opt, errorbuilder[1024];
 	struct winsize ws;
 	struct bsddialog_conf conf;
-	enum bsddialog_default_theme theme_opt;
-	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
-	bool esc_cancelvalue_opt;
 
 	bsddialog_initconf(&conf);
 
@@ -997,8 +996,8 @@ static void
 print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
     struct bsddialog_menuitem *items, int focusitem)
 {
-	int i;
 	bool sep, toquote;
+	int i;
 	char *sepstr, quotech;
 	const char *helpvalue;
 
@@ -1199,7 +1198,7 @@ int form_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nitems, fieldlen, valuelen;
 	struct bsddialog_formitem *items;
-	unsigned int flags = 0;
+	unsigned int flags;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
@@ -1207,6 +1206,7 @@ int form_builder(BUILDER_ARGS)
 	}
 
 	formheight = atoi(argv[0]);
+	flags = 0;
 
 	argc--;
 	argv++;
@@ -1328,8 +1328,8 @@ int passwordbox_builder(BUILDER_ARGS)
 int passwordform_builder(BUILDER_ARGS)
 {
 	int i, output, formheight, nitems, fieldlen, valuelen;
+	unsigned int flags;
 	struct bsddialog_formitem *items;
-	unsigned int flags = BSDDIALOG_FIELDHIDDEN;
 
 	if (argc < 1 || (((argc-1) % 8) != 0) ) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
@@ -1337,6 +1337,7 @@ int passwordform_builder(BUILDER_ARGS)
 	}
 
 	formheight = atoi(argv[0]);
+	flags = BSDDIALOG_FIELDHIDDEN;
 
 	argc--;
 	argv++;
