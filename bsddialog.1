@@ -33,80 +33,13 @@
 .Fl Fl help
 .Nm
 .Fl Fl version
-.Pp
 .Nm
 .Op Fl Fl common-opts
-.Fl Fl checklist Ar text Ar rows Ar cols Ar menurows 
-.Op Ar name Ar desc Ar status
-.Ar ...
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl datebox Ar text Ar rows Ar cols Op Ar year Ar month Ar day
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl form
-.Ar text Ar rows Ar cols Ar formrows
-.Op Ar label ylabel xlabel init yfield xfield fieldlen maxlen
-.Ar ...
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl gauge Ar text Ar rows Ar cols Op Ar perc
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl infobox Ar text Ar rows Ar cols
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl inputbox Ar text Ar rows Ar cols Op Ar init
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl menu Ar text Ar rows Ar cols Ar menurows Op Ar name desc
-.Ar ...
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows
-.Op Ar label ylabel xlabel init yfield xfield fieldlen maxlen flag
-.Ar ...
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl mixedgauge Ar text Ar rows Ar cols Ar mainperc
-.Op Ar minilabel Ar miniperc
-.Ar ...
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl msgbox Ar text Ar rows Ar cols
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl passwordbox Ar text Ar rows Ar cols Op Ar init
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl passwordform Ar text Ar rows Ar cols Ar formrows
-.Op Ar label Ar ylabel Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxlen
-.Ar ...
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl pause Ar text Ar rows Ar cols Ar seconds
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl radiolist Ar text Ar rows Ar cols Ar menurows
-.Op Ar name Ar desc Ar status
-...
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl rangebox Ar text Ar rows Ar cols Ar min Ar max Op Ar init
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl textbox Ar file Ar rows Ar cols
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl timebox Ar text Ar rows Ar cols Op Ar hour Ar min Ar sec
-.Nm
-.Op Fl Fl common-opts
-.Fl Fl treeview Ar text Ar rows Ar cols Ar menurows
-.Op Ar depth Ar name Ar desc Ar status
-.Ar ...
-.Nm
-.Op Fl Fl common-opts
-.Fl .yesno Ar text Ar rows Ar cols
+.Fl Fl dialog
+.Ar text
+.Ar rows
+.Ar cols
+.Op Ar dialog-opts
 .Sh DESCRIPTION
 The
 .Nm bsddialog
@@ -250,43 +183,50 @@ TODO.
 .Ss Dialogs
 The following dialogs are available:
 .Bl -tag -width Ds
-.It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Op Ar name Ar desc Ar status ...
+.It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
+Ar status Oc ...
 builds a checklist with
 .Ar menurows
 height.
-.It Fl Fl datebox Ar text Ar rows Ar cols Op year month day
+.It Fl Fl datebox Ar text Ar rows Ar cols Op Ar year Ar month Ar day
 TODO.
-.It Fl Fl form Ar text Ar rows Ar cols Ar formrows Op Ar label ylabel xlabel init yfield xfield fieldlen maxvalue ...
+.It Fl Fl form Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
+Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar valuelen Oc ...
 TODO.
-.It Fl Fl gauge Ar text Ar rows Ar cols Op perc
+.It Fl Fl gauge Ar text Ar rows Ar cols Op Ar perc
 TODO.
 .It Fl Fl infobox Ar text Ar rows Ar cols
 TODO.
-.It Fl Fl inputbox Ar text Ar rows Ar cols Op initstring
+.It Fl Fl inputbox Ar text Ar rows Ar cols Op Ar init
 TODO.
-.It Fl Fl menu Ar text Ar rows Ar cols Ar menurows Op Ar name desc ...
+.It Fl Fl menu Ar text Ar rows Ar cols Ar menurows Oo Ar name desc Oc ...
 TODO.
-.It Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows Op Ar label ylabel xlabel init yfield xfield fieldlen maxvalue 0|1|2 ...
+.It Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
+Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar valuelen Ar flag Oc ...
 TODO.
-.It Fl Fl mixedgauge Ar text Ar rows Ar cols Ar mainperc Op Ar minilabel Ar miniperc ...
+.It Fl Fl mixedgauge Ar text Ar rows Ar cols Ar mainperc Oo Ar minilabel \
+Ar miniperc Oc ...
 TODO  <mainperc> [<minilabel> <-123456789|-10|-11|miniperc> ...].
 .It Fl Fl msgbox Ar text Ar rows Ar cols
 TODO.
-.It Fl Fl passwordbox Ar text Ar rows Ar cols Op Ar defaultvalue
+.It Fl Fl passwordbox Ar text Ar rows Ar cols Op Ar init
 TODO.
-.It Fl Fl passwordform Ar text Ar rows Ar cols Ar formrows Op Ar label Ar ylabel Ar xlabel Ar init Ar yfield Ar Ar xfield  Ar fieldlen Ar maxvalue ...
+.It Fl Fl passwordform Ar text Ar rows Ar cols Ar formrows Oo Ar label \
+Ar ylabel Ar xlabel Ar init Ar yfield Ar xfield  Ar fieldlen Ar valuelen Oc ...
 TODO.
 .It Fl Fl pause Ar text Ar rows Ar cols Ar seconds
 TODO.
-.It Fl Fl radiolist Ar text Ar rows Ar cols Ar menurows Op Ar name Ar desc Ar on|off ...
+.It Fl Fl radiolist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
+Ar status Oc ...
 TODO.
-.It Fl Fl rangebox Ar text Ar rows Ar cols Ar min Ar max Op Ar default
+.It Fl Fl rangebox Ar text Ar rows Ar cols Ar min Ar max Op Ar init
 TODO.
 .It Fl Fl textbox Ar file Ar rows Ar cols
 TODO.
 .It Fl Fl timebox Ar text Ar rows Ar cols Op Ar hour Ar min Ar sec
 TODO.
-.It Fl Fl treeview Ar text Ar rows Ar cols Ar menurows Op Ar depth Ar name Ar desc Ar on|off ...
+.It Fl Fl treeview Ar text Ar rows Ar cols Ar menurows Oo Ar depth Ar name \
+Ar desc Ar status Oc ...
 TODO
 .It Fl .yesno Ar text Ar rows Ar cols
 TODO.
