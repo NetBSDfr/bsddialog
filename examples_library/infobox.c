@@ -26,7 +26,7 @@ int main()
 	bsddialog_initconf(&conf);
 	conf.title = "infobox";
 	conf.sleep = 3;
-	output = bsddialog_infobox(&conf, "Example", 7, 20);
+	output = bsddialog_infobox(&conf, "Example\n(3 seconds)", 7, 20);
 
 	bsddialog_end();
 
