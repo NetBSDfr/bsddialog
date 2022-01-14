@@ -28,7 +28,7 @@
 #include <sys/param.h>
 
 #include <ctype.h>
-#include <ncurses.h>
+#include <curses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -254,7 +254,7 @@ bool shortcut_buttons(int key, struct buttons *bs)
 /* Text */
 #define TABLEN 4
 
-static bool is_ncurses_attr(const char *text)
+static bool is_text_attr(const char *text)
 {
 	if (strnlen(text, 3) < 3)
 		return (false);
@@ -265,9 +265,9 @@ static bool is_ncurses_attr(const char *text)
 	return (strchr("nbBrRuU01234567", text[2]) == NULL ? false : true);
 }
 
-static bool check_set_ncurses_attr(WINDOW *win, char *text)
+static bool check_set_text_attr(WINDOW *win, char *text)
 {
-	if (is_ncurses_attr(text) == false)
+	if (is_text_attr(text) == false)
 		return (false);
 
 	if ((text[2] - '0') >= 0 && (text[2] - '0') < 8) {
@@ -312,7 +312,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, char *str,
 	if (color) {
 		i=0;
 		while (i < len) {
-			if (is_ncurses_attr(str+i))
+			if (is_text_attr(str+i))
 				reallen -= 3;
 			i++;
 		}
@@ -330,7 +330,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, char *str,
 		}
 		j = *x;
 		while (j < cols && i < len) {
-			if (color && check_set_ncurses_attr(win, str+i)) {
+			if (color && check_set_text_attr(win, str+i)) {
 				i += 3;
 			} else {
 				mvwaddch(win, *y, j, str[i]);
@@ -431,7 +431,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	maxwordlen = 0;
 	i=0;
 	while (true) {
-		if (conf->text.highlight && is_ncurses_attr(text + i)) {
+		if (conf->text.highlight && is_text_attr(text + i)) {
 			i += 3;
 			continue;
 		}
@@ -578,14 +578,15 @@ int widget_max_height(struct bsddialog_conf *conf)
 {
 	int maxheight;
 
-	if ((maxheight = conf->shadow ? LINES - t.shadow.h : LINES) <= 0)
-		RETURN_ERROR("Terminal too small, LINES - shadow <= 0");
+	maxheight = conf->shadow ? SCREENLINES - t.shadow.h : SCREENLINES;
+	if (maxheight <= 0)
+		RETURN_ERROR("Terminal too small, screen lines - shadow <= 0");
 
 	if (conf->y > 0) {
 		maxheight -= conf->y;
 		if (maxheight <= 0)
-			RETURN_ERROR("Terminal too small, LINES - shadow - y "
-			    "<= 0");
+			RETURN_ERROR("Terminal too small, screen lines - "
+			    "shadow - y <= 0");
 	}
 
 	return (maxheight);
@@ -595,14 +596,15 @@ int widget_max_width(struct bsddialog_conf *conf)
 {
 	int maxwidth;
 
-	if ((maxwidth = conf->shadow ? COLS - t.shadow.w : COLS)  <= 0)
-		RETURN_ERROR("Terminal too small, COLS - shadow <= 0");
+	maxwidth = conf->shadow ? SCREENCOLS - t.shadow.w : SCREENCOLS;
+	if (maxwidth <= 0)
+		RETURN_ERROR("Terminal too small, screen cols - shadow <= 0");
 
 	if (conf->x > 0) {
 		maxwidth -= conf->x;
 		if (maxwidth <= 0)
-			RETURN_ERROR("Terminal too small, COLS - shadow - x "
-			    "<= 0");
+			RETURN_ERROR("Terminal too small, screen cols - shadow "
+			    "- x <= 0");
 	}
 
 	return (maxwidth);
@@ -719,29 +721,29 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 {
 
 	if (conf->y == BSDDIALOG_CENTER)
-		*y = LINES/2 - (h + t.shadow.h)/2;
+		*y = SCREENLINES/2 - (h + t.shadow.h)/2;
 	else if (conf->y < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin y (less than -1)");
-	else if (conf->y >= LINES)
+	else if (conf->y >= SCREENLINES)
 		RETURN_ERROR("Begin Y under the terminal");
 	else
 		*y = conf->y;
 
-	if ((*y + h + (conf->shadow ? (int) t.shadow.h : 0)) > LINES)
+	if ((*y + h + (conf->shadow ? (int) t.shadow.h : 0)) > SCREENLINES)
 		RETURN_ERROR("The lower of the box under the terminal "
 		    "(begin Y + height (+ shadow) > terminal lines)");
 
 
 	if (conf->x == BSDDIALOG_CENTER)
-		*x = COLS/2 - (w + t.shadow.w)/2;
+		*x = SCREENCOLS/2 - (w + t.shadow.w)/2;
 	else if (conf->x < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin x (less than -1)");
-	else if (conf->x >= COLS)
+	else if (conf->x >= SCREENCOLS)
 		RETURN_ERROR("Begin X over the right of the terminal");
 	else
 		*x = conf->x;
 
-	if ((*x + w + (conf->shadow ? (int) t.shadow.w : 0)) > COLS)
+	if ((*x + w + (conf->shadow ? (int) t.shadow.w : 0)) > SCREENCOLS)
 		RETURN_ERROR("The right of the box over the terminal "
 		    "(begin X + width (+ shadow) > terminal cols)");
 

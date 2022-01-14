@@ -28,7 +28,7 @@
 #include <sys/param.h>
 
 #include <ctype.h>
-#include <ncurses.h>
+#include <curses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -298,8 +298,6 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	wrefresh(widget);
 	getmaxyx(textpad, htextpad, i /* unused */);
-	BSDDIALOG_DEBUG(LINES - 3, 1, "htext:%d|", htext);
-	BSDDIALOG_DEBUG(LINES - 2, 1, "htextoad:%d|", htextpad);
 	ypad =  y + h - 4 - htextpad;
 	ypad = ypad < y+(int)nminibars ? y+nminibars : ypad;
 	prefresh(textpad, 0, 0, ypad, x+2, y+h-4, x+w-2);
@@ -381,7 +379,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 			if (output == BSDDIALOG_ERROR)
 				return (BSDDIALOG_ERROR);
 
-			move(LINES-1, 2);
+			move(SCREENLINES - 1, 2);
 			clrtoeol();
 			readforsec = ((tnew - tstart) == 0) ? 0 :
 			    bsddialog_total_progview / (float)(tnew - tstart);

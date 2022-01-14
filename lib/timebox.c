@@ -28,7 +28,7 @@
 #include <sys/param.h>
 
 #include <ctype.h>
-#include <ncurses.h>
+#include <curses.h>
 #include <string.h>
 
 #include "bsddialog.h"

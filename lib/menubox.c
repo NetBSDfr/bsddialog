@@ -28,7 +28,7 @@
 #include <sys/param.h>
 
 #include <ctype.h>
-#include <ncurses.h>
+#include <curses.h>
 #include <string.h>
 
 #include "bsddialog.h"
@@ -410,7 +410,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	}
 
 	/* bottom description */
-	move(LINES-1, 2);
+	move(SCREENLINES - 1, 2);
 	clrtoeol();
 	if (item.bottomdesc != NULL) {
 		addstr(item.bottomdesc);

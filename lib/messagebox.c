@@ -27,7 +27,7 @@
 
 #include <sys/param.h>
 
-#include <ncurses.h>
+#include <curses.h>
 #include <string.h>
 
 #include "bsddialog.h"
@@ -43,8 +43,8 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	int htext, wtext;
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, &bs, 0, COLS/2, &htext,
-		    &wtext) != 0)
+		if (text_size(conf, rows, cols, text, &bs, 0, SCREENCOLS/2,
+		    &htext, &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 

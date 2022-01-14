@@ -89,7 +89,7 @@ static void shiftleft(struct myfield *mf)
 
 static void print_bottomdesc(struct myfield *mf)
 {
-	move(LINES-1, 2);
+	move(SCREENLINES - 1, 2);
 	clrtoeol();
 	if (mf->bottomdesc != NULL) {
 		addstr(mf->bottomdesc);

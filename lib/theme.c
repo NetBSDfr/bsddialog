@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  */
 
-#include <ncurses.h>
+#include <curses.h>
 
 #include "bsddialog.h"
 #include "bsddialog_theme.h"

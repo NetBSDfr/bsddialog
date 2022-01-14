@@ -76,6 +76,9 @@ int f1help(struct bsddialog_conf *conf);
 int hide_widget(int y, int x, int h, int w, bool withshadow);
 
 /* (auto) size and (auto) position */
+#define SCREENLINES (getmaxy(stdscr))
+#define SCREENCOLS  (getmaxx(stdscr))
+
 int
 text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
     struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext);
