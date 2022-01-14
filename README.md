@@ -43,17 +43,17 @@ Output:
 --cancel-label *string*, --clear, --colors, --cr-wrap, --date-format *format*,
 --defaultno, --default-button *label*, --default-no, --default-item *name*,
 --disable-esc, --esc-cancelvalue, --exit-label *label*, --extra-button,
---extra-label *label*, --help, --help-button, --help-label *label*,
---help-status, --help-tags, --hfile *filename*, --hline *string*,
---hmsg *string*, --ignore, --insecure, --item-depth, --item-help,
---items-prefix, --max-input *size*, --no-cancel, --nocancel, no-collapse,
---no-items, --no-label *label*, --no-lines, --no-nl-expand, --no-ok, --nook,
---no-shadow, --no-tags, --ok-label *label*, --output-fd *fd*,
---output-separator *sep*, --print-maxsize, --print-size, --print-version,
---quoted, --separate-output, --separator *sep*, --shadow, --single-quoted,
---sleep *secs*, --stderr, --stdout, --tab-len *spaces*,
+--extra-label *label*, --generic1-button *label*, --generic2-button *label*,
+--help, --help-button, --help-label *label*, --help-status, --help-tags,
+--hfile *filename*, --hline *string*, --hmsg *string*, --ignore, --insecure,
+--item-depth, --item-help, --items-prefix, --max-input *size*, --no-cancel,
+--nocancel, no-collapse, --no-items, --no-label *label*, --no-lines,
+--no-nl-expand, --no-ok, --nook, --no-shadow, --no-tags, --ok-label *label*,
+--output-fd *fd*, --output-separator *sep*, --print-maxsize, --print-size,
+--print-version, --quoted, --separate-output, --separator *sep*, --shadow,
+--single-quoted, --sleep *secs*, --stderr, --stdout, --tab-len *spaces*,
 --theme *blackwhite|bsddialog|dialog*, --time-format *format*, --title *title*,
---trim, --version, --yes-label *string*.
+--trim, --version, --yes-label *label*.
 
 
 **Dialogs:**
