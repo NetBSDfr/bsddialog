@@ -33,17 +33,21 @@
 .Fl Fl help
 .Nm
 .Fl Fl version
+.Pp
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl checklist Ar text Ar rows Ar cols Ar menurows 
-.Op Ar name Ar desc Ar status ...
+.Op Ar name Ar desc Ar status
+.Ar ...
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl datebox Ar text Ar rows Ar cols Op Ar year Ar month Ar day
 .Nm
 .Op Fl Fl common-opts
-.Fl Fl form Ar text Ar rows Ar cols Ar formrows
-.Op Ar label ylabel xlabel init yfield xfield fieldlen maxvaluelen ...
+.Fl Fl form
+.Ar text Ar rows Ar cols Ar formrows
+.Op Ar label ylabel xlabel init yfield xfield fieldlen maxlen
+.Ar ...
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl gauge Ar text Ar rows Ar cols Op Ar perc
@@ -55,15 +59,18 @@
 .Fl Fl inputbox Ar text Ar rows Ar cols Op Ar init
 .Nm
 .Op Fl Fl common-opts
-.Fl Fl menu Ar text Ar rows Ar cols Ar menurows Op Ar name desc ...
+.Fl Fl menu Ar text Ar rows Ar cols Ar menurows Op Ar name desc
+.Ar ...
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows
-.Op Ar label ylabel xlabel init yfield xfield fieldlen maxvaluelen flag ...
+.Op Ar label ylabel xlabel init yfield xfield fieldlen maxlen flag
+.Ar ...
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl mixedgauge Ar text Ar rows Ar cols Ar mainperc
-.Op Ar minilabel Ar miniperc ...
+.Op Ar minilabel Ar miniperc
+.Ar ...
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl msgbox Ar text Ar rows Ar cols
@@ -73,14 +80,16 @@
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl passwordform Ar text Ar rows Ar cols Ar formrows
-.Op Ar label Ar ylabel Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxvaluelen ...
+.Op Ar label Ar ylabel Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxlen
+.Ar ...
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl pause Ar text Ar rows Ar cols Ar seconds
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl radiolist Ar text Ar rows Ar cols Ar menurows
-.Op Ar name Ar desc Ar status ...
+.Op Ar name Ar desc Ar status
+...
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl rangebox Ar text Ar rows Ar cols Ar min Ar max Op Ar init
@@ -93,7 +102,8 @@
 .Nm
 .Op Fl Fl common-opts
 .Fl Fl treeview Ar text Ar rows Ar cols Ar menurows
-.Op Ar depth Ar name Ar desc Ar status ...
+.Op Ar depth Ar name Ar desc Ar status
+.Ar ...
 .Nm
 .Op Fl Fl common-opts
 .Fl .yesno Ar text Ar rows Ar cols
