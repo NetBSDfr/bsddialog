@@ -183,43 +183,43 @@ TODO.
 .Ss Dialogs
 The following dialogs are available:
 .Bl -tag -width indent
-.It Fl Fl checklist Ar options
+.It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Op Ar name Ar desc Ar on|off ...
 TODO.
-.It Fl Fl datebox Ar options
+.It Fl Fl datebox Ar text Ar rows Ar cols Op year month day
 TODO.
-.It Fl Fl form Ar options
+.It Fl Fl form Ar text Ar rows Ar cols Ar formrows Op Ar label ylabel xlabel init yfield xfield fieldlen maxvalue ...
 TODO.
-.It Fl Fl gauge Ar options
+.It Fl Fl gauge Ar text Ar rows Ar cols Op perc
 TODO.
-.It Fl Fl infobox Ar options
+.It Fl Fl infobox Ar text Ar rows Ar cols
 TODO.
-.It Fl Fl inputbox Ar options
+.It Fl Fl inputbox Ar text Ar rows Ar cols Op initstring
 TODO.
-.It Fl Fl menu Ar options
+.It Fl Fl menu Ar text Ar rows Ar cols Ar menurows Op Ar name desc ...
 TODO.
-.It Fl Fl mixedform Ar options
+.It Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows Op Ar label ylabel xlabel init yfield xfield fieldlen maxvalue 0|1|2 ...
 TODO.
-.It Fl Fl mixedgauge Ar options
+.It Fl Fl mixedgauge Ar text Ar rows Ar cols Ar mainperc Op Ar minilabel Ar miniperc ...
+TODO  <mainperc> [<minilabel> <-123456789|-10|-11|miniperc> ...].
+.It Fl Fl msgbox Ar text Ar rows Ar cols
 TODO.
-.It Fl Fl msgbox Ar options
+.It Fl Fl passwordbox Ar text Ar rows Ar cols Op Ar defaultvalue
 TODO.
-.It Fl Fl passwordbox Ar options
+.It Fl Fl passwordform Ar text Ar rows Ar cols Ar formrows Op Ar label Ar ylabel Ar xlabel Ar init Ar yfield Ar Ar xfield  Ar fieldlen Ar maxvalue ...
 TODO.
-.It Fl Fl passwordform Ar options
+.It Fl Fl pause Ar text Ar rows Ar cols Ar seconds
 TODO.
-.It Fl Fl pause Ar options
+.It Fl Fl radiolist Ar text Ar rows Ar cols Ar menurows Op Ar name Ar desc Ar on|off ...
 TODO.
-.It Fl Fl radiolisto Ar options
+.It Fl Fl rangebox Ar text Ar rows Ar cols Ar min Ar max Op Ar default
 TODO.
-.It Fl Fl rangebox Ar options
+.It Fl Fl textbox Ar file Ar rows Ar cols
 TODO.
-.It Fl Fl textbox Ar options
+.It Fl Fl timebox Ar text Ar rows Ar cols Op Ar hour Ar min Ar sec
 TODO.
-.It Fl Fl timebox Ar options
-TODO.
-.It Fl Fl treeview Ar options
+.It Fl Fl treeview Ar text Ar rows Ar cols Ar menurows Op Ar depth Ar name Ar desc Ar on|off ...
 TODO
-It Fl .yesnolibxo Ar options
+.It Fl .yesno Ar text Ar rows Ar cols
 TODO.
 .El
 .Sh EXIT STATUS
@@ -247,18 +247,17 @@ Generic 1 button.
 Generic 2 button.
 .Ed
 .Sh EXAMPLES
-Backtitle, title and message Example:
+Backtitle, title and message:
 .Dl bsddialog --backtitle INFO --title info --msgbox Message 0 0
 .Pp
 .Dq Yes-No Question
-and theme Example:
+and theme:
 .Dl bsddialog --theme blackwhite --yesno Question 10 30
 .Pp
-Checklist Example:
+Checklist:
 .Dl bsddialog --checklist Checklist 0 0 3 N1 \&D1 off N2 D2 on N3 D3 off
 .Pp
-Gauge script:
-.Pp
+Gauge:
 .Bd -literal -offset indent -compact
 i=1
 for c in A B C D E F G H
@@ -287,6 +286,5 @@ utility first appeared in
 was written by
 .An Alfonso Sabato Siciliano Aq Mt alf.siciliano@gmail.com .
 .Sh BUGS
-.Fn bsddialog_form
-does not resize the dialog after a terminal change and does not provides
+The forms do not resize the dialog after a terminal change and does not provides
 scrolling for items.
