@@ -260,17 +260,15 @@ Checklist Example:
 Gauge script:
 .Pp
 .Bd -literal -offset indent -compact
-characters="A B C D E F G"
-total=`echo $characters | awk '{print split($0, a)}'`
 i=1
-for c in $characters
+for c in A B C D E F G H
 do
 	sleep 1
 	echo XXX
-	echo "$(expr $(expr $i "*" 100) "/" $total)"
-	echo "[$i/$total] Input: $c"
+	echo "$(expr $(expr $i "*" 100) "/" 8)"
+	echo "[$i/8] Char: $c"
 	echo XXX
-	if [ $i -eq $total ]
+	if [ $i -eq 8 ]
 	then
 		echo EOF
 	fi
