@@ -46,7 +46,7 @@ The
 utility build build Text User Interface dialogs and widgets: to display
 messages, to get input and to inform about a computation status.
 .Ss Common options
-.Bl -tag -width indent
+.Bl -tag -width Ds
 .It Fl Fl ascii-lines
 TODO.
 .It Fl Fl backtitle Ar backtitle
@@ -182,9 +182,11 @@ TODO.
 .El
 .Ss Dialogs
 The following dialogs are available:
-.Bl -tag -width indent
-.It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Op Ar name Ar desc Ar on|off ...
-TODO.
+.Bl -tag -width Ds
+.It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Op Ar name Ar desc Ar status ...
+builds a checklist with
+.Ar menurows
+height.
 .It Fl Fl datebox Ar text Ar rows Ar cols Op year month day
 TODO.
 .It Fl Fl form Ar text Ar rows Ar cols Ar formrows Op Ar label ylabel xlabel init yfield xfield fieldlen maxvalue ...
