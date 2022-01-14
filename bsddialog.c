@@ -176,7 +176,7 @@ static void usage(void)
 	    "--default-button <label>, --default-no, --default-item <name>, "
 	    "--disable-esc, --esc-cancelvalue, --exit-label <label>, "
 	    "--extra-button, --extra-label <label>, "
-	    "--generic1-button <string>, --generic2-button <string>, --help, "
+	    "--generic1-button <label>, --generic2-button <label>, --help, "
 	    "--help-button, --help-label <label>, --help-status, --help-tags, "
 	    "--hfile <filename>, --hline <string>, --hmsg <string>, --ignore, "
 	    "--insecure, --item-depth, --item-help, --items-prefix, "
@@ -188,7 +188,7 @@ static void usage(void)
 	    "--separator <sep>, --shadow, --single-quoted, --sleep <secs>, "
 	    "--stderr, --stdout, --tab-len <spaces>, "
 	    "--theme <blackwhite|bsddialog|dialog>, --time-format <format>, "
-	    "--title <title>, --trim, --version, --yes-label <string>.\n");
+	    "--title <title>, --trim, --version, --yes-label <label>.\n");
 	printf("\n");
 
 	printf("Dialogs:\n");
