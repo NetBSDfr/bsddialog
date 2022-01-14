@@ -47,8 +47,30 @@ utility build build Text User Interface dialogs and widgets: to display
 messages, to get input and to inform about a computation status.
 .Ss Common options
 .Ss Dialogs
-.\" .Sh EXIT STATUS
-.\" For sections 1, 6, and 8 only.
+.Sh EXIT STATUS
+The
+.Nm
+utility exits -1 or 255, depending by the terminal, on unsuccessful.
+Otherwise, depending on the pressed button, key or user input the following
+values can be returned:
+.Bl -column -compact
+.It 0
+Ok or Yes button.
+.It 1
+Cancel or No button.
+.It 2
+Help button.
+.It 3
+Extra button.
+.It 4
+timeout.
+.It 5
+ESC key.
+.\" .It 6
+.\" Generic 1 button.
+.\" .It 7
+.\" Generic 2 button.
+.Ed
 .Sh EXAMPLES
 Backtitle, title and message Example:
 .Dl bsddialog --backtitle INFO --title info --msgbox Message 0 0
