@@ -30,16 +30,16 @@
 .Nd TUI dialogs
 .Sh SYNOPSIS
 .Nm bsddialog
-.Fl -help
+.Fl Fl help
 .Nm bsddialog
-.Fl -version
+.Fl Fl version
 .Nm bsddialog
-.Op Fl Ar -common-opts
-.Fl Ar -widget
-.Fl Ar text
-.Fl Ar rows
-.Fl Ar cols
-.Op Fl Ar -dialog-opts
+.Op Fl Fl common-opts
+.Fl Fl dialog
+.Ar text
+.Ar rows
+.Ar cols
+.Op Fl Fl dialog-opts
 .Sh DESCRIPTION
 The
 .Nm bsddialog
@@ -47,177 +47,177 @@ utility build build Text User Interface dialogs and widgets: to display
 messages, to get input and to inform about a computation status.
 .Ss Common options
 .Bl -tag -width indent
-.It Fl -ascii-lines
+.It Fl Fl ascii-lines
 TODO.
-.It Fl -backtitle Ar backtitle
+.It Fl Fl backtitle Ar backtitle
 TODO.
-.It Fl -begin-x Ar x
+.It Fl Fl begin-x Ar x
 TODO.
-.It Fl -begin-y Ar y
+.It Fl Fl begin-y Ar y
 TODO.
-.It Fl -cancel-label Ar string
+.It Fl Fl cancel-label Ar string
 TODO.
-.It Fl -clear
+.It Fl Fl clear
 TODO.
-.It Fl -colors
+.It Fl Fl colors
 TODO.
-.It Fl -cr-wrap
+.It Fl Fl cr-wrap
 TODO.
-.It Fl -date-format Ar format
+.It Fl Fl date-format Ar format
 TODO.
-.It Fl -defaultno
+.It Fl Fl defaultno
 TODO.
-.It Fl -default-button Ar label
+.It Fl Fl default-button Ar label
 TODO.
-.It Fl -default-no
+.It Fl Fl default-no
 TODO.
-.It Fl -default-item Ar name
+.It Fl Fl default-item Ar name
 TODO.
-.It Fl -disable-esc
+.It Fl Fl disable-esc
 TODO.
-.It Fl -esc-cancelvalue
+.It Fl Fl esc-cancelvalue
 TODO.
-.It Fl -exit-label Ar label
+.It Fl Fl exit-label Ar label
 TODO.
-.It Fl -extra-button
+.It Fl Fl extra-button
 TODO.
-.It Fl -extra-label Ar label
+.It Fl Fl extra-label Ar label
 TODO.
-.It Fl -generic1-button Ar label
+.It Fl Fl generic1-button Ar label
 TODO.
-.It Fl -generic2-button Ar label
+.It Fl Fl generic2-button Ar label
 TODO.
-.It Fl -help
+.It Fl Fl help
 TODO.
-.It Fl -help-button
+.It Fl Fl help-button
 TODO.
-.It Fl -help-label Ar label
+.It Fl Fl help-label Ar label
 TODO.
-.It Fl -help-status
+.It Fl Fl help-status
 TODO.
-.It Fl -help-tags
+.It Fl Fl help-tags
 TODO.
-.It Fl -hfile Ar filename
+.It Fl Fl hfile Ar filename
 TODO.
-.It Fl -hline Ar string
+.It Fl Fl hline Ar string
 TODO.
-.It Fl -hmsg Ar string
+.It Fl Fl hmsg Ar string
 TODO.
-.It Fl -ignore
+.It Fl Fl ignore
 TODO.
-.It Fl -insecure
+.It Fl Fl insecure
 TODO.
-.It Fl -item-depth
+.It Fl Fl item-depth
 TODO.
-.It Fl -item-help
+.It Fl Fl item-help
 TODO.
-.It Fl -items-prefix
+.It Fl Fl items-prefix
 TODO.
-.It Fl -max-input Ar size
+.It Fl Fl max-input Ar size
 TODO.
-.It Fl -no-cancel
+.It Fl Fl no-cancel
 TODO.
-.It Fl -nocancel
+.It Fl Fl nocancel
 TODO.
-.It Fl -no-collapse
+.It Fl Fl no-collapse
 TODO.
-.It Fl -no-items
+.It Fl Fl no-items
 TODO.
-.It Fl -no-label Ar label
+.It Fl Fl no-label Ar label
 TODO.
-.It Fl -no-lines
+.It Fl Fl no-lines
 TODO.
-.It Fl -no-nl-expand
+.It Fl Fl no-nl-expand
 TODO.
-.It Fl -no-ok
+.It Fl Fl no-ok
 TODO.
-.It Fl -nook
+.It Fl Fl nook
 TODO.
-.It Fl -no-shadow
+.It Fl Fl no-shadow
 TODO.
-.It Fl -no-tags
+.It Fl Fl no-tags
 TODO.
-.It Fl -ok-label Ar label
+.It Fl Fl ok-label Ar label
 TODO.
-.It Fl -output-fd Ar fd
+.It Fl Fl output-fd Ar fd
 TODO.
-.It Fl -output-separator Ar sep
+.It Fl Fl output-separator Ar sep
 TODO.
-.It Fl -print-maxsize
+.It Fl Fl print-maxsize
 TODO.
-.It Fl -print-size
+.It Fl Fl print-size
 TODO.
-.It Fl -print-version
+.It Fl Fl print-version
 TODO.
-.It Fl -quoted
+.It Fl Fl quoted
 TODO.
-.It Fl -separate-output
+.It Fl Fl separate-output
 TODO.
-.It Fl -separator Ar sep
+.It Fl Fl separator Ar sep
 TODO.
-.It Fl -shadow
+.It Fl Fl shadow
 TODO.
-.It Fl -single-quoted
+.It Fl Fl single-quoted
 TODO.
-.It Fl -sleep Ar secs
+.It Fl Fl sleep Ar secs
 TODO.
-.It Fl -stderr
+.It Fl Fl stderr
 TODO.
-.It Fl -stdout
+.It Fl Fl stdout
 TODO.
-.It Fl -tab-len Ar spaces
+.It Fl Fl tab-len Ar spaces
 TODO.
-.It Fl -theme Ar blackwhite|bsddialog|dialog
+.It Fl Fl theme Ar blackwhite|bsddialog|dialog
 TODO.
-.It Fl -time-format Ar format
+.It Fl Fl time-format Ar format
 TODO.
-.It Fl -title Ar title
+.It Fl Fl title Ar title
 TODO.
-.It Fl -trim
+.It Fl Fl trim
 TODO.
-.It Fl -version
+.It Fl Fl version
 TODO.
-.It Fl -yes-label Ar label
+.It Fl Fl yes-label Ar label
 TODO.
 .El
 .Ss Dialogs
 The following dialogs are available:
 .Bl -tag -width indent
-.It Fl -checklist Ar options
+.It Fl Fl checklist Ar options
 TODO.
-.It Fl -datebox Ar options
+.It Fl Fl datebox Ar options
 TODO.
-.It Fl -form Ar options
+.It Fl Fl form Ar options
 TODO.
-.It Fl -gauge Ar options
+.It Fl Fl gauge Ar options
 TODO.
-.It Fl -infobox Ar options
+.It Fl Fl infobox Ar options
 TODO.
-.It Fl -inputbox Ar options
+.It Fl Fl inputbox Ar options
 TODO.
-.It Fl -menu Ar options
+.It Fl Fl menu Ar options
 TODO.
-.It Fl -mixedform Ar options
+.It Fl Fl mixedform Ar options
 TODO.
-.It Fl -mixedgauge Ar options
+.It Fl Fl mixedgauge Ar options
 TODO.
-.It Fl -msgbox Ar options
+.It Fl Fl msgbox Ar options
 TODO.
-.It Fl -passwordbox Ar options
+.It Fl Fl passwordbox Ar options
 TODO.
-.It Fl -passwordform Ar options
+.It Fl Fl passwordform Ar options
 TODO.
-.It Fl -pause Ar options
+.It Fl Fl pause Ar options
 TODO.
-.It Fl -radiolisto Ar options
+.It Fl Fl radiolisto Ar options
 TODO.
-.It Fl -rangebox Ar options
+.It Fl Fl rangebox Ar options
 TODO.
-.It Fl -textbox Ar options
+.It Fl Fl textbox Ar options
 TODO.
-.It Fl -timebox Ar options
+.It Fl Fl timebox Ar options
 TODO.
-.It Fl -treeview Ar options
+.It Fl Fl treeview Ar options
 TODO
 It Fl .yesnolibxo Ar options
 TODO.
