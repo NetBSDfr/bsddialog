@@ -58,6 +58,8 @@ enum OPTS {
 	EXIT_LABEL,
 	EXTRA_BUTTON,
 	EXTRA_LABEL,
+	GENERIC1_BUTTON,
+	GENERIC2_BUTTON,
 	HELP,
 	HELP_BUTTON,
 	HELP_LABEL,
@@ -173,8 +175,9 @@ static void usage(void)
 	    "--cr-wrap, --date-format <format>, --defaultno, "
 	    "--default-button <label>, --default-no, --default-item <name>, "
 	    "--disable-esc, --esc-cancelvalue, --exit-label <label>, "
-	    "--extra-button, --extra-label <label>, --help, --help-button, "
-	    "--help-label <label>, --help-status, --help-tags, "
+	    "--extra-button, --extra-label <label>, "
+	    "--generic1-button <string>, --generic2-button <string>, --help, "
+	    "--help-button, --help-label <label>, --help-status, --help-tags, "
 	    "--hfile <filename>, --hline <string>, --hmsg <string>, --ignore, "
 	    "--insecure, --item-depth, --item-help, --items-prefix, "
 	    "--max-input <size>, --no-cancel, --nocancel, no-collapse, "
@@ -274,6 +277,8 @@ int main(int argc, char *argv[argc])
 	    {"exit-label",      required_argument, NULL, EXIT_LABEL },
 	    {"extra-button",    no_argument,       NULL, EXTRA_BUTTON },
 	    {"extra-label",     required_argument, NULL, EXTRA_LABEL },
+	    {"generic1-button", required_argument, NULL, GENERIC1_BUTTON },
+	    {"generic2-button", required_argument, NULL, GENERIC2_BUTTON },
 	    {"help",            no_argument,       NULL, HELP },
 	    {"help-button",     no_argument,       NULL, HELP_BUTTON },
 	    {"help-label",      required_argument, NULL, HELP_LABEL },
@@ -407,6 +412,12 @@ int main(int argc, char *argv[argc])
 			break;
 		case EXTRA_LABEL:
 			conf.button.extra_label = optarg;
+			break;
+		case GENERIC1_BUTTON:
+			conf.button.generic1_label = optarg;
+			break;
+		case GENERIC2_BUTTON:
+			conf.button.generic2_label = optarg;
 			break;
 		case HELP:
 			usage();
