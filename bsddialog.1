@@ -45,9 +45,42 @@ The
 .Nm bsddialog
 utility build build Text User Interface dialogs and widgets: to display
 messages, to get input and to inform about a computation status.
+.Ss Common options
+.Ss Dialogs
 .\" .Sh EXIT STATUS
 .\" For sections 1, 6, and 8 only.
-.\" .Sh EXAMPLES
+.Sh EXAMPLES
+Backtitle, title and message Example:
+.Dl bsddialog --backtitle INFO --title info --msgbox Message 0 0
+.Pp
+.Dq Yes-No Question
+and theme Example:
+.Dl bsddialog --theme blackwhite --yesno Question 10 30
+.Pp
+Checklist Example:
+.Dl bsddialog --checklist Checklist 0 0 3 N1 \&D1 off N2 D2 on N3 D3 off
+.Pp
+Gauge script:
+.Pp
+.Bd -literal -offset indent -compact
+input="A B C D E F G"
+total=`echo $input | awk '{print split($0, a)}'`
+curr=1
+for i in $input
+do
+	sleep 1
+	perc="$(expr $(expr $curr "*" 100 ) "/" $total )"
+	echo XXX
+	echo $perc
+	echo "[$curr/$total] Input: $i"
+	echo XXX
+	if [ $curr -eq $total ]
+	then
+		echo EOF
+	fi
+	curr=`expr $curr + 1`
+done | ./bsddialog --title " gauge " --gauge "Starting..." 10 70 0
+.Ed
 .Sh SEE ALSO
 .Xr bsddialog 3 .
 .Sh HISTORY
