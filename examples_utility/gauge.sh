@@ -8,21 +8,20 @@
 # worldwide. THIS SOFTWARE IS DISTRIBUTED WITHOUT ANY WARRANTY, SEE:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-input="A B C D E F G"
-total=`echo $input | awk '{print split($0, a)}'`
-curr=1
-for i in $input
+characters="A B C D E F G"
+total=`echo $characters | awk '{print split($0, a)}'`
+i=1
+for c in $characters
 do
 	sleep 1
-	perc="$(expr $(expr $curr "*" 100 ) "/" $total )"
 	echo XXX
-	echo $perc
-	echo "[$curr/$total] Input: $i"
+	echo "$(expr $(expr $i "*" 100 ) "/" $total )"
+	echo "[$i/$total] Input: $c"
 	echo XXX
-	if [ $curr -eq $total ]
+	if [ $i -eq $total ]
 	then
 		echo EOF
 	fi
-	curr=`expr $curr + 1`
-done | ./bsddialog --title " gauge " --gauge "[0/$total] Starting..." 10 70 0
+	i=`expr $i + 1`
+done | ./bsddialog --title " gauge " --gauge "[0/$total] Starting..." 10 70
 
