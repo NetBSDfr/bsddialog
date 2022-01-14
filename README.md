@@ -98,7 +98,6 @@ and
 ```
 % cd examples_library
 % sh compile
-% ./compile
 % ./datebox
 % ./form
 % ./infobox
