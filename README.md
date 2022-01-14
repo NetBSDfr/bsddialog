@@ -47,7 +47,7 @@ Output:
 --help, --help-button, --help-label *label*, --help-status, --help-tags,
 --hfile *filename*, --hline *string*, --hmsg *string*, --ignore, --insecure,
 --item-depth, --item-help, --items-prefix, --max-input *size*, --no-cancel,
---nocancel, no-collapse, --no-items, --no-label *label*, --no-lines,
+--nocancel, --no-collapse, --no-items, --no-label *label*, --no-lines,
 --no-nl-expand, --no-ok, --nook, --no-shadow, --no-tags, --ok-label *label*,
 --output-fd *fd*, --output-separator *sep*, --print-maxsize, --print-size,
 --print-version, --quoted, --separate-output, --separator *sep*, --shadow,
