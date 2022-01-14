@@ -16,7 +16,7 @@ do
 	sleep 1
 	echo XXX
 	echo "$(expr $(expr $i "*" 100) "/" $total)"
-	echo "[$i/$total] Input: $c"
+	echo "[$i/$total] Char: $c"
 	echo XXX
 	if [ $i -eq $total ]
 	then
