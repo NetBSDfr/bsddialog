@@ -65,13 +65,13 @@ Output:
 
 **Examples**:
 ```
-% ./bsddialog --title msgbox --msgbox "Hello World!" 5 30
-% ./bsddialog --theme default --title msgbox --msgbox "Hello World!" 5 30
-% ./bsddialog --begin-y 2 --title yesno --yesno "Hello World!" 5 30
-% ./bsddialog --ascii-lines --pause "Hello World!" 8 50 5
-% ./bsddialog --checklist "Space to select" 0 0 0 Name1 Desc1 off Name2 Desc2 on Name3 Desc3 off
-% ./bsddialog --backtitle "TITLE" --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
-% ./bsddialog --extra-button --help-button --defaultno --yesno "Hello World!" 0 0
+% ./bsddialog --backtitle "TITLE" --title msgbox --msgbox "Hello World!" 5 30
+% ./bsddialog --theme blackwhite --title msgbox --msgbox "Hello World!" 5 30
+% ./bsddialog --begin-y 2 --default-no --title yesno --yesno "Hello World!" 5 30
+% ./bsddialog --ascii-lines --pause "Hello World!" 8 50 10
+% ./bsddialog --checklist "Space to select" 0 0 0 Name1 Desc1 off Name2 Desc2 on
+% ./bsddialog --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
+% ./bsddialog --extra-button --help-button --yesno "Hello World!" 0 0
 ```
 and
 ```
