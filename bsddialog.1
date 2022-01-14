@@ -275,7 +275,7 @@ do
 		echo EOF
 	fi
 	i=`expr $i + 1`
-done | ./bsddialog --title " gauge " --gauge "Starting..." 10 70
+done | bsddialog --title " gauge " --gauge "Starting..." 10 70
 .Ed
 .Sh SEE ALSO
 .Xr bsddialog 3 .
