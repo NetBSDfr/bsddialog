@@ -592,7 +592,7 @@ enable shortcut keys on buttons, default on items.
 .Ed
 .Pp
 .Fn bsddialog_form
-builds a dialog to displasy a list of items to get strings in input, an item is
+builds a dialog to display a list of items to get strings in input, an item is
 defined like:
 .Pp
 .Bd -literal -offset indent -compact
@@ -626,19 +626,31 @@ and
 .Fa fieldlen
 is its graphical width, while
 .Fa maxvalelen
-is the maximun length of the input string,
+is the maximum length of the input string,
 .Fa init
 is the default value.
 If the Ok button is pressed
 .Fa value
 is the allocated memory with the current field string.
 .Fa flags
-for OR-flags to set the field, can be
+is an OR value to set the
 .Dv BSDDIALOG_FIELDHIDDEN
 and
-.Dv BSDDIALOG_FIELDREADONLY .
+.Dv BSDDIALOG_FIELDREADONLY
+flags for the field.
 .Fa bottomdesc
 is printed on the bottom side of the screen if the item is focused.
+.Fa items
+is an array of items of
+.Fa nitems
+elements,
+.Fa formrows
+specifies the graphical fixed height for the items list;
+.Fa ylabel
+and
+.Fa yfield
+have to be between 1 and
+.Fa formrows .
 .Pp
 .Fn bsddialog_form
 can be customized by:
