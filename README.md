@@ -6,7 +6,7 @@ This project provides **bsddialog** and **libbsddialog**, an utility and a
 library to build scripts and tools with TUI Dialogs and Widgets.
 
 
-## Description
+## Intro
 
 Description:
 <https://www.freebsd.org/status/report-2021-04-2021-06/#_bsddialog_tui_widgets>
@@ -64,6 +64,7 @@ Output:
 
 
 **Examples**:
+
 ```
 % ./bsddialog --backtitle "TITLE" --title msgbox --msgbox "Hello World!" 5 30
 % ./bsddialog --theme blackwhite --title msgbox --msgbox "Hello World!" 5 30
@@ -73,7 +74,9 @@ Output:
 % ./bsddialog --title yesno --hline "bsddialog" --yesno "Hello World!" 5 25
 % ./bsddialog --extra-button --help-button --yesno "Hello World!" 0 0
 ```
-and
+
+and [Examples](https://gitlab.com/alfix/bsddialog/-/tree/main/examples_utility)
+in the _Public Domain_ to build new projects:
 ```
 % sh ./examples_utility/checklist.sh
 % sh ./examples_utility/form.sh
@@ -93,8 +96,15 @@ and
 
 ## Library
 
+**Manual**
+
+ - [bsddialog(3)](https://alfonsosiciliano.gitlab.io/posts/2022-01-15-manual-libbsddialog.html)
+
 
 **Examples**:
+
+[Examples](https://gitlab.com/alfix/bsddialog/-/tree/main/examples_library)
+in the _Public Domain_ to build new projects:
 ```
 % cd examples_library
 % sh compile
@@ -111,16 +121,4 @@ and
 % ./timebox
 % ./yesno
 ```
-
-**Use Cases**:
-
- - [portconfig](https://alfonsosiciliano.gitlab.io/posts/2021-11-20-portconfig.html):
-   <https://gitlab.com/alfix/portconfig>
- - [tzsetup(8)](https://man.freebsd.org/tzsetup/8):
-   <https://cgit.freebsd.org/src/tree/usr.sbin/tzsetup>
- - [kbdmap(1)](https://man.freebsd.org/kbdmap/1):
-   <https://cgit.freebsd.org/src/tree/usr.sbin/kbdmap>
- - [bsdinstall(8)](https://man.freebsd.org/bsdinstall/8): distextract
-   <https://cgit.freebsd.org/src/tree/usr.sbin/bsdinstall>
-   
-
+ 
