@@ -65,7 +65,7 @@
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
-.Fa "int nitems"
+.Fa "unsigned int nitems"
 .Fa "struct bsddialog_menuitem *items"
 .Fa "int *focusitem"
 .Fc
@@ -89,7 +89,7 @@
 .Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
-.Fa "unsigned int formheight"
+.Fa "unsigned int formrows"
 .Fa "unsigned int nitems"
 .Fa "struct bsddialog_formitem *items"
 .Fc
@@ -122,7 +122,7 @@
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
-.Fa "int nitems"
+.Fa "unsigned int nitems"
 .Fa "struct bsddialog_menuitem *items"
 .Fa "int *focusitem"
 .Fc
@@ -144,7 +144,7 @@
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
-.Fa "int ngroups"
+.Fa "unsigned int ngroups"
 .Fa "struct bsddialog_menugroup *groups"
 .Fa "int *focuslist"
 .Fa "int *focusitem"
@@ -171,7 +171,7 @@
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int menurows"
-.Fa "int nitems"
+.Fa "unsigned int nitems"
 .Fa "struct bsddialog_menuitem *items"
 .Fa "int *focusitem"
 .Fc
@@ -188,7 +188,7 @@
 .Ft int
 .Fo bsddialog_textbox
 .Fa "struct bsddialog_conf *conf"
-.Fa "char *file"
+.Fa "const char *file"
 .Fa "int rows"
 .Fa "int cols"
 .Fc
@@ -212,8 +212,8 @@
 .In bsddialog_theme.h
 .Ft int
 .Fo bsddialog_color
-.Fa "enum bsddialog_color background"
 .Fa "enum bsddialog_color foreground"
+.Fa "enum bsddialog_color background"
 .Fa "unsigned int flags"
 .Fc
 .Ft int
