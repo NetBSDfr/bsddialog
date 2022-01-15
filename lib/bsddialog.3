@@ -913,7 +913,7 @@ bsddialog_end();
 Mixedlist Example:
 .Pp
 .Bd -literal -offset indent -compact
-int i, j;
+unsigned int i, j;
 struct bsddialog_conf conf;
 struct bsddialog_menuitem item;
 struct bsddialog_menuitem check[2] = {
@@ -939,8 +939,8 @@ bsddialog_mixedlist(&conf, "Example", 20, 30, 11, 3, group, NULL,
     NULL);
 bsddialog_end();
 
-for (i=0; i<3; i++) {
-	for (j=0; j<(int)group[i].nitems; j++) {
+for (i=0; i < 3; i++) {
+	for (j = 0; j < group[i].nitems; j++) {
 		item = group[i].items[j];
 		if (group[i].type == BSDDIALOG_SEPARATOR)
 			printf("----- %s -----\\n", item.name);
