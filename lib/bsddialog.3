@@ -629,7 +629,7 @@ is its graphical width, while
 is the maximum length of the input string,
 .Fa init
 is the default value.
-If the Ok button is pressed
+If the OK button is pressed
 .Fa value
 is the allocated memory with the current field string.
 .Fa flags
@@ -671,12 +671,12 @@ also if the Extra button is pressed.
 set
 .Fa value
 also if the Help button is pressed.
-.Ed
+.El
 .Pp
 .Fn bsddialog_gauge
-opens a dialog with a
-.Fa perc
-bar, if
+builds dialog with a bar to shows
+.Fa perc ,
+if
 .Fa separator
 is not
 .Dv NULL
@@ -684,13 +684,15 @@ the dialog waits to read
 .Fa separator
 from the standard input, then the first string is used like a new
 .Fa perc
-and the next strings are like new
+and the next strings are the new
 .Fa text ,
+until the next
+.Fa separator ,
 the loop ends reading
 .Dv EOF .
 .Pp
 .Fn bsddialog_mixedgauge
-draw a main bar with
+draw a main bar with the
 .Fa mainperc
 percentage and
 .Fa nminibars
@@ -720,12 +722,12 @@ and
 .Fa max .
 .Fa value
 is the default value on startup and the selected value at exit.
-The current value is printed inside a bar.
-UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys can change it.
+The current value is printed inside a bar, the keys UP, DOWN, HOME, END, PAGEUP
+and PAGEDOWN can change it.
 .Pp
 .Fn bsddialog_textbox
 opens and prints
-.Fa file ,
+.Fa file
 in a dialog, the UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to
 navigate the file.
 OK button is renamed EXIT.
