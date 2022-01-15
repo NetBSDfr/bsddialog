@@ -275,7 +275,7 @@ or
 BSDDIALOG_FULLSCREEN .
 .Fa conf
 is a struct to customize the dialog, it does not set global properties to the
-library, it is local to its dialog.
+library.
 .Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
@@ -299,6 +299,7 @@ struct bsddialog_conf {
 	} key;
 	struct {
 		bool highlight;
+		unsigned int tablen;
 	} text;
 	struct {
 		bool align_left;
@@ -347,30 +348,30 @@ subtitle at the dialog bottom side.
 .It Fa conf.clear
 hide the dialog at exit.
 .It Fa conf.f1_file
-path to a file to open if F1 is pressed.
+file to open if F1 is pressed.
 .It Fa conf.f1_message
-display the message if F1 is pressed.
+message to display if F1 is pressed.
 .It Fa conf.get_height
 if not
 .Dv NULL
-is set like the dialog height at exit.
+is set like the dialog height.
 .It Fa conf.get_width
 if not
 .Dv NULL
-is set like the dialog width at exit.
+is set like the dialog width.
 .It Fa conf.no_lines
 not draw lines.
 .It Fa conf.shadow
-draw a shadow.
+draw shadow.
 .It Fa conf.sleep
-the dialog function waits before to return, the value is in seconds.
+wait before to return, the value is in seconds.
 .It Fa conf.title
 title at the top dialog side.
 .It Fa conf.y
-dialog y position, 0 it the top screen, can be
+vertical position, 0 is top screen size, can be
 .Dv BSDDIALOG_CENTER .
 .It Fa conf.x
-dialog x position, 0 is the left screen side, can be
+horizontal position, 0 is left screen side, can be
 .Dv BSDDIALOG_CENTER .
 .Ed
 .Pp
@@ -415,6 +416,8 @@ disable underline.
 .It Dq \eZn
 disable each customization.
 .Ed
+.Fa conf.text.tablen
+tab length.
 .Pp
 .Bl -column -compact
 .It Fa conf.button.without_ok
@@ -440,10 +443,10 @@ add a button with the specified label.
 .It Fa conf.button.generic2_label
 add a button with the specified label.
 .It Fa conf.button.default_label
-focus on the button with label.
+focus on the button with the specified label.
 .Ed
 .Pp
-.Fa bsddialog_initconf
+.Fn bsddialog_initconf
 initializes
 .Fa conf
 disabling each property, except
@@ -458,7 +461,7 @@ to
 .Fn bsddialog_infobox
 builds a dialog without buttons and returns instantly.
 .Fn bsddialog_msgbox
-builds a dialog with only OK an button.
+builds a dialog with OK button.
 .Fn bsddialog_yesno
 provides a dialog for a
 .Dq Yes-No Question ,
@@ -470,25 +473,26 @@ builds a dialog waiting until the timeout in
 expires or a button is pressed.
 .Pp
 .Fn bsddialog_datebox
-builds a dialog to select a date, on startup
+builds a dialog to select a date,
 .Fa yy ,
 .Fa mm ,
 and
 .Fa dd
-specify a date on startup and are set like the user choice on return.
+are default values on startup, selected date at exit.
 .Fn bsddialog_timebox
 builds a dialog to choose a time,
 .Fa hh ,
 .Fa mm ,
 and
 .Fa ss
-specify a time on startup and are set like the user choice on return.
+are default values on startup, selected time at exit.
 .Pp
 .Fn bsddialog_checklist ,
 .Fn bsddialog_menu
 and
 .Fn bsddialog_radiolist
-build dialogs to chooce some item from a menu, properly an item is defined like:
+build dialogs to select some item from a list via the SPACE key, an item is
+defined like:
 .Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_menuitem {
@@ -501,24 +505,24 @@ struct bsddialog_menuitem {
 };
 .Ed
 .Pp
-An item has:
 .Fa prefix ,
 .Fa name
 and
 .Fa desc
-printed on its row,
+are strings to describe the item and are printed on its row,
 .Fa bottomdesc
-printed on the bottom side of the screen if the item is focused,
+is printed on the bottom side of the screen,
 .Fa depth
 is a margin between the
 .Fa prefix
 and
 .Fa name
-useful to implement a treeview,
+useful to implement a
+.Dq treeview,
 .Fa on
 is set to
 .Dv true
-if the user selects the item,
+if the item is selected,
 .Dv false
 otherwise.
 .Fa items
@@ -526,20 +530,20 @@ is an array of items of
 .Fa nitem
 elements,
 .Fa menurows
-specifies the graphical size of the menu, if
+specifies the graphical fixed height of the list, if
 .Fa cols
 is set to
 .Dv BSDDIALOG_AUTOSIZE
-.Fa menirows
-specifies a maximum value not a fixed.
+.Fa menurows
+specifies a maximum value.
 Finally, if not
 .Dv NULL,
 .Fa focusitem
-specifies the default item on startup and the focused item at exit, could be
-a negative value is no item is focused.
+specifies the default item on startup and the last focused item at exit, could
+be a negative value if no item is focused.
 .Pp
 .Fn bsddialog_mixedlist
-builds a dialog with a collections of checklists, radiolists and separators.
+builds a dialog with collections of checklists, radiolists and separators.
 A collection is a set defined like:
 .Pp
 .Bd -literal -offset indent -compact
@@ -556,18 +560,19 @@ struct bsddialog_menugroup {
 };
 .Ed
 .Pp
+.Fa groups
+is an array of sets of
 .Fa ngroups
-is the number of collections,
-.Fa groups .
+elements.
 .Fa menurows
-is the graphical height size for the menu.
+is the graphical height size for the list.
 If not
 .NULL
 .Fa focuslist
 and
 .Fa focusitem
-specify the default item before the call and the focused item at exit, could be
-negative if no item is focused.
+specify the default item on startup and the last focused item at exit, could be
+a negative value if no item is focused.
 .Pp
 .Fn bsddialog_checklist ,
 .Fn bsddialog_menu ,
@@ -587,13 +592,9 @@ enable shortcut keys on buttons, default on items.
 .Ed
 .Pp
 .Fn bsddialog_form
-builds a dialog with a form to get user input, it is drawn in a square and
-.Fa formheight
-is its height.
-.Fa nitems
-is the size of
-.Fa items
-the array of items for a form, an item is defined by:
+builds a dialog to displasy a list of items to get strings in input, an item is
+defined like:
+.Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_formitem {
 	const char *label;
@@ -614,35 +615,28 @@ struct bsddialog_formitem {
 .Ed
 .Pp
 .Fa label
-is a string to describe the request to the user,
+describes the request, it is printed at the position
 .Fa ylabel
 and
-.Fa xlabel
-represent the position in the form square,
-.Fa ylabel
-has to be between 1 and
-.Fa formheight .
+.Fa xlabel .
+The field for the input is at the position
 .Fa yfield
 and
-.Fa xfield
-represent the position for the field,
-.Fa yfield
-has to be between 0 and
-.Fa formheight .
+.Fa xfield ,
 .Fa fieldlen
-is the graphical size of the field, while
+is its graphical width, while
 .Fa maxvalelen
-is the maximun size of the user input.
+is the maximun length of the input string,
 .Fa init
-is a string printed in the field as a default value.
-.It Fa value
-is allocated memory with the current field if the OK button is pressed.
+is the default value.
+If the Ok button is pressed
+.Fa value
+is the allocated memory with the current field string.
 .Fa flags
-are OR-flags to set the field
+for OR-flags to set the field, can be
 .Dv BSDDIALOG_FIELDHIDDEN
 and
 .Dv BSDDIALOG_FIELDREADONLY .
-Finally,
 .Fa bottomdesc
 is printed on the bottom side of the screen if the item is focused.
 .Pp
@@ -650,9 +644,9 @@ is printed on the bottom side of the screen if the item is focused.
 can be customized by:
 .Bl -column -compact
 .It Fa conf.form.securech
+charachter to hide the input
 with
-.Dv BSDDIALOG_FIELDHIDDEN
-set the charachter to hide the input.
+.Dv BSDDIALOG_FIELDHIDDEN .
 .It Fa conf.form.value_withcancel
 set
 .Fa value
