@@ -35,7 +35,7 @@
 .Nm bsddialog_form ,
 .Nm bsddialog_gauge ,
 .Nm bsddialog_geterror ,
-.Nm bsddialog_get_theme
+.Nm bsddialog_get_theme ,
 .Nm bsddialog_infobox ,
 .Nm bsddialog_init ,
 .Nm bsddialog_initconf ,
@@ -271,8 +271,7 @@ and
 are height and width, their value can be between 2 and the screen size,
 .Dv BSDDIALOG_AUTOSIZE
 or
-.Dv
-BSDDIALOG_FULLSCREEN .
+.Dv BSDDIALOG_FULLSCREEN .
 .Fa conf
 is a struct to customize the dialog, it does not set global properties to the
 library.
@@ -373,7 +372,7 @@ vertical position, 0 is top screen size, can be
 .It Fa conf.x
 horizontal position, 0 is left screen side, can be
 .Dv BSDDIALOG_CENTER .
-.Ed
+.El
 .Pp
 .Fa conf.key.enable_esc
 enables
@@ -415,7 +414,7 @@ underline.
 disable underline.
 .It Dq \eZn
 disable each customization.
-.Ed
+.El
 .Fa conf.text.tablen
 tab length.
 .Pp
@@ -444,7 +443,7 @@ add a button with the specified label.
 add a button with the specified label.
 .It Fa conf.button.default_label
 focus on the button with the specified label.
-.Ed
+.El
 .Pp
 .Fn bsddialog_initconf
 initializes
@@ -537,7 +536,7 @@ is set to
 .Fa menurows
 specifies a maximum value.
 Finally, if not
-.Dv NULL,
+.Dv NULL ,
 .Fa focusitem
 specifies the default item on startup and the last focused item at exit, could
 be a negative value if no item is focused.
@@ -567,7 +566,7 @@ elements.
 .Fa menurows
 is the graphical height size for the list.
 If not
-.NULL
+.Dv NULL ,
 .Fa focuslist
 and
 .Fa focusitem
@@ -583,13 +582,13 @@ can be costomizated by:
 .Bl -column -compact
 .It Fa conf.menu.align_left
 aligns items to left, default center.
-.It Fa conf.menu.no_desc.
+.It Fa conf.menu.no_desc
 hide description.
 .It Fa conf.menu.no_name
 hide names.
 .It Fa conf.menu.shortcut_buttons
 enable shortcut keys on buttons, default on items.
-.Ed
+.El
 .Pp
 .Fn bsddialog_form
 builds a dialog to display a list of items to get strings in input, an item is
@@ -837,7 +836,6 @@ and
 .Dv BSDDIALOG_THEME_DIALOG ,
 they can be set via
 .Fn bsddialog_set_default_theme .
-.Pp
 .Sh RETURN VALUES
 The functions return the value
 .Dv BSDDIALOG_ERROR
@@ -871,7 +869,6 @@ returns
 .Dv BSDDIALOG_TIMEOUT
 if the timeout expires.
 .Sh EXAMPLES
-.Pp
 .Dq Yes-No Question
 Example:
 .Pp
@@ -975,7 +972,7 @@ for (i=0; i < 3; i++) {
 .Sh SEE ALSO
 .Xr bsddialog 1 ,
 .Xr curses 3 ,
-.Xr ncurses 3 .
+.Xr ncurses 3
 .Sh HISTORY
 The
 .Nm bsddialog
