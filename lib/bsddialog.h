@@ -164,7 +164,7 @@ const char *bsddialog_geterror(void);
 /* Dialogs */
 int
 bsddialog_checklist(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int menurows, int nitems,
+    int cols, unsigned int menurows, unsigned int nitems,
     struct bsddialog_menuitem *items, int *focusitem);
 
 int
@@ -186,7 +186,7 @@ bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
 
 int
 bsddialog_menu(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int menurows, int nitems,
+    int cols, unsigned int menurows, unsigned int nitems,
     struct bsddialog_menuitem *items, int *focusitem);
 
 int
@@ -196,7 +196,7 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 int
 bsddialog_mixedlist(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int menurows, int ngroups,
+    int cols, unsigned int menurows, unsigned int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem);
 
 int
@@ -209,7 +209,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 int
 bsddialog_radiolist(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int menurows, int nitems,
+    int cols, unsigned int menurows, unsigned int nitems,
     struct bsddialog_menuitem *items, int *focusitem);
 
 int
