@@ -3,7 +3,7 @@
 **Work In Progress!**
 
 This project provides **bsddialog** and **libbsddialog**, an utility and a
-library to build scripts and tools with TUI Dialogs and Widgets.
+library to build scripts and tools with TUI dialogs and widgets.
 
 
 ## Intro
