@@ -8,13 +8,13 @@ library to build scripts and tools with TUI Dialogs and Widgets.
 
 ## Intro
 
-Description:
+Briefly:
 <https://www.freebsd.org/status/report-2021-04-2021-06/#_bsddialog_tui_widgets>
 
-Description utility:
+Utility:
 <https://alfonsosiciliano.gitlab.io/posts/2021-12-07-bsddialog.html>
 
-Description library:
+Library:
 <https://alfonsosiciliano.gitlab.io/posts/2022-01-16-libbsddialog.html>
 
 Screenshots:
