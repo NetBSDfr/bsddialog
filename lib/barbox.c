@@ -348,9 +348,9 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 	time_t tstart, told, tnew, refresh;
 
 	if ((minilabels = calloc(nminibar, sizeof(char*))) == NULL)
-		RETURN_ERROR("Cannot allocate memory for minilabels\n");
+		RETURN_ERROR("Cannot allocate memory for minilabels");
 	if ((minipercs = calloc(nminibar, sizeof(int))) == NULL)
-		RETURN_ERROR("Cannot allocate memory for minipercs\n");
+		RETURN_ERROR("Cannot allocate memory for minipercs");
 
 	totaltodo = 0;
 	for(i=0; i<nminibar; i++) {
