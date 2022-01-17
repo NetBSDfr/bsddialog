@@ -210,18 +210,18 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	int colorperc, red, green;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char states[12][14] = {
-	    "  Succeeded  ", /*  -1  */
-	    "   Failed    ", /*  -2  */
-	    "   Passed    ", /*  -3  */
-	    "  Completed  ", /*  -4  */
-	    "   Checked   ", /*  -5  */
-	    "    Done     ", /*  -6  */
-	    "   Skipped   ", /*  -7  */
-	    " In Progress ", /*  -8  */
-	    "(blank)      ", /*  -9  */
-	    "     N/A     ", /*  -10 */
-	    "   Pending   ", /*  -11 */
-	    "   UNKNOWN   ", /* <-11 */
+		"  Succeeded  ", /* -1  */
+		"   Failed    ", /* -2  */
+		"   Passed    ", /* -3  */
+		"  Completed  ", /* -4  */
+		"   Checked   ", /* -5  */
+		"    Done     ", /* -6  */
+		"   Skipped   ", /* -7  */
+		" In Progress ", /* -8  */
+		"(blank)      ", /* -9  */
+		"     N/A     ", /* -10 */
+		"   Pending   ", /* -11 */
+		"   UNKNOWN   ", /* < -11, no API */
 	};
 
 	colorperc = -1;
