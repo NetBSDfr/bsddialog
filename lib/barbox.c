@@ -340,8 +340,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
     struct bsddialog_fileminibar *minibar)
 {
 	bool update;
-	int perc, output;
-	int *minipercs;
+	int perc, output, *minipercs;
 	unsigned int i, mainperc, totaltodo;
 	float readforsec;
 	const char **minilabels;
