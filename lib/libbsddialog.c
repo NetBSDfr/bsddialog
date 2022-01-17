@@ -39,6 +39,7 @@ extern struct bsddialog_theme t;
 int bsddialog_init(void)
 {
 	int i, j, c, error;
+	enum bsddialog_default_theme theme;
 
 	set_error_string("");
 
@@ -63,12 +64,13 @@ int bsddialog_init(void)
 			error += init_pair(c, i, j);
 			c++;
 	}
-	if (error != OK) {
-		bsddialog_end();
-		RETURN_ERROR("Cannot init curses (colors)");
-	}
 
-	if (bsddialog_set_default_theme(BSDDIALOG_THEME_DEFAULT) != 0) {
+	if (error == OK)
+		theme = BSDDIALOG_THEME_DEFAULT;
+	else
+		theme = BSDDIALOG_THEME_BLACKWHITE;
+
+	if (bsddialog_set_default_theme(theme) != 0) {
 		bsddialog_end();
 		return (BSDDIALOG_ERROR);
 	}
