@@ -51,8 +51,8 @@ static void
 draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
     int label)
 {
-	char labelstr[128];
 	int i, blue_x, color;
+	char labelstr[128];
 
 	blue_x = (int)((perc*(size))/100);
 
@@ -339,14 +339,13 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
     int cols, struct bsddialog_progviewconf *pvconf, unsigned int nminibar,
     struct bsddialog_fileminibar *minibar)
 {
+	bool update;
 	int perc, output;
 	int *minipercs;
-	unsigned int i;
-	const char **minilabels;
-	unsigned int mainperc, totaltodo;
-	time_t tstart, told, tnew, refresh;
-	bool update;
+	unsigned int i, mainperc, totaltodo;
 	float readforsec;
+	const char **minilabels;
+	time_t tstart, told, tnew, refresh;
 
 	if ((minilabels = calloc(nminibar, sizeof(char*))) == NULL)
 		RETURN_ERROR("Cannot allocate memory for minilabels\n");
@@ -418,11 +417,11 @@ int
 bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, int min, int max, int *value)
 {
-	WINDOW *widget, *textpad, *bar, *shadow;
-	int y, x, h, w;
 	bool loop, buttupdate, barupdate;
+	int y, x, h, w;
 	int input, currvalue, output, sizebar, bigchange, positions;
 	float perc;
+	WINDOW *widget, *textpad, *bar, *shadow;
 	struct buttons bs;
 
 	if (value == NULL)
@@ -592,11 +591,10 @@ int
 bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int sec)
 {
-	WINDOW *widget, *textpad, *bar, *shadow;
-	int output, y, x, h, w;
 	bool loop, buttupdate, barupdate;
-	int input, tout, sizebar;
+	int output, y, x, h, w, input, tout, sizebar;
 	float perc;
+	WINDOW *widget, *textpad, *bar, *shadow;
 	struct buttons bs;
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
