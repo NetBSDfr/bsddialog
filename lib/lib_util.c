@@ -39,9 +39,10 @@
 
 extern struct bsddialog_theme t;
 
-/* Error buffer */
-#define ERRBUFLEN 1024
+#define TABLEN     4    /* Default tab len */
+#define ERRBUFLEN  1024 /* Error buffer */
 
+/* Error */
 static char errorbuffer[ERRBUFLEN];
 
 const char *get_error_string(void)
@@ -162,9 +163,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
     char *nocancellabel)
 {
 	int i;
-#define SIZEBUTTON  8
-#define BUTTON_EXTRA_LABEL   "Extra"
-#define BUTTON_HELP_LABEL    "Help"
+#define SIZEBUTTON              8
 #define DEFAULT_BUTTON_LABEL	BUTTON_OK_LABEL
 #define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
 
@@ -181,7 +180,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 
 	if (conf->button.with_extra) {
 		bs->label[bs->nbuttons] = conf->button.extra_label != NULL ?
-		    conf->button.extra_label : BUTTON_EXTRA_LABEL;
+		    conf->button.extra_label : "Extra";
 		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
 		bs->nbuttons += 1;
 	}
@@ -197,7 +196,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 
 	if (conf->button.with_help) {
 		bs->label[bs->nbuttons] = conf->button.help_label != NULL ?
-		    conf->button.help_label : BUTTON_HELP_LABEL;
+		    conf->button.help_label : "Help";
 		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
 		bs->nbuttons += 1;
 	}
@@ -252,8 +251,6 @@ bool shortcut_buttons(int key, struct buttons *bs)
 }
 
 /* Text */
-#define TABLEN 4
-
 static bool is_text_attr(const char *text)
 {
 	if (strnlen(text, 3) < 3)
@@ -414,10 +411,9 @@ static int
 text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
     int mincols, bool increasecols, int *h, int *w)
 {
-	int i, j, z, wordlen, maxwordlen, nword, *words, maxwords, line;
-	int tablen;
-	int x, y;
-	int maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
+	int i, j, z, x, y;
+	int tablen, wordlen, maxwordlen, nword, maxwords, line, maxwidth;
+	int *words;
 #define NL -1
 #define WS -2
 
@@ -426,6 +422,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		RETURN_ERROR("Cannot alloc memory for text autosize");
 
 	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
+	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
 
 	nword = 0;
 	wordlen = 0;
@@ -720,7 +717,6 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 {
-
 	if (conf->y == BSDDIALOG_CENTER)
 		*y = SCREENLINES/2 - (h + t.shadow.h)/2;
 	else if (conf->y < BSDDIALOG_CENTER)
@@ -757,39 +753,40 @@ draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
     enum elevation elev)
 {
 	int leftcolor, rightcolor;
-	int ls, rs, ts, bs, tl, tr, bl, br;
-	int ltee, rtee;
+	int ls, rs, ts, bs, tl, tr, bl, br, ltee, rtee;
 
-	ls = rs = ACS_VLINE;
-	ts = bs = ACS_HLINE;
-	tl = ACS_ULCORNER;
-	tr = ACS_URCORNER;
-	bl = ACS_LLCORNER;
-	br = ACS_LRCORNER;
-	ltee = ACS_LTEE;
-	rtee = ACS_RTEE;
+	if (conf->no_lines)
+		return;
 
-	if (conf->no_lines == false) {
-		if (conf->ascii_lines) {
-			ls = rs = '|';
-			ts = bs = '-';
-			tl = tr = bl = br = ltee = rtee = '+';
-		}
-		leftcolor  = elev == RAISED ?
-		    t.dialog.lineraisecolor : t.dialog.linelowercolor;
-		rightcolor = elev == RAISED ?
-		    t.dialog.linelowercolor : t.dialog.lineraisecolor;
-		wattron(win, leftcolor);
-		wborder(win, ls, rs, ts, bs, tl, tr, bl, br);
-		wattroff(win, leftcolor);
-
-		wattron(win, rightcolor);
-		mvwaddch(win, 0, cols-1, tr);
-		mvwvline(win, 1, cols-1, rs, rows-2);
-		mvwaddch(win, rows-1, cols-1, br);
-		mvwhline(win, rows-1, 1, bs, cols-2);
-		wattroff(win, rightcolor);
+	if (conf->ascii_lines) {
+		ls = rs = '|';
+		ts = bs = '-';
+		tl = tr = bl = br = ltee = rtee = '+';
+	} else {
+		ls = rs = ACS_VLINE;
+		ts = bs = ACS_HLINE;
+		tl = ACS_ULCORNER;
+		tr = ACS_URCORNER;
+		bl = ACS_LLCORNER;
+		br = ACS_LRCORNER;
+		ltee = ACS_LTEE;
+		rtee = ACS_RTEE;
 	}
+
+	leftcolor = elev == RAISED ? 
+	    t.dialog.lineraisecolor : t.dialog.linelowercolor;
+	rightcolor = elev == RAISED ?
+	    t.dialog.linelowercolor : t.dialog.lineraisecolor;
+	wattron(win, leftcolor);
+	wborder(win, ls, rs, ts, bs, tl, tr, bl, br);
+	wattroff(win, leftcolor);
+
+	wattron(win, rightcolor);
+	mvwaddch(win, 0, cols-1, tr);
+	mvwvline(win, 1, cols-1, rs, rows-2);
+	mvwaddch(win, rows-1, cols-1, br);
+	mvwhline(win, rows-1, 1, bs, cols-2);
+	wattroff(win, rightcolor);
 }
 
 WINDOW *
@@ -815,6 +812,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
     WINDOW *textpad, const char *text, struct buttons *bs, bool shortcutbuttons)
 {
 	int h, w, ts, ltee, rtee;
+
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
 	ltee = conf->ascii_lines ? '+' : ACS_LTEE;
 	rtee = conf->ascii_lines ? '+' : ACS_RTEE;
