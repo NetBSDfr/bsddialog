@@ -188,8 +188,9 @@ static void usage(void)
 	    "--print-size, --print-version, --quoted, --separate-output, "
 	    "--separator <sep>, --shadow, --single-quoted, --sleep <secs>, "
 	    "--stderr, --stdout, --tab-len <spaces>, "
-	    "--theme <blackwhite|bsddialog|dialog>, --time-format <format>, "
-	    "--title <title>, --trim, --version, --yes-label <label>.\n");
+	    "--theme <blackwhite|bsddialog|default|dialog>, "
+	    "--time-format <format>, --title <title>, --trim, --version, "
+	    "--yes-label <label>.\n");
 	printf("\n");
 
 	printf("Dialogs:\n");
