@@ -484,7 +484,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
 		    y + h - formheight, x + 1 + w - TEXTHMARGIN);
 
-		draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
+		draw_borders(conf, formwin, LOWERED);
 		wrefresh(formwin);
 
 		refresh();

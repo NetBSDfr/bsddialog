@@ -749,11 +749,11 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 
 /* Widgets builders */
 void
-draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
-    enum elevation elev)
+draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 {
 	int leftcolor, rightcolor;
 	int ls, rs, ts, bs, tl, tr, bl, br, ltee, rtee;
+	int rows, cols;
 
 	if (conf->no_lines)
 		return;
@@ -781,6 +781,7 @@ draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
 	wborder(win, ls, rs, ts, bs, tl, tr, bl, br);
 	wattroff(win, leftcolor);
 
+	getmaxyx(win, rows, cols);
 	wattron(win, rightcolor);
 	mvwaddch(win, 0, cols-1, tr);
 	mvwvline(win, 1, cols-1, rs, rows-2);
@@ -802,7 +803,7 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 
 	wbkgd(win, t.dialog.color);
 
-	draw_borders(conf, win, rows, cols, elev);
+	draw_borders(conf, win, elev);
 
 	return (win);
 }
@@ -822,7 +823,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	if (shadow != NULL)
 		wnoutrefresh(shadow);
 
-	draw_borders(conf, widget, h, w, RAISED);
+	draw_borders(conf, widget, RAISED);
 
 	if (conf->title != NULL) {
 		if (t.dialog.delimtitle && conf->no_lines == false) {
