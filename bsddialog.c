@@ -193,33 +193,33 @@ static void usage(void)
 
 	printf("Dialogs:\n");
 	printf("--checklist <text> <rows> <cols> <menurows> [<name> <desc> "
-	    "<on|off> ...]\n");
+	    "<on|off>] ...\n");
 	printf("--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
 	printf("--form <text> <rows> <cols> <formrows> [<label> <ylabel> "
-	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxvaluelen> "
-	    "...]\n");
+	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxvaluelen>] "
+	    "...\n");
 	printf("--gauge <text> <rows> <cols> [<perc>]\n");
 	printf("--infobox <text> <rows> <cols>\n");
 	printf("--inputbox <text> <rows> <cols> [init]\n");
-	printf("--menu <text> <rows> <cols> <menurows> [<name> <desc> ...]\n");
+	printf("--menu <text> <rows> <cols> <menurows> [<name> <desc>] ...\n");
 	printf("--mixedform <text> <rows> <cols> <formrows> [<label> <ylabel> "
-	    "<xlabe> <init> <yfield> <xfield> <fieldlen> <maxvaluelen> <0|1|2> "
-	    "...]\n");
+	    "<xlabe> <init> <yfield> <xfield> <fieldlen> <maxvaluelen> "
+	    "<0|1|2>] ...\n");
 	printf("--mixedgauge <text> <rows> <cols> <mainperc> [<minilabel> "
-	    "<miniperc> ...]\n");
+	    "<miniperc>] ...\n");
 	printf("--msgbox <text> <rows> <cols>\n");
 	printf("--passwordbox <text> <rows> <cols> [init]\n");
 	printf("--passwordform <text> <rows> <cols> <formrows> [<label> "
 	    "<ylabel> <xlabe> <init> <yfield> <xfield> <fieldlen> "
-	    "<maxvaluelen> ...]\n");
+	    "<maxvaluelen>] ...\n");
 	printf("--pause <text> <rows> <cols> <secs>\n");
 	printf("--radiolist <text> <rows> <cols> <menurows> [<name> <desc> "
-	    "<on|off> ...]\n");
+	    "<on|off>] ...\n");
 	printf("--rangebox <text> <rows> <cols> <min> <max> <default>\n");
 	printf("--textbox <file> <rows> <cols>\n");
 	printf("--timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n");
 	printf("--treeview <text> <rows> <cols> <menurows> [<depth> <name> "
-	    "<desc> <on|off> ...]\n");
+	    "<desc> <on|off>] ...\n");
 	printf("--yesno <text> <rows> <cols>\n");
 }
 
