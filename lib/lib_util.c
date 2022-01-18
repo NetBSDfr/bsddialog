@@ -409,6 +409,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 	return (0);
 }
 
+/* Autosize */
 static int
 text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
     int mincols, bool increasecols, int *h, int *w)
@@ -576,7 +577,6 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	return (0);
 }
 
-/* autosize */
 int widget_max_height(struct bsddialog_conf *conf)
 {
 	int maxheight;
