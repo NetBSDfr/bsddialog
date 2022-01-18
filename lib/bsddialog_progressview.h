@@ -39,7 +39,7 @@ extern bool bsddialog_abortprogview;
 extern int  bsddialog_total_progview;
 
 struct bsddialog_fileminibar {
-	const char *path;
+	char *path;
 	const char *label;
 	int status; /* next if BSDDIALOG_MG_DONE or BSDDIALOG_MG_FAILED */
 	long long size;
