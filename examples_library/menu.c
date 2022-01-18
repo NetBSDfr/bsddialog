@@ -42,7 +42,7 @@ int main()
 	}
 
 	printf("Menu:\n");
-	for (i=0; i<5; i++)
+	for (i = 0; i < 5; i++)
 		printf(" [%c] %s\n", items[i].on ? 'X' : ' ', items[i].name);
 
 	return (output);

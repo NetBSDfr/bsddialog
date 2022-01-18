@@ -138,8 +138,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	sel = 0;
 	curs_set(2);
 	loop = true;
-	while(loop) {
-		for (i=0; i<3; i++) {
+	while (loop) {
+		for (i = 0; i < 3; i++) {
 			mvwprintw(c[i].win, 1, 1, "%2d", c[i].value);
 			wrefresh(c[i].win);
 		}
@@ -252,7 +252,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 
 	curs_set(0);
 
-	for (i=0; i<3; i++)
+	for (i = 0; i < 3; i++)
 		delwin(c[i].win);
 	end_dialog(conf, shadow, widget, textpad);
 
@@ -338,11 +338,11 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = 2;
 	curs_set(2);
 	loop = true;
-	while(loop) {
+	while (loop) {
 		mvwprintw(c[0].win, 1, 1, "%4d", c[0].value);
 		mvwprintw(c[1].win, 1, 1, "%9s", m[c[1].value-1].name);
 		mvwprintw(c[2].win, 1, 1, "%2d", c[2].value);
-		for (i=0; i<3; i++) {
+		for (i = 0; i < 3; i++) {
 			wrefresh(c[i].win);
 		}
 		wmove(c[sel].win, 1, c[sel].x);
@@ -469,7 +469,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	curs_set(0);
 
-	for (i=0; i<3; i++)
+	for (i = 0; i < 3; i++)
 		delwin(c[i].win);
 	end_dialog(conf, shadow, widget, textpad);
 

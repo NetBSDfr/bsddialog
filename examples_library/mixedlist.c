@@ -15,7 +15,8 @@
 
 int main()
 {
-	int i, j, output;
+	int output;
+	unsigned int i, j;
 	struct bsddialog_conf conf;
 	struct bsddialog_menuitem item;
 	struct bsddialog_menuitem check[5] = {
@@ -59,8 +60,8 @@ int main()
 	}
 
 	printf("Mixedlist:\n");
-	for (i=0; i<3; i++) {
-		for (j=0; j<(int)group[i].nitems; j++) {
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j < group[i].nitems; j++) {
 			item = group[i].items[j];
 			if (group[i].type == BSDDIALOG_SEPARATOR)
 				printf("----- %s -----\n", item.name);

@@ -84,7 +84,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	pad = newpad(hpad, wpad);
 	wbkgd(pad, t.dialog.color);
 	i = 0;
-	while(fgets(buf, BUFSIZ, fp) != NULL) {
+	while (fgets(buf, BUFSIZ, fp) != NULL) {
 		if ((int) strlen(buf) > wpad) {
 			wpad = strlen(buf);
 			wresize(pad, hpad, wpad);
@@ -125,7 +125,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	ypad = xpad = 0;
 	printrows = h-4;
 	loop = true;
-	while(loop) {
+	while (loop) {
 		wnoutrefresh(widget);
 		pnoutrefresh(pad, ypad, xpad, ys, xs, ye, xe);
 		doupdate();

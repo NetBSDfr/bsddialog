@@ -66,7 +66,7 @@ static int checkradiolist(int nitems, struct bsddialog_menuitem *items)
 	int i, error;
 
 	error = 0;
-	for (i=0; i<nitems; i++) {
+	for (i = 0; i < nitems; i++) {
 		if (error > 0)
 			items[i].on = false;
 
@@ -82,7 +82,7 @@ static int checkmenu(int nitems, struct bsddialog_menuitem *items) // useful?
 	int i, error;
 
 	error = 0;
-	for (i=0; i<nitems; i++) {
+	for (i = 0; i < nitems; i++) {
 		if (items[i].on == true)
 			error++;
 
@@ -100,7 +100,7 @@ getfirst(int ngroups, struct bsddialog_menugroup *groups, int *abs, int *group,
 
 	*abs = *rel = *group = -1;
 	a = 0;
-	for (i=0; i<ngroups; i++) {
+	for (i = 0; i < ngroups; i++) {
 		if (groups[i].type == BSDDIALOG_SEPARATOR) {
 			a += groups[i].nitems;
 			continue;
@@ -544,7 +544,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	automenurows = menurows == BSDDIALOG_AUTOSIZE ? true : false;
 
 	totnitems = 0;
-	for (i=0; i < (int)ngroups; i++) {
+	for (i = 0; i < (int)ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
 		if (currmode == RADIOLISTMODE)
 			checkradiolist(groups[i].nitems, groups[i].items);
@@ -555,7 +555,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		if (currmode == RADIOLISTMODE || currmode == CHECKLISTMODE)
 			pos.selectorlen = 3;
 
-		for (j=0; j < (int) groups[i].nitems; j++) {
+		for (j = 0; j < (int)groups[i].nitems; j++) {
 			totnitems++;
 			item = &groups[i].items[j];
 
@@ -611,9 +611,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wbkgd(menupad, t.dialog.color);
 
 	ymenupad = 0;
-	for (i=0; i < (int)ngroups; i++) {
+	for (i = 0; i < (int)ngroups; i++) {
 		currmode = getmode(mode, groups[i]);
-		for (j=0; j < (int) groups[i].nitems; j++) {
+		for (j = 0; j < (int)groups[i].nitems; j++) {
 			item = &groups[i].items[j];
 			drawitem(conf, menupad, ymenupad, *item, currmode, pos,
 			    false);
@@ -647,7 +647,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 
 	loop = true;
-	while(loop) {
+	while (loop) {
 		input = getch();
 		switch(input) {
 		case KEY_ENTER:
@@ -798,7 +798,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			else if (currmode == CHECKLISTMODE)
 				item->on = !item->on;
 			else { /* RADIOLISTMODE */
-				for (i=0; i < (int) groups[g].nitems; i++)
+				for (i = 0; i < (int)groups[g].nitems; i++)
 					if (groups[g].items[i].on && i != rel) {
 						groups[g].items[i].on = false;
 						drawitem(conf, menupad,

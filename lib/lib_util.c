@@ -120,7 +120,7 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 	mvwaddch(window, y, x, t.button.leftch);
 	wattroff(window, color_arrows);
 	wattron(window, color_button);
-	for(i = 1; i < size - 1; i++)
+	for (i = 1; i < size - 1; i++)
 		waddch(window, ' ');
 	wattroff(window, color_button);
 	wattron(window, color_arrows);
@@ -221,7 +221,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 	}
 
 	if (conf->button.default_label != NULL) {
-		for (i=0; i<(int)bs->nbuttons; i++) {
+		for (i = 0; i < (int)bs->nbuttons; i++) {
 			if (strcmp(conf->button.default_label,
 			    bs->label[i]) == 0)
 				bs->curr = i;
@@ -229,7 +229,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 	}
 
 	bs->sizebutton = MAX(SIZEBUTTON - 2, strlen(bs->label[0]));
-	for (i=1; i < (int) bs->nbuttons; i++)
+	for (i = 1; i < (int)bs->nbuttons; i++)
 		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
 	bs->sizebutton += 2;
 }
@@ -377,7 +377,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 			j = -1;
 			break;
 		case '\t':
-			for (z=0; z<tablen; z++) {
+			for (z = 0; z < tablen; z++) {
 				if (x >= cols) {
 					x = 0;
 					y++;
@@ -460,7 +460,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 			}
 
 			if (text[i] == '\t') {
-				for (j=0; j<tablen; j++)
+				for (j = 0; j < tablen; j++)
 					words[nword + j] = 1;
 				nword += tablen;
 			} else {
@@ -485,7 +485,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		x = 0;
 		y = 1;
 		line=0;
-		for (i=0; i<=nword; i++) {
+		for (i = 0; i <= nword; i++) {
 			if (words[i] == NL) {
 				y++;
 				x = 0;
@@ -501,7 +501,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 				if (words[i] + x <= mincols)
 					x += words[i];
 				else {
-					for (z=words[i]; z>0; ) {
+					for (z = words[i]; z > 0; ) {
 						y++;
 						x = MIN(mincols, z);
 						z -= x;

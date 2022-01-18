@@ -118,7 +118,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	unused++; /* fix unused error */
 	textupdate(widget, textpad, htextpad, ytextpad);
 	loop = true;
-	while(loop) {
+	while (loop) {
 		doupdate();
 		input = getch();
 		switch (input) {

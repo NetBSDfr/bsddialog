@@ -43,7 +43,7 @@ int main()
 	if (output == BSDDIALOG_ERROR)
 		printf("Error: %s", bsddialog_geterror());
 
-	for (i=0; i<3; i++) {
+	for (i = 0; i < 3; i++) {
 		printf("%s \"%s\"\n", items[i].label, items[i].value);
 		free(items[i].value);
 	}

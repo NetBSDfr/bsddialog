@@ -984,7 +984,7 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 	}
 
 	j = 0;
-	for (i=0; i<*nitems; i++) {
+	for (i = 0; i < *nitems; i++) {
 		(*items)[i].prefix = setprefix ? argv[j++] : "";
 		(*items)[i].depth = setdepth ?
 		    (u_int)strtoul(argv[j++], NULL, 0) : 0;
@@ -1205,7 +1205,7 @@ print_form_items(struct bsddialog_conf *conf, int output, int nitems,
 	if (output == BSDDIALOG_ERROR)
 		return;
 
-	for (i=0; i < nitems; i++) {
+	for (i = 0; i < nitems; i++) {
 		dprintf(output_fd_opt, "%s\n", items[i].value);
 		free(items[i].value);
 	}
@@ -1231,7 +1231,7 @@ int form_builder(BUILDER_ARGS)
 	nitems = argc / 8;
 	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
-	for (i=0; i<nitems; i++) {
+	for (i = 0; i < nitems; i++) {
 		items[i].label	= argv[8*i];
 		items[i].ylabel = (u_int)strtoul(argv[8*i+1], NULL, 10);
 		items[i].xlabel = (u_int)strtoul(argv[8*i+2], NULL, 10);
@@ -1300,7 +1300,7 @@ int mixedform_builder(BUILDER_ARGS)
 	nitems = argc / 9;
 	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
-	for (i=0; i<nitems; i++) {
+	for (i = 0; i < nitems; i++) {
 		items[i].label	     = argv[9*i];
 		items[i].ylabel      = (u_int)strtoul(argv[9*i+1], NULL, 10);
 		items[i].xlabel      = (u_int)strtoul(argv[9*i+2], NULL, 10);
@@ -1363,7 +1363,7 @@ int passwordform_builder(BUILDER_ARGS)
 	nitems = argc / 8;
 	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
-	for (i=0; i<nitems; i++) {
+	for (i = 0; i < nitems; i++) {
 		items[i].label	= argv[8*i];
 		items[i].ylabel = (u_int)strtoul(argv[8*i+1], NULL, 10);
 		items[i].xlabel = (u_int)strtoul(argv[8*i+2], NULL, 10);

@@ -69,7 +69,7 @@ draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
 	else
 		sprintf(labelstr, "%3d%%", perc);
 	wmove(win, y, x + size/2 - 2);
-	for (i=0; i < (int) strlen(labelstr); i++) {
+	for (i = 0; i < (int)strlen(labelstr); i++) {
 		color = (blue_x + 1 <= size/2 - (int)strlen(labelstr)/2 + i ) ?
 		    t.bar.color : t.bar.f_color;
 		wattron(win, color);
@@ -228,7 +228,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	green = bsddialog_color(BSDDIALOG_WHITE,BSDDIALOG_GREEN,BSDDIALOG_BOLD);
 
 	max_minbarlen = 0;
-	for (i=0; i < (int)nminibars; i++)
+	for (i = 0; i < (int)nminibars; i++)
 		max_minbarlen = MAX(max_minbarlen, (int)strlen(minilabels[i]));
 	max_minbarlen += 3 + 16 /* seps + [...] or mainbar */;
 
@@ -261,7 +261,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		return (output);
 
 	/* mini bars */
-	for (i=0; i < (int)nminibars; i++) {
+	for (i = 0; i < (int)nminibars; i++) {
 		miniperc = minipercs[i];
 		if (miniperc == BSDDIALOG_MG_BLANK)
 			continue;
@@ -352,7 +352,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 		RETURN_ERROR("Cannot allocate memory for minipercs");
 
 	totaltodo = 0;
-	for(i=0; i<nminibar; i++) {
+	for (i = 0; i < nminibar; i++) {
 		totaltodo += minibar[i].size;
 		minilabels[i] = minibar[i].label;
 		minipercs[i] = minibar[i].status;
@@ -458,7 +458,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	    sizebar + 2, RAISED);
 
 	loop = buttupdate = barupdate = true;
-	while(loop) {
+	while (loop) {
 		if (buttupdate) {
 			draw_buttons(widget, bs, true);
 			wrefresh(widget);
@@ -623,7 +623,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	loop = buttupdate = barupdate = true;
-	while(loop) {
+	while (loop) {
 		if (barupdate) {
 			perc = (float)tout * 100 / sec;
 			draw_bar(bar, 1, 1, sizebar, perc, true, tout);

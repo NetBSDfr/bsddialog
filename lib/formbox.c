@@ -117,7 +117,7 @@ return_values(struct bsddialog_conf *conf, struct buttons bs, int nitems,
 	/* BSDDIALOG_OK */
 	form_driver(form, REQ_NEXT_FIELD);
 	form_driver(form, REQ_PREV_FIELD);
-	for (i=0; i<nitems; i++) {
+	for (i = 0; i < nitems; i++) {
 		mf = GETMYFIELD(cfield[i]);
 		items[i].value = strdup(mf->buf);
 		if (items[i].value == NULL)
@@ -144,7 +144,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 	curs_set(2);
 	bs.curr = -1;
 	loop = buttupdate = true;
-	while(loop) {
+	while (loop) {
 		if (buttupdate) {
 			draw_buttons(widget, bs, !informwin);
 			wrefresh(widget);
@@ -244,7 +244,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			form_driver(form, REQ_DEL_PREV);
 			form_driver(form, REQ_BEG_LINE);
 			mf->pos = mf->pos - 1;
-			for (i=0; i<mf->pos; i++)
+			for (i = 0; i < mf->pos; i++)
 				form_driver(form, REQ_NEXT_CHAR);
 			shiftleft(mf);
 			break;
@@ -383,7 +383,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	maxline = 0;
 	myfields = malloc(nitems * sizeof(struct myfield));
 	cfield = calloc(nitems + 1, sizeof(FIELD*));
-	for (i=0; i < (int)nitems; i++) {
+	for (i = 0; i < (int)nitems; i++) {
 		cfield[i] = new_field(1, items[i].fieldlen, items[i].yfield-1,
 		    items[i].xfield-1, 0, 0);
 		field_opts_off(cfield[i], O_STATIC);
@@ -464,7 +464,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	set_form_sub(form, derwin(formwin, nitems, w-4, 1, 1));
 	post_form(form);
 
-	for (i=0; i < (int)nitems; i++)
+	for (i = 0; i < (int)nitems; i++)
 		mvwaddstr(formwin, items[i].ylabel, items[i].xlabel,
 		    items[i].label);
 
@@ -492,7 +492,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	unpost_form(form);
 	free_form(form);
-	for (i=0; i < (int)nitems; i++) {
+	for (i = 0; i < (int)nitems; i++) {
 		free_field(cfield[i]);
 		free(myfields[i].buf);
 	}
