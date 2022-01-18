@@ -476,9 +476,8 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 
 	if (increasecols) {
 		mincols = MAX(mincols, maxwordlen);
-		if (conf->auto_minwidth > 0)
-			mincols = MAX(mincols,
-			    (int)conf->auto_minwidth - VBORDERS - TEXTHMARGINS);
+		mincols = MAX(mincols,
+		    (int)conf->auto_minwidth - VBORDERS - TEXTHMARGINS);
 		mincols = MIN(mincols, maxwidth);
 	}
 
