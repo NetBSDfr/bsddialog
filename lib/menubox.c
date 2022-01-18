@@ -315,7 +315,6 @@ getnextshortcut(struct bsddialog_conf *conf, int ngroups,
 static enum menumode
 getmode(enum menumode mode, struct bsddialog_menugroup group)
 {
-
 	if (mode == MIXEDLISTMODE) {
 		if (group.type == BSDDIALOG_SEPARATOR)
 			mode = SEPARATORMODE;
@@ -506,7 +505,6 @@ static void
 update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
     int totnitems, unsigned int menurows, int ymenupad)
 {
-
 	draw_borders(conf, menuwin, h, w, LOWERED);
 
 	if (totnitems > (int) menurows) {
