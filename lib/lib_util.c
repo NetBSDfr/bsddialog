@@ -502,10 +502,8 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 					x += words[i];
 				else {
 					for (z=words[i]; z>0; ) {
-						//x=0;
 						y++;
 						x = MIN(mincols, z);
-						//z -= MIN(mincols, z);
 						z -= x;
 					}
 				}
