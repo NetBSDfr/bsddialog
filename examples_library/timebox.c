@@ -28,15 +28,14 @@ int main()
 	mm = localtm->tm_min;
 	ss = localtm->tm_sec;
 
-	bsddialog_initconf(&conf);
-	conf.title = "timebox";
-	conf.bottomtitle = "Press TAB and arrows";
-
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);
 	}
 
+	bsddialog_initconf(&conf);
+	conf.title = "timebox";
+	conf.bottomtitle = "Press TAB and arrows";
 	output = bsddialog_timebox(&conf, "Example", 10, 50, &hh, &mm, &ss);
 
 	bsddialog_end();

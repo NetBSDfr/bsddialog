@@ -28,15 +28,14 @@ int main()
 	mm = localtm->tm_mon + 1;
 	dd = localtm->tm_mday;
 
-	bsddialog_initconf(&conf);
-	conf.title = "datebox";
-	conf.bottomtitle = "Press TAB and arrows";
-
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);
 	}
 
+	bsddialog_initconf(&conf);
+	conf.title = "datebox";
+	conf.bottomtitle = "Press TAB and arrows";
 	output = bsddialog_datebox(&conf, "Example", 10, 50, &yy, &mm, &dd);
 
 	bsddialog_end();
