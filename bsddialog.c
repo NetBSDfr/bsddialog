@@ -28,6 +28,7 @@
 #include <sys/ioctl.h>
 
 #include <getopt.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -135,6 +136,7 @@ static int unsigned max_input_form_opt;
 /* General flags and options */
 static int output_fd_opt;
 
+static void sigint_handler(int sig);
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
     char *text, char *buf);
@@ -660,6 +662,8 @@ int main(int argc, char *argv[argc])
 		return (BSDDIALOG_ERROR);
 	}
 
+	signal(SIGINT, sigint_handler);
+
 	if (theme_opt >= 0)
 		bsddialog_set_default_theme(theme_opt);
 
@@ -693,6 +697,13 @@ int main(int argc, char *argv[argc])
 		output = BSDDIALOG_CANCEL;
 
 	return (output);
+}
+
+static void sigint_handler(int sig)
+{
+	bsddialog_end();
+
+	exit(255);
 }
 
 void
