@@ -533,13 +533,13 @@ int main(int argc, char *argv[argc])
 			conf.text.tablen = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case THEME:
-			if (strcmp(optarg, "bsddialog") == 0)
+			if (strcasecmp(optarg, "bsddialog") == 0)
 				theme_opt = BSDDIALOG_THEME_BSDDIALOG;
-			else if (strcmp(optarg, "blackwhite") == 0)
+			else if (strcasecmp(optarg, "blackwhite") == 0)
 				theme_opt = BSDDIALOG_THEME_BLACKWHITE;
-			else if (strcmp(optarg, "default") == 0)
+			else if (strcasecmp(optarg, "default") == 0)
 				theme_opt = BSDDIALOG_THEME_DEFAULT;
-			else if (strcmp(optarg, "dialog") == 0)
+			else if (strcasecmp(optarg, "dialog") == 0)
 				theme_opt = BSDDIALOG_THEME_DIALOG;
 			else {
 				printf("Error: unknown theme\n");
