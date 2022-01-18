@@ -35,7 +35,7 @@ int main()
 		return (1);
 	}
 
-	printf("Value: %d", value);
+	printf("Value: %d\n", value);
 
 	return (output);
 }
