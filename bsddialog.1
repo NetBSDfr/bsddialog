@@ -48,77 +48,133 @@ messages, to get input and to inform about a computation status.
 .Ss Common options
 .Bl -tag -width Ds
 .It Fl Fl ascii-lines
-TODO.
+Ascii characters to draw lines.
 .It Fl Fl backtitle Ar backtitle
-TODO.
+Print a title on the top side of the screen.
 .It Fl Fl begin-x Ar x
-TODO.
+Dialog horizontal position, 0 is the left screen size, default center.
 .It Fl Fl begin-y Ar y
-TODO.
+Dialog vertical position, 0 is the top screen side, default center.
 .It Fl Fl cancel-label Ar string
-TODO.
+Label for the Cancel button.
 .It Fl Fl clear
-TODO.
+Hide the Dialog at exit.
 .It Fl Fl colors
-TODO.
+Enable the enables highlights for text, the following sequences are considered
+escapes:
+.Bl -column -compact
+.It Dq \eZ0
+black.
+.It Dq \eZ1
+red.
+.It Dq \eZ2
+green.
+.It Dq \eZ3
+yellow.
+.It Dq \eZ4
+blue.
+.It Dq \eZ5
+magenta.
+.It Dq \eZ6
+cyan.
+.It Dq \eZ7
+white.
+.It Dq \eZr
+reverse colors between foreground and background.
+.It Dq \eZR
+disable reverse.
+.It Dq \eZb
+bold.
+.It Dq \eZB
+disable bold.
+.It Dq \eZu
+underline.
+.It Dq \eZU
+disable underline.
+.It Dq \eZn
+disable each customization.
+.El
 .It Fl Fl cr-wrap
-TODO.
+Replace new line with a space in
+.Ar text .
 .It Fl Fl date-format Ar format
-TODO.
+.Ar format is a formated string accepted by
+.Xr strftime 3
+to customize the output of
+.Fl Fl datebox .
 .It Fl Fl defaultno
-TODO.
+Focus on Cancel or No butoon on startup.
 .It Fl Fl default-button Ar label
-TODO.
+Focus on the button with
+.Ar label
+on startup.
 .It Fl Fl default-no
-TODO.
+Equivalent to
+.Fl Fl defaultno
 .It Fl Fl default-item Ar name
-TODO.
+Focus on item with
+.Ar name ,
+for Checklist, Menu, Radiolist and Treeview.
 .It Fl Fl disable-esc
-TODO.
+Disable Ext dialog with ESC key.
 .It Fl Fl esc-cancelvalue
-TODO.
+.Nm bsddialog
+exits with Cancel button value, see
+.Sx EXIT STATUS .
 .It Fl Fl exit-label Ar label
-TODO.
+Equivalent to
+.Fl Fl ok-label .
 .It Fl Fl extra-button
-TODO.
+Add a button with Extra label.
 .It Fl Fl extra-label Ar label
-TODO.
+Set
+.Ar label
+for the Extra button.
 .It Fl Fl generic1-button Ar label
-TODO.
+Add a button with
+.Ar label .
 .It Fl Fl generic2-button Ar label
-TODO.
+Add a button with
+.Ar label.
 .It Fl Fl help
-TODO.
+Print this list of option and exit.
 .It Fl Fl help-button
-TODO.
+Add a button with Help label.
 .It Fl Fl help-label Ar label
-TODO.
+Set
+.Ar label
+for Help button.
 .It Fl Fl help-status
 TODO.
 .It Fl Fl help-tags
 TODO.
 .It Fl Fl hfile Ar filename
-TODO.
+Open
+.Ar filename
+in a textbos if F1 key is pressed,
 .It Fl Fl hline Ar string
-TODO.
+Dialog subtitle.
 .It Fl Fl hmsg Ar string
-TODO.
+Open a msgbox with
+.Ar string
+like its
+.Ar text
+if the F1 key is pressed.
 .It Fl Fl ignore
 TODO.
 .It Fl Fl insecure
-TODO.
+Print '*' to hide passwords in input, default whitespace.
 .It Fl Fl item-depth
 TODO.
 .It Fl Fl item-help
 TODO.
-.It Fl Fl items-prefix
+.It Fl Fl item-prefix
 TODO.
 .It Fl Fl max-input Ar size
 TODO.
 .It Fl Fl no-cancel
-TODO.
 .It Fl Fl nocancel
-TODO.
+Do not show Cancel button.
 .It Fl Fl no-collapse
 TODO.
 .It Fl Fl no-items
@@ -126,27 +182,28 @@ TODO.
 .It Fl Fl no-label Ar label
 TODO.
 .It Fl Fl no-lines
-TODO.
+Do not draw borders and lines.
 .It Fl Fl no-nl-expand
 TODO.
 .It Fl Fl no-ok
-TODO.
 .It Fl Fl nook
-TODO.
+Do not draw OK button, alike EXIT and Yes.
 .It Fl Fl no-shadow
-TODO.
+Disable pseudo dialog shadow.
 .It Fl Fl no-tags
 TODO.
 .It Fl Fl ok-label Ar label
-TODO.
+Set
+.Ar label
+for OK button.
 .It Fl Fl output-fd Ar fd
 TODO.
 .It Fl Fl output-separator Ar sep
 TODO.
 .It Fl Fl print-maxsize
-TODO.
+Screen size.
 .It Fl Fl print-size
-TODO.
+Print Dialog height and widget at exit.
 .It Fl Fl print-version
 TODO.
 .It Fl Fl quoted
@@ -156,7 +213,7 @@ TODO.
 .It Fl Fl separator Ar sep
 TODO.
 .It Fl Fl shadow
-TODO.
+Show a pseudo shadow for the dialog, enabled by default.
 .It Fl Fl single-quoted
 TODO.
 .It Fl Fl sleep Ar secs
@@ -166,27 +223,34 @@ TODO.
 .It Fl Fl stdout
 TODO.
 .It Fl Fl tab-len Ar spaces
-TODO.
-.It Fl Fl theme Ar blackwhite|bsddialog|dialog
-TODO.
+White spaces to print a tab.
+.It Fl Fl theme Ar blackwhite|bsddialog|default|dialog
+Set a theme.
 .It Fl Fl time-format Ar format
 TODO.
 .It Fl Fl title Ar title
-TODO.
+Dialog title.
 .It Fl Fl trim
 TODO.
 .It Fl Fl version
 TODO.
 .It Fl Fl yes-label Ar label
-TODO.
+Equivalent to
+.Fl Fl ok-label .
 .El
 .Ss Dialogs
+.Ar rows
+and
+.Ar cols
+are the height and width of the dialog, 0 for autosize and -1 for fullscreen.
+.Ar text
+is a message printed inside the dialog, except for
+.Fl Fl textbox described later.
 The following dialogs are available:
 .Bl -tag -width Ds
 .It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
 Ar status Oc ...
-builds a checklist to select some item from a list via the SPACE key, each item
-has a
+Checklist to select some item from a list via the SPACE key, each item has a
 .Ar name ,
 .Ar desc
 and a default
@@ -202,7 +266,7 @@ is the graphical height of the list.
 Dialog to select a date.
 .It Fl Fl form Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
 Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar valuelen Oc ...
-TODO.
+Dialog to get strings in input, 
 .It Fl Fl gauge Ar text Ar rows Ar cols Op Ar perc
 TODO.
 .It Fl Fl infobox Ar text Ar rows Ar cols
