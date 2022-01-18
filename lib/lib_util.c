@@ -752,7 +752,8 @@ void
 draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
     enum elevation elev)
 {
-	int leftcolor, rightcolor, ls, rs, ts, bs, tl, tr, bl, br, ltee, rtee;
+	int leftcolor, rightcolor;
+	int ls, rs, ts, bs, tl, tr, bl, br, ltee, rtee;
 
 	if (conf->no_lines)
 		return;
