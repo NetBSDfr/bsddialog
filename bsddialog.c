@@ -38,6 +38,7 @@
 #include <bsddialog_theme.h>
 
 #define BSDDIALOG_VERSION "0.0.1"
+#define ERRORVALUE        255
 
 enum OPTS {
 	/* Common options */
@@ -363,17 +364,17 @@ int main(int argc, char *argv[argc])
 		case BEGIN_X:
 			conf.x = (int)strtol(optarg, NULL, 10);
 			if (conf.x < BSDDIALOG_CENTER) {
-				printf("Error: --begin-x %d, cannot be < %d",
+				printf("Error: --begin-x %d < %d", 
 				    conf.x, BSDDIALOG_CENTER);
-				return (BSDDIALOG_ERROR);
+				return (ERRORVALUE);
 			}
 			break;
 		case BEGIN_Y:
 			conf.y = (int)strtol(optarg, NULL, 10);
 			if (conf.y < BSDDIALOG_CENTER) {
-				printf("Error: --begin-y %d, cannot be < %d",
+				printf("Error: --begin-y %d < %d",
 				    conf.y, BSDDIALOG_CENTER);
-				return (BSDDIALOG_ERROR);
+				return (ERRORVALUE);
 			}
 			break;
 		case CANCEL_LABEL:
@@ -535,12 +536,13 @@ int main(int argc, char *argv[argc])
 				theme_opt = BSDDIALOG_THEME_BSDDIALOG;
 			else if (strcmp(optarg, "blackwhite") == 0)
 				theme_opt = BSDDIALOG_THEME_BLACKWHITE;
+			else if (strcmp(optarg, "default") == 0)
+				theme_opt = BSDDIALOG_THEME_DEFAULT;
 			else if (strcmp(optarg, "dialog") == 0)
 				theme_opt = BSDDIALOG_THEME_DIALOG;
 			else {
-				printf("Unknown theme, possible values: ");
-				printf("blackwhite, bsddialog, dialog.\n");
-				return (BSDDIALOG_ERROR);
+				printf("Error: unknown theme\n");
+				return (ERRORVALUE);
 			}
 			break;
 		case TIME_FORMAT:
@@ -619,7 +621,7 @@ int main(int argc, char *argv[argc])
 			if (ignore_opt == true)
 				break;
 			usage();
-			return (BSDDIALOG_ERROR);
+			return (ERRORVALUE);
 		}
 	}
 	argc -= optind;
@@ -635,12 +637,15 @@ int main(int argc, char *argv[argc])
 
 	if (argc < 3) {
 		usage();
-		return (BSDDIALOG_ERROR);
+		return (ERRORVALUE);
 	}
 	if (dialogbuilder == textbox_builder)
 		text = argv[0];
 	else {
-		text = malloc(strlen(argv[0]) + 1);
+		if ((text = malloc(strlen(argv[0]) + 1)) == NULL) {
+			printf("Error: cannot allocate memory for text\n");
+			return (ERRORVALUE);
+		}
 		custom_text(cr_wrap_opt, no_collapse_opt, no_nl_expand_opt,
 		    trim_opt, argv[0], text);
 	}
@@ -677,6 +682,7 @@ int main(int argc, char *argv[argc])
 			printf("Error: %s\n", errorbuilder);
 		else
 			printf("Error: %s\n", bsddialog_geterror());
+		return (ERRORVALUE);
 	}
 
 	if (conf.get_height != NULL && conf.get_width != NULL)
