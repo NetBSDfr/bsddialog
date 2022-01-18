@@ -224,7 +224,6 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		"   UNKNOWN   ", /* < -11, no API */
 	};
 
-	colorperc = -1;
 	red   = bsddialog_color(BSDDIALOG_WHITE,BSDDIALOG_RED,  BSDDIALOG_BOLD);
 	green = bsddialog_color(BSDDIALOG_WHITE,BSDDIALOG_GREEN,BSDDIALOG_BOLD);
 
@@ -276,6 +275,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			mvwaddstr(widget, i+1, w-2-15, states[11]);
 		else if (miniperc < 0) {
 			mvwaddstr(widget, i+1, w-2-15, "[             ]");
+			colorperc = -1;
 			if (color && miniperc == BSDDIALOG_MG_FAILED)
 				colorperc = red;
 			if (color && miniperc == BSDDIALOG_MG_DONE)
