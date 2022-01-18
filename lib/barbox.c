@@ -355,7 +355,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 	for(i=0; i<nminibar; i++) {
 		totaltodo += minibar[i].size;
 		minilabels[i] = minibar[i].label;
-		minipercs[i] = BSDDIALOG_MG_PENDING;
+		minipercs[i] = minibar[i].status;
 	}
 
 	refresh = pvconf->refresh == 0 ? 0 : pvconf->refresh - 1;
