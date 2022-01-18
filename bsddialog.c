@@ -630,7 +630,7 @@ int main(int argc, char *argv[argc])
 
 	if (print_maxsize_opt) {
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-		dprintf(output_fd_opt, "Screen Size: (%d - %d)\n",
+		dprintf(output_fd_opt, "Screen size: (%d - %d)\n",
 		    ws.ws_row, ws.ws_col);
 		if (argc == 0)
 			return (BSDDIALOG_OK);
