@@ -136,10 +136,12 @@ static int unsigned max_input_form_opt;
 /* General flags and options */
 static int output_fd_opt;
 
-static void sigint_handler(int sig);
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
     char *text, char *buf);
+    
+static void sigint_handler(int sig);
+
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
 	int cols, int argc, char **argv, char *errbuf
@@ -699,7 +701,7 @@ int main(int argc, char *argv[argc])
 	return (output);
 }
 
-static void sigint_handler(int sig)
+void sigint_handler(int sig)
 {
 	bsddialog_end();
 
