@@ -344,16 +344,16 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, char *str,
 }
 
 static int
-print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
-    const char *text)
+print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 {
-	char *string;
-	int i, j, z, x, y, tablen;
 	bool loop;
+	int i, j, z, rows, cols, x, y, tablen;
+	char *string;
 
 	if ((string = malloc(strlen(text) + 1)) == NULL)
 		RETURN_ERROR("Cannot build (analyze) text");
 
+	getmaxyx(pad, rows, cols);
 	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
 
 	i = j = x = y = 0;
@@ -363,7 +363,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 
 		if (strchr("\n\t  ", string[j]) != NULL || string[j] == '\0') {
 			string[j] = '\0';
-			print_string(pad, rows, cols, &y, &x, string,
+			print_string(pad, &rows, cols, &y, &x, string,
 			    conf->text.highlight);
 		}
 
@@ -395,9 +395,9 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, int *rows, int cols,
 			j = -1;
 		}
 
-		if (y >= *rows) {
-			*rows = y + 1;
-			wresize(pad, *rows, cols);
+		if (y >= rows) {
+			rows = y + 1;
+			wresize(pad, rows, cols);
 		}
 
 		j++;
@@ -867,10 +867,8 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 
 	wnoutrefresh(widget);
 
-	int htextpad = 1; //delete!
 	if (textpad != NULL && text != NULL) /* textbox */
-		if (print_textpad(conf, textpad, &htextpad,
-		    w - HBORDERS - TEXTHMARGINS, text) !=0)
+		if (print_textpad(conf, textpad, text) !=0)
 			return (BSDDIALOG_ERROR);
 
 	return (0);
