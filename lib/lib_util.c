@@ -811,14 +811,15 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 }
 
 static int
-draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget, int h,
-    int w, WINDOW *textpad, const char *text, struct buttons *bs,
-    bool shortcutbuttons)
+draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
+    WINDOW *textpad, const char *text, struct buttons *bs, bool shortcutbuttons)
 {
-	int ts, ltee, rtee;
+	int h, w, ts, ltee, rtee;
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
 	ltee = conf->ascii_lines ? '+' : ACS_LTEE;
 	rtee = conf->ascii_lines ? '+' : ACS_RTEE;
+
+	getmaxyx(widget, h, w);
 
 	if (shadow != NULL)
 		wnoutrefresh(shadow);
@@ -897,7 +898,7 @@ update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 		wresize(textpad, 1, w - HBORDERS - TEXTHMARGINS);
 	}
 
-	error = draw_dialog(conf, shadow, widget, h, w, textpad, text, bs,
+	error = draw_dialog(conf, shadow, widget, textpad, text, bs,
 	    shortcutbuttons);
 
 	return (error);
@@ -934,7 +935,7 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 		wbkgd(*textpad, t.dialog.color);
 	}
 
-	error = draw_dialog(conf, *shadow, *widget, h, w,
+	error = draw_dialog(conf, *shadow, *widget,
 	    textpad == NULL ? NULL : *textpad, text, bs, shortcutbuttons);
 
 	return (error);
