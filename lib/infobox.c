@@ -58,7 +58,6 @@ infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 
 static int infobox_checksize(int rows, int cols)
 {
-
 	if (cols < HBORDERS)
 		RETURN_ERROR("Few cols, infobox needs at least width 2");
 
