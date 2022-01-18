@@ -38,7 +38,6 @@
 #include <bsddialog_theme.h>
 
 #define BSDDIALOG_VERSION "0.0.1"
-#define ERRORVALUE        255
 
 enum OPTS {
 	/* Common options */
@@ -367,7 +366,7 @@ int main(int argc, char *argv[argc])
 			if (conf.x < BSDDIALOG_CENTER) {
 				printf("Error: --begin-x %d < %d", 
 				    conf.x, BSDDIALOG_CENTER);
-				return (ERRORVALUE);
+				return (255);
 			}
 			break;
 		case BEGIN_Y:
@@ -375,7 +374,7 @@ int main(int argc, char *argv[argc])
 			if (conf.y < BSDDIALOG_CENTER) {
 				printf("Error: --begin-y %d < %d",
 				    conf.y, BSDDIALOG_CENTER);
-				return (ERRORVALUE);
+				return (255);
 			}
 			break;
 		case CANCEL_LABEL:
@@ -543,7 +542,7 @@ int main(int argc, char *argv[argc])
 				theme_opt = BSDDIALOG_THEME_DIALOG;
 			else {
 				printf("Error: unknown theme\n");
-				return (ERRORVALUE);
+				return (255);
 			}
 			break;
 		case TIME_FORMAT:
@@ -622,7 +621,7 @@ int main(int argc, char *argv[argc])
 			if (ignore_opt == true)
 				break;
 			usage();
-			return (ERRORVALUE);
+			return (255);
 		}
 	}
 	argc -= optind;
@@ -638,14 +637,14 @@ int main(int argc, char *argv[argc])
 
 	if (argc < 3) {
 		usage();
-		return (ERRORVALUE);
+		return (255);
 	}
 	if (dialogbuilder == textbox_builder)
 		text = argv[0];
 	else {
 		if ((text = malloc(strlen(argv[0]) + 1)) == NULL) {
 			printf("Error: cannot allocate memory for text\n");
-			return (ERRORVALUE);
+			return (255);
 		}
 		custom_text(cr_wrap_opt, no_collapse_opt, no_nl_expand_opt,
 		    trim_opt, argv[0], text);
@@ -683,7 +682,7 @@ int main(int argc, char *argv[argc])
 			printf("Error: %s\n", errorbuilder);
 		else
 			printf("Error: %s\n", bsddialog_geterror());
-		return (ERRORVALUE);
+		return (255);
 	}
 
 	if (conf.get_height != NULL && conf.get_width != NULL)
