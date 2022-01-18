@@ -5,7 +5,7 @@
 # Written in 2021 by Alfonso Sabato Siciliano.
 # To the extent possible under law, the author has dedicated all copyright
 # and related and neighboring rights to this software to the public domain
-# worldwide. THIS SOFTWARE IS DISTRIBUTED WITHOUT ANY WARRANTY, SEE:
+# worldwide. This software is distributed without any warranty, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 input="A B C D E F G H"
