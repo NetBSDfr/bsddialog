@@ -1,7 +1,7 @@
-# Any copyright is dedicated to the Public Domain, see:
+# PUBLIC DOMAIN - NO WARRANTY, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>
 #
-# Written by Alfonso Sabato Siciliano
+# Written in 2021 by Alfonso Sabato Siciliano
 
 OUTPUT=  bsddialog
 SOURCES= bsddialog.c

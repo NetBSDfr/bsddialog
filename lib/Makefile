@@ -1,4 +1,4 @@
-# Any copyright is dedicated to the Public Domain, NO WARRANTY, see:
+# PUBLIC DOMAIN - NO WARRANTY, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>
 #
 # Written in 2021 by Alfonso Sabato Siciliano
