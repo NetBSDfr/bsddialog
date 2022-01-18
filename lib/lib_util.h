@@ -105,7 +105,8 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
 enum elevation { RAISED, LOWERED };
 
 void
-draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
+draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
+    enum elevation elev);
 
 WINDOW *
 new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,

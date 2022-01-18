@@ -226,17 +226,17 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 
 			wclear(c[0].win);
 			mvwin(c[0].win, y + h - 6, x + w/2 - 7);
-			draw_borders(conf, c[0].win, LOWERED);
+			draw_borders(conf, c[0].win, 3, 4, LOWERED);
 			wrefresh(c[0].win);
 
 			wclear(c[1].win);
 			mvwin(c[1].win, y + h - 6, x + w/2 - 2);
-			draw_borders(conf, c[1].win, LOWERED);
+			draw_borders(conf, c[1].win, 3, 4, LOWERED);
 			wrefresh(c[1].win);
 
 			wclear(c[2].win);
 			mvwin(c[2].win, y + h - 6, x + w/2 + 3);
-			draw_borders(conf, c[2].win, LOWERED);
+			draw_borders(conf, c[2].win, 3, 4, LOWERED);
 			wrefresh(c[2].win);
 
 			/* Important to avoid grey lines expanding screen */
@@ -443,17 +443,17 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 			wclear(c[0].win);
 			mvwin(c[0].win, y + h - 6, x + w/2 - 11);
-			draw_borders(conf, c[0].win, LOWERED);
+			draw_borders(conf, c[0].win, 3, 6, LOWERED);
 			wrefresh(c[0].win);
 
 			wclear(c[1].win);
 			mvwin(c[1].win, y + h - 6, x + w/2 - 4);
-			draw_borders(conf, c[1].win, LOWERED);
+			draw_borders(conf, c[1].win, 3, 11, LOWERED);
 			wrefresh(c[1].win);
 
 			wclear(c[2].win);
 			mvwin(c[2].win, y + h - 6, x + w/2 + 8);
-			draw_borders(conf, c[2].win, LOWERED);
+			draw_borders(conf, c[2].win, 3, 4, LOWERED);
 			wrefresh(c[2].win);
 
 			/* Important to avoid grey lines expanding screen */

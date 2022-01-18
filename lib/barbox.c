@@ -154,7 +154,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-4,
 		    x+w-1-TEXTHMARGIN);
-		draw_borders(conf, bar, RAISED);
+		draw_borders(conf, bar, 3, w-6, RAISED);
 		draw_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
 
@@ -565,7 +565,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);
-			draw_borders(conf, bar, RAISED);
+			draw_borders(conf, bar, 3, sizebar+2, RAISED);
 
 			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
 			    x+w-1-TEXTHMARGIN);
@@ -708,7 +708,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);
-			draw_borders(conf, bar, LOWERED);
+			draw_borders(conf, bar, 3, sizebar+2, LOWERED);
 
 			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
 			    x+w-1-TEXTHMARGIN);
