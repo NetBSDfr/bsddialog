@@ -73,7 +73,7 @@ static void checkradiolist(int nitems, struct bsddialog_menuitem *items)
 		items[i].on = false;
 }
 
-static void checkmenu(int nitems, struct bsddialog_menuitem *items) // useful?
+static void checkmenu(int nitems, struct bsddialog_menuitem *items)
 {
 	int i;
 
