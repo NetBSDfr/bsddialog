@@ -28,6 +28,7 @@
 #include <sys/ioctl.h>
 
 #include <getopt.h>
+#include <locale.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -238,6 +239,8 @@ int main(int argc, char *argv[argc])
 	char *text, *backtitle_opt, errorbuilder[1024];
 	struct winsize ws;
 	struct bsddialog_conf conf;
+
+	setlocale(LC_ALL, "");
 
 	bsddialog_initconf(&conf);
 
