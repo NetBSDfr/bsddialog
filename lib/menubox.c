@@ -61,35 +61,24 @@ struct lineposition {
 	unsigned int line;
 };
 
-static int checkradiolist(int nitems, struct bsddialog_menuitem *items)
+static void checkradiolist(int nitems, struct bsddialog_menuitem *items)
 {
-	int i, error;
+	int i;
 
-	error = 0;
-	for (i = 0; i < nitems; i++) {
-		if (error > 0)
-			items[i].on = false;
-
+	for (i = 0; i < nitems; i++)
 		if (items[i].on == true)
-			error++;
-	}
+			break;
 
-	return (error == 0 ? 0 : -1);
+	for (i = i + 1 ; i < nitems; i++)
+		items[i].on = false;
 }
 
-static int checkmenu(int nitems, struct bsddialog_menuitem *items) // useful?
+static void checkmenu(int nitems, struct bsddialog_menuitem *items) // useful?
 {
-	int i, error;
+	int i;
 
-	error = 0;
-	for (i = 0; i < nitems; i++) {
-		if (items[i].on == true)
-			error++;
-
+	for (i = 0; i < nitems; i++)
 		items[i].on = false;
-	}
-
-	return (error == 0 ? 0 : -1);
 }
 
 static void
