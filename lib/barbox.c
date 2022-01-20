@@ -127,12 +127,12 @@ bar_checksize(int rows, int cols, struct buttons *bs)
 
 int
 bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int perc, const char *sep)
+    int cols, unsigned int perc, FILE *input, const char *sep)
 {
 	bool mainloop;
 	int y, x, h, w;
 	WINDOW *widget, *textpad, *bar, *shadow;
-	char input[2048], ntext[2048], *pntext;
+	char inputbuf[2048], ntext[2048], *pntext;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -149,7 +149,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
 
-	mainloop = (sep == NULL) ? false : true;
+	mainloop = (input == NULL) ? false : true;
 	while (mainloop) {
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-4,
@@ -159,31 +159,31 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		wrefresh(bar);
 
 		while (true) {
-			scanf("%s", input);
-			if (strcmp(input,"EOF") == 0) {
+			fscanf(input, "%s", inputbuf);
+			if (strcmp(inputbuf,"EOF") == 0) {
 				mainloop = false;
 				break;
 			}
-			if (strcmp(input, sep) == 0)
+			if (strcmp(inputbuf, sep) == 0)
 				break;
 		}
 		if (mainloop == false)
 			break;
-		scanf("%d", &perc);
+		fscanf(input, "%d", &perc);
 		perc = perc < 0 ? 0 : perc;
 		perc = perc > 100 ? 100 : perc;
 		pntext = &ntext[0];
 		ntext[0] = '\0';
 		while (true) {
-			scanf("%s", input);
-			if (strcmp(input,"EOF") == 0) {
+			fscanf(input, "%s", inputbuf);
+			if (strcmp(inputbuf,"EOF") == 0) {
 				mainloop = false;
 				break;
 			}
-			if (strcmp(input, sep) == 0)
+			if (strcmp(inputbuf, sep) == 0)
 				break;
-			strcpy(pntext, input);
-			pntext += strlen(input);
+			strcpy(pntext, inputbuf);
+			pntext += strlen(inputbuf);
 			pntext[0] = ' ';
 			pntext++;
 		}

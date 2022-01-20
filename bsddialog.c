@@ -773,7 +773,7 @@ int gauge_builder(BUILDER_ARGS)
 	else
 		perc = 0;
 
-	output = bsddialog_gauge(&conf, text, rows, cols, perc, "XXX");
+	output = bsddialog_gauge(&conf, text, rows, cols, perc, stdin, "XXX");
 
 	return (output);
 }

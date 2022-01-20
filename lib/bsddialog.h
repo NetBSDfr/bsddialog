@@ -178,7 +178,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 int
 bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int perc, const char *sep);
+    int cols, unsigned int perc, FILE *input, const char *sep);
 
 int
 bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
