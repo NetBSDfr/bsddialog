@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 15, 2022
+.Dd January 20, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -100,6 +100,7 @@
 .Fa "int rows"
 .Fa "int cols"
 .Fa "unsigned int perc"
+.Fa "FILE *input"
 .Fa "const char *sep"
 .Fc
 .Ft const char *
@@ -683,10 +684,10 @@ the dialog waits to read
 .Fa separator
 from
 .Fa input ,
-then the first string is used like a new
+then the first string replaces
 .Fa perc
-and the next strings are the new
-.Fa text ,
+and the following strings replace
+.Fa text
 until the next
 .Fa separator ,
 the loop ends reading
