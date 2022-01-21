@@ -266,8 +266,7 @@ int main(int argc, char *argv[argc])
 	max_input_form_opt = 0;
 
 	/* options descriptor */
-	struct option longopts[] =
-	{
+	struct option longopts[] = {
 		/* common options */
 		{"ascii-lines",      no_argument,       NULL, ASCII_LINES},
 		{"backtitle",        required_argument, NULL, BACKTITLE},
