@@ -20,11 +20,15 @@ int main()
 	struct bsddialog_conf conf;
 	enum bsddialog_default_theme theme;
 	struct bsddialog_menuitem items[5] = {
-	    {"", false, 0, "Default",   "dialog-like",    "BSDDIALOG_THEME_DEFAULT" },
-	    {"", false, 0, "Dialog",    "dialog clone",   "BSDDIALOG_THEME_DIALOG" },
-	    {"", false, 0, "BSDDialog", "new theme",      "BSDDIALOG_THEME_BSDDIALOG"},
-	    {"", false, 0, "BlackWhite","black and white","BSDDIALOG_THEME_BLACKWHITE"},
-	    {"", false, 0, "Quit",      "Exit",           "Quit or Cancel to exit" }
+		{"", false, 0, "Default", "dialog-like",
+		    "BSDDIALOG_THEME_DEFAULT" },
+		{"", false, 0, "Dialog", "dialog clone",
+		    "BSDDIALOG_THEME_DIALOG" },
+		{"", false, 0, "BSDDialog", "new theme",
+		    "BSDDIALOG_THEME_BSDDIALOG" },
+		{"", false, 0, "BlackWhite","black and white",
+		    "BSDDIALOG_THEME_BLACKWHITE" },
+		{"", false, 0, "Quit", "Exit", "Quit or Cancel to exit" }
 	};
 
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
