@@ -520,7 +520,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
 	int i, j, y, x, h, w, output, input;
 	int ymenupad, ys, ye, xs, xe, abs, g, rel, totnitems;
-	bool loop, automenurows, shortcut_butts;
+	bool loop, updatefocus, automenurows, shortcut_butts;
 	struct buttons bs;
 	struct bsddialog_menuitem *item;
 	enum menumode currmode;
@@ -633,6 +633,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wrefresh(menuwin);
 	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 
+	updatefocus = false;
 	loop = true;
 	while (loop) {
 		input = getch();
@@ -734,50 +735,46 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			continue;
 		switch(input) {
 		case KEY_HOME:
+			if (abs == 0) /* useless, just to save cpu refresh */
+				break;
+			drawitem(conf, menupad, abs, *item, currmode, pos, false);
+			getfirst(ngroups, groups, &abs, &g, &rel);
+			updatefocus = true;
+			break;
 		case KEY_UP:
+			if (abs == 0) /* useless, just to save cpu refresh */
+				break;
+			drawitem(conf, menupad, abs, *item, currmode, pos, false);
+			getprev(groups, &abs, &g, &rel);
+			updatefocus = true;
+			break;
 		case KEY_PPAGE:
 			if (abs == 0) /* useless, just to save cpu refresh */
 				break;
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
-			if (input == KEY_HOME)
-				getfirst(ngroups, groups, &abs, &g, &rel);
-			else if (input == KEY_UP)
-				getprev(groups, &abs, &g, &rel);
-			else /* input == KEY_PPAGE*/
-				getfastprev(menurows, groups, &abs, &g, &rel);
-			item = &groups[g].items[rel];
-			currmode= getmode(mode, groups[g]);
-			drawitem(conf, menupad, abs, *item, currmode, pos, true);
-			if (ymenupad > abs && ymenupad > 0)
-				ymenupad = abs;
-			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
-			    menurows, ymenupad);
-			wrefresh(menuwin);
-			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			getfastprev(menurows, groups, &abs, &g, &rel);
+			updatefocus = true;
 			break;
 		case KEY_END:
+			if (abs == totnitems -1)
+				break; /* useless, just to save cpu refresh */
+			drawitem(conf, menupad, abs, *item, currmode, pos, false);
+			getlast(totnitems, ngroups, groups, &abs, &g, &rel);
+			updatefocus = true;
+			break;
 		case KEY_DOWN:
+			if (abs == totnitems -1)
+				break; /* useless, just to save cpu refresh */
+			drawitem(conf, menupad, abs, *item, currmode, pos, false);
+			getnext(ngroups, groups, &abs, &g, &rel);
+			updatefocus = true;
+			break;
 		case KEY_NPAGE:
 			if (abs == totnitems -1)
 				break; /* useless, just to save cpu refresh */
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
-			if (input == KEY_END)
-				getlast(totnitems, ngroups, groups, &abs, &g,
-				    &rel);
-			else if (input == KEY_DOWN)
-				getnext(ngroups, groups, &abs, &g, &rel);
-			else /* input == KEY_NPAGE*/
-				getfastnext(menurows, ngroups, groups, &abs, &g,
-				    &rel);
-			item = &groups[g].items[rel];
-			currmode= getmode(mode, groups[g]);
-			drawitem(conf, menupad, abs, *item, currmode, pos, true);
-			if ((int)(ymenupad + menurows) <= abs)
-				ymenupad = abs - menurows + 1;
-			update_menuwin(conf, menuwin, menurows+2, w-4, totnitems,
-			    menurows, ymenupad);
-			wrefresh(menuwin);
-			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			getfastnext(menurows, ngroups, groups, &abs, &g, &rel);
+			updatefocus = true;
 			break;
 		case ' ': /* Space */
 			if (currmode == MENUMODE)
@@ -811,6 +808,10 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			drawitem(conf, menupad, abs, *item, currmode, pos, false);
 			getnextshortcut(conf, ngroups, groups, &abs, &g, &rel,
 			    input);
+			updatefocus = true;
+		}
+
+		if (updatefocus) {
 			item = &groups[g].items[rel];
 			currmode = getmode(mode, groups[g]);
 			drawitem(conf, menupad, abs, *item, currmode, pos, true);
@@ -822,6 +823,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			    totnitems, menurows, ymenupad);
 			wrefresh(menuwin);
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			updatefocus = false;
 		}
 	}
 
