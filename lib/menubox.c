@@ -74,7 +74,7 @@ static void
 set_output(struct bsddialog_conf *conf, struct buttons bs, int ngroups,
     struct bsddialog_menugroup *groups, struct privateitem *pritems)
 {
-	unsigned int i, j, abs;
+	int i, j, abs;
 
 	if (bs.value[bs.curr] != BSDDIALOG_OK && !conf->menu.on_without_ok)
 		return;
@@ -85,7 +85,7 @@ set_output(struct bsddialog_conf *conf, struct buttons bs, int ngroups,
 			continue;
 		}
 
-		for(j = 0; j < groups[i].nitems; j++) {
+		for(j = 0; j < (int)groups[i].nitems; j++) {
 			groups[i].items[j].on = pritems[abs].on;
 			abs++;
 		}
