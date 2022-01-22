@@ -90,6 +90,7 @@ struct bsddialog_conf {
 		bool align_left;
 		bool no_desc;
 		bool no_name;
+		bool on_without_ok;
 		bool shortcut_buttons;
 	} menu;
 	struct {

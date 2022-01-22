@@ -243,6 +243,8 @@ int main(int argc, char *argv[argc])
 	setlocale(LC_ALL, "");
 
 	bsddialog_initconf(&conf);
+	conf.key.enable_esc = true;
+	conf.menu.on_without_ok = true;
 
 	backtitle_opt = NULL;
 	theme_opt = -1;
@@ -251,7 +253,6 @@ int main(int argc, char *argv[argc])
 	ignore_opt = false;
 	errorbuilder[0] = '\0';
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
-	conf.key.enable_esc = true;
 	esc_cancelvalue_opt = false;
 
 	item_output_sepnl_opt = item_singlequote_opt = false;
