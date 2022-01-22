@@ -211,7 +211,6 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	return (BSDDIALOG_OK);
 }
 
-
 /* Mixedgauge */
 static int
 do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
