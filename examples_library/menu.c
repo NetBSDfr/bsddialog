@@ -41,6 +41,11 @@ int main()
 		return (1);
 	}
 
+	if (output == BSDDIALOG_CANCEL) {
+		printf("Cancel\n");
+		return (0);
+	}
+
 	printf("Menu:\n");
 	for (i = 0; i < 5; i++)
 		printf(" [%c] %s\n", items[i].on ? 'X' : ' ', items[i].name);
