@@ -95,9 +95,7 @@ struct bsddialog_conf {
 	} menu;
 	struct {
 		int  securech;
-		bool value_withcancel;
-		bool value_withextra;
-		bool value_withhelp;
+		bool value_without_ok;
 	} form;
 	struct {
 		bool without_ok;

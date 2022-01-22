@@ -245,6 +245,7 @@ int main(int argc, char *argv[argc])
 	bsddialog_initconf(&conf);
 	conf.key.enable_esc = true;
 	conf.menu.on_without_ok = true;
+	conf.form.value_without_ok = true;
 
 	backtitle_opt = NULL;
 	theme_opt = -1;

@@ -105,16 +105,9 @@ return_values(struct bsddialog_conf *conf, struct buttons bs, int nitems,
 	struct myfield *mf;
 
 	output = bs.value[bs.curr];
-	if (output == BSDDIALOG_HELP && conf->form.value_withhelp == false)
-		return (output);
-	if (output == BSDDIALOG_EXTRA && conf->form.value_withextra == false)
-		return (output);
-	if (output == BSDDIALOG_CANCEL && conf->form.value_withcancel == false)
-		return (output);
-	if (output == BSDDIALOG_GENERIC1 || output == BSDDIALOG_GENERIC2)
+	if (output != BSDDIALOG_OK && conf->form.value_without_ok == false)
 		return (output);
 
-	/* BSDDIALOG_OK */
 	form_driver(form, REQ_NEXT_FIELD);
 	form_driver(form, REQ_PREV_FIELD);
 	for (i = 0; i < nitems; i++) {

@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 20, 2022
+.Dd January 22, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -663,18 +663,10 @@ can be customized by:
 charachter to hide the input
 with
 .Dv BSDDIALOG_FIELDHIDDEN .
-.It Fa conf.form.value_withcancel
-set
+.It Fa conf.form.value_without_ok;
+allocate memory and set
 .Fa value
-also if the Cancel button is pressed.
-.It Fa conf.form.value_withextra
-set
-.Fa value
-also if the Extra button is pressed.
-.It Fa conf.form.value_withhelp
-set
-.Fa value
-also if the Help button is pressed.
+also if the OK button is not pressed.
 .El
 .Pp
 .Fn bsddialog_gauge

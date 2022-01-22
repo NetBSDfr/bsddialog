@@ -40,8 +40,15 @@ int main()
 
 	bsddialog_end();
 
-	if (output == BSDDIALOG_ERROR)
+	if (output == BSDDIALOG_ERROR) {
 		printf("Error: %s", bsddialog_geterror());
+		return (1);
+	}
+
+	if (output == BSDDIALOG_CANCEL) {
+		printf("Cancel\n");
+		return (0);
+	}
 
 	for (i = 0; i < 3; i++) {
 		printf("%s \"%s\"\n", items[i].label, items[i].value);
