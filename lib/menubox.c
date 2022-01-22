@@ -181,13 +181,11 @@ static int
 getnextshortcut(struct bsddialog_conf *conf, int npritems,
     struct privateitem *pritems, int abs, int key)
 {
-	int i, ch;
+	int i, ch, next;
 
+	next = -1;
 	for (i = 0; i < npritems; i++) {
 		if (pritems[i].type == SEPARATORMODE)
-			continue;
-
-		if (i == abs)
 			continue;
 
 		if (conf->menu.no_name)
@@ -196,15 +194,15 @@ getnextshortcut(struct bsddialog_conf *conf, int npritems,
 			ch = pritems[i].item->name[0];
 
 		if (ch == key) {
-			if (i < abs) 
-				abs = i;
-
 			if (i > abs)
 				return (i);
+
+			if (i < abs && next == -1) 
+				next = i;
 		}
 	}
 
-	return (abs);
+	return (next != -1 ? next : abs);
 }
 
 static enum menumode
