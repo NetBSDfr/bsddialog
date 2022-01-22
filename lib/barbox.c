@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "bsddialog.h"
 #include "bsddialog_progressview.h"
@@ -127,10 +128,11 @@ bar_checksize(int rows, int cols, struct buttons *bs)
 
 int
 bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int perc, FILE *input, const char *sep)
+    int cols, unsigned int perc, int fd, const char *sep)
 {
 	bool mainloop;
-	int y, x, h, w;
+	int y, x, h, w, fd2;
+	FILE *input;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char inputbuf[2048], ntext[2048], *pntext;
 
@@ -149,7 +151,16 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
 
-	mainloop = (input == NULL) ? false : true;
+	mainloop = (fd < 0) ? false : true;
+	
+	if (mainloop) {
+		fd2 = dup(fd);
+		input = fdopen(fd2, "r");
+		if (input == NULL)
+			RETURN_ERROR("Cannot build FILE* from fd");
+	} else
+		input = NULL;
+
 	while (mainloop) {
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-4,
@@ -192,6 +203,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 			return (BSDDIALOG_ERROR);
 	}
 
+	if (input != NULL)
+		fclose(input);
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
 

@@ -686,6 +686,15 @@ int main(int argc, char *argv[argc])
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */
+	#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+	struct stat buf;
+	if (fstat(STDIN_FILENO, &buf) == -1)
+		printf("[-1]\n");
+	else
+		printf("[0]\n");
+		 
 
 	if (output == BSDDIALOG_ERROR) {
 		if (errorbuilder[0] != '\0')
@@ -774,7 +783,8 @@ int gauge_builder(BUILDER_ARGS)
 	else
 		perc = 0;
 
-	output = bsddialog_gauge(&conf, text, rows, cols, perc, stdin, "XXX");
+	output = bsddialog_gauge(&conf, text, rows, cols, perc, STDIN_FILENO,
+	    "XXX");
 
 	return (output);
 }
@@ -923,8 +933,7 @@ int datebox_builder(BUILDER_ARGS)
 
 	if (date_fmt_opt == NULL) {
 		dprintf(output_fd_opt, "%u/%u/%u", yy, mm, dd);
-	}
-	else {
+	} else {
 		time(&cal);
 		localtm = localtime(&cal);
 		localtm->tm_year = yy - 1900;
@@ -963,8 +972,7 @@ int timebox_builder(BUILDER_ARGS)
 
 	if (time_fmt_opt == NULL) {
 		dprintf(output_fd_opt, "%u:%u:%u", hh, mm, ss);
-	}
-	else {
+	} else {
 		time(&clock);
 		localtm = localtime(&clock);
 		localtm->tm_hour = hh;
