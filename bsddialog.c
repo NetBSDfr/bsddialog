@@ -686,15 +686,6 @@ int main(int argc, char *argv[argc])
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */
-	#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-	struct stat buf;
-	if (fstat(STDIN_FILENO, &buf) == -1)
-		printf("[-1]\n");
-	else
-		printf("[0]\n");
-		 
 
 	if (output == BSDDIALOG_ERROR) {
 		if (errorbuilder[0] != '\0')
