@@ -28,7 +28,6 @@
 #ifndef _LIBBSDDIALOG_THEME_H_
 #define _LIBBSDDIALOG_THEME_H_
 
-/* f_ focus on element */
 struct bsddialog_theme {
 	struct {
 		int color;
