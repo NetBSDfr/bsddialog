@@ -20,6 +20,7 @@ do
 	echo XXX
 	if [ $i -eq $total ]
 	then
+		sleep 1
 		echo EOF
 	fi
 	i=`expr $i + 1`
