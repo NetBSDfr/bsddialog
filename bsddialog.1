@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 16, 2021
+.Dd January 23, 2021
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -60,8 +60,7 @@ Label for the Cancel button.
 .It Fl Fl clear
 Hide the Dialog at exit.
 .It Fl Fl colors
-Enable the enables highlights for text, the following sequences are considered
-escapes:
+Enable highlights for text, the following sequences are considered escapes:
 .Bl -column -compact
 .It Dq \eZ0
 black.
@@ -80,7 +79,7 @@ cyan.
 .It Dq \eZ7
 white.
 .It Dq \eZr
-reverse colors between foreground and background.
+reverse foreground and background colors.
 .It Dq \eZR
 disable reverse.
 .It Dq \eZb
@@ -92,18 +91,18 @@ underline.
 .It Dq \eZU
 disable underline.
 .It Dq \eZn
-disable each customization.
+restore to normal text.
 .El
 .It Fl Fl cr-wrap
 Replace new line with a space in
 .Ar text .
 .It Fl Fl date-format Ar format
-.Ar format is a formated string accepted by
+string accepted by
 .Xr strftime 3
 to customize the output of
 .Fl Fl datebox .
 .It Fl Fl defaultno
-Focus on Cancel or No butoon on startup.
+Focus on Cancel or No button on startup.
 .It Fl Fl default-button Ar label
 Focus on the button with
 .Ar label
@@ -116,7 +115,7 @@ Focus on item with
 .Ar name ,
 for Checklist, Menu, Radiolist and Treeview.
 .It Fl Fl disable-esc
-Disable Ext dialog with ESC key.
+Do not quit the dialog with ESC key.
 .It Fl Fl esc-cancelvalue
 .Nm bsddialog
 exits with Cancel button value, see
@@ -129,7 +128,7 @@ Add a button with Extra label.
 .It Fl Fl extra-label Ar label
 Set
 .Ar label
-for the Extra button.
+for the Extra button, some dialog rename OK button with Extra.
 .It Fl Fl generic1-button Ar label
 Add a button with
 .Ar label .
@@ -137,7 +136,7 @@ Add a button with
 Add a button with
 .Ar label.
 .It Fl Fl help
-Print this list of option and exit.
+Print this list of options and exit.
 .It Fl Fl help-button
 Add a button with Help label.
 .It Fl Fl help-label Ar label
@@ -163,7 +162,7 @@ if the F1 key is pressed.
 .It Fl Fl ignore
 TODO.
 .It Fl Fl insecure
-Print '*' to hide passwords in input, default whitespace.
+Print '*' to hide passwords in form, default whitespace.
 .It Fl Fl item-depth
 TODO.
 .It Fl Fl item-help
@@ -245,7 +244,8 @@ and
 are the height and width of the dialog, 0 for autosize and -1 for fullscreen.
 .Ar text
 is a message printed inside the dialog, except for
-.Fl Fl textbox described later.
+.Fl Fl textbox
+described later.
 The following dialogs are available:
 .Bl -tag -width Ds
 .It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
@@ -273,7 +273,8 @@ TODO.
 Dialog without buttons to display a message and to exit immediately.
 .It Fl Fl inputbox Ar text Ar rows Ar cols Op Ar init
 Dialog to get a string in input and to print it in the standard error.
-.Ar init is the default value.
+.Ar init
+is the default value.
 .It Fl Fl menu Ar text Ar rows Ar cols Ar menurows Oo Ar name desc Oc ...
 builds a menu to select an item from a list, each item has a
 .Ar name
