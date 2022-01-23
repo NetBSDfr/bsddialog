@@ -43,34 +43,37 @@
 .Sh DESCRIPTION
 The
 .Nm bsddialog
-utility build build Text User Interface dialogs and widgets: to display
-messages, to get input and to inform about a computation status.
+utility build Text User Interface dialogs and widgets: to display messages, to
+get input and to inform about a computation status.
 .Pp
+The following options are available for each dialog.
 .Ar rows
 and
 .Ar cols
-are the height and width of the dialog, 0 for autosize and -1 for fullscreen.
+are the height and width, 0 for autosize and -1 for fullscreen.
 .Ar text
 is a message printed inside the dialog, except for
 .Fl Fl textbox
-described later. The user input got by the dialogs is printed to the standard
-error.
+described later. The input got from the user interface is printed to the
+standard error.
 .Ss Common options
-The following options are common to some dialog and can change the default
-behavior of the utility:
+The following can change the default behavior of the utility and are common to
+some dialog.
 .Bl -tag -width Ds
 .It Fl Fl ascii-lines
 Ascii characters to draw lines.
 .It Fl Fl backtitle Ar backtitle
 Print a title on the top side of the screen.
 .It Fl Fl begin-x Ar x
-Dialog horizontal position, 0 is the left screen size, default center.
+Dialog horizontal position, 0 is the left screen size, -1 center.
 .It Fl Fl begin-y Ar y
-Dialog vertical position, 0 is the top screen side, default center.
+Dialog vertical position, 0 is the top screen side, -1 center.
 .It Fl Fl cancel-label Ar string
-Label for the Cancel button.
+Label for the
+.Dq Cancel
+button.
 .It Fl Fl clear
-Hide the Dialog at exit.
+Hide the dialog at exit.
 .It Fl Fl colors
 Enable highlights for text, the following sequences are considered escapes:
 .Bl -column -compact
@@ -109,12 +112,16 @@ restore to normal text.
 Replace new line with a space in
 .Ar text .
 .It Fl Fl date-format Ar format
-string accepted by
+String accepted by
 .Xr strftime 3
 to customize the output of
 .Fl Fl datebox .
 .It Fl Fl defaultno
-Focus on Cancel or No button on startup.
+Focus on
+.Dq Cancel
+or
+.Dq \&No
+button on startup.
 .It Fl Fl default-button Ar label
 Focus on the button with
 .Ar label
@@ -123,24 +130,29 @@ on startup.
 Equivalent to
 .Fl Fl defaultno
 .It Fl Fl default-item Ar name
-Focus on item with
+Focus on the item with
 .Ar name ,
 for Checklist, Menu, Radiolist and Treeview.
 .It Fl Fl disable-esc
-Do not quit the dialog with ESC key.
+Disable ESC key to quit.
 .It Fl Fl esc-cancelvalue
-.Nm bsddialog
-exits with Cancel button value, see
+Exits with
+Dq Cancel
+button value if the ESC key is pressed, see
 .Sx EXIT STATUS .
 .It Fl Fl exit-label Ar label
 Equivalent to
 .Fl Fl ok-label .
 .It Fl Fl extra-button
-Add a button with Extra label.
+Add a button with
+.Dq Extra
+label.
 .It Fl Fl extra-label Ar label
 Set
 .Ar label
-for the Extra button.
+for the
+.Dq Extra
+button.
 .It Fl Fl generic1-button Ar label
 Add a button with
 .Ar label .
@@ -150,15 +162,21 @@ Add a button with
 .It Fl Fl help
 Print this list of options and exit.
 .It Fl Fl help-button
-Add a button with Help label.
+Add a button with
+.Dq Help
+label.
 .It Fl Fl help-label Ar label
 Set
 .Ar label
-for Help button.
+for
+.Dq Help
+button.
 .It Fl Fl help-status
-Print also the selected items if the Help button is pressed.
+Print also the selected items if the
+.Dq Help
+button is pressed.
 .It Fl Fl help-tags
-Force to print the name of the focused item if the Help button is pressed also
+Print the name of the focused item if the Help button is pressed also
 with
 .Fl Fl item-help .
 .It Fl Fl hfile Ar filename
@@ -170,13 +188,13 @@ Dialog subtitle.
 .It Fl Fl hmsg Ar string
 Open a msgbox with
 .Ar string
-like its
-.Ar text
 if the F1 key is pressed.
 .It Fl Fl ignore
-TODO.
+Do not exit with unknown options.
 .It Fl Fl insecure
-Print '*' to hide passwords while typing, default whitespace.
+Print
+.Sq *
+to hide passwords while typing, default whitespace.
 .It Fl Fl item-depth
 Specify a margin for items of Checklist, Menu and Radiolist.
 .It Fl Fl item-help
@@ -189,10 +207,12 @@ Maximum length of the input for
 .Fl Fl input-box
 ans
 .Fl Fl passwordbox ,
-defalt 2048.
+default 2048.
 .It Fl Fl no-cancel
 .It Fl Fl nocancel
-Do not show Cancel button.
+Do not show
+.Dq Cancel
+button.
 .It Fl Fl no-collapse
 Do not replace tab with a space in
 .Ar text .
@@ -205,7 +225,7 @@ Equivalent to
 Do not draw borders and lines.
 .It Fl Fl no-nl-expand
 do not consider the sequence
-.Dq \n
+.Dq \\\n
 like new line.
 .It Fl Fl no-ok
 .It Fl Fl nook
@@ -438,6 +458,7 @@ do
 	echo XXX
 	if [ $i -eq 8 ]
 	then
+		sleep 1
 		echo EOF
 	fi
 	i=`expr $i + 1`
