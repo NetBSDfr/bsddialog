@@ -248,7 +248,7 @@ int main(int argc, char *argv[argc])
 	conf.form.value_without_ok = true;
 
 	backtitle_opt = NULL;
-	theme_opt = -1;
+	theme_opt = BSDDIALOG_THEME_DEFAULT;
 	output_fd_opt = STDERR_FILENO;
 	print_maxsize_opt = false;
 	ignore_opt = false;
@@ -670,7 +670,7 @@ int main(int argc, char *argv[argc])
 
 	signal(SIGINT, sigint_handler);
 
-	if (theme_opt >= 0)
+	if (theme_opt != BSDDIALOG_THEME_DEFAULT)
 		bsddialog_set_default_theme(theme_opt);
 
 	if (backtitle_opt != NULL)
