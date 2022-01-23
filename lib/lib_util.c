@@ -274,6 +274,7 @@ static bool check_set_text_attr(WINDOW *win, char *text)
 
 	switch (text[2]) {
 	case 'n':
+		wattron(win, t.dialog.color);
 		wattrset(win, A_NORMAL);
 		break;
 	case 'b':
