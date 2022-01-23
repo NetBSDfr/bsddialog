@@ -50,7 +50,7 @@ int main()
 	bsddialog_initconf(&conf);
 	conf.title = "mixedlist";
 	output = bsddialog_mixedlist(&conf, "Example", 20, 30, 11, 3, group,
-	    NULL,NULL);
+	    NULL, NULL);
 
 	bsddialog_end();
 
