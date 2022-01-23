@@ -45,7 +45,19 @@ The
 .Nm bsddialog
 utility build build Text User Interface dialogs and widgets: to display
 messages, to get input and to inform about a computation status.
+.Pp
+.Ar rows
+and
+.Ar cols
+are the height and width of the dialog, 0 for autosize and -1 for fullscreen.
+.Ar text
+is a message printed inside the dialog, except for
+.Fl Fl textbox
+described later. The user input got by the dialogs is printed to the standard
+error.
 .Ss Common options
+The following options are common to some dialog and can change the default
+behavior of the utility:
 .Bl -tag -width Ds
 .It Fl Fl ascii-lines
 Ascii characters to draw lines.
@@ -256,14 +268,6 @@ Equivalent to
 .Fl Fl ok-label .
 .El
 .Ss Dialogs
-.Ar rows
-and
-.Ar cols
-are the height and width of the dialog, 0 for autosize and -1 for fullscreen.
-.Ar text
-is a message printed inside the dialog, except for
-.Fl Fl textbox
-described later.
 The following dialogs are available:
 .Bl -tag -width Ds
 .It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
