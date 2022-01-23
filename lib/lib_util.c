@@ -857,9 +857,9 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	if (conf->bottomtitle != NULL) {
 		wattron(widget, t.dialog.bottomtitlecolor);
 		wmove(widget, h - 1, w/2 - strlen(conf->bottomtitle)/2 - 1);
-		waddch(widget, '[');
+		waddch(widget, ' ');
 		waddstr(widget, conf->bottomtitle);
-		waddch(widget, ']');
+		waddch(widget, ' ');
 		wattroff(widget, t.dialog.bottomtitlecolor);
 	}
 
