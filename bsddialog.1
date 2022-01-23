@@ -128,7 +128,7 @@ Add a button with Extra label.
 .It Fl Fl extra-label Ar label
 Set
 .Ar label
-for the Extra button, some dialog rename OK button with Extra.
+for the Extra button.
 .It Fl Fl generic1-button Ar label
 Add a button with
 .Ar label .
@@ -144,13 +144,15 @@ Set
 .Ar label
 for Help button.
 .It Fl Fl help-status
-TODO.
+Print also the selected items if the Help button is pressed.
 .It Fl Fl help-tags
-TODO.
+Force to print the name of the focused item if the Help button is pressed also
+with
+.Fl Fl item-help .
 .It Fl Fl hfile Ar filename
 Open
 .Ar filename
-in a textbos if F1 key is pressed,
+in a Textbox if F1 key is pressed,
 .It Fl Fl hline Ar string
 Dialog subtitle.
 .It Fl Fl hmsg Ar string
@@ -162,65 +164,81 @@ if the F1 key is pressed.
 .It Fl Fl ignore
 TODO.
 .It Fl Fl insecure
-Print '*' to hide passwords in form, default whitespace.
+Print '*' to hide passwords while typing, default whitespace.
 .It Fl Fl item-depth
-TODO.
+Specify a margin for items of Checklist, Menu and Radiolist.
 .It Fl Fl item-help
-TODO.
+Set a help string for Checklist, Menu, Radiolist and Treeview items to display
+at the bottom screen side.
 .It Fl Fl item-prefix
-TODO.
+Set a margin for each item.
 .It Fl Fl max-input Ar size
-TODO.
+Maximum length of the input for
+.Fl Fl input-box
+ans
+.Fl Fl passwordbox ,
+defalt 2048.
 .It Fl Fl no-cancel
 .It Fl Fl nocancel
 Do not show Cancel button.
 .It Fl Fl no-collapse
-TODO.
+Do not replace tab with a space in
+.Ar text .
 .It Fl Fl no-items
-TODO.
+Do not display items desciption.
 .It Fl Fl no-label Ar label
-TODO.
+Equivalent to
+.Fl Fl cancel-label Ar label
 .It Fl Fl no-lines
 Do not draw borders and lines.
 .It Fl Fl no-nl-expand
-TODO.
+do not consider the sequence
+.Dq \n
+like new line.
 .It Fl Fl no-ok
 .It Fl Fl nook
 Do not draw OK button, alike EXIT and Yes.
 .It Fl Fl no-shadow
 Disable pseudo dialog shadow.
 .It Fl Fl no-tags
-TODO.
+Do not display items name.
 .It Fl Fl ok-label Ar label
 Set
 .Ar label
 for OK button.
 .It Fl Fl output-fd Ar fd
-TODO.
+Output to the specified file descriptor.
 .It Fl Fl output-separator Ar sep
-TODO.
+Set a sepator for the items in output, default whitespace.
 .It Fl Fl print-maxsize
 Screen size.
 .It Fl Fl print-size
 Print Dialog height and widget at exit.
 .It Fl Fl print-version
-TODO.
+Print
+.Nm bsddialog
+version and exit.
 .It Fl Fl quoted
-TODO.
+Quote items in output, default only when necessary.
 .It Fl Fl separate-output
-TODO.
+Separate selected items with a new line.
 .It Fl Fl separator Ar sep
-TODO.
+Equivalent to
+.Fl Fl output-separator .
 .It Fl Fl shadow
 Show a pseudo shadow for the dialog, enabled by default.
 .It Fl Fl single-quoted
-TODO.
+Use sinnque quote for items in output.
 .It Fl Fl sleep Ar secs
-TODO.
+Wait
+.Ar secs
+seconds to close the dialog.
 .It Fl Fl stderr
-TODO.
+Output to standand error,
+.Nm bsddialog
+default.
 .It Fl Fl stdout
-TODO.
+Output to standard output.
 .It Fl Fl tab-len Ar spaces
 White spaces to print a tab.
 .It Fl Fl theme Ar blackwhite|bsddialog|default|dialog
