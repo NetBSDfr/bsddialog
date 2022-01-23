@@ -540,8 +540,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (conf->menu.align_left || (int)pos.line > w - 6) {
 		xs = x + 3;
 		xe = xs + w - 7;
-	}
-	else { /* center */
+	} else { /* center */
 		xs = x + 3 + (w-6)/2 - pos.line/2;
 		xe = xs + w - 5;
 	}
@@ -639,8 +638,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if (conf->menu.align_left || (int)pos.line > w - 6) {
 				xs = x + 3;
 				xe = xs + w - 7;
-			}
-			else { /* center */
+			} else { /* center */
 				xs = x + 3 + (w-6)/2 - pos.line/2;
 				xe = xs + w - 5;
 			}
