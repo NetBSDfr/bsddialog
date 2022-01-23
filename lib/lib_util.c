@@ -268,7 +268,7 @@ static bool check_set_text_attr(WINDOW *win, char *text)
 		return (false);
 
 	if ((text[2] - '0') >= 0 && (text[2] - '0') < 8) {
-		wattron(win, bsddialog_color( text[2] - '0', COLOR_WHITE, 0));
+		wattron(win, bsddialog_color(text[2] - '0', COLOR_WHITE, 0));
 		return (true);
 	}
 
