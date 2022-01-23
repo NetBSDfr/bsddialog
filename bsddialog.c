@@ -1056,13 +1056,11 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
 
-		if (list_items_on_opt == false)
-			return;
-
 		sep = true;
 	}
 
-	if (output != BSDDIALOG_OK && list_items_on_opt == false)
+	if (output != BSDDIALOG_OK &&
+	    !(output == BSDDIALOG_HELP && list_items_on_opt))
 		return;
 
 	for (i = 0; i < nitems; i++) {
