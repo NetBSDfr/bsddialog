@@ -987,12 +987,12 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 	*focusitem = -1;
 
 	sizeitem = 0;
-	if (setprefix) sizeitem++;
-	if (setdepth)  sizeitem++;
-	if (setname)   sizeitem++;
-	if (setdesc)   sizeitem++;
-	if (setstatus) sizeitem++;
-	if (sethelp)   sizeitem++;
+	sizeitem += setprefix ? 1 : 0;
+	sizeitem += setdepth  ? 1 : 0;
+	sizeitem += setname   ? 1 : 0;
+	sizeitem += setdesc   ? 1 : 0;
+	sizeitem += setstatus ? 1 : 0;
+	sizeitem += sethelp   ? 1 : 0;
 	if ((argc % sizeitem) != 0) {
 		strcpy(errbuf, "bad number of arguments for this menu\n");
 		return (BSDDIALOG_ERROR);
