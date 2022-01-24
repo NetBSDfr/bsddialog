@@ -43,8 +43,8 @@
 .Sh DESCRIPTION
 The
 .Nm bsddialog
-utility build Text User Interface dialogs and widgets: to display messages, to
-get input and to inform about a computation status.
+utility builds Text User Interface dialogs and widgets: to display messages,
+to get input and to inform about a computation status.
 .Pp
 The following options are available for each dialog.
 .Ar rows
@@ -198,8 +198,8 @@ to hide passwords while typing, default whitespace.
 .It Fl Fl item-depth
 Specify a margin for items of Checklist, Menu and Radiolist.
 .It Fl Fl item-help
-Set a help string for Checklist, Menu, Radiolist and Treeview items to display
-at the bottom screen side.
+Set a help string for each element of Checklist, Form, Menu, Mixedform,
+Passwordform, Radiolist and Treeview items to display at the bottom screen side.
 .It Fl Fl item-prefix
 Set a margin for each item.
 .It Fl Fl max-input Ar size
@@ -209,10 +209,12 @@ ans
 .Fl Fl passwordbox ,
 default 2048.
 .It Fl Fl no-cancel
-.It Fl Fl nocancel
 Do not show
 .Dq Cancel
 button.
+.It Fl Fl nocancel
+Equivalent to
+.Fl Fl no-cancel .
 .It Fl Fl no-collapse
 Do not replace tab with a space in
 .Ar text .
@@ -228,8 +230,12 @@ do not consider the sequence
 .Dq \en
 like new line.
 .It Fl Fl no-ok
+Do not draw
+.Dq OK
+button.
 .It Fl Fl nook
-Do not draw OK button, alike EXIT and Yes.
+Equivalent to
+.fl Fl no-ok .
 .It Fl Fl no-shadow
 Disable pseudo dialog shadow.
 .It Fl Fl no-tags
@@ -237,7 +243,9 @@ Do not display items name.
 .It Fl Fl ok-label Ar label
 Set
 .Ar label
-for OK button.
+for
+.Dq OK
+button.
 .It Fl Fl output-fd Ar fd
 Output to the specified file descriptor.
 .It Fl Fl output-separator Ar sep
@@ -247,9 +255,7 @@ Screen size.
 .It Fl Fl print-size
 Print Dialog height and widget at exit.
 .It Fl Fl print-version
-Print
-.Nm bsddialog
-version and exit.
+Print version.
 .It Fl Fl quoted
 Quote items in output, default only when necessary.
 .It Fl Fl separate-output
@@ -273,16 +279,22 @@ default.
 Output to standard output.
 .It Fl Fl tab-len Ar spaces
 White spaces to print a tab.
-.It Fl Fl theme Ar blackwhite|bsddialog|default|dialog
-Set a theme.
+.It Fl Fl theme Ar theme
+Set a graphical style: blackwhite, bsddialog, default or dialog.
 .It Fl Fl time-format Ar format
-TODO.
+String accepted by
+.Xr strftime 3
+to customize the output of
+.Fl Fl timebox ;
+actually it is equivalent to
+.Fl Fl date-format .
 .It Fl Fl title Ar title
 Dialog title.
 .It Fl Fl trim
-TODO.
+remove consecutive spaces in
+.Ar text .
 .It Fl Fl version
-TODO.
+Print version and exit.
 .It Fl Fl yes-label Ar label
 Equivalent to
 .Fl Fl ok-label .
@@ -303,14 +315,24 @@ or
 .Dq off .
 The names of the selected items are printed in the standard error.
 .Ar menurows
-is the graphical height of the list.
+is the graphical height of the list, 0 for autosize.
 .It Fl Fl datebox Ar text Ar rows Ar cols Op Ar year Ar month Ar day
 Dialog to select a date.
 .It Fl Fl form Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
 Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar valuelen Oc ...
 Dialog to get strings in input, 
-.It Fl Fl gauge Ar text Ar rows Ar cols Op Ar perc
-TODO.
+.It Fl Fl gauge Ar text Ar rows Ar cols Op Ar percentage
+Dialog with a bar to shows
+.Ar percentage ,
+then it waits to read
+.Dq XXX
+from the standard input, then the first string replaces percentage and the
+following strings replace
+.Ar text
+until the next
+.Dq XXX ,
+the loop ends reading
+.Dv EOF .
 .It Fl Fl infobox Ar text Ar rows Ar cols
 Dialog without buttons to display a message and to exit immediately.
 .It Fl Fl inputbox Ar text Ar rows Ar cols Op Ar init
@@ -359,7 +381,9 @@ blank line
 -11
 .Dq Pending .
 .It Fl Fl msgbox Ar text Ar rows Ar cols
-Dialog to diplay a message without the Cancel button.
+Dialog to diplay a message without the
+.Dq Cancel
+button.
 .It Fl Fl passwordbox Ar text Ar rows Ar cols Op Ar init
 Dialog to get a password and prints it in the standard error,
 .Ar init
@@ -396,11 +420,12 @@ is the default value, the keys UP, DOWN, HOME, END, PAGEUP and PAGEDOWN can
 change it.
 The selected value is printed in the standard error.
 .It Fl Fl textbox Ar file Ar rows Ar cols
-opens and prints
+Opens and prints
 .Ar file
-the UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to navigate
-the file.
-OK button is renamed EXIT.
+the UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to navigate;
+.Dq OK
+button is renamed
+.Dq EXIT .
 .It Fl Fl timebox Ar text Ar rows Ar cols Op Ar hour Ar min Ar sec
 Dialog to select a time.
 .It Fl Fl treeview Ar text Ar rows Ar cols Ar menurows Oo Ar depth Ar name \
@@ -411,7 +436,13 @@ and
 .Fl Fl no-name .
 .It Fl Fl yesno Ar text Ar rows Ar cols
 .Dq Yes-No Question ,
-the OK and Cancel buttons are renamed Yes and No.
+.Dq OK
+and
+.Dq Cancel
+buttons are renamed
+.Dq Yes
+and
+.Dq \&No .
 .El
 .Sh EXIT STATUS
 The
@@ -420,13 +451,22 @@ utility exits 255 on unsuccessful, otherwise depending on the button or key
 pressed the following values can be returned:
 .Bl -column -compact
 .It 0
-OK or Yes button.
+.Dq OK ,
+.Dq Yes
+or
+.Dq Exit
+button.
 .It 1
-Cancel or No button.
+.Dq Cancel
+or
+.Dq \&No
+button.
 .It 2
-Help button.
+.Dq Help
+button.
 .It 3
-Extra button.
+.Dq Extra
+button.
 .It 4
 Timeout.
 .It 5
