@@ -1233,11 +1233,12 @@ print_form_items(struct bsddialog_conf *conf, int output, int nitems,
 
 int form_builder(BUILDER_ARGS)
 {
-	int i, output, fieldlen, valuelen;
-	unsigned int flags, formheight, nitems;
+	int i, j, output, fieldlen, valuelen;
+	unsigned int flags, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
-	if (argc < 1 || (((argc-1) % 8) != 0) ) {
+	sizeitem = item_bottomdesc_opt ? 9 : 8;
+	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
@@ -1248,27 +1249,28 @@ int form_builder(BUILDER_ARGS)
 	argc--;
 	argv++;
 
-	nitems = argc / 8;
+	nitems = argc / sizeitem;
 	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
+	j = 0;
 	for (i = 0; i < nitems; i++) {
-		items[i].label	= argv[8*i];
-		items[i].ylabel = (u_int)strtoul(argv[8*i+1], NULL, 10);
-		items[i].xlabel = (u_int)strtoul(argv[8*i+2], NULL, 10);
-		items[i].init	= argv[8*i+3];
-		items[i].yfield	= (u_int)strtoul(argv[8*i+4], NULL, 10);
-		items[i].xfield	= (u_int)strtoul(argv[8*i+5], NULL, 10);
+		items[i].label	= argv[j++];
+		items[i].ylabel = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xlabel = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].init	= argv[j++];
+		items[i].yfield	= (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xfield	= (u_int)strtoul(argv[j++], NULL, 10);
 
-		fieldlen = (int)strtol(argv[8*i+6], NULL, 10);
+		fieldlen = (int)strtol(argv[j++], NULL, 10);
 		items[i].fieldlen = abs(fieldlen);
 
-		valuelen = (int)strtol(argv[8*i+7], NULL, 10);
+		valuelen = (int)strtol(argv[j++], NULL, 10);
 		items[i].maxvaluelen = valuelen == 0 ? abs(fieldlen) : valuelen;
 
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
 
-		items[i].bottomdesc = "";
+		items[i].bottomdesc = item_bottomdesc_opt ? argv[j++] : "";
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
@@ -1303,11 +1305,12 @@ int inputbox_builder(BUILDER_ARGS)
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int i, output;
-	unsigned int formheight, nitems;
+	int i, j, output;
+	unsigned int formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
-	if (argc < 1 || (((argc-1) % 9) != 0) ) {
+	sizeitem = item_bottomdesc_opt ? 10 : 9;
+	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
@@ -1317,20 +1320,21 @@ int mixedform_builder(BUILDER_ARGS)
 	argc--;
 	argv++;
 
-	nitems = argc / 9;
+	nitems = argc / sizeitem;
 	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
+	j = 0;
 	for (i = 0; i < nitems; i++) {
-		items[i].label	     = argv[9*i];
-		items[i].ylabel      = (u_int)strtoul(argv[9*i+1], NULL, 10);
-		items[i].xlabel      = (u_int)strtoul(argv[9*i+2], NULL, 10);
-		items[i].init	     = argv[9*i+3];
-		items[i].yfield	     = (u_int)strtoul(argv[9*i+4], NULL, 10);
-		items[i].xfield	     = (u_int)strtoul(argv[9*i+5], NULL, 10);
-		items[i].fieldlen    = (u_int)strtoul(argv[9*i+6], NULL, 10);
-		items[i].maxvaluelen = (u_int)strtoul(argv[9*i+7], NULL, 10);
-		items[i].flags       = (u_int)strtoul(argv[9*i+8], NULL, 10);
-		items[i].bottomdesc  = "";
+		items[i].label	     = argv[j++];
+		items[i].ylabel      = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xlabel      = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].init	     = argv[j++];
+		items[i].yfield	     = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xfield	     = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].fieldlen    = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].maxvaluelen = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].flags       = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].bottomdesc  = item_bottomdesc_opt ? argv[j++] : "";
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
@@ -1365,11 +1369,12 @@ int passwordbox_builder(BUILDER_ARGS)
 
 int passwordform_builder(BUILDER_ARGS)
 {
-	int i, output, fieldlen, valuelen;
-	unsigned int flags, formheight, nitems;
+	int i, j, output, fieldlen, valuelen;
+	unsigned int flags, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
-	if (argc < 1 || (((argc-1) % 8) != 0) ) {
+	sizeitem = item_bottomdesc_opt ? 9 : 8;
+	if (argc < 1 || (((argc-1) % sizeitem) != 0) ) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
@@ -1380,27 +1385,28 @@ int passwordform_builder(BUILDER_ARGS)
 	argc--;
 	argv++;
 
-	nitems = argc / 8;
+	nitems = argc / sizeitem;
 	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
+	j = 0;
 	for (i = 0; i < nitems; i++) {
-		items[i].label	= argv[8*i];
-		items[i].ylabel = (u_int)strtoul(argv[8*i+1], NULL, 10);
-		items[i].xlabel = (u_int)strtoul(argv[8*i+2], NULL, 10);
-		items[i].init	= argv[8*i+3];
-		items[i].yfield	= (u_int)strtoul(argv[8*i+4], NULL, 10);
-		items[i].xfield	= (u_int)strtoul(argv[8*i+5], NULL, 10);
+		items[i].label	= argv[j++];
+		items[i].ylabel = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xlabel = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].init	= argv[j++];
+		items[i].yfield	= (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xfield	= (u_int)strtoul(argv[j++], NULL, 10);
 
-		fieldlen = (int)strtol(argv[8*i+6], NULL, 10);
+		fieldlen = (int)strtol(argv[j++], NULL, 10);
 		items[i].fieldlen = abs(fieldlen);
 
-		valuelen = (int)strtol(argv[8*i+7], NULL, 10);
+		valuelen = (int)strtol(argv[j++], NULL, 10);
 		items[i].maxvaluelen = valuelen == 0 ? abs(fieldlen) : valuelen;
 
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
 
-		items[i].bottomdesc = "";
+		items[i].bottomdesc  = item_bottomdesc_opt ? argv[j++] : "";
 	}
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
