@@ -98,13 +98,12 @@ static void print_bottomdesc(struct myfield *mf)
 }
 
 int
-return_values(struct bsddialog_conf *conf, struct buttons bs, int nitems,
+return_values(struct bsddialog_conf *conf, int output, int nitems,
     struct bsddialog_formitem *items, FORM *form, FIELD **cfield)
 {
-	int i, output;
+	int i;
 	struct myfield *mf;
 
-	output = bs.value[bs.curr];
 	if (output != BSDDIALOG_OK && conf->form.value_without_ok == false)
 		return (output);
 
@@ -154,13 +153,14 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 		case 10: /* Enter */
 			if (informwin)
 				break;
+			output = return_values(conf, bs.value[bs.curr], nitems,
+			    items, form, cfield);
 			loop = false;
-			output = return_values(conf, bs, nitems, items, form,
-			    cfield);
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				output = return_values(conf, BSDDIALOG_ESC,
+				    nitems, items, form, cfield);
 				loop = false;
 			}
 			break;
@@ -272,8 +272,9 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			}
 			else {
 				if (shortcut_buttons(input, &bs)) {
-					output = return_values(conf, bs, nitems,
-					    items, form, cfield);
+					output = return_values(conf,
+					    bs.value[bs.curr], nitems, items,
+					    form, cfield);
 					loop = false;
 				}
 			}
