@@ -71,12 +71,12 @@ struct privateitem {
 };
 
 static void
-set_output(struct bsddialog_conf *conf, struct buttons bs, int ngroups,
+set_on_output(struct bsddialog_conf *conf, int output, int ngroups,
     struct bsddialog_menugroup *groups, struct privateitem *pritems)
 {
 	int i, j, abs;
 
-	if (bs.value[bs.curr] != BSDDIALOG_OK && !conf->menu.on_without_ok)
+	if (output != BSDDIALOG_OK && !conf->menu.on_without_ok)
 		return;
 
 	for(i = abs = 0; i < ngroups; i++) {
@@ -563,7 +563,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			output = bs.value[bs.curr];
 			if (abs >= 0 && pritems[abs].type == MENUMODE)
 				pritems[abs].on = true;
-			set_output(conf, bs, ngroups, groups, pritems);
+			set_on_output(conf, output, ngroups, groups, pritems);
 			loop = false;
 			break;
 		case 27: /* Esc */
@@ -571,7 +571,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				output = BSDDIALOG_ESC;
 				if (abs >= 0 && pritems[abs].type == MENUMODE)
 					pritems[abs].on = true;
-				set_output(conf, bs, ngroups, groups, pritems);
+				set_on_output(conf, output, ngroups, groups,
+				    pritems);
 				loop = false;
 			}
 			break;
@@ -706,8 +707,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 					output = bs.value[bs.curr];
 					if (pritems[abs].type == MENUMODE)
 						pritems[abs].on = true;
-					set_output(conf, bs, ngroups, groups,
-					    pritems);
+					set_on_output(conf, output, ngroups,
+					    groups, pritems);
 					loop = false;
 				}
 				break;
