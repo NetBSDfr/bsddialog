@@ -136,8 +136,11 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 	mf->pos = MIN(mf->buflen, mf->maxpos);
 	curs_set(2);
 	informwin = true;
+
 	bs.curr = -1;
-	loop = buttupdate = true;
+	buttupdate = true;
+
+	loop = true;
 	while (loop) {
 		if (buttupdate) {
 			draw_buttons(widget, bs, !informwin);
@@ -168,7 +171,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 				curs_set(0);
 			} else {
 				bs.curr++;
-				informwin = bs.curr >= (int) bs.nbuttons ?
+				informwin = bs.curr >= (int)bs.nbuttons ?
 				    true : false;
 				if (informwin) {
 					curs_set(2);
