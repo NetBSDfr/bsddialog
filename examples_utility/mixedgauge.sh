@@ -8,15 +8,12 @@
 # worldwide. This software is distributed without any warranty, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-input="A B C D E F G H"
-total=`echo $input | awk '{print split($0, a)}'`
-curr=1
-for i in $input
+perc=0
+while [ $perc -le 100 ]
 do
-	perc="$(expr $(expr $curr "*" 100 ) "/" $total )"
-	curr=`expr $curr + 1`
-	./bsddialog --sleep 1 --title " mixedgauge " --mixedgauge "Example" 25 50  $perc \
-		"Hidden"     " -9"  \
+	./bsddialog --sleep 1 --title " mixedgauge "    \
+		--mixedgauge "Example..." 20 45  $perc \
+		"(Hidden)"   " -9"  \
 		"Label  1"   " -1"  \
 		"Label  2"   " -2"  \
 		"Label  3"   " -3"  \
@@ -28,6 +25,6 @@ do
 		"Label  9"   " -10" \
 		"Label 10"   " -11" \
 		"Label  X"   $perc
-	#sleep 1
-done
 
+	perc=`expr $perc + 20`
+done
