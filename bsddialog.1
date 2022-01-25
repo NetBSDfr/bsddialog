@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 23, 2021
+.Dd January 25, 2021
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -486,7 +486,13 @@ Yes-No Question and theme:
 Checklist:
 .Dl bsddialog --checklist Checklist 0 0 3 N1 \&D1 off N2 D2 on N3 D3 off
 .Pp
-Gauge:
+Mixedgauge:
+.Dl bsddialog --sleep 3 --mixedgauge Example 10 30 60 L1 "\(dq" -1" L2 30
+.Pp
+Mixedgauge:
+.Dl bsddialog --form Form 9 23 2 L1: 1 1 init 1 5 15 25 L2: 2 1 init 2 5 15 25
+.Pp
+Gauge script:
 .Bd -literal -offset indent -compact
 i=1
 for c in A B C D E F G H
@@ -503,6 +509,22 @@ do
 	fi
 	i=`expr $i + 1`
 done | bsddialog --title " gauge " --gauge "Starting..." 10 70
+.Ed
+.Pp
+Mixedgauge script:
+.Bd -literal -offset indent -compact
+perc=0
+while [ $perc -le 100 ]
+do
+	bsddialog --sleep 1 --title " Progress "        \e
+		--mixedgauge "\enExample...\en" 0 0 $perc \e
+		"Hidden"   " -9"                        \e
+		"Label 1"  " -6"                        \e
+		"Label 2"  " -6"                        \e
+		"Label 3"  $perc
+
+	perc=`expr $perc + 20`
+done
 .Ed
 .Sh SEE ALSO
 .Xr bsddialog 3 .
