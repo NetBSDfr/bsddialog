@@ -332,7 +332,7 @@ form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
 	/* buttons */
 	mincols += bs.nbuttons * bs.sizebutton;
 	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
-	mincols = MAX(mincols, linelen + 4);
+	mincols = MAX(mincols, (int)linelen + 4);
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, width < size buttons or "
