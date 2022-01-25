@@ -165,21 +165,15 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			}
 			break;
 		case '\t': /* TAB */
-			sel = (sel + 1) % 3;
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
+			draw_buttons(widget, bs, true);
+			wrefresh(widget);
 			break;
 		case KEY_LEFT:
-			if (bs.curr > 0) {
-				bs.curr--;
-				draw_buttons(widget, bs, true);
-				wrefresh(widget);
-			}
+			sel = sel == 0 ? 2 : (sel - 1);
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < (int) bs.nbuttons - 1) {
-				bs.curr++;
-				draw_buttons(widget, bs, true);
-				wrefresh(widget);
-			}
+			sel = (sel + 1) % 3;
 			break;
 		case KEY_UP:
 			c[sel].value = c[sel].value < c[sel].max ?
@@ -367,21 +361,15 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 			break;
 		case '\t': /* TAB */
-			sel = (sel + 1) % 3;
+			bs.curr = (bs.curr + 1) % bs.nbuttons;
+			draw_buttons(widget, bs, true);
+			wrefresh(widget);
 			break;
 		case KEY_LEFT:
-			if (bs.curr > 0) {
-				bs.curr--;
-				draw_buttons(widget, bs, true);
-				wrefresh(widget);
-			}
+			sel = sel == 0 ? 2 : (sel - 1);
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < (int) bs.nbuttons - 1) {
-				bs.curr++;
-				draw_buttons(widget, bs, true);
-				wrefresh(widget);
-			}
+			sel = (sel + 1) % 3;
 			break;
 		case KEY_UP:
 			c[sel].value = c[sel].value > 1 ?
