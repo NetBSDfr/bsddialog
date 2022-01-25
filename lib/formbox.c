@@ -291,12 +291,12 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
 		if (text_size(conf, rows, cols, text, &bs, *formheight + 2,
-		    linelen + 6, &htext, &wtext) != 0)
+		    linelen + 2, &htext, &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 
 	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, linelen + 6, &bs);
+		*w = widget_min_width(conf, wtext, linelen + 2, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
 		if (*formheight == 0) {
@@ -319,7 +319,7 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 
 static int
 form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
-    struct buttons bs)
+    unsigned int linelen, struct buttons bs)
 {
 	int mincols, textrow, formrows;
 
@@ -327,8 +327,7 @@ form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
 	/* buttons */
 	mincols += bs.nbuttons * bs.sizebutton;
 	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
-	/* linelen, comment to allow some hidden col */
-	/* mincols = MAX(mincols, linelen); */
+	mincols = MAX(mincols, linelen + 4);
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, width < size buttons or "
@@ -418,7 +417,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		set_field_back(cfield[i], color);
 
 		maxline = MAX(maxline, items[i].xlabel + strlen(items[i].label));
-		maxline = MAX(maxline, items[i].xfield + items[i].fieldlen);
+		maxline = MAX(maxline, items[i].xfield + items[i].fieldlen - 1);
 	}
 	cfield[i] = NULL;
 
@@ -436,7 +435,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	if (form_autosize(conf, rows, cols, &h, &w, text, maxline, &formheight,
 	    nitems, bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_checksize(h, w, text, formheight, nitems, bs) != 0)
+	if (form_checksize(h, w, text, formheight, nitems, maxline, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
