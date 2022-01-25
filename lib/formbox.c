@@ -125,7 +125,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
     WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
     struct bsddialog_formitem *items)
 {
-	bool loop, buttupdate, informwin = true;
+	bool loop, buttupdate, informwin;
 	int i, input, output;
 	struct myfield *mf;
 
@@ -135,6 +135,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 	form_driver(form, REQ_END_LINE);
 	mf->pos = MIN(mf->buflen, mf->maxpos);
 	curs_set(2);
+	informwin = true;
 	bs.curr = -1;
 	loop = buttupdate = true;
 	while (loop) {
