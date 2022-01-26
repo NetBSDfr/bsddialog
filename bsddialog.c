@@ -170,13 +170,13 @@ static void usage(void)
 {
 	printf("usage: bsddialog --help\n");
 	printf("       bsddialog --version\n");
-	printf("       bsddialog [--<common-opts>] --<dialog> <text> <height> "
-	    "<width> [--<dialog-opts>]\n");
+	printf("       bsddialog [--<common-opts>] --<dialog> <text> <rows> "
+	    "<cols> [--<dialog-opts>]\n");
 	printf("\n");
 
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
-	    "--begin-y <y>, --cancel-label <string>, --clear, --colors, "
+	    "--begin-y <y>, --cancel-label <label>, --clear, --colors, "
 	    "--cr-wrap, --date-format <format>, --defaultno, "
 	    "--default-button <label>, --default-no, --default-item <name>, "
 	    "--disable-esc, --esc-cancelvalue, --exit-label <label>, "
@@ -216,17 +216,20 @@ static void usage(void)
 	printf("--msgbox <text> <rows> <cols>\n");
 	printf("--passwordbox <text> <rows> <cols> [init]\n");
 	printf("--passwordform <text> <rows> <cols> <formrows> [<label> "
-	    "<ylabel> <xlabe> <init> <yfield> <xfield> <fieldlen> "
+	    "<ylabel> <xlabel> <init> <yfield> <xfield> <fieldlen> "
 	    "<maxvaluelen>] ...\n");
 	printf("--pause <text> <rows> <cols> <secs>\n");
 	printf("--radiolist <text> <rows> <cols> <menurows> [<name> <desc> "
 	    "<on|off>] ...\n");
-	printf("--rangebox <text> <rows> <cols> <min> <max> <default>\n");
+	printf("--rangebox <text> <rows> <cols> <min> <max> [<init>]\n");
 	printf("--textbox <file> <rows> <cols>\n");
 	printf("--timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n");
 	printf("--treeview <text> <rows> <cols> <menurows> [<depth> <name> "
 	    "<desc> <on|off>] ...\n");
 	printf("--yesno <text> <rows> <cols>\n");
+	printf("\n");
+
+	printf("See 'man 1 bsddialog' for more information.\n");
 }
 
 int main(int argc, char *argv[argc])
