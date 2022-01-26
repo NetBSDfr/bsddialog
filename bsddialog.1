@@ -46,15 +46,21 @@ The
 utility builds Text User Interface dialogs and widgets: to display messages,
 to get input and to inform about a computation status.
 .Pp
-The following options are available for each dialog.
-.Ar rows
+The options
+.Fl Fl help
 and
-.Ar cols
-are the height and width, 0 for autosize and -1 for fullscreen.
+.Fl Fl version
+print the list of options and the version, respectively, then exit.
+.Pp
+The following options are available for each dialog.
 .Ar text
 is a message printed inside the dialog, except for
 .Fl Fl textbox
 described later.
+.Ar rows
+and
+.Ar cols
+are the height and width, 0 for autosize and -1 for fullscreen.
 The possible input got from the user interface is printed to the standard error.
 .Ss Common options
 The following options can change the default behavior of the utility and are
@@ -63,12 +69,12 @@ common to some dialog.
 .It Fl Fl ascii-lines
 Ascii characters to draw lines.
 .It Fl Fl backtitle Ar backtitle
-Print a title on the top side of the screen.
+Title on the top side of the screen.
 .It Fl Fl begin-x Ar x
-Dialog horizontal position, 0 is the left screen size, -1 center.
+Dialog horizontal position, 0 is the left screen side, -1 center.
 .It Fl Fl begin-y Ar y
 Dialog vertical position, 0 is the top screen side, -1 center.
-.It Fl Fl cancel-label Ar string
+.It Fl Fl cancel-label Ar label
 Label for the
 .Dq Cancel
 button.
@@ -116,30 +122,29 @@ String accepted by
 .Xr strftime 3
 to customize the output of
 .Fl Fl datebox .
-.It Fl Fl defaultno
+.It Fl Fl default-button Ar label
+Focus on the button with
+.Ar label
+on startup.
+.It Fl Fl default-item Ar name
+Focus on the item with
+.Ar name ,
+for Checklist, Menu, Radiolist and Treeview.
+.It Fl Fl default-no
 Focus on
 .Dq Cancel
 or
 .Dq \&No
 button on startup.
-.It Fl Fl default-button Ar label
-Focus on the button with
-.Ar label
-on startup.
-.It Fl Fl default-no
+.It Fl Fl defaultno
 Equivalent to
-.Fl Fl defaultno
-.It Fl Fl default-item Ar name
-Focus on the item with
-.Ar name ,
-for Checklist, Menu, Radiolist and Treeview.
+.Fl Fl default-no .
 .It Fl Fl disable-esc
 Disable ESC key to quit.
 .It Fl Fl esc-cancelvalue
-Exits with
-Dq Cancel
-button value if the ESC key is pressed, see
-.Sx EXIT STATUS .
+Exits with the
+.Dq Cancel
+button value if the ESC key is pressed.
 .It Fl Fl exit-label Ar label
 Equivalent to
 .Fl Fl ok-label .
@@ -153,14 +158,12 @@ Set
 for the
 .Dq Extra
 button.
-.It Fl Fl generic1-button Ar label
+.It Fl Fl generic-button1 Ar label
 Add a button with
 .Ar label .
-.It Fl Fl generic2-button Ar label
+.It Fl Fl generic-button2 Ar label
 Add a button with
 .Ar label .
-.It Fl Fl help
-Print this list of options and exit.
 .It Fl Fl help-button
 Add a button with
 .Dq Help
@@ -196,12 +199,12 @@ Print
 .Sq *
 to hide passwords while typing, default whitespace.
 .It Fl Fl item-depth
-Specify a margin for items of Checklist, Menu and Radiolist.
+Specify a margin for items, available for Checklist, Menu and Radiolist.
 .It Fl Fl item-help
-Set a help string for each element of Checklist, Form, Menu, Mixedform,
-Passwordform, Radiolist and Treeview items to display at the bottom screen side.
+Set a help string for each element of a Checklist, Form, Menu, Mixedform,
+Passwordform, Radiolist and Treeview to display at the bottom screen side.
 .It Fl Fl item-prefix
-Set a margin for each item.
+Set a string to prefix each item of a Checklist, Menu, Radiolist or Treeview.
 .It Fl Fl max-input Ar size
 Maximum length of the input for
 .Fl Fl input-box
@@ -213,13 +216,13 @@ Do not show
 .Dq Cancel
 button.
 .It Fl Fl no-collapse
-Do not replace tab with a space in
+Do not replace a TAB character with a space in
 .Ar text .
 .It Fl Fl no-items
-Do not display items desciption.
+Do not display items desciption, for Checklist, Menu, Radiolist or Treeview.
 .It Fl Fl no-label Ar label
 Equivalent to
-.Fl Fl cancel-label Ar label
+.Fl Fl cancel-label .
 .It Fl Fl no-lines
 Do not draw borders and lines.
 .It Fl Fl no-nl-expand
@@ -230,16 +233,16 @@ like new line.
 Do not draw
 .Dq OK
 button.
+.It Fl Fl no-shadow
+No not draw the shadow of the dialog.
+.It Fl Fl no-tags
+Do not display items name, for Checklist, Menu and Radiolist.
 .It Fl Fl nocancel
 Equivalent to
 .Fl Fl no-cancel .
 .It Fl Fl nook
 Equivalent to
 .Fl Fl no-ok .
-.It Fl Fl no-shadow
-Disable pseudo dialog shadow.
-.It Fl Fl no-tags
-Do not display items name.
 .It Fl Fl ok-label Ar label
 Set
 .Ar label
@@ -247,7 +250,7 @@ for
 .Dq OK
 button.
 .It Fl Fl output-fd Ar fd
-Output to the specified file descriptor.
+Print input from user interface to the specified file descriptor.
 .It Fl Fl output-separator Ar sep
 Set a sepator for the items in output, default whitespace.
 .It Fl Fl print-maxsize
@@ -266,35 +269,30 @@ Equivalent to
 .It Fl Fl shadow
 Show a pseudo shadow for the dialog, enabled by default.
 .It Fl Fl single-quoted
-Use sinnque quote for items in output.
+Use single quote for items in output.
 .It Fl Fl sleep Ar secs
 Wait
 .Ar secs
 seconds to close the dialog.
 .It Fl Fl stderr
-Output to standand error,
-.Nm bsddialog
-default.
+Print input from user interface to standand error, default.
 .It Fl Fl stdout
-Output to standard output.
+Print input from user interface to standard output.
 .It Fl Fl tab-len Ar spaces
-White spaces to print a tab.
+Number of spaces to print a TAB in
+.Ar text .
 .It Fl Fl theme Ar theme
 Set a graphical style: blackwhite, bsddialog, default or dialog.
 .It Fl Fl time-format Ar format
 String accepted by
 .Xr strftime 3
 to customize the output of
-.Fl Fl timebox ;
-actually it is equivalent to
-.Fl Fl date-format .
+.Fl Fl timebox .
 .It Fl Fl title Ar title
 Dialog title.
 .It Fl Fl trim
 remove consecutive spaces in
 .Ar text .
-.It Fl Fl version
-Print version and exit.
 .It Fl Fl yes-label Ar label
 Equivalent to
 .Fl Fl ok-label .
