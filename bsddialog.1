@@ -55,10 +55,10 @@ are the height and width, 0 for autosize and -1 for fullscreen.
 is a message printed inside the dialog, except for
 .Fl Fl textbox
 described later.
-The input got from the user interface is printed to the standard error.
+The possible input got from the user interface is printed to the standard error.
 .Ss Common options
-The following can change the default behavior of the utility and are common to
-some dialog.
+The following options can change the default behavior of the utility and are
+common to some dialog.
 .Bl -tag -width Ds
 .It Fl Fl ascii-lines
 Ascii characters to draw lines.
@@ -346,7 +346,7 @@ and a
 .Ar desc .
 The names of the selected item is printed in the standard error.
 .Ar menurows
-is the graphical height of the list.
+is the graphical height of the list, 0 for autosize.
 .It Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
 Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar valuelen Ar flag Oc ...
 TODO.
@@ -409,7 +409,7 @@ or
 .Dq off .
 The names of the selected item is printed in the standard error.
 .Ar menurows
-is the graphical height of the list.
+is the graphical height of the list, 0 for autosize.
 .It Fl Fl rangebox Ar text Ar rows Ar cols Ar min Ar max Op Ar init
 Dialog to select a value between
 .Ar min
@@ -478,7 +478,7 @@ Generic 2 button.
 .El
 .Sh EXAMPLES
 Backtitle, title and message:
-.Dl bsddialog --backtitle INFO --title info --msgbox Message 0 0
+.Dl bsddialog --backtitle MESSAGE --title Msgbox --msgbox Message 0 0
 .Pp
 Yes-No Question and theme:
 .Dl bsddialog --theme blackwhite --yesno Question 10 30
@@ -508,7 +508,7 @@ do
 		echo EOF
 	fi
 	i=`expr $i + 1`
-done | bsddialog --title " gauge " --gauge "Starting..." 10 70
+done | bsddialog --title Gauge --gauge "Starting..." 10 70
 .Ed
 .Pp
 Mixedgauge script:
@@ -516,11 +516,11 @@ Mixedgauge script:
 perc=0
 while [ $perc -le 100 ]
 do
-	bsddialog --sleep 1 --title " Progress "        \e
+	bsddialog --sleep 1 --title Mixedgauge          \e
 		--mixedgauge "\enExample...\en" 0 0 $perc \e
 		"Hidden"   " -9"                        \e
-		"Label 1"  " -6"                        \e
-		"Label 2"  " -6"                        \e
+		"Label 1"  " -4"                        \e
+		"Label 2"  " -4"                        \e
 		"Label 3"  $perc
 
 	perc=`expr $perc + 20`
