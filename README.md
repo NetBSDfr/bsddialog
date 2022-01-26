@@ -83,6 +83,12 @@ in the _Public Domain_ to build new projects:
 
 ## Library
 
+**API**
+
+ - [bsddialog.h](https://gitlab.com/alfix/bsddialog/-/blob/main/lib/bsddialog.h)
+ - [bsddialog\_theme.h](https://gitlab.com/alfix/bsddialog/-/blob/main/lib/bsddialog_theme.h)
+
+
 **Manual**
 
  - [bsddialog(3)](https://alfonsosiciliano.gitlab.io/posts/2022-01-15-manual-libbsddialog.html)
