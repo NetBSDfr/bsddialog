@@ -61,7 +61,7 @@ described later.
 and
 .Ar cols
 are the height and width, 0 for autosize and -1 for fullscreen.
-The possible input got from the user interface is printed to the standard error.
+The possible input got from the user interface is printed to standard error.
 .Ss Common options
 The following options can change the default behavior of the utility and are
 common to some dialog.
@@ -189,7 +189,7 @@ in a Textbox if F1 key is pressed,
 .It Fl Fl hline Ar string
 Dialog subtitle.
 .It Fl Fl hmsg Ar string
-Open a msgbox with
+Open a Msgbox with
 .Ar string
 if the F1 key is pressed.
 .It Fl Fl ignore
@@ -197,7 +197,8 @@ Do not exit with unknown options.
 .It Fl Fl insecure
 Print
 .Sq *
-to hide passwords while typing, default whitespace.
+to hide passwords while typing, default space
+.Sq " " .
 .It Fl Fl item-depth
 Specify a margin for items, available for Checklist, Menu and Radiolist.
 .It Fl Fl item-help
@@ -302,7 +303,7 @@ The following dialogs are available:
 .Bl -tag -width Ds
 .It Fl Fl checklist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
 Ar status Oc ...
-Checklist to select some item from a list via the SPACE key, each item has a
+Checklist to select some item from a list via the SPACE key. An item has a
 .Ar name ,
 .Ar desc
 and a default
@@ -311,14 +312,14 @@ specified by
 .Dq on
 or
 .Dq off .
-The names of the selected items are printed in the standard error.
+The names of the selected items are printed to standard error.
 .Ar menurows
 is the graphical height of the list, 0 for autosize.
 .It Fl Fl datebox Ar text Ar rows Ar cols Op Ar year Ar month Ar day
 Dialog to select a date.
 .It Fl Fl form Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
 Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxvaluelen Oc ...
-Dialog to get a list of strings in input via forms. A form has a
+Dialog to get a list of strings via forms. A form has a
 .Ar label
 at the position
 .Ar ylabel
@@ -331,13 +332,14 @@ and
 with graphical length
 .Ar fieldlen ,
 .Ar maxvaluelen
-is the maximum input length, if
+is the maximum input length.
+The field can be customized, if
 .Ar fieldlen
-is 0 its value is the absolute value of
+is 0 its length is the absolute value of
 .Ar maxvaluelen ,
 if
 .Ar maxvaluelen
-is less than 0 the field is read only.
+is negative the field is read only,
 .Ar init
 is a default value.
 .Ar formrows
@@ -357,20 +359,22 @@ the loop ends reading
 .It Fl Fl infobox Ar text Ar rows Ar cols
 Dialog without buttons to display a message and to exit immediately.
 .It Fl Fl inputbox Ar text Ar rows Ar cols Op Ar init
-Dialog to get a string in input and to print it in the standard error.
+Dialog to get a string in input,
 .Ar init
 is the default value.
 .It Fl Fl menu Ar text Ar rows Ar cols Ar menurows Oo Ar name desc Oc ...
-Builds a menu to select an item from a list, each item has a
+Builds a menu to select an item from a list.
+An item has a
 .Ar name
 and a
 .Ar desc .
-The names of the selected item is printed in the standard error.
+The name of the selected item is printed to standard error.
 .Ar menurows
 is the graphical height of the list, 0 for autosize.
 .It Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
 Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxvaluelen Ar flag Oc ...
-Dialog to get a list of strings in input via forms. A form has a
+Dialog to get a list of strings via forms.
+A form has a
 .Ar label
 at the position
 .Ar ylabel
@@ -399,7 +403,7 @@ from 0 to 100 and some mini bar with a
 .Ar minilabel
 string and a
 .Ar miniperc
-with value from 0 and 100 or negative value prints a descriptive string: -1
+with value from 0 and 100 or negative to print a descriptive string: -1
 .Dq Succeeded ,
 -2
 .Dq Failed ,
@@ -426,12 +430,12 @@ Dialog to diplay a message without the
 .Dq Cancel
 button.
 .It Fl Fl passwordbox Ar text Ar rows Ar cols Op Ar init
-Dialog to get a password and prints it in the standard error,
+Dialog to get a password,
 .Ar init
 is the default value.
 .It Fl Fl passwordform Ar text Ar rows Ar cols Ar formrows Oo Ar label \
 Ar ylabel Ar xlabel Ar init Ar yfield Ar xfield  Ar fieldlen Ar valuelen Oc ...
-Dialog to get a list of passwords in input, equivalent to
+Dialog to get a list of passwords, equivalent to
 .Fl Fl form
 except typed characters are hidden.
 .It Fl Fl pause Ar text Ar rows Ar cols Ar seconds
@@ -440,8 +444,7 @@ Dialog runs until the timeout in
 expires or a button is pressed.
 .It Fl Fl radiolist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
 Ar status Oc ...
-Builds a radiolist to select an item from a list via the SPACE key, each item
-has a
+Radiolist to select at most an item from a list via the SPACE key. An item has a
 .Ar name ,
 .Ar desc
 and a default
@@ -450,7 +453,7 @@ specified by
 .Dq on
 or
 .Dq off .
-The names of the selected item is printed in the standard error.
+The name of the selected item is printed to standard error.
 .Ar menurows
 is the graphical height of the list, 0 for autosize.
 .It Fl Fl rangebox Ar text Ar rows Ar cols Ar min Ar max Op Ar init
@@ -461,7 +464,6 @@ and
 .Ar init
 is the default value, the keys UP, DOWN, HOME, END, PAGEUP and PAGEDOWN can
 change it.
-The selected value is printed in the standard error.
 .It Fl Fl textbox Ar file Ar rows Ar cols
 Opens and prints
 .Ar file
