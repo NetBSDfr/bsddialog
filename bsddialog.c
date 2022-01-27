@@ -794,8 +794,8 @@ int infobox_builder(BUILDER_ARGS)
 
 int mixedgauge_builder(BUILDER_ARGS)
 {
-	int i, output, *minipercs;
-	unsigned int mainperc, nminibars;
+	int output, *minipercs;
+	unsigned int i, mainperc, nminibars;
 	const char **minilabels;
 
 	if (argc < 1 || (((argc-1) % 2) != 0) ) {
@@ -985,7 +985,7 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
     bool setdepth, bool setname, bool setdesc, bool setstatus, bool sethelp,
     unsigned int *nitems, struct bsddialog_menuitem **items, int *focusitem)
 {
-	int i, j, sizeitem;
+	unsigned int i, j, sizeitem;
 
 	*focusitem = -1;
 
@@ -1236,8 +1236,8 @@ print_form_items(struct bsddialog_conf *conf, int output, int nitems,
 
 int form_builder(BUILDER_ARGS)
 {
-	int i, j, output, fieldlen, valuelen;
-	unsigned int flags, formheight, nitems, sizeitem;
+	int output, fieldlen, valuelen;
+	unsigned int i, j, flags, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
 	sizeitem = item_bottomdesc_opt ? 9 : 8;
@@ -1308,8 +1308,8 @@ int inputbox_builder(BUILDER_ARGS)
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int i, j, output;
-	unsigned int formheight, nitems, sizeitem;
+	int output;
+	unsigned int i, j, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
 	sizeitem = item_bottomdesc_opt ? 10 : 9;
@@ -1372,8 +1372,8 @@ int passwordbox_builder(BUILDER_ARGS)
 
 int passwordform_builder(BUILDER_ARGS)
 {
-	int i, j, output, fieldlen, valuelen;
-	unsigned int flags, formheight, nitems, sizeitem;
+	int output, fieldlen, valuelen;
+	unsigned int i, j, flags, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
 	sizeitem = item_bottomdesc_opt ? 9 : 8;
