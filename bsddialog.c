@@ -209,7 +209,7 @@ static void usage(void)
 	printf("--inputbox <text> <rows> <cols> [init]\n");
 	printf("--menu <text> <rows> <cols> <menurows> [<name> <desc>] ...\n");
 	printf("--mixedform <text> <rows> <cols> <formrows> [<label> <ylabel> "
-	    "<xlabe> <init> <yfield> <xfield> <fieldlen> <maxvaluelen> "
+	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxvaluelen> "
 	    "<0|1|2>] ...\n");
 	printf("--mixedgauge <text> <rows> <cols> <mainperc> [<minilabel> "
 	    "<miniperc>] ...\n");
