@@ -566,7 +566,7 @@ int main(int argc, char *argv[argc])
 			trim_opt = true;
 			break;
 		case VERSION:
-			printf("bsddialog %s (libbsddialog %s).\n",
+			printf("bsddialog %s (libbsddialog %s)\n",
 			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
 			return (BSDDIALOG_OK);
 		/* Dialogs */
