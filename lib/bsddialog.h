@@ -63,6 +63,10 @@
 #define BSDDIALOG_MG_NA          -10
 #define BSDDIALOG_MG_PENDING     -11
 
+/* Form */
+#define BSDDIALOG_FIELDHIDDEN    1U
+#define BSDDIALOG_FIELDREADONLY  2U
+
 struct bsddialog_conf {
 	bool ascii_lines;
 	unsigned int auto_minheight;
@@ -133,9 +137,6 @@ struct bsddialog_menugroup {
 	unsigned int nitems;
 	struct bsddialog_menuitem *items;
 };
-
-#define BSDDIALOG_FIELDHIDDEN    1U
-#define BSDDIALOG_FIELDREADONLY  2U
 
 struct bsddialog_formitem {
 	const char *label;

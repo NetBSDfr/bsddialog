@@ -28,6 +28,11 @@
 #ifndef _LIBBSDDIALOG_THEME_H_
 #define _LIBBSDDIALOG_THEME_H_
 
+/* color flags */
+#define BSDDIALOG_BOLD         1U
+#define BSDDIALOG_REVERSE      2U
+#define BSDDIALOG_UNDERLINE    4U
+
 struct bsddialog_theme {
 	struct {
 		int color;
@@ -96,10 +101,6 @@ enum bsddialog_color {
 	BSDDIALOG_CYAN,
 	BSDDIALOG_WHITE
 };
-
-#define BSDDIALOG_BOLD         1U
-#define BSDDIALOG_REVERSE      2U
-#define BSDDIALOG_UNDERLINE    4U
 
 int
 bsddialog_color(enum bsddialog_color foreground,
