@@ -10,7 +10,7 @@ LIBRARY_A = lib${LIBRARY:=.a}
 HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
 SOURCES = barbox.c formbox.c infobox.c libbsddialog.c lib_util.c menubox.c \
 	messagebox.c textbox.c theme.c timebox.c
-OBJECTS= ${SOURCES:.c=.o}
+OBJECTS = ${SOURCES:.c=.o}
 CFLAGS += -fPIC -Wall -Wextra
 LDFLAGS += -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} \
@@ -18,23 +18,23 @@ LDFLAGS += -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 
 .if defined(DEBUG)
 # `make -DDEBUG`
-CFLAGS= -g -fPIC -Wall -Wextra
+CFLAGS = -g -fPIC -Wall -Wextra
 .else
 CFLAGS += -O2 -pipe -std=gnu99 -Wno-format-zero-length \
 	-fstack-protector-strong -Qunused-arguments
 .endif
 
-LOCALBASE=/usr/local
+LOCALBASE = /usr/local
 LN = ln -s -f
 RM = rm -f
 CP = cp
 GZIP = gzip -cn
 LDCONFIG = /sbin/ldconfig -m
-MAN= ${OUTPUT}.3
-GZIP= gzip -cn
-MANDIR= ${LOCALBASE}/share/man/man3
-INSTALL= install
-RM= rm -f
+MAN = ${OUTPUT}.3
+GZIP = gzip -cn
+MANDIR = ${LOCALBASE}/share/man/man3
+INSTALL = install
+RM = rm -f
 
 all : man ${LIBRARY}
 
