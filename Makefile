@@ -10,6 +10,11 @@ LIBPATH= ${.CURDIR}/lib
 LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
 CFLAGS+= -Wall -I${LIBPATH}
+# `make -DDEBUG`
+.if defined(DEBUG)
+CFLAGS += -g
+LIBDEBUG= -DDEBUG
+.endif
 LDFLAGS+= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
 
 BINDIR= /usr/local/bin
@@ -26,7 +31,7 @@ ${OUTPUT}: ${LIBBSDDIALOG} ${OBJECTS}
 	${CC} ${LDFLAGS} ${OBJECTS} -o ${.PREFIX}
 
 ${LIBBSDDIALOG}:
-	make -C ${LIBPATH}
+	make -C ${LIBPATH} ${LIBDEBUG}
 
 .c.o:
 	${CC} ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
