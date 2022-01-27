@@ -12,7 +12,7 @@ LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 CFLAGS+= -Wall -I${LIBPATH}
 # `make -DDEBUG`
 .if defined(DEBUG)
-CFLAGS += -g
+CFLAGS= -g -Wall -I${LIBPATH}
 LIBDEBUG= -DDEBUG
 .endif
 LDFLAGS+= -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog

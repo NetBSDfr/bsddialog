@@ -18,7 +18,7 @@ LDFLAGS += -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 
 .if defined(DEBUG)
 # `make -DDEBUG`
-CFLAGS += -g
+CFLAGS= -g -fPIC -Wall -Wextra
 .else
 CFLAGS += -O2 -pipe -std=gnu99 -Wno-format-zero-length \
 	-fstack-protector-strong -Qunused-arguments
