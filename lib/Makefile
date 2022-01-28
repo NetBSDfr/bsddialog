@@ -66,7 +66,7 @@ install:
 	${INSTALL} -l rs ${LOCALBASE}/lib/${LIBRARY_SO}.${VERSION} ${LOCALBASE}/lib/${LIBRARY_SO}
 	${INSTALL} -m 644 ${LIBRARY_A} ${LOCALBASE}/lib
 	${LDCONFIG} ${LOCALBASE}/lib
-	${INSTALL} -m 644 ${LIBRARY}.3.gz ${MNADIR}
+	${INSTALL} -m 644 ${LIBRARY}.3.gz ${MANDIR}
 
 unistall:
 	${RM} ${LOCALBASE}/include/${LIBRARY}*.h
