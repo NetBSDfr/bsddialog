@@ -1051,7 +1051,8 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 			helpvalue = items[focusitem].bottomdesc;
 
 		toquote = item_always_quote_opt ||
-		    strchr(helpvalue, ' ') != NULL;
+		    (item_output_sepnl_opt == false &&
+		     strchr(helpvalue, ' ') != NULL);
 
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
@@ -1078,7 +1079,8 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 		sep = true;
 
 		toquote = item_always_quote_opt ||
-		    strchr(items[i].name, ' ') != NULL;
+		    (item_output_sepnl_opt == false &&
+		     strchr(items[i].name, ' ') != NULL);
 
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
