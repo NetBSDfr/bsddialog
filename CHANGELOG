@@ -24,8 +24,9 @@ next
 	    --theme <blackwhite|bsddialog|default|dialog>,
 	    --time-format <format>, --title <title>, --trim, --version,
 	    --yes-label <label>.
-	 Dialogs: --checklist, --datebox, --form, --gauge, --infobox,
+	* Dialogs: --checklist, --datebox, --form, --gauge, --infobox,
 	    --inputbox, --menu, --mixedform, --mixedgauge, --msgbox,
 	    --passwordbox, --passwordform, --pause, --radiolist, --rangebox,
 	    --textbox, --timebox, --treeview, --yesno.
-	 Manuals: bsddialog.1, bsddialog.3
+	* Manuals: bsddialog.1, bsddialog.3.
+
