@@ -1243,7 +1243,7 @@ int form_builder(BUILDER_ARGS)
 	struct bsddialog_formitem *items;
 
 	sizeitem = item_bottomdesc_opt ? 9 : 8;
-	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
+	if (argc < 1 || (argc - 1) % sizeitem != 0) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
@@ -1315,7 +1315,7 @@ int mixedform_builder(BUILDER_ARGS)
 	struct bsddialog_formitem *items;
 
 	sizeitem = item_bottomdesc_opt ? 10 : 9;
-	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
+	if (argc < 1 || (argc-1) % sizeitem != 0) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
@@ -1379,7 +1379,7 @@ int passwordform_builder(BUILDER_ARGS)
 	struct bsddialog_formitem *items;
 
 	sizeitem = item_bottomdesc_opt ? 9 : 8;
-	if (argc < 1 || (((argc-1) % sizeitem) != 0)) {
+	if (argc < 1 || (argc - 1) % sizeitem != 0) {
 		strcpy(errbuf, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
