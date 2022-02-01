@@ -149,6 +149,12 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 		wrefresh(formwin);
 		input = getch();
 		switch(input) {
+		case KEY_HOME:
+		case KEY_PPAGE:
+		case KEY_END:
+		case KEY_NPAGE:
+			/* disabled keys */
+			break;
 		case KEY_ENTER:
 		case 10: /* Enter */
 			if (informwin)

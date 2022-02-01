@@ -1,6 +1,7 @@
 next
 
 	* fix: --separate-output, avoid to quote except with --quoted.
+	* fix: disable HOME, PPAGE, END and NPAGE keys in bsddialog_form().
 
 2022-01-27 version 0.1
 
