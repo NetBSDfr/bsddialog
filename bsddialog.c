@@ -1037,26 +1037,30 @@ print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
 	bool sep, toquote;
 	int i;
 	char *sepstr, quotech;
-	const char *helpvalue;
+	const char *focusname;
 
 	sep = false;
 	quotech = item_singlequote_opt ? '\'' : '"';
 	sepstr = item_output_sep_opt != NULL ? item_output_sep_opt : " ";
 
-	if (output == BSDDIALOG_HELP && focusitem >= 0) {
-		dprintf(output_fd_opt, "HELP ");
+	if (output != BSDDIALOG_OK && output != BSDDIALOG_ERROR &&
+	    focusitem >= 0) {
+		focusname = items[focusitem].name;
 
-		helpvalue = items[focusitem].name;
-		if (item_bottomdesc_opt && item_tag_help_opt == false)
-			helpvalue = items[focusitem].bottomdesc;
+		if (output == BSDDIALOG_HELP) {
+			dprintf(output_fd_opt, "HELP ");
+
+			if (item_bottomdesc_opt && item_tag_help_opt == false)
+				focusname = items[focusitem].bottomdesc;
+		}
 
 		toquote = item_always_quote_opt ||
 		    (item_output_sepnl_opt == false &&
-		     strchr(helpvalue, ' ') != NULL);
+		     strchr(focusname, ' ') != NULL);
 
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
-		dprintf(output_fd_opt, "%s", helpvalue);
+		dprintf(output_fd_opt, "%s", focusname);
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
 
