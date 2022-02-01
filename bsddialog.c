@@ -971,7 +971,7 @@ int timebox_builder(BUILDER_ARGS)
 		localtm = localtime(&clock);
 		localtm->tm_hour = hh;
 		localtm->tm_min  = mm;
-		localtm->tm_sec = ss;
+		localtm->tm_sec  = ss;
 		strftime(stringtime, 1024, time_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringtime);
 	}
