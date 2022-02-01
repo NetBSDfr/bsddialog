@@ -136,7 +136,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	wrefresh(widget);
 
 	sel = 0;
-	curs_set(2);
+	curs_set(1);
 	loop = true;
 	while (loop) {
 		for (i = 0; i < 3; i++) {
@@ -189,7 +189,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			curs_set(0);
 			if (f1help(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			curs_set(2);
+			curs_set(1);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -330,7 +330,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	wrefresh(widget);
 
 	sel = 2;
-	curs_set(2);
+	curs_set(1);
 	loop = true;
 	while (loop) {
 		mvwprintw(c[0].win, 1, 1, "%4d", c[0].value);
@@ -401,7 +401,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			curs_set(0);
 			if (f1help(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			curs_set(2);
+			curs_set(1);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */

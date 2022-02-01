@@ -133,7 +133,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 	pos_form_cursor(form);
 	form_driver(form, REQ_END_LINE);
 	mf->pos = MIN(mf->buflen, mf->maxpos);
-	curs_set(2);
+	curs_set(1);
 	informwin = true;
 
 	bs.curr = -1;
@@ -149,6 +149,12 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 		wrefresh(formwin);
 		input = getch();
 		switch(input) {
+		case KEY_HOME:
+		case KEY_PPAGE:
+		case KEY_END:
+		case KEY_NPAGE:
+			/* disabled keys */
+			break;
 		case KEY_ENTER:
 		case 10: /* Enter */
 			if (informwin)
@@ -174,7 +180,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 				informwin = bs.curr >= (int)bs.nbuttons ?
 				    true : false;
 				if (informwin) {
-					curs_set(2);
+					curs_set(1);
 					pos_form_cursor(form);
 				}
 			}

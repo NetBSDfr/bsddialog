@@ -1,6 +1,10 @@
 next
 
 	* fix: --separate-output, avoid to quote except with --quoted.
+	* fix: disable HOME, PPAGE, END and NPAGE keys in bsddialog_form().
+	* fix: visible cursor for timebox.c and form.c in VM VirtualBox.
+	* fix: output month with --datebox and --date-format.
+	* add: "menus" print focus item except with OK and ERROR.
 
 2022-01-27 version 0.1
 
