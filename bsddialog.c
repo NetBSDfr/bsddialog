@@ -931,7 +931,7 @@ int datebox_builder(BUILDER_ARGS)
 		time(&cal);
 		localtm = localtime(&cal);
 		localtm->tm_year = yy - 1900;
-		localtm->tm_mon = mm;
+		localtm->tm_mon = mm - 1;
 		localtm->tm_mday = dd;
 		strftime(stringdate, 1024, date_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringdate);
