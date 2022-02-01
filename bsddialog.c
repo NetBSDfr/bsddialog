@@ -931,7 +931,7 @@ int datebox_builder(BUILDER_ARGS)
 		time(&cal);
 		localtm = localtime(&cal);
 		localtm->tm_year = yy - 1900;
-		localtm->tm_mon  = mm;
+		localtm->tm_mon = mm;
 		localtm->tm_mday = dd;
 		strftime(stringdate, 1024, date_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringdate);
@@ -970,8 +970,8 @@ int timebox_builder(BUILDER_ARGS)
 		time(&clock);
 		localtm = localtime(&clock);
 		localtm->tm_hour = hh;
-		localtm->tm_min  = mm;
-		localtm->tm_sec  = ss;
+		localtm->tm_min = mm;
+		localtm->tm_sec = ss;
 		strftime(stringtime, 1024, time_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringtime);
 	}
