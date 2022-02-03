@@ -45,7 +45,7 @@ extern struct bsddialog_theme t;
 /* field_userptr for private buffer and view options */
 struct myfield {
 	int  buflen;
-	char *buf;
+	wchar_t *buf;
 	int  pos;
 	int  maxpos;
 	bool secure;
@@ -97,7 +97,23 @@ static void print_bottomdesc(struct myfield *mf)
 	}
 }
 
-int
+static char *w2c(wchar_t *string)
+{
+	int i, len;
+	char *value;
+
+	len = wcslen(string);
+	if ((value = calloc(len + 1, sizeof(char))) == NULL)
+		return NULL;
+
+	for (i = 0; i < len; i++)
+		value[i] = string[i];
+	value[i] = '\0';
+
+	return value;
+}
+
+static int
 return_values(struct bsddialog_conf *conf, int output, int nitems,
     struct bsddialog_formitem *items, FORM *form, FIELD **cfield)
 {
@@ -107,11 +123,15 @@ return_values(struct bsddialog_conf *conf, int output, int nitems,
 	if (output != BSDDIALOG_OK && conf->form.value_without_ok == false)
 		return (output);
 
-	form_driver(form, REQ_NEXT_FIELD);
-	form_driver(form, REQ_PREV_FIELD);
+	form_driver_w(form, KEY_CODE_YES, REQ_NEXT_FIELD);
+	form_driver_w(form, KEY_CODE_YES, REQ_PREV_FIELD);
 	for (i = 0; i < nitems; i++) {
 		mf = GETMYFIELD(cfield[i]);
-		items[i].value = strdup(mf->buf);
+		if (conf->form.enable_wchar) {
+			items[i].value = (char*)wcsdup(mf->buf);
+		} else {
+			items[i].value = w2c(mf->buf);
+		}
 		if (items[i].value == NULL)
 			RETURN_ERROR("Cannot allocate memory for form value");
 	}
@@ -125,13 +145,14 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
     struct bsddialog_formitem *items)
 {
 	bool loop, buttupdate, informwin;
-	int i, input, output;
+	int i, chtype, output;
+	wint_t input;
 	struct myfield *mf;
 
 	mf = GETMYFIELD2(form);
 	print_bottomdesc(mf);
 	pos_form_cursor(form);
-	form_driver(form, REQ_END_LINE);
+	form_driver_w(form, KEY_CODE_YES, REQ_END_LINE);
 	mf->pos = MIN(mf->buflen, mf->maxpos);
 	curs_set(1);
 	informwin = true;
@@ -147,7 +168,10 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			buttupdate = false;
 		}
 		wrefresh(formwin);
-		input = getch();
+		chtype = get_wch(&input);
+		if (chtype != KEY_CODE_YES && input > 127 &&
+		    conf->form.enable_wchar == false)
+			continue;
 		switch(input) {
 		case KEY_HOME:
 		case KEY_PPAGE:
@@ -188,7 +212,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			break;
 		case KEY_LEFT:
 			if (informwin) {
-				form_driver(form, REQ_PREV_CHAR);
+				form_driver_w(form, KEY_CODE_YES, REQ_PREV_CHAR);
 				mf = GETMYFIELD2(form);
 				if (mf->pos > 0)
 					mf->pos -= 1;
@@ -205,7 +229,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 				if (mf->pos >= mf->buflen)
 					break;
 				mf->pos += 1;
-				form_driver(form, REQ_NEXT_CHAR);
+				form_driver_w(form, KEY_CODE_YES, REQ_NEXT_CHAR);
 			} else {
 				if (bs.curr < (int) bs.nbuttons - 1) {
 					bs.curr++;
@@ -218,8 +242,8 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 				break;
 			set_field_fore(current_field(form), t.form.fieldcolor);
 			set_field_back(current_field(form), t.form.fieldcolor);
-			form_driver(form, REQ_PREV_FIELD);
-			form_driver(form, REQ_END_LINE);
+			form_driver_w(form, KEY_CODE_YES, REQ_PREV_FIELD);
+			form_driver_w(form, KEY_CODE_YES, REQ_END_LINE);
 			mf = GETMYFIELD2(form);
 			print_bottomdesc(mf);
 			mf->pos = MIN(mf->buflen, mf->maxpos);
@@ -231,8 +255,8 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 				break;
 			set_field_fore(current_field(form), t.form.fieldcolor);
 			set_field_back(current_field(form), t.form.fieldcolor);
-			form_driver(form, REQ_NEXT_FIELD);
-			form_driver(form, REQ_END_LINE);
+			form_driver_w(form, KEY_CODE_YES, REQ_NEXT_FIELD);
+			form_driver_w(form, KEY_CODE_YES, REQ_END_LINE);
 			mf = GETMYFIELD2(form);
 			print_bottomdesc(mf);
 			mf->pos = MIN(mf->buflen, mf->maxpos);
@@ -244,15 +268,15 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			mf = GETMYFIELD2(form);
 			if (mf->pos <= 0)
 				break;
-			form_driver(form, REQ_DEL_PREV);
-			form_driver(form, REQ_BEG_LINE);
+			form_driver_w(form, KEY_CODE_YES, REQ_DEL_PREV);
+			form_driver_w(form, KEY_CODE_YES, REQ_BEG_LINE);
 			mf->pos = mf->pos - 1;
 			for (i = 0; i < mf->pos; i++)
-				form_driver(form, REQ_NEXT_CHAR);
+				form_driver_w(form, KEY_CODE_YES, REQ_NEXT_CHAR);
 			shiftleft(mf);
 			break;
 		case KEY_DC:
-			form_driver(form, REQ_DEL_CHAR);
+			form_driver_w(form, KEY_CODE_YES, REQ_DEL_CHAR);
 			mf = GETMYFIELD2(form);
 			if (mf->pos < mf->buflen)
 				shiftleft(mf);
@@ -270,11 +294,13 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 			break;
 		default:
 			if (informwin) {
+				if (chtype == KEY_CODE_YES)
+					break;
 				mf = GETMYFIELD2(form);
 				if (mf->secure)
-					form_driver(form, mf->securech);
+					form_driver_w(form, chtype, mf->securech);
 				else
-					form_driver(form, input);
+					form_driver_w(form, chtype, input);
 				insertch(mf, input);
 			}
 			else {
@@ -363,13 +389,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *items)
 {
-	WINDOW *widget, *formwin, *textpad, *shadow;
-	int i, output, color, y, x, h, w;
-	FIELD **cfield;
-	FORM *form;
+	int i, j, output, color, y, x, h, w;
+	unsigned long maxline, mybufsize;
 	struct buttons bs;
 	struct myfield *myfields;
-	unsigned long maxline;
+	FIELD **cfield;
+	FORM *form;
+	WINDOW *widget, *formwin, *textpad, *shadow;
 
 	/* disable form scrolling */
 	if (formheight < nitems)
@@ -392,13 +418,17 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		    items[i].xfield-1, 0, 0);
 		field_opts_off(cfield[i], O_STATIC);
 		set_max_field(cfield[i], items[i].maxvaluelen);
+		/* setlocale() should handle set_field_buffer() */
 		set_field_buffer(cfield[i], 0, items[i].init);
 
-		myfields[i].buf = malloc(items[i].maxvaluelen + 1);
-		memset(myfields[i].buf, 0, items[i].maxvaluelen + 1);
-		strncpy(myfields[i].buf, items[i].init, items[i].maxvaluelen);
+		mybufsize = (items[i].maxvaluelen + 1) * sizeof(wchar_t);
+		myfields[i].buf = malloc(mybufsize);
+		memset(myfields[i].buf, 0, mybufsize);
+		for (j = 0; j < items[i].maxvaluelen && j < strlen(items[i].init); j++)
+			myfields[i].buf[j] = items[i].init[j];
 
-		myfields[i].buflen = strlen(myfields[i].buf);
+		//myfields[i].buflen = strlen(myfields[i].buf);
+		myfields[i].buflen = wcslen(myfields[i].buf);
 
 		myfields[i].maxpos = items[i].maxvaluelen -1;
 		myfields[i].pos = MIN(myfields[i].buflen, myfields[i].maxpos);

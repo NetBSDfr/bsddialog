@@ -661,6 +661,12 @@ have to be between 1 and
 .Fn bsddialog_form
 can be customized by:
 .Bl -column -compact
+.It Fa conf.form.enable_wchar
+enables characters greater than 127 in the field,
+.Fa value
+is a pointer to allocated memory for a
+.Em wchar_t
+string.
 .It Fa conf.form.securech
 charachter to hide the input
 with

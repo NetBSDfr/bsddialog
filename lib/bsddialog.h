@@ -98,6 +98,7 @@ struct bsddialog_conf {
 		bool shortcut_buttons;
 	} menu;
 	struct {
+		bool enable_wchar;
 		int  securech;
 		bool value_without_ok;
 	} form;
