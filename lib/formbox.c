@@ -389,8 +389,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *items)
 {
-	int i, j, output, color, y, x, h, w;
-	unsigned long maxline, mybufsize;
+	int i, output, color, y, x, h, w;
+	unsigned long j, maxline, mybufsize;
 	struct buttons bs;
 	struct myfield *myfields;
 	FIELD **cfield;
@@ -427,7 +427,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		for (j = 0; j < items[i].maxvaluelen && j < strlen(items[i].init); j++)
 			myfields[i].buf[j] = items[i].init[j];
 
-		//myfields[i].buflen = strlen(myfields[i].buf);
 		myfields[i].buflen = wcslen(myfields[i].buf);
 
 		myfields[i].maxpos = items[i].maxvaluelen -1;
