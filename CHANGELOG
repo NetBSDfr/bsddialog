@@ -5,6 +5,7 @@ next
 	* fix: visible cursor for timebox.c and form.c in VM VirtualBox.
 	* fix: output month with --datebox and --date-format.
 	* add: "menus" print focus item except with OK and ERROR.
+	* change: API, move conf.f1_file and conf.f1_message under conf.key.
 
 2022-01-27 version 0.1
 

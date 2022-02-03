@@ -449,13 +449,13 @@ int main(int argc, char *argv[argc])
 			item_tag_help_opt = true;
 			break;
 		case HFILE:
-			conf.f1_file = optarg;
+			conf.key.f1_file = optarg;
 			break;
 		case HLINE:
 			conf.bottomtitle = optarg;
 			break;
 		case HMSG:
-			conf.f1_message = optarg;
+			conf.key.f1_message = optarg;
 			break;
 		case IGNORE:
 			ignore_opt = true;

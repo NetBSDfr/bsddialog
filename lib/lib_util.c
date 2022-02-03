@@ -91,11 +91,11 @@ int f1help(struct bsddialog_conf *conf)
 	hconf.text.highlight  = conf->text.highlight;
 
 	output = BSDDIALOG_OK;
-	if (conf->f1_message != NULL)
-		output = bsddialog_msgbox(&hconf, conf->f1_message, 0, 0);
+	if (conf->key.f1_message != NULL)
+		output = bsddialog_msgbox(&hconf, conf->key.f1_message, 0, 0);
 
-	if (output != BSDDIALOG_ERROR && conf->f1_file != NULL)
-		output = bsddialog_textbox(&hconf, conf->f1_file, 0, 0);
+	if (output != BSDDIALOG_ERROR && conf->key.f1_file != NULL)
+		output = bsddialog_textbox(&hconf, conf->key.f1_file, 0, 0);
 
 	return (output == BSDDIALOG_ERROR ? BSDDIALOG_ERROR : 0);
 }

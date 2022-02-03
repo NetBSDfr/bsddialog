@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 23, 2022
+.Dd February 3, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -284,8 +284,6 @@ struct bsddialog_conf {
 	unsigned int auto_minwidth;
 	const char *bottomtitle;
 	bool clear;
-	const char *f1_file;
-	const char *f1_message;
 	int *get_height;
 	int *get_width;
 	bool no_lines;
@@ -296,6 +294,8 @@ struct bsddialog_conf {
 	int x;
 	struct {
 		bool enable_esc;
+		const char *f1_file;
+		const char *f1_message;
 	} key;
 	struct {
 		bool highlight;
@@ -347,10 +347,6 @@ is
 subtitle at the dialog bottom side.
 .It Fa conf.clear
 hide the dialog at exit.
-.It Fa conf.f1_file
-file to open if F1 is pressed.
-.It Fa conf.f1_message
-message to display if F1 is pressed.
 .It Fa conf.get_height
 if not
 .Dv NULL
@@ -375,10 +371,16 @@ horizontal position, 0 is left screen side, can be
 .Dv BSDDIALOG_CENTER .
 .El
 .Pp
-.Fa conf.key.enable_esc
+.Bl -column -compact
+.It Fa conf.key.enable_esc
 enables
 .Dv ESC
 key to close the dialog.
+.It Fa conf.key.f1_file
+file to open if F1 is pressed.
+.It Fa conf.key.f1_message
+message to display if F1 is pressed.
+.El
 .Pp
 .Fa conf.text.highlight
 enables highlights for

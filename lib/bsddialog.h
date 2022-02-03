@@ -73,8 +73,6 @@ struct bsddialog_conf {
 	unsigned int auto_minwidth;
 	const char *bottomtitle;
 	bool clear;
-	const char *f1_file;
-	const char *f1_message;
 	int *get_height;
 	int *get_width;
 	bool no_lines;
@@ -85,6 +83,8 @@ struct bsddialog_conf {
 	int x;
 	struct {
 		bool enable_esc;
+		const char *f1_file;
+		const char *f1_message;
 	} key;
 	struct {
 		bool highlight;
