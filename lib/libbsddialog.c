@@ -59,13 +59,14 @@ int bsddialog_init(void)
 
 	c = 1;
 	error += start_color();
-	for (i = 0; i < 8; i++)
+	for (i = 0; i < 8; i++) {
 		for (j = 0; j < 8; j++) {
 			error += init_pair(c, i, j);
 			c++;
+		}
 	}
 
-	if (error == OK)
+	if (error == OK && has_colors())
 		theme = BSDDIALOG_THEME_DEFAULT;
 	else
 		theme = BSDDIALOG_THEME_BLACKWHITE;
