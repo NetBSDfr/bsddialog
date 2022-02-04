@@ -305,13 +305,13 @@ struct bsddialog_conf {
 		bool align_left;
 		bool no_desc;
 		bool no_name;
+		bool on_without_ok;
 		bool shortcut_buttons;
 	} menu;
 	struct {
+		bool enable_wchar;
 		int  securech;
-		bool value_withcancel;
-		bool value_withextra;
-		bool value_withhelp;
+		bool value_without_ok;
 	} form;
 	struct {
 		bool without_ok;
@@ -906,7 +906,7 @@ Theme Example:
 struct bsddialog_conf conf;
 struct bsddialog_theme theme;
 
-if (bsddialog_init() == BSDDIALOG_ERROR)
+bsddialog_init();
 
 bsddialog_initconf(&conf);
 bsddialog_msgbox(&conf, "Default theme", 7, 25);
