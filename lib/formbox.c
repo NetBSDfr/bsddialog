@@ -169,7 +169,7 @@ form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
 		}
 		wrefresh(formwin);
 		chtype = get_wch(&input);
-		if (chtype != KEY_CODE_YES && input > 255 &&
+		if (chtype != KEY_CODE_YES && input > 127 &&
 		    conf->form.enable_wchar == false)
 			continue;
 		switch(input) {
