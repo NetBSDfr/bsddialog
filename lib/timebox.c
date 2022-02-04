@@ -205,14 +205,14 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 		case KEY_UP:
 			if (focusbuttons)
 				break;
-			c[sel].value = c[sel].value < c[sel].max ?
-			    c[sel].value + 1 : 0;
+			c[sel].value = c[sel].value > 0 ?
+			    c[sel].value - 1 : c[sel].max;
 			break;
 		case KEY_DOWN:
 			if (focusbuttons)
 				break;
-			c[sel].value = c[sel].value > 0 ?
-			    c[sel].value - 1 : c[sel].max;
+			c[sel].value = c[sel].value < c[sel].max ?
+			    c[sel].value + 1 : 0;
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
