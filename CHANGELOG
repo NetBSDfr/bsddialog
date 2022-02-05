@@ -9,7 +9,6 @@ next
 	* add: conf.form.enable_wchar for wide characters in bsddialog_form().
 	* fix: timebox and datebox set values only with BSDDIALOG_OK
 	* improve: timebox and datebox navigation (keys, buttons and shortcuts).
-	* add: print unknown options.
 	* change: menu focus name color for default and dialog theme.
 	* change: menu name color for bsddialog theme.
 
