@@ -632,6 +632,7 @@ int main(int argc, char *argv[argc])
 		default:
 			if (ignore_opt == true)
 				break;
+			printf("ERROR option: %s\n\n", argv[optind]);
 			usage();
 			return (255);
 		}

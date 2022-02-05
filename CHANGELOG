@@ -9,6 +9,7 @@ next
 	* add: conf.form.enable_wchar for wide characters in bsddialog_form().
 	* fix: timebox and datebox set values only with BSDDIALOG_OK
 	* improve: timebox and datebox navigation (keys, buttons and shortcuts).
+	* add: print unknown options.
 
 2022-01-27 version 0.1
 
