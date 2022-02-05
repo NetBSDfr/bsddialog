@@ -1228,8 +1228,7 @@ alloc_formitems(int nitems, struct bsddialog_formitem **items, char *errbuf)
 }
 
 static void
-print_form_items(struct bsddialog_conf *conf, int output, int nitems,
-    struct bsddialog_formitem *items)
+print_form_items(int output, int nitems, struct bsddialog_formitem *items)
 {
 	int i;
 
@@ -1286,7 +1285,7 @@ int form_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(&conf, output, nitems, items);
+	print_form_items(output, nitems, items);
 	free(items);
 
 	return (output);
@@ -1309,7 +1308,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
-	print_form_items(&conf, output, 1, &item);
+	print_form_items(output, 1, &item);
 
 	return (output);
 }
@@ -1350,7 +1349,7 @@ int mixedform_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(&conf, output, nitems, items);
+	print_form_items(output, nitems, items);
 	free(items);
 
 	return (output);
@@ -1373,7 +1372,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
-	print_form_items(&conf, output, 1, &item);
+	print_form_items(output, 1, &item);
 
 	return (output);
 }
@@ -1422,7 +1421,7 @@ int passwordform_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(&conf, output, nitems, items);
+	print_form_items(output, nitems, items);
 	free(items);
 
 	return (output);
