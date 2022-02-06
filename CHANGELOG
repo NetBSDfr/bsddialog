@@ -10,7 +10,7 @@ next
 	* fix: timebox and datebox set values only with BSDDIALOG_OK
 	* improve: timebox and datebox navigation (keys, buttons and shortcuts).
 	* change: menu focus name color for default and dialog theme.
-	* change: menu name color for bsddialog theme.
+	* change: bsddialog theme colors.
 
 2022-01-27 version 0.1
 

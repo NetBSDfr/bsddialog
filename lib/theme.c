@@ -72,12 +72,12 @@ static struct bsddialog_theme bsddialogtheme = {
 	.button.space        = 3,
 	.button.leftch       = '[',
 	.button.rightch      = ']',
-	.button.f_delimcolor = GET_COLOR(COLOR_WHITE,  bgcurr),
+	.button.f_delimcolor = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.button.delimcolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
-	.button.f_color      = GET_COLOR(COLOR_WHITE,  bgcurr)    | A_UNDERLINE,
-	.button.color        = GET_COLOR(COLOR_BLACK,  bgwidget)  | A_UNDERLINE,
-	.button.f_shortcutcolor = GET_COLOR(COLOR_BLACK, bgcurr)  | A_UNDERLINE,
-	.button.shortcutcolor = GET_COLOR(COLOR_YELLOW, bgwidget) | A_UNDERLINE
+	.button.f_color      = GET_COLOR(COLOR_BLACK,  bgcurr)   | A_UNDERLINE,
+	.button.color        = GET_COLOR(COLOR_BLACK,  bgwidget) | A_UNDERLINE,
+	.button.f_shortcutcolor = GET_COLOR(COLOR_RED, bgcurr)   | A_UNDERLINE,
+	.button.shortcutcolor   = GET_COLOR(COLOR_RED, bgwidget) | A_UNDERLINE
 };
 
 static struct bsddialog_theme blackwhite = {
