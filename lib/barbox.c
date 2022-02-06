@@ -39,8 +39,9 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define BARPADDING    3
-#define MINBARWIDTH   (15 + BARPADDING * 2)
+#define BARPADDING   2
+#define MINBARLEN    15
+#define MINBARWIDTH  (2 + 2 * BARPADDING + MINBARLEN)
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -49,16 +50,16 @@ int  bsddialog_total_progview;
 extern struct bsddialog_theme t;
 
 static void
-draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
+draw_bar(WINDOW *win, int y, int x, int barlen, int perc, bool withlabel,
     int label)
 {
-	int i, blue_x, color;
+	int i, blue_x, color, stringlen;
 	char labelstr[128];
 
-	blue_x = (perc * size) / 100;
+	blue_x = perc > 0 ? (perc * barlen) / 100 : -1;
 
 	wmove(win, y, x);
-	for (i = 0; i < size; i++) {
+	for (i = 0; i < barlen; i++) {
 		color = (i <= blue_x) ? t.bar.f_color : t.bar.color;
 		wattron(win, color);
 		waddch(win, ' ');
@@ -69,9 +70,10 @@ draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
 		sprintf(labelstr, "%d", label);
 	else
 		sprintf(labelstr, "%3d%%", perc);
-	wmove(win, y, x + size/2 - 2);
-	for (i = 0; i < (int)strlen(labelstr); i++) {
-		color = (blue_x + 1 <= size/2 - (int)strlen(labelstr)/2 + i ) ?
+	stringlen = (int)strlen(labelstr);
+	wmove(win, y, x + barlen/2 - stringlen/2);
+	for (i = 0; i < stringlen; i++) {
+		color = (blue_x + 1 <= barlen/2 - stringlen/2 + i ) ?
 		    t.bar.color : t.bar.f_color;
 		wattron(win, color);
 		waddch(win, labelstr[i]);
@@ -462,7 +464,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
-	sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 	bigchange = MAX(1, sizebar/10);
 
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
@@ -572,7 +574,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 			doupdate();
 
-			sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+			sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 			bigchange = MAX(1, sizebar/10);
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
@@ -627,7 +629,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
-	sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED);
 
@@ -717,7 +719,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 			doupdate();
 
-			sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+			sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);

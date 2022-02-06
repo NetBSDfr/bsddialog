@@ -11,6 +11,8 @@ next
 	* improve: timebox and datebox navigation (keys, buttons and shortcuts).
 	* change: menu focus name color for default and dialog theme.
 	* change: bsddialog theme colors.
+	* fix: bar color with 0%.
+	* fix: bar label position.
 
 2022-01-27 version 0.1
 
