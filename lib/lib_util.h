@@ -28,7 +28,6 @@
 #ifndef _LIBBSDDIALOG_UTIL_H_
 #define _LIBBSDDIALOG_UTIL_H_
 
-#define HBORDER         1
 #define HBORDERS	2
 #define VBORDERS	2
 #define TEXTHMARGIN     1
