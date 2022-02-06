@@ -39,8 +39,8 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define BARPADDING    3
-#define MINBARWIDTH   (15 + BARPADDING * 2)
+#define BARPADDING    (HBORDER + 2)
+#define MINBARWIDTH   (15 + 2 * BARPADDING)
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -462,7 +462,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
-	sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+	sizebar = w - HBORDERS - 2 - 2 * BARPADDING;
 	bigchange = MAX(1, sizebar/10);
 
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
@@ -572,7 +572,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 			doupdate();
 
-			sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+			sizebar = w - HBORDERS - 2 - 2 * BARPADDING;
 			bigchange = MAX(1, sizebar/10);
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
@@ -627,7 +627,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
-	sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+	sizebar = w - HBORDERS - 2 - 2 * BARPADDING;
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED);
 
@@ -717,7 +717,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 			doupdate();
 
-			sizebar = w - HBORDERS - 2 - BARPADDING * 2;
+			sizebar = w - HBORDERS - 2 - 2 * BARPADDING;
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);
