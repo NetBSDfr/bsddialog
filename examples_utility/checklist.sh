@@ -36,4 +36,3 @@ case $? in
 		echo "[OK] Selected: $ITEMS"
 	;;
 esac
-
