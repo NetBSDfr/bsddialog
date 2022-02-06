@@ -181,7 +181,6 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		if (mainloop == false)
 			break;
 		fscanf(input, "%d", &perc);
-		perc = perc < 0 ? 0 : perc;
 		perc = perc > 100 ? 100 : perc;
 		pntext = &ntext[0];
 		ntext[0] = '\0';
@@ -311,7 +310,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wrefresh(widget);
 	getmaxyx(textpad, htextpad, i /* unused */);
 	ypad =  y + h - 4 - htextpad;
-	ypad = ypad < y+(int)nminibars ? y+nminibars : ypad;
+	ypad = ypad < y+(int)nminibars ? y+(int)nminibars : ypad;
 	prefresh(textpad, 0, 0, ypad, x+2, y+h-4, x+w-2);
 
 	/* main bar */

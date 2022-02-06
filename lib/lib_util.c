@@ -577,7 +577,7 @@ int widget_max_height(struct bsddialog_conf *conf)
 {
 	int maxheight;
 
-	maxheight = conf->shadow ? SCREENLINES - t.shadow.h : SCREENLINES;
+	maxheight = conf->shadow ? SCREENLINES - (int)t.shadow.h : SCREENLINES;
 	if (maxheight <= 0)
 		RETURN_ERROR("Terminal too small, screen lines - shadow <= 0");
 
@@ -595,7 +595,7 @@ int widget_max_width(struct bsddialog_conf *conf)
 {
 	int maxwidth;
 
-	maxwidth = conf->shadow ? SCREENCOLS - t.shadow.w : SCREENCOLS;
+	maxwidth = conf->shadow ? SCREENCOLS - (int)t.shadow.w : SCREENCOLS;
 	if (maxwidth <= 0)
 		RETURN_ERROR("Terminal too small, screen cols - shadow <= 0");
 
