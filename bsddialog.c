@@ -516,7 +516,7 @@ int main(int argc, char *argv[argc])
 			print_maxsize_opt = true;
 			break;
 		case PRINT_SIZE:
-			conf.get_height = &getH;;
+			conf.get_height = &getH;
 			conf.get_width = &getW;
 			break;
 		case PRINT_VERSION:
@@ -1032,8 +1032,8 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 }
 
 static void
-print_menu_items(struct bsddialog_conf *conf, int output, int nitems,
-    struct bsddialog_menuitem *items, int focusitem)
+print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
+    int focusitem)
 {
 	bool sep, toquote;
 	int i;
@@ -1117,7 +1117,7 @@ int checklist_builder(BUILDER_ARGS)
 	output = bsddialog_checklist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(&conf, output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem);
 
 	free(items);
 
@@ -1146,7 +1146,7 @@ int menu_builder(BUILDER_ARGS)
 	output = bsddialog_menu(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(&conf, output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem);
 
 	free(items);
 
@@ -1175,7 +1175,7 @@ int radiolist_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(&conf, output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem);
 
 	free(items);
 
@@ -1206,7 +1206,7 @@ int treeview_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(&conf, output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem);
 
 	free(items);
 
