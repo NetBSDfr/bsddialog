@@ -55,7 +55,7 @@ draw_bar(WINDOW *win, int y, int x, int size, int perc, bool withlabel,
 	int i, blue_x, color;
 	char labelstr[128];
 
-	blue_x = (int)((perc*(size))/100);
+	blue_x = (perc * size) / 100;
 
 	wmove(win, y, x);
 	for (i = 0; i < size; i++) {
