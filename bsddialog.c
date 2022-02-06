@@ -861,8 +861,8 @@ int rangebox_builder(BUILDER_ARGS)
 	int output, min, max, value;
 
 	if (argc < 2) {
-		strcpy(errorbuilder, "usage --rangebox <text> <rows> <cols> <min> "
-		    "<max> [<init>]\n");
+		strcpy(errorbuilder, "usage --rangebox <text> <rows> <cols> "
+		    "<min> <max> [<init>]\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1196,8 +1196,9 @@ int treeview_builder(BUILDER_ARGS)
 
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	output = get_menu_items(errorbuilder, argc-1, argv+1, item_prefix_opt, true,
-	    true, true, true, item_bottomdesc_opt, &nitems, &items, &focusitem);
+	output = get_menu_items(errorbuilder, argc-1, argv+1, item_prefix_opt,
+	    true, true, true, true, item_bottomdesc_opt, &nitems, &items,
+	    &focusitem);
 	if (output != 0)
 		return (output);
 
