@@ -136,6 +136,8 @@ static char *date_fmt_opt, *time_fmt_opt;
 static int unsigned max_input_form_opt;
 /* General flags and options */
 static int output_fd_opt;
+/* Builder error */
+char errorbuilder[1024];
 
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
@@ -145,7 +147,7 @@ static void sigint_handler(int sig);
 
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
-	int cols, int argc, char **argv, char *errbuf
+	int cols, int argc, char **argv
 static int checklist_builder(BUILDER_ARGS);
 static int datebox_builder(BUILDER_ARGS);
 static int form_builder(BUILDER_ARGS);
@@ -239,7 +241,7 @@ int main(int argc, char *argv[argc])
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
-	char *text, *backtitle_opt, errorbuilder[1024];
+	char *text, *backtitle_opt;
 	struct winsize ws;
 	struct bsddialog_conf conf;
 
@@ -256,7 +258,6 @@ int main(int argc, char *argv[argc])
 	output_fd_opt = STDERR_FILENO;
 	print_maxsize_opt = false;
 	ignore_opt = false;
-	errorbuilder[0] = '\0';
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
 	esc_cancelvalue_opt = false;
 
@@ -680,10 +681,10 @@ int main(int argc, char *argv[argc])
 	if (backtitle_opt != NULL)
 		bsddialog_backtitle(&conf, backtitle_opt);
 
+	errorbuilder[0] = '\0';
 	output = BSDDIALOG_OK;
 	if (dialogbuilder != NULL)
-		output = dialogbuilder(conf, text, rows, cols, argc, argv,
-		    errorbuilder);
+		output = dialogbuilder(conf, text, rows, cols, argc, argv);
 
 	if (dialogbuilder != textbox_builder)
 		free(text);
@@ -800,7 +801,7 @@ int mixedgauge_builder(BUILDER_ARGS)
 	const char **minilabels;
 
 	if (argc < 1 || (((argc-1) % 2) != 0) ) {
-		strcpy(errbuf, "bad --mixedgauge arguments\n");
+		strcpy(errorbuilder, "bad --mixedgauge arguments\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -811,11 +812,11 @@ int mixedgauge_builder(BUILDER_ARGS)
 
 	nminibars  = argc / 2;
 	if ((minilabels = calloc(nminibars, sizeof(char*))) == NULL) {
-		strcpy(errbuf, "Cannot allocate memory for minilabels\n");
+		strcpy(errorbuilder, "Cannot allocate memory for minilabels\n");
 		return BSDDIALOG_ERROR;
 	}
 	if ((minipercs = calloc(nminibars, sizeof(int))) == NULL) {
-		strcpy(errbuf, "Cannot allocate memory for minipercs\n");
+		strcpy(errorbuilder, "Cannot allocate memory for minipercs\n");
 		return BSDDIALOG_ERROR;
 	}
 
@@ -845,7 +846,7 @@ int pause_builder(BUILDER_ARGS)
 	unsigned int secs;
 
 	if (argc < 1) {
-		strcpy(errbuf, "missing <seconds> for --pause\n");
+		strcpy(errorbuilder, "missing <seconds> for --pause\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -860,7 +861,7 @@ int rangebox_builder(BUILDER_ARGS)
 	int output, min, max, value;
 
 	if (argc < 2) {
-		strcpy(errbuf, "usage --rangebox <text> <rows> <cols> <min> "
+		strcpy(errorbuilder, "usage --rangebox <text> <rows> <cols> <min> "
 		    "<max> [<init>]\n");
 		return (BSDDIALOG_ERROR);
 	}
@@ -982,7 +983,7 @@ int timebox_builder(BUILDER_ARGS)
 
 /* MENU */
 static int
-get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
+get_menu_items(char *errorbuilder, int argc, char **argv, bool setprefix,
     bool setdepth, bool setname, bool setdesc, bool setstatus, bool sethelp,
     unsigned int *nitems, struct bsddialog_menuitem **items, int *focusitem)
 {
@@ -998,14 +999,14 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 	sizeitem += setstatus ? 1 : 0;
 	sizeitem += sethelp   ? 1 : 0;
 	if ((argc % sizeitem) != 0) {
-		strcpy(errbuf, "bad number of arguments for this menu\n");
+		strcpy(errorbuilder, "bad number of arguments for this menu\n");
 		return (BSDDIALOG_ERROR);
 	}
 	*nitems = argc / sizeitem;
 
 	*items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
 	if (items == NULL) {
-		strcpy(errbuf, "cannot allocate memory menu items\n");
+		strcpy(errorbuilder, "cannot allocate memory menu items\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1102,13 +1103,13 @@ int checklist_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
-		strcpy(errbuf, "<menurows> not provided");
+		strcpy(errorbuilder, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
+	output = get_menu_items(errorbuilder, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
 	    &items, &focusitem);
 	if (output != 0)
@@ -1131,13 +1132,13 @@ int menu_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
-		strcpy(errbuf, "<menurows> not provided");
+		strcpy(errorbuilder, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
+	output = get_menu_items(errorbuilder, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, false, item_bottomdesc_opt, &nitems,
 	    &items, &focusitem);
 	if (output != 0)
@@ -1160,13 +1161,13 @@ int radiolist_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
-		strcpy(errbuf, "<menurows> not provided");
+		strcpy(errorbuilder, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt,
+	output = get_menu_items(errorbuilder, argc-1, argv+1, item_prefix_opt,
 	    item_depth_opt, true, true, true, item_bottomdesc_opt, &nitems,
 	    &items, &focusitem);
 	if (output != 0)
@@ -1189,13 +1190,13 @@ int treeview_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1) {
-		strcpy(errbuf, "<menurows> not provided");
+		strcpy(errorbuilder, "<menurows> not provided");
 		return (BSDDIALOG_ERROR);
 	}
 
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	output = get_menu_items(errbuf, argc-1, argv+1, item_prefix_opt, true,
+	output = get_menu_items(errorbuilder, argc-1, argv+1, item_prefix_opt, true,
 	    true, true, true, item_bottomdesc_opt, &nitems, &items, &focusitem);
 	if (output != 0)
 		return (output);
@@ -1215,11 +1216,11 @@ int treeview_builder(BUILDER_ARGS)
 
 /* FORM */
 static int
-alloc_formitems(int nitems, struct bsddialog_formitem **items, char *errbuf)
+alloc_formitems(int nitems, struct bsddialog_formitem **items)
 {
 	*items = calloc(nitems, sizeof(struct bsddialog_formitem));
 	if (items == NULL) {
-		strcpy(errbuf, "cannot allocate memory for form items\n");
+		strcpy(errorbuilder, "cannot allocate memory for form items\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1248,7 +1249,7 @@ int form_builder(BUILDER_ARGS)
 
 	sizeitem = item_bottomdesc_opt ? 9 : 8;
 	if (argc < 1 || (argc - 1) % sizeitem != 0) {
-		strcpy(errbuf, "bad number of arguments for this form\n");
+		strcpy(errorbuilder, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1259,7 +1260,7 @@ int form_builder(BUILDER_ARGS)
 	argv++;
 
 	nitems = argc / sizeitem;
-	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
+	if (alloc_formitems(nitems, &items) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
 	j = 0;
 	for (i = 0; i < nitems; i++) {
@@ -1320,7 +1321,7 @@ int mixedform_builder(BUILDER_ARGS)
 
 	sizeitem = item_bottomdesc_opt ? 10 : 9;
 	if (argc < 1 || (argc-1) % sizeitem != 0) {
-		strcpy(errbuf, "bad number of arguments for this form\n");
+		strcpy(errorbuilder, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1330,7 +1331,7 @@ int mixedform_builder(BUILDER_ARGS)
 	argv++;
 
 	nitems = argc / sizeitem;
-	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
+	if (alloc_formitems(nitems, &items) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
 	j = 0;
 	for (i = 0; i < nitems; i++) {
@@ -1384,7 +1385,7 @@ int passwordform_builder(BUILDER_ARGS)
 
 	sizeitem = item_bottomdesc_opt ? 9 : 8;
 	if (argc < 1 || (argc - 1) % sizeitem != 0) {
-		strcpy(errbuf, "bad number of arguments for this form\n");
+		strcpy(errorbuilder, "bad number of arguments for this form\n");
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -1395,7 +1396,7 @@ int passwordform_builder(BUILDER_ARGS)
 	argv++;
 
 	nitems = argc / sizeitem;
-	if (alloc_formitems(nitems, &items, errbuf) != BSDDIALOG_OK)
+	if (alloc_formitems(nitems, &items) != BSDDIALOG_OK)
 		return (BSDDIALOG_ERROR);
 	j = 0;
 	for (i = 0; i < nitems; i++) {
