@@ -39,9 +39,11 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define BARPADDING   2
-#define MINBARLEN    15
-#define MINBARWIDTH  (2 + 2 * BARPADDING + MINBARLEN)
+#define BARPADDING     2
+#define MINBARLEN      15
+#define MINBARWIDTH    (2 + 2 * BARPADDING + MINBARLEN)
+#define MINMGBARLEN    18
+#define MINMGBARWIDTH  (2 + 2 * BARPADDING + MINMGBARLEN)
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -243,7 +245,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	max_minbarlen = 0;
 	for (i = 0; i < (int)nminibars; i++)
 		max_minbarlen = MAX(max_minbarlen, (int)strlen(minilabels[i]));
-	max_minbarlen += 3 + 16 /* seps + [...] or mainbar */;
+	max_minbarlen += 3 + 16; /* seps + [...] */
+	max_minbarlen = MAX(max_minbarlen, MINMGBARWIDTH); /* mainbar */
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
