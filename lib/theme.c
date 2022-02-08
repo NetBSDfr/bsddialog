@@ -70,8 +70,8 @@ static struct bsddialog_theme bsddialogtheme = {
 	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
 
 	.button.space        = 3,
-	.button.leftch       = '[',
-	.button.rightch      = ']',
+	.button.leftdelim    = '[',
+	.button.rightdelim   = ']',
 	.button.f_delimcolor = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.button.delimcolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.button.f_color      = GET_COLOR(COLOR_BLACK,  bgcurr)   | A_UNDERLINE,
@@ -115,8 +115,8 @@ static struct bsddialog_theme blackwhite = {
 	.bar.color   = GET_COLOR(fg, bk),
 
 	.button.space           = 3,
-	.button.leftch          = '[',
-	.button.rightch         = ']',
+	.button.leftdelim       = '[',
+	.button.rightdelim      = ']',
 	.button.f_delimcolor    = GET_COLOR(fg, bk),
 	.button.delimcolor      = GET_COLOR(fg, bk),
 	.button.f_color         = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
@@ -158,8 +158,8 @@ static struct bsddialog_theme dialogtheme = {
 	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
 
 	.button.space           = 3,
-	.button.leftch          = '<',
-	.button.rightch         = '>',
+	.button.leftdelim       = '<',
+	.button.rightdelim      = '>',
 	.button.f_delimcolor    = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)  | A_BOLD,
 	.button.delimcolor      = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
 	.button.f_color         = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)  | A_BOLD,
@@ -203,8 +203,8 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->bar.color   = src->bar.color;
 
 	dst->button.space           = src->button.space;
-	dst->button.leftch          = src->button.leftch;
-	dst->button.rightch         = src->button.rightch;
+	dst->button.leftdelim       = src->button.leftdelim;
+	dst->button.rightdelim      = src->button.rightdelim;
 	dst->button.f_delimcolor    = src->button.f_delimcolor;
 	dst->button.delimcolor      = src->button.delimcolor;
 	dst->button.f_color         = src->button.f_color;
@@ -248,8 +248,8 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 		bsddialog_set_theme(&dialogtheme);
 		t.dialog.lineraisecolor = t.dialog.linelowercolor;
 		t.dialog.delimtitle     = true;
-		t.button.leftch         = '[';
-		t.button.rightch        = ']';
+		t.button.leftdelim      = '[';
+		t.button.rightdelim     = ']';
 	}
 	else if (newtheme == BSDDIALOG_THEME_BSDDIALOG)
 		bsddialog_set_theme(&bsddialogtheme);
