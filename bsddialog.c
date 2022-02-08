@@ -140,7 +140,7 @@ static int output_fd_opt;
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
     char *text, char *buf);
-    
+
 static void sigint_handler(int sig);
 
 /* Dialogs */
@@ -377,7 +377,7 @@ int main(int argc, char *argv[argc])
 		case BEGIN_X:
 			conf.x = (int)strtol(optarg, NULL, 10);
 			if (conf.x < BSDDIALOG_CENTER) {
-				printf("Error: --begin-x %d < %d", 
+				printf("Error: --begin-x %d < %d",
 				    conf.x, BSDDIALOG_CENTER);
 				return (255);
 			}

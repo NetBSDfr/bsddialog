@@ -136,7 +136,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	wrefresh(widget);
 
 	loop = focusbuttons = true;
-	while (loop) {		
+	while (loop) {
 		for (i = 0; i < 3; i++) {
 			mvwprintw(c[i].win, 1, 1, "%2d", c[i].value);
 			wrefresh(c[i].win);

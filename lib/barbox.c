@@ -156,7 +156,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
 
 	mainloop = (fd < 0) ? false : true;
-	
+
 	if (mainloop) {
 		fd2 = dup(fd);
 		input = fdopen(fd2, "r");

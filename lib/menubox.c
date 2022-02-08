@@ -197,7 +197,7 @@ getnextshortcut(struct bsddialog_conf *conf, int npritems,
 			if (i > abs)
 				return (i);
 
-			if (i < abs && next == -1) 
+			if (i < abs && next == -1)
 				next = i;
 		}
 	}

@@ -774,7 +774,7 @@ draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
 		rtee = ACS_RTEE;
 	}
 
-	leftcolor = elev == RAISED ? 
+	leftcolor = elev == RAISED ?
 	    t.dialog.lineraisecolor : t.dialog.linelowercolor;
 	rightcolor = elev == RAISED ?
 	    t.dialog.linelowercolor : t.dialog.lineraisecolor;
