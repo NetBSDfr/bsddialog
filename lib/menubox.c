@@ -36,8 +36,8 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define DEPTHSPACE	4
-#define MIN_HEIGHT	VBORDERS + 6 /* 2 buttons 1 text 3 menu */
+#define DEPTH       2
+#define MIN_HEIGHT  VBORDERS + 6 /* 2 buttons 1 text 3 menu */
 
 extern struct bsddialog_theme t;
 
@@ -274,7 +274,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	colorname = focus ? t.menu.f_namecolor : t.menu.namecolor;
 	if (conf->menu.no_name == false) {
 		wattron(pad, colorname);
-		mvwaddstr(pad, y, pos.xname + depth * DEPTHSPACE, name);
+		mvwaddstr(pad, y, pos.xname + depth * DEPTH, name);
 		wattroff(pad, colorname);
 	}
 
@@ -287,7 +287,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	if (conf->menu.no_desc == false) {
 		wattron(pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(pad, y, pos.xname + depth * DEPTHSPACE, desc);
+			mvwaddstr(pad, y, pos.xname + depth * DEPTH, desc);
 		else
 			mvwaddstr(pad, y, pos.xdesc, desc);
 		wattroff(pad, colordesc);
@@ -303,7 +303,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 			shortcut = desc;
 		else
 			shortcut = name;
-		wmove(pad, y, pos.xname + depth * DEPTHSPACE);
+		wmove(pad, y, pos.xname + depth * DEPTH);
 		if (shortcut != NULL && shortcut[0] != '\0')
 			waddch(pad, shortcut[0]);
 	wattroff(pad, colorshortcut);
@@ -466,7 +466,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	}
 	pos.maxname = conf->menu.no_name ? 0 : pos.maxname;
 	pos.maxdesc = conf->menu.no_desc ? 0 : pos.maxdesc;
-	pos.maxdepth *= DEPTHSPACE;
+	pos.maxdepth *= DEPTH;
 
 	pos.xselector = pos.maxprefix + (pos.maxprefix != 0 ? 1 : 0);
 	pos.xname = pos.xselector + pos.selectorlen +
