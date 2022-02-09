@@ -541,7 +541,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			abs++;
 		}
 	}
-	drawseparators(conf, menupad, MIN(pos.line, w-6), totnitems, pritems);
+	drawseparators(conf, menupad, MIN((int)pos.line, w-6), totnitems,
+	    pritems);
 	abs = getfirst_with_default(totnitems, pritems, ngroups, groups,
 	    focuslist, focusitem);
 	if (abs >= 0)
@@ -656,6 +657,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				xs = x + 3 + (w-6)/2 - pos.line/2;
 				xe = xs + w - 5;
 			}
+
+			drawseparators(conf, menupad, MIN((int)pos.line, w-6),
+			    totnitems, pritems);
 
 			if ((int)(ymenupad + menurows) - 1 < abs)
 				ymenupad = abs - menurows + 1;
