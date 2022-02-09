@@ -13,7 +13,8 @@ next
 	* change: bsddialog theme colors.
 	* fix: bar color with 0%.
 	* fix: bar label position.
-	* change: API, t.button.[left|right]ch -> t.button.[left|right]delim
+	* change: API, t.button.[left|right]ch -> t.button.[left|right]delim.
+	* change: API, t.button.space -> t.button.hmargin.
 
 2022-01-27 version 0.1
 
