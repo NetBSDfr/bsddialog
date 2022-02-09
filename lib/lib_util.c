@@ -148,11 +148,10 @@ draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
 	getmaxyx(window, rows, cols);
 	y = rows - 2;
 
-	startx = bs.sizebutton * bs.nbuttons + (bs.nbuttons-1) * t.button.space;
-	startx = cols/2 - startx/2;
+	startx = cols/2 - buttons_width(bs)/2;
 
-	for (i = 0; i < (int) bs.nbuttons; i++) {
-		x = i * (bs.sizebutton + t.button.space);
+	for (i = 0; i < (int)bs.nbuttons; i++) {
+		x = i * (bs.sizebutton + t.button.hmargin);
 		draw_button(window, y, startx + x, bs.sizebutton, bs.label[i],
 		    i == bs.curr, shortcut);
 	}
@@ -231,6 +230,17 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
 	for (i = 1; i < (int)bs->nbuttons; i++)
 		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
 	bs->sizebutton += 2;
+}
+
+int buttons_width(struct buttons bs)
+{
+	unsigned int width;
+
+	width = bs.nbuttons * bs.sizebutton;
+	if (bs.nbuttons > 0)
+		width += (bs.nbuttons - 1) * t.button.hmargin;
+
+	return (width);
 }
 
 bool shortcut_buttons(int key, struct buttons *bs)
@@ -532,11 +542,8 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	bool changewtext;
 
 	wbuttons = 0;
-	if (bs != NULL) {
-		wbuttons = bs->nbuttons * bs->sizebutton;
-		if (bs->nbuttons > 0)
-			wbuttons += (bs->nbuttons-1) * t.button.space;
-	}
+	if (bs != NULL)
+		wbuttons = buttons_width(*bs);
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		startwtext = MAX(startwtext, wbuttons - TEXTHMARGINS);
@@ -647,10 +654,8 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	min = 0;
 
 	/* buttons */
-	if (bs != NULL) {
-		min += bs->nbuttons * bs->sizebutton;
-		min += bs->nbuttons > 0 ? (bs->nbuttons-1) * t.button.space : 0;
-	}
+	if (bs != NULL)
+		min += buttons_width(*bs);
 
 	/* text */
 	if (wtext > 0)

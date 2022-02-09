@@ -376,8 +376,8 @@ menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
 
 	mincols = VBORDERS;
 	/* buttons */
-	mincols += bs.nbuttons * bs.sizebutton;
-	mincols += bs.nbuttons > 0 ? (bs.nbuttons-1) * t.button.space : 0;
+	mincols += buttons_width(bs);
+
 	/*
 	 * linelen check, comment to allow some hidden col otherwise portconfig
 	 * could not show big menus like www/apache24

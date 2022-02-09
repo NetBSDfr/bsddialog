@@ -69,7 +69,7 @@ static struct bsddialog_theme bsddialogtheme = {
 	.bar.f_color = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
 	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
 
-	.button.space        = 3,
+	.button.hmargin      = 3,
 	.button.leftdelim    = '[',
 	.button.rightdelim   = ']',
 	.button.f_delimcolor = GET_COLOR(COLOR_BLACK,  bgwidget),
@@ -114,7 +114,7 @@ static struct bsddialog_theme blackwhite = {
 	.bar.f_color = GET_COLOR(fg, bk) | A_REVERSE,
 	.bar.color   = GET_COLOR(fg, bk),
 
-	.button.space           = 3,
+	.button.hmargin         = 3,
 	.button.leftdelim       = '[',
 	.button.rightdelim      = ']',
 	.button.f_delimcolor    = GET_COLOR(fg, bk),
@@ -157,7 +157,7 @@ static struct bsddialog_theme dialogtheme = {
 	.bar.f_color = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
 	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
 
-	.button.space           = 3,
+	.button.hmargin         = 3,
 	.button.leftdelim       = '<',
 	.button.rightdelim      = '>',
 	.button.f_delimcolor    = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)  | A_BOLD,
@@ -202,7 +202,7 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->bar.f_color = src->bar.f_color;
 	dst->bar.color   = src->bar.color;
 
-	dst->button.space           = src->button.space;
+	dst->button.hmargin         = src->button.hmargin;
 	dst->button.leftdelim       = src->button.leftdelim;
 	dst->button.rightdelim      = src->button.rightdelim;
 	dst->button.f_delimcolor    = src->button.f_delimcolor;

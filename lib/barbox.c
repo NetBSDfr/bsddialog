@@ -110,11 +110,9 @@ bar_checksize(int rows, int cols, struct buttons *bs)
 	int minheight, minwidth;
 
 	minwidth = 0;
-	if (bs != NULL) { /* gauge has not buttons */
-		minwidth = bs->nbuttons * bs->sizebutton;
-		if (bs->nbuttons > 0)
-			minwidth += (bs->nbuttons-1) * t.button.space;
-	}
+	if (bs != NULL) /* gauge has not buttons */
+		minwidth = buttons_width(*bs);
+
 	minwidth = MAX(minwidth, MINBARWIDTH);
 	minwidth += VBORDERS;
 
