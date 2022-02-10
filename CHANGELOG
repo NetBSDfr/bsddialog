@@ -16,6 +16,7 @@ next
 	* change: API, t.button.[left|right]ch -> t.button.[left|right]delim.
 	* change: API, t.button.space -> t.button.hmargin.
 	* change: "menus" depth 4 -> 2.
+	* fix: center position of separator with big pad.
 
 2022-01-27 version 0.1
 

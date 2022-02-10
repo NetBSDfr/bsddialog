@@ -221,10 +221,41 @@ getmode(enum menumode mode, struct bsddialog_menugroup group)
 }
 
 static void
+drawseparators(struct bsddialog_conf *conf, WINDOW *pad, int linelen,
+    int nitems, struct privateitem *pritems)
+{
+	int i, linech, labellen;
+	const char *desc, *name;
+
+	for (i = 0; i < nitems; i++) {
+		if (pritems[i].type != SEPARATORMODE)
+			continue;
+		if (conf->no_lines == false) {
+			wattron(pad, t.menu.desccolor);
+			linech = conf->ascii_lines ? '-' : ACS_HLINE;
+			mvwhline(pad, i, 0, linech, linelen);
+			wattroff(pad, t.menu.desccolor);
+		}
+		name = pritems[i].item->name;
+		desc = pritems[i].item->desc;
+		labellen = strlen(name) + strlen(desc);
+		wmove(pad, i, labellen < linelen ? linelen/2 - labellen/2 : 0);
+		wattron(pad, t.menu.namesepcolor);
+		waddstr(pad, name);
+		wattroff(pad, t.menu.namesepcolor);
+		if (strlen(name) > 0 && strlen(desc) > 0)
+			waddch(pad, ' ');
+		wattron(pad, t.menu.descsepcolor);
+		waddstr(pad, desc);
+		wattroff(pad, t.menu.descsepcolor);
+	}
+}
+
+static void
 drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
     struct lineposition pos, struct privateitem *pritem, bool focus)
 {
-	int colordesc, colorname, colorshortcut, linech;
+	int colordesc, colorname, colorshortcut;
 	unsigned int depth;
 	enum menumode mode;
 	const char *prefix, *name, *desc, *bottomdesc, *shortcut;
@@ -236,26 +267,6 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	bottomdesc = pritem->item->bottomdesc;
 
 	mode = pritem->type;
-
-	if (mode == SEPARATORMODE) {
-		if (conf->no_lines == false) {
-			wattron(pad, t.menu.desccolor);
-			linech = conf->ascii_lines ? '-' : ACS_HLINE;
-			mvwhline(pad, y, 0, linech, pos.line);
-			wattroff(pad, t.menu.desccolor);
-		}
-		wmove(pad, y,
-		    pos.line/2 - (strlen(name) + strlen(desc)) / 2 );
-		wattron(pad, t.menu.namesepcolor);
-		waddstr(pad, name);
-		wattroff(pad, t.menu.namesepcolor);
-		if (strlen(name) > 0 && strlen(desc) > 0)
-			waddch(pad, ' ');
-		wattron(pad, t.menu.descsepcolor);
-		waddstr(pad, desc);
-		wattroff(pad, t.menu.descsepcolor);
-		return;
-	}
 
 	/* prefix */
 	if (prefix != NULL && prefix[0] != '\0')
@@ -530,6 +541,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			abs++;
 		}
 	}
+	drawseparators(conf, menupad, MIN(pos.line, w-6), totnitems, pritems);
 	abs = getfirst_with_default(totnitems, pritems, ngroups, groups,
 	    focuslist, focusitem);
 	if (abs >= 0)
