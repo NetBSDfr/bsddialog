@@ -31,7 +31,7 @@ int main()
 	};
 	struct bsddialog_menuitem sep2[2] = {
 	    { "", true, 0, "Radiolist", "(desc)", "" },
-	    { "", true, 0, "Subtitle", "(desc)",       "" }
+	    { "", true, 0, "Subtitle", "(desc)",  "" }
 	};
 	struct bsddialog_menuitem radio[5] = {
 	    { "",  true,  0, "Name 1", "Desc 1", "Bottom Desc 1" },
