@@ -20,7 +20,7 @@ LDFLAGS += -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 # `make -DDEBUG`
 CFLAGS = -g -D_XOPEN_SOURCE_EXTENDED -fPIC -Wall -Wextra
 .else
-CFLAGS += -O2 -pipe -std=gnu99 -fstack-protector-strong -Qunused-arguments
+CFLAGS += -std=gnu99 -fstack-protector-strong -Qunused-arguments
 .endif
 
 LOCALBASE = /usr/local
