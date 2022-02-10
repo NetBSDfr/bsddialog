@@ -238,7 +238,7 @@ drawseparators(struct bsddialog_conf *conf, WINDOW *pad, int linelen,
 		}
 		name = pritems[i].item->name;
 		desc = pritems[i].item->desc;
-		labellen = strlen(name) + strlen(desc);
+		labellen = strlen(name) + strlen(desc) + 1;
 		wmove(pad, i, labellen < linelen ? linelen/2 - labellen/2 : 0);
 		wattron(pad, t.menu.namesepcolor);
 		waddstr(pad, name);
