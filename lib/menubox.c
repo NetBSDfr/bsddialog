@@ -256,28 +256,21 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
     struct lineposition pos, struct privateitem *pritem, bool focus)
 {
 	int colordesc, colorname, colorshortcut;
-	unsigned int depth;
-	enum menumode mode;
-	const char *prefix, *name, *desc, *bottomdesc, *shortcut;
+	const char *shortcut;
+	struct bsddialog_menuitem *item;
 
-	prefix = pritem->item->prefix;
-	name = pritem->item->name;
-	depth = pritem->item->depth;
-	desc = pritem->item->desc;
-	bottomdesc = pritem->item->bottomdesc;
-
-	mode = pritem->type;
+	item = pritem->item;
 
 	/* prefix */
-	if (prefix != NULL && prefix[0] != '\0')
-		mvwaddstr(pad, y, 0, prefix);
+	if (item->prefix != NULL && item->prefix[0] != '\0')
+		mvwaddstr(pad, y, 0, item->prefix);
 
 	/* selector */
 	wmove(pad, y, pos.xselector);
 	wattron(pad, t.menu.selectorcolor);
-	if (mode == CHECKLISTMODE)
+	if (pritem->type == CHECKLISTMODE)
 		wprintw(pad, "[%c]", pritem->on ? 'X' : ' ');
-	if (mode == RADIOLISTMODE)
+	if (pritem->type == RADIOLISTMODE)
 		wprintw(pad, "(%c)", pritem->on ? '*' : ' ');
 	wattroff(pad, t.menu.selectorcolor);
 
@@ -285,7 +278,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	colorname = focus ? t.menu.f_namecolor : t.menu.namecolor;
 	if (conf->menu.no_name == false) {
 		wattron(pad, colorname);
-		mvwaddstr(pad, y, pos.xname + depth * DEPTH, name);
+		mvwaddstr(pad, y, pos.xname + item->depth * DEPTH, item->name);
 		wattroff(pad, colorname);
 	}
 
@@ -298,9 +291,9 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	if (conf->menu.no_desc == false) {
 		wattron(pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(pad, y, pos.xname + depth * DEPTH, desc);
+			mvwaddstr(pad, y, pos.xname + item->depth * DEPTH, item->desc);
 		else
-			mvwaddstr(pad, y, pos.xdesc, desc);
+			mvwaddstr(pad, y, pos.xdesc, item->desc);
 		wattroff(pad, colordesc);
 	}
 
@@ -311,10 +304,10 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 		wattron(pad, colorshortcut);
 
 		if (conf->menu.no_name)
-			shortcut = desc;
+			shortcut = item->desc;
 		else
-			shortcut = name;
-		wmove(pad, y, pos.xname + depth * DEPTH);
+			shortcut = item->name;
+		wmove(pad, y, pos.xname + item->depth * DEPTH);
 		if (shortcut != NULL && shortcut[0] != '\0')
 			waddch(pad, shortcut[0]);
 	wattroff(pad, colorshortcut);
@@ -323,8 +316,8 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	/* bottom description */
 	move(SCREENLINES - 1, 2);
 	clrtoeol();
-	if (bottomdesc != NULL && focus) {
-		addstr(bottomdesc);
+	if (item->bottomdesc != NULL && focus) {
+		addstr(item->bottomdesc);
 		refresh();
 	}
 }
