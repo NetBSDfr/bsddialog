@@ -414,7 +414,7 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 	draw_borders(conf, menuwin, h, w, LOWERED);
 
 	if (totnitems > (int) menurows) {
-		wattron(menuwin, t.menu.arrowcolor);
+		wattron(menuwin, t.dialog.arrowcolor);
 
 		if (ymenupad > 0)
 			mvwprintw(menuwin, 0, 2, "^^^");
@@ -422,7 +422,7 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 		if ((int) (ymenupad + menurows) < totnitems)
 			mvwprintw(menuwin, h-1, 2, "vvv");
 
-		wattroff(menuwin, t.menu.arrowcolor);
+		wattroff(menuwin, t.dialog.arrowcolor);
 
 		mvwprintw(menuwin, h-1, w-10, "%3d%%",
 		    100 * (ymenupad + menurows) / totnitems);

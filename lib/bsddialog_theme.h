@@ -49,9 +49,9 @@ struct bsddialog_theme {
 		int  lineraisecolor;
 		int  linelowercolor;
 		int  bottomtitlecolor;
+		int  arrowcolor;
 	} dialog;
 	struct {
-		int arrowcolor;
 		int selectorcolor;
 		int f_namecolor;
 		int namecolor;
