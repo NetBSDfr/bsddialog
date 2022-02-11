@@ -267,12 +267,12 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 
 	/* selector */
 	wmove(pad, y, pos.xselector);
-	wattron(pad, t.menu.selectorcolor);
+	wattron(pad, focus ? t.menu.f_selectorcolor : t.menu.selectorcolor);
 	if (pritem->type == CHECKLISTMODE)
 		wprintw(pad, "[%c]", pritem->on ? 'X' : ' ');
 	if (pritem->type == RADIOLISTMODE)
 		wprintw(pad, "(%c)", pritem->on ? '*' : ' ');
-	wattroff(pad, t.menu.selectorcolor);
+	wattroff(pad, focus ? t.menu.f_selectorcolor : t.menu.selectorcolor);
 
 	/* name */
 	colorname = focus ? t.menu.f_namecolor : t.menu.namecolor;

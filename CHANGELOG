@@ -18,6 +18,7 @@ next
 	* change: "menus" depth 4 -> 2.
 	* fix: center position of separator with big pad.
 	* change: API, t.menu.arrowcolor -> t.dialog.arrowcolor.
+	* add: t.menu.f_selectorcolor.
 
 2022-01-27 version 0.1
 

@@ -52,7 +52,8 @@ static struct bsddialog_theme bsddialogtheme = {
 	.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.dialog.arrowcolor       = GET_COLOR(COLOR_YELLOW, bgwidget),
 
-	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  bgwidget) | A_BOLD,
+	.menu.f_selectorcolor = GET_COLOR(COLOR_BLACK,  bgcurr),
+	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE,  bgcurr),
 	.menu.desccolor       = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.menu.f_namecolor     = GET_COLOR(COLOR_BLACK,  bgcurr),
@@ -97,6 +98,7 @@ static struct bsddialog_theme blackwhite = {
 	.dialog.bottomtitlecolor = GET_COLOR(fg, bk),
 	.dialog.arrowcolor       = GET_COLOR(fg, bk),
 
+	.menu.f_selectorcolor = GET_COLOR(fg, bk) | A_REVERSE,
 	.menu.selectorcolor   = GET_COLOR(fg, bk),
 	.menu.f_desccolor     = GET_COLOR(fg, bk) | A_REVERSE,
 	.menu.desccolor       = GET_COLOR(fg, bk),
@@ -140,6 +142,7 @@ static struct bsddialog_theme dialogtheme = {
 	.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 	.dialog.arrowcolor       = GET_COLOR(COLOR_GREEN,  COLOR_WHITE),
 
+	.menu.f_selectorcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
 	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
 	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
 	.menu.desccolor       = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
@@ -185,6 +188,7 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->dialog.bottomtitlecolor = src->dialog.bottomtitlecolor;
 	dst->dialog.arrowcolor       = src->dialog.arrowcolor;
 
+	dst->menu.f_selectorcolor = src->menu.f_selectorcolor;
 	dst->menu.selectorcolor   = src->menu.selectorcolor;
 	dst->menu.f_desccolor     = src->menu.f_desccolor;
 	dst->menu.desccolor       = src->menu.desccolor;
