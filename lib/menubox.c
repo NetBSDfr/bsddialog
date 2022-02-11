@@ -291,7 +291,8 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	if (conf->menu.no_desc == false) {
 		wattron(pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(pad, y, pos.xname + item->depth * DEPTH, item->desc);
+			mvwaddstr(pad, y, pos.xname + item->depth * DEPTH,
+			    item->desc);
 		else
 			mvwaddstr(pad, y, pos.xdesc, item->desc);
 		wattroff(pad, colordesc);
