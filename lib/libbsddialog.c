@@ -67,7 +67,7 @@ int bsddialog_init(void)
 	}
 
 	if (error == OK && has_colors())
-		theme = BSDDIALOG_THEME_DEFAULT;
+		theme = BSDDIALOG_THEME_FLAT;
 	else
 		theme = BSDDIALOG_THEME_BLACKWHITE;
 

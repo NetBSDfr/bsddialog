@@ -248,7 +248,7 @@ int bsddialog_set_theme(struct bsddialog_theme *theme)
 int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 {
 
-	if (newtheme == BSDDIALOG_THEME_DEFAULT) {
+	if (newtheme == BSDDIALOG_THEME_FLAT) {
 		bsddialog_set_theme(&dialogtheme);
 		t.dialog.lineraisecolor = t.dialog.linelowercolor;
 		t.dialog.delimtitle     = true;

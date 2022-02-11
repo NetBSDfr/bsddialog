@@ -192,7 +192,7 @@ static void usage(void)
 	    "--print-size, --print-version, --quoted, --separate-output, "
 	    "--separator <sep>, --shadow, --single-quoted, --sleep <secs>, "
 	    "--stderr, --stdout, --tab-len <spaces>, "
-	    "--theme <blackwhite|bsddialog|default|dialog>, "
+	    "--theme <blackwhite|bsddialog|flat|dialog>, "
 	    "--time-format <format>, --title <title>, --trim, --version, "
 	    "--yes-label <label>.\n");
 	printf("\n");
@@ -253,7 +253,7 @@ int main(int argc, char *argv[argc])
 	conf.form.enable_wchar = true;
 
 	backtitle_opt = NULL;
-	theme_opt = BSDDIALOG_THEME_DEFAULT;
+	theme_opt = BSDDIALOG_THEME_FLAT;
 	output_fd_opt = STDERR_FILENO;
 	print_maxsize_opt = false;
 	ignore_opt = false;
@@ -549,8 +549,8 @@ int main(int argc, char *argv[argc])
 				theme_opt = BSDDIALOG_THEME_BSDDIALOG;
 			else if (strcasecmp(optarg, "blackwhite") == 0)
 				theme_opt = BSDDIALOG_THEME_BLACKWHITE;
-			else if (strcasecmp(optarg, "default") == 0)
-				theme_opt = BSDDIALOG_THEME_DEFAULT;
+			else if (strcasecmp(optarg, "flat") == 0)
+				theme_opt = BSDDIALOG_THEME_FLAT;
 			else if (strcasecmp(optarg, "dialog") == 0)
 				theme_opt = BSDDIALOG_THEME_DIALOG;
 			else {
@@ -675,7 +675,7 @@ int main(int argc, char *argv[argc])
 
 	signal(SIGINT, sigint_handler);
 
-	if (theme_opt != BSDDIALOG_THEME_DEFAULT)
+	if (theme_opt != BSDDIALOG_THEME_FLAT)
 		bsddialog_set_default_theme(theme_opt);
 
 	if (backtitle_opt != NULL)
