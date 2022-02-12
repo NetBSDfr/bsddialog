@@ -42,7 +42,7 @@ int bsddialog_init(void)
 	enum bsddialog_default_theme theme;
 
 	set_error_string("");
-
+//fputs("\e[?25l", stdout);
 	if (initscr() == NULL)
 		RETURN_ERROR("Cannot init curses (initscr)");
 
@@ -52,6 +52,7 @@ int bsddialog_init(void)
 	error += cbreak();
 	error += noecho();
 	curs_set(0);
+//fputs("\e[?25l", stdout);
 	if (error != OK) {
 		bsddialog_end();
 		RETURN_ERROR("Cannot init curses (keypad and cursor)");
@@ -83,7 +84,7 @@ int bsddialog_end(void)
 {
 	if (endwin() != OK)
 		RETURN_ERROR("Cannot end curses (endwin)");
-
+//fputs("\e[?25h", stdout);
 	return (BSDDIALOG_OK);
 }
 
