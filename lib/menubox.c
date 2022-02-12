@@ -471,7 +471,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	}
 	pos.maxname = conf->menu.no_name ? 0 : pos.maxname;
 	pos.maxdesc = conf->menu.no_desc ? 0 : pos.maxdesc;
-	pos.maxdepth *= DEPTH;
+	pos.maxdepth = DEPTH * pos.maxdepth;
 
 	pos.xselector = pos.maxprefix + (pos.maxprefix != 0 ? 1 : 0);
 	pos.xname = pos.xselector + pos.selectorlen +
