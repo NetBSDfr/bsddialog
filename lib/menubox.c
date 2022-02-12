@@ -445,7 +445,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	shortcut_butts = conf->menu.shortcut_buttons;
 
-	automenurows = menurows == BSDDIALOG_AUTOSIZE ? true : false;
+	automenurows = (menurows == BSDDIALOG_AUTOSIZE) ? true : false;
 
 	totnitems = 0;
 	for (i = 0; i < (int)ngroups; i++) {
