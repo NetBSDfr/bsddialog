@@ -706,7 +706,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 						drawitem(conf, menupad, i, pos,
 						    &pritems[i], false);
 					}
-				    }
+				}
 				pritems[abs].on = !pritems[abs].on;
 			}
 			drawitem(conf, menupad, abs, pos, &pritems[abs], true);
