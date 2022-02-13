@@ -423,7 +423,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		mybufsize = (items[i].maxvaluelen + 1) * sizeof(wchar_t);
 		myfields[i].buf = malloc(mybufsize);
 		memset(myfields[i].buf, 0, mybufsize);
-		for (j = 0; j < items[i].maxvaluelen && j < strlen(items[i].init); j++)
+		for (j = 0; j < items[i].maxvaluelen && j < strlen(items[i].init);
+		    j++)
 			myfields[i].buf[j] = items[i].init[j];
 
 		myfields[i].buflen = wcslen(myfields[i].buf);
