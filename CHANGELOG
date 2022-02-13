@@ -20,6 +20,7 @@ next
 	* change: API, t.menu.arrowcolor -> t.dialog.arrowcolor.
 	* add: t.menu.f_selectorcolor.
 	* change: rename theme "default" -> "flat".
+	* fix: menurows autosize with fullscreen.
 
 2022-01-27 version 0.1
 
