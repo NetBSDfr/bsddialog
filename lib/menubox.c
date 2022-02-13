@@ -367,7 +367,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*menurows = MIN(*h - 6 - htext, (int)*menurows);
 	} else {
 		if (*menurows == 0)
-			*menurows = MIN(rows-6-htext, nitems);
+			*menurows = MIN(*h-6-htext, nitems);
 	}
 
 	return (0);
