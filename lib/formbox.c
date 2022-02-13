@@ -36,9 +36,9 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define REDRAWFORM 19860214 /* magic number */
 #define ISFIELDHIDDEN(item)   (item.flags & BSDDIALOG_FIELDHIDDEN)
 #define ISFIELDREADONLY(item) (item.flags & BSDDIALOG_FIELDREADONLY)
+#define REDRAWFORM            19860214 /* magic number */
 
 extern struct bsddialog_theme t;
 
