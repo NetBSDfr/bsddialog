@@ -340,6 +340,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 	} else
 		notext += *menurows;
 
+	/* cols autosize, rows autosize, rows fullscreen, menu particularity */
 	if (cols == BSDDIALOG_AUTOSIZE || rows <= BSDDIALOG_AUTOSIZE) {
 		if (text_size(conf, rows, cols, text, &bs, notext, linelen + 4,
 		    &htext, &wtext) != 0)
