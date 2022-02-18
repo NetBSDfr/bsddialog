@@ -38,7 +38,7 @@
 #include "lib_util.h"
 
 #define TABLEN     4    /* Default tab len */
-#define ERRBUFLEN  1024 /* Error buffer */
+#define ERRBUFLEN  1024 /* Error buffer    */
 
 /* Error */
 static char errorbuffer[ERRBUFLEN];
