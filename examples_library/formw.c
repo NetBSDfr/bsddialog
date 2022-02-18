@@ -8,12 +8,11 @@
  *   <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+#include <bsddialog.h>
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <bsddialog.h>
 
 #define H   BSDDIALOG_FIELDHIDDEN
 #define RO  BSDDIALOG_FIELDREADONLY
