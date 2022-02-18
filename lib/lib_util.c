@@ -37,8 +37,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-extern struct bsddialog_theme t;
-
 #define TABLEN     4    /* Default tab len */
 #define ERRBUFLEN  1024 /* Error buffer */
 
@@ -50,7 +48,7 @@ const char *get_error_string(void)
 	return (errorbuffer);
 }
 
-void set_error_string(char *str)
+void set_error_string(const char *str)
 {
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
@@ -158,8 +156,8 @@ draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
 }
 
 void
-get_buttons(struct bsddialog_conf *conf, struct buttons *bs, char *yesoklabel,
-    char *nocancellabel)
+get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
+    const char *yesoklabel, const char *nocancellabel)
 {
 	int i;
 #define SIZEBUTTON              8

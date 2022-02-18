@@ -32,13 +32,10 @@
 #include <string.h>
 
 #include "bsddialog.h"
-#include "bsddialog_theme.h"
 #include "lib_util.h"
 
 #define MINWDATE   23 /* 3 windows and their borders */
 #define MINWTIME   14 /* 3 windows and their borders */
-
-extern struct bsddialog_theme t;
 
 static int
 datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,

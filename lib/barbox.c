@@ -49,8 +49,6 @@ bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
 int  bsddialog_total_progview;
 
-extern struct bsddialog_theme t;
-
 static void
 draw_bar(WINDOW *win, int y, int x, int barlen, int perc, bool withlabel,
     int label)

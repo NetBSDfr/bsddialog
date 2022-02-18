@@ -40,8 +40,6 @@
 #define ISFIELDREADONLY(item) (item.flags & BSDDIALOG_FIELDREADONLY)
 #define REDRAWFORM            19860214 /* magic number */
 
-extern struct bsddialog_theme t;
-
 /* field_userptr for private buffer and view options */
 struct myfield {
 	int  buflen;

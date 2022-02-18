@@ -39,8 +39,6 @@
 #define DEPTH       2
 #define MIN_HEIGHT  VBORDERS + 6 /* 2 buttons 1 text 3 menu */
 
-extern struct bsddialog_theme t;
-
 enum menumode {
 	CHECKLISTMODE,
 	MENUMODE,

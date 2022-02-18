@@ -34,8 +34,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-extern struct bsddialog_theme t;
-
 static void
 textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, int hpad, int wpad, struct buttons bs)

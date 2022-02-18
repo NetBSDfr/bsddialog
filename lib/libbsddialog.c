@@ -34,8 +34,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-extern struct bsddialog_theme t;
-
 int bsddialog_init(void)
 {
 	int i, j, c, error;
