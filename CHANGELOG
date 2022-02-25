@@ -3,7 +3,7 @@ next
 	Utility:
 	* add: "menus" print item with focus, except with OK and ERROR.
 	* change: --theme name "default" -> "flat".
-	* fix: --separate-output does not quote except with --quoted.
+	* fix: --separate-output does not quote (except with --quoted).
 	* fix: --datebox and --date-format month in output.
 
 	Library:
