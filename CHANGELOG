@@ -2,9 +2,9 @@ next
 
 	Utility:
 	* add: "menus" print item with focus, except with OK and ERROR.
-	* change: rename theme "default" -> "flat".
-	* fix: --separate-output, avoid to quote except with --quoted.
-	* fix: output month with --datebox and --date-format.
+	* change: --theme name "default" -> "flat".
+	* fix: --separate-output does not quote except with --quoted.
+	* fix: --datebox and --date-format month in output.
 
 	Library:
 	* add: conf.form.enable_wchar for wide characters in bsddialog_form().
