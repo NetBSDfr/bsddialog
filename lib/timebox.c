@@ -302,7 +302,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		unsigned int x;
 	};
 	struct month {
-		char *name;
+		const char *name;
 		unsigned int days;
 	};
 
