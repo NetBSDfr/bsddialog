@@ -125,16 +125,16 @@ enum OPTS {
 	YESNO
 };
 
-/* Menus flags and options */
+/* Menus options */
 static bool item_prefix_opt, item_bottomdesc_opt, item_output_sepnl_opt;
 static bool item_singlequote_opt, list_items_on_opt, item_tag_help_opt;
 static bool item_always_quote_opt, item_depth_opt;
 static char *item_output_sep_opt, *item_default_opt;
-/* Time and calendar options */
+/* Date and Time options */
 static char *date_fmt_opt, *time_fmt_opt;
-/* Forms */
+/* Forms options */
 static int unsigned max_input_form_opt;
-/* General flags and options */
+/* General options */
 static int output_fd_opt;
 
 static void
