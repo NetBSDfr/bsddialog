@@ -1,8 +1,12 @@
 next
 
 	Utility:
+	* add: (this) CHANGELOG.
 	* add: "menus" print item with focus (except with OK and ERROR).
+	* add: pause.sh example.
+	* add: timebox.sh example.
 	* change: --theme name "default" -> "flat".
+	* delete: treeview.sh example.
 	* fix: --separate-output does not quote (except with --quoted).
 	* fix: --datebox and --date-format month in output.
 	* improve: examples handle exit status.
@@ -10,6 +14,7 @@ next
 	Library:
 	* add: conf.form.enable_wchar for wide characters in bsddialog_form().
 	* add: theme.menu.f_selectorcolor.
+	* add: formw.c example.
 	* change: move conf.f1_file and conf.f1_message in conf.key.
 	* change: theme.button.[left|right]ch -> theme.button.[left|right]delim.
 	* change: theme.button.space -> theme.button.hmargin.
