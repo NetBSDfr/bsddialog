@@ -5,6 +5,7 @@ next
 	* change: --theme name "default" -> "flat".
 	* fix: --separate-output does not quote (except with --quoted).
 	* fix: --datebox and --date-format month in output.
+	* improve: examples handle exit status.
 
 	Library:
 	* add: conf.form.enable_wchar for wide characters in bsddialog_form().
