@@ -1,4 +1,4 @@
-# BSDDialog 0.1
+# BSDDialog 0.2
 
 
 This project provides **bsddialog** and **libbsddialog**, an utility and a
