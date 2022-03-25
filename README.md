@@ -25,9 +25,24 @@ Screenshots:
 FreeBSD:
 
 ```
+% bsddialog --msgbox "Hello World!" 8 20
+```
+
+FreeBSD < 14.0:
+
+```
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
 % make
+% ./bsddialog --msgbox "Hello World!" 8 20
+```
+
+Linux:
+
+```
+% git clone https://gitlab.com/alfix/bsddialog.git
+% cd bsddialog
+% make -f GNUMakefile
 % ./bsddialog --msgbox "Hello World!" 8 20
 ```
 
