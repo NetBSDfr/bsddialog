@@ -19,6 +19,11 @@ Library:
 Screenshots:
 <https://www.flickr.com/photos/alfonsosiciliano/albums/72157720215006074>
 
+Real-world Use Cases:
+
+ - <https://wiki.freebsd.org/RoadmapFromDialogToBSDDialog>
+ - <https://gitlab.com/alfix/portconfig>
+
 
 ## Getting Started
 
@@ -28,7 +33,7 @@ FreeBSD:
 % bsddialog --msgbox "Hello World!" 8 20
 ```
 
-FreeBSD < 14.0:
+FreeBSD <= 13:
 
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
