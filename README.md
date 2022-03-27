@@ -1,14 +1,27 @@
 # BSDDialog 0.2
 
+This is a permissive open source project released under the terms of the
+BSD-2-Clause License. It provides **bsddialog** and **libbsddialog**, an utility
+and a library to build scripts and tools with TUI dialogs and widgets.
 
-This project provides **bsddialog** and **libbsddialog**, an utility and a
-library to build scripts and tools with TUI dialogs and widgets.
+It is inspired by (LGPL)
+[dialog](https://en.wikipedia.org/wiki/Dialog_(software)),
+**bsddialog** (utility) implements several features described by the
+[dialog(1)](https://www.freebsd.org/cgi/man.cgi?query=dialog) manual.
 
+From bsddialog.1:
+*The bsddialog utility first appeared in FreeBSD 14.0.  It was introduced
+to provide a permissive open source alternative to the dialog utility for
+use by the FreeBSD base system.  It is initially intended to provide
+similar features and options to facilitate transition, but compatibility
+is not a priority for future development*.
+
+BSDDialog started from the [MixerTUI](https://gitlab.com/alfix/mixertui) code base using its "pop-ups"; currently the original code has been completely rewritten.
 
 ## Intro
 
-Briefly:
-<https://www.freebsd.org/status/report-2021-04-2021-06/#_bsddialog_tui_widgets>
+Announcement:
+<https://dev.to/alfonsosiciliano/bsddialog-2b55>
 
 Utility:
 <https://alfonsosiciliano.gitlab.io/posts/2021-12-07-bsddialog.html>
