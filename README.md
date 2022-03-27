@@ -6,7 +6,7 @@ and a library to build scripts and tools with TUI dialogs and widgets.
 
 It is inspired by (LGPL)
 [dialog](https://en.wikipedia.org/wiki/Dialog_(software)),
-**bsddialog** (utility) implements several features described by the
+**bsddialog** (utility) implements some features described in the
 [dialog(1)](https://www.freebsd.org/cgi/man.cgi?query=dialog) manual.
 
 From bsddialog.1:
@@ -16,7 +16,9 @@ use by the FreeBSD base system.  It is initially intended to provide
 similar features and options to facilitate transition, but compatibility
 is not a priority for future development*.
 
-BSDDialog started from the [MixerTUI](https://gitlab.com/alfix/mixertui) code base using its "pop-ups"; currently the original code has been completely rewritten.
+BSDDialog started from the [MixerTUI](https://gitlab.com/alfix/mixertui) code
+base using its "pop-ups"; currently the original code has been completely
+rewritten.
 
 ## Intro
 
