@@ -6,7 +6,7 @@ and a library to build scripts and tools with TUI dialogs and widgets.
 
 It is inspired by (LGPL)
 [dialog](https://en.wikipedia.org/wiki/Dialog_(software)),
-**bsddialog** (utility) implements some features described in the
+**bsddialog** (utility) implements some feature described in the
 [dialog(1)](https://www.freebsd.org/cgi/man.cgi?query=dialog) manual.
 
 From bsddialog.1:
