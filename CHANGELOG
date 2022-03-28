@@ -1,3 +1,8 @@
+Next
+
+	Utility:
+	* fix: --hline with empty string (for bsdconfig).
+
 2022-03-02 version 0.2
 
 	Utility:
