@@ -5,6 +5,7 @@ Next
 
 	Library:
 	* fix: bsddialog_gauge() with fd < 0.
+	* fix: internal segmentation fault with disabled shadow.
 
 2022-03-02 version 0.2
 
