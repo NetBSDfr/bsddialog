@@ -3,6 +3,9 @@ Next
 	Utility:
 	* fix: --hline with empty string (for bsdconfig).
 
+	Library:
+	* fix: bsddialog_gauge() with fd < 0.
+
 2022-03-02 version 0.2
 
 	Utility:

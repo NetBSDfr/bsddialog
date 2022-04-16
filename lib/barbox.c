@@ -151,16 +151,14 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
 
-	mainloop = (fd < 0) ? false : true;
-
-	if (mainloop) {
+	input = NULL;
+	if (fd >= 0) {
 		fd2 = dup(fd);
-		input = fdopen(fd2, "r");
-		if (input == NULL)
+		if ((input = fdopen(fd2, "r")) == NULL)
 			RETURN_ERROR("Cannot build FILE* from fd");
-	} else
-		input = NULL;
+	}
 
+	mainloop = true;
 	while (mainloop) {
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-4,
@@ -168,6 +166,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		draw_borders(conf, bar, 3, w-6, RAISED);
 		draw_bar(bar, 1, 1, w-8, perc, false, -1 /*unused*/);
 		wrefresh(bar);
+		if (input == NULL) /* that is fd < 0 */
+			break;
 
 		while (true) {
 			fscanf(input, "%s", inputbuf);
