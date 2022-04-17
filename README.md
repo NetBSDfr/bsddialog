@@ -6,6 +6,9 @@ and a library to build scripts and tools with TUI dialogs and widgets.
 
 ## Intro
 
+Briefly:
+<https://www.freebsd.org/status/report-2021-04-2021-06/bsddialog/>
+
 Utility:
 <https://alfonsosiciliano.gitlab.io/posts/2021-12-07-bsddialog.html>
 
