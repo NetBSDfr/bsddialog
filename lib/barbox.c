@@ -197,6 +197,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 			pntext[0] = ' ';
 			pntext++;
 		}
+		pntext[0] = '\0';
 		if (update_dialog(conf, shadow, widget, y, x, h, w, textpad,
 		    ntext, NULL, false) != 0)
 			return (BSDDIALOG_ERROR);
