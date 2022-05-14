@@ -578,6 +578,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	return (0);
 }
 
+/* Widget size and position */
 int widget_max_height(struct bsddialog_conf *conf)
 {
 	int maxheight;
@@ -754,7 +755,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	return (0);
 }
 
-/* Widgets builders */
+/* Widgets build, update, destroy */
 void
 draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
     enum elevation elev)
