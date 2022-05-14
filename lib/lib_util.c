@@ -721,8 +721,11 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 {
+	int hshadow = conf->shadow ? (int)t.shadow.h : 0;
+	int wshadow = conf->shadow ? (int)t.shadow.w : 0;
+
 	if (conf->y == BSDDIALOG_CENTER)
-		*y = SCREENLINES/2 - (h + t.shadow.h)/2;
+		*y = SCREENLINES/2 - (h + hshadow)/2;
 	else if (conf->y < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin y (less than -1)");
 	else if (conf->y >= SCREENLINES)
@@ -730,13 +733,13 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	else
 		*y = conf->y;
 
-	if ((*y + h + (conf->shadow ? (int) t.shadow.h : 0)) > SCREENLINES)
+	if (*y + h + hshadow > SCREENLINES)
 		RETURN_ERROR("The lower of the box under the terminal "
 		    "(begin Y + height (+ shadow) > terminal lines)");
 
 
 	if (conf->x == BSDDIALOG_CENTER)
-		*x = SCREENCOLS/2 - (w + t.shadow.w)/2;
+		*x = SCREENCOLS/2 - (w + wshadow)/2;
 	else if (conf->x < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin x (less than -1)");
 	else if (conf->x >= SCREENCOLS)
@@ -744,7 +747,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	else
 		*x = conf->x;
 
-	if ((*x + w + (conf->shadow ? (int) t.shadow.w : 0)) > SCREENCOLS)
+	if ((*x + w + wshadow) > SCREENCOLS)
 		RETURN_ERROR("The right of the box over the terminal "
 		    "(begin X + width (+ shadow) > terminal cols)");
 
