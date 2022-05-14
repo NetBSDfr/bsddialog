@@ -2,6 +2,9 @@ Next
 
 	Utility:
 	* fix: --hline with empty string (for bsdconfig).
+	* fix: avoid to overlay the backtitle setting a top margin.
+	* fix: avoid to overlay down shadow with menus and forms bottom desc
+		setting a down margin.
 
 	Library:
 	* fix: bsddialog_gauge() with fd < 0.

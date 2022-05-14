@@ -373,6 +373,8 @@ int main(int argc, char *argv[argc])
 			break;
 		case BACKTITLE:
 			backtitle_opt = optarg;
+			if (conf.y == BSDDIALOG_CENTER)
+				conf.auto_topmargin = 2;
 			break;
 		case BEGIN_X:
 			conf.x = (int)strtol(optarg, NULL, 10);
@@ -389,6 +391,7 @@ int main(int argc, char *argv[argc])
 				    conf.y, BSDDIALOG_CENTER);
 				return (255);
 			}
+			conf.auto_topmargin = 0;
 			break;
 		case CANCEL_LABEL:
 			conf.button.cancel_label = optarg;
@@ -575,12 +578,14 @@ int main(int argc, char *argv[argc])
 		/* Dialogs */
 		case CHECKLIST:
 			dialogbuilder = checklist_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case DATEBOX:
 			dialogbuilder = datebox_builder;
 			break;
 		case FORM:
 			dialogbuilder = form_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case GAUGE:
 			dialogbuilder = gauge_builder;
@@ -590,12 +595,15 @@ int main(int argc, char *argv[argc])
 			break;
 		case INPUTBOX:
 			dialogbuilder = inputbox_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case MENU:
 			dialogbuilder = menu_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case MIXEDFORM:
 			dialogbuilder = mixedform_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case MIXEDGAUGE:
 			dialogbuilder = mixedgauge_builder;
@@ -608,12 +616,15 @@ int main(int argc, char *argv[argc])
 			break;
 		case PASSWORDBOX:
 			dialogbuilder = passwordbox_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case PASSWORDFORM:
 			dialogbuilder = passwordform_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case RADIOLIST:
 			dialogbuilder = radiolist_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case RANGEBOX:
 			dialogbuilder = rangebox_builder;
@@ -626,6 +637,7 @@ int main(int argc, char *argv[argc])
 			break;
 		case TREEVIEW:
 			dialogbuilder = treeview_builder;
+			conf.auto_downmargin = 1;
 			break;
 		case YESNO:
 			dialogbuilder = yesno_builder;
