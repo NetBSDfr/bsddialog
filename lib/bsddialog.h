@@ -71,6 +71,8 @@ struct bsddialog_conf {
 	bool ascii_lines;
 	unsigned int auto_minheight;
 	unsigned int auto_minwidth;
+	unsigned int auto_topmargin;
+	unsigned int auto_downmargin;
 	const char *bottomtitle;
 	bool clear;
 	int *get_height;

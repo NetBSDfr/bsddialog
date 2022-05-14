@@ -587,12 +587,22 @@ int widget_max_height(struct bsddialog_conf *conf)
 	if (maxheight <= 0)
 		RETURN_ERROR("Terminal too small, screen lines - shadow <= 0");
 
-	if (conf->y > 0) {
+	if (conf->y != BSDDIALOG_CENTER && conf->auto_topmargin > 0)
+		RETURN_ERROR("conf.y > 0 and conf->auto_topmargin > 0");
+	else if (conf->y == BSDDIALOG_CENTER) {
+		maxheight -= conf->auto_topmargin;
+		if (maxheight <= 0)
+			RETURN_ERROR("Terminal too small, screen lines - top margins <= 0");
+	} else if (conf->y > 0) {
 		maxheight -= conf->y;
 		if (maxheight <= 0)
 			RETURN_ERROR("Terminal too small, screen lines - "
 			    "shadow - y <= 0");
 	}
+
+	maxheight -= conf->auto_downmargin;
+	if (maxheight <= 0)
+		RETURN_ERROR("Terminal too small, screen lines - Down margins <= 0");
 
 	return (maxheight);
 }
@@ -725,8 +735,13 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	int hshadow = conf->shadow ? (int)t.shadow.h : 0;
 	int wshadow = conf->shadow ? (int)t.shadow.w : 0;
 
-	if (conf->y == BSDDIALOG_CENTER)
+	if (conf->y == BSDDIALOG_CENTER) {
 		*y = SCREENLINES/2 - (h + hshadow)/2;
+		if (*y < (int)conf->auto_topmargin)
+			*y = conf->auto_topmargin;
+		if (*y + h + hshadow > SCREENLINES - (int)conf->auto_downmargin)
+			*y = SCREENLINES - h - hshadow - conf->auto_downmargin;
+	}
 	else if (conf->y < BSDDIALOG_CENTER)
 		RETURN_ERROR("Negative begin y (less than -1)");
 	else if (conf->y >= SCREENLINES)
