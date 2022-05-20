@@ -1269,7 +1269,6 @@ int form_builder(BUILDER_ARGS)
 	}
 
 	formheight = (u_int)strtoul(argv[0], NULL, 10);
-	flags = 0;
 
 	argc--;
 	argv++;
@@ -1292,7 +1291,7 @@ int form_builder(BUILDER_ARGS)
 		valuelen = (int)strtol(argv[j++], NULL, 10);
 		items[i].maxvaluelen = valuelen == 0 ? abs(fieldlen) : valuelen;
 
-		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
+		flags = (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
 
 		items[i].bottomdesc = item_bottomdesc_opt ? argv[j++] : "";

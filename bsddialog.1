@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd April 19, 2022
+.Dd May 20, 2022
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -337,15 +337,16 @@ with graphical length
 is the maximum input length.
 The field can be customized, if
 .Ar fieldlen
-is 0 its length is the absolute value of
-.Ar maxvaluelen ,
-if
+is negative the field is read only and its absolute value is the field length.
+If
 .Ar maxvaluelen
-is negative the field is read only,
+is 0 the max input value is the absolute value of
+.Ar fieldlen .
 .Ar init
 is a default value.
 .Ar formrows
-is the graphical height of the list, has to be at least the number of forms.
+is the graphical height of the list, has to be at least the number of forms or 0
+for auto size.
 .It Fl Fl gauge Ar text Ar rows Ar cols Op Ar percentage
 Dialog with a bar to shows
 .Ar percentage ,

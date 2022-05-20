@@ -5,6 +5,7 @@ Next
 	* fix: avoid to overlay the backtitle setting a top margin.
 	* fix: avoid to overlay down shadow with menus and forms bottom desc
 		setting a down margin.
+	* fix: --form read only flag with multiple fields and documentation.
 
 	Library:
 	* fix: bsddialog_gauge() with fd < 0.
