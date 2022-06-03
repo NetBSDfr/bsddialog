@@ -122,4 +122,15 @@ in the _Public Domain_ to build new projects:
 % ./timebox
 % ./yesno
 ```
- 
+
+
+## TODO
+
+ - complete unicode (widechar) support
+ - refactoring forms
+ - add bsddialog\_inputbox() and bsddialog\_passwordbox() (to improve autosizing)
+ - add menubar feature
+ - add keys callback
+ - add bsddialog\_refresh()
+ - add bsddialog\_init\_withtheme()
+ - add --loadtheme
