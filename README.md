@@ -128,6 +128,7 @@ in the _Public Domain_ to build new projects:
 
  - complete unicode (widechar) support
  - refactoring forms
+ - fix form height (max y instead of nitems)
  - add bsddialog\_inputbox() and bsddialog\_passwordbox() (to improve autosizing)
  - add menubar feature
  - add keys callback
