@@ -12,6 +12,7 @@ Next
 	* fix: internal segmentation fault with disabled shadow.
 	* fix: new text refresh in bsddialog_gauge().
 	* fix: center position without shadow.
+	* fix: text wrapping with more than 1024 words.
 	* add: conf.auto_topmargin and conf.auto_downmargin.
 
 2022-03-02 version 0.2
