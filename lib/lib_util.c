@@ -37,8 +37,8 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define TABLEN     4    /* Default tab len */
-#define ERRBUFLEN  1024 /* Error buffer    */
+#define TABLEN     4    /* Default tab len  */
+#define ERRBUFLEN  1024 /* Error buffer len */
 
 /* Error */
 static char errorbuffer[ERRBUFLEN];
