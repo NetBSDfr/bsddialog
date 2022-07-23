@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd May 14, 2022
+.Dd July 23, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -279,6 +279,7 @@ library.
 .Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
+	bool api_wchar;
 	bool ascii_lines;
 	unsigned int auto_minheight;
 	unsigned int auto_minwidth;
@@ -333,6 +334,16 @@ struct bsddialog_conf {
 .Ed
 .Pp
 .Bl -column -compact
+.It Fa conf.api_wchar
+The library considers each
+.Fa char
+or
+.Fa char*
+parameter like a
+.Fa wchar_t
+or
+.Fa wchar_t*
+value internally.
 .It Fa conf.ascii_lines
 ascii characters to draw lines, default wide characters.
 .It Fa conf.auto_minheight

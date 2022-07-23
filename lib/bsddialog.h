@@ -68,6 +68,7 @@
 #define BSDDIALOG_FIELDREADONLY  2U
 
 struct bsddialog_conf {
+	bool api_wchar;
 	bool ascii_lines;
 	unsigned int auto_minheight;
 	unsigned int auto_minwidth;
