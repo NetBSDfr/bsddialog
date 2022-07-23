@@ -9,6 +9,7 @@
  */
 
 #include <bsddialog.h>
+#include <locale.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -17,6 +18,8 @@ int main()
 	int output;
 	struct bsddialog_conf conf;
 
+	setlocale(LC_ALL, "");
+
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);
@@ -24,7 +27,7 @@ int main()
 
 	bsddialog_initconf(&conf);
 	conf.title = "msgbox";
-	output = bsddialog_msgbox(&conf, "Example", 7, 20);
+	output = bsddialog_msgbox(&conf, "あいうえお 漢字", 10, 50);
 
 	bsddialog_end();
 
