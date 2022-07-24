@@ -134,4 +134,6 @@ in the _Public Domain_ to build new projects:
  - add keys callback
  - add bsddialog\_refresh()
  - add bsddialog\_init\_withtheme()
+ - add bsddialog\_init\_withdeftheme()
+ - add bsddialog\_init\_withoutrefresh()
  - add --loadtheme
