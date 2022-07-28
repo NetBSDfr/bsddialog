@@ -146,3 +146,4 @@ in the _Public Domain_ to build new projects:
  - add bsddialog\_init\_withdeftheme()
  - add bsddialog\_init\_withoutrefresh()
  - add --loadtheme
+ - add --savetheme
