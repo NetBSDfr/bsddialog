@@ -126,7 +126,7 @@ in the _Public Domain_ to build new projects:
 
 ## TODO
 
- - complete unicode (widechar) support - Library
+ - Library unicode (widechar), conf.api\_wchar
    - bottons
    - title
    - subtitle
@@ -134,7 +134,8 @@ in the _Public Domain_ to build new projects:
    - menus (name, desc)
    - forms (label, field)
    - borders
- - unicode support - Utility
+   - backtitle
+ - Utility unicode
  - refactoring forms
  - fix form height (max y instead of nitems)
  - add bsddialog\_inputbox() and bsddialog\_passwordbox() (to improve autosizing)
