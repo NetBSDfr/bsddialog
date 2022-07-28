@@ -12,6 +12,7 @@
 #include <locale.h>
 #include <stdio.h>
 #include <string.h>
+#include <wchar.h>
 
 int main()
 {
@@ -26,8 +27,9 @@ int main()
 	}
 
 	bsddialog_initconf(&conf);
-	conf.title = "msgbox";
-	output = bsddialog_msgbox(&conf, "あいうえお 漢字", 10, 50);
+	conf.api_wchar = true;
+	conf.title = (const char *) L"Hello, World! 你好，世界! ひらがな カタカナ 漢字 프로그램";
+	output = bsddialog_msgbox(&conf, "Example", 0, 0);
 
 	bsddialog_end();
 

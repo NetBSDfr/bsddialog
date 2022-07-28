@@ -128,7 +128,7 @@ in the _Public Domain_ to build new projects:
 
  - Library unicode (widechar), conf.api\_wchar
    - bottons
-   - title
+   - ~~title~~
    - subtitle
    - text
    - menus (name, desc)

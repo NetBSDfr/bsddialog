@@ -53,6 +53,37 @@ void set_error_string(const char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
+/* Unicode */
+int struilen(struct bsddialog_conf *conf, const char *string)
+{
+	int i, len, tot;
+	wchar_t *wstring;
+
+	tot = 0;
+	if (conf->api_wchar) {
+		i = 0;
+		wstring = (wchar_t *)string;
+		for (i = 0; (len = (wcwidth(wstring[i]))) > 0; i++)
+			tot += len;
+		if (len < 0)
+			RETURN_ERROR("Not printable widechar");
+	}
+	else
+		tot = strlen(string);
+
+	return (tot);
+}
+
+void
+drawstr(struct bsddialog_conf *conf, WINDOW *window, int y, int x,
+    const char *string)
+{
+	if (conf->api_wchar)
+		mvwaddwstr(window, y, x, (const wchar_t*)string);
+	else
+		mvwaddstr(window, y, x, string);
+}
+
 /* Clear */
 int hide_widget(int y, int x, int h, int w, bool withshadow)
 {
@@ -80,7 +111,8 @@ int f1help(struct bsddialog_conf *conf)
 	struct bsddialog_conf hconf;
 
 	bsddialog_initconf(&hconf);
-	hconf.title           = "HELP";
+	hconf.api_wchar       = conf->api_wchar;
+	hconf.title           = hconf.api_wchar ? (const char*)L"HELP" : "HELP";
 	hconf.button.ok_label = "EXIT";
 	hconf.clear           = true;
 	hconf.ascii_lines     = conf->ascii_lines;
@@ -659,7 +691,7 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
     struct buttons *bs)
 
 {
-	int min, delimtitle;
+	int min, delimtitle, wtitle;
 
 	min = 0;
 
@@ -677,7 +709,9 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	/* title */
 	if (conf->title != NULL) {
 		delimtitle = t.dialog.delimtitle ? 2 : 0;
-		min = MAX(min, (int)strlen(conf->title) + 2 + delimtitle);
+		wtitle = struilen(conf, conf->title);
+		// XXX if wtitle < 0 return ERROR
+		min = MAX(min, wtitle + 2 + delimtitle);
 	}
 
 	/* bottom title */
@@ -835,7 +869,7 @@ static int
 draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
     WINDOW *textpad, const char *text, struct buttons *bs, bool shortcutbuttons)
 {
-	int h, w, ts, ltee, rtee;
+	int h, w, wtitle, ts, ltee, rtee;
 
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
 	ltee = conf->ascii_lines ? '+' : ACS_LTEE;
@@ -849,13 +883,15 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	draw_borders(conf, widget, h, w, RAISED);
 
 	if (conf->title != NULL) {
+		if ((wtitle = struilen(conf, conf->title)) < 0)
+			return (BSDDIALOG_ERROR);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
 			wattron(widget, t.dialog.lineraisecolor);
-			mvwaddch(widget, 0, w/2-strlen(conf->title)/2-1, rtee);
+			mvwaddch(widget, 0, w/2 - wtitle/2 -1, rtee);
 			wattroff(widget, t.dialog.lineraisecolor);
 		}
 		wattron(widget, t.dialog.titlecolor);
-		mvwaddstr(widget, 0, w/2 - strlen(conf->title)/2, conf->title);
+		drawstr(conf, widget, 0, w/2 - wtitle/2, conf->title);
 		wattroff(widget, t.dialog.titlecolor);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
 			wattron(widget, t.dialog.lineraisecolor);
