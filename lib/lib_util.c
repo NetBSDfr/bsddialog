@@ -75,13 +75,22 @@ int struilen(struct bsddialog_conf *conf, const char *string)
 }
 
 void
-drawstr(struct bsddialog_conf *conf, WINDOW *window, int y, int x,
+mvdrawstr(struct bsddialog_conf *conf, WINDOW *window, int y, int x,
     const char *string)
 {
 	if (conf->api_wchar)
 		mvwaddwstr(window, y, x, (const wchar_t*)string);
 	else
 		mvwaddstr(window, y, x, string);
+}
+
+void
+drawstr(struct bsddialog_conf *conf, WINDOW *window, const char *string)
+{
+	if (conf->api_wchar)
+		waddwstr(window, (const wchar_t*)string);
+	else
+		waddstr(window, string);
 }
 
 /* Clear */
@@ -691,7 +700,7 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
     struct buttons *bs)
 
 {
-	int min, delimtitle, wtitle;
+	int min, delimtitle, wbottomtitle, wtitle;
 
 	min = 0;
 
@@ -715,8 +724,11 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	}
 
 	/* bottom title */
-	if (conf->bottomtitle != NULL)
-		min = MAX(min, (int)strlen(conf->bottomtitle) + 4);
+	if (conf->bottomtitle != NULL) {
+		wbottomtitle = struilen(conf, conf->bottomtitle);
+		// XXX if wbottomtitle < 0 return ERROR
+		min = MAX(min, wbottomtitle + 4);
+	}
 
 	/* dialog borders */
 	min += VBORDERS;
@@ -869,7 +881,7 @@ static int
 draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
     WINDOW *textpad, const char *text, struct buttons *bs, bool shortcutbuttons)
 {
-	int h, w, wtitle, ts, ltee, rtee;
+	int h, w, wtitle, wbottomtitle, ts, ltee, rtee;
 
 	ts = conf->ascii_lines ? '-' : ACS_HLINE;
 	ltee = conf->ascii_lines ? '+' : ACS_LTEE;
@@ -891,7 +903,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 			wattroff(widget, t.dialog.lineraisecolor);
 		}
 		wattron(widget, t.dialog.titlecolor);
-		drawstr(conf, widget, 0, w/2 - wtitle/2, conf->title);
+		mvdrawstr(conf, widget, 0, w/2 - wtitle/2, conf->title);
 		wattroff(widget, t.dialog.titlecolor);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
 			wattron(widget, t.dialog.lineraisecolor);
@@ -915,10 +927,12 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	}
 
 	if (conf->bottomtitle != NULL) {
+		if ((wbottomtitle = struilen(conf, conf->bottomtitle)) < 0)
+			return (BSDDIALOG_ERROR);
 		wattron(widget, t.dialog.bottomtitlecolor);
-		wmove(widget, h - 1, w/2 - strlen(conf->bottomtitle)/2 - 1);
+		wmove(widget, h - 1, w/2 - wbottomtitle/2 - 1);
 		waddch(widget, ' ');
-		waddstr(widget, conf->bottomtitle);
+		drawstr(conf, widget, conf->bottomtitle);
 		waddch(widget, ' ');
 		wattroff(widget, t.dialog.bottomtitlecolor);
 	}

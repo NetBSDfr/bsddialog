@@ -129,7 +129,7 @@ in the _Public Domain_ to build new projects:
  - Library unicode (widechar), conf.api\_wchar
    - bottons
    - ~~title~~
-   - subtitle
+   - ~~bottomtitle~~
    - text
    - menus (name, desc)
    - forms (label, field)
