@@ -87,7 +87,6 @@ static size_t mbstr_cols(const char *string)
 		nchar++;
 	}
 
-	BSDDIALOG_DEBUG(2,2, "ncol: %u|", ncol);
 	return (ncol);
 }
 
