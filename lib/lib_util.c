@@ -54,7 +54,7 @@ void set_error_string(const char *str)
 }
 
 /* Unicode - multibyte characters, proof of concept for now */
-static size_t mbstr_chars(char *string)
+/*static size_t mbstr_chars(char *string)
 {
 	size_t charlen, nchar;
 	mbstate_t mbs;
@@ -68,7 +68,7 @@ static size_t mbstr_chars(char *string)
 	}
 
 	return (nchar);
-}
+}*/
 
 static size_t mbstr_cols(const char *string)
 {
@@ -105,7 +105,6 @@ static int struilen(struct bsddialog_conf *conf, const char *string)
 			RETURN_ERROR("Not printable widechar");
 	}
 	else {
-		//tot = strlen(string);
 
 		//wchar_t wc[2000];
 		//mbstowcs(wc, string, 2000);
