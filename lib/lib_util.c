@@ -170,13 +170,14 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 	mvwaddch(window, y, x + i, t.button.rightdelim);
 	wattroff(window, color_arrows);
 
-	x = x + 1 + ((size - 2 - strlen(text))/2);
+	x = x + 1 + ((size - 2 - mbstr_cols(text))/2);
 	wattron(window, color_button);
 	mvwaddstr(window, y, x, text);
 	wattroff(window, color_button);
 
 	if (shortcut) {
 		wattron(window, color_shortkey);
+		// XXX 
 		mvwaddch(window, y, x, text[0]);
 		wattroff(window, color_shortkey);
 	}
@@ -268,9 +269,9 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 		}
 	}
 
-	bs->sizebutton = MAX(SIZEBUTTON - 2, strlen(bs->label[0]));
+	bs->sizebutton = MAX(SIZEBUTTON - 2, mbstr_cols(bs->label[0]));
 	for (i = 1; i < (int)bs->nbuttons; i++)
-		bs->sizebutton = MAX(bs->sizebutton, strlen(bs->label[i]));
+		bs->sizebutton = MAX((int)bs->sizebutton, mbstr_cols(bs->label[i]));
 	bs->sizebutton += 2;
 }
 
