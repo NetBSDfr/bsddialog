@@ -54,21 +54,29 @@ void set_error_string(const char *str)
 }
 
 /* Unicode. To improve, proof of concept for now */
-/*static size_t mbstr_chars(char *string)
+static wchar_t* mbstr_to_wstr(char *mbstring)
 {
 	size_t charlen, nchar;
 	mbstate_t mbs;
+	char *pmbstring;
+	wchar_t *wstring;
 
 	nchar = 0;
+	pmbstring = mbstring;
 	memset(&mbs, 0, sizeof(mbs));
-	while ((charlen = mbrlen(string, MB_CUR_MAX, &mbs)) != 0 &&
+	// XXX mblen?
+	while ((charlen = mbrlen(pmbstring, MB_CUR_MAX, &mbs)) != 0 &&
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
-		string += charlen;
+		// XXX check/return errors
+		pmbstring += charlen;
 		nchar++;
 	}
 
-	return (nchar);
-}*/
+	wstring = calloc(nchar + 1, sizeof(wchar_t));
+	mbstowcs(wstring, mbstring, nchar);
+
+	return (wstring);
+}
 
 static int mbstr_cols(const char *string)
 {
