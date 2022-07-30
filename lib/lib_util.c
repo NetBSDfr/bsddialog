@@ -53,7 +53,7 @@ void set_error_string(const char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
-/* Unicode - multibyte characters, proof of concept for now */
+/* Unicode. To improve, proof of concept for now */
 /*static size_t mbstr_chars(char *string)
 {
 	size_t charlen, nchar;
