@@ -20,7 +20,7 @@ examples_library/rangebox
 examples_library/sade
 examples_library/timebox
 examples_library/yesno
-examples_library/w_msgbox
+examples_library/u_msgbox
 *.gz
 lib/libbsddialog.so*
 BSDDIALOG.geany

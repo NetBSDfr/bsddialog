@@ -53,8 +53,45 @@ void set_error_string(const char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
-/* Unicode */
-int struilen(struct bsddialog_conf *conf, const char *string)
+/* Unicode - multibyte characters, proof of concept for now */
+static size_t mbstr_chars(char *string)
+{
+	size_t charlen, nchar;
+	mbstate_t mbs;
+
+	nchar = 0;
+	memset(&mbs, 0, sizeof(mbs));
+	while ((charlen = mbrlen(string, MB_CUR_MAX, &mbs)) != 0 &&
+	    charlen != (size_t)-1 && charlen != (size_t)-2) {
+		string += charlen;
+		nchar++;
+	}
+
+	return (nchar);
+}
+
+static size_t mbstr_cols(const char *string)
+{
+	size_t charlen, nchar, ncol;
+	mbstate_t mbs;
+	wchar_t wch;
+	// XXX maybe mb_cur_max = MB_CUR_MAX; MB_CUR_MAX calls a function
+
+	ncol = nchar = 0;
+	memset(&mbs, 0, sizeof(mbs));
+	while ((charlen = mbrlen(string, MB_CUR_MAX, &mbs)) != 0 &&
+	    charlen != (size_t)-1 && charlen != (size_t)-2) {
+		mbtowc(&wch, string, MB_CUR_MAX);
+		ncol += wcwidth(wch);
+		string += charlen;
+		nchar++;
+	}
+
+	BSDDIALOG_DEBUG(2,2, "ncol: %u|", ncol);
+	return (ncol);
+}
+
+static int struilen(struct bsddialog_conf *conf, const char *string)
 {
 	int i, len, tot;
 	wchar_t *wstring;
@@ -68,29 +105,17 @@ int struilen(struct bsddialog_conf *conf, const char *string)
 		if (len < 0)
 			RETURN_ERROR("Not printable widechar");
 	}
-	else
-		tot = strlen(string);
+	else {
+		//tot = strlen(string);
+
+		//wchar_t wc[2000];
+		//mbstowcs(wc, string, 2000);
+		//tot = wcswidth(wc,2000);
+
+		tot = (int) mbstr_cols(string);
+	}
 
 	return (tot);
-}
-
-void
-mvdrawstr(struct bsddialog_conf *conf, WINDOW *window, int y, int x,
-    const char *string)
-{
-	if (conf->api_wchar)
-		mvwaddwstr(window, y, x, (const wchar_t*)string);
-	else
-		mvwaddstr(window, y, x, string);
-}
-
-void
-drawstr(struct bsddialog_conf *conf, WINDOW *window, const char *string)
-{
-	if (conf->api_wchar)
-		waddwstr(window, (const wchar_t*)string);
-	else
-		waddstr(window, string);
 }
 
 /* Clear */
@@ -903,7 +928,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 			wattroff(widget, t.dialog.lineraisecolor);
 		}
 		wattron(widget, t.dialog.titlecolor);
-		mvdrawstr(conf, widget, 0, w/2 - wtitle/2, conf->title);
+		mvwaddstr(widget, 0, w/2 - wtitle/2, conf->title);
 		wattroff(widget, t.dialog.titlecolor);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
 			wattron(widget, t.dialog.lineraisecolor);
@@ -932,7 +957,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 		wattron(widget, t.dialog.bottomtitlecolor);
 		wmove(widget, h - 1, w/2 - wbottomtitle/2 - 1);
 		waddch(widget, ' ');
-		drawstr(conf, widget, conf->bottomtitle);
+		waddstr(widget, conf->bottomtitle);
 		waddch(widget, ' ');
 		wattroff(widget, t.dialog.bottomtitlecolor);
 	}
