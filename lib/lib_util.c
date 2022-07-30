@@ -70,7 +70,7 @@ void set_error_string(const char *str)
 	return (nchar);
 }*/
 
-static size_t mbstr_cols(const char *string)
+static int mbstr_cols(const char *string)
 {
 	size_t charlen, nchar, ncol;
 	mbstate_t mbs;
@@ -81,39 +81,19 @@ static size_t mbstr_cols(const char *string)
 	memset(&mbs, 0, sizeof(mbs));
 	while ((charlen = mbrlen(string, MB_CUR_MAX, &mbs)) != 0 &&
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
+		// XXX check/return errors
 		mbtowc(&wch, string, MB_CUR_MAX);
 		ncol += wcwidth(wch);
 		string += charlen;
 		nchar++;
 	}
 
+	// old solution
+	//wchar_t wc[2000];
+	//mbstowcs(wc, string, 2000);
+	//tot = wcswidth(wc,2000);
+
 	return (ncol);
-}
-
-static int struilen(struct bsddialog_conf *conf, const char *string)
-{
-	int i, len, tot;
-	wchar_t *wstring;
-
-	tot = 0;
-	if (conf->api_wchar) {
-		i = 0;
-		wstring = (wchar_t *)string;
-		for (i = 0; (len = (wcwidth(wstring[i]))) > 0; i++)
-			tot += len;
-		if (len < 0)
-			RETURN_ERROR("Not printable widechar");
-	}
-	else {
-
-		//wchar_t wc[2000];
-		//mbstowcs(wc, string, 2000);
-		//tot = wcswidth(wc,2000);
-
-		tot = (int) mbstr_cols(string);
-	}
-
-	return (tot);
 }
 
 /* Clear */
@@ -741,14 +721,14 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	/* title */
 	if (conf->title != NULL) {
 		delimtitle = t.dialog.delimtitle ? 2 : 0;
-		wtitle = struilen(conf, conf->title);
+		wtitle = mbstr_cols(conf->title);
 		// XXX if wtitle < 0 return ERROR
 		min = MAX(min, wtitle + 2 + delimtitle);
 	}
 
 	/* bottom title */
 	if (conf->bottomtitle != NULL) {
-		wbottomtitle = struilen(conf, conf->bottomtitle);
+		wbottomtitle = mbstr_cols(conf->bottomtitle);
 		// XXX if wbottomtitle < 0 return ERROR
 		min = MAX(min, wbottomtitle + 4);
 	}
@@ -918,7 +898,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	draw_borders(conf, widget, h, w, RAISED);
 
 	if (conf->title != NULL) {
-		if ((wtitle = struilen(conf, conf->title)) < 0)
+		if ((wtitle = mbstr_cols(conf->title)) < 0)
 			return (BSDDIALOG_ERROR);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
 			wattron(widget, t.dialog.lineraisecolor);
@@ -950,7 +930,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	}
 
 	if (conf->bottomtitle != NULL) {
-		if ((wbottomtitle = struilen(conf, conf->bottomtitle)) < 0)
+		if ((wbottomtitle = mbstr_cols(conf->bottomtitle)) < 0)
 			return (BSDDIALOG_ERROR);
 		wattron(widget, t.dialog.bottomtitlecolor);
 		wmove(widget, h - 1, w/2 - wbottomtitle/2 - 1);
