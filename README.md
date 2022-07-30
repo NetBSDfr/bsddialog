@@ -127,7 +127,7 @@ in the _Public Domain_ to build new projects:
 ## TODO
 
  - Complete unicode support
-   - bottons
+   - ~~bottons~~
    - ~~title~~
    - ~~bottomtitle~~
    - text
