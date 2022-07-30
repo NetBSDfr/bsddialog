@@ -123,8 +123,7 @@ int f1help(struct bsddialog_conf *conf)
 	struct bsddialog_conf hconf;
 
 	bsddialog_initconf(&hconf);
-	hconf.api_wchar       = conf->api_wchar;
-	hconf.title           = hconf.api_wchar ? (const char*)L"HELP" : "HELP";
+	hconf.title           = "HELP";
 	hconf.button.ok_label = "EXIT";
 	hconf.clear           = true;
 	hconf.ascii_lines     = conf->ascii_lines;
