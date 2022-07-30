@@ -133,7 +133,6 @@ in the _Public Domain_ to build new projects:
    - text
    - menus (name, desc)
    - forms (label, field)
-   - borders
    - ~~backtitle~~
  - refactoring forms
  - fix form height (max y instead of nitems)
