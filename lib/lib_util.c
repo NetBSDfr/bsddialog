@@ -177,7 +177,7 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 
 	if (shortcut) {
 		wattron(window, color_shortkey);
-		// XXX 
+		// XXX TODO MB
 		mvwaddch(window, y, x, text[0]);
 		wattroff(window, color_shortkey);
 	}
