@@ -235,7 +235,7 @@ static void usage(void)
 int main(int argc, char *argv[argc])
 {
 	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
-	bool esc_cancelvalue_opt, ignore_opt, print_maxsize_opt;;
+	bool esc_cancelvalue_opt, ignore_opt, print_maxsize_opt;
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
