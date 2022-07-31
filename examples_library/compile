@@ -12,6 +12,8 @@ libpath=../lib
 examples="menu checklist radiolist mixedlist theme infobox yesno msgbox \
 	datebox form formw timebox rangebox pause"
 
+rm -f $examples
+
 for e in $examples
 do
 	cc -g -Wall -Wextra -I$libpath ${e}.c -o $e -L$libpath -lbsddialog \
