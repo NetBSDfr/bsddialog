@@ -236,6 +236,7 @@ int main(int argc, char *argv[argc])
 {
 	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
 	bool esc_cancelvalue_opt, ignore_opt, print_maxsize_opt;
+	bool textfromfile;
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
@@ -259,6 +260,7 @@ int main(int argc, char *argv[argc])
 	ignore_opt = false;
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
 	esc_cancelvalue_opt = false;
+	textfromfile = false;
 	errorbuilder[0] = '\0';
 
 	item_output_sepnl_opt = item_singlequote_opt = false;
@@ -631,6 +633,7 @@ int main(int argc, char *argv[argc])
 			break;
 		case TEXTBOX:
 			dialogbuilder = textbox_builder;
+			textfromfile = true;
 			break;
 		case TIMEBOX:
 			dialogbuilder = timebox_builder;
@@ -665,7 +668,7 @@ int main(int argc, char *argv[argc])
 		usage();
 		return (255);
 	}
-	if (dialogbuilder == textbox_builder)
+	if (textfromfile) /* textbox */
 		text = argv[0];
 	else {
 		if ((text = malloc(strlen(argv[0]) + 1)) == NULL) {
@@ -700,7 +703,7 @@ int main(int argc, char *argv[argc])
 		output = dialogbuilder(conf, text, rows, cols, argc, argv,
 		    errorbuilder);
 
-	if (dialogbuilder != textbox_builder)
+	if (textfromfile == false)
 		free(text);
 
 	bsddialog_end();
