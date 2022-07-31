@@ -26,8 +26,8 @@ int main()
 	}
 
 	bsddialog_initconf(&conf);
-	conf.title = "Hello, World! 你好，世界! ひらがな カタカナ 漢字 프로그램";
-	output = bsddialog_msgbox(&conf, "Example", 0, 0);
+	output = bsddialog_msgbox(&conf,
+	    "Hello, World! 你好，世界! ひらがな カタカナ 漢字 프로그램", 0, 0);
 
 	bsddialog_end();
 

@@ -54,11 +54,11 @@ void set_error_string(const char *str)
 }
 
 /* Unicode. To improve, proof of concept for now */
-static wchar_t* mbstr_to_wstr(char *mbstring)
+static wchar_t* mbstr_to_wstr(const char *mbstring)
 {
 	size_t charlen, nchar;
 	mbstate_t mbs;
-	char *pmbstring;
+	const char *pmbstring;
 	wchar_t *wstring;
 
 	nchar = 0;
@@ -310,7 +310,7 @@ bool shortcut_buttons(int key, struct buttons *bs)
 	return (match);
 }
 
-/* Text */
+/* Text in unicode, */
 static bool is_text_attr(const char *text)
 {
 	if (strnlen(text, 3) < 3)
@@ -322,37 +322,49 @@ static bool is_text_attr(const char *text)
 	return (strchr("nbBrRuU01234567", text[2]) == NULL ? false : true);
 }
 
-static bool check_set_text_attr(WINDOW *win, char *text)
+static bool is_wtext_attr(const wchar_t *wtext)
 {
-	if (is_text_attr(text) == false)
+	if (wcsnlen(wtext, 3) < 3)
 		return (false);
 
-	if ((text[2] - '0') >= 0 && (text[2] - '0') < 8) {
-		wattron(win, bsddialog_color(text[2] - '0', COLOR_WHITE, 0));
+	if (wtext[0] != L'\\' || wtext[1] != L'Z')
+		return (false);
+
+	return (wcschr(L"nbBrRuU01234567", wtext[2]) == NULL ? false : true);
+}
+
+static bool check_set_wtext_attr(WINDOW *win, wchar_t *wtext)
+{
+	if (is_wtext_attr(wtext) == false)
+		return (false);
+
+	if ((wtext[2] - L'0') >= 0 && (wtext[2] - L'0') < 8) {
+		// XXX check wchar and COLOR_WHITE
+		wattron(win, bsddialog_color(wtext[2] - L'0', COLOR_WHITE, 0));
 		return (true);
 	}
 
-	switch (text[2]) {
-	case 'n':
+	switch (wtext[2]) {
+	case L'n':
 		wattron(win, t.dialog.color);
 		wattrset(win, A_NORMAL);
 		break;
-	case 'b':
+	case L'b':
 		wattron(win, A_BOLD);
 		break;
-	case 'B':
+	case L'B':
 		wattroff(win, A_BOLD);
 		break;
-	case 'r':
+	case L'r':
 		wattron(win, A_REVERSE);
 		break;
-	case 'R':
+	case L'R':
 		wattroff(win, A_REVERSE);
 		break;
-	case 'u':
+	case L'u':
 		wattron(win, A_UNDERLINE);
 		break;
-	case 'U':
+	case L'U':
 		wattroff(win, A_UNDERLINE);
 		break;
 	}
@@ -361,20 +373,24 @@ static bool check_set_text_attr(WINDOW *win, char *text)
 }
 
 static void
-print_string(WINDOW *win, int *rows, int cols, int *y, int *x, char *str,
+print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
     bool color)
 {
 	int i, j, len, reallen;
+	wchar_t *ws = malloc(10);
+	ws[1] = L'\0';
 
-	len = reallen = strlen(str);
+	len = wcslen(str);
 	if (color) {
+		reallen = 0;
 		i=0;
 		while (i < len) {
-			if (is_text_attr(str+i))
-				reallen -= 3;
+			if (is_wtext_attr(str+i) == false)
+				reallen += wcwidth(str[i]);
 			i++;
 		}
-	}
+	} else
+		reallen = wcswidth(str, len);
 
 	i = 0;
 	while (i < len) {
@@ -388,13 +404,19 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, char *str,
 		}
 		j = *x;
 		while (j < cols && i < len) {
-			if (color && check_set_text_attr(win, str+i)) {
+			if (color && check_set_wtext_attr(win, str+i)) {
 				i += 3;
+			} else if (j + wcwidth(str[i]) > cols) {
+				break;
 			} else {
-				mvwaddch(win, *y, j, str[i]);
+				// XXX print widechar?
+				ws[0] = str[i];
+				mvwaddwstr(win, *y, j, ws);
+				//wctomb(mb, str[i]);
+				//mvwaddch(win, *y, j, mb);
+				reallen -= wcwidth(str[i]);
+				j += wcwidth(str[i]);
 				i++;
-				reallen--;
-				j++;
 				*x = j;
 			}
 		}
@@ -406,9 +428,12 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 {
 	bool loop;
 	int i, j, z, rows, cols, x, y, tablen;
-	char *string;
+	wchar_t *wtext, *string;
 
-	if ((string = malloc(strlen(text) + 1)) == NULL)
+	// XXX check/return error
+	wtext = mbstr_to_wstr(text);
+
+	if ((string = calloc(wcslen(wtext) + 1, sizeof(wchar_t))) == NULL)
 		RETURN_ERROR("Cannot build (analyze) text");
 
 	getmaxyx(pad, rows, cols);
@@ -417,24 +442,24 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 	i = j = x = y = 0;
 	loop = true;
 	while (loop) {
-		string[j] = text[i];
+		string[j] = wtext[i];
 
-		if (strchr("\n\t  ", string[j]) != NULL || string[j] == '\0') {
-			string[j] = '\0';
+		if (wcschr(L"\n\t  ", string[j]) != NULL || string[j] == L'\0') {
+			string[j] = L'\0';
 			print_string(pad, &rows, cols, &y, &x, string,
 			    conf->text.highlight);
 		}
 
-		switch (text[i]) {
-		case '\0':
+		switch (wtext[i]) {
+		case L'\0':
 			loop = false;
 			break;
-		case '\n':
+		case L'\n':
 			x = 0;
 			y++;
 			j = -1;
 			break;
-		case '\t':
+		case L'\t':
 			for (z = 0; z < tablen; z++) {
 				if (x >= cols) {
 					x = 0;
@@ -462,6 +487,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 		i++;
 	}
 
+	free(wtext);
 	free(string);
 
 	return (0);
