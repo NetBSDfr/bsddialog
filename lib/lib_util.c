@@ -400,7 +400,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 			} else if (j + wcwidth(str[i]) > cols) {
 				break;
 			} else {
-				// XXX print widechar?
+				// XXX print mb?
 				ws[0] = str[i];
 				mvwaddwstr(win, *y, j, ws);
 				//wctomb(mb, str[i]);
