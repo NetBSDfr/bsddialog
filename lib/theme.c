@@ -254,6 +254,7 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 		t.dialog.delimtitle     = true;
 		t.button.leftdelim      = '[';
 		t.button.rightdelim     = ']';
+		t.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE);
 	}
 	else if (newtheme == BSDDIALOG_THEME_BSDDIALOG)
 		bsddialog_set_theme(&bsddialogtheme);
