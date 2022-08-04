@@ -127,11 +127,11 @@ in the _Public Domain_ to build new projects:
 ## TODO
 
  - Complete unicode support
-   - bottons (~~label~~, shortcut)
+   - bottons (~~label~~, shortcuts)
    - ~~title~~
    - ~~bottomtitle~~
    - ~~text (word wrapping, auto sizing)~~
-   - menus (shortcut, name, desc)
+   - menus (shortcuts, name, desc)
    - forms (label, field)
    - ~~backtitle~~
  - refactoring forms
