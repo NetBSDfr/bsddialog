@@ -127,21 +127,19 @@ in the _Public Domain_ to build new projects:
 ## TODO
 
  - Complete unicode support
-   - bottons (~~label~~, shortcuts)
+   - ~~backtitle~~
    - ~~title~~
-   - ~~bottomtitle~~
    - ~~text (word wrapping, auto sizing)~~
    - menus (shortcuts, name, desc)
    - forms (label, field)
-   - ~~backtitle~~
+   - bottons (~~label~~, shortcuts)
+   - ~~bottomtitle~~
  - refactoring forms
- - fix form height (max y instead of nitems)
+ - fix form height (items y instead of nitems)
  - add bsddialog\_inputbox() and bsddialog\_passwordbox() (to improve autosizing)
  - add menubar feature
- - add keys callback
- - add bsddialog\_refresh()
- - add bsddialog\_init\_withtheme()
- - add bsddialog\_init\_withdeftheme()
- - add bsddialog\_init\_withoutrefresh()
+ - add key callback
+ - add bsddialog\_init\_notheme()
+ - add bsddialog_hascolors()
  - add --loadtheme
  - add --savetheme
