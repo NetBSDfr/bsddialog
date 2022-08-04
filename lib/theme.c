@@ -34,6 +34,7 @@
 #define GET_COLOR(bg, fg) (COLOR_PAIR(bg * 8 + fg +1))
 
 struct bsddialog_theme t;
+bool hastermcolors;
 
 static struct bsddialog_theme bsddialogtheme = {
 #define bgwidget  COLOR_WHITE
@@ -282,4 +283,9 @@ bsddialog_color(enum bsddialog_color foreground,
 		cursesflags |= A_UNDERLINE;
 
 	return (GET_COLOR(foreground, background) | cursesflags);
+}
+
+bool bsddialog_hascolors(void)
+{
+	return hastermcolors;
 }

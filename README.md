@@ -139,7 +139,7 @@ in the _Public Domain_ to build new projects:
  - add bsddialog\_inputbox() and bsddialog\_passwordbox() (to improve autosizing)
  - add menubar feature
  - add key callback
- - add bsddialog\_init\_notheme()
- - add bsddialog_hascolors()
+ - ~~add bsddialog\_init\_notheme()~~
+ - ~~add bsddialog_hascolors()~~
  - add --loadtheme
  - add --savetheme

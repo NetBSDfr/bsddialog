@@ -158,6 +158,7 @@ struct bsddialog_formitem {
 };
 
 int bsddialog_init(void);
+int bsddialog_init_notheme(void);
 int bsddialog_end(void);
 int bsddialog_backtitle(struct bsddialog_conf *conf, const char *backtitle);
 int bsddialog_initconf(struct bsddialog_conf *conf);

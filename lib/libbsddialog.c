@@ -34,10 +34,11 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-int bsddialog_init(void)
+extern bool hastermcolors;
+
+int bsddialog_init_notheme(void)
 {
 	int i, j, c, error;
-	enum bsddialog_default_theme theme;
 
 	set_error_string("");
 
@@ -64,7 +65,18 @@ int bsddialog_init(void)
 		}
 	}
 
-	if (error == OK && has_colors())
+	hastermcolors = (error == OK && has_colors()) ? true : false;
+
+	return (BSDDIALOG_OK);
+}
+
+int bsddialog_init(void)
+{
+	enum bsddialog_default_theme theme;
+
+	bsddialog_init_notheme();
+
+	if (bsddialog_hascolors())
 		theme = BSDDIALOG_THEME_FLAT;
 	else
 		theme = BSDDIALOG_THEME_BLACKWHITE;

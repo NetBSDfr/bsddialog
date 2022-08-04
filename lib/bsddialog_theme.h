@@ -103,6 +103,7 @@ enum bsddialog_color {
 	BSDDIALOG_WHITE
 };
 
+bool bsddialog_hascolors(void);
 int
 bsddialog_color(enum bsddialog_color foreground,
     enum bsddialog_color background, unsigned int flags);

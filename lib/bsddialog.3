@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 30, 2022
+.Dd August 4, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -36,8 +36,10 @@
 .Nm bsddialog_gauge ,
 .Nm bsddialog_geterror ,
 .Nm bsddialog_get_theme ,
+.Nm bsddialog_hascolors ,
 .Nm bsddialog_infobox ,
 .Nm bsddialog_init ,
+.Nm bsddialog_init_notheme ,
 .Nm bsddialog_initconf ,
 .Nm bsddialog_menu ,
 .Nm bsddialog_mixedgauge ,
@@ -114,6 +116,8 @@
 .Fc
 .Ft int
 .Fn bsddialog_init "void"
+.Ft int
+.Fn bsddialog_init_notheme "void"
 .Ft int
 .Fn bsddialog_initconf "struct bsddialog_conf *conf"
 .Ft int
@@ -219,6 +223,8 @@
 .Fc
 .Ft int
 .Fn bsddialog_get_theme "struct bsddialog_theme *theme"
+.Ft bool
+.Fn bsddialog_hascolors "void"
 .Ft int
 .Fn bsddialog_set_default_theme "enum bsddialog_default_theme theme"
 .Ft int
@@ -239,6 +245,12 @@ API.
 restores the screen like before
 .Fn bsddialog_init ,
 then it is not possible to use the library functions.
+.Fn bsddialog_init_notheme
+is equivalent to
+.Fn bsddialog_init
+except it does not set the default graphical theme; see
+.Sx Theme
+subsection to set a theme explicitly.
 .Pp
 .Fn bsddialog_error
 returns a string to describe the last error, it should be called after a
@@ -859,6 +871,13 @@ and
 .Dv BSDDIALOG_THEME_DIALOG ,
 they can be set via
 .Fn bsddialog_set_default_theme .
+.Pp
+.Fn bsddialog_hascolors
+returns
+.Dv true
+if the terminal provides colors,
+.Dv false
+otherwise.
 .Sh RETURN VALUES
 The functions return the value
 .Dv BSDDIALOG_ERROR
