@@ -392,7 +392,7 @@ menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
 		RETURN_ERROR("Few cols, width < size buttons or "
 		    "name + descripion of the items");
 
-	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
+	textrow = text != NULL && text[0] != '\0' ? 1 : 0;
 
 	if (nitems > 0 && menurows == 0)
 		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "
