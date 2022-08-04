@@ -134,12 +134,15 @@ in the _Public Domain_ to build new projects:
    - forms (label, field)
    - bottons (~~label~~, shortcuts)
    - ~~bottomtitle~~
- - refactoring forms
- - fix form height (items y instead of nitems)
- - add bsddialog\_inputbox() and bsddialog\_passwordbox() (to improve autosizing)
+ - Forms
+   - refactoring formbox.c
+   - fix form height (items y instead of nitems)
+   - add bsddialog\_inputbox() (improve autosizing, focus on buttons)
+   - add bsddialog\_passwordbox() (improve autosizing, focus on buttons)
+ - Custom theme
+   - ~~add bsddialog\_init\_notheme()~~
+   - ~~add bsddialog_hascolors()~~
+   - add --loadtheme
+   - add --savetheme
  - add menubar feature
  - add key callback
- - ~~add bsddialog\_init\_notheme()~~
- - ~~add bsddialog_hascolors()~~
- - add --loadtheme
- - add --savetheme
