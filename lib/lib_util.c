@@ -311,18 +311,7 @@ bool shortcut_buttons(int key, struct buttons *bs)
 	return (match);
 }
 
-/* Text in unicode, */
-static bool is_text_attr(const char *text)
-{
-	if (strnlen(text, 3) < 3)
-		return (false);
-
-	if (text[0] != '\\' || text[1] != 'Z')
-		return (false);
-
-	return (strchr("nbBrRuU01234567", text[2]) == NULL ? false : true);
-}
-
+/* Text */
 static bool is_wtext_attr(const wchar_t *wtext)
 {
 	if (wcsnlen(wtext, 3) < 3)
@@ -373,6 +362,7 @@ static bool check_set_wtext_attr(WINDOW *win, wchar_t *wtext)
 	return (true);
 }
 
+/* Word Wrapping */
 static void
 print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
     bool color)
@@ -494,16 +484,19 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 	return (0);
 }
 
-/* Autosize */
+/* Text Autosize */
 static int
 text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
     int mincols, bool increasecols, int *h, int *w)
 {
-	int i, j, z, x, y;
-	int tablen, wordlen, maxwordlen, nword, maxwords, line, maxwidth;
+	int i, j, x, y, z, l, wtextlen;
+	int tablen, wordcols, maxwordlen, nword, maxwords, line, maxwidth;
+	const wchar_t *wtext;
+	uint8_t *wletters;
 	int *words;
-#define NL -1
-#define WS -2
+#define NL  -1
+#define WS  -2
+#define TB  -3
 
 	maxwords = 1024;
 	if ((words = calloc(maxwords, sizeof(int))) == NULL)
@@ -512,17 +505,23 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
 	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
 
+	// XXX check and return error
+	wtext = mbstr_to_wstr(text);
+	// XXX should mbstr_to_wstr() set wtextlen?
+	wtextlen = wcslen(wtext);
+	wletters = calloc(wtextlen, sizeof(uint8_t)); //XXX needs only 2 bit
+
 	nword = 0;
-	wordlen = 0;
+	wordcols = 0;
 	maxwordlen = 0;
-	i=0;
-	while (true) {
-		if (conf->text.highlight && is_text_attr(text + i)) {
+	l = 0;
+	for (i = 0; i < wtextlen + 1; i++) {
+		if (conf->text.highlight && is_wtext_attr(wtext + i)) {
 			i += 3;
 			continue;
 		}
 
-		if (nword + tablen + 1 >= maxwords) {
+		if (nword + 1 >= maxwords) {
 			maxwords += 1024;
 			words = realloc(words, maxwords * sizeof(int));
 			if (words == NULL)
@@ -530,34 +529,39 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 				    "autosize");
 		}
 
-		if (text[i] == '\0') {
-			words[nword] = wordlen;
-			maxwordlen = MAX(wordlen, maxwordlen);
+		// out for?
+		if (wtext[i] == L'\0') {
+			words[nword] = wordcols;
+			maxwordlen = MAX(wordcols, maxwordlen);
 			break;
 		}
 
-		if (strchr("\t\n  ", text[i]) != NULL) {
-			maxwordlen = MAX(wordlen, maxwordlen);
+		if (wcschr(L"\t\n  ", wtext[i]) != NULL) {
+			maxwordlen = MAX(wordcols, maxwordlen);
 
-			if (wordlen != 0) {
-				words[nword] = wordlen;
+			if (wordcols != 0) {
+				words[nword] = wordcols;
 				nword++;
-				wordlen = 0;
+				wordcols = 0;
 			}
 
-			if (text[i] == '\t') {
-				for (j = 0; j < tablen; j++)
-					words[nword + j] = 1;
-				nword += tablen;
-			} else {
-				words[nword] = text[i] == '\n' ? NL : WS;
-				nword++;
+			switch (wtext[i]) {
+			case L'\t':
+				words[nword] = TB;
+				break;
+			case L'\n':
+				words[nword] = NL;
+				break;
+			case L' ':
+				words[nword] = WS;
+				break;
 			}
+			nword++;
+		} else {
+			wletters[l] = wcwidth(wtext[i]);
+			wordcols += wletters[l];
+			l++;
 		}
-		else
-			wordlen++;
-
-		i++;
 	}
 
 	if (increasecols) {
@@ -571,26 +575,46 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		x = 0;
 		y = 1;
 		line=0;
+		l = 0;
 		for (i = 0; i <= nword; i++) {
-			if (words[i] == NL) {
+			switch (words[i]) {
+			case TB:
+				for (j = 0; j < tablen; j++) {
+					if (x >= mincols) {
+						x = 0;
+						y++;
+					}
+				x++;
+				}
+				break;
+			case NL:
 				y++;
 				x = 0;
-			}
-			else if (words[i] == WS) {
+				break;
+			case WS:
 				x++;
 				if (x >= mincols) {
 					x = 0;
 					y++;
 				}
-			}
-			else {
-				if (words[i] + x <= mincols)
+				break;
+			default:
+				if (words[i] + x <= mincols) {
 					x += words[i];
-				else {
-					for (z = words[i]; z > 0; ) {
+					for (z = 0 ; z != words[i]; l++ )
+						z += wletters[l];
+				} else {
+					for (j = words[i]; j > 0; ) {
 						y++;
-						x = MIN(mincols, z);
-						z -= x;
+						//x = MIN(mincols, j);
+						//j -= x;
+						z = 0;
+						while (z != j && z < mincols) {
+							z += wletters[l];
+							l++;
+						}
+						x = z;
+						j -= z;
 					}
 				}
 			}
@@ -607,6 +631,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	*h = (nword == 0 && words[0] == 0) ? 0 : y;
 	*w = MIN(mincols, line); /* wtext can be less than mincols */
 
+	//XXX free(wtext);
 	free(words);
 
 	return (0);
