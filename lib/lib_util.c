@@ -79,7 +79,7 @@ static wchar_t* mbstr_to_wstr(const char *mbstring)
 	return (wstring);
 }
 
-static int mbstr_cols(const char *string)
+static int strcols(const char *string)
 {
 	size_t charlen, nchar, ncol;
 	mbstate_t mbs;
@@ -178,7 +178,7 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 	mvwaddch(window, y, x + i, t.button.rightdelim);
 	wattroff(window, color_arrows);
 
-	x = x + 1 + ((size - 2 - mbstr_cols(text))/2);
+	x = x + 1 + ((size - 2 - strcols(text))/2);
 	wattron(window, color_button);
 	mvwaddstr(window, y, x, text);
 	wattroff(window, color_button);
@@ -277,9 +277,9 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 		}
 	}
 
-	bs->sizebutton = MAX(SIZEBUTTON - 2, mbstr_cols(bs->label[0]));
+	bs->sizebutton = MAX(SIZEBUTTON - 2, strcols(bs->label[0]));
 	for (i = 1; i < (int)bs->nbuttons; i++)
-		bs->sizebutton = MAX((int)bs->sizebutton, mbstr_cols(bs->label[i]));
+		bs->sizebutton = MAX((int)bs->sizebutton, strcols(bs->label[i]));
 	bs->sizebutton += 2;
 }
 
@@ -781,14 +781,14 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	/* title */
 	if (conf->title != NULL) {
 		delimtitle = t.dialog.delimtitle ? 2 : 0;
-		wtitle = mbstr_cols(conf->title);
+		wtitle = strcols(conf->title);
 		// XXX if wtitle < 0 return ERROR
 		min = MAX(min, wtitle + 2 + delimtitle);
 	}
 
 	/* bottom title */
 	if (conf->bottomtitle != NULL) {
-		wbottomtitle = mbstr_cols(conf->bottomtitle);
+		wbottomtitle = strcols(conf->bottomtitle);
 		// XXX if wbottomtitle < 0 return ERROR
 		min = MAX(min, wbottomtitle + 4);
 	}
@@ -958,7 +958,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	draw_borders(conf, widget, h, w, RAISED);
 
 	if (conf->title != NULL) {
-		if ((wtitle = mbstr_cols(conf->title)) < 0)
+		if ((wtitle = strcols(conf->title)) < 0)
 			return (BSDDIALOG_ERROR);
 		if (t.dialog.delimtitle && conf->no_lines == false) {
 			wattron(widget, t.dialog.lineraisecolor);
@@ -990,7 +990,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	}
 
 	if (conf->bottomtitle != NULL) {
-		if ((wbottomtitle = mbstr_cols(conf->bottomtitle)) < 0)
+		if ((wbottomtitle = strcols(conf->bottomtitle)) < 0)
 			return (BSDDIALOG_ERROR);
 		wattron(widget, t.dialog.bottomtitlecolor);
 		wmove(widget, h - 1, w/2 - wbottomtitle/2 - 1);
