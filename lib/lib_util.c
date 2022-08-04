@@ -79,7 +79,7 @@ static wchar_t* mbstr_to_wstr(const char *mbstring)
 	return (wstring);
 }
 
-static int strcols(const char *string)
+int strcols(const char *mbstring)
 {
 	size_t charlen, nchar, ncol;
 	mbstate_t mbs;
@@ -88,12 +88,12 @@ static int strcols(const char *string)
 
 	ncol = nchar = 0;
 	memset(&mbs, 0, sizeof(mbs));
-	while ((charlen = mbrlen(string, MB_CUR_MAX, &mbs)) != 0 &&
+	while ((charlen = mbrlen(mbstring, MB_CUR_MAX, &mbs)) != 0 &&
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
 		// XXX check/return errors
-		mbtowc(&wch, string, MB_CUR_MAX);
+		mbtowc(&wch, mbstring, MB_CUR_MAX);
 		ncol += wcwidth(wch);
-		string += charlen;
+		mbstring += charlen;
 		nchar++;
 	}
 

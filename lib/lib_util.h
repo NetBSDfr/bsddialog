@@ -42,6 +42,9 @@ extern struct bsddialog_theme t;
 	refresh();				\
 } while (0)
 
+/* unicode */
+int strcols(const char *mbstring);
+
 /* error buffer */
 const char *get_error_string(void);
 void set_error_string(const char *string);
