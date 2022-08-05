@@ -177,9 +177,10 @@ getfastprev(int menurows, struct privateitem *pritems, int abs)
 
 static int
 getnextshortcut(struct bsddialog_conf *conf, int npritems,
-    struct privateitem *pritems, int abs, int key)
+    struct privateitem *pritems, int abs, wint_t key)
 {
-	int i, ch, next;
+	int i, next;
+	wchar_t wch;
 
 	next = -1;
 	for (i = 0; i < npritems; i++) {
@@ -187,11 +188,11 @@ getnextshortcut(struct bsddialog_conf *conf, int npritems,
 			continue;
 
 		if (conf->menu.no_name)
-			ch = pritems[i].item->desc[0];
+			mbtowc(&wch, pritems[i].item->desc, MB_CUR_MAX);
 		else
-			ch = pritems[i].item->name[0];
+			mbtowc(&wch, pritems[i].item->name, MB_CUR_MAX);
 
-		if (ch == key) {
+		if (wch == key) {
 			if (i > abs)
 				return (i);
 
@@ -236,12 +237,12 @@ drawseparators(struct bsddialog_conf *conf, WINDOW *pad, int linelen,
 		}
 		name = pritems[i].item->name;
 		desc = pritems[i].item->desc;
-		labellen = strlen(name) + strlen(desc) + 1;
+		labellen = strcols(name) + strcols(desc) + 1;
 		wmove(pad, i, labellen < linelen ? linelen/2 - labellen/2 : 0);
 		wattron(pad, t.menu.namesepcolor);
 		waddstr(pad, name);
 		wattroff(pad, t.menu.namesepcolor);
-		if (strlen(name) > 0 && strlen(desc) > 0)
+		if (strcols(name) > 0 && strcols(desc) > 0)
 			waddch(pad, ' ');
 		wattron(pad, t.menu.descsepcolor);
 		waddstr(pad, desc);
@@ -254,7 +255,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
     struct lineposition pos, struct privateitem *pritem, bool focus)
 {
 	int colordesc, colorname, colorshortcut;
-	const char *shortcut;
+	wchar_t shortcut;
 	struct bsddialog_menuitem *item;
 
 	item = pritem->item;
@@ -303,13 +304,11 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 		wattron(pad, colorshortcut);
 
 		if (conf->menu.no_name)
-			shortcut = item->desc;
+			mbtowc(&shortcut, item->desc, MB_CUR_MAX);
 		else
-			shortcut = item->name;
-		wmove(pad, y, pos.xname + item->depth * DEPTH);
-		if (shortcut != NULL && shortcut[0] != '\0')
-			waddch(pad, shortcut[0]);
-	wattroff(pad, colorshortcut);
+			mbtowc(&shortcut, item->name, MB_CUR_MAX);
+		mvwaddwch(pad, y, pos.xname + item->depth * DEPTH, shortcut);
+		wattroff(pad, colorshortcut);
 	}
 
 	/* bottom description */
@@ -458,15 +457,15 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			item = &groups[i].items[j];
 
 			if (groups[i].type == BSDDIALOG_SEPARATOR) {
-				pos.maxsepstr = MAX(pos.maxsepstr,
-				    strlen(item->name) + strlen(item->desc));
+				pos.maxsepstr = MAX((int)pos.maxsepstr,
+				    strcols(item->name) + strcols(item->desc));
 				continue;
 			}
 
-			pos.maxprefix = MAX(pos.maxprefix,strlen(item->prefix));
+			pos.maxprefix = MAX((int)pos.maxprefix,strcols(item->prefix));
 			pos.maxdepth  = MAX(pos.maxdepth, item->depth);
-			pos.maxname   = MAX(pos.maxname, strlen(item->name));
-			pos.maxdesc   = MAX(pos.maxdesc, strlen(item->desc));
+			pos.maxname   = MAX((int)pos.maxname, strcols(item->name));
+			pos.maxdesc   = MAX((int)pos.maxdesc, strcols(item->desc));
 		}
 	}
 	pos.maxname = conf->menu.no_name ? 0 : pos.maxname;

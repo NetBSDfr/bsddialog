@@ -80,7 +80,7 @@ static wchar_t* mbstr_to_wstr(const char *mbstring)
 	return (wstring);
 }
 
-static void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
+void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
 {
 	wchar_t ws[2];
 

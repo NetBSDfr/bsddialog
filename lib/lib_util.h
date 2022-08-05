@@ -44,6 +44,7 @@ extern struct bsddialog_theme t;
 
 /* unicode */
 int strcols(const char *mbstring);
+void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch);
 
 /* error buffer */
 const char *get_error_string(void);

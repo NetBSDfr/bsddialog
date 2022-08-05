@@ -130,7 +130,7 @@ in the _Public Domain_ to build new projects:
    - ~~backtitle~~
    - ~~title~~
    - ~~text (word wrapping, auto sizing)~~
-   - menus (shortcuts, name, desc)
+   - ~~menus (shortcuts, name, desc)~~
    - forms (label)
    - ~~bottons (label, shortcuts)~~
    - ~~bottomtitle~~
