@@ -131,7 +131,6 @@ in the _Public Domain_ to build new projects:
    - ~~title~~
    - ~~text (word wrapping, auto sizing)~~
    - ~~menus (shortcuts, name, desc)~~
-   - forms (label)
    - ~~bottons (label, shortcuts)~~
    - ~~bottomtitle~~
  - Forms
