@@ -192,7 +192,7 @@ getnextshortcut(struct bsddialog_conf *conf, int npritems,
 		else
 			mbtowc(&wch, pritems[i].item->name, MB_CUR_MAX);
 
-		if (wch == key) {
+		if (wch == (wchar_t)key) {
 			if (i > abs)
 				return (i);
 
