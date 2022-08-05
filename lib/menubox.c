@@ -434,8 +434,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
 	bool loop, onetrue, movefocus, automenurows, shortcut_butts;
-	int i, j, y, x, h, w, output, input;
+	int i, j, y, x, h, w, output;
 	int ymenupad, ys, ye, xs, xe, abs, next, totnitems;
+	wint_t input;
 	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
 	struct buttons bs;
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -562,7 +563,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	movefocus = false;
 	loop = true;
 	while (loop) {
-		input = getch();
+		if (get_wch(&input) == ERR)
+			continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */

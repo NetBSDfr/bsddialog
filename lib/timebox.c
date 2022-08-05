@@ -81,7 +81,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
     int cols, unsigned int *hh, unsigned int *mm, unsigned int *ss)
 {
 	bool loop, focusbuttons;
-	int i, input, output, y, x, h, w, sel;
+	int i, output, y, x, h, w, sel;
+	wint_t input;
 	WINDOW *widget, *textpad, *shadow;
 	struct buttons bs;
 	struct myclockstruct {
@@ -143,7 +144,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			wrefresh(c[sel].win);
 		}
 
-		input = getch();
+		if (get_wch(&input) == ERR)
+			continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
@@ -292,7 +294,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
 	bool loop, focusbuttons;
-	int i, input, output, y, x, h, w, sel;
+	int i, output, y, x, h, w, sel;
+	wint_t input;
 	WINDOW *widget, *textpad, *shadow;
 	struct buttons bs;
 	struct calendar {
@@ -376,7 +379,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			wrefresh(c[sel].win);
 		}
 
-		input = getch();
+		if (get_wch(&input) == ERR)
+			continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */

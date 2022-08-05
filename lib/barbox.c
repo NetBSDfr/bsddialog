@@ -431,7 +431,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	bool loop, buttupdate, barupdate;
 	int y, x, h, w;
-	int input, currvalue, output, sizebar, bigchange, positions;
+	int currvalue, output, sizebar, bigchange, positions;
+	wint_t input;
 	float perc;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	struct buttons bs;
@@ -484,7 +485,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			wrefresh(bar);
 		}
 
-		input = getch();
+		if (get_wch(&input) == ERR)
+			continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
@@ -605,7 +607,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int sec)
 {
 	bool loop, buttupdate, barupdate;
-	int output, y, x, h, w, input, tout, sizebar;
+	int output, y, x, h, w, tout, sizebar;
+	wint_t input;
 	float perc;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	struct buttons bs;
@@ -651,8 +654,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			buttupdate = false;
 		}
 
-		input = getch();
-		if (input < 0) { /* timeout */
+		if (get_wch(&input) == ERR) { /* timeout */
 			tout--;
 			if (tout < 0) {
 				output = BSDDIALOG_TIMEOUT;

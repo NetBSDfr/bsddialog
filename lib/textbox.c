@@ -67,8 +67,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
     int cols)
 {
 	bool loop;
-	int i, output, input;
+	int i, output;
 	int y, x, h, w, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
+	wint_t input;
 	char buf[BUFSIZ];
 	FILE *fp;
 	struct buttons bs;
@@ -127,7 +128,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 		wnoutrefresh(widget);
 		pnoutrefresh(pad, ypad, xpad, ys, xs, ye, xe);
 		doupdate();
-		input = getch();
+		if (get_wch(&input) == ERR)
+			continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
