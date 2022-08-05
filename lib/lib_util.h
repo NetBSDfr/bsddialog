@@ -59,6 +59,7 @@ struct buttons {
 	unsigned int nbuttons;
 #define MAXBUTTONS 6 /* ok + extra + cancel + help + 2 generics */
 	const char *label[MAXBUTTONS];
+	wchar_t first[MAXBUTTONS];
 	int value[MAXBUTTONS];
 	int curr;
 	unsigned int sizebutton; /* including left and right delimiters */

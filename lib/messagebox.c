@@ -93,8 +93,9 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool loop;
-	int y, x, h, w, input, output, ytextpad, htextpad, unused;
+	int y, x, h, w, output, ytextpad, htextpad, unused;
 	WINDOW *widget, *textpad, *shadow;
+	wint_t input;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -116,7 +117,8 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	loop = true;
 	while (loop) {
 		doupdate();
-		input = getch();
+		if (get_wch(&input) == ERR)
+			continue;
 		switch (input) {
 		case KEY_ENTER:
 		case 10: /* Enter */

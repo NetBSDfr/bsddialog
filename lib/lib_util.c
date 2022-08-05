@@ -33,6 +33,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <wchar.h>
+#include <wctype.h>
 
 #include "bsddialog.h"
 #include "bsddialog_theme.h"
@@ -77,6 +78,16 @@ static wchar_t* mbstr_to_wstr(const char *mbstring)
 	mbstowcs(wstring, mbstring, nchar);
 
 	return (wstring);
+}
+
+static void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
+{
+	wchar_t ws[2];
+
+	ws[0] = wch;
+	ws[1] = L'\0';
+	mvwaddwstr(w, y, x,ws);
+	
 }
 
 int strcols(const char *mbstring)
@@ -153,7 +164,7 @@ int f1help(struct bsddialog_conf *conf)
 /* Buttons */
 static void
 draw_button(WINDOW *window, int y, int x, int size, const char *text,
-    bool selected, bool shortcut)
+    wchar_t first, bool selected, bool shortcut)
 {
 	int i, color_arrows, color_shortkey, color_button;
 
@@ -185,8 +196,7 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 
 	if (shortcut) {
 		wattron(window, color_shortkey);
-		// XXX TODO MB?
-		mvwaddch(window, y, x, text[0]);
+		mvwaddwch(window, y, x, first);
 		wattroff(window, color_shortkey);
 	}
 }
@@ -204,7 +214,7 @@ draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
 	for (i = 0; i < (int)bs.nbuttons; i++) {
 		x = i * (bs.sizebutton + t.button.hmargin);
 		draw_button(window, y, startx + x, bs.sizebutton, bs.label[i],
-		    i == bs.curr, shortcut);
+		    bs.first[i],  i == bs.curr, shortcut);
 	}
 }
 
@@ -216,6 +226,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 #define SIZEBUTTON              8
 #define DEFAULT_BUTTON_LABEL	BUTTON_OK_LABEL
 #define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
+	wchar_t first;
 
 	bs->nbuttons = 0;
 	bs->curr = 0;
@@ -269,6 +280,11 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 		bs->nbuttons = 1;
 	}
 
+	for (i = 0; i < (int)bs->nbuttons; i++) {
+		mbtowc(&first, bs->label[i], MB_CUR_MAX);
+		bs->first[i] = first;
+	}
+
 	if (conf->button.default_label != NULL) {
 		for (i = 0; i < (int)bs->nbuttons; i++) {
 			if (strcmp(conf->button.default_label,
@@ -294,14 +310,14 @@ int buttons_width(struct buttons bs)
 	return (width);
 }
 
-bool shortcut_buttons(int key, struct buttons *bs)
+bool shortcut_buttons(wint_t key, struct buttons *bs)
 {
 	bool match;
 	unsigned int i;
 
 	match = false;
 	for (i = 0; i < bs->nbuttons; i++) {
-		if (tolower(key) == tolower(bs->label[i][0])) {
+		if (towlower(key) == towlower(bs->first[i])) {
 			bs->curr = i;
 			match = true;
 			break;
