@@ -285,6 +285,27 @@ bsddialog_color(enum bsddialog_color foreground,
 	return (GET_COLOR(foreground, background) | cursesflags);
 }
 
+int
+bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
+    enum bsddialog_color *background, unsigned int *flags)
+{
+	unsigned int flag;
+	short f, b;
+
+	flag = 0U;
+	flag |= (color &= A_BOLD) ? BSDDIALOG_BOLD : 0U;
+	flag |= (color &= A_REVERSE) ? BSDDIALOG_REVERSE : 0U;
+	flag |= (color &= A_UNDERLINE) ? BSDDIALOG_UNDERLINE : 0U;
+	*flags = flag;
+
+	if (pair_content(PAIR_NUMBER(color), &f, &b) != OK)
+		RETURN_ERROR("Cannot get color attributes");
+	*foreground = f;
+	*background = b;
+
+	return (BSDDIALOG_ERROR);
+}
+
 bool bsddialog_hascolors(void)
 {
 	return hastermcolors;

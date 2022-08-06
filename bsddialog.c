@@ -91,6 +91,7 @@ enum OPTS {
 	PRINT_SIZE,
 	PRINT_VERSION,
 	QUOTED,
+	SAVE_THEME,
 	SEPARATE_OUTPUT,
 	SHADOW,
 	SINGLE_QUOTED,
@@ -136,6 +137,8 @@ static char *date_fmt_opt, *time_fmt_opt;
 static int unsigned max_input_form_opt;
 /* General options */
 static int output_fd_opt;
+/* theme.c */
+int savetheme(const char *file, const char *version);
 
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
@@ -189,9 +192,9 @@ static void usage(void)
 	    "--no-items, --no-label <label>, --no-lines, --no-nl-expand, "
 	    "--no-ok, --nook, --no-shadow, --no-tags, --ok-label <label>, "
 	    "--output-fd <fd>, --output-separator <sep>, --print-maxsize, "
-	    "--print-size, --print-version, --quoted, --separate-output, "
-	    "--separator <sep>, --shadow, --single-quoted, --sleep <secs>, "
-	    "--stderr, --stdout, --tab-len <spaces>, "
+	    "--print-size, --print-version, --quoted, --save-theme <file>, "
+	    "--separate-output, --separator <sep>, --shadow, --single-quoted, "
+	    "--sleep <secs>, --stderr, --stdout, --tab-len <spaces>, "
 	    "--theme <blackwhite|bsddialog|flat|dialog>, "
 	    "--time-format <format>, --title <title>, --trim, --version, "
 	    "--yes-label <label>.\n");
@@ -240,7 +243,7 @@ int main(int argc, char *argv[argc])
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
-	char *text, *backtitle_opt;
+	char *text, *backtitle_opt, *savethemefile;
 	char errorbuilder[1024];
 	struct winsize ws;
 	struct bsddialog_conf conf;
@@ -262,6 +265,7 @@ int main(int argc, char *argv[argc])
 	esc_cancelvalue_opt = false;
 	textfromfile = false;
 	errorbuilder[0] = '\0';
+	savethemefile = NULL;
 
 	item_output_sepnl_opt = item_singlequote_opt = false;
 	item_prefix_opt = item_bottomdesc_opt = item_depth_opt = false;
@@ -329,6 +333,7 @@ int main(int argc, char *argv[argc])
 		{"print-size",       no_argument,       NULL, PRINT_SIZE},
 		{"print-version",    no_argument,       NULL, PRINT_VERSION},
 		{"quoted",           no_argument,       NULL, QUOTED},
+		{"save-theme",       required_argument, NULL, SAVE_THEME},
 		{"separate-output",  no_argument,       NULL, SEPARATE_OUTPUT},
 		{"separator",        required_argument, NULL, OUTPUT_SEPARATOR},
 		{"shadow",           no_argument,       NULL, SHADOW},
@@ -529,6 +534,9 @@ int main(int argc, char *argv[argc])
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
 			break;
+		case SAVE_THEME:
+			savethemefile = optarg;
+			break;
 		case SEPARATE_OUTPUT:
 			item_output_sepnl_opt = true;
 			break;
@@ -705,6 +713,9 @@ int main(int argc, char *argv[argc])
 
 	if (textfromfile == false)
 		free(text);
+
+	if (savethemefile != NULL)
+		savetheme(savethemefile, BSDDIALOG_VERSION);
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */

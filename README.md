@@ -141,6 +141,6 @@ in the _Public Domain_ to build new projects:
    - ~~add bsddialog\_init\_notheme()~~
    - ~~add bsddialog_hascolors()~~
    - add --loadtheme
-   - add --savetheme
+   - ~~add --savetheme~~
  - add menubar feature
  - add key callback
