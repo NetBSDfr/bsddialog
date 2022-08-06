@@ -74,8 +74,8 @@ struct bsddialog_theme {
 	} bar;
 	struct {
 		unsigned int hmargin;
-		int leftdelim;
-		int rightdelim;
+		char leftdelim;
+		char rightdelim;
 		int delimcolor;
 		int f_delimcolor;
 		int color;

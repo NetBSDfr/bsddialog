@@ -9,6 +9,7 @@ static struct bsddialog_theme t;
 
 enum typeprop {
 	BOOL,
+	CHAR,
 	INT,
 	UINT,
 	COLOR
@@ -105,6 +106,9 @@ int savetheme(const char *file, const char *version)
 
 		for (i = 0; i < NPROPERTY; i++) {
 		switch (p[i].type) {
+		case CHAR:
+			fprintf(fp, "%s %c\n", p[i].name, *((char*)p[i].value));
+			break;
 		case INT:
 			fprintf(fp, "%s %d\n", p[i].name, *((int*)p[i].value));
 			break;
@@ -136,6 +140,7 @@ int savetheme(const char *file, const char *version)
 int loadtheme(const char *file)
 {
 	bool boolvalue;
+	char charvalue;
 	int i, j, intvalue, flags;
 	unsigned int uintvalue;
 	FILE *fp;
@@ -167,6 +172,10 @@ int loadtheme(const char *file)
 			continue;
 		switch (p[i].type) {
 		// XXX add checks
+		case CHAR:
+			sscanf(value, "%c", &charvalue);
+			*((int*)p[i].value) = charvalue;
+			break;
 		case INT:
 			sscanf(value, "%d", &intvalue);
 			*((int*)p[i].value) = intvalue;
