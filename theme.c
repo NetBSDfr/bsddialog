@@ -104,7 +104,7 @@ int savetheme(const char *file, const char *version)
 	fputs("# To see bsddialog(3) manual to know theme.* properties\n", fp);
 	fprintf(fp, "version %s\n", version);
 
-		for (i = 0; i < NPROPERTY; i++) {
+	for (i = 0; i < NPROPERTY; i++) {
 		switch (p[i].type) {
 		case CHAR:
 			fprintf(fp, "%s %c\n", p[i].name, *((char*)p[i].value));
