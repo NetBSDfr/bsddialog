@@ -140,7 +140,7 @@ in the _Public Domain_ to build new projects:
  - Custom theme
    - ~~add bsddialog\_init\_notheme()~~
    - ~~add bsddialog_hascolors()~~
-   - add --load-theme
+   - ~~add --load-theme~~
    - ~~add --save-theme~~
  - add menubar feature
  - add key callback

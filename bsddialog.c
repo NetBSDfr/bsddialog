@@ -75,6 +75,7 @@ enum OPTS {
 	ITEM_DEPTH,
 	ITEM_HELP,
 	ITEM_PREFIX,
+	LOAD_THEME,
 	MAX_INPUT,
 	NO_CANCEL,
 	NO_COLLAPSE,
@@ -139,6 +140,7 @@ static int unsigned max_input_form_opt;
 static int output_fd_opt;
 /* theme.c */
 int savetheme(const char *file, const char *version);
+int loadtheme(const char *file);
 
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
@@ -188,6 +190,7 @@ static void usage(void)
 	    "--help-button, --help-label <label>, --help-status, --help-tags, "
 	    "--hfile <filename>, --hline <string>, --hmsg <string>, --ignore, "
 	    "--insecure, --item-depth, --item-help, --item-prefix, "
+	    "--load-theme <file>, "
 	    "--max-input <size>, --no-cancel, --nocancel, --no-collapse, "
 	    "--no-items, --no-label <label>, --no-lines, --no-nl-expand, "
 	    "--no-ok, --nook, --no-shadow, --no-tags, --ok-label <label>, "
@@ -243,7 +246,7 @@ int main(int argc, char *argv[argc])
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
-	char *text, *backtitle_opt, *savethemefile;
+	char *text, *backtitle_opt, *loadthemefile, *savethemefile;
 	char errorbuilder[1024];
 	struct winsize ws;
 	struct bsddialog_conf conf;
@@ -266,6 +269,7 @@ int main(int argc, char *argv[argc])
 	textfromfile = false;
 	errorbuilder[0] = '\0';
 	savethemefile = NULL;
+	loadthemefile = NULL;
 
 	item_output_sepnl_opt = item_singlequote_opt = false;
 	item_prefix_opt = item_bottomdesc_opt = item_depth_opt = false;
@@ -314,6 +318,7 @@ int main(int argc, char *argv[argc])
 		{"item-depth",       no_argument,       NULL, ITEM_DEPTH},
 		{"item-help",        no_argument,       NULL, ITEM_HELP},
 		{"item-prefix",      no_argument,       NULL, ITEM_PREFIX},
+		{"load-theme",       required_argument, NULL, LOAD_THEME},
 		{"max-input",        required_argument, NULL, MAX_INPUT},
 		{"no-cancel",        no_argument,       NULL, NO_CANCEL},
 		{"nocancel",         no_argument,       NULL, NO_CANCEL},
@@ -484,6 +489,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case ITEM_PREFIX:
 			item_prefix_opt = true;
+			break;
+		case LOAD_THEME:
+			loadthemefile = optarg;
 			break;
 		case MAX_INPUT:
 			max_input_form_opt = (u_int)strtoul(optarg, NULL, 10);
@@ -701,6 +709,9 @@ int main(int argc, char *argv[argc])
 
 	if (theme_opt != BSDDIALOG_THEME_FLAT)
 		bsddialog_set_default_theme(theme_opt);
+
+	if (loadthemefile != NULL)
+		loadtheme(loadthemefile);
 
 	if (backtitle_opt != NULL)
 		bsddialog_backtitle(&conf, backtitle_opt);

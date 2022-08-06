@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
 
 #include <bsddialog.h>
@@ -7,7 +8,6 @@
 static struct bsddialog_theme t;
 
 enum typeprop {
-	STRING,
 	BOOL,
 	INT,
 	UINT,
@@ -55,14 +55,25 @@ static struct property p[NPROPERTY] = {
 	{ "theme.bar.color", COLOR, &t.bar.color},
 	
 	{ "theme.button.hmargin", UINT, &t.button.hmargin},
-	{ "theme.button.leftdelim", COLOR, &t.button.leftdelim},
-	{ "theme.button.rightdelim", COLOR, &t.button.rightdelim},
+	{ "theme.button.leftdelim", INT, &t.button.leftdelim},
+	{ "theme.button.rightdelim", INT, &t.button.rightdelim},
 	{ "theme.button.delimcolor", COLOR, &t.button.delimcolor},
 	{ "theme.button.f_delimcolor", COLOR, &t.button.f_delimcolor},
 	{ "theme.button.color", COLOR, &t.button.color},
 	{ "theme.button.f_color", COLOR, &t.button.f_color},
 	{ "theme.button.shortcutcolor", COLOR, &t.button.shortcutcolor},
 	{ "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor}
+};
+
+static char *color[8] = {
+	"black",
+	"red",
+	"green",
+	"yellow",
+	"blue",
+	"magenta",
+	"cyan",
+	"white"
 };
 
 int savetheme(const char *file, const char *version)
@@ -72,16 +83,6 @@ int savetheme(const char *file, const char *version)
 	time_t clock;
 	unsigned int flags;
 	enum bsddialog_color bg, fg;
-	char *color[8] = {
-		"black",
-		"red",
-		"green",
-		"yellow",
-		"blue",
-		"magenta",
-		"cyan",
-		"white"
-	};
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
 		printf("Error saving theme: %s\n", bsddialog_geterror());
@@ -115,14 +116,11 @@ int savetheme(const char *file, const char *version)
 			fprintf(fp, "%s %s\n", p[i].name,
 			    *((bool*)p[i].value) ? "true" : "false");
 			break;
-		case STRING:
-			fprintf(fp, "%s %s\n", p[i].name, (char*)p[i].value);
-			break;
 		case COLOR:
-			bsddialog_color_attrs(*(int*)p[i].value, &bg, &fg,
+			bsddialog_color_attrs(*(int*)p[i].value, &fg, &bg,
 			    &flags);
 			fprintf(fp, "%s %s %s%s%s%s\n",
-			    p[i].name, color[bg], color[fg],
+			    p[i].name, color[fg], color[bg],
 			    flags & BSDDIALOG_BOLD ? " bold" : "",
 			    flags & BSDDIALOG_REVERSE ? " reverse" : "",
 			    flags & BSDDIALOG_UNDERLINE ? " underline" : "");
@@ -133,4 +131,79 @@ int savetheme(const char *file, const char *version)
 	fclose(fp);
 
 	return (BSDDIALOG_OK);
+}
+
+int loadtheme(const char *file)
+{
+	bool boolvalue;
+	int i, j, intvalue, flags;
+	unsigned int uintvalue;
+	FILE *fp;
+	char line[BUFSIZ], name[BUFSIZ], c1[BUFSIZ], c2[BUFSIZ];
+	char *value;
+	enum bsddialog_color bg, fg;
+
+	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
+		printf("Error saving theme: %s\n", bsddialog_geterror());
+		return (BSDDIALOG_ERROR);
+	}
+
+	if((fp = fopen(file, "r")) == NULL) {
+		printf("Cannot open %s theme\n", file);
+		return 1;
+	}
+
+	while(fgets(line, BUFSIZ, fp) != NULL) {
+		if(line[0] == '#' || line[0] == '\n')
+			continue;  /* superfluous, just for efficiency */
+		sscanf(line, "%s", name);
+		for (i = 0; i < NPROPERTY; i++) {
+			if (strcmp(name, p[i].name) == 0) {
+				value = &line[strlen(name)];
+				break;
+			}
+		}
+		if (i >= NPROPERTY)
+			continue;
+		switch (p[i].type) {
+		// XXX add checks
+		case INT:
+			sscanf(value, "%d", &intvalue);
+			*((int*)p[i].value) = intvalue;
+			break;
+		case UINT:
+			sscanf(value, "%u", &uintvalue);
+			*((unsigned int*)p[i].value) = uintvalue;
+			break;
+		case BOOL:
+			boolvalue = (strstr(value, "true") != NULL) ? true :false;
+			*((bool*)p[i].value) = boolvalue;
+			break;
+		case COLOR:
+			sscanf(value, "%s %s", c1, c2);
+			for (j = 0; j < 8 ; j++)
+				if ((strstr(c1, color[j])) != NULL)
+					break; // XXX check
+			fg = j;
+			for (j = 0; j < 8 ; j++)
+				if ((value = strstr(c2, color[j])) != NULL)
+					break; // XXX check
+			bg = j;
+			flags = 0;
+			if (strstr(value, "bold") != NULL)
+				flags |= BSDDIALOG_BOLD;
+			if (strstr(value, "reverse") != NULL)
+				flags |= BSDDIALOG_REVERSE;
+			if (strstr(value, "underline") != NULL)
+				flags |= BSDDIALOG_UNDERLINE;
+			*((int*)p[i].value) = bsddialog_color(fg, bg, flags);
+			break;
+		}
+	}
+
+	fclose(fp);
+
+	bsddialog_set_theme(&t);
+
+	return 0;
 }
