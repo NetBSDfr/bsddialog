@@ -303,7 +303,7 @@ bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
 	*foreground = f;
 	*background = b;
 
-	return (BSDDIALOG_ERROR);
+	return (BSDDIALOG_OK);
 }
 
 bool bsddialog_hascolors(void)
