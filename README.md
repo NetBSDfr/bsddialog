@@ -137,6 +137,7 @@ in the _Public Domain_ to build new projects:
    - refactoring formbox.c
    - fix form height (items y instead of nitems)
    - add bsddialog\_inputbox() (improve autosizing, focus on buttons)
+   - field with multi column letters
  - Custom theme
    - ~~add bsddialog\_init\_notheme()~~
    - ~~add bsddialog_hascolors()~~
