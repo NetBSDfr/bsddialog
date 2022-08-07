@@ -56,7 +56,7 @@ void set_error_string(const char *str)
 }
 
 /* Unicode. To improve, proof of concept for now */
-static wchar_t* mbstr_to_wstr(const char *mbstring)
+wchar_t* alloc_mbstows(const char *mbstring)
 {
 	size_t charlen, nchar;
 	mbstate_t mbs;
@@ -438,7 +438,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 	wchar_t *wtext, *string;
 
 	// XXX check/return error
-	wtext = mbstr_to_wstr(text);
+	wtext = alloc_mbstows(text);
 
 	if ((string = calloc(wcslen(wtext) + 1, sizeof(wchar_t))) == NULL)
 		RETURN_ERROR("Cannot build (analyze) text");
@@ -522,8 +522,8 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
 
 	// XXX check and return error
-	wtext = mbstr_to_wstr(text);
-	// XXX should mbstr_to_wstr() set wtextlen?
+	wtext = alloc_mbstows(text);
+	// XXX should alloc_mbstows() set wtextlen?
 	wtextlen = wcslen(wtext);
 	wletters = calloc(wtextlen, sizeof(uint8_t)); //XXX needs only 2 bit
 
