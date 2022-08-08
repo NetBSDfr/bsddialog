@@ -136,7 +136,9 @@ in the _Public Domain_ to build new projects:
  - Forms
    - refactoring formbox.c
    - delete -lformw dep
+   - add #define BSDDIALOG_FIELDNOCOLOR
    - fix form height (items y instead of nitems)
+   / fix form bugs in bsddialog.1 and bsddialog.3
    - add bsddialog\_inputbox() (improve autosizing, focus on buttons)
    - field with multi column letters
  - Custom theme
