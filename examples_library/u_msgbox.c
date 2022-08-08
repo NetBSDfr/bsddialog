@@ -27,7 +27,7 @@ int main()
 
 	bsddialog_initconf(&conf);
 	output = bsddialog_msgbox(&conf,
-	    "Hello, World! 你好，世界! ひらがな カタカナ 漢字 프로그램", 0, 0);
+	    "Hello, World!  你好，世界!  ひらがな  カタカナ  漢字  프로그램", 0, 0);
 
 	bsddialog_end();
 
