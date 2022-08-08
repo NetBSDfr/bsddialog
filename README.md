@@ -135,6 +135,7 @@ in the _Public Domain_ to build new projects:
    - ~~bottomtitle~~
  - Forms
    - refactoring formbox.c
+   - delete -lformw dep
    - fix form height (items y instead of nitems)
    - add bsddialog\_inputbox() (improve autosizing, focus on buttons)
    - field with multi column letters
