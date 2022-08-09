@@ -242,8 +242,8 @@ static bool fieldctl(struct privitem *item, enum operation op)
 	int width, oldwidth, nextwidth, cols;
 	unsigned int i;
 
-BSDDIALOG_DEBUG(2,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
-    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
+//BSDDIALOG_DEBUG(2,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
+//    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
 
 	change = false;
 	switch (op){
@@ -332,8 +332,8 @@ BSDDIALOG_DEBUG(2,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletter
 		break;
 	}
 
-BSDDIALOG_DEBUG(3,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
-    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
+//BSDDIALOG_DEBUG(3,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
+//    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
 
 	return (change);
 }
