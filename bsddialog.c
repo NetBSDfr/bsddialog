@@ -1343,7 +1343,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.xfield	 = 1;
 	item.fieldlen    = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
-	item.flags	 = BSDDIALOG_FIELDNOCOLOR;
+	item.flags	 = BSDDIALOG_FIELDNOCOLOR | BSDDIALOG_FIELDCURSOREND;
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
@@ -1407,7 +1407,9 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.xfield	 = 1;
 	item.fieldlen	 = cols > 4 ? cols-4 : 25;
 	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
-	item.flags       = BSDDIALOG_FIELDHIDDEN | BSDDIALOG_FIELDNOCOLOR;
+	item.flags       = BSDDIALOG_FIELDHIDDEN;
+	item.flags      |= BSDDIALOG_FIELDNOCOLOR;
+	item.flags      |= BSDDIALOG_FIELDCURSOREND;
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);

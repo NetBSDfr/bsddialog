@@ -67,6 +67,7 @@
 #define BSDDIALOG_FIELDHIDDEN    1U
 #define BSDDIALOG_FIELDREADONLY  2U
 #define BSDDIALOG_FIELDNOCOLOR   4U
+#define BSDDIALOG_FIELDCURSOREND 8U
 
 struct bsddialog_conf {
 	bool ascii_lines;

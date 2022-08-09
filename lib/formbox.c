@@ -392,6 +392,7 @@ nextitem(unsigned int nitems, struct privitem *items, int curritem)
 	return (curritem);
 }
 
+/* API */
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
@@ -463,6 +464,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		}
 
 		item->pos = 0;
+		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
+			while (fieldctl(item, MOVE_CURSOR_RIGHT))
+				; /* shit to right */
 
 		item->fieldcols = apiitems[i].fieldlen;
 
