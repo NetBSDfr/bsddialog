@@ -425,7 +425,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->xcursor = 0;
 
 		item->maxletters = apiitems[i].maxvaluelen;
-		// XXX memeset 0? can be useless for wscncpy
 		item->privwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
 		memset(item->privwbuf, 0, item->maxletters + 1);
 		item->pubwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
