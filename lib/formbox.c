@@ -395,9 +395,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			RETURN_ERROR("maxvaluelen cannot be zero");
 		if (apiitems[i].fieldlen == 0)
 			RETURN_ERROR("fieldlen cannot be zero");
-		// XXX to delete
-		//if (apiitems[i].fieldlen > apiitems[i].maxvaluelen)
-		//	RETURN_ERROR("fieldlen cannot be > maxvaluelen");
 	}
 
 	securewch = (conf->form.securech == '\0') ? L' ' : btowc(conf->form.securech);
