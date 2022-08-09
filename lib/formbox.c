@@ -338,6 +338,28 @@ static bool fieldctl(struct privitem *item, enum operation op)
 	return (change);
 }
 
+static unsigned int firstitem(unsigned int nitems, struct privitem *items)
+{
+	int i;
+
+	for (i = 0; i < (int)nitems; i++)
+		if (items[i].readonly == false)
+			break;
+
+	return (i);
+}
+
+static unsigned int lastitem(unsigned int nitems, struct privitem *items)
+{
+	int i;
+
+	for (i = nitems - 1; i >= 0 ; i--)
+		if (items[i].readonly == false)
+			break;
+
+	return (i);
+}
+
 static unsigned int
 previtem(unsigned int nitems, struct privitem *items, int curritem)
 {
@@ -501,10 +523,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		    conf->form.enable_wchar == false)
 			continue;
 		switch(input) {
-		case KEY_PPAGE:
-		case KEY_NPAGE:
-			/* disabled keys */
-			break;
 		case KEY_ENTER:
 		case 10: /* Enter */
 			if (focusinform)
@@ -597,6 +615,22 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			while (fieldctl(item, MOVE_CURSOR_RIGHT))
 				; /* shit to right */
+			drawitem(formwin, item, true);
+			break;
+		case KEY_PPAGE:
+			if (curritem == -1 || focusinform == false)
+				break;
+			drawitem(formwin, item, false);
+			curritem = firstitem(nitems, items);
+			item = &items[curritem];
+			drawitem(formwin, item, true);
+			break;
+		case KEY_NPAGE:
+			if (curritem == -1 || focusinform == false)
+				break;
+			drawitem(formwin, item, false);
+			curritem = lastitem(nitems, items);
+			item = &items[curritem];
 			drawitem(formwin, item, true);
 			break;
 		case KEY_F(1):
