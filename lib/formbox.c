@@ -430,8 +430,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		securewch = L' '; 
 	}
 
+	if ((items = malloc(nitems * sizeof(struct privitem))) == NULL)
+		RETURN_ERROR("Cannot allocate internal items");
 	maxline = 0;
-	items = malloc(nitems * sizeof(struct privitem));
 	curritem = -1;
 	for (i = 0; i < nitems; i++) {
 		item = &items[i];
