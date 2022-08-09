@@ -27,8 +27,8 @@
 
 #include <sys/param.h>
 
-#include <ctype.h>
-#include <form.h>
+#include <curses.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -37,284 +37,132 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define ISFIELDHIDDEN(item)   (item.flags & BSDDIALOG_FIELDHIDDEN)
-#define ISFIELDREADONLY(item) (item.flags & BSDDIALOG_FIELDREADONLY)
-#define REDRAWFORM            19860214 /* magic number */
-
-/* field_userptr for private buffer and view options */
-struct myfield {
-	int  buflen;
-	wchar_t *buf;
-	int  pos;
-	int  maxpos;
-	bool secure;
-	int  securech;
-	const char *bottomdesc;
+struct privitem {
+	const char *label;      // formitem.label
+	unsigned int ylabel;    // formitem.ylabel
+	unsigned int xlabel;    // formitem.xlabel
+	unsigned int yfield;    // formitem.yfield
+	unsigned int xfield;    // formitem.xfield
+	bool secure;            // formitem.flags & BSDDIALOG_FIELDHIDDEN
+	bool readonly;          // formitem.flags & BSDDIALOG_FIELDREADONLY
+	bool fieldnocolor;      // formitem.flags & BSDDIALOG_FIELDNOCOLOR
+	const char *bottomdesc; // formitem.bottomdesc
+	
+	wchar_t *privwbuf;      // formitem.value
+	wchar_t *pubwbuf;
+	unsigned int maxletters;// formitem.maxvaluelen, size privwbuf and pubwbuf
+	unsigned int nletters;  // letters in privwbuf and pubwbuf
+	unsigned int pos;       // pos in privwbuf and pubwbuf
+	unsigned int fieldcols; // formitem.fieldlen
+	unsigned int xcursor;   // 0 - fieldcols-1
+	unsigned int xletterpubbuf; // fist pos in pubwbuf to draw
 };
-#define GETMYFIELD(field) ((struct myfield*)field_userptr(field))
-#define GETMYFIELD2(form) ((struct myfield*)field_userptr(current_field(form)))
 
-static void insertch(struct myfield *mf, int ch)
+static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
+{
+	int color;
+	unsigned int i, cols;
+
+	/* Label */
+	// XXX could be useless, just one-time
+	mvwaddstr(w, ni->ylabel, ni->xlabel, ni->label);
+
+	/* Field */
+	if (ni->readonly)
+		color = t.form.readonlycolor;
+	else if (ni->fieldnocolor)
+		color = t.dialog.color;
+	else
+		color = focus ? t.form.f_fieldcolor : t.form.fieldcolor;
+	wattron(w, color);
+	wmove(w, ni->yfield, ni->xfield);
+	for (i = 0; i < ni->fieldcols; i++)
+		waddch(w, ' ');
+	wrefresh(w); /* important for following multi cols letters */
+	i=0;
+	cols = wcwidth(ni->pubwbuf[ni->xletterpubbuf]);
+	while (cols <= ni->fieldcols && ni->xletterpubbuf + i < wcslen(ni->pubwbuf)) {
+		mvwaddwch(w, ni->yfield, ni->xfield + i, ni->pubwbuf[ni->xletterpubbuf + i]);
+		i++;
+		cols += wcwidth(ni->pubwbuf[ni->xletterpubbuf + i]);
+		
+	}
+	wrefresh(w); // XXX useless? test/check
+	wattroff(w, color);
+
+	move(SCREENLINES - 1, 2);
+	clrtoeol();
+	if (ni->bottomdesc != NULL && focus) {
+		addstr(ni->bottomdesc);
+		refresh();
+	}
+
+	if (focus)
+		wmove(w, ni->yfield, ni->xfield + ni->xcursor);
+	wrefresh(w); // XXX useless? test/check
+}
+
+static bool insertch(struct privitem *mf, wchar_t wch, wchar_t securewch)
 {
 	int i;
 
-	if (mf->buflen > mf->maxpos)
-		return;
+	if (mf->nletters >= mf->maxletters)
+		return (false);
 
-	for (i = mf->buflen; i >= mf->pos; i--) {
-		mf->buf[i+1] = mf->buf[i];
+	for (i = (int)mf->nletters - 1; i >= (int)mf->pos; i--) {
+		mf->privwbuf[i+1] = mf->privwbuf[i];
+		mf->pubwbuf[i+1] = mf->pubwbuf[i];
 	}
 
-	mf->buf[mf->pos] = ch;
-	mf->pos += 1;
-	if (mf->pos > mf->maxpos)
-		mf->pos = mf->maxpos;
-	mf->buflen += 1;
-	mf->buf[mf->buflen] = '\0';
+	mf->privwbuf[mf->pos] = wch;
+	mf->pubwbuf[mf->pos] = mf->secure ? securewch : wch;
+	//mf->pos += 1;
+	//if (mf->pos > mf->maxpos)
+	//	mf->pos = mf->maxpos;
+	mf->nletters += 1;
+	mf->privwbuf[mf->nletters] = L'\0';
+	mf->pubwbuf[mf->nletters] = L'\0';
+
+	return (true);
 }
 
-static void shiftleft(struct myfield *mf)
+static char* alloc_wstomb(wchar_t *wstr)
 {
-	int i, last;
+	int len, nbytes, i;
+	char mbch[MB_LEN_MAX], *mbstr;
 
-	for (i = mf->pos; i < mf->buflen -1; i++) {
-		mf->buf[i] = mf->buf[i+1];
+	nbytes = MB_LEN_MAX;
+	len = wcslen(wstr);
+	for (i = 0; i < len; i++) {
+		wctomb(mbch, wstr[i]);
+		nbytes += mblen(mbch, MB_LEN_MAX);
 	}
+	if((mbstr = malloc(nbytes)) == NULL)
+		return (NULL);
 
-	last = mf->buflen > 0 ? mf->buflen -1 : 0;
-	mf->buf[last] = '\0';
-		mf->buflen = last;
-}
+	wcstombs(mbstr,	wstr, nbytes);
 
-static void print_bottomdesc(struct myfield *mf)
-{
-	move(SCREENLINES - 1, 2);
-	clrtoeol();
-	if (mf->bottomdesc != NULL) {
-		addstr(mf->bottomdesc);
-		refresh();
-	}
-}
-
-static char *w2c(wchar_t *string)
-{
-	int i, len;
-	char *value;
-
-	len = wcslen(string);
-	if ((value = calloc(len + 1, sizeof(char))) == NULL)
-		return NULL;
-
-	for (i = 0; i < len; i++)
-		value[i] = string[i];
-	value[i] = '\0';
-
-	return value;
+	return (mbstr);
 }
 
 static int
 return_values(struct bsddialog_conf *conf, int output, int nitems,
-    struct bsddialog_formitem *items, FORM *form, FIELD **cfield)
+    struct bsddialog_formitem *items, struct privitem *pritems)
 {
 	int i;
-	struct myfield *mf;
 
 	if (output != BSDDIALOG_OK && conf->form.value_without_ok == false)
 		return (output);
 
-	form_driver_w(form, KEY_CODE_YES, REQ_NEXT_FIELD);
-	form_driver_w(form, KEY_CODE_YES, REQ_PREV_FIELD);
 	for (i = 0; i < nitems; i++) {
-		mf = GETMYFIELD(cfield[i]);
 		if (conf->form.enable_wchar) {
-			items[i].value = (char*)wcsdup(mf->buf);
+			items[i].value = (char*)wcsdup(pritems[i].privwbuf);
 		} else {
-			items[i].value = w2c(mf->buf);
+			items[i].value = alloc_wstomb(pritems[i].privwbuf);
 		}
 		if (items[i].value == NULL)
 			RETURN_ERROR("Cannot allocate memory for form value");
 	}
-
-	return (output);
-}
-
-static int
-form_handler(struct bsddialog_conf *conf, WINDOW *widget, struct buttons bs,
-    WINDOW *formwin, FORM *form, FIELD **cfield, int nitems,
-    struct bsddialog_formitem *items)
-{
-	bool loop, buttupdate, informwin;
-	int i, chtype, output;
-	wint_t input;
-	struct myfield *mf;
-
-	mf = GETMYFIELD2(form);
-	print_bottomdesc(mf);
-	pos_form_cursor(form);
-	form_driver_w(form, KEY_CODE_YES, REQ_END_LINE);
-	mf->pos = MIN(mf->buflen, mf->maxpos);
-	curs_set(1);
-	informwin = true;
-
-	bs.curr = -1;
-	buttupdate = true;
-
-	loop = true;
-	while (loop) {
-		if (buttupdate) {
-			draw_buttons(widget, bs, !informwin);
-			wrefresh(widget);
-			buttupdate = false;
-		}
-		wrefresh(formwin);
-		chtype = get_wch(&input);
-		if (chtype != KEY_CODE_YES && input > 127 &&
-		    conf->form.enable_wchar == false)
-			continue;
-		switch(input) {
-		case KEY_HOME:
-		case KEY_PPAGE:
-		case KEY_END:
-		case KEY_NPAGE:
-			/* disabled keys */
-			break;
-		case KEY_ENTER:
-		case 10: /* Enter */
-			if (informwin)
-				break;
-			output = return_values(conf, bs.value[bs.curr], nitems,
-			    items, form, cfield);
-			loop = false;
-			break;
-		case 27: /* Esc */
-			if (conf->key.enable_esc) {
-				output = return_values(conf, BSDDIALOG_ESC,
-				    nitems, items, form, cfield);
-				loop = false;
-			}
-			break;
-		case '\t': /* TAB */
-			if (informwin) {
-				bs.curr = 0;
-				informwin = false;
-				curs_set(0);
-			} else {
-				bs.curr++;
-				informwin = bs.curr >= (int)bs.nbuttons ?
-				    true : false;
-				if (informwin) {
-					curs_set(1);
-					pos_form_cursor(form);
-				}
-			}
-			buttupdate = true;
-			break;
-		case KEY_LEFT:
-			if (informwin) {
-				form_driver_w(form, KEY_CODE_YES, REQ_PREV_CHAR);
-				mf = GETMYFIELD2(form);
-				if (mf->pos > 0)
-					mf->pos -= 1;
-			} else {
-				if (bs.curr > 0) {
-					bs.curr--;
-					buttupdate = true;
-				}
-			}
-			break;
-		case KEY_RIGHT:
-			if (informwin) {
-				mf = GETMYFIELD2(form);
-				if (mf->pos >= mf->buflen)
-					break;
-				mf->pos += 1;
-				form_driver_w(form, KEY_CODE_YES, REQ_NEXT_CHAR);
-			} else {
-				if (bs.curr < (int) bs.nbuttons - 1) {
-					bs.curr++;
-					buttupdate = true;
-				}
-			}
-			break;
-		case KEY_UP:
-			if (nitems < 2)
-				break;
-			set_field_fore(current_field(form), t.form.fieldcolor);
-			set_field_back(current_field(form), t.form.fieldcolor);
-			form_driver_w(form, KEY_CODE_YES, REQ_PREV_FIELD);
-			form_driver_w(form, KEY_CODE_YES, REQ_END_LINE);
-			mf = GETMYFIELD2(form);
-			print_bottomdesc(mf);
-			mf->pos = MIN(mf->buflen, mf->maxpos);
-			set_field_fore(current_field(form), t.form.f_fieldcolor);
-			set_field_back(current_field(form), t.form.f_fieldcolor);
-			break;
-		case KEY_DOWN:
-			if (nitems < 2)
-				break;
-			set_field_fore(current_field(form), t.form.fieldcolor);
-			set_field_back(current_field(form), t.form.fieldcolor);
-			form_driver_w(form, KEY_CODE_YES, REQ_NEXT_FIELD);
-			form_driver_w(form, KEY_CODE_YES, REQ_END_LINE);
-			mf = GETMYFIELD2(form);
-			print_bottomdesc(mf);
-			mf->pos = MIN(mf->buflen, mf->maxpos);
-			set_field_fore(current_field(form), t.form.f_fieldcolor);
-			set_field_back(current_field(form), t.form.f_fieldcolor);
-			break;
-		case KEY_BACKSPACE:
-		case 127: /* Backspace */
-			mf = GETMYFIELD2(form);
-			if (mf->pos <= 0)
-				break;
-			form_driver_w(form, KEY_CODE_YES, REQ_DEL_PREV);
-			form_driver_w(form, KEY_CODE_YES, REQ_BEG_LINE);
-			mf->pos = mf->pos - 1;
-			for (i = 0; i < mf->pos; i++)
-				form_driver_w(form, KEY_CODE_YES, REQ_NEXT_CHAR);
-			shiftleft(mf);
-			break;
-		case KEY_DC:
-			form_driver_w(form, KEY_CODE_YES, REQ_DEL_CHAR);
-			mf = GETMYFIELD2(form);
-			if (mf->pos < mf->buflen)
-				shiftleft(mf);
-			break;
-		case KEY_F(1):
-			if (conf->key.f1_file == NULL &&
-			    conf->key.f1_message == NULL)
-				break;
-			if (f1help(conf) != 0)
-				return (BSDDIALOG_ERROR);
-			/* No Break */
-		case KEY_RESIZE:
-			output = REDRAWFORM;
-			loop = false;
-			break;
-		default:
-			if (informwin) {
-				if (chtype == KEY_CODE_YES)
-					break;
-				mf = GETMYFIELD2(form);
-				if (mf->secure)
-					form_driver_w(form, chtype, mf->securech);
-				else
-					form_driver_w(form, chtype, input);
-				insertch(mf, input);
-			}
-			else {
-				if (shortcut_buttons(input, &bs)) {
-					output = return_values(conf,
-					    bs.value[bs.curr], nitems, items,
-					    form, cfield);
-					loop = false;
-				}
-			}
-			break;
-		}
-	}
-
-	curs_set(0);
 
 	return (output);
 }
@@ -382,94 +230,221 @@ form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
 	return (0);
 }
 
+enum operation {
+	MOVE_CURSOR_RIGHT,
+	MOVE_CURSOR_LEFT,
+	DEL_LETTER
+};
+
+static bool fieldctl(struct privitem *item, enum operation op)
+{
+	bool change;
+	int width, oldwidth, nextwidth, cols;
+	unsigned int i;
+
+BSDDIALOG_DEBUG(2,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
+    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
+
+	change = false;
+	switch (op){
+	case MOVE_CURSOR_LEFT:
+		if (item->pos == 0)
+			break;
+		if (item->xcursor == 0 && item->xletterpubbuf == 0)
+			break; // XXX useless? pos=0!
+		/* here some letter to left */
+		change = true;
+		item->pos -= 1;
+		width = wcwidth(item->pubwbuf[item->pos]);
+		if (((int)item->xcursor) - width < 0) {
+			item->xcursor = 0;
+			item->xletterpubbuf -= 1;
+		} else
+			item->xcursor -= width;
+
+		while (true){
+			if (item->xletterpubbuf == 0)
+				break;
+			if (item->xcursor >= item->fieldcols / 2)
+				break;
+			if (wcwidth(item->pubwbuf[item->xletterpubbuf - 1]) + item->xcursor + width > item->fieldcols)
+				break;
+
+			item->xletterpubbuf -= 1;
+			item->xcursor += wcwidth(item->pubwbuf[item->xletterpubbuf]);
+		}
+		break;
+	case DEL_LETTER:
+		if (item->nletters == 0)
+			break;
+		if (item->pos == item->nletters)
+			break;
+		/* here a letter under the cursor */
+		change = true;
+		for (i = item->pos; i < item->nletters; i++) {
+			item->privwbuf[i] = item->privwbuf[i+1];
+			item->pubwbuf[i] = item->pubwbuf[i+1];
+		}
+		item->nletters -= 1;
+		item->privwbuf[i] = L'\0';
+		item->pubwbuf[i] = L'\0';
+		break;
+	case MOVE_CURSOR_RIGHT: /* used also by insertch, see handler loop */
+		if (item->pos + 1 == item->maxletters) 
+			break;
+		if (item->pos == item->nletters)
+			break;
+		/* here a change to right */
+		change = true;
+		oldwidth = wcwidth(item->pubwbuf[item->pos]);
+		item->pos += 1;
+		if (item->pos == item->nletters) { /* empty column */
+			nextwidth = 1;
+		} else { /* a letter to right */
+			nextwidth = wcwidth(item->pubwbuf[item->pos]);
+		}
+		if (item->xcursor + oldwidth + nextwidth - 1 >= item->fieldcols) {
+			//BSDDIALOG_DEBUG(6,2,"%s", "IN   ");
+			cols = nextwidth;
+			item->xletterpubbuf = item->pos;
+			//int Y = 0;
+			// this loop manage also inserch with multi column, dont change!
+			while (item->xletterpubbuf != 0) {
+				//BSDDIALOG_DEBUG(10 + Y,2,"nextwidth:%d, cols:%d, xletterpubbuf:%u|",
+				//    nextwidth, cols, item->xletterpubbuf);
+				cols += wcwidth(item->pubwbuf[item->xletterpubbuf - 1]);
+				if (cols > (int)item->fieldcols)
+					break;
+				item->xletterpubbuf -= 1;
+				//BSDDIALOG_DEBUG(11 + Y,2,"nextwidth:%d, cols:%d, xletterpubbuf:%u|",
+				//    nextwidth, cols, item->xletterpubbuf);
+				//Y += 3;
+			}
+			item->xcursor = 0;
+			for (i = item->xletterpubbuf; i < item->pos ; i++)
+				item->xcursor += wcwidth(item->pubwbuf[i]);
+		}
+		else {
+			//BSDDIALOG_DEBUG(6,2,"%s", "ELSE");
+			item->xcursor += oldwidth;
+		}
+
+		break;
+	}
+
+BSDDIALOG_DEBUG(3,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
+    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
+
+	return (change);
+}
+
+static unsigned int
+previtem(unsigned int nitems, struct privitem *items, int curritem)
+{
+	int i;
+
+	for (i = curritem - 1; i >= 0; i--)
+		if (items[i].readonly == false)
+			return(i);
+
+	for (i = nitems - 1; i > curritem - 1; i--)
+		if (items[i].readonly == false)
+			return(i);
+
+	return (curritem);
+}
+
+static unsigned int
+nextitem(unsigned int nitems, struct privitem *items, int curritem)
+{
+	int i;
+
+	for (i = curritem + 1; i < (int)nitems; i++)
+		if (items[i].readonly == false)
+			return(i);
+
+	for (i = 0; i < curritem; i++)
+		if (items[i].readonly == false)
+			return(i);
+
+	return (curritem);
+}
+
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
-    struct bsddialog_formitem *items)
+    struct bsddialog_formitem *apiitems)
 {
-	int i, output, color, y, x, h, w;
-	unsigned long j, maxline, mybufsize;
+	bool loop, buttonupdate, focusinform;
+	wchar_t securewch;
+	int output, y, x, h, w, wchtype, curritem;
+	unsigned int i;
+	unsigned long maxline;
+	wint_t input;
 	struct buttons bs;
-	struct myfield *myfields;
-	FIELD **cfield;
-	FORM *form;
+	struct privitem *items, *item;
+	wchar_t *winit;
 	WINDOW *widget, *formwin, *textpad, *shadow;
 
 	/* disable form scrolling */
 	if (formheight < nitems)
 		formheight = nitems;
 
-	for (i = 0; i < (int)nitems; i++) {
-		if (items[i].maxvaluelen == 0)
+	for (i = 0; i < nitems; i++) {
+		if (apiitems[i].maxvaluelen == 0)
 			RETURN_ERROR("maxvaluelen cannot be zero");
-		if (items[i].fieldlen == 0)
+		if (apiitems[i].fieldlen == 0)
 			RETURN_ERROR("fieldlen cannot be zero");
-		if (items[i].fieldlen > items[i].maxvaluelen)
-			RETURN_ERROR("fieldlen cannot be > maxvaluelen");
+		// XXX to delete
+		//if (apiitems[i].fieldlen > apiitems[i].maxvaluelen)
+		//	RETURN_ERROR("fieldlen cannot be > maxvaluelen");
 	}
+
+	securewch = (conf->form.securech == '\0') ? L' ' : btowc(conf->form.securech);
 
 	maxline = 0;
-	myfields = malloc(nitems * sizeof(struct myfield));
-	cfield = calloc(nitems + 1, sizeof(FIELD*));
-	for (i = 0; i < (int)nitems; i++) {
-		cfield[i] = new_field(1, items[i].fieldlen, items[i].yfield-1,
-		    items[i].xfield-1, 0, 0);
-		field_opts_off(cfield[i], O_STATIC);
-		set_max_field(cfield[i], items[i].maxvaluelen);
-		/* setlocale() should handle set_field_buffer() */
-		set_field_buffer(cfield[i], 0, items[i].init);
+	items = malloc(nitems * sizeof(struct privitem));
+	curritem = -1;
+	for (i = 0; i < nitems; i++) {
+		item = &items[i];
+		item->label = apiitems[i].label;
+		item->ylabel = apiitems[i].ylabel;
+		item->xlabel = apiitems[i].xlabel;
+		item->yfield = apiitems[i].yfield;
+		item->xfield = apiitems[i].xfield;
+		item->secure = apiitems[i].flags & BSDDIALOG_FIELDHIDDEN;
+		item->readonly = apiitems[i].flags & BSDDIALOG_FIELDREADONLY;
+		item->fieldnocolor = apiitems[i].flags & BSDDIALOG_FIELDNOCOLOR;
+		item->bottomdesc = apiitems[i].bottomdesc;
+		item->xletterpubbuf = 0;
+		item->xcursor = 0;
 
-		mybufsize = (items[i].maxvaluelen + 1) * sizeof(wchar_t);
-		myfields[i].buf = malloc(mybufsize);
-		memset(myfields[i].buf, 0, mybufsize);
-		// XXX do use mbstr_to_wstr or mbstowcs for maxvaluelen?
-		for (j = 0; j < items[i].maxvaluelen && j < strlen(items[i].init);
-		    j++)
-			myfields[i].buf[j] = items[i].init[j];
+		item->maxletters = apiitems[i].maxvaluelen;
+		// XXX memeset 0? can be useless for wscncpy
+		item->privwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
+		memset(item->privwbuf, 0, item->maxletters + 1);
+		item->pubwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
+		memset(item->pubwbuf, 0, item->maxletters + 1);
 
-		myfields[i].buflen = wcslen(myfields[i].buf);
+		winit = alloc_mbstows(apiitems[i].init);
+		wcsncpy(item->privwbuf, winit, item->maxletters);
+		wcsncpy(item->pubwbuf, winit, item->maxletters);
+		free(winit);
+		item->nletters = wcslen(item->pubwbuf);
+		item->pos = 0;
 
-		myfields[i].maxpos = items[i].maxvaluelen -1;
-		myfields[i].pos = MIN(myfields[i].buflen, myfields[i].maxpos);
+		item->fieldcols = apiitems[i].fieldlen;
 
-		myfields[i].bottomdesc = items[i].bottomdesc;
-		set_field_userptr(cfield[i], &myfields[i]);
+		if (curritem == -1 && item->readonly == false)
+			curritem = i;
 
-		field_opts_off(cfield[i], O_AUTOSKIP);
-		field_opts_off(cfield[i], O_BLANK);
-
-		if (ISFIELDHIDDEN(items[i])) {
-			myfields[i].secure = true;
-			myfields[i].securech = ' ';
-			if (conf->form.securech != '\0')
-				myfields[i].securech = conf->form.securech;
-		}
-		else
-			myfields[i].secure = false;
-
-		if (ISFIELDREADONLY(items[i])) {
-			field_opts_off(cfield[i], O_EDIT);
-			field_opts_off(cfield[i], O_ACTIVE);
-			color = t.form.readonlycolor;
-		} else {
-			color = i == 0 ? t.form.f_fieldcolor : t.form.fieldcolor;
-		}
-		set_field_fore(cfield[i], color);
-		set_field_back(cfield[i], color);
-
-		maxline = MAX(maxline, items[i].xlabel + strlen(items[i].label));
-		maxline = MAX(maxline, items[i].xfield + items[i].fieldlen - 1);
+		maxline = MAX(maxline, apiitems[i].xlabel + strcols(apiitems[i].label));
+		maxline = MAX(maxline, apiitems[i].xfield + apiitems[i].fieldlen - 1);
 	}
-	cfield[i] = NULL;
-
-	 /* disable field focus with 1 item (inputbox or passwordbox) */
-	if (formheight == 1 && nitems == 1 && strlen(items[0].label) == 0 &&
-	    items[0].xfield == 1 ) {
-		set_field_fore(cfield[0], t.dialog.color);
-		set_field_back(cfield[0], t.dialog.color);
-	}
+	item = (curritem == -1) ? NULL : &items[curritem];
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	bs.curr = -1;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -491,46 +466,169 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	formwin = new_boxed_window(conf, y + h - 3 - formheight -2, x +1,
 	    formheight+2, w-2, LOWERED);
 
-	form = new_form(cfield);
-	set_form_win(form, formwin);
-	/* should be formheight */
-	set_form_sub(form, derwin(formwin, nitems, w-4, 1, 1));
-	post_form(form);
+	curs_set(1); // XXX add and check conf.form.focusonbuttons
+	for (i=0 ; i < nitems; i++) {
+		drawitem(formwin, &items[i], false);
+	}
+	if (curritem != 1)
+		drawitem(formwin, item, true);
 
-	for (i = 0; i < (int)nitems; i++)
-		mvwaddstr(formwin, items[i].ylabel, items[i].xlabel,
-		    items[i].label);
-
+	// XXX delete? old code
 	wrefresh(formwin);
 
-	do {
-		output = form_handler(conf, widget, bs, formwin, form, cfield,
-		    nitems, items);
-
-		if (update_dialog(conf, shadow, widget, y, x, h, w, textpad,
-		    text, &bs, true) != 0)
+	focusinform = true;
+	buttonupdate = true;
+	loop = true;
+	output = 0; // XXX delete
+	while (loop) {
+		if (buttonupdate) {
+			draw_buttons(widget, bs, !focusinform);
+			wrefresh(widget);
+			buttonupdate = false;
+		}
+		wrefresh(formwin);
+		wchtype = get_wch(&input);
+		if (wchtype != KEY_CODE_YES && input > 127 &&
+		    conf->form.enable_wchar == false)
+			continue;
+		switch(input) {
+		case KEY_HOME:
+		case KEY_PPAGE:
+		case KEY_END:
+		case KEY_NPAGE:
+			/* disabled keys */
+			break;
+		case KEY_ENTER:
+		case 10: /* Enter */
+			if (focusinform)
+				break;
+			output = return_values(conf, bs.value[bs.curr],
+			    nitems, apiitems, items);
+			loop = false;
+			break;
+		case 27: /* Esc */
+			if (conf->key.enable_esc) {
+				output = return_values(conf, BSDDIALOG_ESC,
+				    nitems, apiitems, items);
+				loop = false;
+			}
+			break;
+		case '\t': /* TAB */
+			if (focusinform) {
+				// XXX check curritem!=-1
+				bs.curr = 0;
+				focusinform = false;
+				curs_set(0);
+			} else {
+				bs.curr++;
+				focusinform = bs.curr >= (int)bs.nbuttons ?
+				    true : false;
+				if (focusinform) {
+					curs_set(1);
+				}
+			}
+			buttonupdate = true;
+			break;
+		case KEY_UP:
+			if (curritem == -1)
+				break;
+			drawitem(formwin, item, false);
+			curritem = previtem(nitems, items, curritem);
+			item = &items[curritem];
+			drawitem(formwin, item, true);
+			break;
+		case KEY_DOWN:
+			if (curritem == -1)
+				break;
+			drawitem(formwin, item, false);
+			curritem = nextitem(nitems, items, curritem);
+			item = &items[curritem];
+			drawitem(formwin, item, true);
+			break;
+		case KEY_LEFT:
+			if (focusinform) {
+				if(fieldctl(item, MOVE_CURSOR_LEFT))
+					drawitem(formwin, item, true);
+			} else {
+				if (bs.curr > 0) {
+					bs.curr--;
+					buttonupdate = true;
+				}
+			}
+			break;
+		case KEY_RIGHT:
+			if (focusinform) {
+				if(fieldctl(item, MOVE_CURSOR_RIGHT))
+					drawitem(formwin, item, true);
+			} else {
+				if (bs.curr < (int) bs.nbuttons - 1) {
+					bs.curr++;
+					buttonupdate = true;
+				}
+			}
+			break;
+		case KEY_BACKSPACE:
+		case 127: /* Backspace */
+			if(fieldctl(item, MOVE_CURSOR_LEFT))
+				if(fieldctl(item, DEL_LETTER))
+					drawitem(formwin, item, true);
+			break;
+		case KEY_DC:
+			if(fieldctl(item, DEL_LETTER))
+				drawitem(formwin, item, true);
+			break;
+		case KEY_F(1):
+			if (conf->key.f1_file == NULL &&
+			    conf->key.f1_message == NULL)
+				break;
+			if (f1help(conf) != 0)
+				return (BSDDIALOG_ERROR);
+			/* No Break */
+		case KEY_RESIZE:
+			if (update_dialog(conf, shadow, widget, y, x, h, w,
+			    textpad, text, &bs, true) != 0)
 			return (BSDDIALOG_ERROR);
 
-		doupdate();
-		wrefresh(widget);
+			doupdate();
+			wrefresh(widget);
 
-		prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
-		    y + h - formheight, x + 1 + w - TEXTHMARGIN);
+			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
+			    y + h - formheight, x + 1 + w - TEXTHMARGIN);
 
-		draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
-		wrefresh(formwin);
+			draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
+			if (curritem != -1)
+				drawitem(formwin, item, true);
+			wrefresh(formwin);
 
-		refresh();
-	} while (output == REDRAWFORM);
-
-	unpost_form(form);
-	free_form(form);
-	for (i = 0; i < (int)nitems; i++) {
-		free_field(cfield[i]);
-		free(myfields[i].buf);
+			refresh();
+			break;
+		default:
+			if (wchtype == KEY_CODE_YES)
+				break;
+			if (focusinform) {
+				/*
+				 * MOVE_CURSOR_RIGHT manages new positions
+				 * because the cursor remain on the new letter,
+				 * "if" and "while" update the positions.
+				 */
+				if(insertch(item, input, securewch))
+					if(fieldctl(item, MOVE_CURSOR_RIGHT))
+						drawitem(formwin, item, true);
+			}
+			else {
+				if (shortcut_buttons(input, &bs)) {
+					output = return_values(conf,
+					    bs.value[bs.curr], nitems, apiitems,
+					    items);
+					loop = false;
+				}
+			}
+			break;
+		}
 	}
-	free(cfield);
-	free(myfields);
+	
+	// XXX to check
+	curs_set(0);
 
 	delwin(formwin);
 	end_dialog(conf, shadow, widget, textpad);

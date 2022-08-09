@@ -66,6 +66,7 @@
 /* Form */
 #define BSDDIALOG_FIELDHIDDEN    1U
 #define BSDDIALOG_FIELDREADONLY  2U
+#define BSDDIALOG_FIELDNOCOLOR   4U
 
 struct bsddialog_conf {
 	bool ascii_lines;

@@ -131,16 +131,16 @@ in the _Public Domain_ to build new projects:
    - ~~title~~
    - ~~text (word wrapping, auto sizing)~~
    - ~~menus (shortcuts, name, desc)~~
+   - ~~forms (label, field)~~
    - ~~bottons (label, shortcuts)~~
    - ~~bottomtitle~~
  - Forms
-   - refactoring formbox.c
-   - delete -lformw dep
-   - add #define BSDDIALOG_FIELDNOCOLOR
+   - ~~refactoring formbox.c~~
+   - ~~delete -lformw dep~~
+   - ~~add #define BSDDIALOG_FIELDNOCOLOR~~
    - fix form height (items y instead of nitems)
-   / fix form bugs in bsddialog.1 and bsddialog.3
+   - fix form bugs in bsddialog.1 and bsddialog.3
    - add bsddialog\_inputbox() (improve autosizing, focus on buttons)
-   - field with multi column letters
  - Custom theme
    - ~~add bsddialog\_init\_notheme()~~
    - ~~add bsddialog_hascolors()~~
