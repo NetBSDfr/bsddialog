@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd August 6, 2022
+.Dd August 9, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -324,7 +324,8 @@ struct bsddialog_conf {
 	} menu;
 	struct {
 		bool enable_wchar;
-		int  securech;
+		char securech;
+		char *securembch;
 		bool value_without_ok;
 	} form;
 	struct {
@@ -699,9 +700,13 @@ is a pointer to allocated memory for a
 .Em wchar_t
 string.
 .It Fa conf.form.securech
-charachter to hide the input
-with
+charachter to hide the input with
 .Dv BSDDIALOG_FIELDHIDDEN .
+.It Fa conf.form.securembch
+multibyte charachter to hide the input with
+.Dv BSDDIALOG_FIELDHIDDEN ,
+.Fa conf.form.securech
+is ignored.
 .It Fa conf.form.value_without_ok
 allocate memory and set
 .Fa value

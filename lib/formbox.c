@@ -377,7 +377,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	bool loop, buttonupdate, focusinform;
 	wchar_t securewch;
-	int output, y, x, h, w, wchtype, curritem;
+	int output, y, x, h, w, wchtype, curritem, mbchsize;
 	unsigned int i;
 	unsigned long maxline;
 	wint_t input;
@@ -397,7 +397,15 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			RETURN_ERROR("fieldlen cannot be zero");
 	}
 
-	securewch = (conf->form.securech == '\0') ? L' ' : btowc(conf->form.securech);
+	if (conf->form.securembch != NULL) {
+		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
+		if(mbtowc(&securewch, conf->form.securembch, mbchsize) < 0)
+			RETURN_ERROR("Cannot convert securembch to wchar_t");
+	} else if (conf->form.securech != '\0') {
+		securewch = btowc(conf->form.securech);
+	} else {
+		securewch = L' '; 
+	}
 
 	maxline = 0;
 	items = malloc(nitems * sizeof(struct privitem));

@@ -102,7 +102,8 @@ struct bsddialog_conf {
 	} menu;
 	struct {
 		bool enable_wchar;
-		int  securech;
+		char securech;
+		char *securembch;
 		bool value_without_ok;
 	} form;
 	struct {
