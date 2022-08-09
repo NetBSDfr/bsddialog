@@ -493,11 +493,11 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	    true) != 0)
 		return (BSDDIALOG_ERROR);
 
-	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
-	    y + h - formheight, x + 1 + w - TEXTHMARGIN);
+	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN, y + h - formheight,
+	    x + 1 + w - TEXTHMARGIN);
 
-	formwin = new_boxed_window(conf, y + h - 3 - formheight -2, x +1,
-	    formheight+2, w-2, LOWERED);
+	formwin = new_boxed_window(conf, y + h - 3 - formheight - 2, x + 1,
+	    formheight + 2, w - 2, LOWERED);
 
 	curs_set(1); // XXX add and check conf.form.focusonbuttons
 	for (i=0 ; i < nitems; i++) {
