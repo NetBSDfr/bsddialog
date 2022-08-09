@@ -257,7 +257,6 @@ int main(int argc, char *argv[argc])
 	conf.key.enable_esc = true;
 	conf.menu.on_without_ok = true;
 	conf.form.value_without_ok = true;
-	conf.form.value_wchar = true;
 
 	backtitle_opt = NULL;
 	theme_opt = BSDDIALOG_THEME_FLAT;
@@ -1276,7 +1275,7 @@ print_form_items(int output, int nitems, struct bsddialog_formitem *items)
 		return;
 
 	for (i = 0; i < nitems; i++) {
-		dprintf(output_fd_opt, "%ls\n", (wchar_t*)items[i].value);
+		dprintf(output_fd_opt, "%s\n", items[i].value);
 		free(items[i].value);
 	}
 }
