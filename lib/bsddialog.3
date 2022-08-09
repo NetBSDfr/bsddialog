@@ -322,9 +322,9 @@ struct bsddialog_conf {
 		bool shortcut_buttons;
 	} menu;
 	struct {
-		bool enable_wchar;
 		char securech;
 		char *securembch;
+		bool value_wchar;
 		bool value_without_ok;
 	} form;
 	struct {
@@ -694,11 +694,11 @@ have to be between 1 and
 .Fn bsddialog_form
 can be customized by:
 .Bl -column -compact
-.It Fa conf.form.enable_wchar
-enables characters greater than 127 in the field,
+.It Fa conf.form.value_wchar
+the allocated field
 .Fa value
-is a pointer to allocated memory for a
-.Em wchar_t
+is a
+.Em wchar_t*
 string.
 .It Fa conf.form.securech
 charachter to hide the input with

@@ -145,6 +145,7 @@ in the _Public Domain_ to build new projects:
    - ~~add conf.form.securembch~~
    - ~~add KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE~~
    - ~~add BSDDIALOG_FIELDCURSOREND~~
+   - ~~change conf.form.enable_wchar to conf.form.value_wchar~~
  - Custom theme
    - ~~add bsddialog\_init\_notheme()~~
    - ~~add bsddialog_hascolors()~~

@@ -37,7 +37,7 @@ int main()
 	bsddialog_initconf(&conf);
 	conf.title = "form";
 	conf.form.securech = '*';
-	conf.form.enable_wchar = true;
+	conf.form.value_wchar = true;
 	output = bsddialog_form(&conf, "Example", 10, 50, 3, 3, items);
 
 	bsddialog_end();

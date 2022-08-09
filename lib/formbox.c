@@ -152,7 +152,7 @@ return_values(struct bsddialog_conf *conf, int output, int nitems,
 		return (output);
 
 	for (i = 0; i < nitems; i++) {
-		if (conf->form.enable_wchar) {
+		if (conf->form.value_wchar) {
 			items[i].value = (char*)wcsdup(pritems[i].privwbuf);
 		} else {
 			items[i].value = alloc_wstomb(pritems[i].privwbuf);
@@ -521,9 +521,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		}
 		wrefresh(formwin);
 		wchtype = get_wch(&input);
-		if (wchtype != KEY_CODE_YES && input > 127 &&
-		    conf->form.enable_wchar == false)
-			continue;
+		//if (wchtype != KEY_CODE_YES && input > 127 &&
+		//    conf->form.value_wchar == false)
+		//	continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */

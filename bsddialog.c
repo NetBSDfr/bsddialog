@@ -257,7 +257,7 @@ int main(int argc, char *argv[argc])
 	conf.key.enable_esc = true;
 	conf.menu.on_without_ok = true;
 	conf.form.value_without_ok = true;
-	conf.form.enable_wchar = true;
+	conf.form.value_wchar = true;
 
 	backtitle_opt = NULL;
 	theme_opt = BSDDIALOG_THEME_FLAT;
