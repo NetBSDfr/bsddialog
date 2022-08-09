@@ -378,7 +378,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	bool loop, buttonupdate, focusinform;
 	wchar_t securewch;
 	int output, y, x, h, w, wchtype, curritem, mbchsize;
-	unsigned int i;
+	unsigned int i, j;
 	unsigned long maxline;
 	wint_t input;
 	struct buttons bs;
@@ -435,6 +435,11 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		wcsncpy(item->pubwbuf, winit, item->maxletters);
 		free(winit);
 		item->nletters = wcslen(item->pubwbuf);
+		if (item->secure) {
+			for (j = 0; j < item->nletters; j++)
+				item->pubwbuf[j] = securewch;
+		}
+
 		item->pos = 0;
 
 		item->fieldcols = apiitems[i].fieldlen;
