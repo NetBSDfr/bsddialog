@@ -143,6 +143,7 @@ in the _Public Domain_ to build new projects:
    - add bsddialog\_inputbox() (improve autosizing, focus on buttons)
    - ~~delete constraint maxvaluelen >= valuelen~~
    - ~~add conf.form.securembch~~
+   - ~~add KEY_HOME and KEY_END~~
  - Custom theme
    - ~~add bsddialog\_init\_notheme()~~
    - ~~add bsddialog_hascolors()~~

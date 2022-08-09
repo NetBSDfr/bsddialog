@@ -501,9 +501,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		    conf->form.enable_wchar == false)
 			continue;
 		switch(input) {
-		case KEY_HOME:
 		case KEY_PPAGE:
-		case KEY_END:
 		case KEY_NPAGE:
 			/* disabled keys */
 			break;
@@ -585,6 +583,21 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_DC:
 			if(fieldctl(item, DEL_LETTER))
 				drawitem(formwin, item, true);
+			break;
+		case KEY_HOME:
+			if (curritem == -1 || focusinform == false)
+				break;
+			item->pos = 0;
+			item->xcursor = 0;
+			item->xletterpubbuf = 0;
+			drawitem(formwin, item, true);
+			break;
+		case KEY_END:
+			if (curritem == -1 || focusinform == false)
+				break;
+			while (fieldctl(item, MOVE_CURSOR_RIGHT))
+				; /* shit to right */
+			drawitem(formwin, item, true);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
