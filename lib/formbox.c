@@ -116,9 +116,6 @@ static bool insertch(struct privitem *mf, wchar_t wch, wchar_t securewch)
 
 	mf->privwbuf[mf->pos] = wch;
 	mf->pubwbuf[mf->pos] = mf->secure ? securewch : wch;
-	//mf->pos += 1;
-	//if (mf->pos > mf->maxpos)
-	//	mf->pos = mf->maxpos;
 	mf->nletters += 1;
 	mf->privwbuf[mf->nletters] = L'\0';
 	mf->pubwbuf[mf->nletters] = L'\0';
