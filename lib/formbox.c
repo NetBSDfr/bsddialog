@@ -521,9 +521,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		}
 		wrefresh(formwin);
 		wchtype = get_wch(&input);
-		//if (wchtype != KEY_CODE_YES && input > 127 &&
-		//    conf->form.value_wchar == false)
-		//	continue;
+		if (conf->form.input_singlebyte && wchtype != KEY_CODE_YES &&
+		    wctob(input) == WEOF)
+			continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */

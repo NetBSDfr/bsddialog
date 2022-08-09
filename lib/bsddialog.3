@@ -694,12 +694,8 @@ have to be between 1 and
 .Fn bsddialog_form
 can be customized by:
 .Bl -column -compact
-.It Fa conf.form.value_wchar
-the allocated field
-.Fa value
-is a
-.Em wchar_t*
-string.
+.It Fa conf.form.input_singlebyte
+field gets only single byte charachters in input. 
 .It Fa conf.form.securech
 charachter to hide the input with
 .Dv BSDDIALOG_FIELDHIDDEN .
@@ -708,6 +704,12 @@ multibyte charachter to hide the input with
 .Dv BSDDIALOG_FIELDHIDDEN ,
 .Fa conf.form.securech
 is ignored.
+.It Fa conf.form.value_wchar
+the allocated field
+.Fa value
+is a
+.Em wchar_t*
+string.
 .It Fa conf.form.value_without_ok
 allocate memory and set
 .Fa value

@@ -102,6 +102,7 @@ struct bsddialog_conf {
 		bool shortcut_buttons;
 	} menu;
 	struct {
+		bool input_singlebyte;
 		char securech;
 		char *securembch;
 		bool value_wchar;
