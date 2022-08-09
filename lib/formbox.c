@@ -664,12 +664,17 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform) {
 				/*
 				 * MOVE_CURSOR_RIGHT manages new positions
-				 * because the cursor remain on the new letter,
+				 * because the cursor remains on the new letter,
 				 * "if" and "while" update the positions.
 				 */
-				if(insertch(item, input, securewch))
-					if(fieldctl(item, MOVE_CURSOR_RIGHT))
-						drawitem(formwin, item, true);
+				if(insertch(item, input, securewch)) {
+					fieldctl(item, MOVE_CURSOR_RIGHT);
+					/* 
+					 * no if(fieldctl), update always
+					 * because it fails with maxletters.
+					 */ 
+					drawitem(formwin, item, true);
+				}
 			}
 			else {
 				if (shortcut_buttons(input, &bs)) {
