@@ -270,10 +270,9 @@ is described later.
 .Pp
 Each
 .Fa char*
-argument has to be a well terminated string, can be empty
-.Pq Dq
-but not
-.Dv NULL .
+argument has to be a well terminated string, it can be a multibyte character
+string depending on current locale, see
+.Xr setlocale 3 .
 .Ss Dialogs
 The dialogs have common arguments.
 .Fa text
