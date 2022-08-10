@@ -38,14 +38,14 @@
 #include "lib_util.h"
 
 struct privitem {
-	const char *label;      /* formitem.label  */
+	const char *label;      /* formitem.label */
 	unsigned int ylabel;    /* formitem.ylabel */
 	unsigned int xlabel;    /* formitem.xlabel */
 	unsigned int yfield;    /* formitem.yfield */
 	unsigned int xfield;    /* formitem.xfield */
-	bool secure;            /* formitem.flags & BSDDIALOG_FIELDHIDDEN   */
+	bool secure;            /* formitem.flags & BSDDIALOG_FIELDHIDDEN */
 	bool readonly;          /* formitem.flags & BSDDIALOG_FIELDREADONLY */
-	bool fieldnocolor;      /* formitem.flags & BSDDIALOG_FIELDNOCOLOR  */
+	bool fieldnocolor;      /* formitem.flags & BSDDIALOG_FIELDNOCOLOR */
 	const char *bottomdesc; /* formitem.bottomdesc */
 	
 	wchar_t *privwbuf;       /* formitem.value */
@@ -55,7 +55,7 @@ struct privitem {
 	unsigned int pos;        /* pos in privwbuf and pubwbuf */
 	unsigned int fieldcols;  /* formitem.fieldlen */
 	unsigned int xcursor;    /* position in fieldcols [0 - fieldcols-1] */
-	unsigned int xletterpubbuf; /* first pos in pubwbuf to draw */
+	unsigned int xletterpubbuf; /* first position to draw in pubwbuf */
 };
 
 static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
