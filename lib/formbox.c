@@ -197,7 +197,6 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 		cols += wcwidth(ni->pubwbuf[ni->xletterpubbuf + i]);
 		
 	}
-	wrefresh(w); // XXX useless? test/check
 	wattroff(w, color);
 
 	move(SCREENLINES - 1, 2);
@@ -209,7 +208,8 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 
 	if (focus)
 		wmove(w, ni->yfield, ni->xfield + ni->xcursor);
-	wrefresh(w); // XXX useless? test/check
+
+	wrefresh(w); /* to be sure */
 }
 
 static bool insertch(struct privitem *mf, wchar_t wch, wchar_t securewch)
