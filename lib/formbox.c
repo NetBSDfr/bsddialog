@@ -58,6 +58,103 @@ struct privitem {
 	unsigned int xletterpubbuf; /* first position to draw in pubwbuf */
 };
 
+enum operation {
+	MOVE_CURSOR_RIGHT,
+	MOVE_CURSOR_LEFT,
+	DEL_LETTER
+};
+
+static bool fieldctl(struct privitem *item, enum operation op)
+{
+	bool change;
+	int width, oldwidth, nextwidth, cols;
+	unsigned int i;
+
+//BSDDIALOG_DEBUG(2,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
+//    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
+	change = false;
+	switch (op){
+	case MOVE_CURSOR_LEFT:
+		if (item->pos == 0)
+			break;
+		if (item->xcursor == 0 && item->xletterpubbuf == 0)
+			break; /* useless by item->pos == 0 and 'while' below */
+		/* here some letter to left */
+		change = true;
+		item->pos -= 1;
+		width = wcwidth(item->pubwbuf[item->pos]);
+		if (((int)item->xcursor) - width < 0) {
+			item->xcursor = 0;
+			item->xletterpubbuf -= 1;
+		} else
+			item->xcursor -= width;
+
+		while (true){
+			if (item->xletterpubbuf == 0)
+				break;
+			if (item->xcursor >= item->fieldcols / 2)
+				break;
+			if (wcwidth(item->pubwbuf[item->xletterpubbuf - 1]) + item->xcursor + width > item->fieldcols)
+				break;
+
+			item->xletterpubbuf -= 1;
+			item->xcursor += wcwidth(item->pubwbuf[item->xletterpubbuf]);
+		}
+		break;
+	case DEL_LETTER:
+		if (item->nletters == 0)
+			break;
+		if (item->pos == item->nletters)
+			break;
+		/* here a letter under the cursor */
+		change = true;
+		for (i = item->pos; i < item->nletters; i++) {
+			item->privwbuf[i] = item->privwbuf[i+1];
+			item->pubwbuf[i] = item->pubwbuf[i+1];
+		}
+		item->nletters -= 1;
+		item->privwbuf[i] = L'\0';
+		item->pubwbuf[i] = L'\0';
+		break;
+	case MOVE_CURSOR_RIGHT: /* used also by "insert", see handler loop */
+		if (item->pos + 1 == item->maxletters) 
+			break;
+		if (item->pos == item->nletters)
+			break;
+		/* here a change to right */
+		change = true;
+		oldwidth = wcwidth(item->pubwbuf[item->pos]);
+		item->pos += 1;
+		if (item->pos == item->nletters) { /* empty column */
+			nextwidth = 1;
+		} else { /* a letter to right */
+			nextwidth = wcwidth(item->pubwbuf[item->pos]);
+		}
+		if (item->xcursor + oldwidth + nextwidth - 1 >= item->fieldcols) {
+			cols = nextwidth;
+			item->xletterpubbuf = item->pos;
+			while (item->xletterpubbuf != 0) {
+				cols += wcwidth(item->pubwbuf[item->xletterpubbuf - 1]);
+				if (cols > (int)item->fieldcols)
+					break;
+				item->xletterpubbuf -= 1;
+			}
+			item->xcursor = 0;
+			for (i = item->xletterpubbuf; i < item->pos ; i++)
+				item->xcursor += wcwidth(item->pubwbuf[i]);
+		}
+		else {
+			item->xcursor += oldwidth;
+		}
+
+		break;
+	}
+//BSDDIALOG_DEBUG(3,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
+//    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
+
+	return (change);
+}
+
 static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 {
 	int color;
@@ -164,166 +261,6 @@ return_values(struct bsddialog_conf *conf, int output, int nitems,
 	return (output);
 }
 
-static int
-form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    const char *text, int linelen, unsigned int *formheight, int nitems,
-    struct buttons bs)
-{
-	int htext, wtext, menusize;
-
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, &bs, *formheight + 2,
-		    linelen + 2, &htext, &wtext) != 0)
-			return (BSDDIALOG_ERROR);
-	}
-
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, linelen + 2, &bs);
-
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		if (*formheight == 0) {
-			menusize = widget_max_height(conf) - HBORDERS -
-			     2 /*buttons*/ - htext;
-			menusize = MIN(menusize, nitems + 2);
-			*formheight = menusize - 2 < 0 ? 0 : menusize - 2;
-		}
-		else /* h autosize with fixed formheight */
-			menusize = *formheight + 2;
-
-		*h = widget_min_height(conf, htext, menusize, true);
-	} else {
-		if (*formheight == 0)
-			*formheight = MIN(rows-6-htext, nitems);
-	}
-
-	return (0);
-}
-
-static int
-form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
-    unsigned int linelen, struct buttons bs)
-{
-	int mincols, textrow, formrows;
-
-	mincols = VBORDERS;
-	/* buttons */
-	mincols += buttons_width(bs);
-	mincols = MAX(mincols, (int)linelen + 4);
-
-	if (cols < mincols)
-		RETURN_ERROR("Few cols, width < size buttons or "
-		    "forms (label + field)");
-
-	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
-
-	if (nitems > 0 && formheight == 0)
-		RETURN_ERROR("fields > 0 but formheight == 0, probably "
-		    "terminal too small");
-
-	formrows = nitems > 0 ? 3 : 0;
-	if (rows < 2  + 2 + formrows + textrow)
-		RETURN_ERROR("Few lines for this menus");
-
-	return (0);
-}
-
-enum operation {
-	MOVE_CURSOR_RIGHT,
-	MOVE_CURSOR_LEFT,
-	DEL_LETTER
-};
-
-static bool fieldctl(struct privitem *item, enum operation op)
-{
-	bool change;
-	int width, oldwidth, nextwidth, cols;
-	unsigned int i;
-
-//BSDDIALOG_DEBUG(2,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
-//    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
-	change = false;
-	switch (op){
-	case MOVE_CURSOR_LEFT:
-		if (item->pos == 0)
-			break;
-		if (item->xcursor == 0 && item->xletterpubbuf == 0)
-			break; /* useless by item->pos == 0 and 'while' below */
-		/* here some letter to left */
-		change = true;
-		item->pos -= 1;
-		width = wcwidth(item->pubwbuf[item->pos]);
-		if (((int)item->xcursor) - width < 0) {
-			item->xcursor = 0;
-			item->xletterpubbuf -= 1;
-		} else
-			item->xcursor -= width;
-
-		while (true){
-			if (item->xletterpubbuf == 0)
-				break;
-			if (item->xcursor >= item->fieldcols / 2)
-				break;
-			if (wcwidth(item->pubwbuf[item->xletterpubbuf - 1]) + item->xcursor + width > item->fieldcols)
-				break;
-
-			item->xletterpubbuf -= 1;
-			item->xcursor += wcwidth(item->pubwbuf[item->xletterpubbuf]);
-		}
-		break;
-	case DEL_LETTER:
-		if (item->nletters == 0)
-			break;
-		if (item->pos == item->nletters)
-			break;
-		/* here a letter under the cursor */
-		change = true;
-		for (i = item->pos; i < item->nletters; i++) {
-			item->privwbuf[i] = item->privwbuf[i+1];
-			item->pubwbuf[i] = item->pubwbuf[i+1];
-		}
-		item->nletters -= 1;
-		item->privwbuf[i] = L'\0';
-		item->pubwbuf[i] = L'\0';
-		break;
-	case MOVE_CURSOR_RIGHT: /* used also by "insert", see handler loop */
-		if (item->pos + 1 == item->maxletters) 
-			break;
-		if (item->pos == item->nletters)
-			break;
-		/* here a change to right */
-		change = true;
-		oldwidth = wcwidth(item->pubwbuf[item->pos]);
-		item->pos += 1;
-		if (item->pos == item->nletters) { /* empty column */
-			nextwidth = 1;
-		} else { /* a letter to right */
-			nextwidth = wcwidth(item->pubwbuf[item->pos]);
-		}
-		if (item->xcursor + oldwidth + nextwidth - 1 >= item->fieldcols) {
-			cols = nextwidth;
-			item->xletterpubbuf = item->pos;
-			while (item->xletterpubbuf != 0) {
-				cols += wcwidth(item->pubwbuf[item->xletterpubbuf - 1]);
-				if (cols > (int)item->fieldcols)
-					break;
-				item->xletterpubbuf -= 1;
-			}
-			item->xcursor = 0;
-			for (i = item->xletterpubbuf; i < item->pos ; i++)
-				item->xcursor += wcwidth(item->pubwbuf[i]);
-		}
-		else {
-			item->xcursor += oldwidth;
-		}
-
-		break;
-	}
-//BSDDIALOG_DEBUG(3,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
-//    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
-
-	return (change);
-}
-
 static unsigned int firstitem(unsigned int nitems, struct privitem *items)
 {
 	int i;
@@ -389,6 +326,69 @@ redrawbuttons(WINDOW *window, struct buttons *bs, bool focus, bool shortcut)
 	draw_buttons(window, *bs, shortcut);
 	wrefresh(window);
 	bs->curr = selected;
+}
+
+static int
+form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
+    const char *text, int linelen, unsigned int *formheight, int nitems,
+    struct buttons bs)
+{
+	int htext, wtext, menusize;
+
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
+		if (text_size(conf, rows, cols, text, &bs, *formheight + 2,
+		    linelen + 2, &htext, &wtext) != 0)
+			return (BSDDIALOG_ERROR);
+	}
+
+	if (cols == BSDDIALOG_AUTOSIZE)
+		*w = widget_min_width(conf, wtext, linelen + 2, &bs);
+
+	if (rows == BSDDIALOG_AUTOSIZE) {
+		if (*formheight == 0) {
+			menusize = widget_max_height(conf) - HBORDERS -
+			     2 /*buttons*/ - htext;
+			menusize = MIN(menusize, nitems + 2);
+			*formheight = menusize - 2 < 0 ? 0 : menusize - 2;
+		}
+		else /* h autosize with fixed formheight */
+			menusize = *formheight + 2;
+
+		*h = widget_min_height(conf, htext, menusize, true);
+	} else {
+		if (*formheight == 0)
+			*formheight = MIN(rows-6-htext, nitems);
+	}
+
+	return (0);
+}
+
+static int
+form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
+    unsigned int linelen, struct buttons bs)
+{
+	int mincols, textrow, formrows;
+
+	mincols = VBORDERS;
+	/* buttons */
+	mincols += buttons_width(bs);
+	mincols = MAX(mincols, (int)linelen + 4);
+
+	if (cols < mincols)
+		RETURN_ERROR("Few cols, width < size buttons or "
+		    "forms (label + field)");
+
+	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
+
+	if (nitems > 0 && formheight == 0)
+		RETURN_ERROR("fields > 0 but formheight == 0, probably "
+		    "terminal too small");
+
+	formrows = nitems > 0 ? 3 : 0;
+	if (rows < 2  + 2 + formrows + textrow)
+		RETURN_ERROR("Few lines for this menus");
+
+	return (0);
 }
 
 /* API */
