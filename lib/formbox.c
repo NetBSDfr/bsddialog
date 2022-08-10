@@ -529,8 +529,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	while (loop) {
 		wrefresh(formwin);
 		wchtype = get_wch(&input);
+		/* avoid wctob(input) == WEOF for IEEE Std 1003.1-2008 */
 		if (conf->form.input_singlebyte && wchtype != KEY_CODE_YES &&
-		    wctob(input) == WEOF)
+		    wctob(input) == EOF) 
 			continue;
 		switch(input) {
 		case KEY_ENTER:
