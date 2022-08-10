@@ -38,24 +38,24 @@
 #include "lib_util.h"
 
 struct privitem {
-	const char *label;      // formitem.label
-	unsigned int ylabel;    // formitem.ylabel
-	unsigned int xlabel;    // formitem.xlabel
-	unsigned int yfield;    // formitem.yfield
-	unsigned int xfield;    // formitem.xfield
-	bool secure;            // formitem.flags & BSDDIALOG_FIELDHIDDEN
-	bool readonly;          // formitem.flags & BSDDIALOG_FIELDREADONLY
-	bool fieldnocolor;      // formitem.flags & BSDDIALOG_FIELDNOCOLOR
-	const char *bottomdesc; // formitem.bottomdesc
+	const char *label;      /* formitem.label  */
+	unsigned int ylabel;    /* formitem.ylabel */
+	unsigned int xlabel;    /* formitem.xlabel */
+	unsigned int yfield;    /* formitem.yfield */
+	unsigned int xfield;    /* formitem.xfield */
+	bool secure;            /* formitem.flags & BSDDIALOG_FIELDHIDDEN   */
+	bool readonly;          /* formitem.flags & BSDDIALOG_FIELDREADONLY */
+	bool fieldnocolor;      /* formitem.flags & BSDDIALOG_FIELDNOCOLOR  */
+	const char *bottomdesc; /* formitem.bottomdesc */
 	
-	wchar_t *privwbuf;      // formitem.value
-	wchar_t *pubwbuf;
-	unsigned int maxletters;// formitem.maxvaluelen, size privwbuf and pubwbuf
-	unsigned int nletters;  // letters in privwbuf and pubwbuf
-	unsigned int pos;       // pos in privwbuf and pubwbuf
-	unsigned int fieldcols; // formitem.fieldlen
-	unsigned int xcursor;   // 0 - fieldcols-1
-	unsigned int xletterpubbuf; // fist pos in pubwbuf to draw
+	wchar_t *privwbuf;       /* formitem.value */
+	wchar_t *pubwbuf;        /* string for drawitem() */
+	unsigned int maxletters; /* formitem.maxvaluelen, [priv|pub]wbuf size */
+	unsigned int nletters;   /* letters in privwbuf and pubwbuf */
+	unsigned int pos;        /* pos in privwbuf and pubwbuf */
+	unsigned int fieldcols;  /* formitem.fieldlen */
+	unsigned int xcursor;    /* position in fieldcols [0 - fieldcols-1] */
+	unsigned int xletterpubbuf; /* first pos in pubwbuf to draw */
 };
 
 static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
@@ -78,7 +78,7 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 	wmove(w, ni->yfield, ni->xfield);
 	for (i = 0; i < ni->fieldcols; i++)
 		waddch(w, ' ');
-	wrefresh(w); /* important for following multi cols letters */
+	wrefresh(w); /* important for following multicolumn letters */
 	i=0;
 	cols = wcwidth(ni->pubwbuf[ni->xletterpubbuf]);
 	while (cols <= ni->fieldcols && ni->xletterpubbuf + i < wcslen(ni->pubwbuf)) {
@@ -241,14 +241,13 @@ static bool fieldctl(struct privitem *item, enum operation op)
 
 //BSDDIALOG_DEBUG(2,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
 //    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
-
 	change = false;
 	switch (op){
 	case MOVE_CURSOR_LEFT:
 		if (item->pos == 0)
 			break;
 		if (item->xcursor == 0 && item->xletterpubbuf == 0)
-			break; // XXX useless? pos=0!
+			break; /* useless by item->pos == 0 and 'while' below */
 		/* here some letter to left */
 		change = true;
 		item->pos -= 1;
@@ -286,7 +285,7 @@ static bool fieldctl(struct privitem *item, enum operation op)
 		item->privwbuf[i] = L'\0';
 		item->pubwbuf[i] = L'\0';
 		break;
-	case MOVE_CURSOR_RIGHT: /* used also by insertch, see handler loop */
+	case MOVE_CURSOR_RIGHT: /* used also by "insert", see handler loop */
 		if (item->pos + 1 == item->maxletters) 
 			break;
 		if (item->pos == item->nletters)
@@ -301,34 +300,24 @@ static bool fieldctl(struct privitem *item, enum operation op)
 			nextwidth = wcwidth(item->pubwbuf[item->pos]);
 		}
 		if (item->xcursor + oldwidth + nextwidth - 1 >= item->fieldcols) {
-			//BSDDIALOG_DEBUG(6,2,"%s", "IN   ");
 			cols = nextwidth;
 			item->xletterpubbuf = item->pos;
-			//int Y = 0;
-			// this loop manage also inserch with multi column, dont change!
 			while (item->xletterpubbuf != 0) {
-				//BSDDIALOG_DEBUG(10 + Y,2,"nextwidth:%d, cols:%d, xletterpubbuf:%u|",
-				//    nextwidth, cols, item->xletterpubbuf);
 				cols += wcwidth(item->pubwbuf[item->xletterpubbuf - 1]);
 				if (cols > (int)item->fieldcols)
 					break;
 				item->xletterpubbuf -= 1;
-				//BSDDIALOG_DEBUG(11 + Y,2,"nextwidth:%d, cols:%d, xletterpubbuf:%u|",
-				//    nextwidth, cols, item->xletterpubbuf);
-				//Y += 3;
 			}
 			item->xcursor = 0;
 			for (i = item->xletterpubbuf; i < item->pos ; i++)
 				item->xcursor += wcwidth(item->pubwbuf[i]);
 		}
 		else {
-			//BSDDIALOG_DEBUG(6,2,"%s", "ELSE");
 			item->xcursor += oldwidth;
 		}
 
 		break;
 	}
-
 //BSDDIALOG_DEBUG(3,2,"pos:%u, xletterpubbuf:%u, xcursor:%u, fieldcols:%u, nletters:%u, maxletters:%u|||||",
 //    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
 
