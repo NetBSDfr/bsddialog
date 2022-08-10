@@ -94,7 +94,8 @@ static bool fieldctl(struct privitem *item, enum operation op)
 				break;
 			if (item->xcursor >= item->fieldcols / 2)
 				break;
-			if (wcwidth(item->pubwbuf[item->xletterpubbuf - 1]) + item->xcursor + width > item->fieldcols)
+			if (wcwidth(item->pubwbuf[item->xletterpubbuf - 1]) +
+			    item->xcursor + width > item->fieldcols)
 				break;
 
 			item->xletterpubbuf -= 1;
@@ -178,8 +179,10 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 	wrefresh(w); /* important for following multicolumn letters */
 	i=0;
 	cols = wcwidth(ni->pubwbuf[ni->xletterpubbuf]);
-	while (cols <= ni->fieldcols && ni->xletterpubbuf + i < wcslen(ni->pubwbuf)) {
-		mvwaddwch(w, ni->yfield, ni->xfield + i, ni->pubwbuf[ni->xletterpubbuf + i]);
+	while (cols <= ni->fieldcols && ni->xletterpubbuf + i <
+	    wcslen(ni->pubwbuf)) {
+		mvwaddwch(w, ni->yfield, ni->xfield + i,
+		    ni->pubwbuf[ni->xletterpubbuf + i]);
 		i++;
 		cols += wcwidth(ni->pubwbuf[ni->xletterpubbuf + i]);
 		
