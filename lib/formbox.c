@@ -389,13 +389,26 @@ nextitem(unsigned int nitems, struct privitem *items, int curritem)
 	return (curritem);
 }
 
+static void
+redrawbuttons(WINDOW *window, struct buttons *bs, bool focus, bool shortcut)
+{
+	int selected;
+
+	selected = bs->curr;
+	if (focus == false)
+		bs->curr = -1;
+	draw_buttons(window, *bs, shortcut);
+	wrefresh(window);
+	bs->curr = selected;
+}
+
 /* API */
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *apiitems)
 {
-	bool loop, buttonupdate, focusinform;
+	bool loop, focusinform;
 	wchar_t securewch;
 	int output, y, x, h, w, wchtype, curritem, mbchsize;
 	unsigned int i, j;
@@ -474,10 +487,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		maxline = MAX(maxline, apiitems[i].xlabel + strcols(apiitems[i].label));
 		maxline = MAX(maxline, apiitems[i].xfield + apiitems[i].fieldlen - 1);
 	}
-	item = (curritem == -1) ? NULL : &items[curritem];
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-	bs.curr = -1;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -498,27 +509,22 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	formwin = new_boxed_window(conf, y + h - 3 - formheight - 2, x + 1,
 	    formheight + 2, w - 2, LOWERED);
-
-	curs_set(1); // XXX add and check conf.form.focusonbuttons
-	for (i=0 ; i < nitems; i++) {
+	
+	for (i=0 ; i < nitems; i++)
 		drawitem(formwin, &items[i], false);
-	}
-	if (curritem != 1)
+	item = NULL;
+	if (curritem != -1) {
+		curs_set(1);
+		item = &items[curritem];
 		drawitem(formwin, item, true);
+		focusinform = true;
+		redrawbuttons(widget, &bs, conf->form.focus_buttons, false);
+	} else {
+		focusinform = false;
+	}
 
-	// XXX delete? old code
-	wrefresh(formwin);
-
-	focusinform = true;
-	buttonupdate = true;
 	loop = true;
-	output = 0; // XXX delete
 	while (loop) {
-		if (buttonupdate) {
-			draw_buttons(widget, bs, !focusinform);
-			wrefresh(widget);
-			buttonupdate = false;
-		}
 		wrefresh(formwin);
 		wchtype = get_wch(&input);
 		if (conf->form.input_singlebyte && wchtype != KEY_CODE_YES &&
@@ -527,7 +533,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			if (focusinform)
+			if (focusinform && conf->form.focus_buttons == false)
 				break;
 			output = return_values(conf, bs.value[bs.curr],
 			    nitems, apiitems, items);
@@ -542,19 +548,49 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case '\t': /* TAB */
 			if (focusinform) {
-				// XXX check curritem!=-1
 				bs.curr = 0;
 				focusinform = false;
 				curs_set(0);
 			} else {
-				bs.curr++;
-				focusinform = bs.curr >= (int)bs.nbuttons ?
-				    true : false;
-				if (focusinform) {
-					curs_set(1);
+				if (bs.curr + 1 < (int)bs.nbuttons) {
+					bs.curr++;
+				} else {
+					if (curritem != -1) {
+						bs.curr = 0;
+						focusinform = true;
+						curs_set(1);
+					} else {
+						bs.curr += 1;
+						bs.curr %= bs.nbuttons;
+					}
 				}
 			}
-			buttonupdate = true;
+			redrawbuttons(widget, &bs, conf->form.focus_buttons ||
+			    !focusinform, !focusinform);
+			break;
+		case KEY_LEFT:
+			if (focusinform) {
+				if(fieldctl(item, MOVE_CURSOR_LEFT))
+					drawitem(formwin, item, true);
+			} else {
+				if (bs.curr > 0) {
+					bs.curr--;
+					draw_buttons(widget, bs, true);
+					wrefresh(widget);
+				}
+			}
+			break;
+		case KEY_RIGHT:
+			if (focusinform) {
+				if(fieldctl(item, MOVE_CURSOR_RIGHT))
+					drawitem(formwin, item, true);
+			} else {
+				if (bs.curr < (int) bs.nbuttons - 1) {
+					bs.curr++;
+					draw_buttons(widget, bs, true);
+					wrefresh(widget);
+				}
+			}
 			break;
 		case KEY_UP:
 			if (curritem == -1)
@@ -571,28 +607,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			curritem = nextitem(nitems, items, curritem);
 			item = &items[curritem];
 			drawitem(formwin, item, true);
-			break;
-		case KEY_LEFT:
-			if (focusinform) {
-				if(fieldctl(item, MOVE_CURSOR_LEFT))
-					drawitem(formwin, item, true);
-			} else {
-				if (bs.curr > 0) {
-					bs.curr--;
-					buttonupdate = true;
-				}
-			}
-			break;
-		case KEY_RIGHT:
-			if (focusinform) {
-				if(fieldctl(item, MOVE_CURSOR_RIGHT))
-					drawitem(formwin, item, true);
-			} else {
-				if (bs.curr < (int) bs.nbuttons - 1) {
-					bs.curr++;
-					buttonupdate = true;
-				}
-			}
 			break;
 		case KEY_BACKSPACE:
 		case 127: /* Backspace */
@@ -689,8 +703,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		}
 	}
-	
-	// XXX to check
 	curs_set(0);
 
 	delwin(formwin);

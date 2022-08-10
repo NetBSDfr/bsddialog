@@ -1345,6 +1345,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.flags	 = BSDDIALOG_FIELDNOCOLOR | BSDDIALOG_FIELDCURSOREND;
 	item.bottomdesc  = "";
 
+	conf.form.focus_buttons = true;
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
 	print_form_items(output, 1, &item);
 
@@ -1411,6 +1412,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.flags      |= BSDDIALOG_FIELDCURSOREND;
 	item.bottomdesc  = "";
 
+	conf.form.focus_buttons = true;
 	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
 	print_form_items(output, 1, &item);
 

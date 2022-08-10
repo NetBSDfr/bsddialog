@@ -322,6 +322,7 @@ struct bsddialog_conf {
 		bool shortcut_buttons;
 	} menu;
 	struct {
+		bool focus_buttons;
 		bool input_singlebyte;
 		char securech;
 		char *securembch;
@@ -695,8 +696,10 @@ have to be between 1 and
 .Fn bsddialog_form
 can be customized by:
 .Bl -column -compact
+.It Fa conf.form.focus_buttons
+focus always also on buttons.
 .It Fa conf.form.input_singlebyte
-field gets only single byte charachters in input. 
+field gets only single byte charachters in input.
 .It Fa conf.form.securech
 charachter to hide the input with
 .Dv BSDDIALOG_FIELDHIDDEN .

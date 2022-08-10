@@ -141,7 +141,7 @@ in the _Public Domain_ to build new projects:
    - ~~Utility replaces output from wide char to multibyte char strings~~
    - fix form height (items y instead of nitems)
    - fix form bugs in bsddialog.1 and bsddialog.3
-   - add bsddialog\_inputbox() (improve autosizing, focus on buttons)
+   - --bsddialog\_inputbox() (improve autosizing, ~~focus on buttons~~)
    - ~~delete constraint maxvaluelen >= valuelen~~
    - ~~add conf.form.securembch~~
    - ~~add KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE~~
