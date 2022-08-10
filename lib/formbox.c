@@ -593,7 +593,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 			break;
 		case KEY_UP:
-			if (curritem == -1)
+			if (focusinform == false)
 				break;
 			drawitem(formwin, item, false);
 			curritem = previtem(nitems, items, curritem);
@@ -601,7 +601,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			drawitem(formwin, item, true);
 			break;
 		case KEY_DOWN:
-			if (curritem == -1)
+			if (focusinform == false)
 				break;
 			drawitem(formwin, item, false);
 			curritem = nextitem(nitems, items, curritem);
@@ -610,16 +610,20 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case KEY_BACKSPACE:
 		case 127: /* Backspace */
+			if (focusinform == false)
+				break;
 			if(fieldctl(item, MOVE_CURSOR_LEFT))
 				if(fieldctl(item, DEL_LETTER))
 					drawitem(formwin, item, true);
 			break;
 		case KEY_DC:
+			if (focusinform == false)
+				break;
 			if(fieldctl(item, DEL_LETTER))
 				drawitem(formwin, item, true);
 			break;
 		case KEY_HOME:
-			if (curritem == -1 || focusinform == false)
+			if (focusinform == false)
 				break;
 			item->pos = 0;
 			item->xcursor = 0;
@@ -627,14 +631,14 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			drawitem(formwin, item, true);
 			break;
 		case KEY_END:
-			if (curritem == -1 || focusinform == false)
+			if (focusinform == false)
 				break;
 			while (fieldctl(item, MOVE_CURSOR_RIGHT))
 				; /* shit to right */
 			drawitem(formwin, item, true);
 			break;
 		case KEY_PPAGE:
-			if (curritem == -1 || focusinform == false)
+			if (focusinform == false)
 				break;
 			drawitem(formwin, item, false);
 			curritem = firstitem(nitems, items);
@@ -642,7 +646,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			drawitem(formwin, item, true);
 			break;
 		case KEY_NPAGE:
-			if (curritem == -1 || focusinform == false)
+			if (focusinform == false)
 				break;
 			drawitem(formwin, item, false);
 			curritem = lastitem(nitems, items);
