@@ -59,6 +59,7 @@ struct privitem {
 };
 
 enum operation {
+	MOVE_CURSOR_BEGIN,
 	MOVE_CURSOR_RIGHT,
 	MOVE_CURSOR_LEFT,
 	DEL_LETTER
@@ -74,6 +75,15 @@ static bool fieldctl(struct privitem *item, enum operation op)
 //    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, item->nletters, item->maxletters);
 	change = false;
 	switch (op){
+	case MOVE_CURSOR_BEGIN:
+		if (item->pos == 0 && item->xcursor == 0)
+			break;
+		/* here the cursor is changed */
+		change = true;
+		item->pos = 0;
+		item->xcursor = 0;
+		item->xletterpubbuf = 0;
+		break;
 	case MOVE_CURSOR_LEFT:
 		if (item->pos == 0)
 			break;
@@ -617,10 +627,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_HOME:
 			if (focusinform == false)
 				break;
-			item->pos = 0;
-			item->xcursor = 0;
-			item->xletterpubbuf = 0;
-			drawitem(formwin, item, true);
+			if(fieldctl(item, MOVE_CURSOR_BEGIN))
+				drawitem(formwin, item, true);
 			break;
 		case KEY_END:
 			if (focusinform == false)
