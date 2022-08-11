@@ -609,6 +609,22 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			item = &items[curritem];
 			drawitem(formwin, item, true);
 			break;
+		case KEY_PPAGE:
+			if (focusinform == false)
+				break;
+			drawitem(formwin, item, false);
+			curritem = firstitem(nitems, items);
+			item = &items[curritem];
+			drawitem(formwin, item, true);
+			break;
+		case KEY_NPAGE:
+			if (focusinform == false)
+				break;
+			drawitem(formwin, item, false);
+			curritem = lastitem(nitems, items);
+			item = &items[curritem];
+			drawitem(formwin, item, true);
+			break;
 		case KEY_BACKSPACE:
 		case 127: /* Backspace */
 			if (focusinform == false)
@@ -634,22 +650,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			while (fieldctl(item, MOVE_CURSOR_RIGHT))
 				; /* shit to right */
-			drawitem(formwin, item, true);
-			break;
-		case KEY_PPAGE:
-			if (focusinform == false)
-				break;
-			drawitem(formwin, item, false);
-			curritem = firstitem(nitems, items);
-			item = &items[curritem];
-			drawitem(formwin, item, true);
-			break;
-		case KEY_NPAGE:
-			if (focusinform == false)
-				break;
-			drawitem(formwin, item, false);
-			curritem = lastitem(nitems, items);
-			item = &items[curritem];
 			drawitem(formwin, item, true);
 			break;
 		case KEY_F(1):
