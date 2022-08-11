@@ -109,7 +109,8 @@ static bool fieldctl(struct privitem *item, enum operation op)
 				break;
 
 			item->xletterpubbuf -= 1;
-			item->xcursor += wcwidth(item->pubwbuf[item->xletterpubbuf]);
+			item->xcursor +=
+			    wcwidth(item->pubwbuf[item->xletterpubbuf]);
 		}
 		break;
 	case DEL_LETTER:
