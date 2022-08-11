@@ -84,7 +84,7 @@ void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
 
 	ws[0] = wch;
 	ws[1] = L'\0';
-	mvwaddwstr(w, y, x,ws);
+	mvwaddwstr(w, y, x, ws);
 	
 }
 
