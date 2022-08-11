@@ -172,7 +172,6 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 	unsigned int i, cols;
 
 	/* Label */
-	// XXX could be useless, just one-time
 	mvwaddstr(w, ni->ylabel, ni->xlabel, ni->label);
 
 	/* Field */
@@ -199,6 +198,7 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 	}
 	wattroff(w, color);
 
+	/* Bottom Desc */
 	move(SCREENLINES - 1, 2);
 	clrtoeol();
 	if (ni->bottomdesc != NULL && focus) {
@@ -208,8 +208,7 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 
 	if (focus)
 		wmove(w, ni->yfield, ni->xfield + ni->xcursor);
-
-	wrefresh(w); /* to be sure */
+	wrefresh(w); /* to be sure after bottom desc addstr and refresh */
 }
 
 static bool insertch(struct privitem *mf, wchar_t wch, wchar_t securewch)
