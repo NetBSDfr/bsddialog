@@ -634,14 +634,25 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, MOVE_CURSOR_LEFT))
-				if(fieldctl(item, DEL_LETTER))
+				if(fieldctl(item, DEL_LETTER)) {
+					/* trick, see case KEY_DC */
+					drawitem(formwin, item, false);
 					drawitem(formwin, item, true);
+				}
 			break;
 		case KEY_DC:
 			if (focusinform == false)
 				break;
-			if(fieldctl(item, DEL_LETTER))
+			if(fieldctl(item, DEL_LETTER)) {
+				/*
+				 * trick to force curses to redraw the empty
+				 * single column in the field otherwise the
+				 * deleted multicolumn letters are drawn again.
+				 * libformw has a similar problem and solution.
+				 */
+				drawitem(formwin, item, false);
 				drawitem(formwin, item, true);
+			}
 			break;
 		case KEY_HOME:
 			if (focusinform == false)
