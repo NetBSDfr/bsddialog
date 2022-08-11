@@ -379,7 +379,8 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
     bool color)
 {
 	int i, j, len, reallen;
-	wchar_t *ws = malloc(10);
+	wchar_t ws[2];
+
 	ws[1] = L'\0';
 
 	len = wcslen(str);
@@ -411,11 +412,9 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 			} else if (j + wcwidth(str[i]) > cols) {
 				break;
 			} else {
-				// XXX print mb?
+				 /* inline mvwaddwch() for efficiency */
 				ws[0] = str[i];
 				mvwaddwstr(win, *y, j, ws);
-				//wctomb(mb, str[i]);
-				//mvwaddch(win, *y, j, mb);
 				reallen -= wcwidth(str[i]);
 				j += wcwidth(str[i]);
 				i++;
