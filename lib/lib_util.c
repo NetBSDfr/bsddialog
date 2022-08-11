@@ -525,9 +525,9 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	wordcols = 0;
 	maxwordlen = 0;
 	l = 0;
-	for (i = 0; i < wtextlen + 1; i++) {
+	for (i = 0; i < wtextlen; i++) {
 		if (conf->text.highlight && is_wtext_attr(wtext + i)) {
-			i += 3;
+			i += 2; /* +1 for update statement */
 			continue;
 		}
 
@@ -537,13 +537,6 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 			if (words == NULL)
 				RETURN_ERROR("Cannot realloc memory for text "
 				    "autosize");
-		}
-
-		// XXX out for?
-		if (wtext[i] == L'\0') {
-			words[nword] = wordcols;
-			maxwordlen = MAX(wordcols, maxwordlen);
-			break;
 		}
 
 		if (wcschr(L"\t\n  ", wtext[i]) != NULL) {
@@ -573,6 +566,8 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 			l++;
 		}
 	}
+	words[nword] = wordcols;
+	maxwordlen = MAX(wordcols, maxwordlen);
 
 	if (increasecols) {
 		mincols = MAX(mincols, maxwordlen);
