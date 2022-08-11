@@ -54,7 +54,7 @@ void set_error_string(const char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
-/* Unicode. To improve, proof of concept for now */
+/* Unicode */
 wchar_t* alloc_mbstows(const char *mbstring)
 {
 	size_t charlen, nchar;
@@ -62,18 +62,17 @@ wchar_t* alloc_mbstows(const char *mbstring)
 	const char *pmbstring;
 	wchar_t *wstring;
 
-	nchar = 0;
+	nchar = 1;
 	pmbstring = mbstring;
 	memset(&mbs, 0, sizeof(mbs));
-	// XXX mblen?
 	while ((charlen = mbrlen(pmbstring, MB_CUR_MAX, &mbs)) != 0 &&
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
-		// XXX check/return errors
 		pmbstring += charlen;
 		nchar++;
 	}
 
-	wstring = calloc(nchar + 1, sizeof(wchar_t));
+	if ((wstring = calloc(nchar, sizeof(wchar_t))) == NULL)
+		return (NULL);
 	mbstowcs(wstring, mbstring, nchar);
 
 	return (wstring);
