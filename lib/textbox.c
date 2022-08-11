@@ -36,26 +36,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-int strcols_tab(const char *mbstring)
-{
-	size_t charlen;
-	int ncol, w;
-	mbstate_t mbs;
-	wchar_t wch;
-
-	ncol = 0;
-	memset(&mbs, 0, sizeof(mbs));
-	while ((charlen = mbrlen(mbstring, MB_CUR_MAX, &mbs)) != 0 &&
-	    charlen != (size_t)-1 && charlen != (size_t)-2) {
-		mbtowc(&wch, mbstring, MB_CUR_MAX);
-		w = (wch == L'\t') ? TABSIZE : wcwidth(wch);
-		ncol += (w < 0) ? 0 : w;
-		mbstring += charlen;
-	}
-
-	return (ncol);
-}
-
 static void
 textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, int hpad, int wpad, struct buttons bs)
@@ -110,7 +90,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	wbkgd(pad, t.dialog.color);
 	i = 0;
 	while (fgets(buf, BUFSIZ, fp) != NULL) {
-		linecols = strcols_tab(buf);
+		linecols = strcols(buf);
 		if (linecols > wpad) {
 			wpad = linecols;
 			wresize(pad, hpad, wpad);

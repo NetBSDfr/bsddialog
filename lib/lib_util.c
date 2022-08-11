@@ -89,30 +89,26 @@ void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
 	
 }
 
-int strcols(const char *mbstring)
+unsigned int strcols(const char *mbstring)
 {
-	size_t charlen, nchar;
-	int ncol, w;
+	size_t charlen, mb_cur_max;
+	unsigned int ncol;
+	int w;
 	mbstate_t mbs;
 	wchar_t wch;
-	// XXX maybe mb_cur_max = MB_CUR_MAX; MB_CUR_MAX calls a function
 
-	ncol = nchar = 0;
+	mb_cur_max = MB_CUR_MAX;
+	ncol = 0;
 	memset(&mbs, 0, sizeof(mbs));
-	while ((charlen = mbrlen(mbstring, MB_CUR_MAX, &mbs)) != 0 &&
+	while ((charlen = mbrlen(mbstring, mb_cur_max, &mbs)) != 0 &&
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
 		// XXX check/return errors
-		mbtowc(&wch, mbstring, MB_CUR_MAX);
+		mbtowc(&wch, mbstring, mb_cur_max);
 		w = wcwidth(wch);
-		ncol += (w < 0) ? 0 : w; /* tab, nl, etc return -1 */
+		w = (wch == L'\t') ? TABSIZE : wcwidth(wch);
+		ncol += (w < 0) ? 0 : w;
 		mbstring += charlen;
-		nchar++;
 	}
-
-	// old solution
-	//wchar_t wc[2000];
-	//mbstowcs(wc, string, 2000);
-	//tot = wcswidth(wc,2000);
 
 	return (ncol);
 }
@@ -296,7 +292,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 
 	bs->sizebutton = MAX(SIZEBUTTON - 2, strcols(bs->label[0]));
 	for (i = 1; i < (int)bs->nbuttons; i++)
-		bs->sizebutton = MAX((int)bs->sizebutton, strcols(bs->label[i]));
+		bs->sizebutton = MAX(bs->sizebutton, strcols(bs->label[i]));
 	bs->sizebutton += 2;
 }
 

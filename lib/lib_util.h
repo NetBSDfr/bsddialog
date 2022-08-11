@@ -43,7 +43,7 @@ extern struct bsddialog_theme t;
 } while (0)
 
 /* unicode */
-int strcols(const char *mbstring);
+unsigned int strcols(const char *mbstring);
 void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch);
 wchar_t* alloc_mbstows(const char *mbstring);
 

@@ -457,15 +457,15 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			item = &groups[i].items[j];
 
 			if (groups[i].type == BSDDIALOG_SEPARATOR) {
-				pos.maxsepstr = MAX((int)pos.maxsepstr,
+				pos.maxsepstr = MAX(pos.maxsepstr,
 				    strcols(item->name) + strcols(item->desc));
 				continue;
 			}
 
-			pos.maxprefix = MAX((int)pos.maxprefix,strcols(item->prefix));
+			pos.maxprefix = MAX(pos.maxprefix,strcols(item->prefix));
 			pos.maxdepth  = MAX(pos.maxdepth, item->depth);
-			pos.maxname   = MAX((int)pos.maxname, strcols(item->name));
-			pos.maxdesc   = MAX((int)pos.maxdesc, strcols(item->desc));
+			pos.maxname   = MAX(pos.maxname, strcols(item->name));
+			pos.maxdesc   = MAX(pos.maxdesc, strcols(item->desc));
 		}
 	}
 	pos.maxname = conf->menu.no_name ? 0 : pos.maxname;
