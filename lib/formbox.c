@@ -559,13 +559,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				if (bs.curr + 1 < (int)bs.nbuttons) {
 					bs.curr++;
 				} else {
+					bs.curr = 0;
 					if (curritem != -1) {
-						bs.curr = 0;
 						focusinform = true;
 						curs_set(1);
-					} else {
-						bs.curr += 1;
-						bs.curr %= bs.nbuttons;
 					}
 				}
 			}
@@ -581,7 +578,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					bs.curr--;
 					draw_buttons(widget, bs, true);
 					wrefresh(widget);
-				}
+				}//else items == 1 && curritem != -1 focusinform
 			}
 			break;
 		case KEY_RIGHT:
@@ -593,7 +590,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					bs.curr++;
 					draw_buttons(widget, bs, true);
 					wrefresh(widget);
-				}
+				}//else items == 1 && curritem != -1 focusinform
 			}
 			break;
 		case KEY_UP:
