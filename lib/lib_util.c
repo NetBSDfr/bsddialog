@@ -790,14 +790,12 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	if (conf->title != NULL) {
 		delimtitle = t.dialog.delimtitle ? 2 : 0;
 		wtitle = strcols(conf->title);
-		// XXX if wtitle < 0 return ERROR
 		min = MAX(min, wtitle + 2 + delimtitle);
 	}
 
 	/* bottom title */
 	if (conf->bottomtitle != NULL) {
 		wbottomtitle = strcols(conf->bottomtitle);
-		// XXX if wbottomtitle < 0 return ERROR
 		min = MAX(min, wbottomtitle + 4);
 	}
 
