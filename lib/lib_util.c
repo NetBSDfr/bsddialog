@@ -103,7 +103,6 @@ unsigned int strcols(const char *mbstring)
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
 		if (mbtowc(&wch, mbstring, mb_cur_max) < 0)
 			return (0);
-		w = wcwidth(wch);
 		w = (wch == L'\t') ? TABSIZE : wcwidth(wch);
 		ncol += (w < 0) ? 0 : w;
 		mbstring += charlen;
