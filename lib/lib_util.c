@@ -91,19 +91,19 @@ void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
 
 unsigned int strcols(const char *mbstring)
 {
-	size_t charlen, mb_cur_max;
-	unsigned int ncol;
 	int w;
-	mbstate_t mbs;
+	unsigned int ncol;
+	size_t charlen, mb_cur_max;
 	wchar_t wch;
+	mbstate_t mbs;
 
 	mb_cur_max = MB_CUR_MAX;
 	ncol = 0;
 	memset(&mbs, 0, sizeof(mbs));
 	while ((charlen = mbrlen(mbstring, mb_cur_max, &mbs)) != 0 &&
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
-		// XXX check/return errors
-		mbtowc(&wch, mbstring, mb_cur_max);
+		if (mbtowc(&wch, mbstring, mb_cur_max) < 0)
+			return (0);
 		w = wcwidth(wch);
 		w = (wch == L'\t') ? TABSIZE : wcwidth(wch);
 		ncol += (w < 0) ? 0 : w;
