@@ -238,7 +238,7 @@ static char* alloc_wstomb(wchar_t *wstr)
 	int len, nbytes, i;
 	char mbch[MB_LEN_MAX], *mbstr;
 
-	nbytes = MB_LEN_MAX;
+	nbytes = MB_LEN_MAX; /* to ensure a null terminated string */
 	len = wcslen(wstr);
 	for (i = 0; i < len; i++) {
 		wctomb(mbch, wstr[i]);
