@@ -432,8 +432,8 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 	int i, j, z, rows, cols, x, y, tablen;
 	wchar_t *wtext, *string;
 
-	// XXX check/return error
-	wtext = alloc_mbstows(text);
+	if ((wtext = alloc_mbstows(text)) == NULL)
+		RETURN_ERROR("Cannot allocate/print text in wchar_t*");
 
 	if ((string = calloc(wcslen(wtext) + 1, sizeof(wchar_t))) == NULL)
 		RETURN_ERROR("Cannot build (analyze) text");
@@ -516,11 +516,10 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
 	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
 
-	// XXX check and return error
-	wtext = alloc_mbstows(text);
-	// XXX should alloc_mbstows() set wtextlen?
+	if ((wtext = alloc_mbstows(text)) == NULL)
+		RETURN_ERROR("Cannot allocate/autosize text in wchar_t*");
 	wtextlen = wcslen(wtext);
-	wletters = calloc(wtextlen, sizeof(uint8_t)); //XXX needs only 2 bit
+	wletters = calloc(wtextlen, sizeof(uint8_t));
 
 	nword = 0;
 	wordcols = 0;

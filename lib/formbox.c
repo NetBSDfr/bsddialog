@@ -463,11 +463,16 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 		item->maxletters = apiitems[i].maxvaluelen;
 		item->privwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
+		if (item->privwbuf == NULL)
+			RETURN_ERROR("Cannot allocate item private buffer");
 		memset(item->privwbuf, 0, item->maxletters + 1);
 		item->pubwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
+		if (item->pubwbuf == NULL)
+			RETURN_ERROR("Cannot allocate item private buffer");
 		memset(item->pubwbuf, 0, item->maxletters + 1);
 
-		winit = alloc_mbstows(apiitems[i].init);
+		if ((winit = alloc_mbstows(apiitems[i].init)) == NULL)
+			RETURN_ERROR("Cannot allocate item.init in wchar_t*");
 		wcsncpy(item->privwbuf, winit, item->maxletters);
 		wcsncpy(item->pubwbuf, winit, item->maxletters);
 		free(winit);
