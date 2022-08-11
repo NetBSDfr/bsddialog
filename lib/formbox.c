@@ -659,10 +659,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (conf->key.f1_file == NULL &&
 			    conf->key.f1_message == NULL)
 				break;
+			curs_set(0);
 			if (f1help(conf) != 0) {
 				output = BSDDIALOG_ERROR;
 				loop = false;
 			}
+			curs_set(1);
 			/* No Break */
 		case KEY_RESIZE:
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
