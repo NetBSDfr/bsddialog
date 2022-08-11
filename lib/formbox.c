@@ -492,8 +492,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		if (curritem == -1 && item->readonly == false)
 			curritem = i;
 
-		maxline = MAX(maxline, apiitems[i].xlabel + strcols(apiitems[i].label));
-		maxline = MAX(maxline, apiitems[i].xfield + apiitems[i].fieldlen - 1);
+		maxline = MAX(maxline, items[i].xlabel + strcols(items[i].label));
+		maxline = MAX(maxline, items[i].xfield + items[i].fieldcols - 1);
 	}
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
