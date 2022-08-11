@@ -391,6 +391,7 @@ form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
 		RETURN_ERROR("Few cols, width < size buttons or "
 		    "forms (label + field)");
 
+	// XXX last strlen
 	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
 
 	if (nitems > 0 && formheight == 0)
