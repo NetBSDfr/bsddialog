@@ -39,7 +39,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define TABLEN     4    /* Default tab len  */
 #define ERRBUFLEN  1024 /* Error buffer len */
 
 /* Error */
@@ -92,7 +91,8 @@ void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
 
 int strcols(const char *mbstring)
 {
-	size_t charlen, nchar, ncol;
+	size_t charlen, nchar;
+	int ncol, w;
 	mbstate_t mbs;
 	wchar_t wch;
 	// XXX maybe mb_cur_max = MB_CUR_MAX; MB_CUR_MAX calls a function
@@ -103,7 +103,8 @@ int strcols(const char *mbstring)
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
 		// XXX check/return errors
 		mbtowc(&wch, mbstring, MB_CUR_MAX);
-		ncol += wcwidth(wch);
+		w = wcwidth(wch);
+		ncol += (w < 0) ? 0 : w; /* tab, nl, etc return -1 */
 		mbstring += charlen;
 		nchar++;
 	}
@@ -444,7 +445,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 		RETURN_ERROR("Cannot build (analyze) text");
 
 	getmaxyx(pad, rows, cols);
-	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
+	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
 
 	i = j = x = y = 0;
 	loop = true;
@@ -518,7 +519,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	if ((words = calloc(maxwords, sizeof(int))) == NULL)
 		RETURN_ERROR("Cannot alloc memory for text autosize");
 
-	tablen = (conf->text.tablen == 0) ? TABLEN : (int)conf->text.tablen;
+	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
 	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
 
 	// XXX check and return error

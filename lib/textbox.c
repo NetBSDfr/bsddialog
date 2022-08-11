@@ -28,11 +28,33 @@
 #include <sys/param.h>
 
 #include <curses.h>
+#include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 #include "bsddialog.h"
 #include "bsddialog_theme.h"
 #include "lib_util.h"
+
+int strcols_tab(const char *mbstring)
+{
+	size_t charlen;
+	int ncol, w;
+	mbstate_t mbs;
+	wchar_t wch;
+
+	ncol = 0;
+	memset(&mbs, 0, sizeof(mbs));
+	while ((charlen = mbrlen(mbstring, MB_CUR_MAX, &mbs)) != 0 &&
+	    charlen != (size_t)-1 && charlen != (size_t)-2) {
+		mbtowc(&wch, mbstring, MB_CUR_MAX);
+		w = (wch == L'\t') ? TABSIZE : wcwidth(wch);
+		ncol += (w < 0) ? 0 : w;
+		mbstring += charlen;
+	}
+
+	return (ncol);
+}
 
 static void
 textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
@@ -50,7 +72,8 @@ textbox_checksize(int rows, int cols, int hpad, struct buttons bs)
 {
 	int mincols;
 
-	mincols = VBORDERS + bs.sizebutton;
+	mincols = VBORDERS;
+	mincols += buttons_width(bs);
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols for the textbox");
@@ -67,8 +90,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
     int cols)
 {
 	bool loop;
-	int i, output;
+	int i, output, linecols;
 	int y, x, h, w, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
+	unsigned int defaulttablen;
 	wint_t input;
 	char buf[BUFSIZ];
 	FILE *fp;
@@ -78,14 +102,17 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	if ((fp = fopen(file, "r")) == NULL)
 		RETURN_ERROR("Cannot open file");
 
+	defaulttablen = TABSIZE;
+	set_tabsize((conf->text.tablen == 0) ? TABSIZE : conf->text.tablen);
 	hpad = 1;
 	wpad = 1;
 	pad = newpad(hpad, wpad);
 	wbkgd(pad, t.dialog.color);
 	i = 0;
 	while (fgets(buf, BUFSIZ, fp) != NULL) {
-		if ((int) strlen(buf) > wpad) {
-			wpad = strlen(buf);
+		linecols = strcols_tab(buf);
+		if (linecols > wpad) {
+			wpad = linecols;
 			wresize(pad, hpad, wpad);
 		}
 		if (i > hpad-1) {
@@ -96,14 +123,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 		i++;
 	}
 	fclose(fp);
-
-	bs.nbuttons = 1;
-	bs.label[0] = "EXIT";
-	if (conf->button.ok_label != NULL)
-		bs.label[0] = conf->button.ok_label;
-	bs.value[0] = BSDDIALOG_OK;
-	bs.curr = 0;
-	bs.sizebutton = strlen(bs.label[0]) + 2;
+	set_tabsize(defaulttablen);
+	
+	get_buttons(conf, &bs, "EXIT", NULL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -120,14 +142,20 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	ys = y + 1;
 	xs = x + 1;
 	ye = ys + h - 5;
-	xe = xs + w - 3;
+	xe = xs + w - 3 - 1; /* -1 avoid multicolumn char border overflow */
 	ypad = xpad = 0;
 	printrows = h-4;
 	loop = true;
 	while (loop) {
-		wnoutrefresh(widget);
-		pnoutrefresh(pad, ypad, xpad, ys, xs, ye, xe);
-		doupdate();
+		/*
+		 * Overflow multicolumn charchter right border:
+		 * wnoutrefresh(widget);
+		 * pnoutrefresh(pad, ypad, xpad, ys, xs, ye, xe);
+		 * doupdate();
+		 */
+		wrefresh(widget);
+		prefresh(pad, ypad, xpad, ys, xs, ye, xe);
+		//refresh();
 		if (get_wch(&input) == ERR)
 			continue;
 		switch(input) {
@@ -200,7 +228,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			ys = y + 1;
 			xs = x + 1;
 			ye = ys + h - 5;
-			xe = xs + w - 3;
+			xe = xs + w - 3 - 1;
 			ypad = xpad = 0;
 			printrows = h - 4;
 
