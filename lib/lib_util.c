@@ -539,7 +539,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 				    "autosize");
 		}
 
-		// out for?
+		// XXX out for?
 		if (wtext[i] == L'\0') {
 			words[nword] = wordcols;
 			maxwordlen = MAX(wordcols, maxwordlen);
@@ -641,7 +641,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	*h = (nword == 0 && words[0] == 0) ? 0 : y;
 	*w = MIN(mincols, line); /* wtext can be less than mincols */
 
-	//XXX free(wtext);
+	free((wchar_t*)wtext);
 	free(words);
 
 	return (0);
