@@ -185,7 +185,7 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 	wattron(w, color);
 	wmove(w, ni->yfield, ni->xfield);
 	for (i = 0; i < ni->fieldcols; i++)
-		waddch(w, ' ');
+		waddch(w, ' '); /* can "fail", see trick in case KEY_DC */
 	wrefresh(w); /* important for following multicolumn letters */
 	i=0;
 	cols = wcwidth(ni->pubwbuf[ni->xletterpubbuf]);
