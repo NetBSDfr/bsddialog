@@ -336,12 +336,14 @@ static bool is_wtext_attr(const wchar_t *wtext)
 
 static bool check_set_wtext_attr(WINDOW *win, wchar_t *wtext)
 {
+	enum bsddialog_color bg;
+
 	if (is_wtext_attr(wtext) == false)
 		return (false);
 
 	if ((wtext[2] - L'0') >= 0 && (wtext[2] - L'0') < 8) {
-		// XXX check wchar and COLOR_WHITE
-		wattron(win, bsddialog_color(wtext[2] - L'0', COLOR_WHITE, 0));
+		bsddialog_color_attrs(t.dialog.color, NULL, &bg, NULL);
+		wattron(win, bsddialog_color(wtext[2] - L'0', bg, 0));
 		return (true);
 	}
 
