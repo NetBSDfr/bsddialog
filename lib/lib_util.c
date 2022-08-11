@@ -471,7 +471,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 			}
 			j = -1;
 			break;
-		case ' ':
+		case L' ':
 			x++;
 			if (x >= cols) {
 				x = 0;
