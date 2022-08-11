@@ -141,8 +141,9 @@ in the _Public Domain_ to build new projects:
    - ~~add #define BSDDIALOG_FIELDNOCOLOR~~
    - ~~Utility replaces output from wide char to multibyte char strings~~
    - fix form height (items y instead of nitems)
-   - fix form bugs in bsddialog.1 and bsddialog.3
-   - --bsddialog\_inputbox() (improve autosizing, ~~focus on buttons~~)
+   - add resize
+   - add scrolling
+   - improve inputbox (improve autosizing, ~~focus on buttons~~)
    - ~~delete constraint maxvaluelen >= valuelen~~
    - ~~add conf.form.securembch~~
    - ~~add KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE~~
