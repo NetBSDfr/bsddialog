@@ -103,7 +103,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 		RETURN_ERROR("Cannot open file");
 
 	defaulttablen = TABSIZE;
-	set_tabsize((conf->text.tablen == 0) ? TABSIZE : conf->text.tablen);
+	set_tabsize((conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen);
 	hpad = 1;
 	wpad = 1;
 	pad = newpad(hpad, wpad);
