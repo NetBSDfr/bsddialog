@@ -418,10 +418,11 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	bool focusinform, insecurecursor, loop;
 	int curritem, mbchsize, output, y, x, h, w, wchtype;
-	unsigned int i, j, maxline;
+	unsigned int hformpad, wformpad;
+	unsigned int i, j;
 	wchar_t securewch, *winit;
 	wint_t input;
-	WINDOW *widget, *formwin, *textpad, *shadow;
+	WINDOW *widget, *formpad, *formwin, *textpad, *shadow;
 	struct privateitem *items, *item;
 	struct buttons bs;
 
@@ -451,8 +452,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if ((items = malloc(nitems * sizeof(struct privateitem))) == NULL)
 		RETURN_ERROR("Cannot allocate internal items");
-	maxline = 0;
-	curritem = -1;
+	hformpad = wformpad = 0;
 	for (i = 0; i < nitems; i++) {
 		item = &items[i];
 		item->label = apiitems[i].label;
@@ -499,21 +499,20 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 		item->fieldcols = apiitems[i].fieldlen;
 
-		if (curritem == -1 && item->readonly == false)
-			curritem = i;
-
-		maxline = MAX(maxline, items[i].xlabel + strcols(items[i].label));
-		maxline = MAX(maxline, items[i].xfield + items[i].fieldcols - 1);
+		hformpad = MAX(hformpad, items[i].ylabel);
+		hformpad = MAX(hformpad, items[i].yfield);
+		wformpad = MAX(wformpad, items[i].xlabel + strcols(items[i].label));
+		wformpad = MAX(wformpad, items[i].xfield + items[i].fieldcols - 1);
 	}
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_autosize(conf, rows, cols, &h, &w, text, maxline, &formheight,
+	if (form_autosize(conf, rows, cols, &h, &w, text, wformpad, &formheight,
 	    nitems, bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_checksize(h, w, text, formheight, nitems, maxline, bs) != 0)
+	if (form_checksize(h, w, text, formheight, nitems, wformpad, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -527,16 +526,20 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	formwin = new_boxed_window(conf, y + h - 3 - formheight - 2, x + 1,
 	    formheight + 2, w - 2, LOWERED);
-	
-	for (i=0 ; i < nitems; i++)
+
+	curritem = -1;
+	for (i=0 ; i < nitems; i++) {
 		drawitem(formwin, &items[i], false);
-	item = NULL;
+		if (curritem == -1 && item->readonly == false)
+			curritem = i;
+	}
 	if (curritem != -1) {
 		item = &items[curritem];
 		drawitem(formwin, item, true);
 		focusinform = true;
 		redrawbuttons(widget, &bs, conf->form.focus_buttons, false);
 	} else {
+		item = NULL;
 		focusinform = false;
 	}
 
