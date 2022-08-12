@@ -216,23 +216,23 @@ static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 	wrefresh(w); /* to be sure after bottom desc addstr and refresh */
 }
 
-static bool insertch(struct privateitem *mf, wchar_t wch, wchar_t securewch)
+static bool insertch(struct privateitem *item, wchar_t wch, wchar_t securewch)
 {
 	int i;
 
-	if (mf->nletters >= mf->maxletters)
+	if (item->nletters >= item->maxletters)
 		return (false);
 
-	for (i = (int)mf->nletters - 1; i >= (int)mf->pos; i--) {
-		mf->privwbuf[i+1] = mf->privwbuf[i];
-		mf->pubwbuf[i+1] = mf->pubwbuf[i];
+	for (i = (int)item->nletters - 1; i >= (int)item->pos; i--) {
+		item->privwbuf[i+1] = item->privwbuf[i];
+		item->pubwbuf[i+1] = item->pubwbuf[i];
 	}
 
-	mf->privwbuf[mf->pos] = wch;
-	mf->pubwbuf[mf->pos] = mf->secure ? securewch : wch;
-	mf->nletters += 1;
-	mf->privwbuf[mf->nletters] = L'\0';
-	mf->pubwbuf[mf->nletters] = L'\0';
+	item->privwbuf[item->pos] = wch;
+	item->pubwbuf[item->pos] = item->secure ? securewch : wch;
+	item->nletters += 1;
+	item->privwbuf[item->nletters] = L'\0';
+	item->pubwbuf[item->nletters] = L'\0';
 
 	return (true);
 }
@@ -258,7 +258,7 @@ static char* alloc_wstomb(wchar_t *wstr)
 
 static int
 return_values(struct bsddialog_conf *conf, int output, int nitems,
-    struct bsddialog_formitem *items, struct privateitem *pritems)
+    struct bsddialog_formitem *apiitems, struct privateitem *items)
 {
 	int i;
 
@@ -267,11 +267,11 @@ return_values(struct bsddialog_conf *conf, int output, int nitems,
 
 	for (i = 0; i < nitems; i++) {
 		if (conf->form.value_wchar) {
-			items[i].value = (char*)wcsdup(pritems[i].privwbuf);
+			apiitems[i].value = (char*)wcsdup(items[i].privwbuf);
 		} else {
-			items[i].value = alloc_wstomb(pritems[i].privwbuf);
+			apiitems[i].value = alloc_wstomb(items[i].privwbuf);
 		}
-		if (items[i].value == NULL)
+		if (apiitems[i].value == NULL)
 			RETURN_ERROR("Cannot allocate memory for form value");
 	}
 
