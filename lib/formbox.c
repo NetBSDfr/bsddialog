@@ -89,8 +89,9 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 	case MOVE_CURSOR_LEFT:
 		if (item->pos == 0)
 			break;
+		/* check redundant by item->pos == 0 because of 'while' below */
 		if (item->xcursor == 0 && item->xletterpubbuf == 0)
-			break; /* useless by item->pos == 0 and 'while' below */
+			break;
 		/* here some letter to left */
 		change = true;
 		item->pos -= 1;
