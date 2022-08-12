@@ -171,34 +171,34 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 	return (change);
 }
 
-static void drawitem(WINDOW *w, struct privateitem *ni, bool focus)
+static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 {
 	int color;
 	unsigned int i, cols;
 
 	/* Label */
-	mvwaddstr(w, ni->ylabel, ni->xlabel, ni->label);
+	mvwaddstr(w, item->ylabel, item->xlabel, item->label);
 
 	/* Field */
-	if (ni->readonly)
+	if (item->readonly)
 		color = t.form.readonlycolor;
-	else if (ni->fieldnocolor)
+	else if (item->fieldnocolor)
 		color = t.dialog.color;
 	else
 		color = focus ? t.form.f_fieldcolor : t.form.fieldcolor;
 	wattron(w, color);
-	wmove(w, ni->yfield, ni->xfield);
-	for (i = 0; i < ni->fieldcols; i++)
+	wmove(w, item->yfield, item->xfield);
+	for (i = 0; i < item->fieldcols; i++)
 		waddch(w, ' '); /* can "fail", see trick in case KEY_DC */
 	wrefresh(w); /* important for following multicolumn letters */
 	i=0;
-	cols = wcwidth(ni->pubwbuf[ni->xletterpubbuf]);
-	while (cols <= ni->fieldcols && ni->xletterpubbuf + i <
-	    wcslen(ni->pubwbuf)) {
-		mvwaddwch(w, ni->yfield, ni->xfield + i,
-		    ni->pubwbuf[ni->xletterpubbuf + i]);
+	cols = wcwidth(item->pubwbuf[item->xletterpubbuf]);
+	while (cols <= item->fieldcols && item->xletterpubbuf + i <
+	    wcslen(item->pubwbuf)) {
+		mvwaddwch(w, item->yfield, item->xfield + i,
+		    item->pubwbuf[item->xletterpubbuf + i]);
 		i++;
-		cols += wcwidth(ni->pubwbuf[ni->xletterpubbuf + i]);
+		cols += wcwidth(item->pubwbuf[item->xletterpubbuf + i]);
 		
 	}
 	wattroff(w, color);
@@ -206,13 +206,13 @@ static void drawitem(WINDOW *w, struct privateitem *ni, bool focus)
 	/* Bottom Desc */
 	move(SCREENLINES - 1, 2);
 	clrtoeol();
-	if (ni->bottomdesc != NULL && focus) {
-		addstr(ni->bottomdesc);
+	if (item->bottomdesc != NULL && focus) {
+		addstr(item->bottomdesc);
 		refresh();
 	}
 
 	if (focus)
-		wmove(w, ni->yfield, ni->xfield + ni->xcursor);
+		wmove(w, item->yfield, item->xfield + item->xcursor);
 	wrefresh(w); /* to be sure after bottom desc addstr and refresh */
 }
 
