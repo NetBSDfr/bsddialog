@@ -713,7 +713,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				output = BSDDIALOG_ERROR;
 				loop = false;
 			}
-			curs_set(1);
+			//curs_set(1); drawitem in KEY_RESIZE later
 			/* No Break */
 		case KEY_RESIZE:
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
