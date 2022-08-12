@@ -416,16 +416,14 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *apiitems)
 {
-	bool loop, focusinform, insecurecursor;
-	wchar_t securewch;
-	int output, y, x, h, w, wchtype, curritem, mbchsize;
-	unsigned int i, j;
-	unsigned long maxline;
+	bool focusinform, insecurecursor, loop;
+	int curritem, mbchsize, output, y, x, h, w, wchtype;
+	unsigned int i, j, maxline;
+	wchar_t securewch, *winit;
 	wint_t input;
-	struct buttons bs;
-	struct privateitem *items, *item;
-	wchar_t *winit;
 	WINDOW *widget, *formwin, *textpad, *shadow;
+	struct privateitem *items, *item;
+	struct buttons bs;
 
 	/* disable form scrolling */
 	if (formheight < nitems)
