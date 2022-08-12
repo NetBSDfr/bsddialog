@@ -37,7 +37,7 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-struct privitem {
+struct privateitem {
 	const char *label;      /* formitem.label */
 	unsigned int ylabel;    /* formitem.ylabel */
 	unsigned int xlabel;    /* formitem.xlabel */
@@ -65,7 +65,7 @@ enum operation {
 	DEL_LETTER
 };
 
-static bool fieldctl(struct privitem *item, enum operation op)
+static bool fieldctl(struct privateitem *item, enum operation op)
 {
 	bool change;
 	int width, oldwidth, nextwidth, cols;
@@ -171,7 +171,7 @@ static bool fieldctl(struct privitem *item, enum operation op)
 	return (change);
 }
 
-static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
+static void drawitem(WINDOW *w, struct privateitem *ni, bool focus)
 {
 	int color;
 	unsigned int i, cols;
@@ -216,7 +216,7 @@ static void drawitem(WINDOW *w, struct privitem *ni, bool focus)
 	wrefresh(w); /* to be sure after bottom desc addstr and refresh */
 }
 
-static bool insertch(struct privitem *mf, wchar_t wch, wchar_t securewch)
+static bool insertch(struct privateitem *mf, wchar_t wch, wchar_t securewch)
 {
 	int i;
 
@@ -258,7 +258,7 @@ static char* alloc_wstomb(wchar_t *wstr)
 
 static int
 return_values(struct bsddialog_conf *conf, int output, int nitems,
-    struct bsddialog_formitem *items, struct privitem *pritems)
+    struct bsddialog_formitem *items, struct privateitem *pritems)
 {
 	int i;
 
@@ -278,7 +278,7 @@ return_values(struct bsddialog_conf *conf, int output, int nitems,
 	return (output);
 }
 
-static unsigned int firstitem(unsigned int nitems, struct privitem *items)
+static unsigned int firstitem(unsigned int nitems, struct privateitem *items)
 {
 	int i;
 
@@ -289,7 +289,7 @@ static unsigned int firstitem(unsigned int nitems, struct privitem *items)
 	return (i);
 }
 
-static unsigned int lastitem(unsigned int nitems, struct privitem *items)
+static unsigned int lastitem(unsigned int nitems, struct privateitem *items)
 {
 	int i;
 
@@ -301,7 +301,7 @@ static unsigned int lastitem(unsigned int nitems, struct privitem *items)
 }
 
 static unsigned int
-previtem(unsigned int nitems, struct privitem *items, int curritem)
+previtem(unsigned int nitems, struct privateitem *items, int curritem)
 {
 	int i;
 
@@ -317,7 +317,7 @@ previtem(unsigned int nitems, struct privitem *items, int curritem)
 }
 
 static unsigned int
-nextitem(unsigned int nitems, struct privitem *items, int curritem)
+nextitem(unsigned int nitems, struct privateitem *items, int curritem)
 {
 	int i;
 
@@ -422,7 +422,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	unsigned long maxline;
 	wint_t input;
 	struct buttons bs;
-	struct privitem *items, *item;
+	struct privateitem *items, *item;
 	wchar_t *winit;
 	WINDOW *widget, *formwin, *textpad, *shadow;
 
@@ -447,7 +447,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		securewch = L' '; 
 	}
 
-	if ((items = malloc(nitems * sizeof(struct privitem))) == NULL)
+	if ((items = malloc(nitems * sizeof(struct privateitem))) == NULL)
 		RETURN_ERROR("Cannot allocate internal items");
 	maxline = 0;
 	curritem = -1;
