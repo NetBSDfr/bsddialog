@@ -175,7 +175,7 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 {
 	int color;
-	unsigned int i, cols;
+	unsigned int n, cols;
 
 	/* Label */
 	mvwaddstr(w, item->ylabel, item->xlabel, item->label);
@@ -188,20 +188,19 @@ static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 	else
 		color = focus ? t.form.f_fieldcolor : t.form.fieldcolor;
 	wattron(w, color);
-	wmove(w, item->yfield, item->xfield);
-	for (i = 0; i < item->fieldcols; i++)
-		waddch(w, ' '); /* can "fail", see trick in case KEY_DC */
+	/* can "fail", see trick in case KEY_DC */
+	mvwhline(w, item->yfield, item->xfield, ' ', item->fieldcols);
 	wrefresh(w); /* important for following multicolumn letters */
-	i=0;
+	n=0;
 	cols = wcwidth(item->pubwbuf[item->xposdraw]);
-	while (cols <= item->fieldcols && item->xposdraw + i <
+	while (cols <= item->fieldcols && item->xposdraw + n <
 	    wcslen(item->pubwbuf)) {
-		mvwaddwch(w, item->yfield, item->xfield + i,
-		    item->pubwbuf[item->xposdraw + i]);
-		i++;
-		cols += wcwidth(item->pubwbuf[item->xposdraw + i]);
+		n++;
+		cols += wcwidth(item->pubwbuf[item->xposdraw + n]);
 		
 	}
+	mvwaddnwstr(w, item->yfield, item->xfield,
+	    &item->pubwbuf[item->xposdraw], n);
 	wattroff(w, color);
 
 	/* Bottom Desc */
