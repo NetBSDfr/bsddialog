@@ -55,7 +55,7 @@ struct privateitem {
 	unsigned int pos;        /* pos in privwbuf and pubwbuf */
 	unsigned int fieldcols;  /* formitem.fieldlen */
 	unsigned int xcursor;    /* position in fieldcols [0 - fieldcols-1] */
-	unsigned int xletterpubbuf; /* first position to draw in pubwbuf */
+	unsigned int xposdraw;   /* first position to draw in pubwbuf */
 };
 
 enum operation {
@@ -71,9 +71,9 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 	int width, oldwidth, nextwidth, cols;
 	unsigned int i;
 
-	/*BSDDIALOG_DEBUG(2,2,"|pos:%u, xletterpubbuf:%u, xcursor:%u, "
+	/*BSDDIALOG_DEBUG(2,2,"|pos:%u, xposdraw:%u, xcursor:%u, "
 	    "fieldcols:%u, nletters:%u, maxletters:%u|",
-	    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, 
+	    item->pos, item->xposdraw, item->xcursor, item->fieldcols, 
 	    item->nletters, item->maxletters);*/
 	change = false;
 	switch (op){
@@ -84,13 +84,13 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 		change = true;
 		item->pos = 0;
 		item->xcursor = 0;
-		item->xletterpubbuf = 0;
+		item->xposdraw = 0;
 		break;
 	case MOVE_CURSOR_LEFT:
 		if (item->pos == 0)
 			break;
 		/* check redundant by item->pos == 0 because of 'while' below */
-		if (item->xcursor == 0 && item->xletterpubbuf == 0)
+		if (item->xcursor == 0 && item->xposdraw == 0)
 			break;
 		/* here some letter to left */
 		change = true;
@@ -98,22 +98,22 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 		width = wcwidth(item->pubwbuf[item->pos]);
 		if (((int)item->xcursor) - width < 0) {
 			item->xcursor = 0;
-			item->xletterpubbuf -= 1;
+			item->xposdraw -= 1;
 		} else
 			item->xcursor -= width;
 
 		while (true) {
-			if (item->xletterpubbuf == 0)
+			if (item->xposdraw == 0)
 				break;
 			if (item->xcursor >= item->fieldcols / 2)
 				break;
-			if (wcwidth(item->pubwbuf[item->xletterpubbuf - 1]) +
+			if (wcwidth(item->pubwbuf[item->xposdraw - 1]) +
 			    item->xcursor + width > item->fieldcols)
 				break;
 
-			item->xletterpubbuf -= 1;
+			item->xposdraw -= 1;
 			item->xcursor +=
-			    wcwidth(item->pubwbuf[item->xletterpubbuf]);
+			    wcwidth(item->pubwbuf[item->xposdraw]);
 		}
 		break;
 	case DEL_LETTER:
@@ -147,15 +147,15 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 		}
 		if (item->xcursor + oldwidth + nextwidth - 1 >= item->fieldcols) {
 			cols = nextwidth;
-			item->xletterpubbuf = item->pos;
-			while (item->xletterpubbuf != 0) {
-				cols += wcwidth(item->pubwbuf[item->xletterpubbuf - 1]);
+			item->xposdraw = item->pos;
+			while (item->xposdraw != 0) {
+				cols += wcwidth(item->pubwbuf[item->xposdraw - 1]);
 				if (cols > (int)item->fieldcols)
 					break;
-				item->xletterpubbuf -= 1;
+				item->xposdraw -= 1;
 			}
 			item->xcursor = 0;
-			for (i = item->xletterpubbuf; i < item->pos ; i++)
+			for (i = item->xposdraw; i < item->pos ; i++)
 				item->xcursor += wcwidth(item->pubwbuf[i]);
 		}
 		else {
@@ -164,9 +164,9 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 
 		break;
 	}
-	/*BSDDIALOG_DEBUG(3,2,"|pos:%u, xletterpubbuf:%u, xcursor:%u, "
+	/*BSDDIALOG_DEBUG(3,2,"|pos:%u, xposdraw:%u, xcursor:%u, "
 	    "fieldcols:%u, nletters:%u, maxletters:%u|",
-	    item->pos, item->xletterpubbuf, item->xcursor, item->fieldcols, 
+	    item->pos, item->xposdraw, item->xcursor, item->fieldcols, 
 	    item->nletters, item->maxletters);*/
 
 	return (change);
@@ -193,13 +193,13 @@ static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 		waddch(w, ' '); /* can "fail", see trick in case KEY_DC */
 	wrefresh(w); /* important for following multicolumn letters */
 	i=0;
-	cols = wcwidth(item->pubwbuf[item->xletterpubbuf]);
-	while (cols <= item->fieldcols && item->xletterpubbuf + i <
+	cols = wcwidth(item->pubwbuf[item->xposdraw]);
+	while (cols <= item->fieldcols && item->xposdraw + i <
 	    wcslen(item->pubwbuf)) {
 		mvwaddwch(w, item->yfield, item->xfield + i,
-		    item->pubwbuf[item->xletterpubbuf + i]);
+		    item->pubwbuf[item->xposdraw + i]);
 		i++;
-		cols += wcwidth(item->pubwbuf[item->xletterpubbuf + i]);
+		cols += wcwidth(item->pubwbuf[item->xposdraw + i]);
 		
 	}
 	wattroff(w, color);
@@ -463,7 +463,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->readonly = apiitems[i].flags & BSDDIALOG_FIELDREADONLY;
 		item->fieldnocolor = apiitems[i].flags & BSDDIALOG_FIELDNOCOLOR;
 		item->bottomdesc = apiitems[i].bottomdesc;
-		item->xletterpubbuf = 0;
+		item->xposdraw = 0;
 		item->xcursor = 0;
 
 		item->maxletters = apiitems[i].maxvaluelen;
