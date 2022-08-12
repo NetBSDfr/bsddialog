@@ -69,7 +69,7 @@ updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
 			cc = '|';
 		else
 			cc = ACS_VLINE;
-		cc |= A_ATTRIBUTES & t.dialog.lineraisecolor;
+		cc |= A_ATTRIBUTES & t.dialog.linelowercolor;
 	}
 	mvwvline(widget, (h/2)-2, w-1, cc, 4);
 
