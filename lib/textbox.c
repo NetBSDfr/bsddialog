@@ -37,6 +37,50 @@
 #include "lib_util.h"
 
 static void
+updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
+    int hpad, int wpad, int ypad, int xpad)
+{
+	int h, w;
+	chtype cc;
+
+	getmaxyx(widget, h, w);
+
+	if (xpad > 0) {
+		cc = conf->ascii_lines ? '<' : ACS_LARROW;
+		cc |= A_ATTRIBUTES & t.dialog.arrowcolor;
+	} else {
+		if (conf->no_lines)
+			cc = ' ';
+		else if (conf->ascii_lines)
+			cc = '|';
+		else
+			cc = ACS_VLINE;
+		cc |= A_ATTRIBUTES & t.dialog.lineraisecolor;
+	}
+	mvwvline(widget, (h/2)-2, 0, cc, 4);
+
+	if (xpad + w-2-padmargin < wpad) {
+		cc = conf->ascii_lines ? '<' : ACS_RARROW;
+		cc |= A_ATTRIBUTES & t.dialog.arrowcolor;
+	} else {
+		if (conf->no_lines)
+			cc = ' ';
+		else if (conf->ascii_lines)
+			cc = '|';
+		else
+			cc = ACS_VLINE;
+		cc |= A_ATTRIBUTES & t.dialog.lineraisecolor;
+	}
+	mvwvline(widget, (h/2)-2, w-1, cc, 4);
+
+	if (hpad > h - 4) {
+		wattron(widget, t.dialog.arrowcolor);
+		mvwprintw(widget, h-3, w-6, "%3d%%", 100 * (ypad+h-4)/ hpad);
+		wattroff(widget, t.dialog.arrowcolor);
+	}
+}
+
+static void
 textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, int hpad, int wpad, int padmargin, struct buttons bs)
 {
@@ -135,6 +179,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	printrows = h-4;
 	loop = true;
 	while (loop) {
+		updateborders(conf, widget, padmargin, hpad, wpad, ypad, xpad);
 		/*
 		 * Overflow multicolumn charchter right border:
 		 * wnoutrefresh(widget);
