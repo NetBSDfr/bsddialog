@@ -55,7 +55,7 @@ struct privateitem {
 	unsigned int pos;        /* pos in privwbuf and pubwbuf */
 	unsigned int fieldcols;  /* formitem.fieldlen */
 	unsigned int xcursor;    /* position in fieldcols [0 - fieldcols-1] */
-	unsigned int xposdraw;   /* first position to draw in pubwbuf */
+	unsigned int xposdraw;   /* first pubwbuf index to draw */
 };
 
 enum operation {
