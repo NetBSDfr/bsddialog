@@ -38,10 +38,10 @@
 
 static void
 textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, int hpad, int wpad, struct buttons bs)
+    int *w, int hpad, int wpad, int padmargin, struct buttons bs)
 {
 	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, 0, wpad, &bs);
+		*w = widget_min_width(conf, 0, wpad + padmargin, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
 		*h = widget_min_height(conf, 0, hpad, true);
@@ -70,9 +70,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
     int cols)
 {
 	bool loop;
-	int i, output, linecols;
-	int y, x, h, w, hpad, wpad, ypad, xpad, ys, ye, xs, xe, printrows;
-	unsigned int defaulttablen;
+	int i, output, y, x, h, w;
+	int hpad, wpad, ypad, xpad, ys, ye, xs, xe, padmargin, printrows;
+	unsigned int defaulttablen, linecols, sblen;
 	wint_t input;
 	char buf[BUFSIZ];
 	FILE *fp;
@@ -88,10 +88,11 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	wpad = 1;
 	pad = newpad(hpad, wpad);
 	wbkgd(pad, t.dialog.color);
+	padmargin = 0;
 	i = 0;
 	while (fgets(buf, BUFSIZ, fp) != NULL) {
 		linecols = strcols(buf);
-		if (linecols > wpad) {
+		if ((int)linecols > wpad) {
 			wpad = linecols;
 			wresize(pad, hpad, wpad);
 		}
@@ -101,6 +102,13 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 		}
 		mvwaddstr(pad, i, 0, buf);
 		i++;
+		if (padmargin == 0) {
+			sblen = strlen(buf);
+			if (sblen > 0 && buf[sblen-1] == '\n')
+				sblen -= 1;
+			if (sblen != linecols)
+				padmargin = 2; /* multicolumn charachters */
+		}
 	}
 	fclose(fp);
 	set_tabsize(defaulttablen);
@@ -109,7 +117,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad, bs);
+	textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad, padmargin, bs);
 	if (textbox_checksize(h, w, hpad, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
@@ -120,9 +128,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 		return (BSDDIALOG_ERROR);
 
 	ys = y + 1;
-	xs = x + 1;
+	xs = (padmargin == 0) ? x + 1 : x + 2;
 	ye = ys + h - 5;
-	xe = xs + w - 3 - 1; /* -1 avoid multicolumn char border overflow */
+	xe = xs + w - 3 - padmargin;
 	ypad = xpad = 0;
 	printrows = h-4;
 	loop = true;
@@ -173,7 +181,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			break;
 		case KEY_RIGHT:
 		case 'l':
-			xpad = (xpad + w-2) < wpad-1 ? xpad + 1 : xpad;
+			xpad = (xpad + w-2-padmargin) < wpad ? xpad + 1 : xpad;
 			break;
 		case KEY_UP:
 		case 'k':
@@ -198,16 +206,16 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
 			textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad,
-			    bs);
+			    padmargin, bs);
 			if (textbox_checksize(h, w, hpad, bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
 
 			ys = y + 1;
-			xs = x + 1;
+			xs = (padmargin == 0) ? x + 1 : x + 2;
 			ye = ys + h - 5;
-			xe = xs + w - 3 - 1;
+			xe = xs + w - 3 - padmargin;
 			ypad = xpad = 0;
 			printrows = h - 4;
 
