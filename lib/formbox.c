@@ -46,6 +46,7 @@ struct privateitem {
 	bool secure;            /* formitem.flags & BSDDIALOG_FIELDHIDDEN */
 	bool readonly;          /* formitem.flags & BSDDIALOG_FIELDREADONLY */
 	bool fieldnocolor;      /* formitem.flags & BSDDIALOG_FIELDNOCOLOR */
+	bool cursor;            /* field cursor visibility */
 	const char *bottomdesc; /* formitem.bottomdesc */
 	
 	wchar_t *privwbuf;       /* formitem.value */
@@ -211,8 +212,8 @@ static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 		refresh();
 	}
 
-	if (focus)
-		wmove(w, item->yfield, item->xfield + item->xcursor);
+	curs_set((focus && item->cursor) ? 1 : 0 );
+	wmove(w, item->yfield, item->xfield + item->xcursor);
 	wrefresh(w); /* to be sure after bottom desc addstr and refresh */
 }
 
@@ -415,7 +416,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *apiitems)
 {
-	bool loop, focusinform;
+	bool loop, focusinform, insecurecursor;
 	wchar_t securewch;
 	int output, y, x, h, w, wchtype, curritem, mbchsize;
 	unsigned int i, j;
@@ -437,12 +438,15 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			RETURN_ERROR("fieldlen cannot be zero");
 	}
 
+	insecurecursor = false;
 	if (conf->form.securembch != NULL) {
 		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
 		if(mbtowc(&securewch, conf->form.securembch, mbchsize) < 0)
 			RETURN_ERROR("Cannot convert securembch to wchar_t");
+		insecurecursor = true;
 	} else if (conf->form.securech != '\0') {
 		securewch = btowc(conf->form.securech);
+		insecurecursor = true;
 	} else {
 		securewch = L' '; 
 	}
@@ -464,6 +468,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->bottomdesc = apiitems[i].bottomdesc;
 		item->xposdraw = 0;
 		item->xcursor = 0;
+		if (item->readonly || (item->secure && !insecurecursor))
+			item->cursor = false;
+		else
+			item->cursor = true;
 
 		item->maxletters = apiitems[i].maxvaluelen;
 		item->privwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
@@ -526,7 +534,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		drawitem(formwin, &items[i], false);
 	item = NULL;
 	if (curritem != -1) {
-		curs_set(1);
 		item = &items[curritem];
 		drawitem(formwin, item, true);
 		focusinform = true;
@@ -563,7 +570,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform) {
 				bs.curr = 0;
 				focusinform = false;
-				curs_set(0);
+				drawitem(formwin, item, false);
 			} else {
 				if (bs.curr + 1 < (int)bs.nbuttons) {
 					bs.curr++;
@@ -571,7 +578,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					bs.curr = 0;
 					if (curritem != -1) {
 						focusinform = true;
-						curs_set(1);
+						drawitem(formwin, item, true);
 					}
 				}
 			}
