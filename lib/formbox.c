@@ -101,7 +101,7 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 		} else
 			item->xcursor -= width;
 
-		while (true){
+		while (true) {
 			if (item->xletterpubbuf == 0)
 				break;
 			if (item->xcursor >= item->fieldcols / 2)
