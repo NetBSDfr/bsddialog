@@ -592,9 +592,14 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else {
 				if (bs.curr > 0) {
 					bs.curr--;
-					draw_buttons(widget, bs, true);
-					wrefresh(widget);
-				}//else items == 1 && curritem != -1 focusinform
+				} else if (curritem != -1) {
+					bs.curr = 0;
+					focusinform = true;
+					drawitem(formwin, item, true);
+				}
+				redrawbuttons(widget, &bs,
+				    conf->form.focus_buttons || !focusinform,
+				    !focusinform);
 			}
 			break;
 		case KEY_RIGHT:
@@ -604,26 +609,45 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else {
 				if (bs.curr < (int) bs.nbuttons - 1) {
 					bs.curr++;
-					draw_buttons(widget, bs, true);
-					wrefresh(widget);
-				}//else items == 1 && curritem != -1 focusinform
+				} else if (curritem != -1) {
+					bs.curr = 0;
+					focusinform = true;
+					drawitem(formwin, item, true);
+				}
+				redrawbuttons(widget, &bs,
+				    conf->form.focus_buttons || !focusinform,
+				    !focusinform);
 			}
 			break;
 		case KEY_UP:
-			if (focusinform == false)
-				break;
-			drawitem(formwin, item, false);
-			curritem = previtem(nitems, items, curritem);
-			item = &items[curritem];
-			drawitem(formwin, item, true);
+			if (focusinform) {
+				drawitem(formwin, item, false);
+				curritem = previtem(nitems, items, curritem);
+				item = &items[curritem];
+				drawitem(formwin, item, true);
+			} else if (curritem != -1) {
+				focusinform = true;
+				drawitem(formwin, item, true);
+				bs.curr = 0;
+				redrawbuttons(widget, &bs,
+				conf->form.focus_buttons, false);
+			}
 			break;
 		case KEY_DOWN:
 			if (focusinform == false)
 				break;
-			drawitem(formwin, item, false);
-			curritem = nextitem(nitems, items, curritem);
-			item = &items[curritem];
-			drawitem(formwin, item, true);
+			if (nitems == 1) {
+				focusinform = false;
+				drawitem(formwin, item, false);
+				bs.curr = 0;
+				draw_buttons(widget, bs, true);
+				wrefresh(widget);
+			} else {
+				drawitem(formwin, item, false);
+				curritem = nextitem(nitems, items, curritem);
+				item = &items[curritem];
+				drawitem(formwin, item, true);
+			}
 			break;
 		case KEY_PPAGE:
 			if (focusinform == false)
