@@ -501,7 +501,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	    x + 1 + w - TEXTHMARGIN);
 
 	menuwin = new_boxed_window(conf, y + h - 5 - menurows, x + 2,
-	    menurows+2, w-4, LOWERED);
+	    menurows + 2, w - 4, LOWERED);
 
 	menupad = newpad(totnitems, pos.line);
 	wbkgd(menupad, t.dialog.color);
