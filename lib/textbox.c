@@ -41,37 +41,34 @@ updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
     int hpad, int wpad, int ypad, int xpad)
 {
 	int h, w;
-	chtype cc;
+	chtype arrowch, borderch;
 
 	getmaxyx(widget, h, w);
 
+	if (conf->no_lines)
+		borderch = ' ';
+	else if (conf->ascii_lines)
+		borderch = '|';
+	else
+		borderch = ACS_VLINE;
+
 	if (xpad > 0) {
-		cc = conf->ascii_lines ? '<' : ACS_LARROW;
-		cc |= A_ATTRIBUTES & t.dialog.arrowcolor;
+		arrowch = conf->ascii_lines ? '<' : ACS_LARROW;
+		arrowch |= A_ATTRIBUTES & t.dialog.arrowcolor;
 	} else {
-		if (conf->no_lines)
-			cc = ' ';
-		else if (conf->ascii_lines)
-			cc = '|';
-		else
-			cc = ACS_VLINE;
-		cc |= A_ATTRIBUTES & t.dialog.lineraisecolor;
+		arrowch = borderch;
+		arrowch |= A_ATTRIBUTES & t.dialog.lineraisecolor;
 	}
-	mvwvline(widget, (h/2)-2, 0, cc, 4);
+	mvwvline(widget, (h / 2) - 2, 0, arrowch, 4);
 
 	if (xpad + w-2-padmargin < wpad) {
-		cc = conf->ascii_lines ? '<' : ACS_RARROW;
-		cc |= A_ATTRIBUTES & t.dialog.arrowcolor;
+		arrowch = conf->ascii_lines ? '>' : ACS_RARROW;
+		arrowch |= A_ATTRIBUTES & t.dialog.arrowcolor;
 	} else {
-		if (conf->no_lines)
-			cc = ' ';
-		else if (conf->ascii_lines)
-			cc = '|';
-		else
-			cc = ACS_VLINE;
-		cc |= A_ATTRIBUTES & t.dialog.linelowercolor;
+		arrowch = borderch;
+		arrowch |= A_ATTRIBUTES & t.dialog.linelowercolor;
 	}
-	mvwvline(widget, (h/2)-2, w-1, cc, 4);
+	mvwvline(widget, (h / 2) - 2, w - 1, arrowch, 4);
 
 	if (hpad > h - 4) {
 		wattron(widget, t.dialog.arrowcolor);
