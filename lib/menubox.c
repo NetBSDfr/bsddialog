@@ -320,6 +320,29 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	}
 }
 
+/* the caller has to call prefresh(menupad, ymenupad, 0, ys, xs, ye, xe); */
+static void
+update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
+    int totnitems, unsigned int menurows, int ymenupad)
+{
+	draw_borders(conf, menuwin, h, w, LOWERED);
+
+	if (totnitems > (int)menurows) {
+		wattron(menuwin, t.dialog.arrowcolor);
+		if (ymenupad > 0)
+			mvwhline(menuwin, 0, 2,
+			    conf->ascii_lines ? '^' : ACS_UARROW, 3);
+
+		if ((ymenupad + (int)menurows) < totnitems)
+			mvwhline(menuwin, h-1, 2,
+			    conf->ascii_lines ? 'v' : ACS_DARROW, 3);
+
+		mvwprintw(menuwin, h-1, w-6, "%3d%%",
+		    100 * (ymenupad + menurows) / totnitems);
+		wattroff(menuwin, t.dialog.arrowcolor);
+	}
+}
+
 static int
 menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     const char *text, int linelen, unsigned int *menurows, int nitems,
@@ -402,29 +425,6 @@ menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
 		RETURN_ERROR("Few lines for this menus");
 
 	return (0);
-}
-
-/* the caller has to call prefresh(menupad, ymenupad, 0, ys, xs, ye, xe); */
-static void
-update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
-    int totnitems, unsigned int menurows, int ymenupad)
-{
-	draw_borders(conf, menuwin, h, w, LOWERED);
-
-	if (totnitems > (int)menurows) {
-		wattron(menuwin, t.dialog.arrowcolor);
-		if (ymenupad > 0)
-			mvwhline(menuwin, 0, 2,
-			    conf->ascii_lines ? '^' : ACS_UARROW, 3);
-
-		if ((ymenupad + (int)menurows) < totnitems)
-			mvwhline(menuwin, h-1, 2,
-			    conf->ascii_lines ? 'v' : ACS_DARROW, 3);
-
-		mvwprintw(menuwin, h-1, w-6, "%3d%%",
-		    100 * (ymenupad + menurows) / totnitems);
-		wattroff(menuwin, t.dialog.arrowcolor);
-	}
 }
 
 static int
