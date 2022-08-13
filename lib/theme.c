@@ -141,7 +141,7 @@ static struct bsddialog_theme dialogtheme = {
 	.dialog.linelowercolor   = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 	.dialog.color            = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 	.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
-	.dialog.arrowcolor       = GET_COLOR(COLOR_GREEN,  COLOR_WHITE),
+	.dialog.arrowcolor       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
 
 	.menu.f_selectorcolor = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
 	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  bgwidget),
