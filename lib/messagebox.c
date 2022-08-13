@@ -31,6 +31,7 @@
 #include <string.h>
 
 #include "bsddialog.h"
+#include "bsddialog_theme.h"
 #include "lib_util.h"
 
 static int
@@ -80,8 +81,10 @@ textupdate(WINDOW *widget, WINDOW *textpad, int htextpad, int ytextpad)
 	getmaxyx(widget, h, w);
 
 	if (htextpad > h - 4) {
+		wattron(widget, t.dialog.arrowcolor);
 		mvwprintw(widget, h-3, w-6, "%3d%%",
 		    100 * (ytextpad+h-4)/ htextpad);
+		wattroff(widget, t.dialog.arrowcolor);
 		wnoutrefresh(widget);
 	}
 
