@@ -413,17 +413,17 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 
 	if (totnitems > (int)menurows) {
 		wattron(menuwin, t.dialog.arrowcolor);
-
 		if (ymenupad > 0)
-			mvwprintw(menuwin, 0, 2, "^^^");
+			mvwhline(menuwin, 0, 2,
+			    conf->ascii_lines ? '^' : ACS_UARROW, 3);
 
 		if ((ymenupad + (int)menurows) < totnitems)
-			mvwprintw(menuwin, h-1, 2, "vvv");
+			mvwhline(menuwin, h-1, 2,
+			    conf->ascii_lines ? 'v' : ACS_DARROW, 3);
 
-		wattroff(menuwin, t.dialog.arrowcolor);
-
-		mvwprintw(menuwin, h-1, w-10, "%3d%%",
+		mvwprintw(menuwin, h-1, w-6, "%3d%%",
 		    100 * (ymenupad + menurows) / totnitems);
+		wattroff(menuwin, t.dialog.arrowcolor);
 	}
 }
 
