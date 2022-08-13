@@ -237,7 +237,8 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 	prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye, form->xe);
 }
 
-static bool insertch(struct privateitem *item, wchar_t wch, wchar_t securewch)
+static bool
+insertch(struct privateform *form, struct privateitem *item, wchar_t wch)
 {
 	int i;
 
@@ -250,7 +251,7 @@ static bool insertch(struct privateitem *item, wchar_t wch, wchar_t securewch)
 	}
 
 	item->privwbuf[item->pos] = wch;
-	item->pubwbuf[item->pos] = item->secure ? securewch : wch;
+	item->pubwbuf[item->pos] = item->secure ? form->securewch : wch;
 	item->nletters += 1;
 	item->privwbuf[item->nletters] = L'\0';
 	item->pubwbuf[item->nletters] = L'\0';
@@ -797,7 +798,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				 * because the cursor remains on the new letter,
 				 * "if" and "while" update the positions.
 				 */
-				if(insertch(item, input, form.securewch)) {
+				if(insertch(&form, item, input)) {
 					fieldctl(item, MOVE_CURSOR_RIGHT);
 					/* 
 					 * no if(fieldctl), update always
