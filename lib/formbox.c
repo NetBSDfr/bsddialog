@@ -59,6 +59,22 @@ struct privateitem {
 	unsigned int xposdraw;   /* first pubwbuf index to draw */
 };
 
+struct privateform {
+	WINDOW *border;
+	WINDOW *pad;
+	unsigned int h;
+	unsigned int w;
+	unsigned int ys;
+	unsigned int ye;
+	unsigned int xs;
+	unsigned int xe;
+	unsigned int y;
+	//unsigned int nitem;
+	//struct privateitem *items;
+	//int activeidx;
+	wchar_t securewch;
+};
+
 enum operation {
 	MOVE_CURSOR_BEGIN,
 	MOVE_CURSOR_RIGHT,
@@ -173,13 +189,16 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 	return (change);
 }
 
-static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
+static void
+drawitem(struct privateform *form, struct privateitem *item, bool focus)
 {
 	int color;
 	unsigned int n, cols;
 
 	/* Label */
-	mvwaddstr(w, item->ylabel, item->xlabel, item->label);
+	wattron(form->pad, t.dialog.color);
+	mvwaddstr(form->pad, item->ylabel, item->xlabel, item->label);
+	wattroff(form->pad, t.dialog.color);
 
 	/* Field */
 	if (item->readonly)
@@ -188,10 +207,10 @@ static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 		color = t.dialog.color;
 	else
 		color = focus ? t.form.f_fieldcolor : t.form.fieldcolor;
-	wattron(w, color);
+	wattron(form->pad, color);
 	/* can "fail", see trick in case KEY_DC */
-	mvwhline(w, item->yfield, item->xfield, ' ', item->fieldcols);
-	wrefresh(w); /* important for following multicolumn letters */
+	mvwhline(form->pad, item->yfield, item->xfield, ' ', item->fieldcols);
+	//wrefresh(pad); /* important for following multicolumn letters */
 	n=0;
 	cols = wcwidth(item->pubwbuf[item->xposdraw]);
 	while (cols <= item->fieldcols && item->xposdraw + n <
@@ -200,9 +219,9 @@ static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 		cols += wcwidth(item->pubwbuf[item->xposdraw + n]);
 		
 	}
-	mvwaddnwstr(w, item->yfield, item->xfield,
+	mvwaddnwstr(form->pad, item->yfield, item->xfield,
 	    &item->pubwbuf[item->xposdraw], n);
-	wattroff(w, color);
+	wattroff(form->pad, color);
 
 	/* Bottom Desc */
 	move(SCREENLINES - 1, 2);
@@ -213,8 +232,9 @@ static void drawitem(WINDOW *w, struct privateitem *item, bool focus)
 	}
 
 	curs_set((focus && item->cursor) ? 1 : 0 );
-	wmove(w, item->yfield, item->xfield + item->xcursor);
-	wrefresh(w); /* to be sure after bottom desc addstr and refresh */
+	wmove(form->pad, item->yfield, item->xfield + item->xcursor);
+	//wrefresh(w); /* to be sure after bottom desc addstr and refresh */
+	prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye, form->xe);
 }
 
 static bool insertch(struct privateitem *item, wchar_t wch, wchar_t securewch)
@@ -346,65 +366,106 @@ redrawbuttons(WINDOW *window, struct buttons *bs, bool focus, bool shortcut)
 	bs->curr = selected;
 }
 
+static void
+update_formborders(struct bsddialog_conf *conf, struct privateform *form)
+{
+	int h, w;
+
+	getmaxyx(form->border, h, w);
+	draw_borders(conf, form->border, h, w, LOWERED);
+
+	if ((int)form->h + 2 > h) {
+		wattron(form->border, t.dialog.arrowcolor);
+		if (form->y > 0)
+			mvwhline(form->border, 0, (w / 2) - 2,
+			    conf->ascii_lines ? '^' : ACS_UARROW, 5);
+
+		if (form->y + h-2 < form->h )
+			mvwhline(form->border, h-1, (w / 2) - 2,
+			    conf->ascii_lines ? 'v' : ACS_DARROW, 5);
+		wattroff(form->border, t.dialog.arrowcolor);
+		wrefresh(form->border);
+	}
+}
+
 static int
-form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    const char *text, int linelen, unsigned int *formheight, int nitems,
+menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
+    const char *text, int linelen, unsigned int *menurows, int nitems,
     struct buttons bs)
 {
-	int htext, wtext, menusize;
+	int htext, wtext, menusize, notext;
 
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, &bs, *formheight + 2,
-		    linelen + 2, &htext, &wtext) != 0)
+	notext = 2;
+	if (*menurows == BSDDIALOG_AUTOSIZE) {
+		/* algo 1): grows vertically */
+		/* notext = 1; */
+		/* algo 2): grows horizontally, better with little screens */
+		notext += nitems;
+		notext = MIN(notext, widget_max_height(conf) - HBORDERS - 3);
+	} else
+		notext += *menurows;
+
+	/* cols autosize, rows autosize, rows fullscreen, menu particularity */
+	if (cols == BSDDIALOG_AUTOSIZE || rows <= BSDDIALOG_AUTOSIZE) {
+		if (text_size(conf, rows, cols, text, &bs, notext, linelen + 4,
+		    &htext, &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 
 	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, linelen + 2, &bs);
+		*w = widget_min_width(conf, wtext, linelen + 4, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		if (*formheight == 0) {
+		if (*menurows == 0) {
 			menusize = widget_max_height(conf) - HBORDERS -
 			     2 /*buttons*/ - htext;
 			menusize = MIN(menusize, nitems + 2);
-			*formheight = menusize - 2 < 0 ? 0 : menusize - 2;
+			*menurows = menusize - 2 < 0 ? 0 : menusize - 2;
 		}
-		else /* h autosize with fixed formheight */
-			menusize = *formheight + 2;
+		else /* h autosize with fixed menurows */
+			menusize = *menurows + 2;
 
 		*h = widget_min_height(conf, htext, menusize, true);
+		/*
+		 * avoid menurows overflow and
+		 * with rows=AUTOSIZE menurows!=0 becomes max-menurows
+		 */
+		*menurows = MIN(*h - 6 - htext, (int)*menurows);
 	} else {
-		if (*formheight == 0)
-			*formheight = MIN(rows-6-htext, nitems);
+		if (*menurows == 0)
+			*menurows = MIN(*h-6-htext, nitems);
 	}
 
 	return (0);
 }
 
 static int
-form_checksize(int rows, int cols, const char *text, int formheight, int nitems,
-    unsigned int linelen, struct buttons bs)
+menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
+    struct buttons bs)
 {
-	int mincols, textrow, formrows;
+	int mincols, textrow, menusize;
 
 	mincols = VBORDERS;
 	/* buttons */
 	mincols += buttons_width(bs);
-	mincols = MAX(mincols, (int)linelen + 4);
+	/*
+	 * linelen check, comment to allow some hidden col otherwise portconfig
+	 * could not show big menus like www/apache24
+	 */
+	/* mincols = MAX(mincols, linelen); */
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, width < size buttons or "
-		    "forms (label + field)");
+		    "name + descripion of the items");
 
-	// XXX last strlen
-	textrow = text != NULL && strlen(text) > 0 ? 1 : 0;
+	textrow = text != NULL && text[0] != '\0' ? 1 : 0;
 
-	if (nitems > 0 && formheight == 0)
-		RETURN_ERROR("fields > 0 but formheight == 0, probably "
-		    "terminal too small");
+	if (nitems > 0 && menurows == 0)
+		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "
+		    "too small");
 
-	formrows = nitems > 0 ? 3 : 0;
-	if (rows < 2  + 2 + formrows + textrow)
+	menusize = nitems > 0 ? 3 : 0;
+	if (rows < 2  + 2 + menusize + textrow)
 		RETURN_ERROR("Few lines for this menus");
 
 	return (0);
@@ -418,17 +479,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	bool switchfocus, changeitem, focusinform, insecurecursor, loop;
 	int curritem, mbchsize, next, output, y, x, h, w, wchtype;
-	unsigned int hformpad, wformpad;
 	unsigned int i, j;
-	wchar_t securewch, *winit;
+	wchar_t *winit;
 	wint_t input;
-	WINDOW *widget, *formpad, *formwin, *textpad, *shadow;
+	WINDOW *widget, *textpad, *shadow;
 	struct privateitem *items, *item;
 	struct buttons bs;
-
-	/* disable form scrolling */
-	if (formheight < nitems)
-		formheight = nitems;
+	struct privateform form;
 
 	for (i = 0; i < nitems; i++) {
 		if (apiitems[i].maxvaluelen == 0)
@@ -440,19 +497,19 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	insecurecursor = false;
 	if (conf->form.securembch != NULL) {
 		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
-		if(mbtowc(&securewch, conf->form.securembch, mbchsize) < 0)
+		if(mbtowc(&form.securewch, conf->form.securembch, mbchsize) < 0)
 			RETURN_ERROR("Cannot convert securembch to wchar_t");
 		insecurecursor = true;
 	} else if (conf->form.securech != '\0') {
-		securewch = btowc(conf->form.securech);
+		form.securewch = btowc(conf->form.securech);
 		insecurecursor = true;
 	} else {
-		securewch = L' '; 
+		form.securewch = L' '; 
 	}
 
 	if ((items = malloc(nitems * sizeof(struct privateitem))) == NULL)
 		RETURN_ERROR("Cannot allocate internal items");
-	hformpad = wformpad = 0;
+	form.h = form.w = 0;
 	for (i = 0; i < nitems; i++) {
 		item = &items[i];
 		item->label = apiitems[i].label;
@@ -489,7 +546,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->nletters = wcslen(item->pubwbuf);
 		if (item->secure) {
 			for (j = 0; j < item->nletters; j++)
-				item->pubwbuf[j] = securewch;
+				item->pubwbuf[j] = form.securewch;
 		}
 
 		item->pos = 0;
@@ -499,20 +556,25 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 		item->fieldcols = apiitems[i].fieldlen;
 
-		hformpad = MAX(hformpad, items[i].ylabel);
-		hformpad = MAX(hformpad, items[i].yfield);
-		wformpad = MAX(wformpad, items[i].xlabel + strcols(items[i].label));
-		wformpad = MAX(wformpad, items[i].xfield + items[i].fieldcols - 1);
+		form.h = MAX(form.h, items[i].ylabel);
+		form.h = MAX(form.h, items[i].yfield);
+		form.w = MAX(form.w, items[i].xlabel + strcols(items[i].label));
+		form.w = MAX(form.w, items[i].xfield + items[i].fieldcols - 1);
+	}
+
+	if (nitems > 0) {
+		form.h += 1;
+		form.w += 1;
 	}
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_autosize(conf, rows, cols, &h, &w, text, wformpad, &formheight,
-	    nitems, bs) != 0)
+	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w, &formheight,
+	    form.h, bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_checksize(h, w, text, formheight, nitems, wformpad, bs) != 0)
+	if (menu_checksize(h, w, text, formheight, form.h, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -521,21 +583,26 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	    true) != 0)
 		return (BSDDIALOG_ERROR);
 
+	doupdate();
+
 	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN, y + h - formheight,
 	    x + 1 + w - TEXTHMARGIN);
 
-	formwin = new_boxed_window(conf, y + h - 3 - formheight - 2, x + 1,
-	    formheight + 2, w - 2, LOWERED);
+	form.border = new_boxed_window(conf, y + h - 5 - formheight, x + 2,
+	    formheight + 2, w - 4, LOWERED);
+
+	form.pad = newpad(form.h, form.w);
+	wbkgd(form.pad, t.dialog.color);
 
 	curritem = -1;
 	for (i=0 ; i < nitems; i++) {
-		drawitem(formwin, &items[i], false);
+		drawitem(&form, &items[i], false);
 		if (curritem == -1 && item->readonly == false)
 			curritem = i;
 	}
 	if (curritem != -1) {
 		item = &items[curritem];
-		drawitem(formwin, item, true);
+		drawitem(&form, item, true);
 		focusinform = true;
 		redrawbuttons(widget, &bs, conf->form.focus_buttons, false);
 	} else {
@@ -543,12 +610,28 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		focusinform = false;
 	}
 
+	form.ys = y + h - 5 - formheight + 1;
+	form.ye = y + h - 5 ;
+	if ((int)form.w > w - 6) { /* left */
+		form.xs = x + 3;
+		form.xe = form.xs + w - 7;
+	} else { /* center */
+		form.xs = x + 3 + (w-6)/2 - form.w/2;
+		form.xe = form.xs + w - 5;
+	}
+
+	form.y = 0;
+	if ((int)(form.y + formheight) - 1 < (int)items[curritem].yfield)
+		form.y = items[curritem].yfield - formheight + 1;
+	update_formborders(conf, &form);
+	wrefresh(form.border);
+	prefresh(form.pad, form.y, 0, form.ys, form.xs, form.ye, form.xe);
+
 	changeitem = switchfocus = false;
 	loop = true;
 	while (loop) {
-		wrefresh(formwin);
 		wchtype = get_wch(&input);
-		/* avoid wctob(input) == WEOF for IEEE Std 1003.1-2008 */
+		/* avoid "wctob(input) == WEOF" for IEEE Std 1003.1-2008 */
 		if (conf->form.input_singlebyte && wchtype != KEY_CODE_YES &&
 		    wctob(input) == EOF) 
 			continue;
@@ -570,27 +653,24 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case '\t': /* TAB */
 			if (focusinform) {
-				bs.curr = 0;
-				focusinform = false;
-				drawitem(formwin, item, false);
+				switchfocus = true;
 			} else {
 				if (bs.curr + 1 < (int)bs.nbuttons) {
 					bs.curr++;
 				} else {
 					bs.curr = 0;
 					if (curritem != -1) {
-						focusinform = true;
-						drawitem(formwin, item, true);
+						switchfocus = true;
 					}
 				}
+				draw_buttons(widget, bs, true);
+				wrefresh(widget);
 			}
-			redrawbuttons(widget, &bs, conf->form.focus_buttons ||
-			    !focusinform, !focusinform);
 			break;
 		case KEY_LEFT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_LEFT))
-					drawitem(formwin, item, true);
+					drawitem(&form, item, true);
 			} else if (bs.curr > 0) {
 				bs.curr--;
 				draw_buttons(widget, bs, true);
@@ -602,7 +682,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_RIGHT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_RIGHT))
-					drawitem(formwin, item, true);
+					drawitem(&form, item, true);
 			} else if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				draw_buttons(widget, bs, true);
@@ -648,8 +728,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if(fieldctl(item, MOVE_CURSOR_LEFT))
 				if(fieldctl(item, DEL_LETTER)) {
 					/* trick, see case KEY_DC */
-					drawitem(formwin, item, false);
-					drawitem(formwin, item, true);
+					drawitem(&form, item, false);
+					drawitem(&form, item, true);
 				}
 			break;
 		case KEY_DC:
@@ -662,22 +742,22 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				 * deleted multicolumn letters are drawn again.
 				 * libformw has a similar problem and solution.
 				 */
-				drawitem(formwin, item, false);
-				drawitem(formwin, item, true);
+				drawitem(&form, item, false);
+				drawitem(&form, item, true);
 			}
 			break;
 		case KEY_HOME:
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, MOVE_CURSOR_BEGIN))
-				drawitem(formwin, item, true);
+				drawitem(&form, item, true);
 			break;
 		case KEY_END:
 			if (focusinform == false)
 				break;
 			while (fieldctl(item, MOVE_CURSOR_RIGHT))
 				; /* shit to right */
-			drawitem(formwin, item, true);
+			drawitem(&form, item, true);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -701,10 +781,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
 			    y + h - formheight, x + 1 + w - TEXTHMARGIN);
 
-			draw_borders(conf, formwin, formheight+2, w-2, LOWERED);
+			draw_borders(conf, form.pad, formheight+2, w-2, LOWERED);
 			if (curritem != -1)
-				drawitem(formwin, item, true);
-			wrefresh(formwin);
+				drawitem(&form, item, true);
+			//wrefresh(formpad);
 
 			refresh();
 			break;
@@ -717,13 +797,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				 * because the cursor remains on the new letter,
 				 * "if" and "while" update the positions.
 				 */
-				if(insertch(item, input, securewch)) {
+				if(insertch(item, input, form.securewch)) {
 					fieldctl(item, MOVE_CURSOR_RIGHT);
 					/* 
 					 * no if(fieldctl), update always
 					 * because it fails with maxletters.
 					 */ 
-					drawitem(formwin, item, true);
+					drawitem(&form, item, true);
 				}
 			}
 			else {
@@ -739,33 +819,33 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 		if (switchfocus) {
 			focusinform = !focusinform;
-			drawitem(formwin, item, focusinform);
 			bs.curr = 0;
 			redrawbuttons(widget, &bs, conf->form.focus_buttons ||
 			    !focusinform, !focusinform);
+			drawitem(&form, item, focusinform);
 			switchfocus = false;
 		}
 
 		if (changeitem) {
-			drawitem(formwin, item, false);
+			drawitem(&form, item, false);
 			curritem = next;
 			item = &items[curritem];
-			drawitem(formwin, item, true);
-			//if (ymenupad > abs && ymenupad > 0)
-			//	ymenupad = abs;
-			//if ((int)(ymenupad + menurows) <= abs)
-			//	ymenupad = abs - menurows + 1;
-			//update_menuwin(conf, menuwin, menurows+2, w-4,
-			//    totnitems, menurows, ymenupad);
-			//wrefresh(menuwin);
-			//prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			if (form.y > items[curritem].ylabel && form.y > 0)
+				form.y = (int)items[curritem].ylabel;
+			if ((int)(form.y + formheight) - 1 < (int)items[curritem].yfield)
+				form.y = items[curritem].yfield - formheight + 1;
+			/* form.y can change */
+			prefresh(form.pad, form.y, 0, form.ys, form.xs, form.ye, form.xe);
+			update_formborders(conf, &form);
+			drawitem(&form, item, true);
 			changeitem = false;
 		}
 	} /* end while handler */
 
 	curs_set(0);
 
-	delwin(formwin);
+	delwin(form.pad);
+	delwin(form.border);
 	for (i = 0; i < nitems; i++) {
 		free(items[i].privwbuf);
 		free(items[i].pubwbuf);

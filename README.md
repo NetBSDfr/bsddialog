@@ -140,9 +140,9 @@ in the _Public Domain_ to build new projects:
    - ~~delete -lformw dep~~
    - ~~add #define BSDDIALOG_FIELDNOCOLOR~~
    - ~~Utility replaces output from wide char to multibyte char strings~~
-   - fix form height (items y instead of nitems)
+   - ~~fix form height (items y instead of nitems)~~
    - add resize
-   - add scrolling
+   - ~~add scrolling~~
    - improve inputbox (improve autosizing, ~~focus on buttons~~)
    - ~~delete constraint maxvaluelen >= valuelen~~
    - ~~add conf.form.securembch~~
