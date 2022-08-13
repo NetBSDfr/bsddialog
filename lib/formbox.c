@@ -735,7 +735,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				}
 			}
 			break;
-		}
+		} /* end switch handler */
 
 		if (switchfocus) {
 			focusinform = !focusinform;
@@ -761,7 +761,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			//prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			changeitem = false;
 		}
-	}
+	} /* end while handler */
+
 	curs_set(0);
 
 	delwin(formwin);
