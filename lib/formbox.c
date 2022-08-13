@@ -416,8 +416,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *apiitems)
 {
-	bool focusinform, insecurecursor, loop;
-	int curritem, mbchsize, output, y, x, h, w, wchtype;
+	bool switchfocus, changeitem, focusinform, insecurecursor, loop;
+	int curritem, mbchsize, next, output, y, x, h, w, wchtype;
 	unsigned int hformpad, wformpad;
 	unsigned int i, j;
 	wchar_t securewch, *winit;
@@ -543,6 +543,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		focusinform = false;
 	}
 
+	changeitem = switchfocus = false;
 	loop = true;
 	while (loop) {
 		wrefresh(formwin);
@@ -590,81 +591,55 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_LEFT))
 					drawitem(formwin, item, true);
-			} else {
-				if (bs.curr > 0) {
-					bs.curr--;
-				} else if (curritem != -1) {
-					bs.curr = 0;
-					focusinform = true;
-					drawitem(formwin, item, true);
-				}
-				redrawbuttons(widget, &bs,
-				    conf->form.focus_buttons || !focusinform,
-				    !focusinform);
+			} else if (bs.curr > 0) {
+				bs.curr--;
+				draw_buttons(widget, bs, true);
+				wrefresh(widget);
+			} else if (curritem != -1) {
+				switchfocus = true;
 			}
 			break;
 		case KEY_RIGHT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_RIGHT))
 					drawitem(formwin, item, true);
-			} else {
-				if (bs.curr < (int) bs.nbuttons - 1) {
-					bs.curr++;
-				} else if (curritem != -1) {
-					bs.curr = 0;
-					focusinform = true;
-					drawitem(formwin, item, true);
-				}
-				redrawbuttons(widget, &bs,
-				    conf->form.focus_buttons || !focusinform,
-				    !focusinform);
+			} else if (bs.curr < (int) bs.nbuttons - 1) {
+				bs.curr++;
+				draw_buttons(widget, bs, true);
+				wrefresh(widget);
+			} else if (curritem != -1) {
+				switchfocus = true;
 			}
 			break;
 		case KEY_UP:
 			if (focusinform) {
-				drawitem(formwin, item, false);
-				curritem = previtem(nitems, items, curritem);
-				item = &items[curritem];
-				drawitem(formwin, item, true);
+				next = previtem(nitems, items, curritem);
+				changeitem = curritem != next;
 			} else if (curritem != -1) {
-				focusinform = true;
-				drawitem(formwin, item, true);
-				bs.curr = 0;
-				redrawbuttons(widget, &bs,
-				conf->form.focus_buttons, false);
+				switchfocus = true;
 			}
 			break;
 		case KEY_DOWN:
 			if (focusinform == false)
 				break;
 			if (nitems == 1) {
-				focusinform = false;
-				drawitem(formwin, item, false);
-				bs.curr = 0;
-				draw_buttons(widget, bs, true);
-				wrefresh(widget);
+				switchfocus = true;
 			} else {
-				drawitem(formwin, item, false);
-				curritem = nextitem(nitems, items, curritem);
-				item = &items[curritem];
-				drawitem(formwin, item, true);
+				next = nextitem(nitems, items, curritem);
+				changeitem = curritem != next;
 			}
 			break;
 		case KEY_PPAGE:
-			if (focusinform == false)
-				break;
-			drawitem(formwin, item, false);
-			curritem = firstitem(nitems, items);
-			item = &items[curritem];
-			drawitem(formwin, item, true);
+			if (focusinform) {
+				next = firstitem(nitems, items);
+				changeitem = curritem != next;
+			}
 			break;
 		case KEY_NPAGE:
-			if (focusinform == false)
-				break;
-			drawitem(formwin, item, false);
-			curritem = lastitem(nitems, items);
-			item = &items[curritem];
-			drawitem(formwin, item, true);
+			if (focusinform) {
+				next = lastitem(nitems, items);
+				changeitem = curritem != next;
+			}
 			break;
 		case KEY_BACKSPACE:
 		case 127: /* Backspace */
@@ -760,6 +735,31 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				}
 			}
 			break;
+		}
+
+		if (switchfocus) {
+			focusinform = !focusinform;
+			drawitem(formwin, item, focusinform);
+			bs.curr = 0;
+			redrawbuttons(widget, &bs, conf->form.focus_buttons ||
+			    !focusinform, !focusinform);
+			switchfocus = false;
+		}
+
+		if (changeitem) {
+			drawitem(formwin, item, false);
+			curritem = next;
+			item = &items[curritem];
+			drawitem(formwin, item, true);
+			//if (ymenupad > abs && ymenupad > 0)
+			//	ymenupad = abs;
+			//if ((int)(ymenupad + menurows) <= abs)
+			//	ymenupad = abs - menurows + 1;
+			//update_menuwin(conf, menuwin, menurows+2, w-4,
+			//    totnitems, menurows, ymenupad);
+			//wrefresh(menuwin);
+			//prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			changeitem = false;
 		}
 	}
 	curs_set(0);
