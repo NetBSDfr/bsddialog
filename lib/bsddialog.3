@@ -635,8 +635,16 @@ enable shortcut keys on buttons, default on items.
 .El
 .Pp
 .Fn bsddialog_form
-builds a dialog to display a list of items to get strings in input, an item is
-defined like:
+builds a dialog to display an array of
+.Fa items
+of
+.Fa nitems
+elements to get strings in input.
+.Fa formrows
+specifies the graphical height for the box around the items,
+.Dv 0
+for autosizing.
+An item is defined like:
 .Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_formitem {
@@ -658,7 +666,7 @@ struct bsddialog_formitem {
 .Ed
 .Pp
 .Fa label
-describes the request, it is printed at the position
+is a string to describe the request, it is printed at the position
 .Fa ylabel
 and
 .Fa xlabel .
@@ -669,12 +677,13 @@ and
 .Fa fieldlen
 is its graphical width, while
 .Fa maxvalelen
-is the maximum length of the input string,
+is the maximum number of characters of the input string.
 .Fa init
-is the default value.
+is the default field value.
 If the OK button is pressed
 .Fa value
-is the allocated memory with the current field string.
+is the allocated memory with the current field string, its size depends on
+the current locale.
 .Fa flags
 is an OR value to set the
 .Dv BSDDIALOG_FIELDHIDDEN ,
@@ -685,17 +694,6 @@ and
 flags for the field.
 .Fa bottomdesc
 is printed on the bottom side of the screen if the item is focused.
-.Fa items
-is an array of items of
-.Fa nitems
-elements,
-.Fa formrows
-specifies the graphical fixed height for the items list;
-.Fa ylabel
-and
-.Fa yfield
-have to be between 1 and
-.Fa formrows .
 .Pp
 .Fn bsddialog_form
 can be customized by:
@@ -713,7 +711,7 @@ multibyte charachter to hide the input with
 .Fa conf.form.securech
 is ignored.
 .It Fa conf.form.value_wchar
-the allocated field
+the allocated
 .Fa value
 is a
 .Em wchar_t*
