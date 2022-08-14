@@ -638,8 +638,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.xe = form.xs + w - 5;
 	}
 
-	form.y = form.ybeg;
-	//form.y = 0;
+	form.y = form.ybeg; // XXX to fix, y di curritem
 	if ((int)(form.y + form.viewrows) - 1 < (int)items[curritem].yfield)
 		form.y = items[curritem].yfield - form.viewrows + 1;
 	update_formborders(conf, &form);
