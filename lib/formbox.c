@@ -83,6 +83,7 @@ struct privateform {
 
 enum operation {
 	MOVE_CURSOR_BEGIN,
+	MOVE_CURSOR_END,
 	MOVE_CURSOR_RIGHT,
 	MOVE_CURSOR_LEFT,
 	DEL_LETTER
@@ -108,6 +109,10 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 		item->pos = 0;
 		item->xcursor = 0;
 		item->xposdraw = 0;
+		break;
+	case MOVE_CURSOR_END:
+		while (fieldctl(item, MOVE_CURSOR_RIGHT))
+			change = true;
 		break;
 	case MOVE_CURSOR_LEFT:
 		if (item->pos == 0)
@@ -558,8 +563,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 		item->pos = 0;
 		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
-			while (fieldctl(item, MOVE_CURSOR_RIGHT))
-				; /* shit to right */
+			fieldctl(item, MOVE_CURSOR_END);
 
 		item->fieldcols = apiitems[i].fieldlen;
 
@@ -773,9 +777,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_END:
 			if (focusinform == false)
 				break;
-			while (fieldctl(item, MOVE_CURSOR_RIGHT))
-				; /* shit to right */
-			drawitem(&form, item, true);
+			if (fieldctl(item, MOVE_CURSOR_END))
+				drawitem(&form, item, true);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
