@@ -452,33 +452,31 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
-    struct buttons bs)
+form_checksize(int rows, int cols, const char *text, struct privateform *form,
+    int nitems, int linelen, struct buttons bs)
 {
 	int mincols, textrow, menusize;
 
+	/* cols */
 	mincols = VBORDERS;
-	/* buttons */
 	mincols += buttons_width(bs);
-	/*
-	 * linelen check, comment to allow some hidden col otherwise portconfig
-	 * could not show big menus like www/apache24
-	 */
-	/* mincols = MAX(mincols, linelen); */
+	mincols = MAX(mincols, linelen);
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols, width < size buttons or "
-		    "name + descripion of the items");
+		RETURN_ERROR("Form width, cols < buttons or xlabels/xfields");
+
+	/* rows */
+	if (nitems > 0 && form->viewrows == 0)
+		RETURN_ERROR("items > 0 but viewrows == 0, if formheigh = 0 "
+		    "terminal too small");
+
+	if (form->viewrows < form->minviewrows)
+		RETURN_ERROR("Few rows, if formheigh = 0 terminal too small");
 
 	textrow = text != NULL && text[0] != '\0' ? 1 : 0;
-
-	if (nitems > 0 && menurows == 0)
-		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "
-		    "too small");
-
 	menusize = nitems > 0 ? 3 : 0;
 	if (rows < 2  + 2 + menusize + textrow)
-		RETURN_ERROR("Few lines for this menus");
+		RETURN_ERROR("Few lines for this form");
 
 	return (0);
 }
@@ -596,7 +594,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w - form.xbeg,
 	    &form.viewrows, form.h - form.ybeg, bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (menu_checksize(h, w, text, form.viewrows, nitems, bs) != 0)
+	if (form_checksize(h, w, text, &form, nitems, form.w + 6, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
