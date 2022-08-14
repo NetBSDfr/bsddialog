@@ -531,8 +531,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->readonly = apiitems[i].flags & BSDDIALOG_FIELDREADONLY;
 		item->fieldnocolor = apiitems[i].flags & BSDDIALOG_FIELDNOCOLOR;
 		item->bottomdesc = apiitems[i].bottomdesc;
-		item->xposdraw = 0;
-		item->xcursor = 0;
 		if (item->readonly || (item->secure && !insecurecursor))
 			item->cursor = false;
 		else
@@ -559,11 +557,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				item->pubwbuf[j] = form.securewch;
 		}
 
+		item->fieldcols = apiitems[i].fieldlen;
+		item->xposdraw = 0;
+		item->xcursor = 0;
 		item->pos = 0;
 		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
 			fieldctl(item, MOVE_CURSOR_END);
-
-		item->fieldcols = apiitems[i].fieldlen;
 
 		form.h = MAX(form.h, items[i].ylabel);
 		form.h = MAX(form.h, items[i].yfield);
