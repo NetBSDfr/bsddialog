@@ -21,9 +21,9 @@ int main()
 	int i, output;
 	struct bsddialog_conf conf;
 	struct bsddialog_formitem items[3] = {
-	    {"Input:",    1, 1, "value",     1, 11, 30, 50, NULL, 0,  "desc 1"},
-	    {"Input:",    2, 1, "read only", 2, 11, 30, 50, NULL, RO, "desc 2"},
-	    {"Password:", 3, 1, "",          3, 11, 30, 50, NULL, H,  "desc 3"}
+	    {"Input:",    0, 0, "value",     0, 10, 30, 50, NULL, 0,  "desc 1"},
+	    {"Input:",    1, 0, "read only", 1, 10, 30, 50, NULL, RO, "desc 2"},
+	    {"Password:", 2, 0, "",          2, 10, 30, 50, NULL, H,  "desc 3"}
 	};
 
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
