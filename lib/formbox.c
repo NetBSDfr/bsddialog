@@ -589,7 +589,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w,
+	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w - form.xbeg,
 	    &form.viewrows, form.h - form.ybeg, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (menu_checksize(h, w, text, form.viewrows, nitems, bs) != 0)
