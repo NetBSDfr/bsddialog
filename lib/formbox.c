@@ -453,14 +453,14 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 
 static int
 form_checksize(int rows, int cols, const char *text, struct privateform *form,
-    int nitems, int linelen, struct buttons bs)
+    int nitems, struct buttons bs)
 {
 	int mincols, textrow, menusize;
 
 	/* cols */
 	mincols = VBORDERS;
 	mincols += buttons_width(bs);
-	mincols = MAX(mincols, linelen);
+	mincols = MAX(mincols, (int)form->w + 6);
 
 	if (cols < mincols)
 		RETURN_ERROR("Form width, cols < buttons or xlabels/xfields");
@@ -594,7 +594,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w - form.xbeg,
 	    &form.viewrows, form.h - form.ybeg, bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_checksize(h, w, text, &form, nitems, form.w + 6, bs) != 0)
+	if (form_checksize(h, w, text, &form, nitems, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
