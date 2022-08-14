@@ -407,7 +407,7 @@ menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
 	 * linelen check, comment to allow some hidden col otherwise portconfig
 	 * could not show big menus like www/apache24
 	 */
-	/* mincols = MAX(mincols, linelen); */
+	/* mincols += MAX(mincols, linelen); */
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, width < size buttons or "
