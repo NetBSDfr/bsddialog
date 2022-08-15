@@ -150,6 +150,7 @@ in the _Public Domain_ to build new projects:
    - ~~add BSDDIALOG_FIELDCURSOREND~~
    - ~~change conf.form.enable_wchar to conf.form.value_wchar~~
    - ~~add conf.form.input_singlebyte~~
+   - ~~add BSDDIALOG_FIELDEXTEND~~
  - Custom theme
    - ~~add bsddialog\_init\_notheme()~~
    - ~~add bsddialog_hascolors()~~
