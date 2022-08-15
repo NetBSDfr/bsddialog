@@ -70,12 +70,9 @@ struct privateform {
 	unsigned int xs;   /* to refresh */
 	unsigned int xe;   /* to refresh */
 	unsigned int y;    /* changes moving focus around items */
-	unsigned int viewrows;    /* visible rows, ye - ys , most h - ypad */
-	unsigned int minviewrows; /* min viewrows if ylabel != yfield */
+	unsigned int viewrows;    /* visible rows, real formheight */
+	unsigned int minviewrows; /* min viewrows, ylabel != yfield */
 
-	//unsigned int nitem;
-	//struct privateitem *items;
-	//int activeidx;
 	wchar_t securewch;
 };
 
