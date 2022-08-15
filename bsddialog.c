@@ -1340,9 +1340,11 @@ int inputbox_builder(BUILDER_ARGS)
 	item.init	 = argc > 0 ? argv[0] : "";
 	item.yfield	 = 0;
 	item.xfield	 = 0;
-	item.fieldlen    = cols > 4 ? cols-4 : 25;
+	item.fieldlen    = 1;
 	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
-	item.flags	 = BSDDIALOG_FIELDNOCOLOR | BSDDIALOG_FIELDCURSOREND;
+	item.flags	 = BSDDIALOG_FIELDNOCOLOR;
+	item.flags      |= BSDDIALOG_FIELDCURSOREND;
+	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
 	conf.form.focus_buttons = true;
@@ -1405,11 +1407,12 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.init	 = argc > 0 ? argv[0] : "";
 	item.yfield	 = 0;
 	item.xfield	 = 0;
-	item.fieldlen	 = cols > 4 ? cols-4 : 25;
+	item.fieldlen	 = 1;
 	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
 	item.flags       = BSDDIALOG_FIELDHIDDEN;
 	item.flags      |= BSDDIALOG_FIELDNOCOLOR;
 	item.flags      |= BSDDIALOG_FIELDCURSOREND;
+	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
 	conf.form.focus_buttons = true;

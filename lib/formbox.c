@@ -567,8 +567,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->xposdraw = 0;
 		item->xcursor = 0;
 		item->pos = 0;
-		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
-			fieldctl(item, MOVE_CURSOR_END);
 
 		form.h = MAX(form.h, items[i].ylabel);
 		form.h = MAX(form.h, items[i].yfield);
@@ -622,6 +620,15 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	form.border = new_boxed_window(conf, y + h - 5 - form.viewrows, x + 2,
 	    form.viewrows + 2, w - 4, LOWERED);
+
+	for (i = 0; i < nitems; i++) {
+		if (apiitems[i].flags & BSDDIALOG_FIELDEXTEND) {
+			items[i].fieldcols = w - 6 - items[i].yfield;
+			form.w = MAX(form.w, items[i].yfield + items[i].fieldcols);
+		}
+		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
+			fieldctl(item, MOVE_CURSOR_END);
+	}
 
 	form.pad = newpad(form.h, form.w);
 	wbkgd(form.pad, t.dialog.color);
