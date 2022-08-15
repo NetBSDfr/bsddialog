@@ -70,8 +70,6 @@ struct privateform {
 	unsigned int xs;   /* to refresh */
 	unsigned int xe;   /* to refresh */
 	unsigned int y;    /* changes moving focus around items */
-	unsigned int ybeg; /* min items y, to compat items and arrows */
-	unsigned int xbeg; /* min items x, to compat items */
 	unsigned int viewrows;    /* visible rows, ye - ys , most h - ypad */
 	unsigned int minviewrows; /* min viewrows if ylabel != yfield */
 
@@ -245,7 +243,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 	curs_set((focus && item->cursor) ? 1 : 0 );
 	wmove(form->pad, item->yfield, item->xfield + item->xcursor);
 	//wrefresh(w); /* to be sure after bottom desc addstr and refresh */
-	prefresh(form->pad, form->y, form->xbeg, form->ys, form->xs, form->ye, form->xe);
+	prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye, form->xe);
 }
 
 static bool
@@ -386,9 +384,9 @@ update_formborders(struct bsddialog_conf *conf, struct privateform *form)
 	getmaxyx(form->border, h, w);
 	draw_borders(conf, form->border, h, w, LOWERED);
 
-	if (form->ybeg + form->viewrows < form->h) {
+	if (form->viewrows < form->h) {
 		wattron(form->border, t.dialog.arrowcolor);
-		if (form->y > form->ybeg)
+		if (form->y > 0)
 			mvwhline(form->border, 0, (w / 2) - 2,
 			    conf->ascii_lines ? '^' : ACS_UARROW, 5);
 
@@ -460,7 +458,7 @@ form_checksize(int rows, int cols, const char *text, struct privateform *form,
 	/* cols */
 	mincols = VBORDERS;
 	mincols += buttons_width(bs);
-	mincols = MAX(mincols, (int)(form->w - form->xbeg) + 6);
+	mincols = MAX(mincols, (int)form->w + 6);
 
 	if (cols < mincols)
 		RETURN_ERROR("Form width, cols < buttons or xlabels/xfields");
@@ -489,7 +487,7 @@ static void curriteminview(struct privateform *form, struct privateitem *item)
 	yup = MIN(item->ylabel, item->yfield);
 	ydown = MAX(item->ylabel, item->yfield);
 
-	if (form->y > yup && form->y > form->ybeg)
+	if (form->y > yup && form->y > 0)
 		form->y = yup;
 	if ((int)(form->y + form->viewrows) - 1 < (int)ydown)
 		form->y = ydown - form->viewrows + 1;
@@ -503,7 +501,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	bool switchfocus, changeitem, focusinform, insecurecursor, loop;
 	int curritem, mbchsize, next, output, y, x, h, w, wchtype;
-	unsigned int i, j, tmp;
+	unsigned int i, j, itemybeg, itemxbeg, tmp;
 	wchar_t *winit;
 	wint_t input;
 	WINDOW *widget, *textpad, *shadow;
@@ -583,21 +581,28 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.w = MAX(form.w, items[i].xlabel + strcols(items[i].label));
 		form.w = MAX(form.w, items[i].xfield + items[i].fieldcols - 1);
 		if (i == 0) {
-			form.ybeg = MIN(items[i].ylabel, items[i].yfield);
-			form.xbeg = MIN(items[i].xlabel, items[i].xfield);
+			itemybeg = MIN(items[i].ylabel, items[i].yfield);
+			itemxbeg = MIN(items[i].xlabel, items[i].xfield);
 		} else {
 			tmp = MIN(items[i].ylabel, items[i].yfield);
-			form.ybeg = MIN(form.ybeg, tmp);
+			itemybeg = MIN(itemybeg, tmp);
 			tmp = MIN(items[i].xlabel, items[i].xfield);
-			form.xbeg = MIN(form.xbeg, tmp);
+			itemxbeg = MIN(itemxbeg, tmp);
 		}
 		tmp = abs((int)items[i].ylabel - (int)items[i].yfield);
 		form.minviewrows = MAX(form.minviewrows, tmp);
 	}
 	if (nitems > 0) {
-		form.h += 1;
-		form.w += 1;
+		form.h += 1 - itemybeg;
+		form.w += 1 - itemxbeg;
 		form.minviewrows += 1;
+	}
+
+	for (i = 0; i < nitems; i++) {
+		items[i].ylabel -= itemybeg;
+		items[i].yfield -= itemybeg;
+		items[i].xlabel -= itemxbeg;
+		items[i].xfield -= itemxbeg;
 	}
 
 	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
@@ -605,8 +610,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w - form.xbeg,
-	    &form.viewrows, form.h - form.ybeg, bs) != 0)
+	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w, 
+	    &form.viewrows, form.h, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (form_checksize(h, w, text, &form, nitems, bs) != 0)
 		return (BSDDIALOG_ERROR);
@@ -655,12 +660,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 
 	// XXX if curr != -1
-	form.y = form.ybeg;
+	form.y = 0;
 	curriteminview(&form, item);
 	update_formborders(conf, &form);
 	wrefresh(form.border);
 	drawitem(&form, item, true);
-	prefresh(form.pad, form.y, form.xbeg, form.ys, form.xs, form.ye, form.xe);
+	prefresh(form.pad, form.y, 0, form.ys, form.xs, form.ye, form.xe);
 
 	changeitem = switchfocus = false;
 	loop = true;
