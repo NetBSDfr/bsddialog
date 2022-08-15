@@ -597,7 +597,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.w += 1 - itemxbeg;
 		form.minviewrows += 1;
 	}
-
 	for (i = 0; i < nitems; i++) {
 		items[i].ylabel -= itemybeg;
 		items[i].yfield -= itemybeg;
