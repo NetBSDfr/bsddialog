@@ -632,22 +632,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	form.pad = newpad(form.h, form.w);
 	wbkgd(form.pad, t.dialog.color);
 
-	curritem = -1;
-	for (i=0 ; i < nitems; i++) {
-		drawitem(&form, &items[i], false);
-		if (curritem == -1 && items[i].readonly == false)
-			curritem = i;
-	}
-	if (curritem != -1) {
-		item = &items[curritem];
-		drawitem(&form, item, true);
-		focusinform = true;
-		redrawbuttons(widget, &bs, conf->form.focus_buttons, false);
-	} else {
-		item = NULL;
-		focusinform = false;
-	}
-
 	form.ys = y + h - 5 - form.viewrows + 1;
 	form.ye = y + h - 5 ;
 	if ((int)form.w > w - 6) { /* left */
@@ -658,13 +642,25 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.xe = form.xs + w - 5;
 	}
 
-	// XXX if curr != -1
-	form.y = 0;
-	curriteminview(&form, item);
-	update_formborders(conf, &form);
-	wrefresh(form.border);
-	drawitem(&form, item, true);
-	prefresh(form.pad, form.y, 0, form.ys, form.xs, form.ye, form.xe);
+	curritem = -1;
+	for (i=0 ; i < nitems; i++) {
+		drawitem(&form, &items[i], false);
+		if (curritem == -1 && items[i].readonly == false)
+			curritem = i;
+	}
+	if (curritem != -1) {
+		focusinform = true;
+		redrawbuttons(widget, &bs, conf->form.focus_buttons, false);
+		form.y = 0;
+		item = &items[curritem];
+		curriteminview(&form, item);
+		update_formborders(conf, &form);
+		wrefresh(form.border);
+		drawitem(&form, item, true);
+	} else {
+		item = NULL;
+		focusinform = false;
+	}
 
 	changeitem = switchfocus = false;
 	loop = true;
