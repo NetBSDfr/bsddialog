@@ -577,7 +577,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			tmp = MIN(items[i].xlabel, items[i].xfield);
 			form.xbeg = MIN(form.xbeg, tmp);
 		}
-		form.minviewrows = abs((int)items[i].ylabel - (int)items[i].yfield);
+		tmp = abs((int)items[i].ylabel - (int)items[i].yfield);
+		form.minviewrows = MAX(form.minviewrows, tmp);
 	}
 	if (nitems > 0) {
 		form.h += 1;
