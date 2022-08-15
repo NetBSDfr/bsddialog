@@ -103,7 +103,6 @@ enum bsddialog_color {
 	BSDDIALOG_WHITE
 };
 
-bool bsddialog_hascolors(void);
 int
 bsddialog_color(enum bsddialog_color foreground,
     enum bsddialog_color background, unsigned int flags);
@@ -111,6 +110,7 @@ int
 bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
     enum bsddialog_color *background, unsigned int *flags);
 int bsddialog_get_theme(struct bsddialog_theme *theme);
+bool bsddialog_hascolors(void);
 int bsddialog_set_default_theme(enum bsddialog_default_theme theme);
 int bsddialog_set_theme(struct bsddialog_theme *theme);
 
