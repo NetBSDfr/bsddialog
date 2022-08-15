@@ -482,6 +482,19 @@ form_checksize(int rows, int cols, const char *text, struct privateform *form,
 	return (0);
 }
 
+static void curriteminview(struct privateform *form, struct privateitem *item)
+{
+	unsigned int yup, ydown;
+
+	yup = MIN(item->ylabel, item->yfield);
+	ydown = MAX(item->ylabel, item->yfield);
+
+	if (form->y > yup && form->y > form->ybeg)
+		form->y = yup;
+	if ((int)(form->y + form->viewrows) - 1 < (int)ydown)
+		form->y = ydown - form->viewrows + 1;
+}
+
 /* API */
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
@@ -618,7 +631,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	curritem = -1;
 	for (i=0 ; i < nitems; i++) {
 		drawitem(&form, &items[i], false);
-		if (curritem == -1 && item->readonly == false)
+		if (curritem == -1 && items[i].readonly == false)
 			curritem = i;
 	}
 	if (curritem != -1) {
@@ -641,11 +654,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.xe = form.xs + w - 5;
 	}
 
-	form.y = form.ybeg; // XXX to fix, y di curritem
-	if ((int)(form.y + form.viewrows) - 1 < (int)items[curritem].yfield)
-		form.y = items[curritem].yfield - form.viewrows + 1;
+	// XXX if curr != -1
+	form.y = form.ybeg;
+	curriteminview(&form, item);
 	update_formborders(conf, &form);
 	wrefresh(form.border);
+	drawitem(&form, item, true);
 	prefresh(form.pad, form.y, form.xbeg, form.ys, form.xs, form.ye, form.xe);
 
 	changeitem = switchfocus = false;
@@ -850,12 +864,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			drawitem(&form, item, false);
 			curritem = next;
 			item = &items[curritem];
-			if (form.y > items[curritem].ylabel && form.y > 0)
-				form.y = (int)items[curritem].ylabel;
-			if ((int)(form.y + form.viewrows) - 1 < (int)items[curritem].yfield)
-				form.y = items[curritem].yfield - form.viewrows + 1;
-			/* form.y can change */
-			prefresh(form.pad, form.y, form.xbeg, form.ys, form.xs, form.ye, form.xe);
+			curriteminview(&form, item);		
 			update_formborders(conf, &form);
 			drawitem(&form, item, true);
 			changeitem = false;
