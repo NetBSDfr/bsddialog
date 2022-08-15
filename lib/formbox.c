@@ -214,9 +214,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 	else
 		color = focus ? t.form.f_fieldcolor : t.form.fieldcolor;
 	wattron(form->pad, color);
-	/* can "fail", see trick in case KEY_DC */
 	mvwhline(form->pad, item->yfield, item->xfield, ' ', item->fieldcols);
-	//wrefresh(pad); /* important for following multicolumn letters */
 	n=0;
 	cols = wcwidth(item->pubwbuf[item->xposdraw]);
 	while (cols <= item->fieldcols && item->xposdraw + n <
@@ -758,25 +756,14 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, MOVE_CURSOR_LEFT))
-				if(fieldctl(item, DEL_LETTER)) {
-					/* trick, see case KEY_DC */
-					drawitem(&form, item, false);
+				if(fieldctl(item, DEL_LETTER))
 					drawitem(&form, item, true);
-				}
 			break;
 		case KEY_DC:
 			if (focusinform == false)
 				break;
-			if(fieldctl(item, DEL_LETTER)) {
-				/*
-				 * trick to force curses to redraw the empty
-				 * single column in the field otherwise the
-				 * deleted multicolumn letters are drawn again.
-				 * libformw has a similar problem and solution.
-				 */
-				drawitem(&form, item, false);
+			if(fieldctl(item, DEL_LETTER))
 				drawitem(&form, item, true);
-			}
 			break;
 		case KEY_HOME:
 			if (focusinform == false)
