@@ -471,7 +471,8 @@ form_checksize(int rows, int cols, const char *text, struct privateform *form,
 		    "terminal too small");
 
 	if (form->viewrows < form->minviewrows)
-		RETURN_ERROR("Few rows, if formheigh = 0 terminal too small");
+		RETURN_ERROR("Few formheight rows, if formheight = 0 terminal "
+		    "too small");
 
 	textrow = text != NULL && text[0] != '\0' ? 1 : 0;
 	menusize = nitems > 0 ? 3 : 0;
