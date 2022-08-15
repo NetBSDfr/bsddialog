@@ -467,7 +467,7 @@ form_checksize(int rows, int cols, const char *text, struct privateform *form,
 
 	/* rows */
 	if (nitems > 0 && form->viewrows == 0)
-		RETURN_ERROR("items > 0 but viewrows == 0, if formheigh = 0 "
+		RETURN_ERROR("items > 0 but viewrows == 0, if formheight = 0 "
 		    "terminal too small");
 
 	if (form->viewrows < form->minviewrows)
