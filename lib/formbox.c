@@ -660,6 +660,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	} else {
 		item = NULL;
 		focusinform = false;
+		wrefresh(form.border);
 	}
 
 	changeitem = switchfocus = false;
