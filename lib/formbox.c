@@ -460,7 +460,7 @@ form_checksize(int rows, int cols, const char *text, struct privateform *form,
 	/* cols */
 	mincols = VBORDERS;
 	mincols += buttons_width(bs);
-	mincols = MAX(mincols, (int)form->w + 6);
+	mincols = MAX(mincols, (int)form->w - form->xbeg + 6);
 
 	if (cols < mincols)
 		RETURN_ERROR("Form width, cols < buttons or xlabels/xfields");
