@@ -73,7 +73,7 @@ struct privateform {
 	unsigned int viewrows;    /* visible rows, real formheight */
 	unsigned int minviewrows; /* min viewrows, ylabel != yfield */
 
-	wchar_t securewch;
+	wchar_t securewch; /* wide char of conf.form.secure[mb]ch */
 };
 
 enum operation {
