@@ -624,6 +624,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 							l++;
 						}
 						x = z;
+						line = MAX(line, x);
 						j -= z;
 					}
 				}
