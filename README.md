@@ -141,7 +141,7 @@ in the _Public Domain_ to build new projects:
    - ~~add #define BSDDIALOG_FIELDNOCOLOR~~
    - ~~Utility replaces output from wide char to multibyte char strings~~
    - ~~fix form height (items y instead of nitems)~~
-   - add resize
+   - ~~add resize~~
    - ~~add scrolling~~
    - inputbox (improve autosizing, ~~focus on buttons~~)
    - ~~delete constraint maxvaluelen >= valuelen~~

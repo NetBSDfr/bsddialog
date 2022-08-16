@@ -65,6 +65,7 @@ struct privateform {
 	WINDOW *pad;
 	unsigned int h;    /* only to create pad */
 	unsigned int w;    /* only to create pad */
+	unsigned int wmin; /* to refresh, w can change for FIELDEXTEND */
 	unsigned int ys;   /* to refresh */
 	unsigned int ye;   /* to refresh */
 	unsigned int xs;   /* to refresh */
@@ -589,6 +590,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.w += 1 - itemxbeg;
 		form.minviewrows += 1;
 	}
+	form.wmin = form.w;
 	for (i = 0; i < nitems; i++) {
 		items[i].ylabel -= itemybeg;
 		items[i].yfield -= itemybeg;
@@ -793,25 +795,69 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				output = BSDDIALOG_ERROR;
 				loop = false;
 			}
-			//curs_set(1); drawitem in KEY_RESIZE later
-			/* No Break */
+			/* No break, screen size can change */
 		case KEY_RESIZE:
+			/* Important for decreasing screen */
+			hide_widget(y, x, h, w, conf->shadow);
+			refresh();
+
+			form.viewrows = formheight;
+			form.w = form.wmin;
+			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+				return (BSDDIALOG_ERROR);
+			if (menu_autosize(conf, rows, cols, &h, &w, text, form.w, 
+			    &form.viewrows, form.h, bs) != 0)
+				return (BSDDIALOG_ERROR);
+			if (form_checksize(h, w, text, &form, nitems, bs) != 0)
+				return (BSDDIALOG_ERROR);
+			if (set_widget_position(conf, &y, &x, h, w) != 0)
+				return (BSDDIALOG_ERROR);
+
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs, true) != 0)
 			return (BSDDIALOG_ERROR);
 
 			doupdate();
-			wrefresh(widget);
 
 			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
 			    y + h - form.viewrows, x + 1 + w - TEXTHMARGIN);
 
-			draw_borders(conf, form.pad, form.viewrows+2, w-2, LOWERED);
-			if (curritem != -1)
-				drawitem(&form, item, true);
-			//wrefresh(formpad);
+			wclear(form.border);
+			mvwin(form.border, y + h - 5 - form.viewrows, x + 2);
+			wresize(form.border, form.viewrows + 2, w - 4);
 
-			refresh();
+			for (i = 0; i < nitems; i++) {
+				fieldctl(&items[i], MOVE_CURSOR_BEGIN);
+				if (apiitems[i].flags & BSDDIALOG_FIELDEXTEND) {
+					items[i].fieldcols = w - 6 - items[i].yfield;
+					form.w = MAX(form.w, items[i].yfield + items[i].fieldcols);
+				}
+				if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
+					fieldctl(&items[i], MOVE_CURSOR_END);
+			}
+
+			form.ys = y + h - 5 - form.viewrows + 1;
+			form.ye = y + h - 5 ;
+			if ((int)form.w > w - 6) { /* left */
+				form.xs = x + 3;
+				form.xe = form.xs + w - 7;
+			} else { /* center */
+				form.xs = x + 3 + (w-6)/2 - form.w/2;
+				form.xe = form.xs + w - 5;
+			}
+
+			if (curritem != -1) {
+				redrawbuttons(widget, &bs,
+				    conf->form.focus_buttons || !focusinform,
+				    !focusinform);
+				curriteminview(&form, item);
+				update_formborders(conf, &form);
+				wrefresh(form.border);
+				/* drawitem just to prefresh() pad */
+				drawitem(&form, item, focusinform);
+			} else {
+				wrefresh(form.border);
+			}
 			break;
 		default:
 			if (wchtype == KEY_CODE_YES)
