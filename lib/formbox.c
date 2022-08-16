@@ -834,7 +834,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				fieldctl(&items[i], MOVE_CURSOR_BEGIN);
 				if (items[i].extendfield) {
 					form.w = w - 6;
-					items[i].fieldcols = form.w - items[i].xfield;
+					items[i].fieldcols =
+					    form.w - items[i].xfield;
 				}
 				if (items[i].cursorend)
 					fieldctl(&items[i], MOVE_CURSOR_END);
