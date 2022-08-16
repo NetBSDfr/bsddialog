@@ -625,8 +625,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	for (i = 0; i < nitems; i++) {
 		if (apiitems[i].flags & BSDDIALOG_FIELDEXTEND) {
-			items[i].fieldcols = w - 6 - items[i].yfield;
-			form.w = MAX(form.w, items[i].yfield + items[i].fieldcols);
+			items[i].fieldcols = w - 6 - items[i].xfield;
+			form.w = MAX(form.w, items[i].xfield + items[i].fieldcols);
 		}
 		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
 			fieldctl(item, MOVE_CURSOR_END);
@@ -829,8 +829,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			for (i = 0; i < nitems; i++) {
 				fieldctl(&items[i], MOVE_CURSOR_BEGIN);
 				if (apiitems[i].flags & BSDDIALOG_FIELDEXTEND) {
-					items[i].fieldcols = w - 6 - items[i].yfield;
-					form.w = MAX(form.w, items[i].yfield + items[i].fieldcols);
+					items[i].fieldcols = w - 6 - items[i].xfield;
+					form.w = MAX(form.w, items[i].xfield + items[i].fieldcols);
 				}
 				if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
 					fieldctl(&items[i], MOVE_CURSOR_END);
