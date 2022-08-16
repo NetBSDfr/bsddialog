@@ -85,8 +85,8 @@ static struct property p[NPROPERTY] = {
 	{ "theme.bar.color", COLOR, &t.bar.color},
 	
 	{ "theme.button.hmargin", UINT, &t.button.hmargin},
-	{ "theme.button.leftdelim", INT, &t.button.leftdelim},
-	{ "theme.button.rightdelim", INT, &t.button.rightdelim},
+	{ "theme.button.leftdelim", CHAR, &t.button.leftdelim},
+	{ "theme.button.rightdelim", CHAR, &t.button.rightdelim},
 	{ "theme.button.delimcolor", COLOR, &t.button.delimcolor},
 	{ "theme.button.f_delimcolor", COLOR, &t.button.f_delimcolor},
 	{ "theme.button.color", COLOR, &t.button.color},
