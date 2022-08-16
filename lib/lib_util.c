@@ -617,7 +617,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 						z += wletters[l];
 				} else {
 					for (j = words[i]; j > 0; ) {
-						y++;
+						y = (x == 0) ? y : y + 1;
 						z = 0;
 						while (z != j && z < mincols) {
 							z += wletters[l];
