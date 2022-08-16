@@ -143,7 +143,7 @@ in the _Public Domain_ to build new projects:
    - ~~fix form height (items y instead of nitems)~~
    - add resize
    - ~~add scrolling~~
-   - improve inputbox (improve autosizing, ~~focus on buttons~~)
+   - inputbox (improve autosizing, ~~focus on buttons~~)
    - ~~delete constraint maxvaluelen >= valuelen~~
    - ~~add conf.form.securembch~~
    - ~~add KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE~~
@@ -156,5 +156,8 @@ in the _Public Domain_ to build new projects:
    - ~~add bsddialog_hascolors()~~
    - ~~add --load-theme~~
    - ~~add --save-theme~~
+ - Text autosizing
+   - add maintain lines (conf.text.auto_keeplines)
+   - add ratio cols/rows (conf.text.auto_ratio)
  - add menubar feature
  - add key callback
