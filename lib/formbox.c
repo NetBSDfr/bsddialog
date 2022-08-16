@@ -46,6 +46,7 @@ struct privateitem {
 	bool secure;            /* formitem.flags & BSDDIALOG_FIELDHIDDEN */
 	bool readonly;          /* formitem.flags & BSDDIALOG_FIELDREADONLY */
 	bool fieldnocolor;      /* formitem.flags & BSDDIALOG_FIELDNOCOLOR */
+	bool extendfield;       /* formitem.flags & BSDDIALOG_FIELDEXTEND */
 	bool cursor;            /* field cursor visibility */
 	const char *bottomdesc; /* formitem.bottomdesc */
 	
@@ -537,6 +538,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->secure = apiitems[i].flags & BSDDIALOG_FIELDHIDDEN;
 		item->readonly = apiitems[i].flags & BSDDIALOG_FIELDREADONLY;
 		item->fieldnocolor = apiitems[i].flags & BSDDIALOG_FIELDNOCOLOR;
+		item->extendfield = apiitems[i].flags & BSDDIALOG_FIELDEXTEND;
 		item->bottomdesc = apiitems[i].bottomdesc;
 		if (item->readonly || (item->secure && !insecurecursor))
 			item->cursor = false;
@@ -572,7 +574,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.h = MAX(form.h, items[i].ylabel);
 		form.h = MAX(form.h, items[i].yfield);
 		form.w = MAX(form.w, items[i].xlabel + strcols(items[i].label));
-		form.w = MAX(form.w, items[i].xfield + items[i].fieldcols - 1);
+		form.w = MAX(form.w, items[i].xfield + items[i].fieldcols);
 		if (i == 0) {
 			itemybeg = MIN(items[i].ylabel, items[i].yfield);
 			itemxbeg = MIN(items[i].xlabel, items[i].xfield);
@@ -586,8 +588,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.minviewrows = MAX(form.minviewrows, tmp);
 	}
 	if (nitems > 0) {
-		form.h += 1 - itemybeg;
-		form.w += 1 - itemxbeg;
+		form.h = form.h + 1 - itemybeg;
+		form.w -= itemxbeg;
 		form.minviewrows += 1;
 	}
 	form.wmin = form.w;
@@ -624,9 +626,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	    form.viewrows + 2, w - 4, LOWERED);
 
 	for (i = 0; i < nitems; i++) {
-		if (apiitems[i].flags & BSDDIALOG_FIELDEXTEND) {
-			items[i].fieldcols = w - 6 - items[i].xfield;
-			form.w = MAX(form.w, items[i].xfield + items[i].fieldcols);
+		if (items[i].extendfield) {
+			form.w = w - 6;
+			items[i].fieldcols = form.w - items[i].xfield;
 		}
 		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
 			fieldctl(item, MOVE_CURSOR_END);
@@ -637,7 +639,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	form.ys = y + h - 5 - form.viewrows + 1;
 	form.ye = y + h - 5 ;
-	if ((int)form.w > w - 6) { /* left */
+	if ((int)form.w >= w - 6) { /* left */
 		form.xs = x + 3;
 		form.xe = form.xs + w - 7;
 	} else { /* center */
@@ -828,9 +830,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 			for (i = 0; i < nitems; i++) {
 				fieldctl(&items[i], MOVE_CURSOR_BEGIN);
-				if (apiitems[i].flags & BSDDIALOG_FIELDEXTEND) {
-					items[i].fieldcols = w - 6 - items[i].xfield;
-					form.w = MAX(form.w, items[i].xfield + items[i].fieldcols);
+				if (items[i].extendfield) {
+					form.w = w - 6;
+					items[i].fieldcols = form.w - items[i].xfield;
 				}
 				if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
 					fieldctl(&items[i], MOVE_CURSOR_END);
@@ -838,7 +840,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 			form.ys = y + h - 5 - form.viewrows + 1;
 			form.ye = y + h - 5 ;
-			if ((int)form.w > w - 6) { /* left */
+			if ((int)form.w >= w - 6) { /* left */
 				form.xs = x + 3;
 				form.xe = form.xs + w - 7;
 			} else { /* center */
