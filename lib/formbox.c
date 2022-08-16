@@ -47,6 +47,7 @@ struct privateitem {
 	bool readonly;          /* formitem.flags & BSDDIALOG_FIELDREADONLY */
 	bool fieldnocolor;      /* formitem.flags & BSDDIALOG_FIELDNOCOLOR */
 	bool extendfield;       /* formitem.flags & BSDDIALOG_FIELDEXTEND */
+	bool cursorend;         /* formitem.flags & BSDDIALOG_FIELDCURSOREND */
 	bool cursor;            /* field cursor visibility */
 	const char *bottomdesc; /* formitem.bottomdesc */
 	
@@ -539,6 +540,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->readonly = apiitems[i].flags & BSDDIALOG_FIELDREADONLY;
 		item->fieldnocolor = apiitems[i].flags & BSDDIALOG_FIELDNOCOLOR;
 		item->extendfield = apiitems[i].flags & BSDDIALOG_FIELDEXTEND;
+		item->cursorend = apiitems[i].flags & BSDDIALOG_FIELDCURSOREND;
 		item->bottomdesc = apiitems[i].bottomdesc;
 		if (item->readonly || (item->secure && !insecurecursor))
 			item->cursor = false;
@@ -630,7 +632,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			form.w = w - 6;
 			items[i].fieldcols = form.w - items[i].xfield;
 		}
-		if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
+		if (items[i].cursorend)
 			fieldctl(item, MOVE_CURSOR_END);
 	}
 
@@ -834,7 +836,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					form.w = w - 6;
 					items[i].fieldcols = form.w - items[i].xfield;
 				}
-				if (apiitems[i].flags & BSDDIALOG_FIELDCURSOREND)
+				if (items[i].cursorend)
 					fieldctl(&items[i], MOVE_CURSOR_END);
 			}
 
