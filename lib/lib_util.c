@@ -527,7 +527,8 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	if ((wtext = alloc_mbstows(text)) == NULL)
 		RETURN_ERROR("Cannot allocate/autosize text in wchar_t*");
 	wtextlen = wcslen(wtext);
-	tp->wletters = calloc(wtextlen, sizeof(uint8_t));
+	if ((tp->wletters = calloc(wtextlen, sizeof(uint8_t))) == NULL)
+		RETURN_ERROR("Cannot allocate wletters for text autosizing");
 
 	tp->nword = 0;
 	tp->maxline = 0;
