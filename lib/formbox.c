@@ -395,6 +395,7 @@ update_formborders(struct bsddialog_conf *conf, struct privateform *form)
 	}
 }
 
+/* use menu autosizing, linelen = form.w, nitems = form.h */
 static int
 menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     const char *text, int linelen, unsigned int *menurows, int nitems,
