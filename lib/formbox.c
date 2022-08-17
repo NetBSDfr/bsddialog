@@ -674,10 +674,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	changeitem = switchfocus = false;
 	loop = true;
 	while (loop) {
-		wchtype = get_wch(&input);
-		/* avoid "wctob(input) == WEOF" for IEEE Std 1003.1-2008 */
-		if (conf->form.input_singlebyte && wchtype != KEY_CODE_YES &&
-		    wctob(input) == EOF) 
+		if ((wchtype = get_wch(&input)) == ERR)
 			continue;
 		switch(input) {
 		case KEY_ENTER:
@@ -869,6 +866,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (wchtype == KEY_CODE_YES)
 				break;
 			if (focusinform) {
+				/* avoid WEOF for IEEE Std 1003.1-2008 */
+				if (conf->form.input_singlebyte &&
+				    wctob(input) == EOF) 
+					break;
 				/*
 				 * MOVE_CURSOR_RIGHT manages new positions
 				 * because the cursor remains on the new letter,
@@ -882,8 +883,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					 */ 
 					drawitem(&form, item, true);
 				}
-			}
-			else {
+			} else {
 				if (shortcut_buttons(input, &bs)) {
 					output = return_values(conf,
 					    bs.value[bs.curr], nitems, apiitems,
