@@ -534,6 +534,7 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	tp->maxwordcols = 0;
 	tp->hasnewline = false;
 	currlinecols = 0;
+	wordcols = 0;
 	l = 0;
 	for (i = 0; i < wtextlen; i++) {
 		if (conf->text.highlight && is_wtext_attr(wtext + i)) {
