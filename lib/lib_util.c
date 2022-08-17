@@ -414,7 +414,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 			} else if (j + wcwidth(str[i]) > cols) {
 				break;
 			} else {
-				 /* inline mvwaddwch() for efficiency */
+				/* inline mvwaddwch() for efficiency */
 				ws[0] = str[i];
 				mvwaddwstr(win, *y, j, ws);
 				wc = wcwidth(str[i]);;
