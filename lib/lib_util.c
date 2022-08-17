@@ -755,7 +755,8 @@ int widget_max_height(struct bsddialog_conf *conf)
 	else if (conf->y == BSDDIALOG_CENTER) {
 		maxheight -= conf->auto_topmargin;
 		if (maxheight <= 0)
-			RETURN_ERROR("Terminal too small, screen lines - top margins <= 0");
+			RETURN_ERROR("Terminal too small, screen lines - top "
+			    "margins <= 0");
 	} else if (conf->y > 0) {
 		maxheight -= conf->y;
 		if (maxheight <= 0)
@@ -765,7 +766,8 @@ int widget_max_height(struct bsddialog_conf *conf)
 
 	maxheight -= conf->auto_downmargin;
 	if (maxheight <= 0)
-		RETURN_ERROR("Terminal too small, screen lines - Down margins <= 0");
+		RETURN_ERROR("Terminal too small, screen lines - Down margins "
+		    "<= 0");
 
 	return (maxheight);
 }
