@@ -518,6 +518,8 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	int i, l, currlinecols, maxwords, wtextlen, tablen, wordcols;
 	const wchar_t *wtext;
 
+	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
+
 	maxwords = 1024;
 	if ((tp->words = calloc(maxwords, sizeof(int))) == NULL)
 		RETURN_ERROR("Cannot alloc memory for text autosize");
@@ -530,6 +532,8 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	tp->nword = 0;
 	tp->maxline = 0;
 	tp->maxwordcols = 0;
+	tp->hasnewline = false;
+	currlinecols = 0;
 	l = 0;
 	for (i = 0; i < wtextlen; i++) {
 		if (conf->text.highlight && is_wtext_attr(wtext + i)) {
@@ -549,6 +553,9 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 			tp->maxwordcols = MAX(wordcols, tp->maxwordcols);
 
 			if (wordcols != 0) {
+				/* line */
+				currlinecols += wordcols;
+				/* word */
 				tp->words[tp->nword] = wordcols;
 				tp->nword += 1;
 				wordcols = 0;
@@ -556,12 +563,23 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 
 			switch (wtext[i]) {
 			case L'\t':
+				/* line */
+				currlinecols += tablen;
+				/* word */
 				tp->words[tp->nword] = TB;
 				break;
 			case L'\n':
+				/* line */
+				tp->hasnewline = true;
+				tp->maxline = MAX(tp->maxline, currlinecols);
+				currlinecols = 0;
+				/* word */
 				tp->words[tp->nword] = NL;
 				break;
 			case L' ':
+				/* line */
+				currlinecols += 1;
+				/* word */
 				tp->words[tp->nword] = WS;
 				break;
 			}
@@ -577,32 +595,9 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 		tp->nword += 1;
 		tp->maxwordcols = MAX(wordcols, tp->maxwordcols);
 	}
+	tp->maxline = MAX(tp->maxline, currlinecols);
 
 	free((wchar_t*)wtext);
-
-	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
-	tp->maxline = 0;
-	tp->hasnewline = false;
-	currlinecols = 0;
-	for (i = 0; i < tp->nword; i++) {
-		switch (tp->words[i]) {
-		case NL:
-			tp->hasnewline = true;
-			tp->maxline = MAX(tp->maxline, currlinecols);
-			currlinecols = 0;
-			break;
-		case WS:
-			currlinecols += 1;
-			break;
-		case TB:
-			currlinecols += tablen;
-			break;
-		default:
-			currlinecols += tp->words[i];
-			break;
-		}
-	}
-	tp->maxline = MAX(tp->maxline, currlinecols);
 
 	return (0);
 }
