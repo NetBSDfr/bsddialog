@@ -568,8 +568,11 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 			l++;
 		}
 	}
-	words[nword] = wordcols;
-	maxwordlen = MAX(wordcols, maxwordlen);
+	if (wordcols != 0) {
+		words[nword] = wordcols;
+		nword++;
+		maxwordlen = MAX(wordcols, maxwordlen);
+	}
 
 	if (increasecols) {
 		mincols = MAX(mincols, maxwordlen);
@@ -583,7 +586,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		y = 1;
 		line=0;
 		l = 0;
-		for (i = 0; i <= nword; i++) {
+		for (i = 0; i < nword; i++) {
 			switch (words[i]) {
 			case TB:
 				for (j = 0; j < tablen; j++) {
@@ -639,7 +642,7 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		mincols++;
 	}
 
-	*h = (nword == 0 && words[0] == 0) ? 0 : y;
+	*h = (nword == 0) ? 0 : y;
 	*w = MIN(mincols, line); /* wtext can be less than mincols */
 
 	free((wchar_t*)wtext);
