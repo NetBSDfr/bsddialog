@@ -414,7 +414,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 			} else if (j + wcwidth(str[i]) > cols) {
 				break;
 			} else {
-				/* inline mvwaddwch() for efficiency */
+				 /* inline mvwaddwch() for efficiency */
 				ws[0] = str[i];
 				mvwaddwstr(win, *y, j, ws);
 				wc = wcwidth(str[i]);;
@@ -498,10 +498,6 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 }
 
 /* Text Autosize */
-#define NL  -1
-#define WS  -2
-#define TB  -3
-
 static int
 text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
     int mincols, bool increasecols, int *h, int *w)
@@ -511,6 +507,9 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 	const wchar_t *wtext;
 	uint8_t *wletters;
 	int *words;
+#define NL  -1
+#define WS  -2
+#define TB  -3
 
 	maxwords = 1024;
 	if ((words = calloc(maxwords, sizeof(int))) == NULL)
