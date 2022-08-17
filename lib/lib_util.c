@@ -498,34 +498,38 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 }
 
 /* Text Autosize */
-static int
-text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
-    int mincols, bool increasecols, int *h, int *w)
-{
-	int i, j, x, y, z, l, wtextlen;
-	int tablen, wordcols, maxwordlen, nword, maxwords, line, maxwidth;
-	const wchar_t *wtext;
-	uint8_t *wletters;
-	int *words;
 #define NL  -1
 #define WS  -2
 #define TB  -3
 
-	maxwords = 1024;
-	if ((words = calloc(maxwords, sizeof(int))) == NULL)
-		RETURN_ERROR("Cannot alloc memory for text autosize");
+struct textproperties {
+	int nword;
+	int *words;
+	uint8_t *wletters;
+	int maxwordcols;
+	int maxline;
+	bool hasnewline;
+};
 
-	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
-	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
+static int
+text_properties(struct bsddialog_conf *conf, const char *text,
+    struct textproperties *tp)
+{
+	int i, l, currlinecols, maxwords, wtextlen, tablen, wordcols;
+	const wchar_t *wtext;
+
+	maxwords = 1024;
+	if ((tp->words = calloc(maxwords, sizeof(int))) == NULL)
+		RETURN_ERROR("Cannot alloc memory for text autosize");
 
 	if ((wtext = alloc_mbstows(text)) == NULL)
 		RETURN_ERROR("Cannot allocate/autosize text in wchar_t*");
 	wtextlen = wcslen(wtext);
-	wletters = calloc(wtextlen, sizeof(uint8_t));
+	tp->wletters = calloc(wtextlen, sizeof(uint8_t));
 
-	nword = 0;
-	wordcols = 0;
-	maxwordlen = 0;
+	tp->nword = 0;
+	tp->maxline = 0;
+	tp->maxwordcols = 0;
 	l = 0;
 	for (i = 0; i < wtextlen; i++) {
 		if (conf->text.highlight && is_wtext_attr(wtext + i)) {
@@ -533,49 +537,88 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 			continue;
 		}
 
-		if (nword + 1 >= maxwords) {
+		if (tp->nword + 1 >= maxwords) {
 			maxwords += 1024;
-			words = realloc(words, maxwords * sizeof(int));
-			if (words == NULL)
+			tp->words = realloc(tp->words, maxwords * sizeof(int));
+			if (tp->words == NULL)
 				RETURN_ERROR("Cannot realloc memory for text "
 				    "autosize");
 		}
 
 		if (wcschr(L"\t\n  ", wtext[i]) != NULL) {
-			maxwordlen = MAX(wordcols, maxwordlen);
+			tp->maxwordcols = MAX(wordcols, tp->maxwordcols);
 
 			if (wordcols != 0) {
-				words[nword] = wordcols;
-				nword++;
+				tp->words[tp->nword] = wordcols;
+				tp->nword += 1;
 				wordcols = 0;
 			}
 
 			switch (wtext[i]) {
 			case L'\t':
-				words[nword] = TB;
+				tp->words[tp->nword] = TB;
 				break;
 			case L'\n':
-				words[nword] = NL;
+				tp->words[tp->nword] = NL;
 				break;
 			case L' ':
-				words[nword] = WS;
+				tp->words[tp->nword] = WS;
 				break;
 			}
-			nword++;
+			tp->nword += 1;
 		} else {
-			wletters[l] = wcwidth(wtext[i]);
-			wordcols += wletters[l];
+			tp->wletters[l] = wcwidth(wtext[i]);
+			wordcols += tp->wletters[l];
 			l++;
 		}
 	}
 	if (wordcols != 0) {
-		words[nword] = wordcols;
-		nword++;
-		maxwordlen = MAX(wordcols, maxwordlen);
+		tp->words[tp->nword] = wordcols;
+		tp->nword += 1;
+		tp->maxwordcols = MAX(wordcols, tp->maxwordcols);
 	}
 
+	free((wchar_t*)wtext);
+
+	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
+	tp->maxline = 0;
+	tp->hasnewline = false;
+	currlinecols = 0;
+	for (i = 0; i < tp->nword; i++) {
+		switch (tp->words[i]) {
+		case NL:
+			tp->hasnewline = true;
+			tp->maxline = MAX(tp->maxline, currlinecols);
+			currlinecols = 0;
+			break;
+		case WS:
+			currlinecols += 1;
+			break;
+		case TB:
+			currlinecols += tablen;
+			break;
+		default:
+			currlinecols += tp->words[i];
+			break;
+		}
+	}
+	tp->maxline = MAX(tp->maxline, currlinecols);
+
+	return (0);
+}
+
+
+static int
+text_autosize(struct bsddialog_conf *conf, struct textproperties *tp,
+    int maxrows, int mincols, bool increasecols, int *h, int *w)
+{
+	int i, j, x, y, z, l, line, maxwidth, tablen;
+
+	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
+	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
+
 	if (increasecols) {
-		mincols = MAX(mincols, maxwordlen);
+		mincols = MAX(mincols, tp->maxwordcols);
 		mincols = MAX(mincols,
 		    (int)conf->auto_minwidth - HBORDERS - TEXTHMARGINS);
 		mincols = MIN(mincols, maxwidth);
@@ -586,8 +629,8 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		y = 1;
 		line=0;
 		l = 0;
-		for (i = 0; i < nword; i++) {
-			switch (words[i]) {
+		for (i = 0; i < tp->nword; i++) {
+			switch (tp->words[i]) {
 			case TB:
 				for (j = 0; j < tablen; j++) {
 					if (x >= mincols) {
@@ -609,21 +652,21 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 				}
 				break;
 			default:
-				if (words[i] + x <= mincols) {
-					x += words[i];
-					for (z = 0 ; z != words[i]; l++ )
-						z += wletters[l];
-				} else if (words[i] <= mincols) {
+				if (tp->words[i] + x <= mincols) {
+					x += tp->words[i];
+					for (z = 0 ; z != tp->words[i]; l++ )
+						z += tp->wletters[l];
+				} else if (tp->words[i] <= mincols) {
 					y++;
-					x = words[i];
-					for (z = 0 ; z != words[i]; l++ )
-						z += wletters[l];
+					x = tp->words[i];
+					for (z = 0 ; z != tp->words[i]; l++ )
+						z += tp->wletters[l];
 				} else {
-					for (j = words[i]; j > 0; ) {
+					for (j = tp->words[i]; j > 0; ) {
 						y = (x == 0) ? y : y + 1;
 						z = 0;
 						while (z != j && z < mincols) {
-							z += wletters[l];
+							z += tp->wletters[l];
 							l++;
 						}
 						x = z;
@@ -642,11 +685,8 @@ text_autosize(struct bsddialog_conf *conf, const char *text, int maxrows,
 		mincols++;
 	}
 
-	*h = (nword == 0) ? 0 : y;
+	*h = (tp->nword == 0) ? 0 : y;
 	*w = MIN(mincols, line); /* wtext can be less than mincols */
-
-	free((wchar_t*)wtext);
-	free(words);
 
 	return (0);
 }
@@ -655,8 +695,9 @@ int
 text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
     struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext)
 {
-	int wbuttons, maxhtext;
 	bool changewtext;
+	int wbuttons, maxhtext;
+	struct textproperties tp;
 
 	wbuttons = 0;
 	if (bs != NULL)
@@ -690,9 +731,15 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		return (0);
 	}
 
-	if (text_autosize(conf, text, maxhtext, startwtext, changewtext,
-	    htext, wtext) != 0)
+	if (text_properties(conf, text, &tp) != 0)
 		return (BSDDIALOG_ERROR);
+
+	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, htext,
+	    wtext) != 0)
+		return (BSDDIALOG_ERROR);
+
+	free(tp.words);
+	free(tp.wletters);
 
 	return (0);
 }
