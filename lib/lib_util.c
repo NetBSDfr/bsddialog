@@ -592,11 +592,13 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 			l++;
 		}
 	}
+	/* word */
 	if (wordcols != 0) {
 		tp->words[tp->nword] = wordcols;
 		tp->nword += 1;
 		tp->maxwordcols = MAX(wordcols, tp->maxwordcols);
 	}
+	/* line */
 	tp->maxline = MAX(tp->maxline, currlinecols);
 
 	free((wchar_t*)wtext);
