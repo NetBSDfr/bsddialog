@@ -148,7 +148,7 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 int savetheme(const char *file, const char *version);
 int loadtheme(const char *file);
 /* Dialogs */
-#define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
+#define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv, char *errbuf
 static int checklist_builder(BUILDER_ARGS);
 static int datebox_builder(BUILDER_ARGS);
@@ -717,7 +717,7 @@ int main(int argc, char *argv[argc])
 	errorbuilder[0] = '\0';
 	output = BSDDIALOG_OK;
 	if (dialogbuilder != NULL)
-		output = dialogbuilder(conf, text, rows, cols, argc, argv,
+		output = dialogbuilder(&conf, text, rows, cols, argc, argv,
 		    errorbuilder);
 
 	if (savethemefile != NULL)
@@ -816,7 +816,7 @@ int gauge_builder(BUILDER_ARGS)
 	else
 		perc = 0;
 
-	output = bsddialog_gauge(&conf, text, rows, cols, perc, STDIN_FILENO,
+	output = bsddialog_gauge(conf, text, rows, cols, perc, STDIN_FILENO,
 	    "XXX");
 
 	return (output);
@@ -826,7 +826,7 @@ int infobox_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_infobox(&conf, text, rows, cols);
+	output = bsddialog_infobox(conf, text, rows, cols);
 
 	return (output);
 }
@@ -862,7 +862,7 @@ int mixedgauge_builder(BUILDER_ARGS)
 		minipercs[i] = (int)strtol(argv[i * 2 + 1], NULL, 10);
 	}
 
-	output = bsddialog_mixedgauge(&conf, text, rows, cols, mainperc,
+	output = bsddialog_mixedgauge(conf, text, rows, cols, mainperc,
 	    nminibars, minilabels, minipercs);
 
 	return (output);
@@ -872,7 +872,7 @@ int msgbox_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_msgbox(&conf, text, rows, cols);
+	output = bsddialog_msgbox(conf, text, rows, cols);
 
 	return (output);
 }
@@ -888,7 +888,7 @@ int pause_builder(BUILDER_ARGS)
 	}
 
 	secs = (u_int)strtoul(argv[0], NULL, 10);
-	output = bsddialog_pause(&conf, text, rows, cols, secs);
+	output = bsddialog_pause(conf, text, rows, cols, secs);
 
 	return (output);
 }
@@ -914,7 +914,7 @@ int rangebox_builder(BUILDER_ARGS)
 	else
 		value = min;
 
-	output = bsddialog_rangebox(&conf, text, rows, cols, min, max, &value);
+	output = bsddialog_rangebox(conf, text, rows, cols, min, max, &value);
 
 	dprintf(output_fd_opt, "%d", value);
 
@@ -925,7 +925,7 @@ int textbox_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_textbox(&conf, text, rows, cols);
+	output = bsddialog_textbox(conf, text, rows, cols);
 
 	return (output);
 }
@@ -934,7 +934,7 @@ int yesno_builder(BUILDER_ARGS)
 {
 	int output;
 
-	output = bsddialog_yesno(&conf, text, rows, cols);
+	output = bsddialog_yesno(conf, text, rows, cols);
 
 	return (output);
 }
@@ -960,7 +960,7 @@ int datebox_builder(BUILDER_ARGS)
 		dd = (u_int)strtoul(argv[2], NULL, 10);
 	}
 
-	output = bsddialog_datebox(&conf, text, rows, cols, &yy, &mm, &dd);
+	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
 	if (output != BSDDIALOG_OK)
 		return (output);
 
@@ -999,7 +999,7 @@ int timebox_builder(BUILDER_ARGS)
 		ss = (u_int)strtoul(argv[2], NULL, 10);
 	}
 
-	output = bsddialog_timebox(&conf, text, rows, cols, &hh, &mm, &ss);
+	output = bsddialog_timebox(conf, text, rows, cols, &hh, &mm, &ss);
 	if (output != BSDDIALOG_OK)
 		return (output);
 
@@ -1152,7 +1152,7 @@ int checklist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	output = bsddialog_checklist(&conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem);
@@ -1181,7 +1181,7 @@ int menu_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	output = bsddialog_menu(&conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem);
@@ -1210,7 +1210,7 @@ int radiolist_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem);
@@ -1239,10 +1239,10 @@ int treeview_builder(BUILDER_ARGS)
 	if (output != 0)
 		return (output);
 
-	conf.menu.no_name = true;
-	conf.menu.align_left = true;
+	conf->menu.no_name = true;
+	conf->menu.align_left = true;
 
-	output = bsddialog_radiolist(&conf, text, rows, cols, menurows, nitems,
+	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem);
@@ -1320,7 +1320,7 @@ int form_builder(BUILDER_ARGS)
 		items[i].bottomdesc = item_bottomdesc_opt ? argv[j++] : "";
 	}
 
-	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
+	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
 	print_form_items(output, nitems, items);
 	free(items);
@@ -1346,8 +1346,8 @@ int inputbox_builder(BUILDER_ARGS)
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
-	conf.form.focus_buttons = true;
-	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
+	conf->form.focus_buttons = true;
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(output, 1, &item);
 
 	return (output);
@@ -1387,7 +1387,7 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].bottomdesc  = item_bottomdesc_opt ? argv[j++] : "";
 	}
 
-	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
+	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
 	print_form_items(output, nitems, items);
 	free(items);
@@ -1414,8 +1414,8 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
-	conf.form.focus_buttons = true;
-	output = bsddialog_form(&conf, text, rows, cols, 1, 1, &item);
+	conf->form.focus_buttons = true;
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(output, 1, &item);
 
 	return (output);
@@ -1463,7 +1463,7 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].bottomdesc  = item_bottomdesc_opt ? argv[j++] : "";
 	}
 
-	output = bsddialog_form(&conf, text, rows, cols, formheight, nitems,
+	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
 	print_form_items(output, nitems, items);
 	free(items);
