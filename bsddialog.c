@@ -138,16 +138,15 @@ static char *date_fmt_opt, *time_fmt_opt;
 static int unsigned max_input_form_opt;
 /* General options */
 static int output_fd_opt;
-/* theme.c */
-int savetheme(const char *file, const char *version);
-int loadtheme(const char *file);
 
+/* Functions */
+static void sigint_handler(int sig);
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
     char *text, char *buf);
-
-static void sigint_handler(int sig);
-
+/* theme.c */
+int savetheme(const char *file, const char *version);
+int loadtheme(const char *file);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf conf, char* text, int rows,         \
 	int cols, int argc, char **argv, char *errbuf
