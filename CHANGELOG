@@ -13,6 +13,7 @@ Next
 	* fix: internal segmentation fault with disabled shadow.
 	* fix: new text refresh in bsddialog_gauge().
 	* fix: center position without shadow.
+	* fix: infobox with zero text length.
 	* fix: text wrapping with more than 1024 words.
 	* add: conf.auto_topmargin and conf.auto_downmargin.
 	* add: bsddialog_textbox() accepts conf.button customization.
