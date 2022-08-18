@@ -720,9 +720,6 @@ int main(int argc, char *argv[argc])
 		output = dialogbuilder(conf, text, rows, cols, argc, argv,
 		    errorbuilder);
 
-	if (textfromfile == false)
-		free(text);
-
 	if (savethemefile != NULL)
 		savetheme(savethemefile, BSDDIALOG_VERSION);
 
@@ -736,6 +733,9 @@ int main(int argc, char *argv[argc])
 			printf("Error: %s\n", bsddialog_geterror());
 		return (255);
 	}
+
+	if (textfromfile == false)
+		free(text);
 
 	if (conf.get_height != NULL && conf.get_width != NULL)
 		dprintf(output_fd_opt, "Dialog size: (%d - %d)\n",
