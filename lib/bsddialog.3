@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd August 16, 2022
+.Dd August 19, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -311,6 +311,7 @@ struct bsddialog_conf {
 		const char *f1_message;
 	} key;
 	struct {
+		unsigned int cols_per_row;
 		bool highlight;
 		unsigned int tablen;
 	} text;
@@ -415,11 +416,16 @@ file to open if F1 is pressed.
 message to display if F1 is pressed.
 .El
 .Pp
-.Fa conf.text.highlight
+.Bl -column -compact
+.It Fa conf.text.cols_per_row
+Try to set the number of columns for a row of
+.Fa text
+with autosizing; default
+.Dv 16 .
+.It Fa conf.text.highlight
 enables highlights for
 .Fa text ,
 properly the following sequences are considered escapes:
-.Bl -column -compact
 .It Dq \eZ0
 black.
 .It Dq \eZ1
@@ -450,13 +456,13 @@ underline.
 disable underline.
 .It Dq \eZn
 disable each customization.
-.El
-.Fa conf.text.tablen
+.It Fa conf.text.tablen
 tab length for
 .Fa text
 argument and
 .Fn bsddialog_textbox
 function.
+.El
 .Pp
 .Bl -column -compact
 .It Fa conf.button.without_ok

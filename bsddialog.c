@@ -50,6 +50,7 @@ enum OPTS {
 	CANCEL_LABEL,
 	CLEAR,
 	COLORS,
+	COLUMNS_PER_ROW,
 	CR_WRAP,
 	DATE_FORMAT,
 	DEFAULT_BUTTON,
@@ -181,6 +182,7 @@ static void usage(void)
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
 	    "--begin-y <y>, --cancel-label <label>, --clear, --colors, "
+	    "--columns-per-row <columns> , "
 	    "--cr-wrap, --date-format <format>, --defaultno, "
 	    "--default-button <label>, --default-no, --default-item <name>, "
 	    "--disable-esc, --esc-cancelvalue, --exit-label <label>, "
@@ -194,7 +196,8 @@ static void usage(void)
 	    "--no-items, --no-label <label>, --no-lines, --no-nl-expand, "
 	    "--no-ok, --nook, --no-shadow, --no-tags, --ok-label <label>, "
 	    "--output-fd <fd>, --output-separator <sep>, --print-maxsize, "
-	    "--print-size, --print-version, --quoted, --save-theme <file>, "
+	    "--print-size, --print-version, --quoted, "
+	    "--save-theme <file>, "
 	    "--separate-output, --separator <sep>, --shadow, --single-quoted, "
 	    "--sleep <secs>, --stderr, --stdout, --tab-len <spaces>, "
 	    "--theme <blackwhite|bsddialog|flat|dialog>, "
@@ -336,6 +339,7 @@ int main(int argc, char *argv[argc])
 		{"print-size",       no_argument,       NULL, PRINT_SIZE},
 		{"print-version",    no_argument,       NULL, PRINT_VERSION},
 		{"quoted",           no_argument,       NULL, QUOTED},
+		{"columns-per-row",  required_argument, NULL, COLUMNS_PER_ROW},
 		{"save-theme",       required_argument, NULL, SAVE_THEME},
 		{"separate-output",  no_argument,       NULL, SEPARATE_OUTPUT},
 		{"separator",        required_argument, NULL, OUTPUT_SEPARATOR},
@@ -411,6 +415,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case COLORS:
 			conf.text.highlight = true;
+			break;
+		case COLUMNS_PER_ROW:
+			conf.text.cols_per_row = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case CR_WRAP:
 			cr_wrap_opt = true;

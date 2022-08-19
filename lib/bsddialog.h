@@ -92,6 +92,7 @@ struct bsddialog_conf {
 		const char *f1_message;
 	} key;
 	struct {
+		unsigned int cols_per_row;
 		bool highlight;
 		unsigned int tablen;
 	} text;

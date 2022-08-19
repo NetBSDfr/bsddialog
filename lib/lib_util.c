@@ -29,6 +29,7 @@
 
 #include <ctype.h>
 #include <curses.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -39,7 +40,8 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define ERRBUFLEN  1024 /* Error buffer len */
+#define ERRBUFLEN    1024 /* Error buffer len */
+#define COLSPERROWS  16   /* Default conf.text.columns_per_row */
 
 /* Error */
 static char errorbuffer[ERRBUFLEN];
@@ -609,7 +611,7 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 
 static int
 text_autosize(struct bsddialog_conf *conf, struct textproperties *tp,
-    int maxrows, int mincols, bool increasecols, int *h, int *w)
+    int maxrows, int mincols, bool increasecols, bool oneloop, int *h, int *w)
 {
 	int i, j, x, y, z, l, line, maxwidth, tablen;
 
@@ -677,6 +679,8 @@ text_autosize(struct bsddialog_conf *conf, struct textproperties *tp,
 			line = MAX(line, x);
 		}
 
+		if (oneloop)
+			break;
 		if (increasecols == false)
 			break;
 		if (y <= maxrows || mincols >= maxwidth)
@@ -696,7 +700,13 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 {
 	bool changewtext;
 	int wbuttons, maxhtext;
+	uint colsperrow;
+	float tmp;
 	struct textproperties tp;
+
+	colsperrow = COLSPERROWS;
+	if (conf->text.cols_per_row != 0)
+		colsperrow = conf->text.cols_per_row;
 
 	wbuttons = 0;
 	if (bs != NULL)
@@ -733,9 +743,26 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	if (text_properties(conf, text, &tp) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, htext,
-	    wtext) != 0)
+	if (changewtext) {
+		if (text_autosize(conf, &tp, maxhtext, startwtext, true, true,
+		    htext, wtext) != 0)
+			return (BSDDIALOG_ERROR);
+		if ((tmp = (*htext + *wtext) / (colsperrow + 1.0)) < 1) {
+			startwtext = MAX(startwtext, (int)colsperrow);
+		} else {
+			if (((*htext + *wtext) % colsperrow) != 0)
+				tmp += 1;
+			startwtext = MAX(startwtext, round(tmp * colsperrow));
+		}
+		//BSDDIALOG_DEBUG(1,1, "htext:%d,wtext:%d,ratio:%u,startwtext:%d,",
+		//    *htext, *wtext, colsperrow, startwtext);
+	}
+
+	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, false,
+	    htext, wtext) != 0)
 		return (BSDDIALOG_ERROR);
+
+	//BSDDIALOG_DEBUG(3,1, "htext:%d,wtext:%d|", *htext, *wtext);
 
 	free(tp.words);
 	free(tp.wletters);
