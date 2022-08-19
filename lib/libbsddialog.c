@@ -34,6 +34,8 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
+#define COLSPERROWS  10   /* Default conf.text.columns_per_row */
+
 extern bool hastermcolors;
 
 int bsddialog_init_notheme(void)
@@ -125,6 +127,7 @@ int bsddialog_initconf(struct bsddialog_conf *conf)
 	conf->y = BSDDIALOG_CENTER;
 	conf->x = BSDDIALOG_CENTER;
 	conf->shadow = true;
+	conf->text.cols_per_row = COLSPERROWS;
 
 	return (BSDDIALOG_OK);
 }
