@@ -699,9 +699,8 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
     struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext)
 {
 	bool changewtext;
-	int wbuttons, maxhtext;
+	int wbuttons, maxhtext, tmp;
 	uint colsperrow;
-	float tmp;
 	struct textproperties tp;
 
 	colsperrow = COLSPERROWS;
@@ -747,12 +746,12 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		if (text_autosize(conf, &tp, maxhtext, startwtext, true, true,
 		    htext, wtext) != 0)
 			return (BSDDIALOG_ERROR);
-		if ((tmp = (*htext + *wtext) / (colsperrow + 1.0)) < 1) {
+		if ((tmp = round((*htext + *wtext) / (colsperrow + 1.0))) <= 1) {
 			startwtext = MAX(startwtext, (int)colsperrow);
 		} else {
-			if (((*htext + *wtext) % colsperrow) != 0)
+			if (((*htext + *wtext) % (colsperrow + 1)) != 0)
 				tmp += 1;
-			startwtext = MAX(startwtext, round(tmp * colsperrow));
+			startwtext = MAX(startwtext, tmp * (int)colsperrow);
 		}
 		//BSDDIALOG_DEBUG(1,1, "htext:%d,wtext:%d,ratio:%u,startwtext:%d,",
 		//    *htext, *wtext, colsperrow, startwtext);
