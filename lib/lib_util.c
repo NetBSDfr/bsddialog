@@ -699,17 +699,33 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
     struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext)
 {
 	bool changewtext;
-	int wbuttons, maxhtext, tmp;
+	int wbuttons, maxhtext;
 	uint colsperrow;
+	float tmp;
 	struct textproperties tp;
 
-	colsperrow = COLSPERROWS;
-	if (conf->text.cols_per_row != 0)
-		colsperrow = conf->text.cols_per_row;
+	if (text_properties(conf, text, &tp) != 0)
+		return (BSDDIALOG_ERROR);
 
+	/* Rows */
 	wbuttons = 0;
 	if (bs != NULL)
 		wbuttons = buttons_width(*bs);
+
+	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
+		maxhtext = widget_max_height(conf) - VBORDERS - rowsnotext;
+		if (bs != NULL)
+			maxhtext -= 2;
+	} else { /* fixed */
+		maxhtext = rows - VBORDERS - rowsnotext;
+		if (bs != NULL)
+			maxhtext -= 2;
+	}
+
+	/* Cols */
+	colsperrow = COLSPERROWS;
+	if (conf->text.cols_per_row != 0)
+		colsperrow = conf->text.cols_per_row;
 
 	if (cols == BSDDIALOG_AUTOSIZE) {
 		startwtext = MAX(startwtext, wbuttons - TEXTHMARGINS);
@@ -722,16 +738,22 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		changewtext = false;
 	}
 
-	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
-		maxhtext = widget_max_height(conf) - VBORDERS - rowsnotext;
-		if (bs != NULL)
-			maxhtext -= 2;
-	} else { /* fixed */
-		maxhtext = rows - VBORDERS - rowsnotext;
-		if (bs != NULL)
-			maxhtext -= 2;
+	if (changewtext) {
+		if (text_autosize(conf, &tp, maxhtext, startwtext, true, true,
+		    htext, wtext) != 0)
+			return (BSDDIALOG_ERROR);
+		if ((tmp = ((*htext + *wtext) / (colsperrow + 1.0))) < 1.0) {
+			startwtext = MAX(startwtext, (int)colsperrow);
+		} else {
+			if (((*htext + *wtext) % (colsperrow + 1)) != 0)
+				tmp += 1;
+			startwtext = MAX(startwtext, round(tmp * colsperrow));
+		}
+		BSDDIALOG_DEBUG(1,1, "htext:%d,wtext:%d,ratio:%u,startwtext:%d,",
+		    *htext, *wtext, colsperrow, startwtext);
 	}
 
+	/* Sizing calculation */
 	if (startwtext <= 0 && changewtext)
 		startwtext = 1;
 	if (maxhtext <= 0 || startwtext <= 0) {
@@ -739,29 +761,11 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		return (0);
 	}
 
-	if (text_properties(conf, text, &tp) != 0)
-		return (BSDDIALOG_ERROR);
-
-	if (changewtext) {
-		if (text_autosize(conf, &tp, maxhtext, startwtext, true, true,
-		    htext, wtext) != 0)
-			return (BSDDIALOG_ERROR);
-		if ((tmp = round((*htext + *wtext) / (colsperrow + 1.0))) <= 1) {
-			startwtext = MAX(startwtext, (int)colsperrow);
-		} else {
-			if (((*htext + *wtext) % (colsperrow + 1)) != 0)
-				tmp += 1;
-			startwtext = MAX(startwtext, tmp * (int)colsperrow);
-		}
-		//BSDDIALOG_DEBUG(1,1, "htext:%d,wtext:%d,ratio:%u,startwtext:%d,",
-		//    *htext, *wtext, colsperrow, startwtext);
-	}
-
 	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, false,
 	    htext, wtext) != 0)
 		return (BSDDIALOG_ERROR);
 
-	//BSDDIALOG_DEBUG(3,1, "htext:%d,wtext:%d|", *htext, *wtext);
+	BSDDIALOG_DEBUG(3,1, "htext:%d,wtext:%d|", *htext, *wtext);
 
 	free(tp.words);
 	free(tp.wletters);
