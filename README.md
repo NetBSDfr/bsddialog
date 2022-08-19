@@ -157,7 +157,6 @@ in the _Public Domain_ to build new projects:
    - ~~add --load-theme~~
    - ~~add --save-theme~~
  - Text autosizing
-   - add maintain lines (conf.text.auto_keeplines)
    - ~~add ratio cols/rows (conf.text.cols_per_row)~~
  - add menubar feature
  - add key callback
