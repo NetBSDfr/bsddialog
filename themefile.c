@@ -189,7 +189,7 @@ int loadtheme(const char *file)
 
 	while(fgets(line, BUFSIZ, fp) != NULL) {
 		if(line[0] == '#' || line[0] == '\n')
-			continue;  /* superfluous, just for efficiency */
+			continue;  /* superfluous, only for efficiency */
 		sscanf(line, "%s", name);
 		for (i = 0; i < NPROPERTY; i++) {
 			if (strcmp(name, p[i].name) == 0) {
