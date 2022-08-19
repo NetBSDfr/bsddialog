@@ -701,11 +701,11 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	int wbuttons, maxhtext;
 	struct textproperties tp;
 
-	/* Rows */
 	wbuttons = 0;
 	if (bs != NULL)
 		wbuttons = buttons_width(*bs);
 
+	/* Rows */
 	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
 		maxhtext = widget_max_height(conf) - VBORDERS - rowsnotext;
 		if (bs != NULL)
