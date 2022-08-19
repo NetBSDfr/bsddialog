@@ -701,9 +701,6 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	int wbuttons, maxhtext;
 	struct textproperties tp;
 
-	if (text_properties(conf, text, &tp) != 0)
-		return (BSDDIALOG_ERROR);
-
 	/* Rows */
 	wbuttons = 0;
 	if (bs != NULL)
@@ -739,6 +736,8 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		return (0);
 	}
 
+	if (text_properties(conf, text, &tp) != 0)
+		return (BSDDIALOG_ERROR);
 	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, htext,
 	    wtext) != 0)
 		return (BSDDIALOG_ERROR);
