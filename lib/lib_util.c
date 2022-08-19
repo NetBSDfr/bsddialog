@@ -29,7 +29,6 @@
 
 #include <ctype.h>
 #include <curses.h>
-#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>

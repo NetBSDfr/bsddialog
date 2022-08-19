@@ -14,7 +14,7 @@ OBJECTS = ${SOURCES:.c=.o}
 CFLAGS += -D_XOPEN_SOURCE_EXTENDED -fPIC -Wall -Wextra
 LDFLAGS += -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} \
-	-L/usr/lib -lncursesw -ltinfow -lm
+	-L/usr/lib -lncursesw -ltinfow
 
 .if defined(DEBUG)
 # `make -DDEBUG`
