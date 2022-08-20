@@ -145,6 +145,7 @@ static void sigint_handler(int sig);
 static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
     char *text, char *buf);
+static void errorexit(char *errbuf);
 /* theme.c */
 int savetheme(const char *file, char *errbuf, const char *version);
 int loadtheme(const char *file, char *errbuf);
@@ -715,33 +716,31 @@ int main(int argc, char *argv[argc])
 	signal(SIGINT, sigint_handler);
 
 	if (theme_opt != BSDDIALOG_THEME_FLAT)
-		bsddialog_set_default_theme(theme_opt);
-
+		if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
+			errorexit(NULL);
 	if (loadthemefile != NULL)
-		loadtheme(loadthemefile, errorbuilder);
+		if (loadtheme(loadthemefile, errorbuilder) != BSDDIALOG_OK)
+			errorexit(errorbuilder);
 
 	if (backtitle_opt != NULL)
-		bsddialog_backtitle(&conf, backtitle_opt);
+		if( bsddialog_backtitle(&conf, backtitle_opt))
+			errorexit(NULL);
 
-	errorbuilder[0] = '\0';
-	output = BSDDIALOG_OK;
-	if (dialogbuilder != NULL)
+	if (dialogbuilder != NULL) {
 		output = dialogbuilder(&conf, text, rows, cols, argc, argv,
 		    errorbuilder);
+		if (output == BSDDIALOG_ERROR)
+			errorexit(errorbuilder);
+	} else
+		output = BSDDIALOG_OK;
 
 	if (savethemefile != NULL)
-		savetheme(savethemefile, errorbuilder, BSDDIALOG_VERSION);
+		if (savetheme(savethemefile, errorbuilder, BSDDIALOG_VERSION) !=
+		    BSDDIALOG_OK)
+			errorexit(errorbuilder);
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */
-
-	if (output == BSDDIALOG_ERROR) {
-		if (errorbuilder[0] != '\0')
-			printf("Error: %s\n", errorbuilder);
-		else
-			printf("Error: %s\n", bsddialog_geterror());
-		return (255);
-	}
 
 	if (textfromfile == false)
 		free(text);
@@ -759,6 +758,18 @@ int main(int argc, char *argv[argc])
 void sigint_handler(int sig)
 {
 	bsddialog_end();
+
+	exit(255);
+}
+
+void errorexit(char *errbuf)
+{
+	bsddialog_end();
+
+	if (errbuf != NULL && errbuf[0] != '\0')
+		printf("Error: %s\n", errbuf);
+	else
+		printf("Error: %s\n", bsddialog_geterror());
 
 	exit(255);
 }
