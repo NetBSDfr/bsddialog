@@ -20,6 +20,7 @@ Next
 	* add: bsddialog_textbox() accepts conf.button customization.
 	* add: bsddialog_textbox() shows arrows and percentage.
 	* add: conf.text.cols_per_row to set a ratio for autosizing.
+	* add: timebox and datebox arrows and focus background.
 	* improve: timebox and datebox navigation (UP key).
 
 
