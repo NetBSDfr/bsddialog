@@ -113,17 +113,17 @@ int savetheme(const char *file, char *errbuf, const char *version)
 	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
-		sprintf(errbuf, "Cannot save theme: %s\n", bsddialog_geterror());
+		sprintf(errbuf, "Cannot save theme: %s", bsddialog_geterror());
 		return (BSDDIALOG_ERROR);
 	}
 
 	if(time(&clock) < 0) {
-		sprintf(errbuf, "Cannot save profile (getting current time)\n");
+		sprintf(errbuf, "Cannot save profile (getting current time)");
 		return (BSDDIALOG_ERROR);
 	}
 
 	if ((fp = fopen(file, "w")) == NULL) {
-		sprintf(errbuf, "Cannot open %s to save profile\n", file);
+		sprintf(errbuf, "Cannot open %s to save profile", file);
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -182,12 +182,13 @@ int loadtheme(const char *file, char *errbuf)
 	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
-		sprintf(errbuf, "Cannot save theme: %s\n", bsddialog_geterror());
+		sprintf(errbuf, "Cannot get current theme: %s",
+		    bsddialog_geterror());
 		return (BSDDIALOG_ERROR);
 	}
 
 	if((fp = fopen(file, "r")) == NULL) {
-		sprintf(errbuf, "Cannot open %s theme\n", file);
+		sprintf(errbuf, "Cannot open theme \"%s\"", file);
 		return (BSDDIALOG_ERROR);
 	}
 
