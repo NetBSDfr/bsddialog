@@ -166,25 +166,31 @@ int savetheme(const char *file, char *errbuf, const char *version)
 	return (BSDDIALOG_OK);
 }
 
-int loadtheme(const char *file)
+#define RETURN_ERROR(name, error) do {                                         \
+	sprintf(errbuf, "%s for \"%s\"", error, name);                         \
+	fclose(fp);                                                            \
+	return (BSDDIALOG_ERROR);                                              \
+} while (0)
+
+
+int loadtheme(const char *file, char *errbuf)
 {
 	bool boolvalue;
-	char charvalue;
+	char charvalue, *value;
+	char line[BUFSIZ], name[BUFSIZ], c1[BUFSIZ], c2[BUFSIZ];
 	int i, j, intvalue, flags;
 	unsigned int uintvalue;
-	FILE *fp;
-	char line[BUFSIZ], name[BUFSIZ], c1[BUFSIZ], c2[BUFSIZ];
-	char *value;
 	enum bsddialog_color bg, fg;
+	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
-		printf("Error saving theme: %s\n", bsddialog_geterror());
+		sprintf(errbuf, "Cannot save theme: %s\n", bsddialog_geterror());
 		return (BSDDIALOG_ERROR);
 	}
 
 	if((fp = fopen(file, "r")) == NULL) {
-		printf("Cannot open %s theme\n", file);
-		return 1;
+		sprintf(errbuf, "Cannot open %s theme\n", file);
+		return (BSDDIALOG_ERROR);
 	}
 
 	while(fgets(line, BUFSIZ, fp) != NULL) {
@@ -197,20 +203,25 @@ int loadtheme(const char *file)
 				break;
 			}
 		}
-		if (i >= NPROPERTY)
-			continue;
+		if (i >= NPROPERTY) {
+			if (strcmp(name, "version") == 0)
+				continue;
+			RETURN_ERROR(name, "Unknown theme property name");
+		}
 		switch (p[i].type) {
-		// XXX add checks
 		case CHAR:
-			sscanf(value, "%c", &charvalue);
+			if (sscanf(value, "%c", &charvalue) != 1)
+				RETURN_ERROR(p[i].name, "Cannot get a char");
 			*((int*)p[i].value) = charvalue;
 			break;
 		case INT:
-			sscanf(value, "%d", &intvalue);
+			if (sscanf(value, "%d", &intvalue) != 1)
+				RETURN_ERROR(p[i].name, "Cannot get a int");
 			*((int*)p[i].value) = intvalue;
 			break;
 		case UINT:
-			sscanf(value, "%u", &uintvalue);
+			if (sscanf(value, "%u", &uintvalue) != 1)
+				RETURN_ERROR(p[i].name, "Cannot get a uint");
 			*((unsigned int*)p[i].value) = uintvalue;
 			break;
 		case BOOL:
@@ -218,15 +229,21 @@ int loadtheme(const char *file)
 			*((bool*)p[i].value) = boolvalue;
 			break;
 		case COLOR:
-			sscanf(value, "%s %s", c1, c2);
+			if (sscanf(value, "%s %s", c1, c2) != 2)
+				RETURN_ERROR(p[i].name, "Cannot get 2 color strings");
+			/* Foreground */
 			for (j = 0; j < 8 ; j++)
 				if ((strstr(c1, color[j])) != NULL)
-					break; // XXX check
-			fg = j;
+					break;
+			if ((fg = j) > 7)
+				RETURN_ERROR(p[i].name, "Bad foreground");
+			/* Background */
 			for (j = 0; j < 8 ; j++)
 				if ((value = strstr(c2, color[j])) != NULL)
-					break; // XXX check
-			bg = j;
+					break;
+			if ((bg = j) > 7)
+				RETURN_ERROR(p[i].name, "Bad background");
+			/* Flags */
 			flags = 0;
 			if (strstr(value, "bold") != NULL)
 				flags |= BSDDIALOG_BOLD;
