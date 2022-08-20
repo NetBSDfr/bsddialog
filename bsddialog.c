@@ -619,6 +619,7 @@ int main(int argc, char *argv[argc])
 		case INPUTBOX:
 			dialogbuilder = inputbox_builder;
 			conf.auto_downmargin = 1;
+			conf.form.focus_buttons = true;
 			break;
 		case MENU:
 			dialogbuilder = menu_builder;
@@ -640,6 +641,7 @@ int main(int argc, char *argv[argc])
 		case PASSWORDBOX:
 			dialogbuilder = passwordbox_builder;
 			conf.auto_downmargin = 1;
+			conf.form.focus_buttons = true;
 			break;
 		case PASSWORDFORM:
 			dialogbuilder = passwordform_builder;
@@ -1353,7 +1355,6 @@ int inputbox_builder(BUILDER_ARGS)
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
-	conf->form.focus_buttons = true;
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(output, 1, &item);
 
@@ -1421,7 +1422,6 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
-	conf->form.focus_buttons = true;
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
 	print_form_items(output, 1, &item);
 
