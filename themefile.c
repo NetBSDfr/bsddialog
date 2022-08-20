@@ -26,6 +26,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
@@ -33,6 +34,7 @@
 #include <bsddialog_theme.h>
 
 static struct bsddialog_theme t;
+static char title[1024];
 
 enum typeprop {
 	BOOL,
@@ -258,6 +260,86 @@ int loadtheme(const char *file, char *errbuf)
 	fclose(fp);
 
 	bsddialog_set_theme(&t);
+
+	return (BSDDIALOG_OK);
+}
+
+int bikeshed(struct bsddialog_conf *conf, char *errbuf)
+{
+	int margin, i;
+	int colors[8] = {0, 0, 0, 0 ,0 ,0 , 0, 0};
+	enum bsddialog_color col[6];
+	time_t clock;
+
+	time(&clock);
+	srand(clock);
+
+	/* theme */
+	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
+		return (BSDDIALOG_ERROR);
+
+	for (i = 0; i < 6; i++) {
+		do {
+			col[i] = rand() % 8;
+		} while (colors[col[i]] == 1);
+		colors[col[i]] = 1;
+	}
+
+	t.screen.color = bsddialog_color(col[4], col[3], 0);
+
+	t.shadow.color   = bsddialog_color(col[0], col[0], 0);
+	t.shadow.h       = 1,
+	t.shadow.w       = 2,
+
+	t.dialog.delimtitle       = (rand() % 2 == 0) ? true : false;
+	t.dialog.titlecolor       = bsddialog_color(col[3], col[5], 0);
+	t.dialog.lineraisecolor   = bsddialog_color(col[0], col[5], 0);
+	t.dialog.linelowercolor   = bsddialog_color(col[0], col[5], 0);
+	t.dialog.color            = bsddialog_color(col[0], col[5], 0);
+	t.dialog.bottomtitlecolor = bsddialog_color(col[0], col[5], 0);
+	t.dialog.arrowcolor       = bsddialog_color(col[3], col[5], 0);
+
+	t.menu.f_selectorcolor = bsddialog_color(col[5], col[3], 0);
+	t.menu.selectorcolor   = bsddialog_color(col[0], col[5], 0);
+	t.menu.f_desccolor     = bsddialog_color(col[5], col[3], 0);
+	t.menu.desccolor       = bsddialog_color(col[0], col[5], 0);
+	t.menu.f_namecolor     = bsddialog_color(col[5], col[3], 0);
+	t.menu.namecolor       = bsddialog_color(col[3], col[5], 0);
+	t.menu.namesepcolor    = bsddialog_color(col[1], col[5], 0);
+	t.menu.descsepcolor    = bsddialog_color(col[1], col[5], 0);
+	t.menu.f_shortcutcolor = bsddialog_color(col[1], col[3], 0);
+	t.menu.shortcutcolor   = bsddialog_color(col[1], col[5], 0);
+
+	t.form.f_fieldcolor  = bsddialog_color(col[5], col[3], 0);
+	t.form.fieldcolor    = bsddialog_color(col[5], col[4], 0);
+	t.form.readonlycolor = bsddialog_color(col[4], col[5], 0);
+
+	t.bar.f_color = bsddialog_color(col[5], col[3], 0);
+	t.bar.color   = bsddialog_color(col[3], col[5], 0);
+
+	t.button.hmargin         = 3,
+	t.button.leftdelim       = '[',
+	t.button.rightdelim      = ']',
+	t.button.f_delimcolor    = bsddialog_color(col[5], col[3], 0);
+	t.button.delimcolor      = bsddialog_color(col[0], col[5], 0);
+	t.button.f_color         = bsddialog_color(col[2], col[3], 0);
+	t.button.color           = bsddialog_color(col[0], col[5], 0);
+	t.button.f_shortcutcolor = bsddialog_color(col[5], col[3], 0);
+	t.button.shortcutcolor   = bsddialog_color(col[1], col[5], 0);
+
+	if (bsddialog_set_theme(&t))
+		return (BSDDIALOG_ERROR);
+
+	/* conf */
+	conf->form.focus_buttons = (rand() % 2 == 0) ? true : false;
+	if (conf->title != NULL) {
+		memset(title, 0, 1024);
+		margin = rand() % 5;
+		memset(title, ' ', margin);
+		strcpy(title + margin, conf->title);
+		memset(title + strlen(title), ' ', margin);
+		conf->title = title;
+	}
 
 	return (BSDDIALOG_OK);
 }

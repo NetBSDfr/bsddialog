@@ -7,7 +7,8 @@ Next
 		description by setting a down margin.
 	* fix: --form read-only flag with multiple fields.
 	* add: --textbox accepts button options.
-	* add: --columns-per-row.
+	* add: --columns-per-row option.
+	* add: --bikeshed option.
 
 	Library:
 	* fix: bsddialog_gauge() with fd < 0.

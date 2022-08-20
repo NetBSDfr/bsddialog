@@ -47,6 +47,7 @@ enum OPTS {
 	BACKTITLE,
 	BEGIN_X,
 	BEGIN_Y,
+	BIKESHED,
 	CANCEL_LABEL,
 	CLEAR,
 	COLORS,
@@ -149,6 +150,7 @@ static void errorexit(char *errbuf);
 /* theme.c */
 int savetheme(const char *file, char *errbuf, const char *version);
 int loadtheme(const char *file, char *errbuf);
+int bikeshed(struct bsddialog_conf *conf, char *errbuf);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv, char *errbuf
@@ -182,7 +184,8 @@ static void usage(void)
 
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
-	    "--begin-y <y>, --cancel-label <label>, --clear, --colors, "
+	    "--begin-y <y>, bikeshed, --cancel-label <label>, --clear, "
+	    "--colors, "
 	    "--columns-per-row <columns> , "
 	    "--cr-wrap, --date-format <format>, --defaultno, "
 	    "--default-button <label>, --default-no, --default-item <name>, "
@@ -245,7 +248,7 @@ int main(int argc, char *argv[argc])
 {
 	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
 	bool esc_cancelvalue_opt, ignore_opt, print_maxsize_opt;
-	bool textfromfile;
+	bool bikeshed_opt, textfromfile;
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
@@ -269,6 +272,7 @@ int main(int argc, char *argv[argc])
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
 	esc_cancelvalue_opt = false;
 	textfromfile = false;
+	bikeshed_opt = false;
 	errorbuilder[0] = '\0';
 	savethemefile = NULL;
 	loadthemefile = NULL;
@@ -291,6 +295,7 @@ int main(int argc, char *argv[argc])
 		{"backtitle",        required_argument, NULL, BACKTITLE},
 		{"begin-x",          required_argument, NULL, BEGIN_X},
 		{"begin-y",          required_argument, NULL, BEGIN_Y},
+		{"bikeshed",         no_argument,       NULL, BIKESHED},
 		{"cancel-label",     required_argument, NULL, CANCEL_LABEL},
 		{"clear",            no_argument,       NULL, CLEAR},
 		{"colors",           no_argument,       NULL, COLORS},
@@ -407,6 +412,9 @@ int main(int argc, char *argv[argc])
 				return (255);
 			}
 			conf.auto_topmargin = 0;
+			break;
+		case BIKESHED:
+			bikeshed_opt = true;
 			break;
 		case CANCEL_LABEL:
 			conf.button.cancel_label = optarg;
@@ -720,6 +728,9 @@ int main(int argc, char *argv[argc])
 			errorexit(NULL);
 	if (loadthemefile != NULL)
 		if (loadtheme(loadthemefile, errorbuilder) != BSDDIALOG_OK)
+			errorexit(errorbuilder);
+	if (bikeshed_opt)
+		if (bikeshed(&conf, errorbuilder) != BSDDIALOG_OK)
 			errorexit(errorbuilder);
 
 	if (backtitle_opt != NULL)
