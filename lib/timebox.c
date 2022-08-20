@@ -32,10 +32,41 @@
 #include <string.h>
 
 #include "bsddialog.h"
+#include "bsddialog_theme.h"
 #include "lib_util.h"
 
 #define MINWDATE   23 /* 3 windows and their borders */
 #define MINWTIME   14 /* 3 windows and their borders */
+
+static void
+drawquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt, 
+    void *value, bool focus)
+{
+	int h, l, w;
+
+	getmaxyx(win, h, w);
+	draw_borders(conf, win, h, w, LOWERED);
+	if (focus) {
+		l = 2 + w%2;
+		wattron(win, t.dialog.arrowcolor);
+		mvwhline(win, 0, w/2 - l/2,
+		    conf->ascii_lines ? '^' : ACS_UARROW, l);
+		mvwhline(win, h-1, w/2 - l/2,
+		    conf->ascii_lines ? 'v' : ACS_DARROW, l);
+		wattroff(win, t.dialog.arrowcolor);
+	}
+
+	if (focus)
+		wattron(win, t.menu.f_namecolor);
+	if (strchr(fmt, 's') != NULL)
+		mvwprintw(win, 1, 1, fmt, (char*)value);
+	else
+		mvwprintw(win, 1, 1, fmt, *((int*)value));
+	if (focus)
+		wattroff(win, t.menu.f_namecolor);
+
+	wrefresh(win);
+}
 
 static int
 datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
@@ -132,17 +163,11 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 
 	wrefresh(widget);
 
+	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		for (i = 0; i < 3; i++) {
-			mvwprintw(c[i].win, 1, 1, "%2d", c[i].value);
-			wrefresh(c[i].win);
-		}
-
-		if (focusbuttons == false) {
-			wmove(c[sel].win, 1, 2);
-			wrefresh(c[sel].win);
-		}
+		for (i = 0; i < 3; i++)
+			drawquare(conf, c[i].win, "%2d", &c[i].value, sel == i);
 
 		if (get_wch(&input) == ERR)
 			continue;
@@ -167,14 +192,12 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				focusbuttons = bs.curr < (int)bs.nbuttons ?
 				    true : false;
 				if (focusbuttons == false) {
-					curs_set(1);
 					sel = 0;
 				}
 			} else {
 				sel++;
 				focusbuttons = sel > 2 ? true : false;
 				if (focusbuttons) {
-					curs_set(0);
 					bs.curr = 0;
 				}
 			}
@@ -185,26 +208,27 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			if (focusbuttons) {
 				bs.curr--;
 				focusbuttons = bs.curr < 0 ? false : true;
-				if (focusbuttons == false) {
-					curs_set(1);
+				if (focusbuttons == false)
 					sel = 2;
-				}
 			} else {
 				sel--;
 				focusbuttons = sel < 0 ? true : false;
-				if (focusbuttons) {
-					curs_set(0);
+				if (focusbuttons)
 					bs.curr = (int)bs.nbuttons - 1;
-				}
 			}
 			draw_buttons(widget, bs, true);
 			wrefresh(widget);
 			break;
 		case KEY_UP:
-			if (focusbuttons)
-				break;
-			c[sel].value = c[sel].value > 0 ?
+			if (focusbuttons) {
+				sel = 0;
+				focusbuttons = false;
+				bs.curr = -1;
+				draw_buttons(widget, bs, true);
+				wrefresh(widget);
+			} else { c[sel].value = c[sel].value > 0 ?
 			    c[sel].value - 1 : c[sel].max;
+			}
 			break;
 		case KEY_DOWN:
 			if (focusbuttons)
@@ -216,10 +240,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			if (conf->key.f1_file == NULL &&
 			    conf->key.f1_message == NULL)
 				break;
-			curs_set(0);
 			if (f1help(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			curs_set(1);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -250,18 +272,10 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 
 			wclear(c[0].win);
 			mvwin(c[0].win, y + h - 6, x + w/2 - 7);
-			draw_borders(conf, c[0].win, 3, 4, LOWERED);
-			wrefresh(c[0].win);
-
 			wclear(c[1].win);
 			mvwin(c[1].win, y + h - 6, x + w/2 - 2);
-			draw_borders(conf, c[1].win, 3, 4, LOWERED);
-			wrefresh(c[1].win);
-
 			wclear(c[2].win);
 			mvwin(c[2].win, y + h - 6, x + w/2 + 3);
-			draw_borders(conf, c[2].win, 3, 4, LOWERED);
-			wrefresh(c[2].win);
 
 			/* Important to avoid grey lines expanding screen */
 			refresh();
@@ -279,8 +293,6 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 		*mm = c[1].value;
 		*ss = c[2].value;
 	}
-
-	curs_set(0);
 
 	for (i = 0; i < 3; i++)
 		delwin(c[i].win);
@@ -366,18 +378,13 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	wrefresh(widget);
 
+	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		mvwprintw(c[0].win, 1, 1, "%4d", c[0].value);
-		mvwprintw(c[1].win, 1, 1, "%9s", m[c[1].value-1].name);
-		mvwprintw(c[2].win, 1, 1, "%2d", c[2].value);
-		for (i = 0; i < 3; i++) {
-			wrefresh(c[i].win);
-		}
-		if (focusbuttons == false) {
-			wmove(c[sel].win, 1, c[sel].x);
-			wrefresh(c[sel].win);
-		}
+		drawquare(conf, c[0].win, "%4d", &c[0].value, sel == 0);
+		drawquare(conf, c[1].win, "%9s", (void*)m[c[1].value-1].name,
+		    sel == 1);
+		drawquare(conf, c[2].win, "%2d", &c[2].value, sel == 2);
 
 		if (get_wch(&input) == ERR)
 			continue;
@@ -402,14 +409,12 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				focusbuttons = bs.curr < (int)bs.nbuttons ?
 				    true : false;
 				if (focusbuttons == false) {
-					curs_set(1);
 					sel = 0;
 				}
 			} else {
 				sel++;
 				focusbuttons = sel > 2 ? true : false;
 				if (focusbuttons) {
-					curs_set(0);
 					bs.curr = 0;
 				}
 			}
@@ -421,14 +426,12 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				bs.curr--;
 				focusbuttons = bs.curr < 0 ? false : true;
 				if (focusbuttons == false) {
-					curs_set(1);
 					sel = 2;
 				}
 			} else {
 				sel--;
 				focusbuttons = sel < 0 ? true : false;
 				if (focusbuttons) {
-					curs_set(0);
 					bs.curr = (int)bs.nbuttons - 1;
 				}
 			}
@@ -436,18 +439,24 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			wrefresh(widget);
 			break;
 		case KEY_UP:
-			if (focusbuttons)
-				break;
-			c[sel].value = c[sel].value > 1 ?
-			    c[sel].value - 1 : c[sel].max ;
-			/* if mount change */
-			c[2].max = m[c[1].value -1].days;
-			/* if year change */
-			if (c[1].value == 2 && ISLEAF(c[0].value))
-				c[2].max = 29;
-			/* set new day */
-			if (c[2].value > c[2].max)
-				c[2].value = c[2].max;
+			if (focusbuttons) {
+				sel = 0;
+				focusbuttons = false;
+				bs.curr = -1;
+				draw_buttons(widget, bs, true);
+				wrefresh(widget);
+			} else {
+				{c[sel].value = c[sel].value > 1 ?
+				    c[sel].value - 1 : c[sel].max ;
+				/* if mount change */
+				c[2].max = m[c[1].value -1].days;
+				/* if year change */
+				if (c[1].value == 2 && ISLEAF(c[0].value))
+					c[2].max = 29;
+				/* set new day */
+				if (c[2].value > c[2].max)
+					c[2].value = c[2].max;
+			}
 			break;
 		case KEY_DOWN:
 			if (focusbuttons)
@@ -467,10 +476,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (conf->key.f1_file == NULL &&
 			    conf->key.f1_message == NULL)
 				break;
-			curs_set(0);
 			if (f1help(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			curs_set(1);
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
@@ -500,18 +507,10 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 			wclear(c[0].win);
 			mvwin(c[0].win, y + h - 6, x + w/2 - 11);
-			draw_borders(conf, c[0].win, 3, 6, LOWERED);
-			wrefresh(c[0].win);
-
 			wclear(c[1].win);
 			mvwin(c[1].win, y + h - 6, x + w/2 - 4);
-			draw_borders(conf, c[1].win, 3, 11, LOWERED);
-			wrefresh(c[1].win);
-
 			wclear(c[2].win);
 			mvwin(c[2].win, y + h - 6, x + w/2 + 8);
-			draw_borders(conf, c[2].win, 3, 4, LOWERED);
-			wrefresh(c[2].win);
 
 			/* Important to avoid grey lines expanding screen */
 			refresh();
@@ -529,8 +528,6 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		*mm = c[1].value;
 		*dd = c[2].value;
 	}
-
-	curs_set(0);
 
 	for (i = 0; i < 3; i++)
 		delwin(c[i].win);
