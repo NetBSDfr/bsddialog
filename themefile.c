@@ -259,5 +259,5 @@ int loadtheme(const char *file, char *errbuf)
 
 	bsddialog_set_theme(&t);
 
-	return 0;
+	return (BSDDIALOG_OK);
 }
