@@ -64,12 +64,12 @@ static struct bsddialog_theme bsddialogtheme = {
 	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    bgcurr),
 	.menu.shortcutcolor   = GET_COLOR(COLOR_RED,    bgwidget),
 
-	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE,  COLOR_BLUE),
-	.form.fieldcolor    = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
+	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
+	.form.fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_CYAN),
 	.form.readonlycolor = GET_COLOR(COLOR_CYAN,COLOR_WHITE),
 
-	.bar.f_color = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
-	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
+	.bar.f_color = GET_COLOR(COLOR_BLACK, COLOR_YELLOW),
+	.bar.color   = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 
 	.button.hmargin      = 3,
 	.button.leftdelim    = '[',
