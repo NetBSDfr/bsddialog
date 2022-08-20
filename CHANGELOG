@@ -3,8 +3,8 @@ Next
 	Utility:
 	* fix: --hline with empty string (for bsdconfig).
 	* fix: avoid to overlay the backtitle by setting a top margin.
-	* fix: avoid to overlay down shadow with menus and forms bottom desc
-	       by setting a down margin.
+	* fix: avoid to overlay down shadow with menus and forms bottom
+		description by setting a down margin.
 	* fix: --form read-only flag with multiple fields.
 	* add: --textbox accepts button options.
 	* add: --columns-per-row.
