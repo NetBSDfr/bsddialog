@@ -32,8 +32,6 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
-/* This file is a proof of concept for now, TO IMPROVE */
-
 static struct bsddialog_theme t;
 
 enum typeprop {
