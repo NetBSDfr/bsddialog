@@ -230,7 +230,7 @@ int loadtheme(const char *file, char *errbuf)
 			break;
 		case COLOR:
 			if (sscanf(value, "%s %s", c1, c2) != 2)
-				RETURN_ERROR(p[i].name, "Cannot get 2 color strings");
+				RETURN_ERROR(p[i].name, "Cannot get 2 colors");
 			/* Foreground */
 			for (j = 0; j < 8 ; j++)
 				if ((strstr(c1, color[j])) != NULL)
