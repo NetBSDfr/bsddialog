@@ -474,7 +474,7 @@ int main(int argc, char *argv[argc])
 			conf.key.f1_file = optarg;
 			break;
 		case HLINE:
-			if (strlen(optarg) > 0)
+			if (optarg[0] != '\0')
 				conf.bottomtitle = optarg;
 			break;
 		case HMSG:
