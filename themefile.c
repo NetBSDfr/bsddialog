@@ -106,26 +106,26 @@ static char *color[8] = {
 	"white"
 };
 
-int savetheme(const char *file, const char *version)
+int savetheme(const char *file, char *errbuf, const char *version)
 {
 	int i;
 	unsigned int flags;
 	enum bsddialog_color bg, fg;
-	FILE *fp;
 	time_t clock;
+	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
-		printf("Error saving theme: %s\n", bsddialog_geterror());
+		sprintf(errbuf, "Cannot save theme: %s\n", bsddialog_geterror());
 		return (BSDDIALOG_ERROR);
 	}
 
 	if(time(&clock) < 0) {
-		printf("Cannot save the profile (gettin current time)\n");
+		sprintf(errbuf, "Cannot save profile (getting current time)\n");
 		return (BSDDIALOG_ERROR);
 	}
 
 	if ((fp = fopen(file, "w")) == NULL) {
-		printf("Cannot open %s to save the profile\n", file);
+		sprintf(errbuf, "Cannot open %s to save profile\n", file);
 		return (BSDDIALOG_ERROR);
 	}
 

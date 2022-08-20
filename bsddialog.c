@@ -146,8 +146,8 @@ static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
     char *text, char *buf);
 /* theme.c */
-int savetheme(const char *file, const char *version);
-int loadtheme(const char *file);
+int savetheme(const char *file, char *errbuf, const char *version);
+int loadtheme(const char *file, char *errbuf);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv, char *errbuf
@@ -718,7 +718,7 @@ int main(int argc, char *argv[argc])
 		bsddialog_set_default_theme(theme_opt);
 
 	if (loadthemefile != NULL)
-		loadtheme(loadthemefile);
+		loadtheme(loadthemefile, errorbuilder);
 
 	if (backtitle_opt != NULL)
 		bsddialog_backtitle(&conf, backtitle_opt);
@@ -730,7 +730,7 @@ int main(int argc, char *argv[argc])
 		    errorbuilder);
 
 	if (savethemefile != NULL)
-		savetheme(savethemefile, BSDDIALOG_VERSION);
+		savetheme(savethemefile, errorbuilder, BSDDIALOG_VERSION);
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */
