@@ -707,7 +707,7 @@ int main(int argc, char *argv[argc])
 	/* bsddialog terminal mode */
 	if (bsddialog_init() != 0) {
 		printf("Error: %s\n", bsddialog_geterror());
-		return (BSDDIALOG_ERROR);
+		return (255);
 	}
 
 	signal(SIGINT, sigint_handler);
