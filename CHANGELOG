@@ -21,7 +21,7 @@ Next
 	* add: bsddialog_textbox() shows arrows and percentage.
 	* add: conf.text.cols_per_row to set a ratio for autosizing.
 	* add: timebox and datebox arrows and focus background.
-	* improve: timebox and datebox navigation (UP key).
+	* add: timebox and datebox UP key to switch focus.
 
 
 2022-03-02 version 0.2
