@@ -109,10 +109,10 @@ static char *color[8] = {
 int savetheme(const char *file, const char *version)
 {
 	int i;
-	FILE *fp;
-	time_t clock;
 	unsigned int flags;
 	enum bsddialog_color bg, fg;
+	FILE *fp;
+	time_t clock;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
 		printf("Error saving theme: %s\n", bsddialog_geterror());
@@ -125,12 +125,12 @@ int savetheme(const char *file, const char *version)
 	}
 
 	if ((fp = fopen(file, "w")) == NULL) {
-		printf("Cannot save the profile (open %s)\n", file);
+		printf("Cannot open %s to save the profile\n", file);
 		return (BSDDIALOG_ERROR);
 	}
 
 	fprintf(fp, "### bsddialog theme - %s", ctime(&clock));
-	fputs("# To see bsddialog(3) manual to know theme.* properties\n", fp);
+	fputs("# Refer to bsddialog(3) manual to know theme.* properties\n", fp);
 	fprintf(fp, "version %s\n", version);
 
 	for (i = 0; i < NPROPERTY; i++) {
