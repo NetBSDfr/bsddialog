@@ -446,7 +446,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				draw_buttons(widget, bs, true);
 				wrefresh(widget);
 			} else {
-				{c[sel].value = c[sel].value > 1 ?
+				c[sel].value = c[sel].value > 1 ?
 				    c[sel].value - 1 : c[sel].max ;
 				/* if mount change */
 				c[2].max = m[c[1].value -1].days;
