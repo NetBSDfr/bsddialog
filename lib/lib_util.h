@@ -44,6 +44,7 @@ extern struct bsddialog_theme t;
 
 /* unicode */
 unsigned int strcols(const char *mbstring);
+int str_props(const char *mbstring, unsigned int *cols, bool *has_multi_col);
 void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch);
 wchar_t* alloc_mbstows(const char *mbstring);
 

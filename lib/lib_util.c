@@ -88,6 +88,38 @@ void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch)
 	
 }
 
+int str_props(const char *mbstring, unsigned int *cols, bool *has_multi_col)
+{
+	bool multicol;
+	int w;
+	unsigned int ncol;
+	size_t charlen, mb_cur_max;
+	wchar_t wch;
+	mbstate_t mbs;
+
+	multicol = false;
+	mb_cur_max = MB_CUR_MAX;
+	ncol = 0;
+	memset(&mbs, 0, sizeof(mbs));
+	while ((charlen = mbrlen(mbstring, mb_cur_max, &mbs)) != 0 &&
+	    charlen != (size_t)-1 && charlen != (size_t)-2) {
+		if (mbtowc(&wch, mbstring, mb_cur_max) < 0)
+			return (-1);
+		if (w > 0)
+			multicol = true;
+		w = (wch == L'\t') ? TABSIZE : wcwidth(wch);
+		ncol += (w < 0) ? 0 : w;
+		mbstring += charlen;
+	}
+
+	if (cols != NULL)
+		*cols = ncol;
+	if (has_multi_col != NULL)
+		*has_multi_col = multicol;
+
+	return (0);
+}
+
 unsigned int strcols(const char *mbstring)
 {
 	int w;

@@ -110,10 +110,10 @@ int
 bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
     int cols)
 {
-	bool loop;
+	bool loop, has_multi_col;
 	int i, output, y, x, h, w;
 	int hpad, wpad, ypad, xpad, ys, ye, xs, xe, padmargin, printrows;
-	unsigned int defaulttablen, linecols, sblen;
+	unsigned int defaulttablen, linecols;
 	wint_t input;
 	char buf[BUFSIZ];
 	FILE *fp;
@@ -132,7 +132,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	padmargin = 0;
 	i = 0;
 	while (fgets(buf, BUFSIZ, fp) != NULL) {
-		linecols = strcols(buf);
+		if (str_props(buf, &linecols, &has_multi_col) != 0)
+			continue;
 		if ((int)linecols > wpad) {
 			wpad = linecols;
 			wresize(pad, hpad, wpad);
@@ -143,13 +144,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 		}
 		mvwaddstr(pad, i, 0, buf);
 		i++;
-		if (padmargin == 0) {
-			sblen = strlen(buf);
-			if (sblen > 0 && buf[sblen-1] == '\n')
-				sblen -= 1;
-			if (sblen != linecols)
-				padmargin = 2; /* multicolumn charachters */
-		}
+		if (has_multi_col)
+			padmargin = 2;
 	}
 	fclose(fp);
 	set_tabsize(defaulttablen);
