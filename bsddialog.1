@@ -330,7 +330,7 @@ is the graphical height of the list, 0 for autosize.
 .It Fl Fl datebox Ar text Ar rows Ar cols Op Ar year Ar month Ar day
 Dialog to select a date.
 .It Fl Fl form Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
-Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxvaluelen Oc ...
+Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxletters Oc ...
 Dialog to get a list of strings via forms.
 A form has a
 .Ar label
@@ -344,13 +344,13 @@ and
 .Ar xfield
 with graphical length
 .Ar fieldlen ,
-.Ar maxvaluelen
+.Ar maxletters
 is the maximum input length.
 The field can be customized, if
 .Ar fieldlen
 is negative the field is read only and its absolute value is the field length.
 If
-.Ar maxvaluelen
+.Ar maxletters
 is 0 the max input value is the absolute value of
 .Ar fieldlen .
 .Ar init
@@ -386,7 +386,7 @@ The name of the selected item is printed to standard error.
 .Ar menurows
 is the graphical height of the list, 0 for autosize.
 .It Fl Fl mixedform Ar text Ar rows Ar cols Ar formrows Oo Ar label Ar ylabel \
-Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxvaluelen Ar flag Oc ...
+Ar xlabel Ar init Ar yfield Ar xfield Ar fieldlen Ar maxletters Ar flag Oc ...
 Dialog to get a list of strings via forms.
 A form has a
 .Ar label
@@ -400,7 +400,7 @@ at the position
 .Ar yfield
 and
 .Ar xfield ,
-.Ar maxvaluelen
+.Ar maxletters
 is the maximum input length,
 .Ar init
 is a default value,

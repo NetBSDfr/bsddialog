@@ -211,14 +211,14 @@ static void usage(void)
 	    "<on|off>] ...\n");
 	printf("--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
 	printf("--form <text> <rows> <cols> <formrows> [<label> <ylabel> "
-	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxvaluelen>] "
+	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxletters>] "
 	    "...\n");
 	printf("--gauge <text> <rows> <cols> [<perc>]\n");
 	printf("--infobox <text> <rows> <cols>\n");
 	printf("--inputbox <text> <rows> <cols> [init]\n");
 	printf("--menu <text> <rows> <cols> <menurows> [<name> <desc>] ...\n");
 	printf("--mixedform <text> <rows> <cols> <formrows> [<label> <ylabel> "
-	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxvaluelen> "
+	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxletters> "
 	    "<0|1|2>] ...\n");
 	printf("--mixedgauge <text> <rows> <cols> <mainperc> [<minilabel> "
 	    "<miniperc>] ...\n");
@@ -226,7 +226,7 @@ static void usage(void)
 	printf("--passwordbox <text> <rows> <cols> [init]\n");
 	printf("--passwordform <text> <rows> <cols> <formrows> [<label> "
 	    "<ylabel> <xlabel> <init> <yfield> <xfield> <fieldlen> "
-	    "<maxvaluelen>] ...\n");
+	    "<maxletters>] ...\n");
 	printf("--pause <text> <rows> <cols> <secs>\n");
 	printf("--radiolist <text> <rows> <cols> <menurows> [<name> <desc> "
 	    "<on|off>] ...\n");
