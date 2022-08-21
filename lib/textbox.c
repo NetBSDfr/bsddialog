@@ -155,6 +155,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	set_tabsize(defaulttablen);
 	
 	get_buttons(conf, &bs, "EXIT", NULL);
+	bs.curr = 0;
+	bs.nbuttons = 1;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);

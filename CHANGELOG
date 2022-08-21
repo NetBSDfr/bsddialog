@@ -6,7 +6,7 @@ Next
 	* fix: avoid to overlay down shadow with menus and forms bottom
 	       description by setting a down margin.
 	* fix: --form read-only flag with multiple fields.
-	* add: --textbox accepts button options.
+	* add: --textbox accepts options for the first button.
 	* add: --columns-per-row option for text autosizing.
 	* add: --bikeshed option to avoid "bikeshed".
 	* add: --load-theme option to set a custom themeat runtime.
