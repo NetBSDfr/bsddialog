@@ -105,10 +105,10 @@ int str_props(const char *mbstring, unsigned int *cols, bool *has_multi_col)
 	    charlen != (size_t)-1 && charlen != (size_t)-2) {
 		if (mbtowc(&wch, mbstring, mb_cur_max) < 0)
 			return (-1);
-		if (w > 1)
-			multicol = true;
 		w = (wch == L'\t') ? TABSIZE : wcwidth(wch);
 		ncol += (w < 0) ? 0 : w;
+		if (w > 1 && wch != L'\t')
+			multicol = true;
 		mbstring += charlen;
 	}
 
