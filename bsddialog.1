@@ -546,18 +546,23 @@ Backtitle, title and message:
 Yes-No Question and theme:
 .Dl bsddialog --theme blackwhite --yesno Question 10 30
 .Pp
-Save and load a custom theme
-.Dl bsddialog --save-theme theme.txt --infobox "Saving theme..." 0 0
-.Dl bsddialog --load-theme theme.txt --infobox "Custom theme" 0 0
+Save a custom theme:
+.Dl bsddialog --save-theme theme.txt --infobox \*qSaving theme...\*q 0 0
+.Pp
+Load a custom theme:
+.Dl bsddialog --load-theme theme.txt --infobox \*qCustom theme\*q 0 0
 .Pp
 Checklist:
 .Dl bsddialog --checklist Checklist 0 0 3 N1 \&D1 off N2 D2 on N3 D3 off
 .Pp
 Mixedgauge:
-.Dl bsddialog --sleep 3 --mixedgauge Example 10 30 60 L1 "\(dq" -1" L2 30
+.Dl bsddialog --sleep 3 --mixedgauge Example 10 30 60 L1 \*q -1\*q L2 30
 .Pp
 Form:
 .Dl bsddialog --form Form 0 0 0 L1: 1 1 X 1 5 20 25 L2: 2 1 X 2 5 20 25
+.Pp
+Bikeshed:
+.Dl bsddialog --bikeshed --inputbox Example 0 0
 .Pp
 Gauge script:
 .Bd -literal -offset indent -compact
