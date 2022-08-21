@@ -148,7 +148,7 @@ int hide_widget(int y, int x, int h, int w, bool withshadow)
 {
 	WINDOW *clear;
 
-	if ((clear = newwin(h, w, y + t.shadow.h, x + t.shadow.w)) == NULL)
+	if ((clear = newwin(h, w, y + t.shadow.y, x + t.shadow.x)) == NULL)
 		RETURN_ERROR("Cannot hide the widget");
 	wbkgd(clear, t.screen.color);
 
@@ -784,7 +784,7 @@ int widget_max_height(struct bsddialog_conf *conf)
 {
 	int maxheight;
 
-	maxheight = conf->shadow ? SCREENLINES - (int)t.shadow.h : SCREENLINES;
+	maxheight = conf->shadow ? SCREENLINES - (int)t.shadow.y : SCREENLINES;
 	if (maxheight <= 0)
 		RETURN_ERROR("Terminal too small, screen lines - shadow <= 0");
 
@@ -814,7 +814,7 @@ int widget_max_width(struct bsddialog_conf *conf)
 {
 	int maxwidth;
 
-	maxwidth = conf->shadow ? SCREENCOLS - (int)t.shadow.w : SCREENCOLS;
+	maxwidth = conf->shadow ? SCREENCOLS - (int)t.shadow.x : SCREENCOLS;
 	if (maxwidth <= 0)
 		RETURN_ERROR("Terminal too small, screen cols - shadow <= 0");
 
@@ -938,8 +938,8 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 {
-	int hshadow = conf->shadow ? (int)t.shadow.h : 0;
-	int wshadow = conf->shadow ? (int)t.shadow.w : 0;
+	int hshadow = conf->shadow ? (int)t.shadow.y : 0;
+	int wshadow = conf->shadow ? (int)t.shadow.x : 0;
 
 	if (conf->y == BSDDIALOG_CENTER) {
 		*y = SCREENLINES/2 - (h + hshadow)/2;
@@ -1114,7 +1114,7 @@ update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 
 	if (conf->shadow) {
 		wclear(shadow);
-		mvwin(shadow, y + t.shadow.h, x + t.shadow.w);
+		mvwin(shadow, y + t.shadow.y, x + t.shadow.x);
 		wresize(shadow, h, w);
 	}
 
@@ -1141,7 +1141,7 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 	int error;
 
 	if (conf->shadow) {
-		*shadow = newwin(h, w, y + t.shadow.h, x + t.shadow.w);
+		*shadow = newwin(h, w, y + t.shadow.y, x + t.shadow.x);
 		if (*shadow == NULL)
 			RETURN_ERROR("Cannot build shadow");
 		wbkgd(*shadow, t.shadow.color);

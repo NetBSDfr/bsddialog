@@ -55,8 +55,8 @@ static struct property p[NPROPERTY] = {
 	{ "theme.screen.color", COLOR, &t.screen.color },
 
 	{ "theme.shadow.color", COLOR, &t.shadow.color },
-	{ "theme.shadow.h", UINT, &t.shadow.h },
-	{ "theme.shadow.w", UINT, &t.shadow.w },
+	{ "theme.shadow.y", UINT, &t.shadow.y },
+	{ "theme.shadow.x", UINT, &t.shadow.x },
 
 	{ "theme.dialog.color", COLOR, &t.dialog.color },
 	{ "theme.dialog.delimtitle", BOOL, &t.dialog.delimtitle },
@@ -288,8 +288,8 @@ int bikeshed(struct bsddialog_conf *conf, char *errbuf)
 	t.screen.color = bsddialog_color(col[4], col[3], 0);
 
 	t.shadow.color   = bsddialog_color(col[0], col[0], 0);
-	t.shadow.h       = 1,
-	t.shadow.w       = 2,
+	t.shadow.y       = 1,
+	t.shadow.x       = 2,
 
 	t.dialog.delimtitle       = (rand() % 2 == 0) ? true : false;
 	t.dialog.titlecolor       = bsddialog_color(col[3], col[5], 0);

@@ -39,8 +39,8 @@ struct bsddialog_theme {
 	} screen;
 	struct {
 		int color;
-		unsigned int h;
-		unsigned int w;
+		unsigned int y;
+		unsigned int x;
 	} shadow;
 	struct {
 		int  color;

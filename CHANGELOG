@@ -22,6 +22,8 @@ Next
 	* fix: center position without shadow.
 	* fix: infobox with zero text length.
 	* fix: text wrapping with more than 1024 words.
+	* fix: rename theme.shadow.h to theme.shadow.y.
+	* fix: rename theme.shadow.w to theme.shadow.x.
 	* add: conf.auto_topmargin and conf.auto_downmargin.
 	* add: bsddialog_textbox() accepts conf.button customization.
 	* add: bsddialog_textbox() shows arrows and percentage.
