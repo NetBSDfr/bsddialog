@@ -58,7 +58,7 @@ enum OPTS {
 	DEFAULT_ITEM,
 	DEFAULT_NO,
 	DISABLE_ESC,
-	ESC_CANCELVALUE,
+	ESC_RETURNCANCEL,
 	EXIT_LABEL,
 	EXTRA_BUTTON,
 	EXTRA_LABEL,
@@ -188,7 +188,7 @@ static void usage(void)
 	    "--colors, --columns-per-row <columns> , --cr-wrap, "
 	    "--date-format <format>,  --default-button <label>, "
 	    "--default-item <name>, --default-no, --disable-esc, "
-	    "--esc-cancelvalue, --exit-label <label>, --extra-button, "
+	    "--esc-return-cancel, --exit-label <label>, --extra-button, "
 	    "--extra-label <label>, --generic-button1 <label>, "
 	    "--generic-button2 <label>, --help, --help-button, "
 	    "--help-label <label>, --help-status, --help-tags, --hfile <file>, "
@@ -244,7 +244,7 @@ static void usage(void)
 int main(int argc, char *argv[argc])
 {
 	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
-	bool esc_cancelvalue_opt, ignore_opt, print_maxsize_opt;
+	bool esc_return_cancel_opt, ignore_opt, print_maxsize_opt;
 	bool bikeshed_opt, textfromfile;
 	int input, rows, cols, output, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
@@ -267,7 +267,7 @@ int main(int argc, char *argv[argc])
 	print_maxsize_opt = false;
 	ignore_opt = false;
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
-	esc_cancelvalue_opt = false;
+	esc_return_cancel_opt = false;
 	textfromfile = false;
 	bikeshed_opt = false;
 	errorbuilder[0] = '\0';
@@ -303,7 +303,7 @@ int main(int argc, char *argv[argc])
 		{"default-item",     required_argument, NULL, DEFAULT_ITEM},
 		{"default-no",       no_argument,       NULL, DEFAULT_NO},
 		{"disable-esc",      no_argument,       NULL, DISABLE_ESC},
-		{"esc-cancelvalue",  no_argument,       NULL, ESC_CANCELVALUE},
+		{"esc-return-cancel",no_argument,       NULL, ESC_RETURNCANCEL},
 		{"exit-label",       required_argument, NULL, EXIT_LABEL},
 		{"extra-button",     no_argument,       NULL, EXTRA_BUTTON},
 		{"extra-label",      required_argument, NULL, EXTRA_LABEL},
@@ -443,8 +443,8 @@ int main(int argc, char *argv[argc])
 		case DISABLE_ESC:
 			conf.key.enable_esc = false;
 			break;
-		case ESC_CANCELVALUE:
-			esc_cancelvalue_opt = true;
+		case ESC_RETURNCANCEL:
+			esc_return_cancel_opt = true;
 			break;
 		case EXIT_LABEL:
 			conf.button.ok_label = optarg;
@@ -757,7 +757,7 @@ int main(int argc, char *argv[argc])
 		dprintf(output_fd_opt, "Dialog size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
 
-	if (output == BSDDIALOG_ESC && esc_cancelvalue_opt)
+	if (output == BSDDIALOG_ESC && esc_return_cancel_opt)
 		output = BSDDIALOG_CANCEL;
 
 	return (output);

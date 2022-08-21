@@ -9,6 +9,7 @@ Next
 	* add: --textbox accepts button options.
 	* add: --columns-per-row option.
 	* add: --bikeshed option.
+	* change: rename --esc-cancelvalue to --esc-return-cancel.
 
 	Library:
 	* fix: bsddialog_gauge() with fd < 0.
