@@ -548,7 +548,7 @@ text_properties(struct bsddialog_conf *conf, const char *text,
     struct textproperties *tp)
 {
 	int i, l, currlinecols, maxwords, wtextlen, tablen, wordcols;
-	const wchar_t *wtext;
+	wchar_t *wtext;
 
 	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
 
@@ -633,7 +633,7 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	/* line */
 	tp->maxline = MAX(tp->maxline, currlinecols);
 
-	free((wchar_t*)wtext);
+	free(wtext);
 
 	return (0);
 }
