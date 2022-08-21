@@ -125,38 +125,6 @@ in the _Public Domain_ to build new projects:
 
 
 ## TODO
-
- - Complete unicode support
-   - ~~backtitle~~
-   - ~~title~~
-   - ~~text (word wrapping, auto sizing)~~
-   - ~~menus (shortcuts, name, desc)~~
-   - ~~forms (label, field)~~
-   - ~~textbox~~
-   - ~~bottons (label, shortcuts)~~
-   - ~~bottomtitle~~
- - Forms
-   - ~~refactoring formbox.c~~
-   - ~~delete -lformw dep~~
-   - ~~add #define BSDDIALOG_FIELDNOCOLOR~~
-   - ~~Utility replaces output from wide char to multibyte char strings~~
-   - ~~fix form height (items y instead of nitems)~~
-   - ~~add resize~~
-   - ~~add scrolling~~
-   - ~~inputbox (improve autosizing, focus on buttons)~~
-   - ~~delete constraint maxvaluelen >= valuelen~~
-   - ~~add conf.form.securembch~~
-   - ~~add KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE~~
-   - ~~add BSDDIALOG_FIELDCURSOREND~~
-   - ~~change conf.form.enable_wchar to conf.form.value_wchar~~
-   - ~~add conf.form.input_singlebyte~~
-   - ~~add BSDDIALOG_FIELDEXTEND~~
- - Custom theme
-   - ~~add bsddialog\_init\_notheme()~~
-   - ~~add bsddialog_hascolors()~~
-   - ~~add --load-theme~~
-   - ~~add --save-theme~~
- - Text autosizing
-   - ~~add ratio cols/rows (conf.text.cols_per_row)~~
+ 
  - add menubar feature
  - add key callback
