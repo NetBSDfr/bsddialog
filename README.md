@@ -109,6 +109,7 @@ in the _Public Domain_ to build new projects:
 ```
 % cd examples_library
 % sh compile
+% ./checklist
 % ./datebox
 % ./form
 % ./infobox
