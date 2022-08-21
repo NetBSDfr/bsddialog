@@ -39,6 +39,8 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
+#include "theme.h"
+
 #define BSDDIALOG_VERSION "0.3-WorkInProgress"
 
 enum OPTS {
@@ -147,10 +149,6 @@ static void
 custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
     char *text, char *buf);
 static void errorexit(char *errbuf);
-/* theme.c */
-int savetheme(const char *file, char *errbuf, const char *version);
-int loadtheme(const char *file, char *errbuf);
-int bikeshed(struct bsddialog_conf *conf, char *errbuf);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv, char *errbuf
