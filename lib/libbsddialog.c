@@ -36,8 +36,6 @@
 
 #define COLSPERROWS  10   /* Default conf.text.columns_per_row */
 
-extern bool hastermcolors;
-
 int bsddialog_init_notheme(void)
 {
 	int i, j, c, error;

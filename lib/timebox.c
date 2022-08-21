@@ -40,7 +40,7 @@
 
 static void
 drawquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt, 
-    void *value, bool focus)
+    const void *value, bool focus)
 {
 	int h, l, w;
 
@@ -59,9 +59,9 @@ drawquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
 	if (focus)
 		wattron(win, t.menu.f_namecolor);
 	if (strchr(fmt, 's') != NULL)
-		mvwprintw(win, 1, 1, fmt, (char*)value);
+		mvwprintw(win, 1, 1, fmt, (const char*)value);
 	else
-		mvwprintw(win, 1, 1, fmt, *((int*)value));
+		mvwprintw(win, 1, 1, fmt, *((const int*)value));
 	if (focus)
 		wattroff(win, t.menu.f_namecolor);
 
@@ -382,7 +382,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	loop = focusbuttons = true;
 	while (loop) {
 		drawquare(conf, c[0].win, "%4d", &c[0].value, sel == 0);
-		drawquare(conf, c[1].win, "%9s", (void*)m[c[1].value-1].name,
+		drawquare(conf, c[1].win, "%9s", m[c[1].value-1].name,
 		    sel == 1);
 		drawquare(conf, c[2].win, "%2d", &c[2].value, sel == 2);
 

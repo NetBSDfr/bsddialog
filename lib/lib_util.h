@@ -33,8 +33,9 @@
 #define TEXTHMARGIN     1
 #define TEXTHMARGINS    (TEXTHMARGIN + TEXTHMARGIN)
 
-/* current theme */
+/* theme utils */
 extern struct bsddialog_theme t;
+extern bool hastermcolors;
 
 /* debug */
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {	\
