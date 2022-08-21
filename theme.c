@@ -50,7 +50,7 @@ struct property {
 	void *value;
 };
 
-#define NPROPERTY 35
+#define NPROPERTY 37
 static struct property p[NPROPERTY] = {
 	{ "theme.screen.color", COLOR, &t.screen.color },
 
@@ -76,10 +76,12 @@ static struct property p[NPROPERTY] = {
 	{ "theme.menu.descsepcolor", COLOR, &t.menu.descsepcolor},
 	{ "theme.menu.f_shortcutcolor", COLOR, &t.menu.f_shortcutcolor},
 	{ "theme.menu.shortcutcolor", COLOR, &t.menu.shortcutcolor},
+	{ "theme.menu.bottomdesccolor", COLOR, &t.menu.bottomdesccolor},
 
 	{ "theme.form.f_fieldcolor", COLOR, &t.form.f_fieldcolor},
 	{ "theme.form.fieldcolor", COLOR, &t.form.fieldcolor},
 	{ "theme.form.readonlycolor", COLOR, &t.form.readonlycolor},
+	{ "theme.form.bottomdesccolor", COLOR, &t.form.bottomdesccolor},
 	
 	{ "theme.bar.f_color", COLOR, &t.bar.f_color},
 	{ "theme.bar.color", COLOR, &t.bar.color},
@@ -309,10 +311,12 @@ int bikeshed(struct bsddialog_conf *conf, char *errbuf)
 	t.menu.descsepcolor    = bsddialog_color(col[1], col[5], 0);
 	t.menu.f_shortcutcolor = bsddialog_color(col[1], col[3], 0);
 	t.menu.shortcutcolor   = bsddialog_color(col[1], col[5], 0);
+	t.menu.bottomdesccolor = bsddialog_color(col[4], col[3], 0);
 
-	t.form.f_fieldcolor  = bsddialog_color(col[5], col[3], 0);
-	t.form.fieldcolor    = bsddialog_color(col[5], col[4], 0);
-	t.form.readonlycolor = bsddialog_color(col[4], col[5], 0);
+	t.form.f_fieldcolor    = bsddialog_color(col[5], col[3], 0);
+	t.form.fieldcolor      = bsddialog_color(col[5], col[4], 0);
+	t.form.readonlycolor   = bsddialog_color(col[4], col[5], 0);
+	t.form.bottomdesccolor = bsddialog_color(col[4], col[3], 0);
 
 	t.bar.f_color = bsddialog_color(col[5], col[3], 0);
 	t.bar.color   = bsddialog_color(col[3], col[5], 0);

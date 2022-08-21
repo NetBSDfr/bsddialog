@@ -234,7 +234,9 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 	move(SCREENLINES - 1, 2);
 	clrtoeol();
 	if (item->bottomdesc != NULL && focus) {
+		attron(t.form.bottomdesccolor);
 		addstr(item->bottomdesc);
+		attroff(t.form.bottomdesccolor);
 		refresh();
 	}
 

@@ -63,10 +63,12 @@ static struct bsddialog_theme bsddialogtheme = {
 	.menu.descsepcolor    = GET_COLOR(COLOR_YELLOW, bgwidget),
 	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    bgcurr),
 	.menu.shortcutcolor   = GET_COLOR(COLOR_RED,    bgwidget),
+	.menu.bottomdesccolor = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
 
-	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
-	.form.fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_CYAN),
-	.form.readonlycolor = GET_COLOR(COLOR_CYAN,COLOR_WHITE),
+	.form.f_fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
+	.form.fieldcolor      = GET_COLOR(COLOR_WHITE, COLOR_CYAN),
+	.form.readonlycolor   = GET_COLOR(COLOR_CYAN,  COLOR_WHITE),
+	.form.bottomdesccolor = GET_COLOR(COLOR_WHITE, COLOR_CYAN),
 
 	.bar.f_color = GET_COLOR(COLOR_BLACK, COLOR_YELLOW),
 	.bar.color   = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
@@ -109,10 +111,12 @@ static struct bsddialog_theme blackwhite = {
 	.menu.descsepcolor    = GET_COLOR(fg, bk),
 	.menu.f_shortcutcolor = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
 	.menu.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE,
+	.menu.bottomdesccolor = GET_COLOR(fg, bk),
 
-	.form.f_fieldcolor  = GET_COLOR(fg, bk) | A_REVERSE,
-	.form.fieldcolor    = GET_COLOR(fg, bk),
-	.form.readonlycolor = GET_COLOR(fg, bk),
+	.form.f_fieldcolor    = GET_COLOR(fg, bk) | A_REVERSE,
+	.form.fieldcolor      = GET_COLOR(fg, bk),
+	.form.readonlycolor   = GET_COLOR(fg, bk),
+	.form.bottomdesccolor = GET_COLOR(fg, bk),
 
 	.bar.f_color = GET_COLOR(fg, bk) | A_REVERSE,
 	.bar.color   = GET_COLOR(fg, bk),
@@ -129,7 +133,7 @@ static struct bsddialog_theme blackwhite = {
 };
 
 static struct bsddialog_theme dialogtheme = {
-	.screen.color = GET_COLOR(COLOR_CYAN,  COLOR_BLUE)  | A_BOLD,
+	.screen.color = GET_COLOR(COLOR_CYAN, COLOR_BLUE) | A_BOLD,
 
 	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadow.y       = 1,
@@ -153,10 +157,12 @@ static struct bsddialog_theme dialogtheme = {
 	.menu.descsepcolor    = GET_COLOR(COLOR_RED,   COLOR_WHITE),
 	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,   COLOR_BLUE),
 	.menu.shortcutcolor   = GET_COLOR(COLOR_RED,   COLOR_WHITE),
+	.menu.bottomdesccolor = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
 
-	.form.f_fieldcolor  = GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
-	.form.fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
-	.form.readonlycolor = GET_COLOR(COLOR_CYAN,  COLOR_WHITE)| A_BOLD,
+	.form.f_fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
+	.form.fieldcolor      = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
+	.form.readonlycolor   = GET_COLOR(COLOR_CYAN,  COLOR_WHITE)| A_BOLD,
+	.form.bottomdesccolor = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
 
 	.bar.f_color = GET_COLOR(COLOR_WHITE, COLOR_BLUE)  | A_BOLD,
 	.bar.color   = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
@@ -199,10 +205,12 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->menu.descsepcolor    = src->menu.descsepcolor;
 	dst->menu.f_shortcutcolor = src->menu.f_shortcutcolor;
 	dst->menu.shortcutcolor   = src->menu.shortcutcolor;
+	dst->menu.bottomdesccolor = src->menu.bottomdesccolor;
 
-	dst->form.f_fieldcolor  = src->form.f_fieldcolor;
-	dst->form.fieldcolor    = src->form.fieldcolor;
-	dst->form.readonlycolor = src->form.readonlycolor;
+	dst->form.f_fieldcolor    = src->form.f_fieldcolor;
+	dst->form.fieldcolor      = src->form.fieldcolor;
+	dst->form.readonlycolor   = src->form.readonlycolor;
+	dst->form.bottomdesccolor = src->form.bottomdesccolor;
 
 	dst->bar.f_color = src->bar.f_color;
 	dst->bar.color   = src->bar.color;

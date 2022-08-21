@@ -62,11 +62,13 @@ struct bsddialog_theme {
 		int descsepcolor;
 		int f_shortcutcolor;
 		int shortcutcolor;
+		int bottomdesccolor;
 	} menu;
 	struct {
 		int f_fieldcolor;
 		int fieldcolor;
 		int readonlycolor;
+		int bottomdesccolor;
 	} form;
 	struct {
 		int f_color;

@@ -315,7 +315,9 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	move(SCREENLINES - 1, 2);
 	clrtoeol();
 	if (item->bottomdesc != NULL && focus) {
+		attron(t.menu.bottomdesccolor);
 		addstr(item->bottomdesc);
+		attroff(t.menu.bottomdesccolor);
 		refresh();
 	}
 }
