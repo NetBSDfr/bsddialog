@@ -54,6 +54,7 @@ Next
 	           widechar string, multibyte charachter string otherwise.
 	    - add: conf.form.focus_buttons for active buttons always.
 	    - fix: formheight, items y instead of nitems.
+	    - add: formheight autosizing.
 	    - add: dynamic item position.
 
 
