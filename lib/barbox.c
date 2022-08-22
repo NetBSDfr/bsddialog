@@ -70,7 +70,7 @@ draw_bar(WINDOW *win, int y, int x, int barlen, int perc, bool withlabel,
 		sprintf(labelstr, "%d", label);
 	else
 		sprintf(labelstr, "%3d%%", perc);
-	stringlen = (int)strlen(labelstr);
+	stringlen = (int)strlen(labelstr); /* number, always 1-byte-ch string */
 	wmove(win, y, x + barlen/2 - stringlen/2);
 	for (i = 0; i < stringlen; i++) {
 		color = (blue_x + 1 <= barlen/2 - stringlen/2 + i ) ?
@@ -193,7 +193,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 			if (strcmp(inputbuf, sep) == 0)
 				break;
 			strcpy(pntext, inputbuf);
-			pntext += strlen(inputbuf);
+			pntext += strlen(inputbuf); /* end string, no strlen */
 			pntext[0] = ' ';
 			pntext++;
 		}
@@ -241,7 +241,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	max_minbarlen = 0;
 	for (i = 0; i < (int)nminibars; i++)
-		max_minbarlen = MAX(max_minbarlen, (int)strlen(minilabels[i]));
+		max_minbarlen = MAX(max_minbarlen, (int)strcols(minilabels[i]));
 	max_minbarlen += 3 + 16; /* seps + [...] */
 	max_minbarlen = MAX(max_minbarlen, MINMGBARWIDTH); /* mainbar */
 
