@@ -34,7 +34,7 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define COLSPERROWS  10   /* Default conf.text.columns_per_row */
+#define COLSPERROW  10   /* Default conf.text.columns_per_row */
 
 int bsddialog_init_notheme(void)
 {
