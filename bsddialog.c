@@ -244,7 +244,7 @@ int main(int argc, char *argv[argc])
 	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
 	bool esc_return_cancel_opt, ignore_opt, print_maxsize_opt;
 	bool bikeshed_opt, textfromfile;
-	int input, rows, cols, output, getH, getW;
+	int input, rows, cols, retval, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
 	char *text, *backtitle_opt, *loadthemefile, *savethemefile;
@@ -733,12 +733,12 @@ int main(int argc, char *argv[argc])
 			errorexit(NULL);
 
 	if (dialogbuilder != NULL) {
-		output = dialogbuilder(&conf, text, rows, cols, argc, argv,
+		retval = dialogbuilder(&conf, text, rows, cols, argc, argv,
 		    errorbuilder);
-		if (output == BSDDIALOG_ERROR)
+		if (retval == BSDDIALOG_ERROR)
 			errorexit(errorbuilder);
 	} else
-		output = BSDDIALOG_OK;
+		retval = BSDDIALOG_OK;
 
 	if (savethemefile != NULL)
 		if (savetheme(savethemefile, errorbuilder, BSDDIALOG_VERSION) !=
@@ -755,10 +755,10 @@ int main(int argc, char *argv[argc])
 		dprintf(output_fd_opt, "Dialog size: (%d - %d)\n",
 		    *conf.get_height, *conf.get_width);
 
-	if (output == BSDDIALOG_ESC && esc_return_cancel_opt)
-		output = BSDDIALOG_CANCEL;
+	if (retval == BSDDIALOG_ESC && esc_return_cancel_opt)
+		retval = BSDDIALOG_CANCEL;
 
-	return (output);
+	return (retval);
 }
 
 void sigint_handler(int sig)
