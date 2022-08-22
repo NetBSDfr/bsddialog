@@ -6,6 +6,7 @@ Next
 	* add: --bikeshed option to avoid "bikeshed".
 	* add: --load-theme option to set a custom theme at runtime.
 	* add: --save-theme option to save current theme.
+	* add: --buttons-focus for form, mixedform and passwordform.
 	* change: rename --esc-cancelvalue to --esc-return-cancel.
 	* change: print form field input like multibyte charachter string,
 	          instead of widechar string.

@@ -50,6 +50,7 @@ enum OPTS {
 	BEGIN_X,
 	BEGIN_Y,
 	BIKESHED,
+	BUTTONS_FOCUS,
 	CANCEL_LABEL,
 	CLEAR,
 	COLORS,
@@ -182,12 +183,12 @@ static void usage(void)
 
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
-	    "--begin-y <y>, --bikeshed, --cancel-label <label>, --clear, "
-	    "--colors, --columns-per-row <columns> , --cr-wrap, "
-	    "--date-format <format>,  --default-button <label>, "
-	    "--default-item <name>, --default-no, --disable-esc, "
-	    "--esc-return-cancel, --exit-label <label>, --extra-button, "
-	    "--extra-label <label>, --generic-button1 <label>, "
+	    "--begin-y <y>, --bikeshed, --buttons-focus, "
+	    "--cancel-label <label>, --clear, --colors, "
+	    "--columns-per-row <columns> , --cr-wrap, --date-format <format>, "
+	    "--default-button <label>, --default-item <name>, --default-no, "
+	    "--disable-esc, --esc-return-cancel, --exit-label <label>, "
+	    "--extra-button, --extra-label <label>, --generic-button1 <label>, "
 	    "--generic-button2 <label>, --help, --help-button, "
 	    "--help-label <label>, --help-status, --help-tags, --hfile <file>, "
 	    "--hline <string>, --hmsg <string>, --ignore, --insecure, "
@@ -291,6 +292,7 @@ int main(int argc, char *argv[argc])
 		{"begin-x",          required_argument, NULL, BEGIN_X},
 		{"begin-y",          required_argument, NULL, BEGIN_Y},
 		{"bikeshed",         no_argument,       NULL, BIKESHED},
+		{"buttons-focus",    no_argument,       NULL, BUTTONS_FOCUS},
 		{"cancel-label",     required_argument, NULL, CANCEL_LABEL},
 		{"clear",            no_argument,       NULL, CLEAR},
 		{"colors",           no_argument,       NULL, COLORS},
@@ -410,6 +412,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case BIKESHED:
 			bikeshed_opt = true;
+			break;
+		case BUTTONS_FOCUS:
+			conf.form.focus_buttons = true;
 			break;
 		case CANCEL_LABEL:
 			conf.button.cancel_label = optarg;
