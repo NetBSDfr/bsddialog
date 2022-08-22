@@ -134,7 +134,7 @@ int savetheme(const char *file, char *errbuf, const char *version)
 	}
 
 	fprintf(fp, "### bsddialog theme - %s", ctime(&clock));
-	fputs("# Refer to bsddialog(3) manual to know theme.* properties\n", fp);
+	fputs("# Refer to bsddialog(3) manual for theme.* properties\n", fp);
 	fprintf(fp, "version %s\n", version);
 
 	for (i = 0; i < NPROPERTY; i++) {
