@@ -282,6 +282,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		if (color && (miniperc >= 0))
 			wattron(widget, A_BOLD);
 		mvwaddstr(widget, i+1, 2, minilabels[i]);
+		if (color && (miniperc >= 0))
 			wattroff(widget, A_BOLD);
 		/* perc */
 		if (miniperc < -11)
