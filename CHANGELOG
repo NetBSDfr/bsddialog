@@ -1,64 +1,64 @@
 Next
 
 	Utility:
-	* fix: --hline with empty string (for bsdconfig).
-	* fix: avoid to overlay the backtitle by setting a top margin.
-	* fix: avoid to overlay down shadow with menus and forms bottom
-	       description by setting a down margin.
-	* fix: --form read-only flag with multiple fields.
 	* add: --textbox accepts options for the first button.
 	* add: --columns-per-row option for text autosizing.
 	* add: --bikeshed option to avoid "bikeshed".
-	* add: --load-theme option to set a custom themeat runtime.
+	* add: --load-theme option to set a custom theme at runtime.
 	* add: --save-theme option to save current theme.
 	* change: rename --esc-cancelvalue to --esc-return-cancel.
-	* change: print form field like multibyte charachter string, instead of
-	          widechar string.
+	* change: print form field input like multibyte charachter string,
+	          instead of widechar string.
+	* fix: --hline with empty string.
+	* fix: avoid to overlay the backtitle by setting a top margin.
+	* fix: avoid to overlay down shadow with menus and forms bottomdesc
+	       by setting a down margin.
+	* fix: --form read-only flag with multiple fields.
 
 	Library:
-	* fix: bsddialog_gauge() with fd < 0.
-	* fix: internal segmentation fault with disabled shadow.
-	* fix: new text refresh in bsddialog_gauge().
-	* fix: center position without shadow.
-	* fix: infobox with zero text length.
-	* fix: text wrapping with more than 1024 words.
-	* fix: rename theme.shadow.h to theme.shadow.y.
-	* fix: rename theme.shadow.w to theme.shadow.x.
 	* add: conf.auto_topmargin and conf.auto_downmargin.
-	* add: bsddialog_textbox() accepts conf.button customization.
-	* add: bsddialog_textbox() shows arrows and percentage.
+	* add: bsddialog_textbox() accepts conf.button.* for the first button.
+	* add: bsddialog_textbox() arrows and percentage.
 	* add: conf.text.cols_per_row to set a ratio for text autosizing.
-	* add: timebox and datebox arrows and focus background.
+	* add: timebox and datebox arrows and focus background for boxes.
 	* add: timebox and datebox UP key to switch focus.
 	* add: bsddialog_init_notheme() in bsddialo_theme.h.
 	* add: bsddialog_hascolors() in bsddialo_theme.h.
 	* add: theme.form.bottomdesccolor and theme.menu.bottomdesccolor.
 	* add: Unicode.
 	    - UI handles multicolumn charachters: backtitle, title,
-	      text (word wrapping, auto sizing), menus (shortcuts, name, desc),
+	      text (word wrapping, autosizing), menus (shortcuts, name, desc),
 	      forms (label, field), textbox, mixedgauge (minilabel),
 	      buttons (label, shortcuts), bottomtitle.
 	    - API handles char* arguments like multibyte charachter string,
 	      depending on the current locale.
+	    - Internally wide charachters are used to get input from keyboard
+	      and to adapt word wrapping and dynamic text autosizing to
+	      muticolumn charachters.
 	* refactoring: (rewrite) form.c.
-	    - delete: libformw dep, implementing its features from scratch.
+	    - delete: libformw dep, implement its features from scratch.
+	    - delete: maxvaluelen >= valuelen constraint.
+	    - delete: conf.form.enable_wchar, get always unicode (wchar) input.
 	    - add: KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE keys.
 	    - add: conf.form.securembch secure multibyte charachter.
-	    - delete: maxvaluelen >= valuelen constraint.
 	    - add: BSDDIALOG_FIELDNOCOLOR for formitem.flags.
 	    - add: BSDDIALOG_FIELDCURSOREND for formitem.flags.
 	    - add: BSDDIALOG_FIELDEXTEND for formitem.flags.
-	    - add: resizing after KEY_RESIZE (SIGWINCH).
+	    - add: resizing and refresh after KEY_RESIZE (SIGWINCH).
 	    - add: items scrolling.
-	    - add: conf.form.input_singlebyte for field input charachters.
-	    - delete: conf.form.enable_wchar, libbsddialog gets always unicode
-	              (wide charachters) for input field.
-	    - add: conf.form.value_wchar the allocated value string is a
-	           widechar string, multibyte charachter string otherwise.
+	    - add: conf.form.input_singlebyte for field input.
+	    - add: conf.form.value_wchar, value is wchar_t* instead MB-char*.
 	    - add: conf.form.focus_buttons for active buttons always.
-	    - fix: formheight, items y instead of nitems.
 	    - add: formheight autosizing.
 	    - add: dynamic item position.
+	* fix: bsddialog_gauge() with fd < 0.
+	* fix: internal segmentation fault with disabled shadow.
+	* fix: bsddialog_gauge() refresh new text.
+	* fix: center position without shadow.
+	* fix: bsddialog_infobox() with zero text length.
+	* fix: text wrapping with more than 1024 words.
+	* fix: rename theme.shadow.h to theme.shadow.y.
+	* fix: rename theme.shadow.w to theme.shadow.x.
 
 
 2022-03-02 version 0.2
