@@ -149,7 +149,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	}
 	fclose(fp);
 	set_tabsize(defaulttablen);
-	
+
 	get_buttons(conf, &bs, "EXIT", NULL);
 	bs.curr = 0;
 	bs.nbuttons = 1;

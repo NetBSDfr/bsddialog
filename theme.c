@@ -84,10 +84,10 @@ static struct property p[NPROPERTY] = {
 	{ "theme.form.fieldcolor", COLOR, &t.form.fieldcolor},
 	{ "theme.form.readonlycolor", COLOR, &t.form.readonlycolor},
 	{ "theme.form.bottomdesccolor", COLOR, &t.form.bottomdesccolor},
-	
+
 	{ "theme.bar.f_color", COLOR, &t.bar.f_color},
 	{ "theme.bar.color", COLOR, &t.bar.color},
-	
+
 	{ "theme.button.hmargin", UINT, &t.button.hmargin},
 	{ "theme.button.leftdelim", CHAR, &t.button.leftdelim},
 	{ "theme.button.rightdelim", CHAR, &t.button.rightdelim},

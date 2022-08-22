@@ -50,7 +50,7 @@ struct privateitem {
 	bool cursorend;         /* formitem.flags & BSDDIALOG_FIELDCURSOREND */
 	bool cursor;            /* field cursor visibility */
 	const char *bottomdesc; /* formitem.bottomdesc */
-	
+
 	wchar_t *privwbuf;       /* formitem.value */
 	wchar_t *pubwbuf;        /* string for drawitem() */
 	unsigned int maxletters; /* formitem.maxvaluelen, [priv|pub]wbuf size */
@@ -95,7 +95,7 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 
 	/*BSDDIALOG_DEBUG(2,2,"|pos:%u, xposdraw:%u, xcursor:%u, "
 	    "fieldcols:%u, nletters:%u, maxletters:%u|",
-	    item->pos, item->xposdraw, item->xcursor, item->fieldcols, 
+	    item->pos, item->xposdraw, item->xcursor, item->fieldcols,
 	    item->nletters, item->maxletters);*/
 	change = false;
 	switch (op){
@@ -158,7 +158,7 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 		item->pubwbuf[i] = L'\0';
 		break;
 	case MOVE_CURSOR_RIGHT: /* used also by "insert", see handler loop */
-		if (item->pos + 1 == item->maxletters) 
+		if (item->pos + 1 == item->maxletters)
 			break;
 		if (item->pos == item->nletters)
 			break;
@@ -192,7 +192,7 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 	}
 	/*BSDDIALOG_DEBUG(3,2,"|pos:%u, xposdraw:%u, xcursor:%u, "
 	    "fieldcols:%u, nletters:%u, maxletters:%u|",
-	    item->pos, item->xposdraw, item->xcursor, item->fieldcols, 
+	    item->pos, item->xposdraw, item->xcursor, item->fieldcols,
 	    item->nletters, item->maxletters);*/
 
 	return (change);
@@ -224,7 +224,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 	    wcslen(item->pubwbuf)) {
 		n++;
 		cols += wcwidth(item->pubwbuf[item->xposdraw + n]);
-		
+
 	}
 	mvwaddnwstr(form->pad, item->yfield, item->xfield,
 	    &item->pubwbuf[item->xposdraw], n);
@@ -526,7 +526,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.securewch = btowc(conf->form.securech);
 		insecurecursor = true;
 	} else {
-		form.securewch = L' '; 
+		form.securewch = L' ';
 	}
 
 	if ((items = malloc(nitems * sizeof(struct privateitem))) == NULL)
@@ -610,7 +610,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w, 
+	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w,
 	    &form.viewrows, form.h, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (form_checksize(h, w, text, &form, nitems, bs) != 0)
@@ -809,7 +809,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			form.w = form.wmin;
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
-			if (menu_autosize(conf, rows, cols, &h, &w, text, form.w, 
+			if (menu_autosize(conf, rows, cols, &h, &w, text, form.w,
 			    &form.viewrows, form.h, bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (form_checksize(h, w, text, &form, nitems, bs) != 0)
@@ -870,7 +870,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform) {
 				/* avoid WEOF for IEEE Std 1003.1-2008 */
 				if (conf->form.input_singlebyte &&
-				    wctob(input) == EOF) 
+				    wctob(input) == EOF)
 					break;
 				/*
 				 * MOVE_CURSOR_RIGHT manages new positions
@@ -879,10 +879,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				 */
 				if(insertch(&form, item, input)) {
 					fieldctl(item, MOVE_CURSOR_RIGHT);
-					/* 
+					/*
 					 * no if(fieldctl), update always
 					 * because it fails with maxletters.
-					 */ 
+					 */
 					drawitem(&form, item, true);
 				}
 			} else {
@@ -909,7 +909,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			drawitem(&form, item, false);
 			curritem = next;
 			item = &items[curritem];
-			curriteminview(&form, item);		
+			curriteminview(&form, item);
 			update_formborders(conf, &form);
 			drawitem(&form, item, true);
 			changeitem = false;

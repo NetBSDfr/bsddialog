@@ -39,7 +39,7 @@
 #define MINWTIME   14 /* 3 windows and their borders */
 
 static void
-drawquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt, 
+drawquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
     const void *value, bool focus)
 {
 	int h, l, w;
