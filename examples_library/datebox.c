@@ -9,6 +9,7 @@
  */
 
 #include <bsddialog.h>
+#include <locale.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -27,6 +28,7 @@ int main()
 	mm = localtm->tm_mon + 1;
 	dd = localtm->tm_mday;
 
+	setlocale(LC_ALL, ""); /* unicode arrows insted of ^^^ and vvv */
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);
@@ -34,9 +36,7 @@ int main()
 
 	bsddialog_initconf(&conf);
 	conf.title = "datebox";
-	output = bsddialog_datebox(&conf,
-	    "TAB / RIGHT / LEFT to move,\nUP / DOWN to select time", 10, 35,
-	    &yy, &mm, &dd);
+	output = bsddialog_datebox(&conf, "Example", 9, 35, &yy, &mm, &dd);
 
 	bsddialog_end();
 
