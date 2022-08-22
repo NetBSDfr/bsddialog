@@ -125,7 +125,7 @@ int bsddialog_initconf(struct bsddialog_conf *conf)
 	conf->y = BSDDIALOG_CENTER;
 	conf->x = BSDDIALOG_CENTER;
 	conf->shadow = true;
-	conf->text.cols_per_row = COLSPERROWS;
+	conf->text.cols_per_row = COLSPERROW;
 
 	return (BSDDIALOG_OK);
 }
