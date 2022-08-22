@@ -434,7 +434,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
 	bool loop, onetrue, movefocus, automenurows, shortcut_butts;
-	int i, j, y, x, h, w, output;
+	int i, j, y, x, h, w, retval;
 	int ymenupad, ys, ye, xs, xe, abs, next, totnitems;
 	wint_t input;
 	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
@@ -567,18 +567,18 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			output = bs.value[bs.curr];
+			retval = bs.value[bs.curr];
 			if (abs >= 0 && pritems[abs].type == MENUMODE)
 				pritems[abs].on = true;
-			set_on_output(conf, output, ngroups, groups, pritems);
+			set_on_output(conf, retval, ngroups, groups, pritems);
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				retval = BSDDIALOG_ESC;
 				if (abs >= 0 && pritems[abs].type == MENUMODE)
 					pritems[abs].on = true;
-				set_on_output(conf, output, ngroups, groups,
+				set_on_output(conf, retval, ngroups, groups,
 				    pritems);
 				loop = false;
 			}
@@ -715,10 +715,10 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		default:
 			if (shortcut_butts) {
 				if (shortcut_buttons(input, &bs)) {
-					output = bs.value[bs.curr];
+					retval = bs.value[bs.curr];
 					if (pritems[abs].type == MENUMODE)
 						pritems[abs].on = true;
-					set_on_output(conf, output, ngroups,
+					set_on_output(conf, retval, ngroups,
 					    groups, pritems);
 					loop = false;
 				}
@@ -757,7 +757,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	end_dialog(conf, shadow, widget, textpad);
 	free(pritems);
 
-	return (output);
+	return (retval);
 }
 
 /* API */
@@ -766,12 +766,12 @@ bsddialog_mixedlist(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int menurows, unsigned int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
-	int output;
+	int retval;
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, MIXEDLISTMODE,
+	retval = do_mixedlist(conf, text, rows, cols, menurows, MIXEDLISTMODE,
 	    ngroups, groups, focuslist, focusitem);
 
-	return (output);
+	return (retval);
 }
 
 int
@@ -779,14 +779,14 @@ bsddialog_checklist(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int menurows, unsigned int nitems,
     struct bsddialog_menuitem *items, int *focusitem)
 {
-	int output, focuslist = 0;
+	int retval, focuslist = 0;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, CHECKLISTMODE,
+	retval = do_mixedlist(conf, text, rows, cols, menurows, CHECKLISTMODE,
 	    1, &group, &focuslist, focusitem);
 
-	return (output);
+	return (retval);
 }
 
 int
@@ -794,14 +794,14 @@ bsddialog_menu(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int menurows, unsigned int nitems,
     struct bsddialog_menuitem *items, int *focusitem)
 {
-	int output, focuslist = 0;
+	int retval, focuslist = 0;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, MENUMODE, 1,
+	retval = do_mixedlist(conf, text, rows, cols, menurows, MENUMODE, 1,
 	    &group, &focuslist, focusitem);
 
-	return (output);
+	return (retval);
 }
 
 int
@@ -809,12 +809,12 @@ bsddialog_radiolist(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int menurows, unsigned int nitems,
     struct bsddialog_menuitem *items, int *focusitem)
 {
-	int output, focuslist = 0;
+	int retval, focuslist = 0;
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
-	output = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
+	retval = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
 	    1, &group, &focuslist, focusitem);
 
-	return (output);
+	return (retval);
 }

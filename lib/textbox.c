@@ -111,7 +111,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
     int cols)
 {
 	bool loop, has_multi_col;
-	int i, output, y, x, h, w;
+	int i, retval, y, x, h, w;
 	int hpad, wpad, ypad, xpad, ys, ye, xs, xe, padmargin, printrows;
 	unsigned int defaulttablen, linecols;
 	wint_t input;
@@ -188,12 +188,12 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			output = BSDDIALOG_OK;
+			retval = BSDDIALOG_OK;
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
@@ -268,7 +268,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.value[bs.curr];
+				retval = bs.value[bs.curr];
 				loop = false;
 			}
 		}
@@ -276,5 +276,5 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 
 	end_dialog(conf, shadow, widget, pad);
 
-	return (output);
+	return (retval);
 }

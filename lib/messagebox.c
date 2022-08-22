@@ -96,7 +96,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool loop;
-	int y, x, h, w, output, ytextpad, htextpad, unused;
+	int y, x, h, w, retval, ytextpad, htextpad, unused;
 	WINDOW *widget, *textpad, *shadow;
 	wint_t input;
 
@@ -125,12 +125,12 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		switch (input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			output = bs.value[bs.curr];
+			retval = bs.value[bs.curr];
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
@@ -199,7 +199,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.value[bs.curr];
+				retval = bs.value[bs.curr];
 				loop = false;
 			}
 		}
@@ -207,7 +207,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	end_dialog(conf, shadow, widget, textpad);
 
-	return (output);
+	return (retval);
 }
 
 /* API */

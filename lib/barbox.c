@@ -217,7 +217,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int mainperc, unsigned int nminibars, const char **minilabels,
     int *minipercs, bool color)
 {
-	int i, output, miniperc, y, x, h, w, ypad, max_minbarlen;
+	int i, retval, miniperc, y, x, h, w, ypad, max_minbarlen;
 	int htextpad, htext, wtext;
 	int colorperc, red, green;
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -268,10 +268,10 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	output = new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
+	retval = new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
 	    NULL, false);
-	if (output == BSDDIALOG_ERROR)
-		return (output);
+	if (retval == BSDDIALOG_ERROR)
+		return (retval);
 
 	/* mini bars */
 	for (i = 0; i < (int)nminibars; i++) {
@@ -339,12 +339,12 @@ bsddialog_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int mainperc, unsigned int nminibars,
     const char **minilabels, int *minipercs)
 {
-	int output;
+	int retval;
 
-	output = do_mixedgauge(conf, text, rows, cols, mainperc, nminibars,
+	retval = do_mixedgauge(conf, text, rows, cols, mainperc, nminibars,
 	    minilabels, minipercs, false);
 
-	return (output);
+	return (retval);
 }
 
 int
@@ -353,7 +353,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
     struct bsddialog_fileminibar *minibar)
 {
 	bool update;
-	int perc, output, *minipercs;
+	int perc, retval, *minipercs;
 	unsigned int i, mainperc, totaltodo;
 	float readforsec;
 	const char **minilabels;
@@ -372,7 +372,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 	}
 
 	refresh = pvconf->refresh == 0 ? 0 : pvconf->refresh - 1;
-	output = BSDDIALOG_OK;
+	retval = BSDDIALOG_OK;
 	i = 0;
 	update = true;
 	time(&told);
@@ -385,9 +385,9 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 
 		time(&tnew);
 		if (update || tnew > told + refresh) {
-			output = do_mixedgauge(conf, text, rows, cols, mainperc,
+			retval = do_mixedgauge(conf, text, rows, cols, mainperc,
 			    nminibar, minilabels, minipercs, true);
-			if (output == BSDDIALOG_ERROR)
+			if (retval == BSDDIALOG_ERROR)
 				return (BSDDIALOG_ERROR);
 
 			move(SCREENLINES - 1, 2);
@@ -422,7 +422,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 
 	free(minilabels);
 	free(minipercs);
-	return (output);
+	return (retval);
 }
 
 int
@@ -431,7 +431,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	bool loop, buttupdate, barupdate;
 	int y, x, h, w;
-	int currvalue, output, sizebar, bigchange, positions;
+	int currvalue, retval, sizebar, bigchange, positions;
 	wint_t input;
 	float perc;
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -490,13 +490,13 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			output = bs.value[bs.curr];
+			retval = bs.value[bs.curr];
 			*value = currvalue;
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
@@ -590,7 +590,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.value[bs.curr];
+				retval = bs.value[bs.curr];
 				loop = false;
 			}
 		}
@@ -599,7 +599,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return (output);
+	return (retval);
 }
 
 int
@@ -607,7 +607,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int sec)
 {
 	bool loop, buttupdate, barupdate;
-	int output, y, x, h, w, tout, sizebar;
+	int retval, y, x, h, w, tout, sizebar;
 	wint_t input;
 	float perc;
 	WINDOW *widget, *textpad, *bar, *shadow;
@@ -657,7 +657,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 		if (get_wch(&input) == ERR) { /* timeout */
 			tout--;
 			if (tout < 0) {
-				output = BSDDIALOG_TIMEOUT;
+				retval = BSDDIALOG_TIMEOUT;
 				break;
 			}
 			else {
@@ -668,12 +668,12 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			output = bs.value[bs.curr];
+			retval = bs.value[bs.curr];
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
@@ -734,7 +734,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.value[bs.curr];
+				retval = bs.value[bs.curr];
 				loop = false;
 			}
 		}
@@ -745,5 +745,5 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return (output);
+	return (retval);
 }

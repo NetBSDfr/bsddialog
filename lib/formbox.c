@@ -500,7 +500,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     struct bsddialog_formitem *apiitems)
 {
 	bool switchfocus, changeitem, focusinform, insecurecursor, loop;
-	int curritem, mbchsize, next, output, y, x, h, w, wchtype;
+	int curritem, mbchsize, next, retval, y, x, h, w, wchtype;
 	unsigned int i, j, itemybeg, itemxbeg, tmp;
 	wchar_t *winit;
 	wint_t input;
@@ -683,13 +683,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case 10: /* Enter */
 			if (focusinform && conf->form.focus_buttons == false)
 				break;
-			output = return_values(conf, bs.value[bs.curr],
+			retval = return_values(conf, bs.value[bs.curr],
 			    nitems, apiitems, items);
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = return_values(conf, BSDDIALOG_ESC,
+				retval = return_values(conf, BSDDIALOG_ESC,
 				    nitems, apiitems, items);
 				loop = false;
 			}
@@ -796,7 +796,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			curs_set(0);
 			if (f1help(conf) != 0) {
-				output = BSDDIALOG_ERROR;
+				retval = BSDDIALOG_ERROR;
 				loop = false;
 			}
 			/* No break, screen size can change */
@@ -887,7 +887,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				}
 			} else {
 				if (shortcut_buttons(input, &bs)) {
-					output = return_values(conf,
+					retval = return_values(conf,
 					    bs.value[bs.curr], nitems, apiitems,
 					    items);
 					loop = false;
@@ -926,5 +926,5 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 	end_dialog(conf, shadow, widget, textpad);
 
-	return (output);
+	return (retval);
 }

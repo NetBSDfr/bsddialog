@@ -112,7 +112,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
     int cols, unsigned int *hh, unsigned int *mm, unsigned int *ss)
 {
 	bool loop, focusbuttons;
-	int i, output, y, x, h, w, sel;
+	int i, retval, y, x, h, w, sel;
 	wint_t input;
 	WINDOW *widget, *textpad, *shadow;
 	struct buttons bs;
@@ -176,12 +176,12 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 		case 10: /* Enter */
 			if (focusbuttons == false)
 				break;
-			output = bs.value[bs.curr];
+			retval = bs.value[bs.curr];
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
@@ -282,13 +282,13 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.value[bs.curr];
+				retval = bs.value[bs.curr];
 				loop = false;
 			}
 		}
 	}
 
-	if (output == BSDDIALOG_OK) {
+	if (retval == BSDDIALOG_OK) {
 		*hh = c[0].value;
 		*mm = c[1].value;
 		*ss = c[2].value;
@@ -298,7 +298,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 		delwin(c[i].win);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return (output);
+	return (retval);
 }
 
 int
@@ -306,7 +306,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd)
 {
 	bool loop, focusbuttons;
-	int i, output, y, x, h, w, sel;
+	int i, retval, y, x, h, w, sel;
 	wint_t input;
 	WINDOW *widget, *textpad, *shadow;
 	struct buttons bs;
@@ -393,12 +393,12 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		case 10: /* Enter */
 			if (focusbuttons == false)
 				break;
-			output = bs.value[bs.curr];
+			retval = bs.value[bs.curr];
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				output = BSDDIALOG_ESC;
+				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
@@ -517,13 +517,13 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				output = bs.value[bs.curr];
+				retval = bs.value[bs.curr];
 				loop = false;
 			}
 		}
 	}
 
-	if (output == BSDDIALOG_OK) {
+	if (retval == BSDDIALOG_OK) {
 		*yy = c[0].value;
 		*mm = c[1].value;
 		*dd = c[2].value;
@@ -533,5 +533,5 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		delwin(c[i].win);
 	end_dialog(conf, shadow, widget, textpad);
 
-	return (output);
+	return (retval);
 }
