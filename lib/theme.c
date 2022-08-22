@@ -237,7 +237,7 @@ int bsddialog_get_theme(struct bsddialog_theme *theme)
 
 	set_theme(theme, &t);
 
-	return (0);
+	return (BSDDIALOG_OK);
 }
 
 int bsddialog_set_theme(struct bsddialog_theme *theme)
@@ -249,7 +249,7 @@ int bsddialog_set_theme(struct bsddialog_theme *theme)
 
 	set_theme(&t, theme);
 
-	return (0);
+	return (BSDDIALOG_OK);
 }
 
 int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
@@ -272,7 +272,7 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 	else
 		RETURN_ERROR("Unknow default theme");
 
-	return (0);
+	return (BSDDIALOG_OK);
 }
 
 int
