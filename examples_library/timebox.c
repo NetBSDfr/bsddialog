@@ -22,13 +22,14 @@ int main()
 	time_t clock;
 	struct tm *localtm;
 
+	setlocale(LC_ALL, ""); /* unicode arrows instead of ^^^ and vvv */
+
 	time(&clock);
 	localtm = localtime(&clock);
 	hh = localtm->tm_hour;
 	mm = localtm->tm_min;
 	ss = localtm->tm_sec;
 
-	setlocale(LC_ALL, ""); /* unicode arrows insted of ^^^ and vvv */
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);

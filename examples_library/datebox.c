@@ -22,13 +22,14 @@ int main()
 	time_t cal;
 	struct tm *localtm;
 
+	setlocale(LC_ALL, ""); /* unicode arrows instead of ^^^ and vvv */
+
 	time(&cal);
 	localtm = localtime(&cal);
 	yy = localtm->tm_year + 1900;
 	mm = localtm->tm_mon + 1;
 	dd = localtm->tm_mday;
 
-	setlocale(LC_ALL, ""); /* unicode arrows insted of ^^^ and vvv */
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);
