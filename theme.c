@@ -170,13 +170,6 @@ int savetheme(const char *file, char *errbuf, const char *version)
 	return (BSDDIALOG_OK);
 }
 
-#define RETURN_ERROR(name, error) do {                                         \
-	sprintf(errbuf, "%s for \"%s\"", error, name);                         \
-	fclose(fp);                                                            \
-	return (BSDDIALOG_ERROR);                                              \
-} while (0)
-
-
 int loadtheme(const char *file, char *errbuf)
 {
 	bool boolvalue;
@@ -197,6 +190,12 @@ int loadtheme(const char *file, char *errbuf)
 		sprintf(errbuf, "Cannot open theme \"%s\"", file);
 		return (BSDDIALOG_ERROR);
 	}
+
+#define RETURN_ERROR(name, error) do {                                         \
+	sprintf(errbuf, "%s for \"%s\"", error, name);                         \
+	fclose(fp);                                                            \
+	return (BSDDIALOG_ERROR);                                              \
+} while (0)
 
 	while(fgets(line, BUFSIZ, fp) != NULL) {
 		if(line[0] == '#' || line[0] == '\n')
