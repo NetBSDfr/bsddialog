@@ -218,7 +218,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 		color = focus ? t.form.f_fieldcolor : t.form.fieldcolor;
 	wattron(form->pad, color);
 	mvwhline(form->pad, item->yfield, item->xfield, ' ', item->fieldcols);
-	n=0;
+	n = 0;
 	cols = wcwidth(item->pubwbuf[item->xposdraw]);
 	while (cols <= item->fieldcols && item->xposdraw + n <
 	    wcslen(item->pubwbuf)) {
