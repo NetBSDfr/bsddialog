@@ -39,7 +39,7 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
-#include "theme.h"
+#include "util_theme.h"
 
 #define BSDDIALOG_VERSION "0.3-WorkInProgress"
 
