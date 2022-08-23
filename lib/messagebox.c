@@ -60,7 +60,7 @@ static int message_checksize(int rows, int cols, struct buttons bs)
 	int mincols;
 
 	mincols = VBORDERS;
-	mincols += buttons_width(bs);
+	mincols += buttons_min_width(bs);
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "

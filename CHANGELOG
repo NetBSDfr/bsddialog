@@ -26,6 +26,9 @@ Next
 	* add: bsddialog_init_notheme() in bsddialo_theme.h.
 	* add: bsddialog_hascolors() in bsddialo_theme.h.
 	* add: theme.form.bottomdesccolor and theme.menu.bottomdesccolor.
+	* add: dynamic buttons margin.
+	    - add: theme.button.minmargin and theme.button.maxmargin.
+	    - delete: theme.button.hmargin.
 	* add: Unicode.
 	    - UI handles multicolumn charachters: backtitle, title,
 	      text (word wrapping, autosizing), menus (shortcuts, name, desc),

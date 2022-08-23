@@ -232,14 +232,26 @@ void
 draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
 {
 	int i, x, startx, y, rows, cols;
+	unsigned int newmargin, margin, wbuttons;
 
 	getmaxyx(window, rows, cols);
 	y = rows - 2;
 
-	startx = cols/2 - buttons_width(bs)/2;
+	newmargin = cols - VBORDERS - (bs.nbuttons * bs.sizebutton);
+	newmargin /= (bs.nbuttons + 1);
+	newmargin = MIN(newmargin, t.button.maxmargin);
+	if (newmargin == 0) {
+		margin = t.button.minmargin;
+		wbuttons = buttons_min_width(bs);
+	} else {
+		margin = newmargin;
+		wbuttons = bs.nbuttons * bs.sizebutton;
+		wbuttons += (bs.nbuttons + 1) * margin;
+	}
 
+	startx = (cols)/2 - wbuttons/2 + newmargin;
 	for (i = 0; i < (int)bs.nbuttons; i++) {
-		x = i * (bs.sizebutton + t.button.hmargin);
+		x = i * (bs.sizebutton + margin);
 		draw_button(window, y, startx + x, bs.sizebutton, bs.label[i],
 		    bs.first[i],  i == bs.curr, shortcut);
 	}
@@ -326,13 +338,13 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 	bs->sizebutton += 2;
 }
 
-int buttons_width(struct buttons bs)
+int buttons_min_width(struct buttons bs)
 {
 	unsigned int width;
 
 	width = bs.nbuttons * bs.sizebutton;
 	if (bs.nbuttons > 0)
-		width += (bs.nbuttons - 1) * t.button.hmargin;
+		width += (bs.nbuttons - 1) * t.button.minmargin;
 
 	return (width);
 }
@@ -734,7 +746,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 
 	wbuttons = 0;
 	if (bs != NULL)
-		wbuttons = buttons_width(*bs);
+		wbuttons = buttons_min_width(*bs);
 
 	/* Rows */
 	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
@@ -867,7 +879,7 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 
 	/* buttons */
 	if (bs != NULL)
-		min += buttons_width(*bs);
+		min += buttons_min_width(*bs);
 
 	/* text */
 	if (wtext > 0)

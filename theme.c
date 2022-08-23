@@ -52,7 +52,7 @@ struct property {
 	void *value;
 };
 
-#define NPROPERTY 37
+#define NPROPERTY 38
 static struct property p[NPROPERTY] = {
 	{ "theme.screen.color", COLOR, &t.screen.color },
 
@@ -88,7 +88,8 @@ static struct property p[NPROPERTY] = {
 	{ "theme.bar.f_color", COLOR, &t.bar.f_color},
 	{ "theme.bar.color", COLOR, &t.bar.color},
 
-	{ "theme.button.hmargin", UINT, &t.button.hmargin},
+	{ "theme.button.minmargin", UINT, &t.button.minmargin},
+	{ "theme.button.maxmargin", UINT, &t.button.maxmargin},
 	{ "theme.button.leftdelim", CHAR, &t.button.leftdelim},
 	{ "theme.button.rightdelim", CHAR, &t.button.rightdelim},
 	{ "theme.button.delimcolor", COLOR, &t.button.delimcolor},
@@ -322,7 +323,8 @@ int bikeshed(struct bsddialog_conf *conf, char *errbuf)
 	t.bar.f_color = bsddialog_color(col[5], col[3], 0);
 	t.bar.color   = bsddialog_color(col[3], col[5], 0);
 
-	t.button.hmargin         = 3,
+	t.button.minmargin       = 1,
+	t.button.maxmargin       = 5,
 	t.button.leftdelim       = '[',
 	t.button.rightdelim      = ']',
 	t.button.f_delimcolor    = bsddialog_color(col[5], col[3], 0);

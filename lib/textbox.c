@@ -94,7 +94,7 @@ textbox_checksize(int rows, int cols, int hpad, struct buttons bs)
 	int mincols;
 
 	mincols = VBORDERS;
-	mincols += buttons_width(bs);
+	mincols += buttons_min_width(bs);
 
 	if (cols < mincols)
 		RETURN_ERROR("Few cols for the textbox");

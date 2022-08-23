@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd August 19, 2022
+.Dd August 23, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -835,7 +835,8 @@ struct bsddialog_theme {
 		int color;
 	} bar;
 	struct {
-		unsigned int hmargin;
+		unsigned int minmargin;
+		unsigned int maxmargin;
 		char leftdelim;
 		char rightdelim;
 		int delimcolor;

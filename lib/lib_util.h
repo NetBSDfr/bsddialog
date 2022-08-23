@@ -78,7 +78,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 void
 draw_buttons(WINDOW *window, struct buttons bs, bool shortcut);
 
-int buttons_width(struct buttons bs);
+int buttons_min_width(struct buttons bs);
 bool shortcut_buttons(wint_t key, struct buttons *bs);
 
 /* help window with F1 key */

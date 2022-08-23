@@ -95,7 +95,7 @@ datetime_checksize(int rows, int cols, int minw, struct buttons bs)
 	int mincols;
 
 	mincols = VBORDERS;
-	mincols += buttons_width(bs);
+	mincols += buttons_min_width(bs);
 	mincols = MAX(minw, mincols);
 
 	if (cols < mincols)
