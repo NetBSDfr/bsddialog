@@ -63,6 +63,8 @@ Next
 	* fix: text wrapping with more than 1024 words.
 	* fix: rename theme.shadow.h to theme.shadow.y.
 	* fix: rename theme.shadow.w to theme.shadow.x.
+	* fix: menurows autosize with fixed rows improving text_size().
+	* fix: msgbox and yesno scrolling and checksize without text.
 
 
 2022-03-02 version 0.2
