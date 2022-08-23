@@ -215,6 +215,9 @@ int loadtheme(const char *file, char *errbuf)
 		}
 		switch (p[i].type) {
 		case CHAR:
+			while (value[0] == ' ' || value[0] == '\n' ||
+			    value[0] == '\0')
+				value++;
 			if (sscanf(value, "%c", &charvalue) != 1)
 				RETURN_ERROR(p[i].name, "Cannot get a char");
 			*((int*)p[i].value) = charvalue;
