@@ -186,6 +186,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				return (BSDDIALOG_ERROR);
 
 			getmaxyx(textpad, htextpad, unused);
+			ytextpad = 0;
 			textupdate(widget, textpad, htextpad, ytextpad, hastext);
 
 			/* Important to fix grey lines expanding screen */
