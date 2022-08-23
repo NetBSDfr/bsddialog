@@ -389,8 +389,12 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		 */
 		*menurows = MIN(*h - 6 - htext, (int)*menurows);
 	} else {
-		if (*menurows == 0)
-			*menurows = MIN(*h-6-htext, nitems);
+		if (*menurows == 0) {
+			if (*h - 6 - htext <= 0)
+				*menurows = 0; /* menu_checksize() will check */
+			else
+				*menurows = MIN(*h-6-htext, nitems);
+		}
 	}
 
 	return (0);
@@ -418,8 +422,8 @@ menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
 	textrow = text != NULL && text[0] != '\0' ? 1 : 0;
 
 	if (nitems > 0 && menurows == 0)
-		RETURN_ERROR("items > 0 but menurows == 0, probably terminal "
-		    "too small");
+		RETURN_ERROR("items > 0 but menurows == 0, if menurows = 0 "
+		    "terminal too small");
 
 	menusize = nitems > 0 ? 3 : 0;
 	if (rows < 2  + 2 + menusize + textrow)

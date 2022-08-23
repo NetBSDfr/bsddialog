@@ -751,13 +751,13 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	/* Rows */
 	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
 		maxhtext = widget_max_height(conf) - VBORDERS - rowsnotext;
-		if (bs != NULL)
-			maxhtext -= 2;
 	} else { /* fixed */
 		maxhtext = rows - VBORDERS - rowsnotext;
-		if (bs != NULL)
-			maxhtext -= 2;
 	}
+	if (bs != NULL)
+		maxhtext -= 2;
+	if (maxhtext <= 0)
+		maxhtext = 1; /* text_autosize() computes always htext */
 
 	/* Cols */
 	if (cols == BSDDIALOG_AUTOSIZE) {
@@ -771,14 +771,12 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		changewtext = false;
 	}
 
-	/* Sizing calculation */
 	if (startwtext <= 0 && changewtext)
 		startwtext = 1;
-	if (maxhtext <= 0 || startwtext <= 0) {
-		*htext = *wtext = 0;
-		return (0);
-	}
+	if (startwtext <= 0)
+		RETURN_ERROR("Fullscreen or fixed cols to print text <=0");
 
+	/* Sizing calculation */
 	if (text_properties(conf, text, &tp) != 0)
 		return (BSDDIALOG_ERROR);
 	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, htext,
