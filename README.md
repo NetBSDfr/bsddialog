@@ -125,7 +125,8 @@ in the _Public Domain_ to build new projects:
 ```
 
 
-## TODO
+## TODO and Ideas
  
- - add menubar feature
- - add key callback
+ - menubar feature
+ - key callback
+ - Right-To-Left text
