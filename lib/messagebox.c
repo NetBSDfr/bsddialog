@@ -45,7 +45,8 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		if (text_size(conf, rows, cols, text, &bs, 0, 1, &htext,
 		    &wtext) != 0)
 			return (BSDDIALOG_ERROR);
-		*hastext = htext > 0 ? true : false;
+		if (hastext != NULL)
+			*hastext = htext > 0 ? true : false;
 	}
 
 	if (cols == BSDDIALOG_AUTOSIZE)
