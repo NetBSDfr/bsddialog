@@ -664,7 +664,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 	if (curritem != -1) {
 		focusinform = true;
-		redrawbuttons(widget, &bs, conf->form.focus_buttons, false);
+		redrawbuttons(widget, &bs, conf->button.always_active, false);
 		form.y = 0;
 		item = &items[curritem];
 		curriteminview(&form, item);
@@ -685,7 +685,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			if (focusinform && conf->form.focus_buttons == false)
+			if (focusinform && conf->button.always_active == false)
 				break;
 			retval = return_values(conf, bs.value[bs.curr],
 			    nitems, apiitems, items);
@@ -857,7 +857,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 			if (curritem != -1) {
 				redrawbuttons(widget, &bs,
-				    conf->form.focus_buttons || !focusinform,
+				    conf->button.always_active || !focusinform,
 				    !focusinform);
 				curriteminview(&form, item);
 				update_formborders(conf, &form);
@@ -903,7 +903,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		if (switchfocus) {
 			focusinform = !focusinform;
 			bs.curr = 0;
-			redrawbuttons(widget, &bs, conf->form.focus_buttons ||
+			redrawbuttons(widget, &bs, conf->button.always_active ||
 			    !focusinform, !focusinform);
 			drawitem(&form, item, focusinform);
 			switchfocus = false;

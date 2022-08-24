@@ -414,7 +414,7 @@ int main(int argc, char *argv[argc])
 			bikeshed_opt = true;
 			break;
 		case BUTTONS_FOCUS:
-			conf.form.focus_buttons = true;
+			conf.button.always_active = true;
 			break;
 		case CANCEL_LABEL:
 			conf.button.cancel_label = optarg;
@@ -629,7 +629,7 @@ int main(int argc, char *argv[argc])
 		case INPUTBOX:
 			dialogbuilder = inputbox_builder;
 			conf.auto_downmargin = 1;
-			conf.form.focus_buttons = true;
+			conf.button.always_active = true;
 			break;
 		case MENU:
 			dialogbuilder = menu_builder;
@@ -651,7 +651,7 @@ int main(int argc, char *argv[argc])
 		case PASSWORDBOX:
 			dialogbuilder = passwordbox_builder;
 			conf.auto_downmargin = 1;
-			conf.form.focus_buttons = true;
+			conf.button.always_active = true;
 			break;
 		case PASSWORDFORM:
 			dialogbuilder = passwordform_builder;

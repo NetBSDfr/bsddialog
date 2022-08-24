@@ -53,7 +53,6 @@ Next
 	    - add: items scrolling.
 	    - add: conf.form.input_singlebyte for field input.
 	    - add: conf.form.value_wchar, value is wchar_t* instead of MB-char*.
-	    - add: conf.form.focus_buttons for active buttons always.
 	    - add: formheight autosizing.
 	    - add: dynamic item position.
 	* fix: bsddialog_gauge() with fd < 0.

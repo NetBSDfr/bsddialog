@@ -341,7 +341,7 @@ int bikeshed(struct bsddialog_conf *conf, char *errbuf)
 		return (BSDDIALOG_ERROR);
 
 	/* conf */
-	conf->form.focus_buttons = (rand() % 2 == 0) ? true : false;
+	conf->button.always_active = (rand() % 2 == 0) ? true : false;
 	if (conf->title != NULL) {
 		memset(title, 0, 1024);
 		margin = rand() % 5;

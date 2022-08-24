@@ -323,7 +323,6 @@ struct bsddialog_conf {
 		bool shortcut_buttons;
 	} menu;
 	struct {
-		bool focus_buttons;
 		bool input_singlebyte;
 		char securech;
 		char *securembch;
@@ -713,8 +712,6 @@ is printed on the bottom side of the screen if the item is focused.
 .Fn bsddialog_form
 can be customized by:
 .Bl -column -compact
-.It Fa conf.form.focus_buttons
-focus always also on buttons.
 .It Fa conf.form.input_singlebyte
 field gets only single byte charachters in input.
 .It Fa conf.form.securech
