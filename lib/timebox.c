@@ -167,7 +167,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	loop = focusbuttons = true;
 	while (loop) {
 		for (i = 0; i < 3; i++)
-			drawquare(conf, c[i].win, "%2d", &c[i].value, sel == i);
+			drawquare(conf, c[i].win, "%02d", &c[i].value,
+			    sel == i);
 
 		if (get_wch(&input) == ERR)
 			continue;
