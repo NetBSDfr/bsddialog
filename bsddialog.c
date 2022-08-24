@@ -426,7 +426,8 @@ int main(int argc, char *argv[argc])
 			conf.text.highlight = true;
 			break;
 		case COLUMNS_PER_ROW:
-			conf.text.cols_per_row = (u_int)strtoul(optarg, NULL, 10);
+			conf.text.cols_per_row =
+			    (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case CR_WRAP:
 			cr_wrap_opt = true;
