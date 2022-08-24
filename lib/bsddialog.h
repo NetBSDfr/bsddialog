@@ -112,6 +112,7 @@ struct bsddialog_conf {
 		bool value_without_ok;
 	} form;
 	struct {
+		bool always_active;
 		bool without_ok;
 		const char *ok_label;
 		bool with_extra;

@@ -175,10 +175,10 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			if (focusbuttons == false)
-				break;
-			retval = bs.value[bs.curr];
-			loop = false;
+			if (focusbuttons || conf->button.always_active) {
+				retval = bs.value[bs.curr];
+				loop = false;
+			}
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
@@ -194,6 +194,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				    true : false;
 				if (focusbuttons == false) {
 					sel = 0;
+					bs.curr = conf->button.always_active ? 0 : -1;
 				}
 			} else {
 				sel++;
@@ -209,8 +210,10 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			if (focusbuttons) {
 				bs.curr--;
 				focusbuttons = bs.curr < 0 ? false : true;
-				if (focusbuttons == false)
+				if (focusbuttons == false) {
 					sel = 2;
+					bs.curr = conf->button.always_active ? 0 : -1;
+				}
 			} else {
 				sel--;
 				focusbuttons = sel < 0 ? true : false;
@@ -224,7 +227,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			if (focusbuttons) {
 				sel = 0;
 				focusbuttons = false;
-				bs.curr = -1;
+				bs.curr = conf->button.always_active ? 0 : -1;
 				draw_buttons(widget, bs, true);
 				wrefresh(widget);
 			} else { c[sel].value = c[sel].value > 0 ?
@@ -392,10 +395,10 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			if (focusbuttons == false)
-				break;
-			retval = bs.value[bs.curr];
-			loop = false;
+			if (focusbuttons || conf->button.always_active) {
+				retval = bs.value[bs.curr];
+				loop = false;
+			}
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
@@ -411,6 +414,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				    true : false;
 				if (focusbuttons == false) {
 					sel = 0;
+					bs.curr = conf->button.always_active ? 0 : -1;
 				}
 			} else {
 				sel++;
@@ -428,13 +432,13 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				focusbuttons = bs.curr < 0 ? false : true;
 				if (focusbuttons == false) {
 					sel = 2;
+					bs.curr = conf->button.always_active ? 0 : -1;
 				}
 			} else {
 				sel--;
 				focusbuttons = sel < 0 ? true : false;
-				if (focusbuttons) {
+				if (focusbuttons)
 					bs.curr = (int)bs.nbuttons - 1;
-				}
 			}
 			draw_buttons(widget, bs, true);
 			wrefresh(widget);
@@ -443,7 +447,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusbuttons) {
 				sel = 0;
 				focusbuttons = false;
-				bs.curr = -1;
+				bs.curr = conf->button.always_active ? 0 : -1;
 				draw_buttons(widget, bs, true);
 				wrefresh(widget);
 			} else {

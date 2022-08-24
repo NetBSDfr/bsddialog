@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd August 23, 2022
+.Dd August 24, 2022
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -331,6 +331,7 @@ struct bsddialog_conf {
 		bool value_without_ok;
 	} form;
 	struct {
+		bool always_active;
 		bool without_ok;
 		const char *ok_label;
 		bool with_extra;
@@ -465,6 +466,13 @@ function.
 .El
 .Pp
 .Bl -column -compact
+.It Fa conf.button.always_active
+buttons always active, avoidind focus switch between buttons and input fields or
+input boxes in
+.Fn bsddialog_form ,
+.Fn bsddialog_datebox
+and
+.Fn bsddialog_timebox .
 .It Fa conf.button.without_ok
 disable OK button.
 .It Fa conf.button.ok_label

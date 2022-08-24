@@ -26,6 +26,7 @@ Next
 	* add: bsddialog_init_notheme() in bsddialo_theme.h.
 	* add: bsddialog_hascolors() in bsddialo_theme.h.
 	* add: theme.form.bottomdesccolor and theme.menu.bottomdesccolor.
+	* add: conf.button.always_active to disable buttons/input-boxes switch.
 	* add: dynamic buttons margin.
 	    - add: theme.button.minmargin and theme.button.maxmargin.
 	    - delete: theme.button.hmargin.
