@@ -1035,7 +1035,7 @@ int timebox_builder(BUILDER_ARGS)
 		return (output);
 
 	if (time_fmt_opt == NULL) {
-		dprintf(output_fd_opt, "%u:%u:%u", hh, mm, ss);
+		dprintf(output_fd_opt, "%02u:%02u:%02u", hh, mm, ss);
 	} else {
 		time(&clock);
 		localtm = localtime(&clock);
