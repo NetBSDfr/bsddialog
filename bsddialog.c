@@ -50,7 +50,6 @@ enum OPTS {
 	BEGIN_X,
 	BEGIN_Y,
 	BIKESHED,
-	BUTTONS_FOCUS,
 	CANCEL_LABEL,
 	CLEAR,
 	COLORS,
@@ -104,6 +103,7 @@ enum OPTS {
 	SLEEP,
 	STDERR,
 	STDOUT,
+	SWITCH_BUTTONS,
 	TAB_LEN,
 	THEME,
 	TIME_FORMAT,
@@ -183,12 +183,12 @@ static void usage(void)
 
 	printf("Common Options:\n");
 	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
-	    "--begin-y <y>, --bikeshed, --buttons-focus, "
-	    "--cancel-label <label>, --clear, --colors, "
-	    "--columns-per-row <columns> , --cr-wrap, --date-format <format>, "
-	    "--default-button <label>, --default-item <name>, --default-no, "
-	    "--disable-esc, --esc-return-cancel, --exit-label <label>, "
-	    "--extra-button, --extra-label <label>, --generic-button1 <label>, "
+	    "--begin-y <y>, --bikeshed, --cancel-label <label>, --clear, "
+	    "--colors, --columns-per-row <columns>, --cr-wrap, "
+	    "--date-format <format>, --default-button <label>, "
+	    "--default-item <name>, --default-no, --disable-esc, "
+	    "--esc-return-cancel, --exit-label <label>, --extra-button, "
+	    "--extra-label <label>, --generic-button1 <label>, "
 	    "--generic-button2 <label>, --help, --help-button, "
 	    "--help-label <label>, --help-status, --help-tags, --hfile <file>, "
 	    "--hline <string>, --hmsg <string>, --ignore, --insecure, "
@@ -200,7 +200,7 @@ static void usage(void)
 	    "--print-version, --quoted, --save-theme <file>, "
 	    "--separate-output, --separator <sep>, --shadow, --single-quoted, "
 	    "--sleep <secs>, --stderr, --stdout, --tab-len <spaces>, "
-	    "--theme <blackwhite|bsddialog|flat|dialog>, "
+	    "--switch-buttons, --theme <blackwhite|bsddialog|flat|dialog>, "
 	    "--time-format <format>, --title <title>, --trim, --version, "
 	    "--yes-label <label>.\n");
 	printf("\n");
@@ -259,6 +259,7 @@ int main(int argc, char *argv[argc])
 	conf.key.enable_esc = true;
 	conf.menu.on_without_ok = true;
 	conf.form.value_without_ok = true;
+	conf.button.always_active = true;
 
 	backtitle_opt = NULL;
 	theme_opt = BSDDIALOG_THEME_FLAT;
@@ -292,7 +293,6 @@ int main(int argc, char *argv[argc])
 		{"begin-x",          required_argument, NULL, BEGIN_X},
 		{"begin-y",          required_argument, NULL, BEGIN_Y},
 		{"bikeshed",         no_argument,       NULL, BIKESHED},
-		{"buttons-focus",    no_argument,       NULL, BUTTONS_FOCUS},
 		{"cancel-label",     required_argument, NULL, CANCEL_LABEL},
 		{"clear",            no_argument,       NULL, CLEAR},
 		{"colors",           no_argument,       NULL, COLORS},
@@ -351,6 +351,7 @@ int main(int argc, char *argv[argc])
 		{"sleep",            required_argument, NULL, SLEEP},
 		{"stderr",           no_argument,       NULL, STDERR},
 		{"stdout",           no_argument,       NULL, STDOUT},
+		{"switch-buttons",   no_argument,       NULL, SWITCH_BUTTONS},
 		{"tab-len",          required_argument, NULL, TAB_LEN},
 		{"theme",            required_argument, NULL, THEME},
 		{"time-format",      required_argument, NULL, TIME_FORMAT},
@@ -412,9 +413,6 @@ int main(int argc, char *argv[argc])
 			break;
 		case BIKESHED:
 			bikeshed_opt = true;
-			break;
-		case BUTTONS_FOCUS:
-			conf.button.always_active = true;
 			break;
 		case CANCEL_LABEL:
 			conf.button.cancel_label = optarg;
@@ -578,6 +576,9 @@ int main(int argc, char *argv[argc])
 		case STDOUT:
 			output_fd_opt = STDOUT_FILENO;
 			break;
+		case SWITCH_BUTTONS:
+			conf.button.always_active = false;
+			break;
 		case TAB_LEN:
 			conf.text.tablen = (u_int)strtoul(optarg, NULL, 10);
 			break;
@@ -629,7 +630,6 @@ int main(int argc, char *argv[argc])
 		case INPUTBOX:
 			dialogbuilder = inputbox_builder;
 			conf.auto_downmargin = 1;
-			conf.button.always_active = true;
 			break;
 		case MENU:
 			dialogbuilder = menu_builder;
@@ -651,7 +651,6 @@ int main(int argc, char *argv[argc])
 		case PASSWORDBOX:
 			dialogbuilder = passwordbox_builder;
 			conf.auto_downmargin = 1;
-			conf.button.always_active = true;
 			break;
 		case PASSWORDFORM:
 			dialogbuilder = passwordform_builder;
