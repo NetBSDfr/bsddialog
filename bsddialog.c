@@ -143,6 +143,7 @@ static char *date_fmt_opt, *time_fmt_opt;
 static int unsigned max_input_form_opt;
 /* General options */
 static int output_fd_opt;
+bool bikeshed_opt;
 
 /* Functions */
 static void sigint_handler(int sig);
@@ -244,7 +245,7 @@ int main(int argc, char *argv[argc])
 {
 	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
 	bool esc_return_cancel_opt, ignore_opt, print_maxsize_opt;
-	bool bikeshed_opt, textfromfile;
+	bool textfromfile;
 	int input, rows, cols, retval, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
@@ -1034,16 +1035,18 @@ int timebox_builder(BUILDER_ARGS)
 	if (output != BSDDIALOG_OK)
 		return (output);
 
-	if (time_fmt_opt == NULL) {
-		dprintf(output_fd_opt, "%02u:%02u:%02u", hh, mm, ss);
-	} else {
+	if (time_fmt_opt != NULL) {
 		time(&clock);
 		localtm = localtime(&clock);
 		localtm->tm_hour = hh;
 		localtm->tm_min = mm;
 		localtm->tm_sec = ss;
-		strftime(stringtime, 1024, time_fmt_opt, localtm);
+		strftime(stringtime, 1024, "%u%u%u", localtm);
 		dprintf(output_fd_opt, "%s", stringtime);
+	} else if (bikeshed_opt && (ss % 2 == 0)) {
+		dprintf(output_fd_opt, "%2u:%2u:%2u", hh, mm, ss);
+	} else {
+		dprintf(output_fd_opt, "%02u:%02u:%02u", hh, mm, ss);
 	}
 
 	return (output);
