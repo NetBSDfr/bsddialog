@@ -233,7 +233,8 @@ int loadtheme(const char *file, char *errbuf)
 			*((unsigned int*)p[i].value) = uintvalue;
 			break;
 		case BOOL:
-			boolvalue = (strstr(value, "true") != NULL) ? true :false;
+			boolvalue = (strstr(value, "true") != NULL) ?
+			    true :false;
 			*((bool*)p[i].value) = boolvalue;
 			break;
 		case COLOR:
