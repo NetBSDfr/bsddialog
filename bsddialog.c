@@ -1041,7 +1041,7 @@ int timebox_builder(BUILDER_ARGS)
 		localtm->tm_hour = hh;
 		localtm->tm_min = mm;
 		localtm->tm_sec = ss;
-		strftime(stringtime, 1024, "%u%u%u", localtm);
+		strftime(stringtime, 1024, time_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringtime);
 	} else if (bikeshed_opt && (ss % 2 == 0)) {
 		dprintf(output_fd_opt, "%2u:%2u:%2u", hh, mm, ss);
