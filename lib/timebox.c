@@ -388,7 +388,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		drawquare(conf, c[0].win, "%4d", &c[0].value, sel == 0);
 		drawquare(conf, c[1].win, "%9s", m[c[1].value-1].name,
 		    sel == 1);
-		drawquare(conf, c[2].win, "%2d", &c[2].value, sel == 2);
+		drawquare(conf, c[2].win, "%02d", &c[2].value, sel == 2);
 
 		if (get_wch(&input) == ERR)
 			continue;

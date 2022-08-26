@@ -996,9 +996,7 @@ int datebox_builder(BUILDER_ARGS)
 	if (output != BSDDIALOG_OK)
 		return (output);
 
-	if (date_fmt_opt == NULL) {
-		dprintf(output_fd_opt, "%u/%u/%u", yy, mm, dd);
-	} else {
+	if (date_fmt_opt != NULL) {
 		time(&cal);
 		localtm = localtime(&cal);
 		localtm->tm_year = yy - 1900;
@@ -1006,6 +1004,10 @@ int datebox_builder(BUILDER_ARGS)
 		localtm->tm_mday = dd;
 		strftime(stringdate, 1024, date_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringdate);
+	} else if (bikeshed_opt && (dd % 2 == 0)) {
+		dprintf(output_fd_opt, "%u/%u/%u", yy, mm, dd);
+	} else {
+		dprintf(output_fd_opt, "%u/%02u/%02u", yy, mm, dd);
 	}
 
 	return (output);
