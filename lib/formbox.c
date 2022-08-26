@@ -240,7 +240,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 		refresh();
 	}
 
-	curs_set((focus && item->cursor) ? 2 : 0 );
+	curs_set((focus && item->cursor) ? 1 : 0 );
 	wmove(form->pad, item->yfield, item->xfield + item->xcursor);
 	prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye, form->xe);
 }
