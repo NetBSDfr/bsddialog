@@ -199,7 +199,7 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 }
 
 static void
-drawitemX(struct privateform *form, struct privateitem *item, bool focus)
+drawitem(struct privateform *form, struct privateitem *item, bool focus)
 {
 	int color;
 	unsigned int n, cols;
@@ -245,9 +245,18 @@ drawitemX(struct privateform *form, struct privateitem *item, bool focus)
 	prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye, form->xe);
 }
 
+/*
+ * Trick: draw 2 times an item with switching focus.
+ * Problem: curses tries to optimize the rendering but sometimes it misses some
+ * updates or draws old stuff. libformw has a similar problem fixed by the
+ * same trick.
+ * Case 1: KEY_DC and KEY_BACKSPACE, deleted multicolumn letters are drawn
+ * again. It seems fixed by new items pad and prefresh(), previously WINDOW.
+ * Case2: some terminal and ssh does not show the cursor.
+ */
 #define DRAWITEM2STEP(form,item,focus) do {                                    \
-	drawitemX(form, item, !focus);                                         \
-	drawitemX(form, item, focus);                                          \
+	drawitem(form, item, !focus);                                          \
+	drawitem(form, item, focus);                                           \
 } while (0)
 
 static bool
