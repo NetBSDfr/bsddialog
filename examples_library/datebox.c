@@ -9,7 +9,6 @@
  */
 
 #include <bsddialog.h>
-#include <locale.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -21,8 +20,6 @@ int main()
 	struct bsddialog_conf conf;
 	time_t cal;
 	struct tm *localtm;
-
-	setlocale(LC_ALL, ""); /* unicode arrows instead of ^^^ and vvv */
 
 	time(&cal);
 	localtm = localtime(&cal);
