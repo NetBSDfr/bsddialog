@@ -252,7 +252,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
  * same trick.
  * Case 1: KEY_DC and KEY_BACKSPACE, deleted multicolumn letters are drawn
  * again. It seems fixed by new items pad and prefresh(), previously WINDOW.
- * Case2: some terminal and ssh does not show the cursor.
+ * Case2: some terminal, tmux and ssh does not show the cursor.
  */
 #define DRAWITEM2STEP(form,item,focus) do {                                    \
 	drawitem(form, item, !focus);                                          \
