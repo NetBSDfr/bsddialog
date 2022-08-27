@@ -199,7 +199,7 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 }
 
 static void
-drawitem(struct privateform *form, struct privateitem *item, bool focus)
+drawitemX(struct privateform *form, struct privateitem *item, bool focus)
 {
 	int color;
 	unsigned int n, cols;
@@ -243,7 +243,13 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 	curs_set((focus && item->cursor) ? 1 : 0 );
 	wmove(form->pad, item->yfield, item->xfield + item->xcursor);
 	prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye, form->xe);
+	wmove(form->pad, item->yfield, item->xfield + item->xcursor);
 }
+
+#define DRAWITEM2STEP(form,item,focus) do {                                    \
+	drawitemX(form, item, !focus);                                         \
+	drawitemX(form, item, focus);                                          \
+} while (0)
 
 static bool
 insertch(struct privateform *form, struct privateitem *item, wchar_t wch)
@@ -658,7 +664,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	curritem = -1;
 	for (i=0 ; i < nitems; i++) {
-		drawitem(&form, &items[i], false);
+		DRAWITEM2STEP(&form, &items[i], false);
 		if (curritem == -1 && items[i].readonly == false)
 			curritem = i;
 	}
@@ -670,7 +676,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		curriteminview(&form, item);
 		update_formborders(conf, &form);
 		wrefresh(form.border);
-		drawitem(&form, item, true);
+		DRAWITEM2STEP(&form, item, true);
 	} else {
 		item = NULL;
 		focusinform = false;
@@ -717,7 +723,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_LEFT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_LEFT))
-					drawitem(&form, item, true);
+					DRAWITEM2STEP(&form, item, true);
 			} else if (bs.curr > 0) {
 				bs.curr--;
 				draw_buttons(widget, bs, true);
@@ -729,7 +735,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_RIGHT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_RIGHT))
-					drawitem(&form, item, true);
+					DRAWITEM2STEP(&form, item, true);
 			} else if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				draw_buttons(widget, bs, true);
@@ -774,25 +780,25 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if(fieldctl(item, MOVE_CURSOR_LEFT))
 				if(fieldctl(item, DEL_LETTER))
-					drawitem(&form, item, true);
+					DRAWITEM2STEP(&form, item, true);
 			break;
 		case KEY_DC:
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, DEL_LETTER))
-				drawitem(&form, item, true);
+				DRAWITEM2STEP(&form, item, true);
 			break;
 		case KEY_HOME:
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, MOVE_CURSOR_BEGIN))
-				drawitem(&form, item, true);
+				DRAWITEM2STEP(&form, item, true);
 			break;
 		case KEY_END:
 			if (focusinform == false)
 				break;
 			if (fieldctl(item, MOVE_CURSOR_END))
-				drawitem(&form, item, true);
+				DRAWITEM2STEP(&form, item, true);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -863,7 +869,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				update_formborders(conf, &form);
 				wrefresh(form.border);
 				/* drawitem just to prefresh() pad */
-				drawitem(&form, item, focusinform);
+				DRAWITEM2STEP(&form, item, focusinform);
 			} else {
 				wrefresh(form.border);
 			}
@@ -887,7 +893,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					 * no if(fieldctl), update always
 					 * because it fails with maxletters.
 					 */
-					drawitem(&form, item, true);
+					DRAWITEM2STEP(&form, item, true);
 				}
 			} else {
 				if (shortcut_buttons(input, &bs)) {
@@ -905,17 +911,17 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			bs.curr = 0;
 			redrawbuttons(widget, &bs, conf->button.always_active ||
 			    !focusinform, !focusinform);
-			drawitem(&form, item, focusinform);
+			DRAWITEM2STEP(&form, item, focusinform);
 			switchfocus = false;
 		}
 
 		if (changeitem) {
-			drawitem(&form, item, false);
+			DRAWITEM2STEP(&form, item, false);
 			curritem = next;
 			item = &items[curritem];
 			curriteminview(&form, item);
 			update_formborders(conf, &form);
-			drawitem(&form, item, true);
+			DRAWITEM2STEP(&form, item, true);
 			changeitem = false;
 		}
 	} /* end while handler */
