@@ -3,15 +3,15 @@ Next
 	Utility:
 	* add: --textbox accepts options for the first button.
 	* add: --columns-per-row option for text autosizing.
-	* add: --bikeshed option to avoid "bikeshed".
-	* add: --load-theme option to set a custom theme at runtime.
+	* add: --load-theme option to read and set a custom theme at runtime.
 	* add: --save-theme option to save current theme.
-	* add: --switch-buttons enables focus switch between buttons and input
-	         components, for: form, inputbox, mixedform, passwordform,
-	         passwordbox, timebox and datebox.
+	* add: --bikeshed option to avoid "bikeshed".
+	* add: --switch-buttons enables focus switching: buttons and input
+	         components. Available for: --form, --inputbox, --mixedform,
+	         --passwordform, --passwordbox, --timebox and --datebox.
 	* change: rename --esc-cancelvalue to --esc-return-cancel.
-	* change: print form field input like multibyte charachter string,
-	          instead of widechar string.
+	* change: form field value is printed like multibyte charachter string,
+	          previously widechar string.
 	* fix: --hline with empty string.
 	* fix: avoid to overlay the backtitle by setting a top margin.
 	* fix: avoid to overlay down shadow with menus and forms bottomdesc
