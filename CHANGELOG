@@ -5,7 +5,7 @@ Next
 	* add: --columns-per-row option for text autosizing.
 	* add: --load-theme option to read and set a custom theme at runtime.
 	* add: --save-theme option to save current theme.
-	* add: --bikeshed option to avoid "bikeshed".
+	* add: --bikeshed option for random settings.
 	* add: --switch-buttons enables focus switching: buttons and input
 	         components. Available for: --form, --inputbox, --mixedform,
 	         --passwordform, --passwordbox, --timebox and --datebox.
@@ -43,7 +43,7 @@ Next
 	      and to adapt word wrapping and dynamic text autosizing to
 	      muticolumn charachters.
 	* refactoring: (rewrite) form.c.
-	    - delete: libformw dep, implement its features from scratch.
+	    - delete: libformw dep implementing its features from scratch.
 	    - delete: maxvaluelen >= valuelen constraint.
 	    - delete: conf.form.enable_wchar, get always unicode (wchar) input.
 	    - add: KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE keys.
@@ -66,7 +66,7 @@ Next
 	* fix: rename theme.shadow.h to theme.shadow.y.
 	* fix: rename theme.shadow.w to theme.shadow.x.
 	* fix: menurows autosize with fixed rows improving text_size().
-	* fix: msgbox and yesno scrolling and checksize without text.
+	* fix: messagebox.c scrolling and checksize without text.
 
 
 2022-03-02 version 0.2
