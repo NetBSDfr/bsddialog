@@ -880,7 +880,6 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (wchtype == KEY_CODE_YES)
 				break;
 			if (focusinform) {
-				/* avoid WEOF for IEEE Std 1003.1-2008 */
 				if (conf->form.input_singlebyte &&
 				    wctob(input) == EOF)
 					break;
