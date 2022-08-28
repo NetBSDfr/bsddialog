@@ -121,7 +121,6 @@ in the _Public Domain_ to build new projects:
 % ./rangebox
 % ./theme
 % ./timebox
-% ./unicode-form
 % ./yesno
 ```
 
