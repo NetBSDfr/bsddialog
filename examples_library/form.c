@@ -9,6 +9,7 @@
  */
 
 #include <bsddialog.h>
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,16 +27,17 @@ int main()
 	    {"Password:", 2, 0, "",          2, 10, 30, 50, NULL, H,  "desc 3"}
 	};
 
+	/* Optional, unless for unicode/multicolum charachters */
+	setlocale(LC_ALL, "");
+
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);
 	}
-
 	bsddialog_initconf(&conf);
 	conf.title = "form";
 	conf.form.securech = '*';
 	output = bsddialog_form(&conf, "Example", 10, 50, 3, 3, items);
-
 	bsddialog_end();
 
 	if (output == BSDDIALOG_ERROR) {
