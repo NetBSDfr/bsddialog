@@ -254,7 +254,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
  * again. It seems fixed by new items pad and prefresh(), previously WINDOW.
  * Case2: some terminal, tmux and ssh does not show the cursor.
  */
-#define DRAWITEM2STEP(form,item,focus) do {                                    \
+#define DRAWITEM2STEPS(form,item,focus) do {                                   \
 	drawitem(form, item, !focus);                                          \
 	drawitem(form, item, focus);                                           \
 } while (0)
@@ -672,7 +672,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	curritem = -1;
 	for (i=0 ; i < nitems; i++) {
-		DRAWITEM2STEP(&form, &items[i], false);
+		DRAWITEM2STEPS(&form, &items[i], false);
 		if (curritem == -1 && items[i].readonly == false)
 			curritem = i;
 	}
@@ -684,7 +684,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		curriteminview(&form, item);
 		update_formborders(conf, &form);
 		wrefresh(form.border);
-		DRAWITEM2STEP(&form, item, true);
+		DRAWITEM2STEPS(&form, item, true);
 	} else {
 		item = NULL;
 		focusinform = false;
@@ -731,7 +731,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_LEFT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_LEFT))
-					DRAWITEM2STEP(&form, item, true);
+					DRAWITEM2STEPS(&form, item, true);
 			} else if (bs.curr > 0) {
 				bs.curr--;
 				draw_buttons(widget, bs, true);
@@ -743,7 +743,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_RIGHT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_RIGHT))
-					DRAWITEM2STEP(&form, item, true);
+					DRAWITEM2STEPS(&form, item, true);
 			} else if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
 				draw_buttons(widget, bs, true);
@@ -788,25 +788,25 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if(fieldctl(item, MOVE_CURSOR_LEFT))
 				if(fieldctl(item, DEL_LETTER))
-					DRAWITEM2STEP(&form, item, true);
+					DRAWITEM2STEPS(&form, item, true);
 			break;
 		case KEY_DC:
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, DEL_LETTER))
-				DRAWITEM2STEP(&form, item, true);
+				DRAWITEM2STEPS(&form, item, true);
 			break;
 		case KEY_HOME:
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, MOVE_CURSOR_BEGIN))
-				DRAWITEM2STEP(&form, item, true);
+				DRAWITEM2STEPS(&form, item, true);
 			break;
 		case KEY_END:
 			if (focusinform == false)
 				break;
 			if (fieldctl(item, MOVE_CURSOR_END))
-				DRAWITEM2STEP(&form, item, true);
+				DRAWITEM2STEPS(&form, item, true);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -877,7 +877,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				update_formborders(conf, &form);
 				wrefresh(form.border);
 				/* drawitem just to prefresh() pad */
-				DRAWITEM2STEP(&form, item, focusinform);
+				DRAWITEM2STEPS(&form, item, focusinform);
 			} else {
 				wrefresh(form.border);
 			}
@@ -901,7 +901,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					 * no if(fieldctl), update always
 					 * because it fails with maxletters.
 					 */
-					DRAWITEM2STEP(&form, item, true);
+					DRAWITEM2STEPS(&form, item, true);
 				}
 			} else {
 				if (shortcut_buttons(input, &bs)) {
@@ -919,17 +919,17 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			bs.curr = 0;
 			redrawbuttons(widget, &bs, conf->button.always_active ||
 			    !focusinform, !focusinform);
-			DRAWITEM2STEP(&form, item, focusinform);
+			DRAWITEM2STEPS(&form, item, focusinform);
 			switchfocus = false;
 		}
 
 		if (changeitem) {
-			DRAWITEM2STEP(&form, item, false);
+			DRAWITEM2STEPS(&form, item, false);
 			curritem = next;
 			item = &items[curritem];
 			curriteminview(&form, item);
 			update_formborders(conf, &form);
-			DRAWITEM2STEP(&form, item, true);
+			DRAWITEM2STEPS(&form, item, true);
 			changeitem = false;
 		}
 	} /* end while handler */
