@@ -51,9 +51,9 @@ Next
 	    - add: BSDDIALOG_FIELDNOCOLOR for formitem.flags.
 	    - add: BSDDIALOG_FIELDCURSOREND for formitem.flags.
 	    - add: BSDDIALOG_FIELDEXTEND for formitem.flags.
+	    - add: BSDDIALOG_FIELDSINGLEBYTE for formitem.flags.
 	    - add: resizing and refresh after KEY_RESIZE (SIGWINCH).
 	    - add: items scrolling.
-	    - add: conf.form.input_singlebyte for field input.
 	    - add: conf.form.value_wchar, value is wchar_t* instead of MB-char*.
 	    - add: formheight autosizing.
 	    - add: dynamic item position.

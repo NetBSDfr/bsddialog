@@ -47,6 +47,7 @@ struct privateitem {
 	bool readonly;          /* formitem.flags & BSDDIALOG_FIELDREADONLY */
 	bool fieldnocolor;      /* formitem.flags & BSDDIALOG_FIELDNOCOLOR */
 	bool extendfield;       /* formitem.flags & BSDDIALOG_FIELDEXTEND */
+	bool fieldonebyte;      /* formitem.flags & BSDDIALOG_FIELDSINGLEBYTE */
 	bool cursorend;         /* formitem.flags & BSDDIALOG_FIELDCURSOREND */
 	bool cursor;            /* field cursor visibility */
 	const char *bottomdesc; /* formitem.bottomdesc */
@@ -555,6 +556,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->readonly = apiitems[i].flags & BSDDIALOG_FIELDREADONLY;
 		item->fieldnocolor = apiitems[i].flags & BSDDIALOG_FIELDNOCOLOR;
 		item->extendfield = apiitems[i].flags & BSDDIALOG_FIELDEXTEND;
+		item->fieldonebyte = apiitems[i].flags &
+		    BSDDIALOG_FIELDSINGLEBYTE;
 		item->cursorend = apiitems[i].flags & BSDDIALOG_FIELDCURSOREND;
 		item->bottomdesc = apiitems[i].bottomdesc;
 		if (item->readonly || (item->secure && !insecurecursor))
@@ -880,8 +883,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (wchtype == KEY_CODE_YES)
 				break;
 			if (focusinform) {
-				if (conf->form.input_singlebyte &&
-				    wctob(input) == EOF)
+				if (item->fieldonebyte && wctob(input) == EOF)
 					break;
 				/*
 				 * MOVE_CURSOR_RIGHT manages new positions

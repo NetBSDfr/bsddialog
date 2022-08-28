@@ -64,11 +64,12 @@
 #define BSDDIALOG_MG_PENDING     -11
 
 /* Form */
-#define BSDDIALOG_FIELDHIDDEN     1U
-#define BSDDIALOG_FIELDREADONLY   2U
-#define BSDDIALOG_FIELDNOCOLOR    4U
-#define BSDDIALOG_FIELDCURSOREND  8U
-#define BSDDIALOG_FIELDEXTEND    16U
+#define BSDDIALOG_FIELDHIDDEN      1U
+#define BSDDIALOG_FIELDREADONLY    2U
+#define BSDDIALOG_FIELDNOCOLOR     4U
+#define BSDDIALOG_FIELDCURSOREND   8U
+#define BSDDIALOG_FIELDEXTEND      16U
+#define BSDDIALOG_FIELDSINGLEBYTE  32U
 
 struct bsddialog_conf {
 	bool ascii_lines;
@@ -104,7 +105,6 @@ struct bsddialog_conf {
 		bool shortcut_buttons;
 	} menu;
 	struct {
-		bool input_singlebyte;
 		char securech;
 		char *securembch;
 		bool value_wchar;
