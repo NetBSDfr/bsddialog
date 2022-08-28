@@ -246,7 +246,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 }
 
 /*
- * Trick: draw 2 times an item with switching focus.
+ * Trick: draw 2 times an item switching focus.
  * Problem: curses tries to optimize the rendering but sometimes it misses some
  * updates or draws old stuff. libformw has a similar problem fixed by the
  * same trick.
