@@ -917,8 +917,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		if (switchfocus) {
 			focusinform = !focusinform;
 			bs.curr = 0;
-			redrawbuttons(widget, &bs, conf->button.always_active ||
-			    !focusinform, !focusinform);
+			redrawbuttons(widget, &bs,
+			    conf->button.always_active || !focusinform,
+			    !focusinform);
 			DRAWITEM2STEPS(&form, item, focusinform);
 			switchfocus = false;
 		}
