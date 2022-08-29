@@ -46,7 +46,9 @@ Next
 	    - delete: libformw dep implementing its features from scratch.
 	    - delete: maxvaluelen >= valuelen constraint.
 	    - delete: conf.form.enable_wchar, get always unicode (wchar) input.
-	    - add: KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE keys.
+	    - add: KEY_HOME, KEY_END, KEY_PPAGE, KEY_NPAGE keys in field.
+	    - add: KEY_UP can move focus from buttons to fields.
+	    - add: KEY_DOWN can move focus from item to buttons, if nitem is 1.
 	    - add: conf.form.securembch secure multibyte charachter.
 	    - add: BSDDIALOG_FIELDNOCOLOR for formitem.flags.
 	    - add: BSDDIALOG_FIELDCURSOREND for formitem.flags.
