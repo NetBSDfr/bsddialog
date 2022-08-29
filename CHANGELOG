@@ -71,7 +71,7 @@ Next
 	* fix: messagebox.c scrolling and checksize without text.
 
 
-2022-03-02 version 0.2
+2022-03-02 Version 0.2
 
 	Utility:
 	* add: (this) CHANGELOG.
@@ -104,7 +104,7 @@ Next
 	* improve: "menus" colors for accessibility.
 
 
-2022-01-27 version 0.1
+2022-01-27 Version 0.1
 
 	* Common-Options: --ascii-lines, --backtitle <backtitle>, --begin-x <x>,
 	  --begin-y <y>, --cancel-label <label>, --clear, --colors, --cr-wrap,
