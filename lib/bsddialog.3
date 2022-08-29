@@ -29,6 +29,7 @@
 .Nm bsddialog_backtitle ,
 .Nm bsddialog_clearterminal ,
 .Nm bsddialog_color ,
+.Nm bsddialog_color_attrs ,
 .Nm bsddialog_checklist ,
 .Nm bsddialog_datebox ,
 .Nm bsddialog_end ,
@@ -220,6 +221,13 @@
 .Fa "enum bsddialog_color foreground"
 .Fa "enum bsddialog_color background"
 .Fa "unsigned int flags"
+.Fc
+.Ft int
+.Fo bsddialog_color_attrs
+.Fa "int color"
+.Fa "enum bsddialog_color *foreground"
+.Fa "enum bsddialog_color *background"
+.Fa "unsigned int *flags"
 .Fc
 .Ft int
 .Fn bsddialog_get_theme "struct bsddialog_theme *theme"
@@ -883,6 +891,8 @@ specifies OR-flags, possible values:
 .Dv BSDDIALOG_REVERSE
 and
 .Dv BSDDIALOG_UNDERLINE .
+.Fn bsddialog_color_attrs
+gets the properties of a color.
 .Pp
 .Fn bsddialog_set_theme
 sets
