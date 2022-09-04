@@ -6,6 +6,7 @@ Next
 	* change: menus --separator and --separate-output print <sepstr> after each item.
 	* fix: menus outputs, quote items only when needed.
 	* fix: --menu output, HELP and selected item double print.
+	* change: --print-maxsize output.
 
 
 2022-08-29 Version 0.3
