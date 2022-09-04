@@ -1,3 +1,13 @@
+Next
+
+	Utility:
+	* change: menus output, no print items with Cancel.
+	* change: menus --separator prints <sepstr> before each item except HELP.
+	* change: menus --separator and --separate-output print <sepstr> after each item.
+	* fix: menus outputs, quote items only when needed.
+	* fix: --menu output, HELP and selected item double print.
+
+
 2022-08-29 Version 0.3
 
 	Utility:
