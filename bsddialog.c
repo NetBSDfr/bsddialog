@@ -1187,9 +1187,9 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		}
 		if (toquote)
 			dprintf(output_fd_opt, "%c%s%c",
-			    quotech, focusname, quotech);
+			    quotech, items[i].name, quotech);
 		else
-			dprintf(output_fd_opt, "%s", focusname);
+			dprintf(output_fd_opt, "%s", items[i].name);
 
 		if (seplast)
 			dprintf(output_fd_opt, "%s", sepstr);
