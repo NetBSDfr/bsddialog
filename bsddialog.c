@@ -1125,22 +1125,21 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 
 		if (focusitem >= 0) {
 			focusname = items[focusitem].name;
-
 			if (item_bottomdesc_opt && item_tag_help_opt == false)
 				focusname = items[focusitem].bottomdesc;
 
 			toquote = false;
 			if (strchr(focusname, ' ') != NULL) {
 				toquote = item_always_quote_opt;
-				if (ismenu == false && item_output_sepnl_opt == false)
+				if (ismenu == false &&
+				    item_output_sepnl_opt == false)
 					toquote = true;
 			}
-
 			if (toquote)
-				dprintf(output_fd_opt, "%c", quotech);
-			dprintf(output_fd_opt, "%s", focusname);
-			if (toquote)
-				dprintf(output_fd_opt, "%c", quotech);
+				dprintf(output_fd_opt, "%c%s%c",
+				    quotech, focusname, quotech);
+			else
+				dprintf(output_fd_opt, "%s", focusname);
 		}
 
 		if (ismenu || list_items_on_opt == false)
@@ -1164,7 +1163,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		if (items[i].on == false)
 			continue;
 
-		if (sep == true || sepfirst == true)
+		if (sep || sepfirst)
 			dprintf(output_fd_opt, "%s", sepstr);
 		sep = false;
 
@@ -1174,14 +1173,13 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 			if (ismenu == false && item_output_sepnl_opt == false)
 				toquote = true;
 		}
-
 		if (toquote)
-			dprintf(output_fd_opt, "%c", quotech);
-		dprintf(output_fd_opt, "%s", items[i].name);
-		if (toquote)
-			dprintf(output_fd_opt, "%c", quotech);
+			dprintf(output_fd_opt, "%c%s%c",
+			    quotech, focusname, quotech);
+		else
+			dprintf(output_fd_opt, "%s", focusname);
 
-		if (seplast == true)
+		if (seplast)
 			dprintf(output_fd_opt, "%s", sepstr);
 	}
 }
