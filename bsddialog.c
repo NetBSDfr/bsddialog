@@ -1107,65 +1107,82 @@ get_menu_items(char *errbuf, int argc, char **argv, bool setprefix,
 
 static void
 print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
-    int focusitem)
+    int focusitem, bool ismenu)
 {
-	bool sep, toquote;
+	bool sep, sepfirst, seplast, toquote;
 	int i;
 	char *sepstr, quotech;
 	const char *focusname;
 
 	sep = false;
 	quotech = item_singlequote_opt ? '\'' : '"';
-	sepstr = item_output_sep_opt != NULL ? item_output_sep_opt : " ";
 
-	if (output != BSDDIALOG_OK && output != BSDDIALOG_ERROR &&
-	    focusitem >= 0) {
-		focusname = items[focusitem].name;
+	if (output == BSDDIALOG_ERROR || output == BSDDIALOG_CANCEL)
+		return;
 
-		if (output == BSDDIALOG_HELP) {
-			dprintf(output_fd_opt, "HELP ");
+	if (output == BSDDIALOG_HELP) {
+		dprintf(output_fd_opt, "HELP ");
+
+		if (focusitem >= 0) {
+			focusname = items[focusitem].name;
 
 			if (item_bottomdesc_opt && item_tag_help_opt == false)
 				focusname = items[focusitem].bottomdesc;
+
+			toquote = false;
+			if (strchr(focusname, ' ') != NULL) {
+				toquote = item_always_quote_opt;
+				if (ismenu == false && item_output_sepnl_opt == false)
+					toquote = true;
+			}
+
+			if (toquote)
+				dprintf(output_fd_opt, "%c", quotech);
+			dprintf(output_fd_opt, "%s", focusname);
+			if (toquote)
+				dprintf(output_fd_opt, "%c", quotech);
 		}
 
-		toquote = item_always_quote_opt ||
-		    (item_output_sepnl_opt == false &&
-		     strchr(focusname, ' ') != NULL);
-
-		if (toquote)
-			dprintf(output_fd_opt, "%c", quotech);
-		dprintf(output_fd_opt, "%s", focusname);
-		if (toquote)
-			dprintf(output_fd_opt, "%c", quotech);
-
+		if (ismenu || list_items_on_opt == false)
+			return;
 		sep = true;
 	}
 
-	if (output != BSDDIALOG_OK &&
-	    !(output == BSDDIALOG_HELP && list_items_on_opt))
-		return;
+	sepfirst = false;
+	if ((sepstr = item_output_sep_opt) == NULL)
+		sepstr = item_output_sepnl_opt ? "\n" : " ";
+	else
+		sepfirst = true;
+
+	seplast = false;
+	if (item_output_sepnl_opt) {
+		sepfirst = false;
+		seplast = true;
+	}
 
 	for (i = 0; i < nitems; i++) {
 		if (items[i].on == false)
 			continue;
 
-		if (sep == true) {
+		if (sep == true || sepfirst == true)
 			dprintf(output_fd_opt, "%s", sepstr);
-			if (item_output_sepnl_opt)
-				dprintf(output_fd_opt, "\n");
-		}
-		sep = true;
+		sep = false;
 
-		toquote = item_always_quote_opt ||
-		    (item_output_sepnl_opt == false &&
-		     strchr(items[i].name, ' ') != NULL);
+		toquote = false;
+		if (strchr(items[i].name, ' ') != NULL) {
+			toquote = item_always_quote_opt;
+			if (ismenu == false && item_output_sepnl_opt == false)
+				toquote = true;
+		}
 
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
 		dprintf(output_fd_opt, "%s", items[i].name);
 		if (toquote)
 			dprintf(output_fd_opt, "%c", quotech);
+
+		if (seplast == true)
+			dprintf(output_fd_opt, "%s", sepstr);
 	}
 }
 
@@ -1191,7 +1208,7 @@ int checklist_builder(BUILDER_ARGS)
 	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem, false);
 
 	free(items);
 
@@ -1220,7 +1237,7 @@ int menu_builder(BUILDER_ARGS)
 	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem, true);
 
 	free(items);
 
@@ -1249,7 +1266,7 @@ int radiolist_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem, false);
 
 	free(items);
 
@@ -1281,7 +1298,7 @@ int treeview_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem);
+	print_menu_items(output, nitems, items, focusitem, false);
 
 	free(items);
 
