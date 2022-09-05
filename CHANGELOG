@@ -7,6 +7,8 @@ Next
 	* fix: menus outputs, quote items only when needed.
 	* fix: --menu output, HELP and selected item double print.
 	* change: --print-maxsize output.
+	* add: --alternate-screen (and alias --keep-tite) to set alternate mode.
+	* add: --normal-screen to set normal mode.
 
 
 2022-08-29 Version 0.3
