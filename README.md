@@ -134,3 +134,4 @@ in the _Public Domain_ to build new projects:
  - --add-widget
  - --normal-screen, --alternate-screen, --keep-tite
  - Check utility MB-char* (now utf8)
+ - menurows semi-fixed
