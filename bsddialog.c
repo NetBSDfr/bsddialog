@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <term.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -80,7 +81,6 @@ enum OPTS {
 	ITEM_DEPTH,
 	ITEM_HELP,
 	ITEM_PREFIX,
-	KEEP_TITE,
 	LOAD_THEME,
 	MAX_INPUT,
 	NO_CANCEL,
@@ -253,6 +253,7 @@ int main(int argc, char *argv[argc])
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
 	char *text, *backtitle_opt, *loadthemefile, *savethemefile;
+	char *screen_mode_opt;
 	char errorbuilder[1024];
 	struct winsize ws;
 	struct bsddialog_conf conf;
@@ -277,6 +278,7 @@ int main(int argc, char *argv[argc])
 	errorbuilder[0] = '\0';
 	savethemefile = NULL;
 	loadthemefile = NULL;
+	screen_mode_opt = NULL;
 
 	item_output_sepnl_opt = item_singlequote_opt = false;
 	item_prefix_opt = item_bottomdesc_opt = item_depth_opt = false;
@@ -394,7 +396,7 @@ int main(int argc, char *argv[argc])
 		switch (input) {
 		/* Common options */
 		case ALTERNATE_SCREEN:
-			// TODO
+			screen_mode_opt = "smcup";
 			break;
 		case ASCII_LINES:
 			conf.ascii_lines = true;
@@ -544,7 +546,7 @@ int main(int argc, char *argv[argc])
 			conf.shadow = false;
 			break;
 		case NORMAL_SCREEN:
-			// TODO
+			screen_mode_opt = "rmcup";
 			break;
 		case OK_LABEL:
 			conf.button.ok_label = optarg;
@@ -735,6 +737,16 @@ int main(int argc, char *argv[argc])
 	}
 
 	signal(SIGINT, sigint_handler);
+
+	if (screen_mode_opt != NULL) {
+		screen_mode_opt = tigetstr(screen_mode_opt);
+		if (screen_mode_opt != NULL && screen_mode_opt != (char*)-1) {
+			tputs(screen_mode_opt, 1, putchar);
+			fflush(stdout);
+			 /* important only to refresh, useless in the library */
+			bsddialog_clearterminal();
+		}
+	}
 
 	if (theme_opt != BSDDIALOG_THEME_FLAT)
 		if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
