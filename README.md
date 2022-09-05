@@ -131,3 +131,6 @@ in the _Public Domain_ to build new projects:
  - key callback
  - Right-To-Left text
  - Check available cursor states
+ - --add-widget
+ - --normal-screen, --alternate-screen, --keep-tite
+ - Check utility MB-char* (now utf8)
