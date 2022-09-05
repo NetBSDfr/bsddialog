@@ -45,7 +45,8 @@
 
 enum OPTS {
 	/* Common options */
-	ASCII_LINES = '?' + 1,
+	ALTERNATE_SCREEN = '?' + 1,
+	ASCII_LINES,
 	BACKTITLE,
 	BEGIN_X,
 	BEGIN_Y,
@@ -79,6 +80,7 @@ enum OPTS {
 	ITEM_DEPTH,
 	ITEM_HELP,
 	ITEM_PREFIX,
+	KEEP_TITE,
 	LOAD_THEME,
 	MAX_INPUT,
 	NO_CANCEL,
@@ -89,6 +91,7 @@ enum OPTS {
 	NO_OK,
 	NO_SHADOW,
 	NO_TAGS,
+	NORMAL_SCREEN,
 	OK_LABEL,
 	OUTPUT_FD,
 	OUTPUT_SEPARATOR,
@@ -183,9 +186,9 @@ static void usage(void)
 	printf("\n");
 
 	printf("Common Options:\n");
-	printf("--ascii-lines, --backtitle <backtitle>, --begin-x <x>, "
-	    "--begin-y <y>, --bikeshed, --cancel-label <label>, --clear, "
-	    "--colors, --columns-per-row <columns>, --cr-wrap, "
+	printf("--alternate-screen, --ascii-lines, --backtitle <backtitle>, "
+	    "--begin-x <x>, --begin-y <y>, --bikeshed, --cancel-label <label>, "
+	    "--clear, --colors, --columns-per-row <columns>, --cr-wrap, "
 	    "--date-format <format>, --default-button <label>, "
 	    "--default-item <name>, --default-no, --disable-esc, "
 	    "--esc-return-cancel, --exit-label <label>, --extra-button, "
@@ -196,9 +199,9 @@ static void usage(void)
 	    "--item-depth, --item-help, --item-prefix, --load-theme <file>, "
 	    "--max-input <size>, --no-cancel, --no-collapse, --no-items, "
 	    "--no-label <label>, --no-lines, --no-nl-expand, --no-ok, "
-	    "--no-shadow, --no-tags, --ok-label <label>, --output-fd <fd>, "
-	    "--output-separator <sep>, --print-maxsize, --print-size, "
-	    "--print-version, --quoted, --save-theme <file>, "
+	    "--no-shadow, --no-tags, --normal-screen, --ok-label <label>, "
+	    "--output-fd <fd>, --output-separator <sep>, --print-maxsize, "
+	    "--print-size, --print-version, --quoted, --save-theme <file>, "
 	    "--separate-output, --separator <sep>, --shadow, --single-quoted, "
 	    "--sleep <secs>, --stderr, --stdout, --tab-len <spaces>, "
 	    "--switch-buttons, --theme <blackwhite|bsddialog|flat|dialog>, "
@@ -289,6 +292,7 @@ int main(int argc, char *argv[argc])
 	/* options descriptor */
 	struct option longopts[] = {
 		/* common options */
+		{"alternate-screen", no_argument,       NULL, ALTERNATE_SCREEN},
 		{"ascii-lines",      no_argument,       NULL, ASCII_LINES},
 		{"backtitle",        required_argument, NULL, BACKTITLE},
 		{"begin-x",          required_argument, NULL, BEGIN_X},
@@ -323,6 +327,7 @@ int main(int argc, char *argv[argc])
 		{"item-depth",       no_argument,       NULL, ITEM_DEPTH},
 		{"item-help",        no_argument,       NULL, ITEM_HELP},
 		{"item-prefix",      no_argument,       NULL, ITEM_PREFIX},
+		{"keep-tite",        no_argument,       NULL, ALTERNATE_SCREEN},
 		{"load-theme",       required_argument, NULL, LOAD_THEME},
 		{"max-input",        required_argument, NULL, MAX_INPUT},
 		{"no-cancel",        no_argument,       NULL, NO_CANCEL},
@@ -336,6 +341,7 @@ int main(int argc, char *argv[argc])
 		{"nook ",            no_argument,       NULL, NO_OK},
 		{"no-shadow",        no_argument,       NULL, NO_SHADOW},
 		{"no-tags",          no_argument,       NULL, NO_TAGS},
+		{"normal-screen",    no_argument,       NULL, NORMAL_SCREEN},
 		{"ok-label",         required_argument, NULL, OK_LABEL},
 		{"output-fd",        required_argument, NULL, OUTPUT_FD},
 		{"output-separator", required_argument, NULL, OUTPUT_SEPARATOR},
@@ -387,6 +393,9 @@ int main(int argc, char *argv[argc])
 	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
 		/* Common options */
+		case ALTERNATE_SCREEN:
+			// TODO
+			break;
 		case ASCII_LINES:
 			conf.ascii_lines = true;
 			break;
@@ -533,6 +542,9 @@ int main(int argc, char *argv[argc])
 			break;
 		case NO_SHADOW:
 			conf.shadow = false;
+			break;
+		case NORMAL_SCREEN:
+			// TODO
 			break;
 		case OK_LABEL:
 			conf.button.ok_label = optarg;
@@ -1175,9 +1187,9 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		}
 		if (toquote)
 			dprintf(output_fd_opt, "%c%s%c",
-			    quotech, focusname, quotech);
+			    quotech, items[i].name, quotech);
 		else
-			dprintf(output_fd_opt, "%s", focusname);
+			dprintf(output_fd_opt, "%s", items[i].name);
 
 		if (seplast)
 			dprintf(output_fd_opt, "%s", sepstr);

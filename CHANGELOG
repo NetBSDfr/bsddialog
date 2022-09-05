@@ -13,10 +13,10 @@ Next
 
 	Utility:
 	* add: --textbox accepts options for the first button.
-	* add: --columns-per-row option for text autosizing.
-	* add: --load-theme option to read and set a custom theme at runtime.
-	* add: --save-theme option to save current theme.
-	* add: --bikeshed option for random settings.
+	* add: --columns-per-row for text autosizing.
+	* add: --load-theme to read and set a custom theme at runtime.
+	* add: --save-theme to save current theme.
+	* add: --bikeshed for random settings.
 	* add: --switch-buttons enables focus switching: buttons / input
 	       components. Available for: --form, --inputbox, --mixedform,
 	       --passwordform, --passwordbox, --timebox and --datebox.
