@@ -249,7 +249,6 @@ int main(int argc, char *argv[argc])
 {
 	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
 	bool esc_return_cancel_opt, ignore_opt, print_maxsize_opt;
-	bool textfromfile;
 	int input, rows, cols, retval, getH, getW;
 	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
 	enum bsddialog_default_theme theme_opt;
@@ -274,7 +273,6 @@ int main(int argc, char *argv[argc])
 	ignore_opt = false;
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
 	esc_return_cancel_opt = false;
-	textfromfile = false;
 	bikeshed_opt = false;
 	errorbuilder[0] = '\0';
 	savethemefile = NULL;
@@ -685,7 +683,6 @@ int main(int argc, char *argv[argc])
 			break;
 		case TEXTBOX:
 			dialogbuilder = textbox_builder;
-			textfromfile = true;
 			break;
 		case TIMEBOX:
 			dialogbuilder = timebox_builder;
@@ -720,13 +717,11 @@ int main(int argc, char *argv[argc])
 		usage();
 		return (255);
 	}
-	if (textfromfile) /* textbox */
-		text = argv[0];
-	else {
-		if ((text = malloc(strlen(argv[0]) + 1)) == NULL) {
-			printf("Error: cannot allocate memory for text\n");
-			return (255);
-		}
+	if ((text = strdup(argv[0])) == NULL) {
+		printf("Error: cannot allocate memory for text\n");
+		return (255);
+	}
+	if (dialogbuilder != textbox_builder) {
 		custom_text(cr_wrap_opt, no_collapse_opt, no_nl_expand_opt,
 		    trim_opt, argv[0], text);
 	}
@@ -783,8 +778,7 @@ int main(int argc, char *argv[argc])
 	bsddialog_end();
 	/* end bsddialog terminal mode */
 
-	if (textfromfile == false)
-		free(text);
+	free(text);
 
 	if (conf.get_height != NULL && conf.get_width != NULL)
 		dprintf(output_fd_opt, "Dialog size: (%d - %d)\n",
