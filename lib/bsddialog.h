@@ -136,14 +136,14 @@ struct bsddialog_menuitem {
 	const char *bottomdesc;
 };
 
-enum bsddialog_grouptype {
+enum bsddialog_menutype {
 	BSDDIALOG_CHECKLIST,
 	BSDDIALOG_RADIOLIST,
 	BSDDIALOG_SEPARATOR,
 };
 
 struct bsddialog_menugroup {
-	enum bsddialog_grouptype type;
+	enum bsddialog_menutype type;
 	unsigned int nitems;
 	struct bsddialog_menuitem *items;
 };

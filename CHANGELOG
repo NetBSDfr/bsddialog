@@ -10,6 +10,8 @@ Next
 	* add: --alternate-screen (and alias --keep-tite) to set alternate mode.
 	* add: --normal-screen to set normal mode.
 
+	Library:
+	change: rename enum bsddialog_grouptype to enum bsddialog_menutype.
 
 2022-08-29 Version 0.3
 
