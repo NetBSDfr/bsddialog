@@ -13,6 +13,7 @@ Next
 	Library:
 	change: rename enum bsddialog_grouptype to enum bsddialog_menutype.
 
+
 2022-08-29 Version 0.3
 
 	Utility:
@@ -146,4 +147,3 @@ Next
 	  --passwordbox, --passwordform, --pause, --radiolist, --rangebox,
 	  --textbox, --timebox, --treeview, --yesno.
 	* Manuals: bsddialog.1, bsddialog.3.
-
