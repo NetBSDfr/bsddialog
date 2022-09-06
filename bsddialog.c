@@ -46,7 +46,8 @@
 
 enum OPTS {
 	/* Common options */
-	ALTERNATE_SCREEN = '?' + 1,
+	ADD_WIDGET = '?' + 1,
+	ALTERNATE_SCREEN,
 	ASCII_LINES,
 	BACKTITLE,
 	BEGIN_X,
@@ -186,13 +187,13 @@ static void usage(void)
 	printf("\n");
 
 	printf("Common Options:\n");
-	printf("--alternate-screen, --ascii-lines, --backtitle <backtitle>, "
-	    "--begin-x <x>, --begin-y <y>, --bikeshed, --cancel-label <label>, "
-	    "--clear, --colors, --columns-per-row <columns>, --cr-wrap, "
-	    "--date-format <format>, --default-button <label>, "
-	    "--default-item <name>, --default-no, --disable-esc, "
-	    "--esc-return-cancel, --exit-label <label>, --extra-button, "
-	    "--extra-label <label>, --generic-button1 <label>, "
+	printf("--add-widget, --alternate-screen, --ascii-lines, "
+	    "--backtitle <backtitle>, --begin-x <x>, --begin-y <y>, "
+	    "--bikeshed, --cancel-label <label>, --clear, --colors, "
+	    "--columns-per-row <columns>, --cr-wrap, --date-format <format>, "
+	    "--default-button <label>, --default-item <name>, --default-no, "
+	    "--disable-esc, --esc-return-cancel, --exit-label <label>, "
+	    "--extra-button, --extra-label <label>, --generic-button1 <label>, "
 	    "--generic-button2 <label>, --help, --help-button, "
 	    "--help-label <label>, --help-status, --help-tags, --hfile <file>, "
 	    "--hline <string>, --hmsg <string>, --ignore, --insecure, "
@@ -294,6 +295,7 @@ int main(int argc, char *argv[argc])
 	/* options descriptor */
 	struct option longopts[] = {
 		/* common options */
+		{"add-widget",       no_argument,       NULL, ADD_WIDGET},
 		{"alternate-screen", no_argument,       NULL, ALTERNATE_SCREEN},
 		{"ascii-lines",      no_argument,       NULL, ASCII_LINES},
 		{"backtitle",        required_argument, NULL, BACKTITLE},
@@ -395,6 +397,9 @@ int main(int argc, char *argv[argc])
 	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
 		/* Common options */
+		case ADD_WIDGET:
+			// TODO
+			break;
 		case ALTERNATE_SCREEN:
 			screen_mode_opt = "smcup";
 			break;
