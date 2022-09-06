@@ -742,7 +742,7 @@ int main(int argc, char *argv[argc])
 		if (screen_mode_opt != NULL && screen_mode_opt != (char*)-1) {
 			tputs(screen_mode_opt, 1, putchar);
 			fflush(stdout);
-			 /* important only to refresh, useless in the library */
+			 /* only to refresh, useless in the library */
 			bsddialog_clearterminal();
 		}
 	}
