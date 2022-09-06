@@ -288,7 +288,7 @@ int main(int argc, char *argv[argc])
 
 	date_fmt_opt = time_fmt_opt = NULL;
 
-	max_input_form_opt = 0;
+	max_input_form_opt = 2048;
 
 	/* options descriptor */
 	struct option longopts[] = {
@@ -1413,7 +1413,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.yfield	 = 0;
 	item.xfield	 = 0;
 	item.fieldlen    = 1;
-	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
+	item.maxvaluelen = max_input_form_opt;
 	item.flags	 = BSDDIALOG_FIELDNOCOLOR;
 	item.flags      |= BSDDIALOG_FIELDCURSOREND;
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
@@ -1479,7 +1479,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.yfield	 = 0;
 	item.xfield	 = 0;
 	item.fieldlen	 = 1;
-	item.maxvaluelen = max_input_form_opt > 0 ? max_input_form_opt : 2048;
+	item.maxvaluelen = max_input_form_opt;
 	item.flags       = BSDDIALOG_FIELDHIDDEN;
 	item.flags      |= BSDDIALOG_FIELDNOCOLOR;
 	item.flags      |= BSDDIALOG_FIELDCURSOREND;
