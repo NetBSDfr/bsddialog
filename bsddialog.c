@@ -694,8 +694,7 @@ int main(int argc, char *argv[argc])
 		case YESNO:
 			dialogbuilder = yesno_builder;
 			break;
-		/* Error */
-		default:
+		default: /* Error */
 			if (ignore_opt == true)
 				break;
 			usage();
