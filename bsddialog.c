@@ -46,8 +46,8 @@
 
 enum OPTS {
 	/* Common options */
-	ADD_WIDGET = '?' + 1,
-	ALTERNATE_SCREEN,
+	ALTERNATE_SCREEN = '?' + 1,
+	AND_WIDGET,
 	ASCII_LINES,
 	BACKTITLE,
 	BEGIN_X,
@@ -293,8 +293,8 @@ int main(int argc, char *argv[argc])
 	/* options descriptor */
 	struct option longopts[] = {
 		/* common options */
-		{"add-widget",       no_argument,       NULL, ADD_WIDGET},
 		{"alternate-screen", no_argument,       NULL, ALTERNATE_SCREEN},
+		{"and-widget",       no_argument,       NULL, AND_WIDGET},
 		{"ascii-lines",      no_argument,       NULL, ASCII_LINES},
 		{"backtitle",        required_argument, NULL, BACKTITLE},
 		{"begin-x",          required_argument, NULL, BEGIN_X},
@@ -395,11 +395,11 @@ int main(int argc, char *argv[argc])
 	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
 		/* Common options */
-		case ADD_WIDGET:
-			// TODO
-			break;
 		case ALTERNATE_SCREEN:
 			screen_mode_opt = "smcup";
+			break;
+		case AND_WIDGET:
+			// TODO
 			break;
 		case ASCII_LINES:
 			conf.ascii_lines = true;
