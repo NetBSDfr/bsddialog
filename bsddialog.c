@@ -69,7 +69,6 @@ enum OPTS {
 	EXTRA_LABEL,
 	GENERIC_BUTTON1,
 	GENERIC_BUTTON2,
-	HELP,
 	HELP_BUTTON,
 	HELP_LABEL,
 	HELP_STATUS,
@@ -113,7 +112,6 @@ enum OPTS {
 	TIME_FORMAT,
 	TITLE,
 	TRIM,
-	VERSION,
 	/* Dialogs */
 	CHECKLIST,
 	DATEBOX,
@@ -162,7 +160,6 @@ static struct option longopts[] = {
 	{"extra-label",       required_argument, NULL, EXTRA_LABEL},
 	{"generic-button1",   required_argument, NULL, GENERIC_BUTTON1},
 	{"generic-button2",   required_argument, NULL, GENERIC_BUTTON2},
-	{"help",              no_argument,       NULL, HELP},
 	{"help-button",       no_argument,       NULL, HELP_BUTTON},
 	{"help-label",        required_argument, NULL, HELP_LABEL},
 	{"help-status",       no_argument,       NULL, HELP_STATUS},
@@ -212,7 +209,6 @@ static struct option longopts[] = {
 	{"time-format",       required_argument, NULL, TIME_FORMAT},
 	{"title",             required_argument, NULL, TITLE},
 	{"trim",              no_argument,       NULL, TRIM},
-	{"version",           no_argument,       NULL, VERSION},
 	{"yes-label",         required_argument, NULL, OK_LABEL},
 	/* Dialogs */
 	{"checklist",    no_argument, NULL, CHECKLIST},
@@ -477,9 +473,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 		case GENERIC_BUTTON2:
 			conf->button.generic2_label = optarg;
 			break;
-		case HELP:
-			usage();
-			return (BSDDIALOG_OK);
 		case HELP_BUTTON:
 			conf->button.with_help = true;
 			break;
@@ -622,10 +615,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 		case TRIM:
 			trim_opt = true;
 			break;
-		case VERSION:
-			printf("bsddialog %s (libbsddialog %s)\n",
-			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
-			return (BSDDIALOG_OK);
 		/* Dialogs */
 		case CHECKLIST:
 			dialogbuilder = checklist_builder;
@@ -706,7 +695,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 
 int main(int argc, char *argv[argc])
 {
-	int rows, cols, retval, getH, getW;
+	int i, rows, cols, retval, getH, getW;
 	char *text;
 	char errorbuilder[1024];
 	struct winsize ws;
@@ -715,6 +704,18 @@ int main(int argc, char *argv[argc])
 	setlocale(LC_ALL, "");
 
 	errorbuilder[0] = '\0';
+
+	for (i = 0; i < argc; i++) {
+		if (strcmp(argv[i], "--version") == 0 && argv[i][9]=='\0') {
+			printf("bsddialog %s (libbsddialog %s)\n",
+			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
+			return (BSDDIALOG_OK);
+		}
+		if (strcmp(argv[i], "--help") == 0 && argv[i][6]=='\0') {
+			usage();
+			return (BSDDIALOG_OK);
+		}
+	}
 
 	parseargs(argc, argv, &conf, &getH, &getW); // XXX add loop --and-widget
 	argc -= optind; // XXX parseargs()
