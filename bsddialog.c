@@ -136,6 +136,108 @@ enum OPTS {
 	YESNO
 };
 
+/* options descriptor */
+static struct option longopts[] = {
+	/* common options */
+	{"alternate-screen",  no_argument,       NULL, ALTERNATE_SCREEN},
+	{"and-widget",        no_argument,       NULL, AND_WIDGET},
+	{"ascii-lines",       no_argument,       NULL, ASCII_LINES},
+	{"backtitle",         required_argument, NULL, BACKTITLE},
+	{"begin-x",           required_argument, NULL, BEGIN_X},
+	{"begin-y",           required_argument, NULL, BEGIN_Y},
+	{"bikeshed",          no_argument,       NULL, BIKESHED},
+	{"cancel-label",      required_argument, NULL, CANCEL_LABEL},
+	{"clear",             no_argument,       NULL, CLEAR},
+	{"colors",            no_argument,       NULL, COLORS},
+	{"cr-wrap",           no_argument,       NULL, CR_WRAP},
+	{"date-format",       required_argument, NULL, DATE_FORMAT},
+	{"defaultno",         no_argument,       NULL, DEFAULT_NO},
+	{"default-button",    required_argument, NULL, DEFAULT_BUTTON},
+	{"default-item",      required_argument, NULL, DEFAULT_ITEM},
+	{"default-no",        no_argument,       NULL, DEFAULT_NO},
+	{"disable-esc",       no_argument,       NULL, DISABLE_ESC},
+	{"esc-return-cancel", no_argument,       NULL, ESC_RETURNCANCEL},
+	{"exit-label",        required_argument, NULL, EXIT_LABEL},
+	{"extra-button",      no_argument,       NULL, EXTRA_BUTTON},
+	{"extra-label",       required_argument, NULL, EXTRA_LABEL},
+	{"generic-button1",   required_argument, NULL, GENERIC_BUTTON1},
+	{"generic-button2",   required_argument, NULL, GENERIC_BUTTON2},
+	{"help",              no_argument,       NULL, HELP},
+	{"help-button",       no_argument,       NULL, HELP_BUTTON},
+	{"help-label",        required_argument, NULL, HELP_LABEL},
+	{"help-status",       no_argument,       NULL, HELP_STATUS},
+	{"help-tags",         no_argument,       NULL, HELP_TAGS},
+	{"hfile",             required_argument, NULL, HFILE},
+	{"hline",             required_argument, NULL, HLINE},
+	{"hmsg",              required_argument, NULL, HMSG},
+	{"ignore",            no_argument,       NULL, IGNORE},
+	{"insecure",          no_argument,       NULL, INSECURE},
+	{"item-depth",        no_argument,       NULL, ITEM_DEPTH},
+	{"item-help",         no_argument,       NULL, ITEM_HELP},
+	{"item-prefix",       no_argument,       NULL, ITEM_PREFIX},
+	{"keep-tite",         no_argument,       NULL, ALTERNATE_SCREEN},
+	{"load-theme",        required_argument, NULL, LOAD_THEME},
+	{"max-input",         required_argument, NULL, MAX_INPUT},
+	{"no-cancel",         no_argument,       NULL, NO_CANCEL},
+	{"nocancel",          no_argument,       NULL, NO_CANCEL},
+	{"no-collapse",       no_argument,       NULL, NO_COLLAPSE},
+	{"no-items",          no_argument,       NULL, NO_ITEMS},
+	{"no-label",          required_argument, NULL, CANCEL_LABEL},
+	{"no-lines",          no_argument,       NULL, NO_LINES},
+	{"no-nl-expand",      no_argument,       NULL, NO_NL_EXPAND},
+	{"no-ok",             no_argument,       NULL, NO_OK},
+	{"nook ",             no_argument,       NULL, NO_OK},
+	{"no-shadow",         no_argument,       NULL, NO_SHADOW},
+	{"no-tags",           no_argument,       NULL, NO_TAGS},
+	{"normal-screen",     no_argument,       NULL, NORMAL_SCREEN},
+	{"ok-label",          required_argument, NULL, OK_LABEL},
+	{"output-fd",         required_argument, NULL, OUTPUT_FD},
+	{"output-separator",  required_argument, NULL, OUTPUT_SEPARATOR},
+	{"print-maxsize",     no_argument,       NULL, PRINT_MAXSIZE},
+	{"print-size",        no_argument,       NULL, PRINT_SIZE},
+	{"print-version",     no_argument,       NULL, PRINT_VERSION},
+	{"quoted",            no_argument,       NULL, QUOTED},
+	{"columns-per-row",   required_argument, NULL, COLUMNS_PER_ROW},
+	{"save-theme",        required_argument, NULL, SAVE_THEME},
+	{"separate-output",   no_argument,       NULL, SEPARATE_OUTPUT},
+	{"separator",         required_argument, NULL, OUTPUT_SEPARATOR},
+	{"shadow",            no_argument,       NULL, SHADOW},
+	{"single-quoted",     no_argument,       NULL, SINGLE_QUOTED},
+	{"sleep",             required_argument, NULL, SLEEP},
+	{"stderr",            no_argument,       NULL, STDERR},
+	{"stdout",            no_argument,       NULL, STDOUT},
+	{"switch-buttons",    no_argument,       NULL, SWITCH_BUTTONS},
+	{"tab-len",           required_argument, NULL, TAB_LEN},
+	{"theme",             required_argument, NULL, THEME},
+	{"time-format",       required_argument, NULL, TIME_FORMAT},
+	{"title",             required_argument, NULL, TITLE},
+	{"trim",              no_argument,       NULL, TRIM},
+	{"version",           no_argument,       NULL, VERSION},
+	{"yes-label",         required_argument, NULL, OK_LABEL},
+	/* Dialogs */
+	{"checklist",    no_argument, NULL, CHECKLIST},
+	{"datebox",      no_argument, NULL, DATEBOX},
+	{"form",         no_argument, NULL, FORM},
+	{"gauge",        no_argument, NULL, GAUGE},
+	{"infobox",      no_argument, NULL, INFOBOX},
+	{"inputbox",     no_argument, NULL, INPUTBOX},
+	{"menu",         no_argument, NULL, MENU},
+	{"mixedform",    no_argument, NULL, MIXEDFORM},
+	{"mixedgauge",   no_argument, NULL, MIXEDGAUGE},
+	{"msgbox",       no_argument, NULL, MSGBOX},
+	{"passwordbox",  no_argument, NULL, PASSWORDBOX},
+	{"passwordform", no_argument, NULL, PASSWORDFORM},
+	{"pause",        no_argument, NULL, PAUSE},
+	{"radiolist",    no_argument, NULL, RADIOLIST},
+	{"rangebox",     no_argument, NULL, RANGEBOX},
+	{"textbox",      no_argument, NULL, TEXTBOX},
+	{"timebox",      no_argument, NULL, TIMEBOX},
+	{"treeview",     no_argument, NULL, TREEVIEW},
+	{"yesno",        no_argument, NULL, YESNO},
+	/* END */
+	{ NULL, 0, NULL, 0}
+};
+
 /* Menus options */
 static bool item_prefix_opt, item_bottomdesc_opt, item_output_sepnl_opt;
 static bool item_singlequote_opt, list_items_on_opt, item_tag_help_opt;
@@ -147,13 +249,17 @@ static char *date_fmt_opt, *time_fmt_opt;
 static int unsigned max_input_form_opt;
 /* General options */
 static int output_fd_opt;
-bool bikeshed_opt;
+static bool bikeshed_opt;
+// old main local
+static bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
+static bool esc_return_cancel_opt, ignore_opt, print_maxsize_opt;
+static enum bsddialog_default_theme theme_opt;
+static char *backtitle_opt, *loadthemefile, *savethemefile;
+static char *screen_mode_opt;
 
 /* Functions */
 static void sigint_handler(int sig);
-static void
-custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
-    char *text, char *buf);
+static void custom_text(char *text, char *buf);
 static void errorexit(char *errbuf);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
@@ -177,6 +283,8 @@ static int textbox_builder(BUILDER_ARGS);
 static int timebox_builder(BUILDER_ARGS);
 static int treeview_builder(BUILDER_ARGS);
 static int yesno_builder(BUILDER_ARGS);
+
+static int (*dialogbuilder)(BUILDER_ARGS);
 
 static void usage(void)
 {
@@ -245,26 +353,19 @@ static void usage(void)
 	printf("See 'man 1 bsddialog' for more information.\n");
 }
 
-int main(int argc, char *argv[argc])
+static int
+parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
+    int *getW)
 {
-	bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
-	bool esc_return_cancel_opt, ignore_opt, print_maxsize_opt;
-	int input, rows, cols, retval, getH, getW;
-	int (*dialogbuilder)(BUILDER_ARGS) = NULL;
-	enum bsddialog_default_theme theme_opt;
-	char *text, *backtitle_opt, *loadthemefile, *savethemefile;
-	char *screen_mode_opt;
-	char errorbuilder[1024];
-	struct winsize ws;
-	struct bsddialog_conf conf;
+	int input;
 
-	setlocale(LC_ALL, "");
+	bsddialog_initconf(conf);
+	conf->key.enable_esc = true;
+	conf->menu.on_without_ok = true;
+	conf->form.value_without_ok = true;
+	conf->button.always_active = true;
 
-	bsddialog_initconf(&conf);
-	conf.key.enable_esc = true;
-	conf.menu.on_without_ok = true;
-	conf.form.value_without_ok = true;
-	conf.button.always_active = true;
+	dialogbuilder = NULL;
 
 	backtitle_opt = NULL;
 	theme_opt = BSDDIALOG_THEME_FLAT;
@@ -274,7 +375,6 @@ int main(int argc, char *argv[argc])
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
 	esc_return_cancel_opt = false;
 	bikeshed_opt = false;
-	errorbuilder[0] = '\0';
 	savethemefile = NULL;
 	loadthemefile = NULL;
 	screen_mode_opt = NULL;
@@ -290,108 +390,7 @@ int main(int argc, char *argv[argc])
 
 	max_input_form_opt = 2048;
 
-	/* options descriptor */
-	struct option longopts[] = {
-		/* common options */
-		{"alternate-screen", no_argument,       NULL, ALTERNATE_SCREEN},
-		{"and-widget",       no_argument,       NULL, AND_WIDGET},
-		{"ascii-lines",      no_argument,       NULL, ASCII_LINES},
-		{"backtitle",        required_argument, NULL, BACKTITLE},
-		{"begin-x",          required_argument, NULL, BEGIN_X},
-		{"begin-y",          required_argument, NULL, BEGIN_Y},
-		{"bikeshed",         no_argument,       NULL, BIKESHED},
-		{"cancel-label",     required_argument, NULL, CANCEL_LABEL},
-		{"clear",            no_argument,       NULL, CLEAR},
-		{"colors",           no_argument,       NULL, COLORS},
-		{"cr-wrap",          no_argument,       NULL, CR_WRAP},
-		{"date-format",      required_argument, NULL, DATE_FORMAT},
-		{"defaultno",        no_argument,       NULL, DEFAULT_NO},
-		{"default-button",   required_argument, NULL, DEFAULT_BUTTON},
-		{"default-item",     required_argument, NULL, DEFAULT_ITEM},
-		{"default-no",       no_argument,       NULL, DEFAULT_NO},
-		{"disable-esc",      no_argument,       NULL, DISABLE_ESC},
-		{"esc-return-cancel",no_argument,       NULL, ESC_RETURNCANCEL},
-		{"exit-label",       required_argument, NULL, EXIT_LABEL},
-		{"extra-button",     no_argument,       NULL, EXTRA_BUTTON},
-		{"extra-label",      required_argument, NULL, EXTRA_LABEL},
-		{"generic-button1",  required_argument, NULL, GENERIC_BUTTON1},
-		{"generic-button2",  required_argument, NULL, GENERIC_BUTTON2},
-		{"help",             no_argument,       NULL, HELP},
-		{"help-button",      no_argument,       NULL, HELP_BUTTON},
-		{"help-label",       required_argument, NULL, HELP_LABEL},
-		{"help-status",      no_argument,       NULL, HELP_STATUS},
-		{"help-tags",        no_argument,       NULL, HELP_TAGS},
-		{"hfile",            required_argument, NULL, HFILE},
-		{"hline",            required_argument, NULL, HLINE},
-		{"hmsg",             required_argument, NULL, HMSG},
-		{"ignore",           no_argument,       NULL, IGNORE},
-		{"insecure",         no_argument,       NULL, INSECURE},
-		{"item-depth",       no_argument,       NULL, ITEM_DEPTH},
-		{"item-help",        no_argument,       NULL, ITEM_HELP},
-		{"item-prefix",      no_argument,       NULL, ITEM_PREFIX},
-		{"keep-tite",        no_argument,       NULL, ALTERNATE_SCREEN},
-		{"load-theme",       required_argument, NULL, LOAD_THEME},
-		{"max-input",        required_argument, NULL, MAX_INPUT},
-		{"no-cancel",        no_argument,       NULL, NO_CANCEL},
-		{"nocancel",         no_argument,       NULL, NO_CANCEL},
-		{"no-collapse",      no_argument,       NULL, NO_COLLAPSE},
-		{"no-items",         no_argument,       NULL, NO_ITEMS},
-		{"no-label",         required_argument, NULL, CANCEL_LABEL},
-		{"no-lines",         no_argument,       NULL, NO_LINES},
-		{"no-nl-expand",     no_argument,       NULL, NO_NL_EXPAND},
-		{"no-ok",            no_argument,       NULL, NO_OK},
-		{"nook ",            no_argument,       NULL, NO_OK},
-		{"no-shadow",        no_argument,       NULL, NO_SHADOW},
-		{"no-tags",          no_argument,       NULL, NO_TAGS},
-		{"normal-screen",    no_argument,       NULL, NORMAL_SCREEN},
-		{"ok-label",         required_argument, NULL, OK_LABEL},
-		{"output-fd",        required_argument, NULL, OUTPUT_FD},
-		{"output-separator", required_argument, NULL, OUTPUT_SEPARATOR},
-		{"print-maxsize",    no_argument,       NULL, PRINT_MAXSIZE},
-		{"print-size",       no_argument,       NULL, PRINT_SIZE},
-		{"print-version",    no_argument,       NULL, PRINT_VERSION},
-		{"quoted",           no_argument,       NULL, QUOTED},
-		{"columns-per-row",  required_argument, NULL, COLUMNS_PER_ROW},
-		{"save-theme",       required_argument, NULL, SAVE_THEME},
-		{"separate-output",  no_argument,       NULL, SEPARATE_OUTPUT},
-		{"separator",        required_argument, NULL, OUTPUT_SEPARATOR},
-		{"shadow",           no_argument,       NULL, SHADOW},
-		{"single-quoted",    no_argument,       NULL, SINGLE_QUOTED},
-		{"sleep",            required_argument, NULL, SLEEP},
-		{"stderr",           no_argument,       NULL, STDERR},
-		{"stdout",           no_argument,       NULL, STDOUT},
-		{"switch-buttons",   no_argument,       NULL, SWITCH_BUTTONS},
-		{"tab-len",          required_argument, NULL, TAB_LEN},
-		{"theme",            required_argument, NULL, THEME},
-		{"time-format",      required_argument, NULL, TIME_FORMAT},
-		{"title",            required_argument, NULL, TITLE},
-		{"trim",             no_argument,       NULL, TRIM},
-		{"version",          no_argument,       NULL, VERSION},
-		{"yes-label",        required_argument, NULL, OK_LABEL},
-		/* Dialogs */
-		{"checklist",    no_argument, NULL, CHECKLIST},
-		{"datebox",      no_argument, NULL, DATEBOX},
-		{"form",         no_argument, NULL, FORM},
-		{"gauge",        no_argument, NULL, GAUGE},
-		{"infobox",      no_argument, NULL, INFOBOX},
-		{"inputbox",     no_argument, NULL, INPUTBOX},
-		{"menu",         no_argument, NULL, MENU},
-		{"mixedform",    no_argument, NULL, MIXEDFORM},
-		{"mixedgauge",   no_argument, NULL, MIXEDGAUGE},
-		{"msgbox",       no_argument, NULL, MSGBOX},
-		{"passwordbox",  no_argument, NULL, PASSWORDBOX},
-		{"passwordform", no_argument, NULL, PASSWORDFORM},
-		{"pause",        no_argument, NULL, PAUSE},
-		{"radiolist",    no_argument, NULL, RADIOLIST},
-		{"rangebox",     no_argument, NULL, RANGEBOX},
-		{"textbox",      no_argument, NULL, TEXTBOX},
-		{"timebox",      no_argument, NULL, TIMEBOX},
-		{"treeview",     no_argument, NULL, TREEVIEW},
-		{"yesno",        no_argument, NULL, YESNO},
-		/* END */
-		{ NULL, 0, NULL, 0}
-	};
-
+	// TODO return(255) after loop --and-widget
 	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
 		/* Common options */
@@ -402,44 +401,44 @@ int main(int argc, char *argv[argc])
 			// TODO
 			break;
 		case ASCII_LINES:
-			conf.ascii_lines = true;
+			conf->ascii_lines = true;
 			break;
 		case BACKTITLE:
 			backtitle_opt = optarg;
-			if (conf.y == BSDDIALOG_CENTER)
-				conf.auto_topmargin = 2;
+			if (conf->y == BSDDIALOG_CENTER)
+				conf->auto_topmargin = 2;
 			break;
 		case BEGIN_X:
-			conf.x = (int)strtol(optarg, NULL, 10);
-			if (conf.x < BSDDIALOG_CENTER) {
+			conf->x = (int)strtol(optarg, NULL, 10);
+			if (conf->x < BSDDIALOG_CENTER) {
 				printf("Error: --begin-x %d < %d",
-				    conf.x, BSDDIALOG_CENTER);
+				    conf->x, BSDDIALOG_CENTER);
 				return (255);
 			}
 			break;
 		case BEGIN_Y:
-			conf.y = (int)strtol(optarg, NULL, 10);
-			if (conf.y < BSDDIALOG_CENTER) {
+			conf->y = (int)strtol(optarg, NULL, 10);
+			if (conf->y < BSDDIALOG_CENTER) {
 				printf("Error: --begin-y %d < %d",
-				    conf.y, BSDDIALOG_CENTER);
+				    conf->y, BSDDIALOG_CENTER);
 				return (255);
 			}
-			conf.auto_topmargin = 0;
+			conf->auto_topmargin = 0;
 			break;
 		case BIKESHED:
 			bikeshed_opt = true;
 			break;
 		case CANCEL_LABEL:
-			conf.button.cancel_label = optarg;
+			conf->button.cancel_label = optarg;
 			break;
 		case CLEAR:
-			conf.clear = true;
+			conf->clear = true;
 			break;
 		case COLORS:
-			conf.text.highlight = true;
+			conf->text.highlight = true;
 			break;
 		case COLUMNS_PER_ROW:
-			conf.text.cols_per_row =
+			conf->text.cols_per_row =
 			    (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case CR_WRAP:
@@ -449,43 +448,43 @@ int main(int argc, char *argv[argc])
 			date_fmt_opt = optarg;
 			break;
 		case DEFAULT_BUTTON:
-			conf.button.default_label = optarg;
+			conf->button.default_label = optarg;
 			break;
 		case DEFAULT_ITEM:
 			item_default_opt = optarg;
 			break;
 		case DEFAULT_NO:
-			conf.button.default_cancel = true;
+			conf->button.default_cancel = true;
 			break;
 		case DISABLE_ESC:
-			conf.key.enable_esc = false;
+			conf->key.enable_esc = false;
 			break;
 		case ESC_RETURNCANCEL:
 			esc_return_cancel_opt = true;
 			break;
 		case EXIT_LABEL:
-			conf.button.ok_label = optarg;
+			conf->button.ok_label = optarg;
 			break;
 		case EXTRA_BUTTON:
-			conf.button.with_extra = true;
+			conf->button.with_extra = true;
 			break;
 		case EXTRA_LABEL:
-			conf.button.extra_label = optarg;
+			conf->button.extra_label = optarg;
 			break;
 		case GENERIC_BUTTON1:
-			conf.button.generic1_label = optarg;
+			conf->button.generic1_label = optarg;
 			break;
 		case GENERIC_BUTTON2:
-			conf.button.generic2_label = optarg;
+			conf->button.generic2_label = optarg;
 			break;
 		case HELP:
 			usage();
 			return (BSDDIALOG_OK);
 		case HELP_BUTTON:
-			conf.button.with_help = true;
+			conf->button.with_help = true;
 			break;
 		case HELP_LABEL:
-			conf.button.help_label = optarg;
+			conf->button.help_label = optarg;
 			break;
 		case HELP_STATUS:
 			list_items_on_opt = true;
@@ -494,20 +493,20 @@ int main(int argc, char *argv[argc])
 			item_tag_help_opt = true;
 			break;
 		case HFILE:
-			conf.key.f1_file = optarg;
+			conf->key.f1_file = optarg;
 			break;
 		case HLINE:
 			if (optarg[0] != '\0')
-				conf.bottomtitle = optarg;
+				conf->bottomtitle = optarg;
 			break;
 		case HMSG:
-			conf.key.f1_message = optarg;
+			conf->key.f1_message = optarg;
 			break;
 		case IGNORE:
 			ignore_opt = true;
 			break;
 		case INSECURE:
-			conf.form.securech = '*';
+			conf->form.securech = '*';
 			break;
 		case ITEM_DEPTH:
 			item_depth_opt = true;
@@ -525,34 +524,34 @@ int main(int argc, char *argv[argc])
 			max_input_form_opt = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case NO_ITEMS:
-			conf.menu.no_desc = true;
+			conf->menu.no_desc = true;
 			break;
 		case NO_CANCEL:
-			conf.button.without_cancel = true;
+			conf->button.without_cancel = true;
 			break;
 		case NO_COLLAPSE:
 			no_collapse_opt = true;
 			break;
 		case NO_LINES:
-			conf.no_lines = true;
+			conf->no_lines = true;
 			break;
 		case NO_NL_EXPAND:
 			no_nl_expand_opt = true;
 			break;
 		case NO_OK:
-			conf.button.without_ok = true;
+			conf->button.without_ok = true;
 			break;
 		case NO_TAGS:
-			conf.menu.no_name = true;
+			conf->menu.no_name = true;
 			break;
 		case NO_SHADOW:
-			conf.shadow = false;
+			conf->shadow = false;
 			break;
 		case NORMAL_SCREEN:
 			screen_mode_opt = "rmcup";
 			break;
 		case OK_LABEL:
-			conf.button.ok_label = optarg;
+			conf->button.ok_label = optarg;
 			break;
 		case OUTPUT_FD:
 			output_fd_opt = (int)strtol(optarg, NULL, 10);
@@ -567,8 +566,8 @@ int main(int argc, char *argv[argc])
 			print_maxsize_opt = true;
 			break;
 		case PRINT_SIZE:
-			conf.get_height = &getH;
-			conf.get_width = &getW;
+			conf->get_height = getH;
+			conf->get_width = getW;
 			break;
 		case PRINT_VERSION:
 			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
@@ -580,13 +579,13 @@ int main(int argc, char *argv[argc])
 			item_output_sepnl_opt = true;
 			break;
 		case SHADOW:
-			conf.shadow = true;
+			conf->shadow = true;
 			break;
 		case SINGLE_QUOTED:
 			item_singlequote_opt = true;
 			break;
 		case SLEEP:
-			conf.sleep = (u_int)strtoul(optarg, NULL, 10);
+			conf->sleep = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case STDERR:
 			output_fd_opt = STDERR_FILENO;
@@ -595,10 +594,10 @@ int main(int argc, char *argv[argc])
 			output_fd_opt = STDOUT_FILENO;
 			break;
 		case SWITCH_BUTTONS:
-			conf.button.always_active = false;
+			conf->button.always_active = false;
 			break;
 		case TAB_LEN:
-			conf.text.tablen = (u_int)strtoul(optarg, NULL, 10);
+			conf->text.tablen = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case THEME:
 			if (strcasecmp(optarg, "bsddialog") == 0)
@@ -618,7 +617,7 @@ int main(int argc, char *argv[argc])
 			time_fmt_opt = optarg;
 			break;
 		case TITLE:
-			conf.title = optarg;
+			conf->title = optarg;
 			break;
 		case TRIM:
 			trim_opt = true;
@@ -630,14 +629,14 @@ int main(int argc, char *argv[argc])
 		/* Dialogs */
 		case CHECKLIST:
 			dialogbuilder = checklist_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case DATEBOX:
 			dialogbuilder = datebox_builder;
 			break;
 		case FORM:
 			dialogbuilder = form_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case GAUGE:
 			dialogbuilder = gauge_builder;
@@ -647,15 +646,15 @@ int main(int argc, char *argv[argc])
 			break;
 		case INPUTBOX:
 			dialogbuilder = inputbox_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case MENU:
 			dialogbuilder = menu_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case MIXEDFORM:
 			dialogbuilder = mixedform_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case MIXEDGAUGE:
 			dialogbuilder = mixedgauge_builder;
@@ -668,15 +667,15 @@ int main(int argc, char *argv[argc])
 			break;
 		case PASSWORDBOX:
 			dialogbuilder = passwordbox_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case PASSWORDFORM:
 			dialogbuilder = passwordform_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case RADIOLIST:
 			dialogbuilder = radiolist_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case RANGEBOX:
 			dialogbuilder = rangebox_builder;
@@ -689,7 +688,7 @@ int main(int argc, char *argv[argc])
 			break;
 		case TREEVIEW:
 			dialogbuilder = treeview_builder;
-			conf.auto_downmargin = 1;
+			conf->auto_downmargin = 1;
 			break;
 		case YESNO:
 			dialogbuilder = yesno_builder;
@@ -701,8 +700,25 @@ int main(int argc, char *argv[argc])
 			return (255);
 		}
 	}
-	argc -= optind;
-	argv += optind;
+
+	return (BSDDIALOG_OK);
+}
+
+int main(int argc, char *argv[argc])
+{
+	int rows, cols, retval, getH, getW;
+	char *text;
+	char errorbuilder[1024];
+	struct winsize ws;
+	struct bsddialog_conf conf;
+
+	setlocale(LC_ALL, "");
+
+	errorbuilder[0] = '\0';
+
+	parseargs(argc, argv, &conf, &getH, &getW); // XXX add loop --and-widget
+	argc -= optind; // XXX parseargs()
+	argv += optind; // XXX parseargs()
 
 	if (print_maxsize_opt) {
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
@@ -721,8 +737,7 @@ int main(int argc, char *argv[argc])
 		return (255);
 	}
 	if (dialogbuilder != textbox_builder) {
-		custom_text(cr_wrap_opt, no_collapse_opt, no_nl_expand_opt,
-		    trim_opt, argv[0], text);
+		custom_text(argv[0], text);
 	}
 	rows = (int)strtol(argv[1], NULL, 10);
 	cols = (int)strtol(argv[2], NULL, 10);
@@ -808,9 +823,7 @@ void errorexit(char *errbuf)
 	exit(255);
 }
 
-void
-custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
-    char *text, char *buf)
+void custom_text(char *text, char *buf)
 {
 	int i, j;
 
@@ -824,7 +837,7 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 				i++;
 				break;
 			case 'n':
-				if (no_nl_expand) {
+				if (no_nl_expand_opt) {
 					j++;
 					buf[j] = 'n';
 				} else
@@ -832,7 +845,7 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 				i++;
 				break;
 			case 't':
-				if (no_collapse) {
+				if (no_collapse_opt) {
 					j++;
 					buf[j] = 't';
 				} else
@@ -842,16 +855,16 @@ custom_text(bool cr_wrap, bool no_collapse, bool no_nl_expand, bool trim,
 			}
 			break;
 		case '\n':
-			buf[j] = cr_wrap ? ' ' : '\n';
+			buf[j] = cr_wrap_opt ? ' ' : '\n';
 			break;
 		case '\t':
-			buf[j] = no_collapse ? '\t' : ' ';
+			buf[j] = no_collapse_opt ? '\t' : ' ';
 			break;
 		default:
 			buf[j] = text[i];
 		}
 		i++;
-		j += (buf[j] == ' ' && trim && j > 0 && buf[j-1] == ' ') ?
+		j += (buf[j] == ' ' && trim_opt && j > 0 && buf[j-1] == ' ') ?
 		    0 : 1;
 	}
 	buf[j] = '\0';
