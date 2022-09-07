@@ -42,6 +42,7 @@
 
 #include "util_theme.h"
 
+/* Work In Progress 0.4 */
 #define BSDDIALOG_VERSION "0.4-WIP"
 
 enum OPTS {
