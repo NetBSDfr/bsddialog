@@ -725,7 +725,7 @@ int main(int argc, char *argv[argc])
 	argc -= optind; // XXX parseargs()
 	argv += optind; // XXX parseargs()
 
-	if (print_maxsize_opt == true && argc == 0)
+	if (print_maxsize_opt && argc == 0)
 		return (BSDDIALOG_OK);
 
 	if (argc < 3) {
