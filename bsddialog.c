@@ -42,7 +42,7 @@
 
 #include "util_theme.h"
 
-#define BSDDIALOG_VERSION "0.3"
+#define BSDDIALOG_VERSION "0.4-WIP"
 
 enum OPTS {
 	/* Common options */
