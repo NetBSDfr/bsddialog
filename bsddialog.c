@@ -355,6 +355,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
     int *getW)
 {
 	int input;
+	struct winsize ws;
 
 	bsddialog_initconf(conf);
 	conf->key.enable_esc = true;
@@ -367,7 +368,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 	backtitle_opt = NULL;
 	theme_opt = BSDDIALOG_THEME_FLAT;
 	output_fd_opt = STDERR_FILENO;
-	print_maxsize_opt = false;
 	ignore_opt = false;
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
 	esc_return_cancel_opt = false;
@@ -558,6 +558,9 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			break;
 		case PRINT_MAXSIZE:
 			print_maxsize_opt = true;
+			ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
+			dprintf(output_fd_opt, "MaxSize: %d, %d\n",
+			    ws.ws_row, ws.ws_col);
 			break;
 		case PRINT_SIZE:
 			conf->get_height = getH;
@@ -699,12 +702,12 @@ int main(int argc, char *argv[argc])
 	int i, rows, cols, retval, getH, getW;
 	char *text;
 	char errorbuilder[1024];
-	struct winsize ws;
 	struct bsddialog_conf conf;
 
 	setlocale(LC_ALL, "");
 
 	errorbuilder[0] = '\0';
+	print_maxsize_opt = false;
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "--version") == 0 && argv[i][9]=='\0') {
@@ -722,13 +725,8 @@ int main(int argc, char *argv[argc])
 	argc -= optind; // XXX parseargs()
 	argv += optind; // XXX parseargs()
 
-	if (print_maxsize_opt) {
-		ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-		dprintf(output_fd_opt, "MaxSize: %d, %d\n",
-		    ws.ws_row, ws.ws_col);
-		if (argc == 0)
-			return (BSDDIALOG_OK);
-	}
+	if (print_maxsize_opt == true && argc == 0)
+		return (BSDDIALOG_OK);
 
 	if (argc < 3) {
 		usage();
