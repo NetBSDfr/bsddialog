@@ -249,7 +249,7 @@ static int output_fd_opt;
 static bool bikeshed_opt;
 // old main local
 static bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
-static bool esc_return_cancel_opt, ignore_opt, print_maxsize_opt;
+static bool esc_return_cancel_opt, ignore_opt, mandatory_dialog;
 static enum bsddialog_default_theme theme_opt;
 static char *backtitle_opt, *loadthemefile, *savethemefile;
 static char *screen_mode_opt;
@@ -258,6 +258,7 @@ static char *screen_mode_opt;
 static void sigint_handler(int sig);
 static void custom_text(char *text, char *buf);
 static void errorexit(char *errbuf);
+static void usage(void);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv, char *errbuf
@@ -282,6 +283,34 @@ static int treeview_builder(BUILDER_ARGS);
 static int yesno_builder(BUILDER_ARGS);
 
 static int (*dialogbuilder)(BUILDER_ARGS);
+
+/* init and exit */
+static bool in_bsddialog_mode;
+static void start_bsddialog_mode(void);
+static void exit_error(const char *errstr, bool with_usage);
+
+static void start_bsddialog_mode(void)
+{
+	if (in_bsddialog_mode)
+		return;
+	if (bsddialog_init() != 0) {
+		printf("Error: %s\n", bsddialog_geterror());
+		exit (255);
+	}
+	signal(SIGINT, sigint_handler);
+}
+
+static void exit_error(const char *errstr, bool with_usage)
+{
+	if (in_bsddialog_mode)
+		bsddialog_end();
+
+	printf("Error: %s\nX", errstr);
+	if (with_usage)
+		usage();
+
+	exit (255);
+}
 
 static void usage(void)
 {
@@ -354,7 +383,7 @@ static int
 parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
     int *getW)
 {
-	int input, parsed;
+	int arg, parsed;
 	struct winsize ws;
 
 	bsddialog_initconf(conf);
@@ -386,11 +415,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 	date_fmt_opt = time_fmt_opt = NULL;
 
 	max_input_form_opt = 2048;
-
-	// TODO return(255) -> -1 after loop --and-widget	
+	
 	parsed=argc;
-	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
-		switch (input) {
+	while ((arg = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
+		switch (arg) {
 		/* Common options */
 		case ALTERNATE_SCREEN:
 			screen_mode_opt = "smcup";
@@ -409,19 +437,13 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			break;
 		case BEGIN_X:
 			conf->x = (int)strtol(optarg, NULL, 10);
-			if (conf->x < BSDDIALOG_CENTER) {
-				printf("Error: --begin-x %d < %d",
-				    conf->x, BSDDIALOG_CENTER);
-				return (255);
-			}
+			if (conf->x < BSDDIALOG_CENTER)
+				exit_error("--begin-x < -1", false);
 			break;
 		case BEGIN_Y:
 			conf->y = (int)strtol(optarg, NULL, 10);
-			if (conf->y < BSDDIALOG_CENTER) {
-				printf("Error: --begin-y %d < %d",
-				    conf->y, BSDDIALOG_CENTER);
-				return (255);
-			}
+			if (conf->y < BSDDIALOG_CENTER)
+				exit_error("--begin-y < -1", false);
 			conf->auto_topmargin = 0;
 			break;
 		case BIKESHED:
@@ -559,7 +581,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			item_always_quote_opt = true;
 			break;
 		case PRINT_MAXSIZE:
-			print_maxsize_opt = true;
+			mandatory_dialog = false;
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
 			dprintf(output_fd_opt, "MaxSize: %d, %d\n",
 			    ws.ws_row, ws.ws_col);
@@ -569,7 +591,9 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			conf->get_width = getW;
 			break;
 		case PRINT_VERSION:
-			printf("bsddialog version %s\n", BSDDIALOG_VERSION);
+			mandatory_dialog = false;
+			dprintf(output_fd_opt, "Version: %s\n",
+			    BSDDIALOG_VERSION);
 			break;
 		case SAVE_THEME:
 			savethemefile = optarg;
@@ -607,10 +631,8 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 				theme_opt = BSDDIALOG_THEME_FLAT;
 			else if (strcasecmp(optarg, "dialog") == 0)
 				theme_opt = BSDDIALOG_THEME_DIALOG;
-			else {
-				printf("Error: unknown theme\n");
-				return (255);
-			}
+			else
+				exit_error("--theme: <unknown> theme", false);
 			break;
 		case TIME_FORMAT:
 			time_fmt_opt = optarg;
@@ -691,8 +713,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 		default: /* Error */
 			if (ignore_opt == true)
 				break;
-			usage();
-			return (255);
+			exit_error("", true);
 		}
 	}
 
@@ -708,8 +729,9 @@ int main(int argc, char *argv[argc])
 
 	setlocale(LC_ALL, "");
 
+	in_bsddialog_mode = false;
 	errorbuilder[0] = '\0';
-	print_maxsize_opt = false;
+	mandatory_dialog = true;
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "--version") == 0 && argv[i][9]=='\0') {
@@ -730,17 +752,13 @@ int main(int argc, char *argv[argc])
 		argc = parsed - optind;
 		argv += optind;
 
-		if (print_maxsize_opt && argc == 0)
+		if (mandatory_dialog == false && argc == 0)
 			return (BSDDIALOG_OK);
 
-		if (argc < 3) {
-			usage();
-			return (255);
-		}
-		if ((text = strdup(argv[0])) == NULL) {
-			printf("Error: cannot allocate memory for text\n");
-			return (255);
-		}
+		if (argc < 3)
+			exit_error("at least 3 args <text><rows><cols>", false);
+		if ((text = strdup(argv[0])) == NULL)
+			exit_error("cannot allocate memory for text", false);
 		if (dialogbuilder != textbox_builder) {
 			custom_text(argv[0], text);
 		}
@@ -749,13 +767,8 @@ int main(int argc, char *argv[argc])
 		argc -= 3;
 		argv += 3;
 
-		/* bsddialog terminal mode */
-		if (bsddialog_init() != 0) {
-			printf("Error: %s\n", bsddialog_geterror());
-			return (255);
-		}
-
-		signal(SIGINT, sigint_handler);
+		/* bsddialog terminal mode (first iteration) */
+		start_bsddialog_mode();
 
 		if (screen_mode_opt != NULL) {
 			screen_mode_opt = tigetstr(screen_mode_opt);
@@ -788,7 +801,8 @@ int main(int argc, char *argv[argc])
 				errorexit(errorbuilder);
 		} else
 			retval = BSDDIALOG_OK;
-		/* for --and-widget */
+		free(text);
+		/* --and-widget: end loop with Error, Cancel or ESC */
 		if (retval == BSDDIALOG_ERROR || retval == BSDDIALOG_CANCEL ||
 		    retval == BSDDIALOG_ESC)
 			break;
@@ -808,8 +822,6 @@ int main(int argc, char *argv[argc])
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */
-
-	free(text);
 
 	if (conf.get_height != NULL && conf.get_width != NULL)
 		dprintf(output_fd_opt, "Dialog size: (%d - %d)\n",
