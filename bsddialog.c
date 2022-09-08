@@ -396,10 +396,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			screen_mode_opt = "smcup";
 			break;
 		case AND_WIDGET:
-			/*printf("AND_WIDGET.argc:%d, optind:%d, ", argc, optind);
-			for (i=0; i<optind; i++)
-				printf("%s,", argv[i]);
-			printf("\n");*/
 			argc = optind;
 			parsed = optind;
 			break;
@@ -731,17 +727,8 @@ int main(int argc, char *argv[argc])
 		parsed = parseargs(argc, argv, &conf, &getH, &getW);
 		nargc = argc - parsed;
 		nargv = argv + parsed;
-		/*printf("PRIMO.");
-		for (i=0; i<argc; i++)
-			printf("%s,", argv[i]);
-		printf("\n");*/
 		argc = parsed - optind;
 		argv += optind;
-		/*printf("SECONDO.");
-		for (i=0; i<argc; i++)
-			printf("%s,", argv[i]);
-		printf("\n");
-		printf("parsed:%d\n", parsed);*/
 
 		if (print_maxsize_opt && argc == 0)
 			return (BSDDIALOG_OK);
@@ -757,16 +744,10 @@ int main(int argc, char *argv[argc])
 		if (dialogbuilder != textbox_builder) {
 			custom_text(argv[0], text);
 		}
-		rows = (int)strtol(argv[1], NULL, 10);//rows++;
-		cols = (int)strtol(argv[2], NULL, 10);//cols++;
+		rows = (int)strtol(argv[1], NULL, 10);
+		cols = (int)strtol(argv[2], NULL, 10);
 		argc -= 3;
 		argv += 3;
-
-		/*printf("TERZO.");
-		for (i=0; i<argc; i++)
-			printf("%s,", argv[i]);
-		printf("\n");
-		printf("parsed:%d\n", parsed);*/
 
 		/* bsddialog terminal mode */
 		if (bsddialog_init() != 0) {
@@ -799,8 +780,6 @@ int main(int argc, char *argv[argc])
 		if (backtitle_opt != NULL)
 			if( bsddialog_backtitle(&conf, backtitle_opt))
 				errorexit(NULL);
-
-		//printf("func:%p\n", dialogbuilder);
 
 		if (dialogbuilder != NULL) {
 			retval = dialogbuilder(&conf, text, rows, cols, argc, argv,
