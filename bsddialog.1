@@ -576,9 +576,9 @@ Checklist:
 Form:
 .Dl bsddialog --form Form 0 0 0 L1: 0 0 X 0 4 20 25 L2: 1 0 Y 1 4 20 25
 .Pp
-Multi dialog:
-.Dl bsddialog --begin-y 1 --yesno Continue? 0 0 --and-widget \e \
---begin-y 10 --infobox Yes 0 0
+Multi-dialog:
+.Dl bsddialog --normal-screen --begin-y 1 --yesno Continue? 0 0  \e \
+--and-widget --begin-y 10 --infobox Yes 0 0
 .Pp
 Bikeshed:
 .Dl bsddialog --bikeshed --inputbox Example 0 0
