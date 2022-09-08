@@ -352,7 +352,7 @@ static void usage(void)
 
 static int
 parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
-    int *getW, bool first)
+    int *getW)
 {
 	int input, parsed;
 	struct winsize ws;
@@ -387,9 +387,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 
 	max_input_form_opt = 2048;
 
-	// TODO return(255) -> -1 after loop --and-widget
-	if (first == false)
-		optind = -1;
+	// TODO return(255) -> -1 after loop --and-widget	
 	parsed=argc;
 	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
@@ -729,10 +727,8 @@ int main(int argc, char *argv[argc])
 		}
 	}
 
-	bool first = true;
 	while (true) {
-		parsed = parseargs(argc, argv, &conf, &getH, &getW, first);
-		first = false;
+		parsed = parseargs(argc, argv, &conf, &getH, &getW);
 		nargc = argc - parsed;
 		nargv = argv + parsed;
 		/*printf("PRIMO.");
@@ -827,6 +823,7 @@ int main(int argc, char *argv[argc])
 		argv = nargv;
 		if (argc <= 0)
 			break;
+		optind = -1; /* reset for next parseargs() call */
 
 	} // end while args
 
