@@ -352,9 +352,9 @@ static void usage(void)
 
 static int
 parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
-    int *getW)
+    int *getW, bool first)
 {
-	int input;
+	int input, parsed;
 	struct winsize ws;
 
 	bsddialog_initconf(conf);
@@ -387,7 +387,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 
 	max_input_form_opt = 2048;
 
-	// TODO return(255) after loop --and-widget
+	// TODO return(255) -> -1 after loop --and-widget
+	if (first == false)
+		optind = -1;
+	parsed=argc;
 	while ((input = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (input) {
 		/* Common options */
@@ -395,7 +398,12 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			screen_mode_opt = "smcup";
 			break;
 		case AND_WIDGET:
-			// TODO
+			/*printf("AND_WIDGET.argc:%d, optind:%d, ", argc, optind);
+			for (i=0; i<optind; i++)
+				printf("%s,", argv[i]);
+			printf("\n");*/
+			argc = optind;
+			parsed = optind;
 			break;
 		case ASCII_LINES:
 			conf->ascii_lines = true;
@@ -694,13 +702,13 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 		}
 	}
 
-	return (BSDDIALOG_OK);
+	return (parsed);
 }
 
 int main(int argc, char *argv[argc])
 {
-	int i, rows, cols, retval, getH, getW;
-	char *text;
+	int i, rows, cols, retval, getH, getW, parsed, nargc;
+	char *text, **nargv;
 	char errorbuilder[1024];
 	struct bsddialog_conf conf;
 
@@ -721,73 +729,106 @@ int main(int argc, char *argv[argc])
 		}
 	}
 
-	parseargs(argc, argv, &conf, &getH, &getW); // XXX add loop --and-widget
-	argc -= optind; // XXX parseargs()
-	argv += optind; // XXX parseargs()
+	bool first = true;
+	while (true) {
+		parsed = parseargs(argc, argv, &conf, &getH, &getW, first);
+		first = false;
+		nargc = argc - parsed;
+		nargv = argv + parsed;
+		/*printf("PRIMO.");
+		for (i=0; i<argc; i++)
+			printf("%s,", argv[i]);
+		printf("\n");*/
+		argc = parsed - optind;
+		argv += optind;
+		/*printf("SECONDO.");
+		for (i=0; i<argc; i++)
+			printf("%s,", argv[i]);
+		printf("\n");
+		printf("parsed:%d\n", parsed);*/
 
-	if (print_maxsize_opt && argc == 0)
-		return (BSDDIALOG_OK);
+		if (print_maxsize_opt && argc == 0)
+			return (BSDDIALOG_OK);
 
-	if (argc < 3) {
-		usage();
-		return (255);
-	}
-	if ((text = strdup(argv[0])) == NULL) {
-		printf("Error: cannot allocate memory for text\n");
-		return (255);
-	}
-	if (dialogbuilder != textbox_builder) {
-		custom_text(argv[0], text);
-	}
-	rows = (int)strtol(argv[1], NULL, 10);
-	cols = (int)strtol(argv[2], NULL, 10);
-	argc -= 3;
-	argv += 3;
-
-	/* bsddialog terminal mode */
-	if (bsddialog_init() != 0) {
-		printf("Error: %s\n", bsddialog_geterror());
-		return (255);
-	}
-
-	signal(SIGINT, sigint_handler);
-
-	if (screen_mode_opt != NULL) {
-		screen_mode_opt = tigetstr(screen_mode_opt);
-		if (screen_mode_opt != NULL && screen_mode_opt != (char*)-1) {
-			tputs(screen_mode_opt, 1, putchar);
-			fflush(stdout);
-			 /* only to refresh, useless in the library */
-			bsddialog_clearterminal();
+		if (argc < 3) {
+			usage();
+			return (255);
 		}
-	}
+		if ((text = strdup(argv[0])) == NULL) {
+			printf("Error: cannot allocate memory for text\n");
+			return (255);
+		}
+		if (dialogbuilder != textbox_builder) {
+			custom_text(argv[0], text);
+		}
+		rows = (int)strtol(argv[1], NULL, 10);//rows++;
+		cols = (int)strtol(argv[2], NULL, 10);//cols++;
+		argc -= 3;
+		argv += 3;
 
-	if (theme_opt != BSDDIALOG_THEME_FLAT)
-		if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
-			errorexit(NULL);
-	if (loadthemefile != NULL)
-		if (loadtheme(loadthemefile, errorbuilder) != BSDDIALOG_OK)
-			errorexit(errorbuilder);
-	if (bikeshed_opt)
-		if (bikeshed(&conf, errorbuilder) != BSDDIALOG_OK)
-			errorexit(errorbuilder);
+		/*printf("TERZO.");
+		for (i=0; i<argc; i++)
+			printf("%s,", argv[i]);
+		printf("\n");
+		printf("parsed:%d\n", parsed);*/
 
-	if (backtitle_opt != NULL)
-		if( bsddialog_backtitle(&conf, backtitle_opt))
-			errorexit(NULL);
+		/* bsddialog terminal mode */
+		if (bsddialog_init() != 0) {
+			printf("Error: %s\n", bsddialog_geterror());
+			return (255);
+		}
 
-	if (dialogbuilder != NULL) {
-		retval = dialogbuilder(&conf, text, rows, cols, argc, argv,
-		    errorbuilder);
-		if (retval == BSDDIALOG_ERROR)
-			errorexit(errorbuilder);
-	} else
-		retval = BSDDIALOG_OK;
+		signal(SIGINT, sigint_handler);
 
-	if (savethemefile != NULL)
-		if (savetheme(savethemefile, errorbuilder, BSDDIALOG_VERSION) !=
-		    BSDDIALOG_OK)
-			errorexit(errorbuilder);
+		if (screen_mode_opt != NULL) {
+			screen_mode_opt = tigetstr(screen_mode_opt);
+			if (screen_mode_opt != NULL && screen_mode_opt != (char*)-1) {
+				tputs(screen_mode_opt, 1, putchar);
+				fflush(stdout);
+				 /* only to refresh, useless in the library */
+				bsddialog_clearterminal();
+			}
+		}
+
+		if (theme_opt != BSDDIALOG_THEME_FLAT)
+			if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
+				errorexit(NULL);
+		if (loadthemefile != NULL)
+			if (loadtheme(loadthemefile, errorbuilder) != BSDDIALOG_OK)
+				errorexit(errorbuilder);
+		if (bikeshed_opt)
+			if (bikeshed(&conf, errorbuilder) != BSDDIALOG_OK)
+				errorexit(errorbuilder);
+
+		if (backtitle_opt != NULL)
+			if( bsddialog_backtitle(&conf, backtitle_opt))
+				errorexit(NULL);
+
+		//printf("func:%p\n", dialogbuilder);
+
+		if (dialogbuilder != NULL) {
+			retval = dialogbuilder(&conf, text, rows, cols, argc, argv,
+			    errorbuilder);
+			if (retval == BSDDIALOG_ERROR)
+				errorexit(errorbuilder);
+		} else
+			retval = BSDDIALOG_OK;
+		/* for --and-widget */
+		if (retval == BSDDIALOG_ERROR || retval == BSDDIALOG_CANCEL ||
+		    retval == BSDDIALOG_ESC)
+			break;
+
+		if (savethemefile != NULL)
+			if (savetheme(savethemefile, errorbuilder, BSDDIALOG_VERSION) !=
+			    BSDDIALOG_OK)
+				errorexit(errorbuilder);
+
+		argc = nargc;
+		argv = nargv;
+		if (argc <= 0)
+			break;
+
+	} // end while args
 
 	bsddialog_end();
 	/* end bsddialog terminal mode */

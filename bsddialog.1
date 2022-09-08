@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd September 5, 2022
+.Dd September 8, 2022
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -66,6 +66,8 @@ The possible input got from the user interface is printed to standard error.
 The following options can change the default behavior of the utility and are
 common to some dialog.
 .Bl -tag -width Ds
+.It Fl Fl and-widget
+Show another dialog unless the previous one returns: an error, ESC or Cancel.
 .It Fl Fl ascii-lines
 Ascii characters to draw lines.
 .It Fl Fl backtitle Ar backtitle
@@ -574,6 +576,10 @@ Checklist:
 Form:
 .Dl bsddialog --form Form 0 0 0 L1: 0 0 X 0 4 20 25 L2: 1 0 Y 1 4 20 25
 .Pp
+Multi dialog:
+.Dl bsddialog --begin-y 1 --yesno Continue? 0 0 --and-widget \e \
+--begin-y 10 --infobox Yes 0 0
+.Pp
 Bikeshed:
 .Dl bsddialog --bikeshed --inputbox Example 0 0
 .Pp
@@ -634,6 +640,7 @@ manual.
 The following features were reimplemented:
 .Pp
 Common options:
+.Fl Fl and-widget ,
 .Fl Fl ascii-lines ,
 .Fl Fl backtitle ,
 .Fl Fl cancel-label ,
