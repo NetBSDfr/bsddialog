@@ -258,7 +258,6 @@ static bool in_bsddialog_mode;
 
 /* Functions */
 #define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
-static void sigint_handler(int sig);
 static void custom_text(char *text, char *buf);
 static void usage(void);
 /* Dialogs */
@@ -286,6 +285,7 @@ static int yesno_builder(BUILDER_ARGS);
 
 static int (*dialogbuilder)(BUILDER_ARGS);
 
+/* Utils */
 static void exit_error(const char *errstr, bool with_usage)
 {
 	if (in_bsddialog_mode)
@@ -298,6 +298,13 @@ static void exit_error(const char *errstr, bool with_usage)
 	exit (255);
 }
 
+void sigint_handler(int UNUSED_PAR(sig))
+{
+	bsddialog_end();
+
+	exit(255);
+}
+
 static void start_bsddialog_mode(void)
 {
 	if (in_bsddialog_mode)
@@ -306,9 +313,11 @@ static void start_bsddialog_mode(void)
 	if (bsddialog_init() != BSDDIALOG_OK)
 		exit_error(bsddialog_geterror(), false);
 
+	in_bsddialog_mode = true;
 	signal(SIGINT, sigint_handler);
 }
 
+/* */
 static void usage(void)
 {
 	printf("usage: bsddialog --help\n");
@@ -826,13 +835,6 @@ int main(int argc, char *argv[argc])
 		retval = BSDDIALOG_CANCEL;
 
 	return (retval);
-}
-
-void sigint_handler(int UNUSED_PAR(sig))
-{
-	bsddialog_end();
-
-	exit(255);
 }
 
 void custom_text(char *text, char *buf)
