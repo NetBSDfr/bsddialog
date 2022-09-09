@@ -253,6 +253,8 @@ static bool esc_return_cancel_opt, ignore_opt, mandatory_dialog;
 static enum bsddialog_default_theme theme_opt;
 static char *backtitle_opt, *loadthemefile, *savethemefile;
 static char *screen_mode_opt;
+/* init and exit */
+static bool in_bsddialog_mode;
 
 /* Functions */
 static void sigint_handler(int sig);
@@ -282,11 +284,6 @@ static int treeview_builder(BUILDER_ARGS);
 static int yesno_builder(BUILDER_ARGS);
 
 static int (*dialogbuilder)(BUILDER_ARGS);
-
-/* init and exit */
-static bool in_bsddialog_mode;
-static void start_bsddialog_mode(void);
-static void exit_error(const char *errstr, bool with_usage);
 
 static void exit_error(const char *errstr, bool with_usage)
 {
