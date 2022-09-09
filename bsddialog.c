@@ -290,7 +290,7 @@ static void exit_error(const char *errstr, bool with_usage)
 	if (in_bsddialog_mode)
 		bsddialog_end();
 
-	printf("Error: %s.\n", errstr);
+	printf("Error: %s.\n\n", errstr);
 	if (with_usage)
 		usage();
 
@@ -314,6 +314,23 @@ static void start_bsddialog_mode(void)
 
 	in_bsddialog_mode = true;
 	signal(SIGINT, sigint_handler);
+}
+
+static void error_args(const char *dialog, int argc, char **argv)
+{
+	int i;
+
+	if (in_bsddialog_mode)
+		bsddialog_end();
+
+	printf("Error: %s unexpected argument%s:", dialog,
+	    argc > 1 ? "s" : "");
+	for (i = 0; i < argc; i++)
+		printf(" \"%s\"", argv[i]);
+	printf(".\n\n");
+	usage();
+
+	exit (255);
 }
 
 static void usage(void)
@@ -892,10 +909,8 @@ int gauge_builder(BUILDER_ARGS)
 	if (argc == 1) {
 		perc = (u_int)strtoul(argv[0], NULL, 10);
 		perc = perc > 100 ? 100 : perc;
-	} else if (argc == 0) {
-		perc = 0;
-	} else {
-		exit_error("--gauge unexpected armuments", true);
+	} else if (argc > 1) {
+		error_args("--gauge", argc - 1, argv + 1);
 	}
 		
 	output = bsddialog_gauge(conf, text, rows, cols, perc, STDIN_FILENO,
@@ -904,15 +919,12 @@ int gauge_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int
-infobox_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
-    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+int infobox_builder(BUILDER_ARGS)
 {
-	int output;
+	if (argc > 0)
+		error_args("--infobox", argc, argv);
 
-	output = bsddialog_infobox(conf, text, rows, cols);
-
-	return (output);
+	return (bsddialog_infobox(conf, text, rows, cols));
 }
 
 int mixedgauge_builder(BUILDER_ARGS)
@@ -946,15 +958,12 @@ int mixedgauge_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int
-msgbox_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
-    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+int msgbox_builder(BUILDER_ARGS)
 {
-	int output;
+	if (argc > 0)
+		error_args("--msgbox", argc, argv);
 
-	output = bsddialog_msgbox(conf, text, rows, cols);
-
-	return (output);
+	return (bsddialog_msgbox(conf, text, rows, cols));
 }
 
 int pause_builder(BUILDER_ARGS)
@@ -962,8 +971,10 @@ int pause_builder(BUILDER_ARGS)
 	int output;
 	unsigned int secs;
 
-	if (argc < 1)
+	if (argc == 0)
 		exit_error("--pause missing <seconds>", true);
+	if (argc > 1)
+		error_args("--pause", argc - 1, argv + 1);
 
 	secs = (u_int)strtoul(argv[0], NULL, 10);
 	output = bsddialog_pause(conf, text, rows, cols, secs);
@@ -977,11 +988,13 @@ int rangebox_builder(BUILDER_ARGS)
 
 	if (argc < 2)
 		exit_error("--rangebox missing <min> <max> [<init>]", true);
+	if (argc > 3)
+		error_args("--rangebox", argc - 3, argv + 3);
 
 	min = (int)strtol(argv[0], NULL, 10);
 	max = (int)strtol(argv[1], NULL, 10);
 
-	if (argc > 2) {
+	if (argc == 3) {
 		value = (int)strtol(argv[2], NULL, 10);
 		value = value < min ? min : value;
 		value = value > max ? max : value;
@@ -990,32 +1003,25 @@ int rangebox_builder(BUILDER_ARGS)
 		value = min;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, &value);
-
 	dprintf(output_fd_opt, "%d", value);
 
 	return (output);
 }
 
-int
-textbox_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
-    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+int textbox_builder(BUILDER_ARGS)
 {
-	int output;
+	if (argc > 0)
+		error_args("--textbox", argc, argv);
 
-	output = bsddialog_textbox(conf, text, rows, cols);
-
-	return (output);
+	return (bsddialog_textbox(conf, text, rows, cols));
 }
 
-int
-yesno_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
-    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
+int yesno_builder(BUILDER_ARGS)
 {
-	int output;
+	if (argc > 0)
+		error_args("--yesno", argc, argv);
 
-	output = bsddialog_yesno(conf, text, rows, cols);
-
-	return (output);
+	return (bsddialog_yesno(conf, text, rows, cols));
 }
 
 /* DATE and TIME */
@@ -1033,7 +1039,9 @@ int datebox_builder(BUILDER_ARGS)
 	mm = localtm->tm_mon + 1;
 	dd = localtm->tm_mday;
 
-	if (argc == 3) {
+	if (argc > 3) {
+		error_args("--datebox", argc - 3, argv + 3);
+	} else if (argc == 3) {
 		yy = (u_int)strtoul(argv[0], NULL, 10);
 		mm = (u_int)strtoul(argv[1], NULL, 10);
 		dd = (u_int)strtoul(argv[2], NULL, 10);
@@ -1074,7 +1082,9 @@ int timebox_builder(BUILDER_ARGS)
 	mm = localtm->tm_min;
 	ss = localtm->tm_sec;
 
-	if (argc == 3) {
+	if (argc > 3) {
+		error_args("--timebox", argc - 3, argv + 3);
+	} else if (argc == 3) {
 		hh = (u_int)strtoul(argv[0], NULL, 10);
 		mm = (u_int)strtoul(argv[1], NULL, 10);
 		ss = (u_int)strtoul(argv[2], NULL, 10);
@@ -1389,6 +1399,9 @@ int inputbox_builder(BUILDER_ARGS)
 	int output;
 	struct bsddialog_formitem item;
 
+	if (argc > 1)
+		error_args("--inputbox", argc - 1, argv + 1);
+
 	item.label	 = "";
 	item.ylabel	 = 0;
 	item.xlabel	 = 0;
@@ -1453,6 +1466,9 @@ int passwordbox_builder(BUILDER_ARGS)
 {
 	int output;
 	struct bsddialog_formitem item;
+
+	if (argc > 1)
+		error_args("--passwordbox", argc - 1, argv + 1);
 
 	item.label	 = "";
 	item.ylabel	 = 0;
