@@ -778,7 +778,7 @@ int main(int argc, char *argv[argc])
 
 		if (theme_opt != BSDDIALOG_THEME_FLAT)
 			if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
-				exit_error(errorbuilder, false);
+				exit_error(bsddialog_geterror(), false);
 		if (loadthemefile != NULL)
 			if (loadtheme(loadthemefile, errorbuilder) != BSDDIALOG_OK)
 				exit_error(errorbuilder, false);
@@ -797,9 +797,8 @@ int main(int argc, char *argv[argc])
 		} else
 			retval = BSDDIALOG_OK;
 		free(text);
-		/* --and-widget: end loop with Error, Cancel or ESC */
-		if (retval == BSDDIALOG_ERROR || retval == BSDDIALOG_CANCEL ||
-		    retval == BSDDIALOG_ESC)
+		/* --and-widget: end loop with Cancel or ESC */
+		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
 
 		if (savethemefile != NULL)
