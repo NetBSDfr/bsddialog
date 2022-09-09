@@ -733,7 +733,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		default: /* Error */
 			if (ignore_opt == true)
 				break;
-			exit_error("", true);
+			exit_error("Unknown option, --ignore to skip", true);
 		}
 	}
 
