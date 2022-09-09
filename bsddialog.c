@@ -250,6 +250,7 @@ static bool bikeshed_opt;
 // old main local
 static bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
 static bool esc_return_cancel_opt, ignore_opt, mandatory_dialog;
+static int getH_opt, getW_opt;
 static enum bsddialog_default_theme theme_opt;
 static char *backtitle_opt, *loadthemefile, *savethemefile;
 static char *screen_mode_opt;
@@ -400,9 +401,7 @@ static void usage(void)
 	printf("See 'man 1 bsddialog' for more information.\n");
 }
 
-static int
-parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
-    int *getW)
+static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 {
 	int arg, parsed;
 	struct winsize ws;
@@ -445,6 +444,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			screen_mode_opt = "smcup";
 			break;
 		case AND_WIDGET:
+			// if dialogbuilde == NULL error
 			argc = optind;
 			parsed = optind;
 			break;
@@ -608,8 +608,8 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 			    ws.ws_row, ws.ws_col);
 			break;
 		case PRINT_SIZE:
-			conf->get_height = getH;
-			conf->get_width = getW;
+			conf->get_height = &getH_opt;
+			conf->get_width = &getW_opt;
 			break;
 		case PRINT_VERSION:
 			mandatory_dialog = false;
@@ -743,7 +743,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf, int *getH,
 
 int main(int argc, char *argv[argc])
 {
-	int i, rows, cols, retval, getH, getW, parsed, nargc;
+	int i, rows, cols, retval, parsed, nargc;
 	char *text, **nargv;
 	char errorbuilder[1024];
 	struct bsddialog_conf conf;
@@ -767,7 +767,7 @@ int main(int argc, char *argv[argc])
 	}
 
 	while (true) {
-		parsed = parseargs(argc, argv, &conf, &getH, &getW);
+		parsed = parseargs(argc, argv, &conf);
 		nargc = argc - parsed;
 		nargv = argv + parsed;
 		argc = parsed - optind;
