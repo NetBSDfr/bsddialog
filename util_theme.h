@@ -30,6 +30,6 @@
 
 int savetheme(const char *file, char *errbuf, const char *version);
 int loadtheme(const char *file, char *errbuf);
-int bikeshed(struct bsddialog_conf *conf, char *errbuf);
+int bikeshed(struct bsddialog_conf *conf);
 
 #endif

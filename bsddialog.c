@@ -257,6 +257,7 @@ static char *screen_mode_opt;
 static bool in_bsddialog_mode;
 
 /* Functions */
+#define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
 static void sigint_handler(int sig);
 static void custom_text(char *text, char *buf);
 static void usage(void);
@@ -783,8 +784,8 @@ int main(int argc, char *argv[argc])
 			if (loadtheme(loadthemefile, errorbuilder) != BSDDIALOG_OK)
 				exit_error(errorbuilder, false);
 		if (bikeshed_opt)
-			if (bikeshed(&conf, errorbuilder) != BSDDIALOG_OK)
-				exit_error(errorbuilder, false);
+			if (bikeshed(&conf) != BSDDIALOG_OK)
+				exit_error(bsddialog_geterror(), false);
 
 		if (backtitle_opt != NULL)
 			if( bsddialog_backtitle(&conf, backtitle_opt))
@@ -827,7 +828,7 @@ int main(int argc, char *argv[argc])
 	return (retval);
 }
 
-void sigint_handler(int sig)
+void sigint_handler(int UNUSED_PAR(sig))
 {
 	bsddialog_end();
 
@@ -900,7 +901,9 @@ int gauge_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int infobox_builder(BUILDER_ARGS)
+int
+infobox_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
+    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	int output;
 
@@ -940,7 +943,9 @@ int mixedgauge_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int msgbox_builder(BUILDER_ARGS)
+int
+msgbox_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
+    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	int output;
 
@@ -988,7 +993,9 @@ int rangebox_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int textbox_builder(BUILDER_ARGS)
+int
+textbox_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
+    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	int output;
 
@@ -997,7 +1004,9 @@ int textbox_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int yesno_builder(BUILDER_ARGS)
+int
+yesno_builder(struct bsddialog_conf *conf, char* text, int rows,int cols,
+    int UNUSED_PAR(argc), char** UNUSED_PAR(argv))
 {
 	int output;
 

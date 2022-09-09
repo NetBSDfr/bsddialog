@@ -111,6 +111,21 @@ static char *color[8] = {
 	"white"
 };
 
+/*
+#define EXIT_ERROR(bsddialogmode, fmt, ...) do {                               \
+	if (bsddialogmode)                                                     \
+		bsddialog_end();                                               \
+	printf(fmt, __VA_ARGS__);                                              \
+	exit (255);                                                            \
+} while (0)
+
+
+#define RETURN_ERROR(name, error) do {                                         \
+	fclose(fp);                                                            \
+	EXIT_ERROR(bsddialog_mode, "%s for \"%s\"", error, name);              \
+} while (0)
+*/
+
 int savetheme(const char *file, char *errbuf, const char *version)
 {
 	int i;
@@ -272,7 +287,7 @@ int loadtheme(const char *file, char *errbuf)
 	return (BSDDIALOG_OK);
 }
 
-int bikeshed(struct bsddialog_conf *conf, char *errbuf)
+int bikeshed(struct bsddialog_conf *conf)
 {
 	int margin, i;
 	int colors[8] = {0, 0, 0, 0 ,0 ,0 , 0, 0};
