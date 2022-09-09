@@ -290,7 +290,7 @@ static void exit_error(const char *errstr, bool with_usage)
 	if (in_bsddialog_mode)
 		bsddialog_end();
 
-	printf("Error: %s\n", errstr);
+	printf("Error: %s.\n", errstr);
 	if (with_usage)
 		usage();
 
