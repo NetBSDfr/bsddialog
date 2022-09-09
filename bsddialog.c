@@ -444,7 +444,6 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			screen_mode_opt = "smcup";
 			break;
 		case AND_WIDGET:
-			// if dialogbuilde == NULL error
 			argc = optind;
 			parsed = optind;
 			break;
