@@ -285,7 +285,6 @@ static int yesno_builder(BUILDER_ARGS);
 
 static int (*dialogbuilder)(BUILDER_ARGS);
 
-/* Utils */
 static void exit_error(const char *errstr, bool with_usage)
 {
 	if (in_bsddialog_mode)
@@ -317,7 +316,6 @@ static void start_bsddialog_mode(void)
 	signal(SIGINT, sigint_handler);
 }
 
-/* */
 static void usage(void)
 {
 	printf("usage: bsddialog --help\n");
