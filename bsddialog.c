@@ -888,13 +888,16 @@ int gauge_builder(BUILDER_ARGS)
 	int output;
 	unsigned int perc;
 
-	if (argc > 0) {
-		perc = argc > 0 ? (u_int)strtoul(argv[0], NULL, 10) : 0;
+	perc = 0;
+	if (argc == 1) {
+		perc = (u_int)strtoul(argv[0], NULL, 10);
 		perc = perc > 100 ? 100 : perc;
-	}
-	else
+	} else if (argc == 0) {
 		perc = 0;
-
+	} else {
+		exit_error("--gauge unexpected armuments", true);
+	}
+		
 	output = bsddialog_gauge(conf, text, rows, cols, perc, STDIN_FILENO,
 	    "XXX");
 
