@@ -59,7 +59,9 @@ and
 .Fl Fl version
 print the list of options and the version, respectively, then exit.
 .Fl Fl and-widget
-opens another dialog unless the previous one returns: an error, ESC or Cancel.
+opens another dialog unless the previous one returns: an error, ESC Key or
+.Dq Cancel
+button.
 .Pp
 .Ar text
 is a message printed inside the dialog, except for
@@ -75,6 +77,9 @@ The possible input got from the user interface is printed to standard error.
 The following options can change the default behavior of the utility and are
 common to some dialog.
 .Bl -tag -width Ds
+.It Fl Fl alternate-screen
+If available set alternate screen mode, see
+.Xr terminfo 5 .
 .It Fl Fl ascii-lines
 Ascii characters to draw lines.
 .It Fl Fl backtitle Ar backtitle
@@ -224,6 +229,9 @@ Set a help string for each element of a Checklist, Form, Menu, Mixedform,
 Passwordform, Radiolist and Treeview to display at the bottom screen side.
 .It Fl Fl item-prefix
 Set a string to prefix each item of a Checklist, Menu, Radiolist or Treeview.
+.It Fl Fl keep-tite
+Equivalent to
+.Fl Fl alternate-screen .
 .It Fl Fl load-theme Ar file
 Load theme from
 .Ar file .
@@ -271,6 +279,9 @@ Set
 for
 .Dq OK
 button.
+.It Fl Fl normal-screen
+If available set normal screen mode, see
+.Xr terminfo 5 .
 .It Fl Fl output-fd Ar fd
 Print input from user interface to the specified file descriptor.
 .It Fl Fl output-separator Ar sep
@@ -672,6 +683,7 @@ Common options:
 .Fl Fl ignore ,
 .Fl Fl insecure ,
 .Fl Fl item-help ,
+.Fl Fl keep-tite ,
 .Fl Fl max-input ,
 .Fl Fl no-cancel ,
 .Fl Fl nocancel ,
