@@ -28,8 +28,8 @@
 #ifndef _BSDDIALOG_UTILITY_THEME_H_
 #define _BSDDIALOG_UTILITY_THEME_H_
 
-int savetheme(const char *file, char *errbuf, const char *version);
-int loadtheme(const char *file, char *errbuf);
+void savetheme(const char *file, const char *version);
+void loadtheme(const char *file);
 int bikeshed(struct bsddialog_conf *conf);
 
 #endif

@@ -111,22 +111,15 @@ static char *color[8] = {
 	"white"
 };
 
-/*
-#define EXIT_ERROR(bsddialogmode, fmt, ...) do {                               \
-	if (bsddialogmode)                                                     \
-		bsddialog_end();                                               \
+#define EXIT_ERROR_1(fmt, ...) do {                                            \
+	bsddialog_end();                                                       \
+	printf("Error: ");                                                     \
 	printf(fmt, __VA_ARGS__);                                              \
+	printf("\n");                                                          \
 	exit (255);                                                            \
 } while (0)
 
-
-#define RETURN_ERROR(name, error) do {                                         \
-	fclose(fp);                                                            \
-	EXIT_ERROR(bsddialog_mode, "%s for \"%s\"", error, name);              \
-} while (0)
-*/
-
-int savetheme(const char *file, char *errbuf, const char *version)
+void savetheme(const char *file, const char *version)
 {
 	int i;
 	unsigned int flags;
@@ -134,20 +127,14 @@ int savetheme(const char *file, char *errbuf, const char *version)
 	time_t clock;
 	FILE *fp;
 
-	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
-		sprintf(errbuf, "Cannot save theme: %s", bsddialog_geterror());
-		return (BSDDIALOG_ERROR);
-	}
+	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
+		EXIT_ERROR_1("cannot save theme: %s", bsddialog_geterror());
 
-	if(time(&clock) < 0) {
-		sprintf(errbuf, "Cannot save profile (getting current time)");
-		return (BSDDIALOG_ERROR);
-	}
+	if(time(&clock) < 0)
+		EXIT_ERROR_1("%s", "cannot save profile getting current time");
 
-	if ((fp = fopen(file, "w")) == NULL) {
-		sprintf(errbuf, "Cannot open %s to save profile", file);
-		return (BSDDIALOG_ERROR);
-	}
+	if ((fp = fopen(file, "w")) == NULL)
+		EXIT_ERROR_1("cannot open %s to save profile", file);
 
 	fprintf(fp, "### bsddialog theme - %s", ctime(&clock));
 	fputs("# Refer to bsddialog(3) manual for theme.* properties\n", fp);
@@ -182,11 +169,9 @@ int savetheme(const char *file, char *errbuf, const char *version)
 	}
 
 	fclose(fp);
-
-	return (BSDDIALOG_OK);
 }
 
-int loadtheme(const char *file, char *errbuf)
+void loadtheme(const char *file)
 {
 	bool boolvalue;
 	char charvalue, *value;
@@ -196,21 +181,16 @@ int loadtheme(const char *file, char *errbuf)
 	enum bsddialog_color bg, fg;
 	FILE *fp;
 
-	if (bsddialog_get_theme(&t) != BSDDIALOG_OK) {
-		sprintf(errbuf, "Cannot get current theme: %s",
+	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
+		EXIT_ERROR_1("Cannot get current theme: %s",
 		    bsddialog_geterror());
-		return (BSDDIALOG_ERROR);
-	}
 
-	if((fp = fopen(file, "r")) == NULL) {
-		sprintf(errbuf, "Cannot open theme \"%s\"", file);
-		return (BSDDIALOG_ERROR);
-	}
+	if((fp = fopen(file, "r")) == NULL)
+		EXIT_ERROR_1("Cannot open theme \"%s\"", file);
 
-#define RETURN_ERROR(name, error) do {                                         \
-	sprintf(errbuf, "%s for \"%s\"", error, name);                         \
+#define EXIT_ERROR_2(name, error) do {                                         \
 	fclose(fp);                                                            \
-	return (BSDDIALOG_ERROR);                                              \
+	EXIT_ERROR_1("%s for \"%s\"", error, name);                            \
 } while (0)
 
 	while(fgets(line, BUFSIZ, fp) != NULL) {
@@ -226,7 +206,7 @@ int loadtheme(const char *file, char *errbuf)
 		if (i >= NPROPERTY) {
 			if (strcmp(name, "version") == 0)
 				continue;
-			RETURN_ERROR(name, "Unknown theme property name");
+			EXIT_ERROR_2(name, "Unknown theme property name");
 		}
 		switch (p[i].type) {
 		case CHAR:
@@ -234,17 +214,17 @@ int loadtheme(const char *file, char *errbuf)
 			    value[0] == '\0')
 				value++;
 			if (sscanf(value, "%c", &charvalue) != 1)
-				RETURN_ERROR(p[i].name, "Cannot get a char");
+				EXIT_ERROR_2(p[i].name, "Cannot get a char");
 			*((int*)p[i].value) = charvalue;
 			break;
 		case INT:
 			if (sscanf(value, "%d", &intvalue) != 1)
-				RETURN_ERROR(p[i].name, "Cannot get a int");
+				EXIT_ERROR_2(p[i].name, "Cannot get a int");
 			*((int*)p[i].value) = intvalue;
 			break;
 		case UINT:
 			if (sscanf(value, "%u", &uintvalue) != 1)
-				RETURN_ERROR(p[i].name, "Cannot get a uint");
+				EXIT_ERROR_2(p[i].name, "Cannot get a uint");
 			*((unsigned int*)p[i].value) = uintvalue;
 			break;
 		case BOOL:
@@ -254,19 +234,19 @@ int loadtheme(const char *file, char *errbuf)
 			break;
 		case COLOR:
 			if (sscanf(value, "%s %s", c1, c2) != 2)
-				RETURN_ERROR(p[i].name, "Cannot get 2 colors");
+				EXIT_ERROR_2(p[i].name, "Cannot get 2 colors");
 			/* Foreground */
 			for (j = 0; j < 8 ; j++)
 				if ((strstr(c1, color[j])) != NULL)
 					break;
 			if ((fg = j) > 7)
-				RETURN_ERROR(p[i].name, "Bad foreground");
+				EXIT_ERROR_2(p[i].name, "Bad foreground");
 			/* Background */
 			for (j = 0; j < 8 ; j++)
 				if ((value = strstr(c2, color[j])) != NULL)
 					break;
 			if ((bg = j) > 7)
-				RETURN_ERROR(p[i].name, "Bad background");
+				EXIT_ERROR_2(p[i].name, "Bad background");
 			/* Flags */
 			flags = 0;
 			if (strstr(value, "bold") != NULL)
@@ -283,8 +263,6 @@ int loadtheme(const char *file, char *errbuf)
 	fclose(fp);
 
 	bsddialog_set_theme(&t);
-
-	return (BSDDIALOG_OK);
 }
 
 int bikeshed(struct bsddialog_conf *conf)

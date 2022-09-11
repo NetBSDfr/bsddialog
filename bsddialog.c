@@ -746,13 +746,11 @@ int main(int argc, char *argv[argc])
 {
 	int i, rows, cols, retval, parsed, nargc;
 	char *text, **nargv;
-	char errorbuilder[1024];
 	struct bsddialog_conf conf;
 
 	setlocale(LC_ALL, "");
 
 	in_bsddialog_mode = false;
-	errorbuilder[0] = '\0';
 	mandatory_dialog = true;
 
 	for (i = 0; i < argc; i++) {
@@ -806,8 +804,8 @@ int main(int argc, char *argv[argc])
 			if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
 				exit_error(bsddialog_geterror(), false);
 		if (loadthemefile != NULL)
-			if (loadtheme(loadthemefile, errorbuilder) != BSDDIALOG_OK)
-				exit_error(errorbuilder, false);
+			loadtheme(loadthemefile);
+
 		if (bikeshed_opt)
 			if (bikeshed(&conf) != BSDDIALOG_OK)
 				exit_error(bsddialog_geterror(), false);
@@ -828,9 +826,7 @@ int main(int argc, char *argv[argc])
 			break;
 
 		if (savethemefile != NULL)
-			if (savetheme(savethemefile, errorbuilder, BSDDIALOG_VERSION) !=
-			    BSDDIALOG_OK)
-				exit_error(errorbuilder, false);
+			savetheme(savethemefile, BSDDIALOG_VERSION);
 
 		argc = nargc;
 		argv = nargv;
