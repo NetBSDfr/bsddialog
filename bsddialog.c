@@ -340,29 +340,31 @@ static void usage(void)
 	printf("       bsddialog --version\n");
 	printf("       bsddialog [--<common-opts>] --<dialog> <text> <rows> "
 	    "<cols> [--<dialog-opts>]\n");
+	printf("       bsddialog --<dialog1> ... [--and-widget --<dialog2> "
+	    "...] ...\n");
 	printf("\n");
 
 	printf("Common Options:\n");
-	printf("--add-widget, --alternate-screen, --ascii-lines, "
-	    "--backtitle <backtitle>, --begin-x <x>, --begin-y <y>, "
-	    "--bikeshed, --cancel-label <label>, --clear, --colors, "
-	    "--columns-per-row <columns>, --cr-wrap, --date-format <format>, "
-	    "--default-button <label>, --default-item <name>, --default-no, "
-	    "--disable-esc, --esc-return-cancel, --exit-label <label>, "
-	    "--extra-button, --extra-label <label>, --generic-button1 <label>, "
-	    "--generic-button2 <label>, --help, --help-button, "
-	    "--help-label <label>, --help-status, --help-tags, --hfile <file>, "
-	    "--hline <string>, --hmsg <string>, --ignore, --insecure, "
-	    "--item-depth, --item-help, --item-prefix, --load-theme <file>, "
-	    "--max-input <size>, --no-cancel, --no-collapse, --no-items, "
-	    "--no-label <label>, --no-lines, --no-nl-expand, --no-ok, "
-	    "--no-shadow, --no-tags, --normal-screen, --ok-label <label>, "
-	    "--output-fd <fd>, --output-separator <sep>, --print-maxsize, "
-	    "--print-size, --print-version, --quoted, --save-theme <file>, "
+	printf("--alternate-screen, --ascii-lines, --backtitle <backtitle>, "
+	    "--begin-x <x>, --begin-y <y>, --bikeshed, --cancel-label <label>, "
+	    "--clear, --colors, --columns-per-row <columns>, --cr-wrap, "
+	    "--date-format <format>, --default-button <label>, "
+	    "--default-item <name>, --default-no, --disable-esc, "
+	    "--esc-return-cancel, --exit-label <label>, --extra-button, "
+	    "--extra-label <label>, --generic-button1 <label>, "
+	    "--generic-button2 <label>, --help-button, --help-label <label>, "
+	    "--help-status, --help-tags, --hfile <file>, --hline <string>, "
+	    "--hmsg <string>, --ignore, --insecure, --item-depth, --item-help, "
+	    "--item-prefix, --load-theme <file>, --max-input <size>, "
+	    "--no-cancel, --no-collapse, --no-items, --no-label <label>, "
+	    "--no-lines, --no-nl-expand, --no-ok, --no-shadow, --no-tags, "
+	    "--normal-screen, --ok-label <label>, --output-fd <fd>, "
+	    "--output-separator <sep>, --print-maxsize, --print-size, "
+	    "--print-version, --quoted, --save-theme <file>, "
 	    "--separate-output, --separator <sep>, --shadow, --single-quoted, "
 	    "--sleep <secs>, --stderr, --stdout, --tab-len <spaces>, "
 	    "--switch-buttons, --theme <blackwhite|bsddialog|flat|dialog>, "
-	    "--time-format <format>, --title <title>, --trim, --version, "
+	    "--time-format <format>, --title <title>, --trim, "
 	    "--yes-label <label>.\n");
 	printf("\n");
 
