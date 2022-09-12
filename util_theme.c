@@ -111,7 +111,7 @@ static char *color[8] = {
 	"white"
 };
 
-#define EXIT_ERROR_1(fmt, ...) do {                                            \
+#define EXIT_FMTERROR(fmt, ...) do {                                           \
 	bsddialog_end();                                                       \
 	printf("Error: ");                                                     \
 	printf(fmt, __VA_ARGS__);                                              \
@@ -128,13 +128,13 @@ void savetheme(const char *file, const char *version)
 	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
-		EXIT_ERROR_1("cannot save theme: %s", bsddialog_geterror());
+		EXIT_FMTERROR("cannot save theme: %s", bsddialog_geterror());
 
 	if(time(&clock) < 0)
-		EXIT_ERROR_1("%s", "cannot save profile getting current time");
+		EXIT_FMTERROR("%s", "cannot save profile getting current time");
 
 	if ((fp = fopen(file, "w")) == NULL)
-		EXIT_ERROR_1("cannot open %s to save profile", file);
+		EXIT_FMTERROR("cannot open %s to save profile", file);
 
 	fprintf(fp, "### bsddialog theme - %s", ctime(&clock));
 	fputs("# Refer to bsddialog(3) manual for theme.* properties\n", fp);
@@ -182,15 +182,15 @@ void loadtheme(const char *file)
 	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
-		EXIT_ERROR_1("Cannot get current theme: %s",
+		EXIT_FMTERROR("Cannot get current theme: %s",
 		    bsddialog_geterror());
 
 	if((fp = fopen(file, "r")) == NULL)
-		EXIT_ERROR_1("Cannot open theme \"%s\"", file);
+		EXIT_FMTERROR("Cannot open theme \"%s\"", file);
 
-#define EXIT_ERROR_2(name, error) do {                                         \
+#define EXIT_ERROR(name, error) do {                                           \
 	fclose(fp);                                                            \
-	EXIT_ERROR_1("%s for \"%s\"", error, name);                            \
+	EXIT_FMTERROR("%s for \"%s\"", error, name);                           \
 } while (0)
 
 	while(fgets(line, BUFSIZ, fp) != NULL) {
@@ -206,7 +206,7 @@ void loadtheme(const char *file)
 		if (i >= NPROPERTY) {
 			if (strcmp(name, "version") == 0)
 				continue;
-			EXIT_ERROR_2(name, "Unknown theme property name");
+			EXIT_ERROR(name, "Unknown theme property name");
 		}
 		switch (p[i].type) {
 		case CHAR:
@@ -214,17 +214,17 @@ void loadtheme(const char *file)
 			    value[0] == '\0')
 				value++;
 			if (sscanf(value, "%c", &charvalue) != 1)
-				EXIT_ERROR_2(p[i].name, "Cannot get a char");
+				EXIT_ERROR(p[i].name, "Cannot get a char");
 			*((int*)p[i].value) = charvalue;
 			break;
 		case INT:
 			if (sscanf(value, "%d", &intvalue) != 1)
-				EXIT_ERROR_2(p[i].name, "Cannot get a int");
+				EXIT_ERROR(p[i].name, "Cannot get a int");
 			*((int*)p[i].value) = intvalue;
 			break;
 		case UINT:
 			if (sscanf(value, "%u", &uintvalue) != 1)
-				EXIT_ERROR_2(p[i].name, "Cannot get a uint");
+				EXIT_ERROR(p[i].name, "Cannot get a uint");
 			*((unsigned int*)p[i].value) = uintvalue;
 			break;
 		case BOOL:
@@ -234,19 +234,19 @@ void loadtheme(const char *file)
 			break;
 		case COLOR:
 			if (sscanf(value, "%s %s", c1, c2) != 2)
-				EXIT_ERROR_2(p[i].name, "Cannot get 2 colors");
+				EXIT_ERROR(p[i].name, "Cannot get 2 colors");
 			/* Foreground */
 			for (j = 0; j < 8 ; j++)
 				if ((strstr(c1, color[j])) != NULL)
 					break;
 			if ((fg = j) > 7)
-				EXIT_ERROR_2(p[i].name, "Bad foreground");
+				EXIT_ERROR(p[i].name, "Bad foreground");
 			/* Background */
 			for (j = 0; j < 8 ; j++)
 				if ((value = strstr(c2, color[j])) != NULL)
 					break;
 			if ((bg = j) > 7)
-				EXIT_ERROR_2(p[i].name, "Bad background");
+				EXIT_ERROR(p[i].name, "Bad background");
 			/* Flags */
 			flags = 0;
 			if (strstr(value, "bold") != NULL)
