@@ -844,12 +844,16 @@ int main(int argc, char *argv[argc])
 		if (theme_opt != BSDDIALOG_THEME_FLAT)
 			if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
 				exit_error(bsddialog_geterror(), false);
+
 		if (loadthemefile != NULL)
 			loadtheme(loadthemefile);
 
 		if (bikeshed_opt)
 			if (bikeshed(&conf) != BSDDIALOG_OK)
 				exit_error(bsddialog_geterror(), false);
+
+		if (savethemefile != NULL)
+			savetheme(savethemefile, BSDDIALOG_VERSION);
 
 		if (backtitle_opt != NULL)
 			if( bsddialog_backtitle(&conf, backtitle_opt))
@@ -865,9 +869,6 @@ int main(int argc, char *argv[argc])
 		/* --and-widget: end loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
-
-		if (savethemefile != NULL)
-			savetheme(savethemefile, BSDDIALOG_VERSION);
 
 		argc = nargc;
 		argv = nargv;
