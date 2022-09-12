@@ -417,7 +417,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	dialogbuilder = NULL;
 
 	backtitle_opt = NULL;
-	theme_opt = BSDDIALOG_THEME_FLAT;
+	theme_opt = -1;
 	output_fd_opt = STDERR_FILENO;
 	ignore_opt = false;
 	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
@@ -841,7 +841,7 @@ int main(int argc, char *argv[argc])
 			}
 		}
 
-		if (theme_opt != BSDDIALOG_THEME_FLAT)
+		if (theme_opt >= 0)
 			if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
 				exit_error(bsddialog_geterror(), false);
 
