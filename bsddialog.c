@@ -849,8 +849,7 @@ int main(int argc, char *argv[argc])
 			loadtheme(loadthemefile);
 
 		if (bikeshed_opt)
-			if (bikeshed(&conf) != BSDDIALOG_OK)
-				exit_error(bsddialog_geterror(), false);
+			bikeshed(&conf);
 
 		if (savethemefile != NULL)
 			savetheme(savethemefile, BSDDIALOG_VERSION);

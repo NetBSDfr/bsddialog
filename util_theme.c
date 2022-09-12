@@ -115,7 +115,7 @@ static char *color[8] = {
 	bsddialog_end();                                                       \
 	printf("Error: ");                                                     \
 	printf(fmt, __VA_ARGS__);                                              \
-	printf("\n");                                                          \
+	printf(".\n");                                                         \
 	exit (255);                                                            \
 } while (0)
 
@@ -265,7 +265,7 @@ void loadtheme(const char *file)
 	bsddialog_set_theme(&t);
 }
 
-int bikeshed(struct bsddialog_conf *conf)
+void bikeshed(struct bsddialog_conf *conf)
 {
 	int margin, i;
 	int colors[8] = {0, 0, 0, 0 ,0 ,0 , 0, 0};
@@ -277,7 +277,7 @@ int bikeshed(struct bsddialog_conf *conf)
 
 	/* theme */
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
-		return (BSDDIALOG_ERROR);
+		EXIT_FMTERROR("%s", bsddialog_geterror());
 
 	for (i = 0; i < 6; i++) {
 		do {
@@ -332,7 +332,7 @@ int bikeshed(struct bsddialog_conf *conf)
 	t.button.shortcutcolor   = bsddialog_color(col[1], col[5], 0);
 
 	if (bsddialog_set_theme(&t))
-		return (BSDDIALOG_ERROR);
+		EXIT_FMTERROR("%s", bsddialog_geterror());
 
 	/* conf */
 	conf->button.always_active = (rand() % 2 == 0) ? true : false;
@@ -344,6 +344,4 @@ int bikeshed(struct bsddialog_conf *conf)
 		memset(title + strlen(title), ' ', margin);
 		conf->title = title;
 	}
-
-	return (BSDDIALOG_OK);
 }
