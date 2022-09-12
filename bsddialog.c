@@ -670,69 +670,107 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			break;
 		/* Dialogs */
 		case CHECKLIST:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --checklist", true);
 			dialogbuilder = checklist_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case DATEBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --datebox", true);
 			dialogbuilder = datebox_builder;
 			break;
 		case FORM:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --form", true);
 			dialogbuilder = form_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case GAUGE:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --gauge", true);
 			dialogbuilder = gauge_builder;
 			break;
 		case INFOBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --infobox", true);
 			dialogbuilder = infobox_builder;
 			break;
 		case INPUTBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --inputbox", true);
 			dialogbuilder = inputbox_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case MENU:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --menu", true);
 			dialogbuilder = menu_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case MIXEDFORM:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --mixedform", true);
 			dialogbuilder = mixedform_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case MIXEDGAUGE:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --mixedgauge", true);
 			dialogbuilder = mixedgauge_builder;
 			break;
 		case MSGBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --msgbox", true);
 			dialogbuilder = msgbox_builder;
 			break;
 		case PAUSE:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --pause", true);
 			dialogbuilder = pause_builder;
 			break;
 		case PASSWORDBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --passwordbox", true);
 			dialogbuilder = passwordbox_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case PASSWORDFORM:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --passwordform", true);
 			dialogbuilder = passwordform_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case RADIOLIST:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --radiolist", true);
 			dialogbuilder = radiolist_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case RANGEBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --rangebox", true);
 			dialogbuilder = rangebox_builder;
 			break;
 		case TEXTBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --textbox", true);
 			dialogbuilder = textbox_builder;
 			break;
 		case TIMEBOX:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --timebox", true);
 			dialogbuilder = timebox_builder;
 			break;
 		case TREEVIEW:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --treeview", true);
 			dialogbuilder = treeview_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case YESNO:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --yesno", true);
 			dialogbuilder = yesno_builder;
 			break;
 		default: /* Error */
