@@ -794,6 +794,7 @@ int main(int argc, char *argv[argc])
 
 	in_bsddialog_mode = false;
 	mandatory_dialog = true;
+	retval = BSDDIALOG_OK;
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "--version") == 0 && argv[i][9]=='\0') {
@@ -807,7 +808,6 @@ int main(int argc, char *argv[argc])
 		}
 	}
 
-	retval = BSDDIALOG_OK;
 	while (true) {
 		parsed = parseargs(argc, argv, &conf);
 		nargc = argc - parsed;
@@ -874,26 +874,24 @@ int main(int argc, char *argv[argc])
 		free(text);
 		if (retval == BSDDIALOG_ERROR)
 			exit_error(bsddialog_geterror(), false);
+		if (retval == BSDDIALOG_ESC && esc_return_cancel_opt)
+			retval = BSDDIALOG_CANCEL;
+		if (conf.get_height != NULL && conf.get_width != NULL)
+			dprintf(output_fd_opt, "DialogSize: %d, %d\n",
+			    *conf.get_height, *conf.get_width);
+
 		/* --and-widget ends loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
-
 		argc = nargc;
 		argv = nargv;
 		if (argc <= 0)
 			break;
 		optind = -1; /* reset for next parseargs() call */
-	} // end while args
+	}
 
-	bsddialog_end();
-	/* end bsddialog terminal mode */
-
-	if (conf.get_height != NULL && conf.get_width != NULL)
-		dprintf(output_fd_opt, "Dialog size: (%d - %d)\n",
-		    *conf.get_height, *conf.get_width);
-
-	if (retval == BSDDIALOG_ESC && esc_return_cancel_opt)
-		retval = BSDDIALOG_CANCEL;
+	if (in_bsddialog_mode)
+		bsddialog_end(); /* end bsddialog terminal mode */
 
 	return (retval);
 }
