@@ -171,6 +171,12 @@ void savetheme(const char *file, const char *version)
 	fclose(fp);
 }
 
+void setdeftheme(enum bsddialog_default_theme theme)
+{
+	if (bsddialog_set_default_theme(theme) != BSDDIALOG_OK)
+		EXIT_FMTERROR("%s", bsddialog_geterror());
+}
+
 void loadtheme(const char *file)
 {
 	bool boolvalue;

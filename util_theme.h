@@ -30,6 +30,7 @@
 
 void savetheme(const char *file, const char *version);
 void loadtheme(const char *file);
+void setdeftheme(enum bsddialog_default_theme theme);
 void bikeshed(struct bsddialog_conf *conf);
 
 #endif
