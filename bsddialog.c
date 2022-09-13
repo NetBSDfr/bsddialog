@@ -236,25 +236,39 @@ static struct option longopts[] = {
 };
 
 /* Menus options */
-static bool item_prefix_opt, item_bottomdesc_opt, item_output_sepnl_opt;
-static bool item_singlequote_opt, list_items_on_opt, item_tag_help_opt;
-static bool item_always_quote_opt, item_depth_opt;
-static char *item_output_sep_opt, *item_default_opt;
+static bool item_prefix_opt;
+static bool item_bottomdesc_opt;
+static bool item_output_sepnl_opt;
+static bool item_singlequote_opt;
+static bool list_items_on_opt;
+static bool item_tag_help_opt;
+static bool item_always_quote_opt;
+static bool item_depth_opt;
+static char *item_output_sep_opt;
+static char *item_default_opt;
 /* Date and Time options */
-static char *date_fmt_opt, *time_fmt_opt;
+static char *date_fmt_opt;
+static char *time_fmt_opt;
 /* Forms options */
 static int unsigned max_input_form_opt;
 /* General options */
+static bool esc_return_cancel_opt;
+static bool ignore_opt;
 static int output_fd_opt;
-static bool esc_return_cancel_opt, ignore_opt;
-static int getH_opt, getW_opt;
+static int getH_opt;
+static int getW_opt;
 /* Text Options */
-static bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
+static bool cr_wrap_opt;
+static bool no_collapse_opt;
+static bool no_nl_expand_opt;
+static bool trim_opt;
 /* Theme and Screen options*/
-static enum bsddialog_default_theme theme_opt;
-static char *backtitle_opt, *loadthemefile, *savethemefile;
-static char *screen_mode_opt;
 static bool bikeshed_opt;
+static enum bsddialog_default_theme theme_opt;
+static char *backtitle_opt;
+static char *loadthemefile;
+static char *savethemefile;
+static char *screen_mode_opt;
 
 /* Functions */
 #define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
@@ -422,21 +436,29 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	theme_opt = -1;
 	output_fd_opt = STDERR_FILENO;
 	ignore_opt = false;
-	cr_wrap_opt = no_collapse_opt = no_nl_expand_opt = trim_opt = false;
+	cr_wrap_opt = false;
+	no_collapse_opt = false;
+	no_nl_expand_opt = false;
+	trim_opt = false;
 	esc_return_cancel_opt = false;
 	bikeshed_opt = false;
 	savethemefile = NULL;
 	loadthemefile = NULL;
 	screen_mode_opt = NULL;
 
-	item_output_sepnl_opt = item_singlequote_opt = false;
-	item_prefix_opt = item_bottomdesc_opt = item_depth_opt = false;
-	list_items_on_opt = item_tag_help_opt = false;
+	item_output_sepnl_opt = false;
+	item_singlequote_opt = false;
+	item_prefix_opt = false;
+	item_bottomdesc_opt = false;
+	item_depth_opt = false;
+	list_items_on_opt = false;
+	item_tag_help_opt = false;
 	item_always_quote_opt = false;
 	item_output_sep_opt = NULL;
 	item_default_opt = NULL;
 
-	date_fmt_opt = time_fmt_opt = NULL;
+	date_fmt_opt = NULL;
+	time_fmt_opt = NULL;
 
 	max_input_form_opt = 2048;
 	
