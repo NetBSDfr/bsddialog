@@ -246,16 +246,15 @@ static char *date_fmt_opt, *time_fmt_opt;
 static int unsigned max_input_form_opt;
 /* General options */
 static int output_fd_opt;
-static bool bikeshed_opt;
-// old main local
-static bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
-static bool esc_return_cancel_opt, ignore_opt, mandatory_dialog;
+static bool esc_return_cancel_opt, ignore_opt;
 static int getH_opt, getW_opt;
+/* Text Options */
+static bool cr_wrap_opt, no_collapse_opt, no_nl_expand_opt, trim_opt;
+/* Theme and Screen options*/
 static enum bsddialog_default_theme theme_opt;
 static char *backtitle_opt, *loadthemefile, *savethemefile;
 static char *screen_mode_opt;
-/* init and exit */
-static bool in_bsddialog_mode;
+static bool bikeshed_opt;
 
 /* Functions */
 #define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
@@ -284,6 +283,9 @@ static int timebox_builder(BUILDER_ARGS);
 static int treeview_builder(BUILDER_ARGS);
 static int yesno_builder(BUILDER_ARGS);
 
+/* init, exit and internals */
+static bool in_bsddialog_mode;
+static bool mandatory_dialog;
 static int (*dialogbuilder)(BUILDER_ARGS);
 
 static void exit_error(const char *errstr, bool with_usage)
