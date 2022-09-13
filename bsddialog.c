@@ -621,6 +621,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			    BSDDIALOG_VERSION);
 			break;
 		case SAVE_THEME:
+			mandatory_dialog = false;
 			savethemefile = optarg;
 			break;
 		case SEPARATE_OUTPUT:
@@ -806,6 +807,7 @@ int main(int argc, char *argv[argc])
 		}
 	}
 
+	retval = BSDDIALOG_OK;
 	while (true) {
 		parsed = parseargs(argc, argv, &conf);
 		nargc = argc - parsed;
@@ -813,27 +815,38 @@ int main(int argc, char *argv[argc])
 		argc = parsed - optind;
 		argv += optind;
 
-		if (mandatory_dialog == false && argc == 0)
+		if (mandatory_dialog && dialogbuilder == NULL)
+			exit_error("expected a --<dialog>", true);
+
+		if (dialogbuilder == NULL && argc > 0)
+			error_args("(no --<dialog>)", argc, argv);
+
+		/* --print-maxsize or --print-version */
+		if (mandatory_dialog == false && savethemefile == NULL)
 			return (BSDDIALOG_OK);
 
-		if (argc < 3)
-			exit_error("at least 3 args <text><rows><cols>", false);
-		if ((text = strdup(argv[0])) == NULL)
-			exit_error("cannot allocate memory for text", false);
-		if (dialogbuilder != textbox_builder) {
-			custom_text(argv[0], text);
+		/* --<dialog>  or --save-theme */
+		if (dialogbuilder != NULL) {
+			if (argc < 3)
+				exit_error("missing <text> <rows> <cols>",
+				    false);
+			if ((text = strdup(argv[0])) == NULL)
+				exit_error("cannot allocate text", false);
+			if (dialogbuilder != textbox_builder)
+				custom_text(argv[0], text);
+			rows = (int)strtol(argv[1], NULL, 10);
+			cols = (int)strtol(argv[2], NULL, 10);
+			argc -= 3;
+			argv += 3;
 		}
-		rows = (int)strtol(argv[1], NULL, 10);
-		cols = (int)strtol(argv[2], NULL, 10);
-		argc -= 3;
-		argv += 3;
 
 		/* bsddialog terminal mode (first iteration) */
 		start_bsddialog_mode();
 
 		if (screen_mode_opt != NULL) {
 			screen_mode_opt = tigetstr(screen_mode_opt);
-			if (screen_mode_opt != NULL && screen_mode_opt != (char*)-1) {
+			if (screen_mode_opt != NULL &&
+			    screen_mode_opt != (char*)-1) {
 				tputs(screen_mode_opt, 1, putchar);
 				fflush(stdout);
 				 /* only to refresh, useless in the library */
@@ -841,31 +854,27 @@ int main(int argc, char *argv[argc])
 			}
 		}
 
+		/* theme */
 		if (theme_opt >= 0)
-			if (bsddialog_set_default_theme(theme_opt) != BSDDIALOG_OK)
-				exit_error(bsddialog_geterror(), false);
-
+			bsddialog_set_default_theme(theme_opt);
 		if (loadthemefile != NULL)
 			loadtheme(loadthemefile);
-
 		if (bikeshed_opt)
 			bikeshed(&conf);
-
 		if (savethemefile != NULL)
 			savetheme(savethemefile, BSDDIALOG_VERSION);
 
+		/* backtitle and dialog */
+		if (dialogbuilder == NULL)
+			break;
 		if (backtitle_opt != NULL)
-			if( bsddialog_backtitle(&conf, backtitle_opt))
+			if(bsddialog_backtitle(&conf, backtitle_opt))
 				exit_error(bsddialog_geterror(), false);
-
-		if (dialogbuilder != NULL) {
-			retval = dialogbuilder(&conf, text, rows, cols, argc, argv);
-			if (retval == BSDDIALOG_ERROR)
-				exit_error(bsddialog_geterror(), false);
-		} else
-			retval = BSDDIALOG_OK;
+		retval = dialogbuilder(&conf, text, rows, cols, argc, argv);
 		free(text);
-		/* --and-widget: end loop with Cancel or ESC */
+		if (retval == BSDDIALOG_ERROR)
+			exit_error(bsddialog_geterror(), false);
+		/* --and-widget ends loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
 
@@ -874,7 +883,6 @@ int main(int argc, char *argv[argc])
 		if (argc <= 0)
 			break;
 		optind = -1; /* reset for next parseargs() call */
-
 	} // end while args
 
 	bsddialog_end();
