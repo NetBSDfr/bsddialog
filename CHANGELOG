@@ -14,9 +14,9 @@ Next
 
 	Library:
 	* change: rename enum bsddialog_grouptype to enum bsddialog_menutype.
-	* change: fixed menurows becames at most menurows.
-	* change: fixed rows becames at most rows, checking screen size.
-	* change: fixed cols becames at most cols, checking screen size.
+	* change: fixed-menurows becames at most menurows.
+	* change: fixed-rows becames at most rows, checking screen size.
+	* change: fixed-cols becames at most cols, checking screen size.
 
 
 2022-08-29 Version 0.3
