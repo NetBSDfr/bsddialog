@@ -1069,8 +1069,7 @@ int rangebox_builder(BUILDER_ARGS)
 		value = (int)strtol(argv[2], NULL, 10);
 		value = value < min ? min : value;
 		value = value > max ? max : value;
-	}
-	else
+	} else
 		value = min;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, &value);
@@ -1258,10 +1257,10 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 				    item_output_sepnl_opt == false)
 					toquote = true;
 			}
-			if (toquote)
+			if (toquote) {
 				dprintf(output_fd_opt, "%c%s%c",
 				    quotech, focusname, quotech);
-			else
+			} else
 				dprintf(output_fd_opt, "%s", focusname);
 		}
 
