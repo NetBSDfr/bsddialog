@@ -308,8 +308,10 @@ static void exit_error(const char *errstr, bool with_usage)
 		bsddialog_end();
 
 	printf("Error: %s.\n\n", errstr);
-	if (with_usage)
-		usage();
+	if (with_usage) {
+		printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
+		printf("for more information.\n");
+	}
 
 	exit (255);
 }
@@ -345,7 +347,8 @@ static void error_args(const char *dialog, int argc, char **argv)
 	for (i = 0; i < argc; i++)
 		printf(" \"%s\"", argv[i]);
 	printf(".\n\n");
-	usage();
+	printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
+	printf("for more information.\n");
 
 	exit (255);
 }
@@ -801,7 +804,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		default: /* Error */
 			if (ignore_opt == true)
 				break;
-			exit_error("Unknown option, --ignore to skip", true);
+			exit_error("--ignore to continue", true);
 		}
 	}
 
@@ -852,8 +855,8 @@ int main(int argc, char *argv[argc])
 		/* --<dialog>  or --save-theme */
 		if (dialogbuilder != NULL) {
 			if (argc < 3)
-				exit_error("missing <text> <rows> <cols>",
-				    false);
+				exit_error("expected <text> <rows> <cols>",
+				    true);
 			if ((text = strdup(argv[0])) == NULL)
 				exit_error("cannot allocate text", false);
 			if (dialogbuilder != textbox_builder)
