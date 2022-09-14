@@ -257,7 +257,7 @@ static bool ignore_opt;
 static int output_fd_opt;
 static int getH_opt;
 static int getW_opt;
-/* Text Options */
+/* Text options */
 static bool cr_wrap_opt;
 static bool no_collapse_opt;
 static bool no_nl_expand_opt;
