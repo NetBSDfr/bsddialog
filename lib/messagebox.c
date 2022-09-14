@@ -103,7 +103,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool hastext, loop;
-	int y, x, h, w, retval, ytextpad, htextpad, unused;
+	int y, x, h, w, retval, ytextpad, htextpad, printrows, unused;
 	WINDOW *widget, *textpad, *shadow;
 	wint_t input;
 
@@ -120,12 +120,13 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	    true) != 0)
 		return (BSDDIALOG_ERROR);
 
+	printrows = h - 4;
 	ytextpad = 0;
 	getmaxyx(textpad, htextpad, unused);
 	unused++; /* fix unused error */
-	textupdate(widget, textpad, htextpad, ytextpad, hastext);
 	loop = true;
 	while (loop) {
+		textupdate(widget, textpad, htextpad, ytextpad, hastext);
 		doupdate();
 		if (get_wch(&input) == ERR)
 			continue;
@@ -161,16 +162,28 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			}
 			break;
 		case KEY_UP:
-			if (ytextpad == 0)
-				break;
-			ytextpad--;
-			textupdate(widget, textpad, htextpad, ytextpad, hastext);
+			if (ytextpad > 0)
+				ytextpad--;
 			break;
 		case KEY_DOWN:
-			if (ytextpad + h - 4 >= htextpad)
-				break;
-			ytextpad++;
-			textupdate(widget, textpad, htextpad, ytextpad, hastext);
+			if (ytextpad + printrows < htextpad)
+				ytextpad++;
+			break;
+		case KEY_HOME:
+			ytextpad = 0;
+			break;
+		case KEY_END:
+			ytextpad = htextpad - printrows;
+			ytextpad = ytextpad < 0 ? 0 : ytextpad;
+			break;
+		case KEY_PPAGE:
+			ytextpad -= printrows;
+			ytextpad = ytextpad < 0 ? 0 : ytextpad;
+			break;
+		case KEY_NPAGE:
+			ytextpad += printrows;
+			if (ytextpad + printrows > htextpad)
+				ytextpad = htextpad - printrows;
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -198,6 +211,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			    textpad, text, &bs, true) != 0)
 				return (BSDDIALOG_ERROR);
 
+			printrows = h - 4;
 			getmaxyx(textpad, htextpad, unused);
 			ytextpad = 0;
 			textupdate(widget, textpad, htextpad, ytextpad, hastext);

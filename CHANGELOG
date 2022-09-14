@@ -18,6 +18,7 @@ Next
 	* change: fixed-menurows becames at most menurows.
 	* change: fixed-rows becames at most rows, checking screen size.
 	* change: fixed-cols becames at most cols, checking screen size.
+	* add: messagebox.c HOME, END, PAGEUP and PAGEDOWN keys.
 
 
 2022-08-29 Version 0.3
