@@ -426,7 +426,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 
 	if (text_size(conf, rows, cols, text, &bs, notext, linelen + 4, &htext,
 	    &wtext) != 0)
-			return (BSDDIALOG_ERROR);
+		return (BSDDIALOG_ERROR);
 
 	if (cols == BSDDIALOG_AUTOSIZE)
 		*w = widget_min_width(conf, wtext, linelen + 4, &bs);
