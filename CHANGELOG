@@ -13,7 +13,8 @@ Next
 	* add: bad arguments number diagnostic messages.
 
 	Library:
-	change: rename enum bsddialog_grouptype to enum bsddialog_menutype.
+	* change: rename enum bsddialog_grouptype to enum bsddialog_menutype.
+	* change: fixed menurows becames at most menurows.
 
 
 2022-08-29 Version 0.3
