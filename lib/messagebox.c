@@ -160,6 +160,18 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				wnoutrefresh(widget);
 			}
 			break;
+		case KEY_UP:
+			if (ytextpad == 0)
+				break;
+			ytextpad--;
+			textupdate(widget, textpad, htextpad, ytextpad, hastext);
+			break;
+		case KEY_DOWN:
+			if (ytextpad + h - 4 >= htextpad)
+				break;
+			ytextpad++;
+			textupdate(widget, textpad, htextpad, ytextpad, hastext);
+			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
 			    conf->key.f1_message == NULL)
@@ -192,18 +204,6 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 			/* Important to fix grey lines expanding screen */
 			refresh();
-			break;
-		case KEY_UP:
-			if (ytextpad == 0)
-				break;
-			ytextpad--;
-			textupdate(widget, textpad, htextpad, ytextpad, hastext);
-			break;
-		case KEY_DOWN:
-			if (ytextpad + h - 4 >= htextpad)
-				break;
-			ytextpad++;
-			textupdate(widget, textpad, htextpad, ytextpad, hastext);
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
