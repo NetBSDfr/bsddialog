@@ -373,7 +373,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*w = widget_min_width(conf, wtext, linelen + 4, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE) {
-		if (*menurows == 0) {
+		if (*menurows == BSDDIALOG_AUTOSIZE) {
 			menusize = widget_max_height(conf) - HBORDERS -
 			     2 /*buttons*/ - htext;
 			menusize = MIN(menusize, nitems + 2);
@@ -389,7 +389,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		 */
 		*menurows = MIN(*h - 6 - htext, (int)*menurows);
 	} else {
-		if (*menurows == 0) {
+		if (*menurows == BSDDIALOG_AUTOSIZE) {
 			if (*h - 6 - htext <= 0)
 				*menurows = 0; /* menu_checksize() will check */
 			else
