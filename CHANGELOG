@@ -11,6 +11,7 @@ Next
 	* add: --normal-screen to set normal mode.
 	* add: --and-widget to show multiple dialogs.
 	* add: bad arguments number DIAGNOSTICS messages.
+	* add: --menu Space key like Enter.
 
 	Library:
 	* change: rename enum bsddialog_grouptype to enum bsddialog_menutype.

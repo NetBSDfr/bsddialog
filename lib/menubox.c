@@ -693,11 +693,15 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			movefocus = next != abs;
 			break;
 		case ' ': /* Space */
-			if (pritems[abs].type == MENUMODE)
-				break;
-			else if (pritems[abs].type == CHECKLISTMODE)
+			if (pritems[abs].type == MENUMODE) {
+				retval = bs.value[bs.curr];
+				pritems[abs].on = true;
+				set_on_output(conf, retval, ngroups, groups,
+				    pritems);
+				loop = false;
+			} else if (pritems[abs].type == CHECKLISTMODE) {
 				pritems[abs].on = !pritems[abs].on;
-			else { /* RADIOLISTMODE */
+			} else { /* RADIOLISTMODE */
 				for (i = abs - pritems[abs].index;
 				    i < totnitems &&
 				    pritems[i].group == pritems[abs].group;
