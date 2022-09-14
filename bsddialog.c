@@ -464,7 +464,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	time_fmt_opt = NULL;
 
 	max_input_form_opt = 2048;
-	
+
 	parsed=argc;
 	while ((arg = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (arg) {
@@ -983,7 +983,7 @@ int gauge_builder(BUILDER_ARGS)
 	} else if (argc > 1) {
 		error_args("--gauge", argc - 1, argv + 1);
 	}
-		
+
 	output = bsddialog_gauge(conf, text, rows, cols, perc, STDIN_FILENO,
 	    "XXX");
 
