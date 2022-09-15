@@ -30,7 +30,8 @@
 
 #include <stdbool.h>
 
-#define LIBBSDDIALOG_VERSION     "0.3"
+/* Work In Progress 0.4 */
+#define LIBBSDDIALOG_VERSION     "0.4-WIP"
 
 /* Exit status */
 #define BSDDIALOG_ERROR          -1
