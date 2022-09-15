@@ -388,35 +388,35 @@ static void usage(void)
 	printf("\n");
 
 	printf("Dialogs:\n");
-	printf("--checklist <text> <rows> <cols> <menurows> [<name> <desc> "
+	printf(" --checklist <text> <rows> <cols> <menurows> [<name> <desc> "
 	    "<on|off>] ...\n");
-	printf("--datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
-	printf("--form <text> <rows> <cols> <formrows> [<label> <ylabel> "
+	printf(" --datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
+	printf(" --form <text> <rows> <cols> <formrows> [<label> <ylabel> "
 	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxletters>] "
 	    "...\n");
-	printf("--gauge <text> <rows> <cols> [<perc>]\n");
-	printf("--infobox <text> <rows> <cols>\n");
-	printf("--inputbox <text> <rows> <cols> [init]\n");
-	printf("--menu <text> <rows> <cols> <menurows> [<name> <desc>] ...\n");
-	printf("--mixedform <text> <rows> <cols> <formrows> [<label> <ylabel> "
+	printf(" --gauge <text> <rows> <cols> [<perc>]\n");
+	printf(" --infobox <text> <rows> <cols>\n");
+	printf(" --inputbox <text> <rows> <cols> [init]\n");
+	printf(" --menu <text> <rows> <cols> <menurows> [<name> <desc>] ...\n");
+	printf(" --mixedform <text> <rows> <cols> <formrows> [<label> <ylabel> "
 	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxletters> "
 	    "<0|1|2>] ...\n");
-	printf("--mixedgauge <text> <rows> <cols> <mainperc> [<minilabel> "
+	printf(" --mixedgauge <text> <rows> <cols> <mainperc> [<minilabel> "
 	    "<miniperc>] ...\n");
-	printf("--msgbox <text> <rows> <cols>\n");
-	printf("--passwordbox <text> <rows> <cols> [init]\n");
-	printf("--passwordform <text> <rows> <cols> <formrows> [<label> "
+	printf(" --msgbox <text> <rows> <cols>\n");
+	printf(" --passwordbox <text> <rows> <cols> [init]\n");
+	printf(" --passwordform <text> <rows> <cols> <formrows> [<label> "
 	    "<ylabel> <xlabel> <init> <yfield> <xfield> <fieldlen> "
 	    "<maxletters>] ...\n");
-	printf("--pause <text> <rows> <cols> <secs>\n");
-	printf("--radiolist <text> <rows> <cols> <menurows> [<name> <desc> "
+	printf(" --pause <text> <rows> <cols> <secs>\n");
+	printf(" --radiolist <text> <rows> <cols> <menurows> [<name> <desc> "
 	    "<on|off>] ...\n");
-	printf("--rangebox <text> <rows> <cols> <min> <max> [<init>]\n");
-	printf("--textbox <file> <rows> <cols>\n");
-	printf("--timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n");
-	printf("--treeview <text> <rows> <cols> <menurows> [<depth> <name> "
+	printf(" --rangebox <text> <rows> <cols> <min> <max> [<init>]\n");
+	printf(" --textbox <file> <rows> <cols>\n");
+	printf(" --timebox <text> <rows> <cols> [<hh> <mm> <ss>]\n");
+	printf(" --treeview <text> <rows> <cols> <menurows> [<depth> <name> "
 	    "<desc> <on|off>] ...\n");
-	printf("--yesno <text> <rows> <cols>\n");
+	printf(" --yesno <text> <rows> <cols>\n");
 	printf("\n");
 
 	printf("See 'man 1 bsddialog' for more information.\n");
