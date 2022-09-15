@@ -160,18 +160,12 @@ Focus on
 or
 .Dq \&No
 button on startup.
-.It Fl Fl defaultno
-Equivalent to
-.Fl Fl default-no .
 .It Fl Fl disable-esc
 Disable ESC key to quit.
 .It Fl Fl esc-return-cancel
 ESC key returns
 .Dq Cancel
 button value.
-.It Fl Fl exit-label Ar label
-Equivalent to
-.Fl Fl ok-label .
 .It Fl Fl extra-button
 Add a button with
 .Dq Extra
@@ -229,9 +223,6 @@ Set a help string for each element of a Checklist, Form, Menu, Mixedform,
 Passwordform, Radiolist and Treeview to display at the bottom screen side.
 .It Fl Fl item-prefix
 Set a string to prefix each item of a Checklist, Menu, Radiolist or Treeview.
-.It Fl Fl keep-tite
-Equivalent to
-.Fl Fl alternate-screen .
 .It Fl Fl load-theme Ar file
 Load theme from
 .Ar file .
@@ -248,13 +239,12 @@ button.
 .It Fl Fl no-collapse
 Do not replace a TAB character with a space in
 .Ar text .
-.It Fl Fl no-items
+.It Fl Fl no-descriptions
 Do not display items desciption, for Checklist, Menu, Radiolist or Treeview.
-.It Fl Fl no-label Ar label
-Equivalent to
-.Fl Fl cancel-label .
 .It Fl Fl no-lines
 Do not draw borders and lines.
+.It Fl Fl no-names
+Do not display items name, for Checklist, Menu and Radiolist.
 .It Fl Fl no-nl-expand
 do not consider the sequence
 .Dq \en
@@ -265,14 +255,6 @@ Do not draw
 button.
 .It Fl Fl no-shadow
 No not draw the shadow of the dialog.
-.It Fl Fl no-tags
-Do not display items name, for Checklist, Menu and Radiolist.
-.It Fl Fl nocancel
-Equivalent to
-.Fl Fl no-cancel .
-.It Fl Fl nook
-Equivalent to
-.Fl Fl no-ok .
 .It Fl Fl ok-label Ar label
 Set
 .Ar label
@@ -298,9 +280,6 @@ Quote items in output, default only when necessary.
 Save the current theme.
 .It Fl Fl separate-output
 Separate selected items with a new line and avoid to quote.
-.It Fl Fl separator Ar sep
-Equivalent to
-.Fl Fl output-separator .
 .It Fl Fl shadow
 Show a pseudo shadow for the dialog, enabled by default.
 .It Fl Fl single-quoted
@@ -340,9 +319,6 @@ Dialog title.
 .It Fl Fl trim
 remove consecutive spaces in
 .Ar text .
-.It Fl Fl yes-label Ar label
-Equivalent to
-.Fl Fl ok-label .
 .El
 .Ss Dialogs
 The following dialogs are available:
@@ -639,6 +615,23 @@ do
 	fi
 	i=`expr $i + 1`
 done | bsddialog --title Gauge --gauge "Starting..." 10 70
+.Ed
+.Sh COMPATIBILITY
+Outdated options are retained for compatibility, properly equivalent options are
+used:
+.Bd -literal -offset indent -compact
+Obsolete        Equivalent
+--defaultno     --default-no
+--exit-label    --ok-label
+--help-tags     --help-print-name
+--keep-tite     --alternate-screen
+--no-items      --no-descriptions
+--no-label      --cancel-label
+--no-tags       --no-names
+--nocancel      --no-cancel
+--nook          --no-ok
+--separator     --output-separator
+--yes-label     --ok-label
 .Ed
 .Sh SEE ALSO
 .Xr bsddialog 3

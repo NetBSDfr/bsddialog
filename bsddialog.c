@@ -72,8 +72,8 @@ enum OPTS {
 	GENERIC_BUTTON2,
 	HELP_BUTTON,
 	HELP_LABEL,
+	HELP_PRINT_NAME,
 	HELP_STATUS,
-	HELP_TAGS,
 	HFILE,
 	HLINE,
 	HMSG,
@@ -86,12 +86,12 @@ enum OPTS {
 	MAX_INPUT,
 	NO_CANCEL,
 	NO_COLLAPSE,
-	NO_ITEMS,
+	NO_DESCRIPTIONS,
 	NO_LINES,
+	NO_NAMES,
 	NO_NL_EXPAND,
 	NO_OK,
 	NO_SHADOW,
-	NO_TAGS,
 	NORMAL_SCREEN,
 	OK_LABEL,
 	OUTPUT_FD,
@@ -164,8 +164,9 @@ static struct option longopts[] = {
 	{"generic-button2",   required_argument, NULL, GENERIC_BUTTON2},
 	{"help-button",       no_argument,       NULL, HELP_BUTTON},
 	{"help-label",        required_argument, NULL, HELP_LABEL},
+	{"help-print-name",   no_argument,       NULL, HELP_PRINT_NAME},
 	{"help-status",       no_argument,       NULL, HELP_STATUS},
-	{"help-tags",         no_argument,       NULL, HELP_TAGS},
+	{"help-tags",         no_argument,       NULL, HELP_PRINT_NAME},
 	{"hfile",             required_argument, NULL, HFILE},
 	{"hline",             required_argument, NULL, HLINE},
 	{"hmsg",              required_argument, NULL, HMSG},
@@ -180,14 +181,16 @@ static struct option longopts[] = {
 	{"no-cancel",         no_argument,       NULL, NO_CANCEL},
 	{"nocancel",          no_argument,       NULL, NO_CANCEL},
 	{"no-collapse",       no_argument,       NULL, NO_COLLAPSE},
-	{"no-items",          no_argument,       NULL, NO_ITEMS},
+	{"no-descriptions",   no_argument,       NULL, NO_DESCRIPTIONS},
+	{"no-items",          no_argument,       NULL, NO_DESCRIPTIONS},
 	{"no-label",          required_argument, NULL, CANCEL_LABEL},
 	{"no-lines",          no_argument,       NULL, NO_LINES},
+	{"no-names",          no_argument,       NULL, NO_NAMES},
 	{"no-nl-expand",      no_argument,       NULL, NO_NL_EXPAND},
 	{"no-ok",             no_argument,       NULL, NO_OK},
 	{"nook ",             no_argument,       NULL, NO_OK},
 	{"no-shadow",         no_argument,       NULL, NO_SHADOW},
-	{"no-tags",           no_argument,       NULL, NO_TAGS},
+	{"no-tags",           no_argument,       NULL, NO_NAMES},
 	{"normal-screen",     no_argument,       NULL, NORMAL_SCREEN},
 	{"ok-label",          required_argument, NULL, OK_LABEL},
 	{"output-fd",         required_argument, NULL, OUTPUT_FD},
@@ -241,7 +244,7 @@ static bool item_bottomdesc_opt;
 static bool item_output_sepnl_opt;
 static bool item_singlequote_opt;
 static bool list_items_on_opt;
-static bool item_tag_help_opt;
+static bool item_help_print_name_opt;
 static bool item_always_quote_opt;
 static bool item_depth_opt;
 static char *item_output_sep_opt;
@@ -372,20 +375,20 @@ static void usage(void)
 	    " --disable-esc,\n --esc-return-cancel, --exit-label <label>,"
 	    " --extra-button,\n --extra-label <label>,"
 	    " --generic-button1 <label>, --generic-button2 <label>,\n"
-	    " --help-button, --help-label <label>, --help-status,"
-	    " --help-tags,\n --hfile <file>, --hline <string>, --hmsg <string>,"
+	    " --help-button, --help-label <label>, --help-print-name,"
+	    " --help-status,\n --hfile <file>, --hline <string>, --hmsg <string>,"
 	    " --ignore, --insecure,\n --item-depth, --item-help, --item-prefix,"
 	    " --load-theme <file>,\n --max-input <size>, --no-cancel,"
-	    " --no-collapse, --no-items, --no-label <label>,\n --no-lines,"
-	    " --no-nl-expand, --no-ok, --no-shadow, --no-tags,"
-	    " --normal-screen,\n --ok-label <label>, --output-fd <fd>,"
-	    " --output-separator <sep>,\n --print-maxsize, --print-size,"
-	    " --print-version, --quoted, --save-theme <file>,\n"
-	    " --separate-output, --separator <sep>, --shadow,"
-	    " --single-quoted,\n --sleep <secs>, --stderr, --stdout,"
-	    " --tab-len <spaces>, --switch-buttons,\n"
-	    " --theme <blackwhite|bsddialog|flat|dialog>,"
-	    " --time-format <format>,\n --title <title>, --trim,"
+	    " --no-collapse, --no-descriptions,\n --no-label <label>,"
+	    " --no-lines, --no-names, --no-nl-expand, --no-ok,\n --no-shadow,"
+	    " --normal-screen, --ok-label <label>, --output-fd <fd>,\n"
+	    " --output-separator <sep>, --print-maxsize, --print-size,"
+	    " --print-version,\n --quoted, --save-theme <file>,"
+	    " --separate-output, --separator <sep>, --shadow,\n"
+	    " --single-quoted, --sleep <secs>, --stderr, --stdout,"
+	    " --tab-len <spaces>,\n --switch-buttons,"
+	    " --theme <blackwhite|bsddialog|flat|dialog>,\n"
+	    " --time-format <format>, --title <title>, --trim,"
 	    " --yes-label <label>.\n");
 	printf("\n");
 
@@ -457,7 +460,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	item_bottomdesc_opt = false;
 	item_depth_opt = false;
 	list_items_on_opt = false;
-	item_tag_help_opt = false;
+	item_help_print_name_opt = false;
 	item_always_quote_opt = false;
 	item_output_sep_opt = NULL;
 	item_default_opt = NULL;
@@ -558,11 +561,11 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case HELP_LABEL:
 			conf->button.help_label = optarg;
 			break;
+		case HELP_PRINT_NAME:
+			item_help_print_name_opt = true;
+			break;
 		case HELP_STATUS:
 			list_items_on_opt = true;
-			break;
-		case HELP_TAGS:
-			item_tag_help_opt = true;
 			break;
 		case HFILE:
 			conf->key.f1_file = optarg;
@@ -595,14 +598,14 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case MAX_INPUT:
 			max_input_form_opt = (u_int)strtoul(optarg, NULL, 10);
 			break;
-		case NO_ITEMS:
-			conf->menu.no_desc = true;
-			break;
 		case NO_CANCEL:
 			conf->button.without_cancel = true;
 			break;
 		case NO_COLLAPSE:
 			no_collapse_opt = true;
+			break;
+		case NO_DESCRIPTIONS:
+			conf->menu.no_desc = true;
 			break;
 		case NO_LINES:
 			conf->no_lines = true;
@@ -610,11 +613,11 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case NO_NL_EXPAND:
 			no_nl_expand_opt = true;
 			break;
+		case NO_NAMES:
+			conf->menu.no_name = true;
+			break;
 		case NO_OK:
 			conf->button.without_ok = true;
-			break;
-		case NO_TAGS:
-			conf->menu.no_name = true;
 			break;
 		case NO_SHADOW:
 			conf->shadow = false;
@@ -1249,7 +1252,8 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 
 		if (focusitem >= 0) {
 			focusname = items[focusitem].name;
-			if (item_bottomdesc_opt && item_tag_help_opt == false)
+			if (item_bottomdesc_opt &&
+			    item_help_print_name_opt == false)
 				focusname = items[focusitem].bottomdesc;
 
 			toquote = false;
