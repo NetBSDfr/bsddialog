@@ -46,7 +46,7 @@
 #define BSDDIALOG_VERSION "0.4-WIP"
 
 enum OPTS {
-	/* Common options */
+	/* Options */
 	ALTERNATE_SCREEN = '?' + 1,
 	AND_WIDGET,
 	ASCII_LINES,
@@ -137,7 +137,7 @@ enum OPTS {
 
 /* options descriptor */
 static struct option longopts[] = {
-	/* common options */
+	/* Options */
 	{"alternate-screen",  no_argument,       NULL, ALTERNATE_SCREEN},
 	{"and-widget",        no_argument,       NULL, AND_WIDGET},
 	{"ascii-lines",       no_argument,       NULL, ASCII_LINES},
@@ -357,13 +357,13 @@ static void usage(void)
 {
 	printf("usage: bsddialog --help\n");
 	printf("       bsddialog --version\n");
-	printf("       bsddialog [--<common-opts>] --<dialog> <text> <rows> "
-	    "<cols> [--<dialog-opts>]\n");
+	printf("       bsddialog [--<opt>] --<dialog> <text> <rows> <cols> "
+	    "[<arg>]\n");
 	printf("       bsddialog --<dialog1> ... [--and-widget --<dialog2> "
 	    "...] ...\n");
 	printf("\n");
 
-	printf("Common Options:\n");
+	printf("Options:\n");
 	printf("--alternate-screen, --ascii-lines, --backtitle <backtitle>, "
 	    "--begin-x <x>, --begin-y <y>, --bikeshed, --cancel-label <label>, "
 	    "--clear, --colors, --columns-per-row <columns>, --cr-wrap, "
