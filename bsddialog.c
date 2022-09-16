@@ -319,7 +319,7 @@ static void exit_error(const char *errstr, bool with_usage)
 	exit (255);
 }
 
-void sigint_handler(int UNUSED_PAR(sig))
+static void sigint_handler(int UNUSED_PAR(sig))
 {
 	bsddialog_end();
 
