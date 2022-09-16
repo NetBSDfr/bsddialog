@@ -969,8 +969,8 @@ void custom_text(char *text, char *buf)
 			buf[j] = text[i];
 		}
 		i++;
-		j += (buf[j] == ' ' && trim_opt && j > 0 && buf[j-1] == ' ') ?
-		    0 : 1;
+		if (buf[j] == ' ' && trim_opt && j > 0 && buf[j-1] == ' ')
+			j++;
 	}
 	buf[j] = '\0';
 }
