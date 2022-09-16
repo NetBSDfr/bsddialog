@@ -15,7 +15,7 @@ Next
 	    - --separator prints <sepstr> before each item except HELP.
 	    - --separator and --separate-output print <sepstr> after each item.
 	    - quoted item name/desc only when needed.
-	    - --menu output, HELP and selected item double print.
+	    - --menu does not print HELP and selected item (double print).
 
 	Library:
 	* add: bsddialog_msgbox() HOME, END, PPAGE and NPAGE keys.
