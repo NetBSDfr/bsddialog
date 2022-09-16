@@ -11,7 +11,7 @@ Next
 	* add: DIAGNOSTICS messages for bad arguments number.
 	* change: --print-maxsize format output.
 	* change: --menu, --radiolist, --checklist and --treeview output.
-	    - no printed items with Cancel.
+	    - no printed items with Cancel or ESC.
 	    - --separator prints <sepstr> before each item except HELP.
 	    - --separator and --separate-output print <sepstr> after each item.
 	    - quoted item name/desc only when needed.

@@ -1244,7 +1244,8 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 	sep = false;
 	quotech = item_singlequote_opt ? '\'' : '"';
 
-	if (output == BSDDIALOG_ERROR || output == BSDDIALOG_CANCEL)
+	if (output == BSDDIALOG_ERROR || output == BSDDIALOG_CANCEL ||
+	    output == BSDDIALOG_ESC)
 		return;
 
 	if (output == BSDDIALOG_HELP) {
