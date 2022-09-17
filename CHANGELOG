@@ -4,7 +4,7 @@ Next
 	* add: --normal-screen to set normal mode.
 	* add: --alternate-screen to set alternate mode.
 	* add: --keep-tite like --alternate-screen alias.
-	* add: --and-widget to build multiple dialogs.
+	* add: --and-widget to build other dialogs.
 	* add: --no-names (--no-tags becames its alias).
 	* add: --no-descriptions (--no-items becames its alias).
 	* add: --help-print-name (--help-tags becames its alias).
