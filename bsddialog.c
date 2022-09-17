@@ -79,8 +79,8 @@ enum OPTS {
 	HMSG,
 	IGNORE,
 	INSECURE,
+	ITEM_BOTTOM_DESC,
 	ITEM_DEPTH,
-	ITEM_HELP,
 	ITEM_PREFIX,
 	LOAD_THEME,
 	MAX_INPUT,
@@ -172,8 +172,9 @@ static struct option longopts[] = {
 	{"hmsg",              required_argument, NULL, HMSG},
 	{"ignore",            no_argument,       NULL, IGNORE},
 	{"insecure",          no_argument,       NULL, INSECURE},
+	{"item-bottom-desc",  no_argument,       NULL, ITEM_BOTTOM_DESC},
 	{"item-depth",        no_argument,       NULL, ITEM_DEPTH},
-	{"item-help",         no_argument,       NULL, ITEM_HELP},
+	{"item-help",         no_argument,       NULL, ITEM_BOTTOM_DESC},
 	{"item-prefix",       no_argument,       NULL, ITEM_PREFIX},
 	{"keep-tite",         no_argument,       NULL, ALTERNATE_SCREEN},
 	{"load-theme",        required_argument, NULL, LOAD_THEME},
@@ -377,8 +378,8 @@ static void usage(void)
 	    " --generic-button1 <label>, --generic-button2 <label>,\n"
 	    " --help-button, --help-label <label>, --help-print-name,"
 	    " --help-status,\n --hfile <file>, --hline <string>,"
-	    " --hmsg <string>, --ignore, --insecure,\n --item-depth,"
-	    " --item-help, --item-prefix, --load-theme <file>,\n"
+	    " --hmsg <string>, --ignore, --insecure,\n --item-bottom-desc,"
+	    " --item-depth, --item-prefix, --load-theme <file>,\n"
 	    " --max-input <size>, --no-cancel, --no-collapse,"
 	    " --no-descriptions,\n --no-label <label>, --no-lines, --no-names,"
 	    " --no-nl-expand, --no-ok,\n --no-shadow, --normal-screen,"
@@ -583,11 +584,11 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case INSECURE:
 			conf->form.securech = '*';
 			break;
+		case ITEM_BOTTOM_DESC:
+			item_bottomdesc_opt = true;
+			break;
 		case ITEM_DEPTH:
 			item_depth_opt = true;
-			break;
-		case ITEM_HELP:
-			item_bottomdesc_opt = true;
 			break;
 		case ITEM_PREFIX:
 			item_prefix_opt = true;
