@@ -24,8 +24,8 @@ Next
 	* add: bsddialog_menu() SPACE key (equivalent to ENTER).
 	* change: rename enum bsddialog_grouptype to enum bsddialog_menutype.
 	* change: fixed-menurows becames at most menurows (depending on text).
-	* change: fixed-rows becames at most rows, min(rows, screen height).
-	* change: fixed-cols becames at most cols, min(cols, screen width).
+	* change: fixed-rows becames at most rows, min(rows, screenH - shadow).
+	* change: fixed-cols becames at most cols, min(cols, screenW - shadow).
 
 
 2022-08-29 Version 0.3
