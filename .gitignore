@@ -4,6 +4,7 @@ bsddialog
 *.so*
 *.a
 *.gz
+*.core
 *~
 BSDDIALOG.geany
 BSDDIALOG.tags
