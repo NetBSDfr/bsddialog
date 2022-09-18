@@ -910,16 +910,15 @@ int main(int argc, char *argv[argc])
 
 void custom_text(char *text, char *buf)
 {
-	bool hasnl, trim, crwrap;
+	bool trim, crwrap;
 	int i, j;
-
-	hasnl = strstr(text, "\\n") == NULL ? false : true;
-	if (hasnl) {
-		trim = false;
-		crwrap = cr_wrap_opt;
-	} else {
+		
+	if (strstr(text, "\\n") == NULL) {
 		trim = true;
 		crwrap = true;
+	} else {
+		trim = false;
+		crwrap = cr_wrap_opt;
 	}
 
 	i = j = 0;
