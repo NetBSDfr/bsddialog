@@ -106,7 +106,9 @@ enum OPTS {
 	STDERR,
 	STDOUT,
 	SWITCH_BUTTONS,
+	TAB_ESCAPE,
 	TAB_LEN,
+	TEXT_UNCHANGED,
 	THEME,
 	TIME_FORMAT,
 	TITLE,
@@ -204,7 +206,9 @@ static struct option longopts[] = {
 	{"stderr",            no_argument,       NULL, STDERR},
 	{"stdout",            no_argument,       NULL, STDOUT},
 	{"switch-buttons",    no_argument,       NULL, SWITCH_BUTTONS},
+	{"tab-escape",        no_argument,       NULL, TAB_ESCAPE},
 	{"tab-len",           required_argument, NULL, TAB_LEN},
+	{"text-unchanged",    no_argument,       NULL, TEXT_UNCHANGED},
 	{"theme",             required_argument, NULL, THEME},
 	{"time-format",       required_argument, NULL, TIME_FORMAT},
 	{"title",             required_argument, NULL, TITLE},
@@ -257,6 +261,8 @@ static int getH_opt;
 static int getW_opt;
 /* Text option */
 static bool cr_wrap_opt;
+static bool tab_escape_opt;
+static bool text_unchanged_opt;
 /* Theme and Screen options*/
 static bool bikeshed_opt;
 static enum bsddialog_default_theme theme_opt;
@@ -371,17 +377,16 @@ static void usage(void)
 	    " --help-status,\n --hfile <file>, --hline <string>,"
 	    " --hmsg <string>, --ignore, --insecure,\n --item-bottom-desc,"
 	    " --item-depth, --item-prefix, --load-theme <file>,\n"
-	    " --max-input <size>, --no-cancel,"
-	    " --no-descriptions,\n --no-label <label>, --no-lines, --no-names,"
-	    " --no-ok,\n --no-shadow, --normal-screen,"
-	    " --ok-label <label>, --output-fd <fd>,\n --output-separator <sep>,"
-	    " --print-maxsize, --print-size, --print-version,\n --quoted,"
-	    " --save-theme <file>, --separate-output, --separator <sep>,"
-	    " --shadow,\n --single-quoted, --sleep <secs>, --stderr, --stdout,"
-	    " --tab-len <spaces>,\n --switch-buttons,"
-	    " --theme <blackwhite|bsddialog|flat|dialog>,\n"
-	    " --time-format <format>, --title <title>,"
-	    " --yes-label <label>.\n");
+	    " --max-input <size>, --no-cancel, --no-descriptions,"
+	    " --no-label <label>,\n --no-lines, --no-names, --no-ok,"
+	    " --no-shadow, --normal-screen,\n --ok-label <label>,"
+	    " --output-fd <fd>, --output-separator <sep>,\n --print-maxsize,"
+	    " --print-size, --print-version, --quoted, --save-theme <file>,\n"
+	    " --separate-output, --separator <sep>, --shadow,"
+	    " --single-quoted,\n --sleep <secs>, --stderr, --stdout,"
+	    " --tab-escape, --tab-len <spaces>, --text-unchanged,\n"
+	    " --switch-buttons, --theme <blackwhite|bsddialog|flat|dialog>,\n"
+	    " --time-format <format>, --title <title>, --yes-label <label>.\n");
 	printf("\n");
 
 	printf("Dialogs:\n");
@@ -437,6 +442,8 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	output_fd_opt = STDERR_FILENO;
 	ignore_opt = false;
 	cr_wrap_opt = false;
+	tab_escape_opt = false;
+	text_unchanged_opt = false;
 	esc_return_cancel_opt = false;
 	bikeshed_opt = false;
 	savethemefile = NULL;
@@ -660,8 +667,14 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case SWITCH_BUTTONS:
 			conf->button.always_active = false;
 			break;
+		case TAB_ESCAPE:
+			tab_escape_opt = true;
+			break;
 		case TAB_LEN:
 			conf->text.tablen = (u_int)strtoul(optarg, NULL, 10);
+			break;
+		case TEXT_UNCHANGED:
+			text_unchanged_opt = true;
 			break;
 		case THEME:
 			if (strcasecmp(optarg, "bsddialog") == 0)
@@ -914,11 +927,16 @@ void custom_text(char *text, char *buf)
 	int i, j;
 		
 	if (strstr(text, "\\n") == NULL) {
+		/* "hasnl" mode */
 		trim = true;
 		crwrap = true;
 	} else {
 		trim = false;
 		crwrap = cr_wrap_opt;
+	}
+	if (text_unchanged_opt) {
+		trim = false;
+		crwrap = true;
 	}
 
 	i = j = 0;
@@ -933,22 +951,22 @@ void custom_text(char *text, char *buf)
 				if (text[i+1] == '\n')
 					i++;
 				break;
-			/*case 't':
-				if (no_collapse_opt) {
+			case 't':
+				if (tab_escape_opt) {
+					buf[j] = '\t';
+				} else {
 					j++;
 					buf[j] = 't';
-				} else
-					buf[j] = '\t';
+				}
 				i++;
-				break;*/
+				break;
 			}
 			break;
 		case '\n':
 			buf[j] = crwrap ? '\n' : ' ';
 			break;
 		case '\t':
-			//buf[j] = no_collapse_opt ? '\t' : ' ';
-			buf[j] = ' ';
+			buf[j] = text_unchanged_opt ? '\t' : ' ';
 			break;
 		default:
 			buf[j] = text[i];
