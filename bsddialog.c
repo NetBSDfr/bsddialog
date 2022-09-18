@@ -928,9 +928,6 @@ void custom_text(char *text, char *buf)
 		case '\\':
 			buf[j] = '\\';
 			switch (text[i+1]) {
-			case '\\':
-				i++;
-				break;
 			case 'n': /* implicitly in "hasnl" mode */
 				buf[j] = '\n';
 				i++;
