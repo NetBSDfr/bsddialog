@@ -918,7 +918,7 @@ void custom_text(char *text, char *buf)
 		trim = false;
 		crwrap = cr_wrap_opt;
 	} else {
-		trim = true; // check
+		trim = true;
 		crwrap = true;
 	}
 
@@ -931,14 +931,9 @@ void custom_text(char *text, char *buf)
 			case '\\':
 				i++;
 				break;
-			case 'n': // implicitamente sono in hasnl mode
-				//if (no_nl_expand_opt) {
-				//	j++;
-				//	buf[j] = 'n';
-				//} else
-					buf[j] = '\n';
+			case 'n': /* implicitly in "hasnl" mode */
+				buf[j] = '\n';
 				i++;
-				//if (crwrap == false && text[i+1] == '\n')
 				if (text[i+1] == '\n')
 					i++;
 				break;
@@ -953,7 +948,6 @@ void custom_text(char *text, char *buf)
 			}
 			break;
 		case '\n':
-			//buf[j] = hasnl ? ' ' : '\n';
 			buf[j] = crwrap ? '\n' : ' ';
 			break;
 		case '\t':
