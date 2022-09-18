@@ -85,11 +85,9 @@ enum OPTS {
 	LOAD_THEME,
 	MAX_INPUT,
 	NO_CANCEL,
-	NO_COLLAPSE,
 	NO_DESCRIPTIONS,
 	NO_LINES,
 	NO_NAMES,
-	NO_NL_EXPAND,
 	NO_OK,
 	NO_SHADOW,
 	NORMAL_SCREEN,
@@ -112,7 +110,6 @@ enum OPTS {
 	THEME,
 	TIME_FORMAT,
 	TITLE,
-	TRIM,
 	/* Dialogs */
 	CHECKLIST,
 	DATEBOX,
@@ -181,13 +178,11 @@ static struct option longopts[] = {
 	{"max-input",         required_argument, NULL, MAX_INPUT},
 	{"no-cancel",         no_argument,       NULL, NO_CANCEL},
 	{"nocancel",          no_argument,       NULL, NO_CANCEL},
-	{"no-collapse",       no_argument,       NULL, NO_COLLAPSE},
 	{"no-descriptions",   no_argument,       NULL, NO_DESCRIPTIONS},
 	{"no-items",          no_argument,       NULL, NO_DESCRIPTIONS},
 	{"no-label",          required_argument, NULL, CANCEL_LABEL},
 	{"no-lines",          no_argument,       NULL, NO_LINES},
 	{"no-names",          no_argument,       NULL, NO_NAMES},
-	{"no-nl-expand",      no_argument,       NULL, NO_NL_EXPAND},
 	{"no-ok",             no_argument,       NULL, NO_OK},
 	{"nook ",             no_argument,       NULL, NO_OK},
 	{"no-shadow",         no_argument,       NULL, NO_SHADOW},
@@ -213,7 +208,6 @@ static struct option longopts[] = {
 	{"theme",             required_argument, NULL, THEME},
 	{"time-format",       required_argument, NULL, TIME_FORMAT},
 	{"title",             required_argument, NULL, TITLE},
-	{"trim",              no_argument,       NULL, TRIM},
 	{"yes-label",         required_argument, NULL, OK_LABEL},
 	/* Dialogs */
 	{"checklist",    no_argument, NULL, CHECKLIST},
@@ -261,11 +255,8 @@ static bool ignore_opt;
 static int output_fd_opt;
 static int getH_opt;
 static int getW_opt;
-/* Text options */
+/* Text option */
 static bool cr_wrap_opt;
-static bool no_collapse_opt;
-static bool no_nl_expand_opt;
-static bool trim_opt;
 /* Theme and Screen options*/
 static bool bikeshed_opt;
 static enum bsddialog_default_theme theme_opt;
@@ -380,16 +371,16 @@ static void usage(void)
 	    " --help-status,\n --hfile <file>, --hline <string>,"
 	    " --hmsg <string>, --ignore, --insecure,\n --item-bottom-desc,"
 	    " --item-depth, --item-prefix, --load-theme <file>,\n"
-	    " --max-input <size>, --no-cancel, --no-collapse,"
+	    " --max-input <size>, --no-cancel,"
 	    " --no-descriptions,\n --no-label <label>, --no-lines, --no-names,"
-	    " --no-nl-expand, --no-ok,\n --no-shadow, --normal-screen,"
+	    " --no-ok,\n --no-shadow, --normal-screen,"
 	    " --ok-label <label>, --output-fd <fd>,\n --output-separator <sep>,"
 	    " --print-maxsize, --print-size, --print-version,\n --quoted,"
 	    " --save-theme <file>, --separate-output, --separator <sep>,"
 	    " --shadow,\n --single-quoted, --sleep <secs>, --stderr, --stdout,"
 	    " --tab-len <spaces>,\n --switch-buttons,"
 	    " --theme <blackwhite|bsddialog|flat|dialog>,\n"
-	    " --time-format <format>, --title <title>, --trim,"
+	    " --time-format <format>, --title <title>,"
 	    " --yes-label <label>.\n");
 	printf("\n");
 
@@ -446,9 +437,6 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	output_fd_opt = STDERR_FILENO;
 	ignore_opt = false;
 	cr_wrap_opt = false;
-	no_collapse_opt = false;
-	no_nl_expand_opt = false;
-	trim_opt = false;
 	esc_return_cancel_opt = false;
 	bikeshed_opt = false;
 	savethemefile = NULL;
@@ -602,17 +590,11 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case NO_CANCEL:
 			conf->button.without_cancel = true;
 			break;
-		case NO_COLLAPSE:
-			no_collapse_opt = true;
-			break;
 		case NO_DESCRIPTIONS:
 			conf->menu.no_desc = true;
 			break;
 		case NO_LINES:
 			conf->no_lines = true;
-			break;
-		case NO_NL_EXPAND:
-			no_nl_expand_opt = true;
 			break;
 		case NO_NAMES:
 			conf->menu.no_name = true;
@@ -698,9 +680,6 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			break;
 		case TITLE:
 			conf->title = optarg;
-			break;
-		case TRIM:
-			trim_opt = true;
 			break;
 		/* Dialogs */
 		case CHECKLIST:
@@ -931,7 +910,17 @@ int main(int argc, char *argv[argc])
 
 void custom_text(char *text, char *buf)
 {
+	bool hasnl, trim, crwrap;
 	int i, j;
+
+	hasnl = strstr(text, "\\n") == NULL ? false : true;
+	if (hasnl) {
+		trim = false;
+		crwrap = cr_wrap_opt;
+	} else {
+		trim = true; // check
+		crwrap = true;
+	}
 
 	i = j = 0;
 	while (text[i] != '\0') {
@@ -942,35 +931,40 @@ void custom_text(char *text, char *buf)
 			case '\\':
 				i++;
 				break;
-			case 'n':
-				if (no_nl_expand_opt) {
-					j++;
-					buf[j] = 'n';
-				} else
+			case 'n': // implicitamente sono in hasnl mode
+				//if (no_nl_expand_opt) {
+				//	j++;
+				//	buf[j] = 'n';
+				//} else
 					buf[j] = '\n';
 				i++;
+				//if (crwrap == false && text[i+1] == '\n')
+				if (text[i+1] == '\n')
+					i++;
 				break;
-			case 't':
+			/*case 't':
 				if (no_collapse_opt) {
 					j++;
 					buf[j] = 't';
 				} else
 					buf[j] = '\t';
 				i++;
-				break;
+				break;*/
 			}
 			break;
 		case '\n':
-			buf[j] = cr_wrap_opt ? ' ' : '\n';
+			//buf[j] = hasnl ? ' ' : '\n';
+			buf[j] = crwrap ? '\n' : ' ';
 			break;
 		case '\t':
-			buf[j] = no_collapse_opt ? '\t' : ' ';
+			//buf[j] = no_collapse_opt ? '\t' : ' ';
+			buf[j] = ' ';
 			break;
 		default:
 			buf[j] = text[i];
 		}
 		i++;
-		j += (buf[j] == ' ' && trim_opt && j > 0 && buf[j-1] == ' ') ?
+		j += (buf[j] == ' ' && trim && j > 0 && buf[j-1] == ' ') ?
 		    0 : 1;
 	}
 	buf[j] = '\0';
