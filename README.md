@@ -116,6 +116,3 @@ in the _Public Domain_ to build new projects:
  - menubar feature
  - key callback
  - Right-To-Left text
- - Check available cursor states
- - Check utility MB-char* (now utf8)
- - menurows semi-fixed
