@@ -469,7 +469,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	parsed=argc;
 	while ((arg = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (arg) {
-		/* Common options */
+		/* Options */
 		case ALTERNATE_SCREEN:
 			screen_mode_opt = "smcup";
 			break;
@@ -916,7 +916,8 @@ int main(int argc, char *argv[argc])
 	}
 
 	if (in_bsddialog_mode)
-		bsddialog_end(); /* end bsddialog terminal mode */
+		bsddialog_end();
+	/* end bsddialog terminal mode */
 
 	return (retval);
 }
