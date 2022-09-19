@@ -925,7 +925,7 @@ void custom_text(char *text, char *buf)
 {
 	bool trim, crwrap;
 	int i, j;
-		
+
 	if (strstr(text, "\\n") == NULL) {
 		/* "hasnl" mode */
 		trim = true;
