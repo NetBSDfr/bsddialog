@@ -36,7 +36,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define DEPTH       2
 #define MIN_HEIGHT  VBORDERS + 6 /* 2 buttons 1 text 3 menu */
 
 enum menumode {
@@ -277,7 +276,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	colorname = focus ? t.menu.f_namecolor : t.menu.namecolor;
 	if (conf->menu.no_name == false) {
 		wattron(pad, colorname);
-		mvwaddstr(pad, y, pos.xname + item->depth * DEPTH, item->name);
+		mvwaddstr(pad, y, pos.xname + item->depth, item->name);
 		wattroff(pad, colorname);
 	}
 
@@ -290,8 +289,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	if (conf->menu.no_desc == false) {
 		wattron(pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(pad, y, pos.xname + item->depth * DEPTH,
-			    item->desc);
+			mvwaddstr(pad, y, pos.xname + item->depth, item->desc);
 		else
 			mvwaddstr(pad, y, pos.xdesc, item->desc);
 		wattroff(pad, colordesc);
@@ -307,7 +305,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 			mbtowc(&shortcut, item->desc, MB_CUR_MAX);
 		else
 			mbtowc(&shortcut, item->name, MB_CUR_MAX);
-		mvwaddwch(pad, y, pos.xname + item->depth * DEPTH, shortcut);
+		mvwaddwch(pad, y, pos.xname + item->depth, shortcut);
 		wattroff(pad, colorshortcut);
 	}
 
@@ -472,7 +470,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	}
 	pos.maxname = conf->menu.no_name ? 0 : pos.maxname;
 	pos.maxdesc = conf->menu.no_desc ? 0 : pos.maxdesc;
-	pos.maxdepth = DEPTH * pos.maxdepth;
 
 	pos.xselector = pos.maxprefix + (pos.maxprefix != 0 ? 1 : 0);
 	pos.xname = pos.xselector + pos.selectorlen +

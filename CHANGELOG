@@ -35,6 +35,7 @@ Next
 	* change: fixed-menurows becames at most menurows (depending on text).
 	* change: fixed-rows becames at most rows, min(rows, screenH - shadow).
 	* change: fixed-cols becames at most cols, min(cols, screenW - shadow).
+	* delete: undocumented internal bsddialog_menuitem.depth factor (was 2).
 
 
 2022-08-29 Version 0.3
@@ -133,7 +134,7 @@ Next
 	* change: theme.button.[left|right]ch -> theme.button.[left|right]delim.
 	* change: theme.button.space -> theme.button.hmargin.
 	* change: theme.menu.arrowcolor -> theme.dialog.arrowcolor.
-	* change: default menu item depth 4 -> 2.
+	* change: internal bsddialog_menuitem.depth factor 4 -> 2.
 	* fix: disable HOME, PPAGE, END and NPAGE keys in bsddialog_form().
 	* fix: visible cursor for timebox.c and form.c in VM VirtualBox.
 	* fix: mixedlist, center position of separator with big pad.
