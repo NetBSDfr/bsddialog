@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd September 18, 2022
+.Dd September 19, 2022
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -64,9 +64,7 @@ opens another dialog unless the previous one returns: an error, ESC Key or
 button.
 .Pp
 .Ar text
-is a message printed inside the dialog, except for
-.Fl Fl textbox
-described later.
+is a message printed inside a dialog.
 .Ar rows
 and
 .Ar cols
@@ -139,8 +137,12 @@ restore normal text.
 Try to set the number of columns for a row of text with autosizing; default
 .Dv 10 .
 .It Fl Fl cr-wrap
-Replace new line with a space in
-.Ar text .
+Keep new line in
+.Ar text
+also if it constains a
+.Dq \en ,
+see
+.Fl Fl text-unchanged .
 .It Fl Fl date-format Ar format
 String accepted by
 .Xr strftime 3
@@ -300,9 +302,25 @@ Suitable for:
 .Fl Fl timebox
 and
 .Fl Fl datebox .
+.It Fl Fl tab-escape
+Replace
+.Dq \et
+with a tab in
+.Ar text .
 .It Fl Fl tab-len Ar spaces
 Number of spaces to print a TAB in
 .Ar text .
+.It Fl Fl text-unchanged
+By default the
+.Ar text
+is changed before to be printed.
+If it contains at least a
+.Dq \en
+each new line and TAB is converted to a space, subsequent spaces are merged.
+Otherwise new line characters are preserved and a TAB becomes a space.
+This option disable the
+.Ar text
+modification.
 .It Fl Fl theme Ar theme
 Set a graphical style: blackwhite, bsddialog, flat or dialog.
 .It Fl Fl time-format Ar format
