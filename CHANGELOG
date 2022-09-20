@@ -13,6 +13,7 @@ Next
 	* add: --text-unchanged to avoid default modification.
 	* add: --tab-escape enables "\t" in text.
 	* add: DIAGNOSTICS messages for bad arguments number.
+	* add: DIAGNOSTICS messages for missing and unexpected options.
 	* change: --print-maxsize format output.
 	* change: --menu, --radiolist, --checklist and --treeview output.
 	    - no printed items with Cancel or ESC.
