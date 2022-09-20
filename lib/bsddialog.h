@@ -30,7 +30,6 @@
 
 #include <stdbool.h>
 
-/* Work In Progress 0.4 */
 #define LIBBSDDIALOG_VERSION     "0.4-WIP"
 
 /* Exit status */
