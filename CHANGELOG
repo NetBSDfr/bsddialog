@@ -20,7 +20,7 @@ Next
 	    - --separator prints <sepstr> before each item except HELP.
 	    - --separator and --separate-output print <sepstr> after each item.
 	    - quoted item name/desc only when needed.
-	    - --menu does not print HELP and selected item (double print).
+	    - --menu avoids to print selected item after focused HELP item.
 	* change: text default modification.
 	    - without a "\n": '\t' -> space, '\n' -> '\n', trim spaces.
 	    - with a "\n": '\t' -> space, '\n' -> space, "\n" -> '\n', no trim.
