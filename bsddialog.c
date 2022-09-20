@@ -42,9 +42,6 @@
 
 #include "util_theme.h"
 
-/* Work In Progress 0.4 */
-#define BSDDIALOG_VERSION "0.4-WIP"
-
 enum OPTS {
 	/* Options */
 	ALTERNATE_SCREEN = '?' + 1,
@@ -640,7 +637,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case PRINT_VERSION:
 			mandatory_dialog = false;
 			dprintf(output_fd_opt, "Version: %s\n",
-			    BSDDIALOG_VERSION);
+			    LIBBSDDIALOG_VERSION);
 			break;
 		case SAVE_THEME:
 			mandatory_dialog = false;
@@ -823,8 +820,7 @@ int main(int argc, char *argv[argc])
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "--version") == 0 && argv[i][9]=='\0') {
-			printf("bsddialog %s (libbsddialog %s)\n",
-			    BSDDIALOG_VERSION, LIBBSDDIALOG_VERSION);
+			printf("Version: %s\n", LIBBSDDIALOG_VERSION);
 			return (BSDDIALOG_OK);
 		}
 		if (strcmp(argv[i], "--help") == 0 && argv[i][6]=='\0') {
@@ -887,7 +883,7 @@ int main(int argc, char *argv[argc])
 		if (bikeshed_opt)
 			bikeshed(&conf);
 		if (savethemefile != NULL)
-			savetheme(savethemefile, BSDDIALOG_VERSION);
+			savetheme(savethemefile, LIBBSDDIALOG_VERSION);
 
 		/* backtitle and dialog */
 		if (dialogbuilder == NULL)
