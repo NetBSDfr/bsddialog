@@ -100,7 +100,7 @@ static struct property p[NPROPERTY] = {
 	{ "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor}
 };
 
-static char *color[8] = {
+static const char *color[8] = {
 	"black",
 	"red",
 	"green",

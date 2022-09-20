@@ -266,7 +266,7 @@ static enum bsddialog_default_theme theme_opt;
 static char *backtitle_opt;
 static char *loadthemefile;
 static char *savethemefile;
-static char *screen_mode_opt;
+static const char *screen_mode_opt;
 
 /* Functions */
 #define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
@@ -1238,8 +1238,8 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 {
 	bool sep, sepfirst, seplast, toquote;
 	int i;
-	char *sepstr, quotech;
-	const char *focusname;
+	char quotech;
+	const char *focusname, *sepstr;
 
 	sep = false;
 	quotech = item_singlequote_opt ? '\'' : '"';
