@@ -24,6 +24,7 @@ Next
 	* change: text default modification.
 	    - without a "\n": '\t' -> space, '\n' -> '\n', trim spaces.
 	    - with a "\n": '\t' -> space, '\n' -> space, "\n" -> '\n', no trim.
+	    - delete '\n' after "\n".
 	* delete: --no-collapse (partial implemented).
 	* delete: --no-nl-expand (partial implemented).
 	* delete: --trim (partial implemented).
