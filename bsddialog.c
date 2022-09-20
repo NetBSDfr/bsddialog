@@ -384,7 +384,7 @@ static void usage(void)
 	    " --print-size, --print-version, --quoted, --save-theme <file>,\n"
 	    " --separate-output, --separator <sep>, --shadow,"
 	    " --single-quoted,\n --sleep <secs>, --stderr, --stdout,"
-	    " --tab-escape, --tab-len <spaces>, --text-unchanged,\n"
+	    " --tab-escape, --tab-len <spaces>,\n --text-unchanged,"
 	    " --switch-buttons, --theme <blackwhite|bsddialog|flat|dialog>,\n"
 	    " --time-format <format>, --title <title>, --yes-label <label>.\n");
 	printf("\n");
