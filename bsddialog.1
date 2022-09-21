@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd September 20, 2022
+.Dd September 21, 2022
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -95,8 +95,10 @@ Zero padding with time or date output.
 Label for the
 .Dq Cancel
 button.
-.It Fl Fl clear
+.It Fl Fl clear-dialog
 Hide the dialog at exit.
+.It Fl Fl clear-screen
+Clear the screen. After the dialog exit if a dialog is built.
 .It Fl Fl colors
 Enable highlights for text, the following sequences are considered escapes:
 .Bl -column -compact
@@ -630,6 +632,7 @@ Outdated options are retained for compatibility, properly equivalent options are
 used:
 .Bd -literal -offset indent -compact
 Obsolete        Equivalent
+--clear         --clear-screen
 --defaultno     --default-no
 --exit-label    --ok-label
 --help-tags     --help-print-name

@@ -3,7 +3,7 @@ Next
 	Utility:
 	* add: --normal-screen to set normal mode.
 	* add: --alternate-screen to set alternate mode.
-	* add: --keep-tite like --alternate-screen alias.
+	* add: --keep-tite as --alternate-screen alias.
 	* add: --and-widget to build other dialogs.
 	* add: --no-names (--no-tags becames its alias).
 	* add: --no-descriptions (--no-items becames its alias).
@@ -12,8 +12,11 @@ Next
 	* add: --cr-wrap (was partial implemented) to keep '\n' with "\n".
 	* add: --text-unchanged to avoid default modification.
 	* add: --tab-escape enables "\t" in text.
+	* add: --clear-screen to clear the screen.
+	* add: --clear-dialog to clear the dialog.
 	* add: DIAGNOSTICS messages for bad arguments number.
 	* add: DIAGNOSTICS messages for missing and unexpected options.
+	* change: --clear becames alias for --clear-screen.
 	* change: --print-maxsize format output.
 	* change: --menu, --radiolist, --checklist and --treeview output.
 	    - no printed items with Cancel or ESC.
@@ -33,7 +36,7 @@ Next
 	* add: bsddialog_msgbox() HOME, END, PPAGE and NPAGE keys.
 	* add: bsddialog_yesno() HOME, END, PPAGE and NPAGE keys.
 	* add: bsddialog_menu() SPACE key (equivalent to ENTER).
-	* change: rename enum bsddialog_grouptype to enum bsddialog_menutype.
+	* change: rename enum bsddialog_grouptype -> enum bsddialog_menutype.
 	* change: fixed-menurows becames at most menurows (depending on text).
 	* change: fixed-rows becames at most rows, min(rows, screenH - shadow).
 	* change: fixed-cols becames at most cols, min(cols, screenW - shadow).

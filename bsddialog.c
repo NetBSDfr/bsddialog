@@ -52,7 +52,8 @@ enum OPTS {
 	BEGIN_Y,
 	BIKESHED,
 	CANCEL_LABEL,
-	CLEAR,
+	CLEAR_DIALOG,
+	CLEAR_SCREEN,
 	COLORS,
 	COLUMNS_PER_ROW,
 	CR_WRAP,
@@ -142,7 +143,9 @@ static struct option longopts[] = {
 	{"begin-y",           required_argument, NULL, BEGIN_Y},
 	{"bikeshed",          no_argument,       NULL, BIKESHED},
 	{"cancel-label",      required_argument, NULL, CANCEL_LABEL},
-	{"clear",             no_argument,       NULL, CLEAR},
+	{"clear",             no_argument,       NULL, CLEAR_SCREEN},
+	{"clear-dialog",      no_argument,       NULL, CLEAR_DIALOG},
+	{"clear-screen",      no_argument,       NULL, CLEAR_SCREEN},
 	{"colors",            no_argument,       NULL, COLORS},
 	{"columns-per-row",   required_argument, NULL, COLUMNS_PER_ROW},
 	{"cr-wrap",           no_argument,       NULL, CR_WRAP},
@@ -264,6 +267,7 @@ static bool text_unchanged_opt;
 static bool bikeshed_opt;
 static enum bsddialog_default_theme theme_opt;
 static char *backtitle_opt;
+static bool clear_screen_opt;
 static char *loadthemefile;
 static char *savethemefile;
 static const char *screen_mode_opt;
@@ -364,26 +368,27 @@ static void usage(void)
 	printf("Options:\n");
 	printf(" --alternate-screen, --ascii-lines, --backtitle <backtitle>,"
 	    " --begin-x <x>,\n --begin-y <y>, --bikeshed,"
-	    " --cancel-label <label>, --clear, --colors,\n"
-	    " --columns-per-row <columns>, --cr-wrap, --date-format <format>,\n"
-	    " --default-button <label>, --default-item <name>, --default-no,"
-	    " --disable-esc,\n --esc-return-cancel, --exit-label <label>,"
-	    " --extra-button,\n --extra-label <label>,"
-	    " --generic-button1 <label>, --generic-button2 <label>,\n"
-	    " --help-button, --help-label <label>, --help-print-name,"
-	    " --help-status,\n --hfile <file>, --hline <string>,"
-	    " --hmsg <string>, --ignore, --insecure,\n --item-bottom-desc,"
-	    " --item-depth, --item-prefix, --load-theme <file>,\n"
-	    " --max-input <size>, --no-cancel, --no-descriptions,"
-	    " --no-label <label>,\n --no-lines, --no-names, --no-ok,"
-	    " --no-shadow, --normal-screen,\n --ok-label <label>,"
-	    " --output-fd <fd>, --output-separator <sep>,\n --print-maxsize,"
-	    " --print-size, --print-version, --quoted, --save-theme <file>,\n"
-	    " --separate-output, --separator <sep>, --shadow,"
-	    " --single-quoted,\n --sleep <secs>, --stderr, --stdout,"
-	    " --tab-escape, --tab-len <spaces>,\n --text-unchanged,"
-	    " --switch-buttons, --theme <blackwhite|bsddialog|flat|dialog>,\n"
-	    " --time-format <format>, --title <title>, --yes-label <label>.\n");
+	    " --cancel-label <label>, --clear-dialog,\n --clear-screen,"
+	    " --colors, --columns-per-row <columns>, --cr-wrap,\n"
+	    " --date-format <format>, --default-button <label>,"
+	    " --default-item <name>,\n --default-no, --disable-esc,"
+	    " --esc-return-cancel, --exit-label <label>,\n --extra-button,"
+	    " --extra-label <label>, --generic-button1 <label>,\n"
+	    " --generic-button2 <label>, --help-button, --help-label <label>,\n"
+	    " --help-print-name, --help-status, --hfile <file>,"
+	    " --hline <string>,\n --hmsg <string>, --ignore, --insecure,"
+	    " --item-bottom-desc, --item-depth,\n --item-prefix,"
+	    " --load-theme <file>, --max-input <size>, --no-cancel,\n"
+	    " --no-descriptions, --no-label <label>, --no-lines, --no-names,"
+	    " --no-ok,\n --no-shadow, --normal-screen, --ok-label <label>,"
+	    " --output-fd <fd>,\n --output-separator <sep>, --print-maxsize,"
+	    " --print-size, --print-version,\n --quoted, --save-theme <file>,"
+	    " --separate-output, --separator <sep>, --shadow,\n"
+	    " --single-quoted, --sleep <secs>, --stderr, --stdout,"
+	    " --tab-escape,\n --tab-len <spaces>, --text-unchanged,"
+	    " --switch-buttons,\n --theme <blackwhite|bsddialog|flat|dialog>,"
+	    " --time-format <format>,\n --title <title>,"
+	    " --yes-label <label>.\n");
 	printf("\n");
 
 	printf("Dialogs:\n");
@@ -445,6 +450,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	bikeshed_opt = false;
 	savethemefile = NULL;
 	loadthemefile = NULL;
+	clear_screen_opt = false;
 	screen_mode_opt = NULL;
 
 	item_output_sepnl_opt = false;
@@ -502,8 +508,12 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case CANCEL_LABEL:
 			conf->button.cancel_label = optarg;
 			break;
-		case CLEAR:
+		case CLEAR_DIALOG:
+			mandatory_dialog = false;
 			conf->clear = true;
+			break;
+		case CLEAR_SCREEN:
+			clear_screen_opt = true;
 			break;
 		case COLORS:
 			conf->text.highlight = true;
@@ -843,10 +853,11 @@ int main(int argc, char *argv[argc])
 			error_args("(no --<dialog>)", argc, argv);
 
 		/* --print-maxsize or --print-version */
-		if (mandatory_dialog == false && savethemefile == NULL)
+		if (mandatory_dialog == false && savethemefile == NULL &&
+		    clear_screen_opt == false)
 			return (BSDDIALOG_OK);
 
-		/* --<dialog>  or --save-theme */
+		/* --<dialog>, --save-theme or clear-screen */
 		if (dialogbuilder != NULL) {
 			if (argc < 3)
 				exit_error("expected <text> <rows> <cols>",
@@ -900,7 +911,9 @@ int main(int argc, char *argv[argc])
 		if (conf.get_height != NULL && conf.get_width != NULL)
 			dprintf(output_fd_opt, "DialogSize: %d, %d\n",
 			    *conf.get_height, *conf.get_width);
-
+		if (clear_screen_opt)
+			bsddialog_clearterminal();
+		clear_screen_opt = false;
 		/* --and-widget ends loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
@@ -911,8 +924,11 @@ int main(int argc, char *argv[argc])
 		optind = -1; /* reset for next parseargs() call */
 	}
 
-	if (in_bsddialog_mode)
+	if (in_bsddialog_mode) {
+		if (clear_screen_opt) /* --clar-screen can be a single option */
+			bsddialog_clearterminal();
 		bsddialog_end();
+	}
 	/* end bsddialog terminal mode */
 
 	return (retval);
