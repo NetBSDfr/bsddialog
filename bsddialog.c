@@ -1133,9 +1133,13 @@ int datebox_builder(BUILDER_ARGS)
 	if (argc > 3) {
 		error_args("--datebox", argc - 3, argv + 3);
 	} else if (argc == 3) {
-		yy = (u_int)strtoul(argv[0], NULL, 10);
+		dd = (u_int)strtoul(argv[0], NULL, 10);
 		mm = (u_int)strtoul(argv[1], NULL, 10);
-		dd = (u_int)strtoul(argv[2], NULL, 10);
+		yy = (u_int)strtoul(argv[2], NULL, 10);
+		if (yy < 1900)
+			yy = 1900;
+		if (yy > 9999)
+			yy = 9999;
 	}
 
 	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
@@ -1151,9 +1155,9 @@ int datebox_builder(BUILDER_ARGS)
 		strftime(stringdate, 1024, date_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringdate);
 	} else if (bikeshed_opt && (dd % 2 == 0)) {
-		dprintf(output_fd_opt, "%u/%u/%u", yy, mm, dd);
+		dprintf(output_fd_opt, "%u/%u/%u", dd, mm, yy);
 	} else {
-		dprintf(output_fd_opt, "%u/%02u/%02u", yy, mm, dd);
+		dprintf(output_fd_opt, "%02u/%02u/%u/", dd, mm, yy);
 	}
 
 	return (output);
