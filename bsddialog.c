@@ -1149,8 +1149,7 @@ static int date(BUILDER_ARGS, bool is_datebox)
 		yy = (u_int)strtoul(argv[2], NULL, 10);
 		if (yy < 1900)
 			yy = 1900;
-		if (yy > 9999)
-			yy = 9999;
+		/* max yy checking is in lib */
 	}
 
 	if (is_datebox)
