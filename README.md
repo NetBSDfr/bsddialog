@@ -34,9 +34,9 @@ Output:
 
 **Dialogs:**
 
---checklist, --datebox, --form, --gauge, --inputbox, --menu, --mixedform,
---mixedgauge, --msgbox, --passwordbox, --passwordform, --pause, --radiolist,
---rangebox, --textbox, --timebox, --treeview, --yesno.
+--calendar, --checklist, --datebox, --form, --gauge, --inputbox, --menu,
+--mixedform, --mixedgauge, --msgbox, --passwordbox, --passwordform, --pause,
+--radiolist, --rangebox, --textbox, --timebox, --treeview, --yesno.
 
 **Manual**
 
@@ -58,6 +58,7 @@ Output:
 and [Examples](https://gitlab.com/alfix/bsddialog/-/tree/main/examples_utility)
 in the _Public Domain_ to build new projects:
 ```
+% sh ./examples_utility/calendar.sh
 % sh ./examples_utility/checklist.sh
 % sh ./examples_utility/form.sh
 % sh ./examples_utility/gauge.sh
@@ -95,6 +96,7 @@ in the _Public Domain_ to build new projects:
 ```
 % cd examples_library
 % sh compile
+% ./calendar
 % ./checklist
 % ./datebox
 % ./form

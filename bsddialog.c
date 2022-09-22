@@ -370,7 +370,7 @@ static void usage(void)
 
 	printf("Options:\n");
 	printf(" --alternate-screen, --ascii-lines, --backtitle <backtitle>,"
-	    " --begin-x <x>,\n --begin-y <y>, --bikeshed,"
+	    " --begin-x <x>,\n --begin-y <y>, --bikeshed, --calendar,"
 	    " --cancel-label <label>, --clear-dialog,\n --clear-screen,"
 	    " --colors, --columns-per-row <columns>, --cr-wrap,\n"
 	    " --date-format <format>, --default-button <label>,"
@@ -1178,6 +1178,19 @@ static int date(BUILDER_ARGS, bool is_datebox)
 
 int calendar_builder(BUILDER_ARGS)
 {
+	if (rows == 2) {
+		/*
+		 * (bsdconfig/share/dialog.subr:1352) f_dialog_calendar_size()
+		 * computes height 2 for `dialog --calendar' in
+		 * (bsdconfig/usermgmt/share/user_input.subr:517)
+		 * f_dialog_input_expire_password() and
+		 * (bsdconfig/usermgmt/share/user_input.subr:660)
+		 * f_dialog_input_expire_account().
+		 * Use height auto-sizing that is min height like dialog.
+		 */
+		rows = 0;
+	}
+
 	return (date(conf, text, rows, cols, argc, argv, false));
 }
 

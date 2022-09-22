@@ -477,12 +477,11 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			hide_widget(y, x, h, w, conf->shadow);
 			refresh();
 
-			/*if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
-			if (datetime_autosize(conf, rows, cols, &h, &w,
-			    MINHCAL, MINWCAL, text, bs) != 0)
+			if (calendar_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (datetime_checksize(h, w, MINWCAL, bs) != 0)
+			if (calendar_checksize(h, w, bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
@@ -490,20 +489,17 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs, true) != 0)
 				return (BSDDIALOG_ERROR);
+			pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-17, x+w-2);
 			doupdate();
 
-			mvwaddch(widget, h - 5, w/2 - 5, '/');
-			mvwaddch(widget, h - 5, w/2 + 7, '/');
+			ycal = y + h - 15;
+			xcal = x + w/2 - 17;
+			mvwaddstr(widget, h - 16, w/2 - 17, "Month");
+			mvwin(monthwin, ycal, xcal);
+			mvwaddstr(widget, h - 16, w/2, "Year");
+			mvwin(yearwin, ycal, xcal + 17);
+			mvwin(daywin, ycal + 3, xcal);
 			wrefresh(widget);
-
-			prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
-
-			wclear(c[0].win);
-			mvwin(c[0].win, y + h - 6, x + w/2 - 11);
-			wclear(c[1].win);
-			mvwin(c[1].win, y + h - 6, x + w/2 - 4);
-			wclear(c[2].win);
-			mvwin(c[2].win, y + h - 6, x + w/2 + 8);*/
 
 			/* Important to avoid grey lines expanding screen */
 			refresh();

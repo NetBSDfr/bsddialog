@@ -14,6 +14,7 @@ Next
 	* add: --tab-escape enables "\t" in text.
 	* add: --clear-screen to clear the screen.
 	* add: --clear-dialog to clear the dialog.
+	* add: --calendar dialog to select a date.
 	* add: DIAGNOSTICS messages for bad arguments number.
 	* add: DIAGNOSTICS messages for missing and unexpected options.
 	* change: --clear becames alias for --clear-screen.
@@ -37,6 +38,7 @@ Next
 	* add: bsddialog_msgbox() HOME, END, PPAGE and NPAGE keys.
 	* add: bsddialog_yesno() HOME, END, PPAGE and NPAGE keys.
 	* add: bsddialog_menu() SPACE key (equivalent to ENTER).
+	* add: bsddialog_calendar() to select a date.
 	* change: rename enum bsddialog_grouptype -> enum bsddialog_menutype.
 	* change: fixed-menurows becames at most menurows (depending on text).
 	* change: fixed-rows becames at most rows, min(rows, screenH - shadow).
