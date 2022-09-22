@@ -61,7 +61,7 @@ static int week_day(int yy, int mm, int dd)
 	int wd;
 
 	dd += mm < 3 ? yy-- : yy - 2;
-	wd = 23*mm/9 + dd + 4 + yy/4- yy/100 + yy/400;
+	wd = 23*mm/9 + dd + 4 + yy/4 - yy/100 + yy/400;
 	wd %= 7;
 
 	return (wd);
