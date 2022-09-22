@@ -8,6 +8,7 @@ bsddialog
 *~
 BSDDIALOG.geany
 BSDDIALOG.tags
+examples_library/calendar
 examples_library/checklist
 examples_library/datebox
 examples_library/form
