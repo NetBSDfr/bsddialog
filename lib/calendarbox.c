@@ -184,10 +184,9 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 {
 	int ndays, i, y, x, wd, h, w;
 
-	wclear(win);
 	getmaxyx(win, h, w);
+	wclear(win);
 	draw_borders(conf, win, h, w, RAISED);
-
 	if (active) {
 		wattron(win, t.dialog.arrowcolor);
 		mvwhline(win, 0, 15, conf->ascii_lines ? '^' : ACS_UARROW, 4);
