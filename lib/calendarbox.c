@@ -479,7 +479,8 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
-			if (calendar_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
+			if (calendar_autosize(conf, rows, cols, &h, &w, text,
+			    bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (calendar_checksize(h, w, bs) != 0)
 				return (BSDDIALOG_ERROR);
