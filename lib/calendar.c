@@ -113,19 +113,22 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
     bool active)
 {
 	int ndays, i, y, x, wd, h, w;
-	int color;
 
 	wclear(win);
 	getmaxyx(win, h, w);
 	draw_borders(conf, win, h, w, RAISED);
+
+	if (active) {
+		wattron(win, t.dialog.arrowcolor);
+		mvwhline(win, 0, 15, conf->ascii_lines ? '^' : ACS_UARROW, 4);
+		mvwhline(win, h-1, 15, conf->ascii_lines ? 'v' : ACS_DARROW, 4);
+		mvwvline(win, 3, 0, conf->ascii_lines ? '<' : ACS_LARROW, 3);
+		mvwvline(win, 3, w-1, conf->ascii_lines ? '>' : ACS_RARROW, 3);
+		wattroff(win, t.dialog.arrowcolor);
+	}
+
 	mvwaddstr(win, 1, 5, "Sun Mon Tue Wed Thu Fri Sat");
-
-	color = t.menu.f_namecolor;
-	if (active == false)
-		color |=  (A_REVERSE | A_BOLD | A_UNDERLINE);
-
 	ndays = month_days(yy, mm);
-
 	y = 2;
 	wd = week_day(yy, mm, 1);
 	for (i = 1; i <= ndays; i++) {
@@ -133,9 +136,9 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 		wmove(win, y, x);
 		mvwprintw(win, y, x, "%2d", i);
 		if (i == dd) {
-			wattron(win, color);
+			wattron(win, t.menu.f_namecolor);
 			mvwprintw(win, y, x, "%2d", i);
-			wattroff(win, color);
+			wattroff(win, t.menu.f_namecolor);
 		}
 		wd++;
 		if (wd > 6) {
@@ -151,17 +154,14 @@ static void
 drawsquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
     const void *value, bool focus)
 {
-	int h, l, w;
+	int h, w;
 
 	getmaxyx(win, h, w);
 	draw_borders(conf, win, h, w, RAISED);
 	if (focus) {
-		l = 2 + w % 2;
 		wattron(win, t.dialog.arrowcolor);
-		mvwhline(win, 0, w/2 - l/2,
-		    conf->ascii_lines ? '^' : ACS_UARROW, l);
-		mvwhline(win, h-1, w/2 - l/2,
-		    conf->ascii_lines ? 'v' : ACS_DARROW, l);
+		mvwhline(win, 0, 7, conf->ascii_lines ? '^' : ACS_UARROW, 3);
+		mvwhline(win, 2, 7, conf->ascii_lines ? 'v' : ACS_DARROW, 3);
 		wattroff(win, t.dialog.arrowcolor);
 	}
 
@@ -349,7 +349,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, monthwin, "%15s", m[month-1], sel == 0);
+		drawsquare(conf, monthwin, "%15s", m[month - 1], sel == 0);
 		drawsquare(conf, yearwin, "%15d", &year, sel == 1);
 		print_calendar(conf, daywin, year, month, day, sel == 2);
 
