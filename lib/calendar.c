@@ -148,7 +148,7 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 }
 
 static void
-drawsquare2(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
+drawsquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
     const void *value, bool focus)
 {
 	int h, l, w;
@@ -349,8 +349,8 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare2(conf, monthwin, "%15s", m[month-1], sel == 0);
-		drawsquare2(conf, yearwin, "%15d", &year, sel == 1);
+		drawsquare(conf, monthwin, "%15s", m[month-1], sel == 0);
+		drawsquare(conf, yearwin, "%15d", &year, sel == 1);
 		print_calendar(conf, daywin, year, month, day, sel == 2);
 
 		if (get_wch(&input) == ERR)
