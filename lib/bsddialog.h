@@ -183,6 +183,10 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd);
 
 int
+bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd);
+
+int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
     struct bsddialog_formitem *items);

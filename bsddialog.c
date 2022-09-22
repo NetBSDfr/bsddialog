@@ -111,6 +111,7 @@ enum OPTS {
 	TIME_FORMAT,
 	TITLE,
 	/* Dialogs */
+	CALENDAR,
 	CHECKLIST,
 	DATEBOX,
 	FORM,
@@ -214,6 +215,7 @@ static struct option longopts[] = {
 	{"title",             required_argument, NULL, TITLE},
 	{"yes-label",         required_argument, NULL, OK_LABEL},
 	/* Dialogs */
+	{"calendar",     no_argument, NULL, CALENDAR},
 	{"checklist",    no_argument, NULL, CHECKLIST},
 	{"datebox",      no_argument, NULL, DATEBOX},
 	{"form",         no_argument, NULL, FORM},
@@ -279,6 +281,7 @@ static void usage(void);
 /* Dialogs */
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv
+static int calendar_builder(BUILDER_ARGS);
 static int checklist_builder(BUILDER_ARGS);
 static int datebox_builder(BUILDER_ARGS);
 static int form_builder(BUILDER_ARGS);
@@ -702,6 +705,11 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->title = optarg;
 			break;
 		/* Dialogs */
+		case CALENDAR:
+			if (dialogbuilder != NULL)
+				exit_error("unexpected --calendar", true);
+			dialogbuilder = calendar_builder;
+			break;
 		case CHECKLIST:
 			if (dialogbuilder != NULL)
 				exit_error("unexpected --checklist", true);
@@ -1115,15 +1123,17 @@ int yesno_builder(BUILDER_ARGS)
 	return (bsddialog_yesno(conf, text, rows, cols));
 }
 
-/* DATE and TIME */
-int datebox_builder(BUILDER_ARGS)
+/* CALENDAR, DATE and TIME */
+static int date(BUILDER_ARGS, bool is_datebox)
 {
-	int output;
+	int ret;
 	unsigned int yy, mm, dd;
 	time_t cal;
 	struct tm *localtm;
 	char stringdate[1024];
+	const char *name;
 
+	name = is_datebox ? "--datebox" : "--calendar";
 	time(&cal);
 	localtm = localtime(&cal);
 	yy = localtm->tm_year + 1900;
@@ -1131,7 +1141,7 @@ int datebox_builder(BUILDER_ARGS)
 	dd = localtm->tm_mday;
 
 	if (argc > 3) {
-		error_args("--datebox", argc - 3, argv + 3);
+		error_args(name, argc - 3, argv + 3);
 	} else if (argc == 3) {
 		dd = (u_int)strtoul(argv[0], NULL, 10);
 		mm = (u_int)strtoul(argv[1], NULL, 10);
@@ -1142,9 +1152,12 @@ int datebox_builder(BUILDER_ARGS)
 			yy = 9999;
 	}
 
-	output = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
-	if (output != BSDDIALOG_OK)
-		return (output);
+	if (is_datebox)
+		ret = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
+	else
+		ret = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
+	if (ret != BSDDIALOG_OK)
+		return (ret);
 
 	if (date_fmt_opt != NULL) {
 		time(&cal);
@@ -1157,10 +1170,20 @@ int datebox_builder(BUILDER_ARGS)
 	} else if (bikeshed_opt && (dd % 2 == 0)) {
 		dprintf(output_fd_opt, "%u/%u/%u", dd, mm, yy);
 	} else {
-		dprintf(output_fd_opt, "%02u/%02u/%u/", dd, mm, yy);
+		dprintf(output_fd_opt, "%02u/%02u/%u", dd, mm, yy);
 	}
 
-	return (output);
+	return (ret);
+}
+
+int calendar_builder(BUILDER_ARGS)
+{
+	return (date(conf, text, rows, cols, argc, argv, false));
+}
+
+int datebox_builder(BUILDER_ARGS)
+{
+	return (date(conf, text, rows, cols, argc, argv, true));
 }
 
 int timebox_builder(BUILDER_ARGS)
