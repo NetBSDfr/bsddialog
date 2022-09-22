@@ -52,7 +52,6 @@ static int month_days(int yy, int mm)
 		days = 31;
 
 	return (days);
-
 }
 
 enum operation {
