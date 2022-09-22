@@ -35,12 +35,10 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MINWDATE    23 /* 3 windows and their borders */
-#define MINWTIME    14 /* 3 windows and their borders */
+#define MINWDATE   23 /* 3 windows and their borders */
+#define MINWTIME   14 /* 3 windows and their borders */
 
-#define ISLEAF(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
-
-static void // XXX typo square
+static void
 drawsquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
     const void *value, bool focus)
 {
@@ -86,7 +84,7 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*w = widget_min_width(conf, wtext, minw, &bs);
 
 	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, 3, true);
+		*h = widget_min_height(conf, htext, 3 /* windows */, true);
 
 	return (0);
 }
@@ -142,7 +140,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_autosize(conf, rows, cols, &h, &w, MINWTIME, text, bs) != 0)
+	if (datetime_autosize(conf, rows, cols, &h, &w, MINWTIME, text,
+	    bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (datetime_checksize(h, w, MINWTIME, bs) != 0)
 		return (BSDDIALOG_ERROR);
@@ -342,6 +341,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		{ "October", 31 }, { "November", 30 }, { "December",  31 }
 	};
 
+#define ISLEAF(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+
 	for (i = 0 ; i < 3; i++) {
 		if (c[i].value > c[i].max)
 			c[i].value = c[i].max;
@@ -358,7 +359,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_autosize(conf, rows, cols, &h, &w, MINWDATE, text, bs) != 0)
+	if (datetime_autosize(conf, rows, cols, &h, &w, MINWDATE, text,
+	    bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (datetime_checksize(h, w, MINWDATE, bs) != 0)
 		return (BSDDIALOG_ERROR);
