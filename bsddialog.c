@@ -513,10 +513,10 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->button.cancel_label = optarg;
 			break;
 		case CLEAR_DIALOG:
-			mandatory_dialog = false;
 			conf->clear = true;
 			break;
 		case CLEAR_SCREEN:
+			mandatory_dialog = false;
 			clear_screen_opt = true;
 			break;
 		case COLORS:
