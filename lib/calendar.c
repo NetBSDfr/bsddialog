@@ -36,14 +36,15 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MINHCAL     14
-#define MINWCAL     38 /* 34 calendar, 4 margins */
+#define MINHCAL   14
+#define MINWCAL   38 /* 34 calendar, 4 margins */
 #define MINYEAR   1900
+#define MAXYEAR   999999999
 
 #define ISLEAF(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
 
 static int
-datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
+calendar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w, const char *text, struct buttons bs)
 {
 	int htext, wtext;
@@ -63,8 +64,7 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	return (0);
 }
 
-static int
-datetime_checksize(int rows, int cols, struct buttons bs)
+static int calendar_checksize(int rows, int cols, struct buttons bs)
 {
 	int mincols;
 
@@ -73,10 +73,10 @@ datetime_checksize(int rows, int cols, struct buttons bs)
 	mincols = MAX(MINWCAL, mincols);
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols for this timebox/datebox");
+		RETURN_ERROR("Few cols for this calendar, at least 40");
 
 	if (rows < MINHCAL + 2 + 2) /* cal + 2 button + 2 borders */
-		RETURN_ERROR("Few rows for this timebox/datebox, at least 7");
+		RETURN_ERROR("Few rows for this calendar, at least 18");
 
 	return (0);
 }
@@ -103,7 +103,7 @@ static int week_day(int yy, int mm, int dd)
 	Y = yy;
 	D = dd;
 	M = mm;
-	wd  = (D += M < 3 ? Y-- : Y - 2, 23*M/9 + D + 4 + Y/4- Y/100 + Y/400)%7; 
+	wd = (D += M < 3 ? Y-- : Y - 2, 23*M/9 + D + 4 + Y/4- Y/100 + Y/400)%7; 
 
 	return (wd);
 }
@@ -122,7 +122,7 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 
 	color = t.menu.f_namecolor;
 	if (active == false)
-		color |=  (A_REVERSE | A_BOLD);
+		color |=  (A_REVERSE | A_BOLD | A_UNDERLINE);
 
 	ndays = month_days(yy, mm);
 
@@ -255,10 +255,26 @@ static void datectl(enum operation op, int *yy, int *mm, int *dd)
 			*dd = ndays;
 		break;
 	case DOWN_MONTH:
+		if (*mm == 12) {
+			*mm = 1;
+			*yy += 1;
+		} else
+			*mm += 1;
+		ndays = month_days(*yy, *mm);
+		if (*dd > ndays)
+			*dd = ndays;
 		break;
 	case UP_YEAR:
+		*yy -= 1;
+		ndays = month_days(*yy, *mm);
+		if (*dd > ndays)
+			*dd = ndays;
 		break;
 	case DOWN_YEAR:
+		*yy += 1;
+		ndays = month_days(*yy, *mm);
+		if (*dd > ndays)
+			*dd = ndays;
 		break;
 	}
 
@@ -267,8 +283,8 @@ static void datectl(enum operation op, int *yy, int *mm, int *dd)
 		*mm = 1;
 		*dd = 1;
 	}
-	if (*yy > 9999) { // date.maxyy
-		*yy = 9999;
+	if (*yy > MAXYEAR) {
+		*yy = MAXYEAR;
 		*mm = 12;
 		*dd = 31;
 	}
@@ -292,9 +308,9 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	if (yy == NULL || mm == NULL || dd == NULL)
 		RETURN_ERROR("yy / mm / dd cannot be NULL");
 
-	year = *yy > 9999 ? 9999 : *yy;
-	if (year < 1900)
-		year = 1900;
+	year = *yy > MAXYEAR ? MAXYEAR : *yy;
+	if (year < MINYEAR)
+		year = MINYEAR;
 	month = *mm > 12 ? 12 : *mm;
 	if (month == 0)
 		month = 1;
@@ -306,9 +322,9 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
+	if (calendar_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_checksize(h, w, bs) != 0)
+	if (calendar_checksize(h, w, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -356,16 +372,17 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		case '\t': /* TAB */
 			if (focusbuttons) {
 				bs.curr++;
-				focusbuttons = bs.curr < (int)bs.nbuttons ?
-				    true : false;
-				if (focusbuttons == false) {
+				if (bs.curr >= (int)bs.nbuttons) {
+					focusbuttons = false;
 					sel = 0;
-					bs.curr = conf->button.always_active ? 0 : -1;
+					bs.curr = conf->button.always_active ?
+					    0 : -1;
 				}
 			} else {
 				sel++;
-				focusbuttons = sel > 2 ? true : false;
-				if (focusbuttons) {
+				if (sel > 2) {
+					focusbuttons = true;
+					sel = -1;
 					bs.curr = 0;
 				}
 			}
@@ -375,20 +392,16 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_RIGHT:
 			if (focusbuttons) {
 				bs.curr++;
-				focusbuttons = bs.curr < (int)bs.nbuttons ?
-				    true : false;
-				if (focusbuttons == false) {
+				if (bs.curr >= (int)bs.nbuttons) {
+					focusbuttons = false;
 					sel = 0;
-					bs.curr = conf->button.always_active ? 0 : -1;
+					bs.curr = conf->button.always_active ?
+					    0 : -1;
 				}
 			} else if (sel == 2) {
 				datectl(RIGHT_DAY, &year, &month, &day);
-			} else {
+			} else { /* Month or Year*/
 				sel++;
-				focusbuttons = sel > 2 ? true : false;
-				if (focusbuttons) {
-					bs.curr = 0;
-				}
 			}
 			draw_buttons(widget, bs, true);
 			wrefresh(widget);
@@ -396,18 +409,20 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_LEFT:
 			if (focusbuttons) {
 				bs.curr--;
-				focusbuttons = bs.curr < 0 ? false : true;
-				if (focusbuttons == false) {
+				if (bs.curr < 0) {
+					focusbuttons = false;
 					sel = 2;
-					bs.curr = conf->button.always_active ? 0 : -1;
+					bs.curr = conf->button.always_active ?
+					    0 : -1;
 				}
 			} else if (sel == 2) {
 				datectl(LEFT_DAY, &year, &month, &day);
-			} else {
-				sel--;
-				focusbuttons = sel < 0 ? true : false;
-				if (focusbuttons)
-					bs.curr = (int)bs.nbuttons - 1;
+			} else if (sel == 1) {
+				sel = 0;
+			} else { /* sel = 0, Month */
+				focusbuttons = true;
+				sel = -1;
+				bs.curr = 0;
 			}
 			draw_buttons(widget, bs, true);
 			wrefresh(widget);
@@ -419,13 +434,36 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				bs.curr = conf->button.always_active ? 0 : -1;
 				draw_buttons(widget, bs, true);
 				wrefresh(widget);
-			} else
+			} else if (sel == 0) {
+				datectl(UP_MONTH, &year, &month, &day);
+			} else if (sel == 1) {
+				datectl(UP_YEAR, &year, &month, &day);
+			} else { /* sel = 2 */
 				datectl(UP_DAY, &year, &month, &day);
+			}
 			break;
 		case KEY_DOWN:
-			if (focusbuttons)
+			if (focusbuttons) {
 				break;
-			datectl(DOWN_DAY, &year, &month, &day);
+			} else if (sel == 0) {
+				datectl(DOWN_MONTH, &year, &month, &day);
+			} else if (sel == 1) {
+				datectl(DOWN_YEAR, &year, &month, &day);
+			} else { /* sel = 2 */
+				datectl(DOWN_DAY, &year, &month, &day);
+			}
+			break;
+		case KEY_HOME:
+			datectl(UP_MONTH, &year, &month, &day);
+			break;
+		case KEY_END:
+			datectl(DOWN_MONTH, &year, &month, &day);
+			break;
+		case KEY_PPAGE:
+			datectl(UP_YEAR, &year, &month, &day);
+			break;
+		case KEY_NPAGE:
+			datectl(DOWN_YEAR, &year, &month, &day);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
