@@ -27,7 +27,6 @@
 
 #include <sys/param.h>
 
-#include <ctype.h>
 #include <curses.h>
 #include <stdlib.h>
 #include <string.h>
