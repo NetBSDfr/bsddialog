@@ -341,8 +341,6 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		{ "October", 31 }, { "November", 30 }, { "December",  31 }
 	};
 
-#define ISLEAF(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
-
 	for (i = 0 ; i < 3; i++) {
 		if (c[i].value > c[i].max)
 			c[i].value = c[i].max;
@@ -350,7 +348,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			c[i].value = 1;
 	}
 	c[2].max = m[c[1].value -1].days;
-	if (c[1].value == 2 && ISLEAF(c[0].value))
+	if (c[1].value == 2 && ISLEAP(c[0].value))
 		c[2].max = 29;
 	if (c[2].value > c[2].max)
 		c[2].value = c[2].max;
@@ -456,7 +454,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				/* if mount change */
 				c[2].max = m[c[1].value -1].days;
 				/* if year change */
-				if (c[1].value == 2 && ISLEAF(c[0].value))
+				if (c[1].value == 2 && ISLEAP(c[0].value))
 					c[2].max = 29;
 				/* set new day */
 				if (c[2].value > c[2].max)
@@ -471,7 +469,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			/* if mount change */
 			c[2].max = m[c[1].value -1].days;
 			/* if year change */
-			if (c[1].value == 2 && ISLEAF(c[0].value))
+			if (c[1].value == 2 && ISLEAP(c[0].value))
 				c[2].max = 29;
 			/* set new day */
 			if (c[2].value > c[2].max)
