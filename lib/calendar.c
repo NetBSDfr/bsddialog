@@ -36,7 +36,7 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MINHCAL   14
+#define MINHCAL   13
 #define MINWCAL   38 /* 34 calendar, 4 margins */
 #define MINYEAR   1900
 #define MAXYEAR   999999999
@@ -75,8 +75,8 @@ static int calendar_checksize(int rows, int cols, struct buttons bs)
 	if (cols < mincols)
 		RETURN_ERROR("Few cols for this calendar, at least 40");
 
-	if (rows < MINHCAL + 2 + 2) /* cal + 2 button + 2 borders */
-		RETURN_ERROR("Few rows for this calendar, at least 18");
+	if (rows < MINHCAL + 2 + 2) /* 2 buttons + 2 borders */
+		RETURN_ERROR("Few rows for calendar, at least 17");
 
 	return (0);
 }
@@ -333,7 +333,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	    true) != 0)
 		return (BSDDIALOG_ERROR);
 
-	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
+	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-17, x+w-2);
 	doupdate();
 
 	ycal = y + h - 15;
