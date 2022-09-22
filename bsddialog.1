@@ -44,7 +44,7 @@
 .Nm
 .Fl Fl dialog1
 .Ar ...
-.Oo Fl Fl and-widget
+.Oo Fl Fl and-dialog
 .Fl Fl dialog2
 .Ar ...
 .Oc ...
@@ -59,7 +59,7 @@ The options
 and
 .Fl Fl version
 print the list of options and the version, respectively, then exit.
-.Fl Fl and-widget
+.Fl Fl and-dialog
 builds another dialog unless the previous one returns Error, ESC or Cancel.
 .Pp
 .Ar text
@@ -591,7 +591,7 @@ Form:
 .Pp
 Multi-dialog:
 .Dl bsddialog --normal-screen --begin-y 1 --yesno Continue? 0 0  \e \
---and-widget --begin-y 10 --infobox Yes 0 0
+--and-dialog --begin-y 10 --infobox Yes 0 0
 .Pp
 Bikeshed:
 .Dl bsddialog --bikeshed --inputbox Example 0 0
@@ -638,6 +638,7 @@ Outdated options are retained for compatibility, properly equivalent options are
 used:
 .Bd -literal -offset indent -compact
 Obsolete        Equivalent
+--and-widget    --and-dialog
 --clear         --clear-screen
 --defaultno     --default-no
 --exit-label    --ok-label

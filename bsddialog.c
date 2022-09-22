@@ -45,7 +45,7 @@
 enum OPTS {
 	/* Options */
 	ALTERNATE_SCREEN = '?' + 1,
-	AND_WIDGET,
+	AND_DIALOG,
 	ASCII_LINES,
 	BACKTITLE,
 	BEGIN_X,
@@ -137,7 +137,8 @@ enum OPTS {
 static struct option longopts[] = {
 	/* Options */
 	{"alternate-screen",  no_argument,       NULL, ALTERNATE_SCREEN},
-	{"and-widget",        no_argument,       NULL, AND_WIDGET},
+	{"and-dialog",        no_argument,       NULL, AND_DIALOG},
+	{"and-widget",        no_argument,       NULL, AND_DIALOG},
 	{"ascii-lines",       no_argument,       NULL, ASCII_LINES},
 	{"backtitle",         required_argument, NULL, BACKTITLE},
 	{"begin-x",           required_argument, NULL, BEGIN_X},
@@ -364,7 +365,7 @@ static void usage(void)
 	printf("       bsddialog --version\n");
 	printf("       bsddialog [--<opt>] --<dialog> <text> <rows> <cols> "
 	    "[<arg>]\n");
-	printf("       bsddialog --<dialog1> ... [--and-widget --<dialog2> "
+	printf("       bsddialog --<dialog1> ... [--and-dialog --<dialog2> "
 	    "...] ...\n");
 	printf("\n");
 
@@ -479,9 +480,9 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case ALTERNATE_SCREEN:
 			screen_mode_opt = "smcup";
 			break;
-		case AND_WIDGET:
+		case AND_DIALOG:
 			if (dialogbuilder == NULL)
-				exit_error("--and-widget without previous "
+				exit_error("--and-dialog without previous "
 				    "--<dialog>", true);
 			argc = optind;
 			parsed = optind;
@@ -922,7 +923,7 @@ int main(int argc, char *argv[argc])
 		if (clear_screen_opt)
 			bsddialog_clearterminal();
 		clear_screen_opt = false;
-		/* --and-widget ends loop with Cancel or ESC */
+		/* --and-dialog ends loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
 		argc = nargc;
