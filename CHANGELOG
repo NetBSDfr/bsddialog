@@ -30,7 +30,7 @@ Next
 	    - without a "\n": '\t' -> space, '\n' -> '\n', trim spaces.
 	    - with a "\n": '\t' -> space, '\n' -> space, "\n" -> '\n', no trim.
 	    - delete '\n' after "\n" (also with --cr-wrap).
-	* change: --datebox input and output yy/mm/dd -> dd/mm/yy.
+	* change: --datebox input and output format yy/mm/dd -> dd/mm/yy.
 	* delete: --no-collapse (partial implemented).
 	* delete: --no-nl-expand (partial implemented).
 	* delete: --trim (partial implemented).
