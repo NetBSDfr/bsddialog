@@ -3,7 +3,7 @@
 #
 # Written in 2021 by Alfonso Sabato Siciliano
 
-VERSION = 0.4
+VERSION = 0.3
 LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
 LIBRARY_A = lib${LIBRARY:=.a}
