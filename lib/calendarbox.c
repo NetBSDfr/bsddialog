@@ -36,7 +36,7 @@
 #include "lib_util.h"
 
 #define MINHCAL   13
-#define MINWCAL   38 /* 34 calendar, 4 margins */
+#define MINWCAL   36 /* 34 calendar, 1 + 1 margins */
 #define MINYEAR   1900
 #define MAXYEAR   999999999
 
@@ -271,15 +271,14 @@ static int calendar_checksize(int rows, int cols, struct buttons bs)
 {
 	int mincols;
 
-	mincols = VBORDERS;
-	mincols += buttons_min_width(bs);
-	mincols = MAX(MINWCAL, mincols);
+	mincols = MAX(MINWCAL, buttons_min_width(bs));
+	mincols += VBORDERS;
 
 	if (cols < mincols)
-		RETURN_ERROR("Few cols for this calendar, at least 40");
+		RETURN_ERROR("Few cols for this calendar (at least 38)");
 
 	if (rows < MINHCAL + 2 + 2) /* 2 buttons + 2 borders */
-		RETURN_ERROR("Few rows for calendar, at least 17");
+		RETURN_ERROR("Few rows for calendar (at least 17)");
 
 	return (0);
 }
