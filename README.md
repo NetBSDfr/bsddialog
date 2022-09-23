@@ -118,3 +118,4 @@ in the _Public Domain_ to build new projects:
  - menubar feature
  - key callback
  - Right-To-Left text
+ - Fix --and-dialog with GNU getopt_long()
