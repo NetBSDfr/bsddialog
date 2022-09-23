@@ -483,12 +483,6 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		}
 	}
 	parsed = argc;
-	/*printf("***********************************\n");
-	printf("optind: %d\n", optind);
-	for(i = 0; i < argc; i++) {
-		printf("[%s] \n", argv[i]);
-	}
-	printf("---------------------\n");*/
 	while ((arg = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (arg) {
 		/* Options */
@@ -499,8 +493,6 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			if (dialogbuilder == NULL)
 				exit_error("--and-dialog without previous "
 				    "--<dialog>", true);
-			//argc = optind;
-			//parsed = optind;
 			break;
 		case ASCII_LINES:
 			conf->ascii_lines = true;
@@ -836,13 +828,6 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			exit_error("--ignore to continue", true);
 		}
 	}
-
-	
-	/*printf("optind: %d\n", optind);
-	for(i = 0; i < argc; i++) {
-		printf("[%s] \n", argv[i]);
-	}
-	printf("***********************************\n");*/
 
 	return (parsed);
 }
