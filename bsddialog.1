@@ -637,25 +637,22 @@ done | bsddialog --title Gauge --gauge "Starting..." 10 70
 Outdated options are retained for compatibility, properly equivalent options are
 used:
 .Bd -literal -offset indent -compact
-Obsolete        Equivalent
---and-widget    --and-dialog
---clear         --clear-screen
---defaultno     --default-no
---exit-label    --ok-label
---help-tags     --help-print-name
---item-help     --item-bottom-desc
---keep-tite     --alternate-screen
---no-items      --no-descriptions
---no-label      --cancel-label
---no-tags       --no-names
---nocancel      --no-cancel
---nook          --no-ok
---separator     --output-separator
---yes-label     --ok-label
-.Ed
-.Pp
-.Bd -literal -offset indent -compact
---calendar <text> 2 <cols>      --calendar <text> 0 <cols>
+Obsolete                     Equivalent
+--and-widget                 --and-dialog
+--calendar <text> 2 <cols>   --calendar <text> 0 <cols>
+--clear                      --clear-screen
+--defaultno                  --default-no
+--exit-label                 --ok-label
+--help-tags                  --help-print-name
+--item-help                  --item-bottom-desc
+--keep-tite                  --alternate-screen
+--no-items                   --no-descriptions
+--no-label                   --cancel-label
+--no-tags                    --no-names
+--nocancel                   --no-cancel
+--nook                       --no-ok
+--separator                  --output-separator
+--yes-label                  --ok-label
 .Ed
 .Sh SEE ALSO
 .Xr bsddialog 3
