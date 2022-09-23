@@ -34,9 +34,9 @@ Output:
 
 **Dialogs:**
 
---calendar, --checklist, --datebox, --form, --gauge, --inputbox, --menu,
---mixedform, --mixedgauge, --msgbox, --passwordbox, --passwordform, --pause,
---radiolist, --rangebox, --textbox, --timebox, --treeview, --yesno.
+--calendar, --checklist, --datebox, --form, --gauge, --infobox, --inputbox,
+--menu, --mixedform, --mixedgauge, --msgbox, --passwordbox, --passwordform,
+--pause, --radiolist, --rangebox, --textbox, --timebox, --treeview, --yesno.
 
 **Manual**
 

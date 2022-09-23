@@ -396,9 +396,10 @@ static void usage(void)
 	printf("\n");
 
 	printf("Dialogs:\n");
+	printf(" --calendar <text> <rows> <cols> [<dd> <mm> <yy>]\n");
 	printf(" --checklist <text> <rows> <cols> <menurows> [<name> <desc> "
 	    "<on|off>] ...\n");
-	printf(" --datebox <text> <rows> <cols> [<yy> <mm> <dd>]\n");
+	printf(" --datebox <text> <rows> <cols> [<dd> <mm> <yy>]\n");
 	printf(" --form <text> <rows> <cols> <formrows> [<label> <ylabel> "
 	    "<xlabel> <init> <yfield> <xfield> <fieldlen> <maxletters>] "
 	    "...\n");
