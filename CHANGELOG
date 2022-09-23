@@ -10,7 +10,7 @@ Next
 	* add: --no-descriptions (--no-items becames its alias).
 	* add: --help-print-name (--help-tags becames its alias).
 	* add: --item-bottom-desc (--item-help becames its alias).
-	* add: --cr-wrap (was partial implemented) to keep '\n' with "\n".
+	* add: --cr-wrap (was partially implemented) to keep '\n' with "\n".
 	* add: --text-unchanged to avoid default modification.
 	* add: --tab-escape enables "\t" in text.
 	* add: --clear-screen to clear the screen.
@@ -31,9 +31,9 @@ Next
 	    - with a "\n": '\t' -> space, '\n' -> space, "\n" -> '\n', no trim.
 	    - delete '\n' after "\n" (also with --cr-wrap).
 	* change: --datebox input and output format yy/mm/dd -> dd/mm/yy.
-	* delete: --no-collapse (partial implemented).
-	* delete: --no-nl-expand (partial implemented).
-	* delete: --trim (partial implemented).
+	* delete: --no-collapse (partially implemented).
+	* delete: --no-nl-expand (partially implemented).
+	* delete: --trim (partially implemented).
 
 	Library:
 	* add: bsddialog_msgbox() HOME, END, PPAGE and NPAGE keys.
