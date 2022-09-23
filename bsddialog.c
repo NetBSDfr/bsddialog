@@ -432,7 +432,7 @@ static void usage(void)
 
 static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 {
-	int arg, parsed;
+	int arg, parsed, i;
 	struct winsize ws;
 
 	bsddialog_initconf(conf);
@@ -473,7 +473,22 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 
 	max_input_form_opt = 2048;
 
-	parsed=argc;
+	for (i = 0; i < argc; i++) {
+		if ((strcmp(argv[i], "--and-dialog") == 0 &&
+		    argv[i][12]=='\0') ||
+		    (strcmp(argv[i], "--and-widget") == 0 &&
+		    argv[i][12]=='\0')) {
+			argc = i + 1;
+			break;
+		}
+	}
+	parsed = argc;
+	/*printf("***********************************\n");
+	printf("optind: %d\n", optind);
+	for(i = 0; i < argc; i++) {
+		printf("[%s] \n", argv[i]);
+	}
+	printf("---------------------\n");*/
 	while ((arg = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
 		switch (arg) {
 		/* Options */
@@ -484,8 +499,8 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			if (dialogbuilder == NULL)
 				exit_error("--and-dialog without previous "
 				    "--<dialog>", true);
-			argc = optind;
-			parsed = optind;
+			//argc = optind;
+			//parsed = optind;
 			break;
 		case ASCII_LINES:
 			conf->ascii_lines = true;
@@ -822,19 +837,28 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		}
 	}
 
+	
+	/*printf("optind: %d\n", optind);
+	for(i = 0; i < argc; i++) {
+		printf("[%s] \n", argv[i]);
+	}
+	printf("***********************************\n");*/
+
 	return (parsed);
 }
 
 int main(int argc, char *argv[argc])
 {
-	int i, rows, cols, retval, parsed, nargc;
-	char *text, **nargv;
+	int i, rows, cols, retval, parsed, nargc, firstoptind;
+	char *text, **nargv, *pn;
 	struct bsddialog_conf conf;
 
 	setlocale(LC_ALL, "");
 
 	in_bsddialog_mode = false;
 	mandatory_dialog = true;
+	firstoptind = optind;
+	pn = argv[0];
 	retval = BSDDIALOG_OK;
 
 	for (i = 0; i < argc; i++) {
@@ -930,11 +954,16 @@ int main(int argc, char *argv[argc])
 		argv = nargv;
 		if (argc <= 0)
 			break;
-		optind = -1; /* reset for next parseargs() call */
+		/* prepare next parseargs() call */
+		argc++;
+		argv--;
+		argv[0] = pn;
+		optind = firstoptind;
 	}
 
 	if (in_bsddialog_mode) {
-		if (clear_screen_opt) /* --clar-screen can be a single option */
+		/* --clear-screen can be a single option */
+		if (clear_screen_opt)
 			bsddialog_clearterminal();
 		bsddialog_end();
 	}
