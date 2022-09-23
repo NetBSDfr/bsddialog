@@ -1186,7 +1186,8 @@ int calendar_builder(BUILDER_ARGS)
 		 * f_dialog_input_expire_password() and
 		 * (bsdconfig/usermgmt/share/user_input.subr:660)
 		 * f_dialog_input_expire_account().
-		 * Use height auto-sizing that is min height like dialog.
+		 * Use height auto-sizing that is min height like dialog,
+		 * documented in bsddialog(1).
 		 */
 		rows = 0;
 	}
