@@ -474,10 +474,8 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	max_input_form_opt = 2048;
 
 	for (i = 0; i < argc; i++) {
-		if ((strcmp(argv[i], "--and-dialog") == 0 &&
-		    argv[i][12]=='\0') ||
-		    (strcmp(argv[i], "--and-widget") == 0 &&
-		    argv[i][12]=='\0')) {
+		if (strcmp(argv[i], "--and-dialog") == 0 ||
+		    strcmp(argv[i], "--and-widget") == 0) {
 			argc = i + 1;
 			break;
 		}
@@ -847,11 +845,11 @@ int main(int argc, char *argv[argc])
 	retval = BSDDIALOG_OK;
 
 	for (i = 0; i < argc; i++) {
-		if (strcmp(argv[i], "--version") == 0 && argv[i][9]=='\0') {
+		if (strcmp(argv[i], "--version") == 0) {
 			printf("Version: %s\n", LIBBSDDIALOG_VERSION);
 			return (BSDDIALOG_OK);
 		}
-		if (strcmp(argv[i], "--help") == 0 && argv[i][6]=='\0') {
+		if (strcmp(argv[i], "--help") == 0) {
 			usage();
 			return (BSDDIALOG_OK);
 		}
