@@ -118,3 +118,5 @@ in the _Public Domain_ to build new projects:
  - menubar feature
  - key callback
  - Right-To-Left text
+ - clear-screen like single option or fix with --and-dialog.
+
