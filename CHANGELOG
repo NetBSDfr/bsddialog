@@ -1,3 +1,8 @@
+Next
+
+	Library:
+	* fix: t.dialog.linelowercolor no bold-black, some terminal draws grey.
+
 2022-09-24 Version 0.4
 
 	Utility:
