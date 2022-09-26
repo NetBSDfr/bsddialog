@@ -119,4 +119,4 @@ in the _Public Domain_ to build new projects:
  - key callback
  - Right-To-Left text
  - --clear-screen like single option or fix with --and-dialog.
-
+ - Merge internal "build" dialogs code with "KEY_RESIZE" dialogs code.
