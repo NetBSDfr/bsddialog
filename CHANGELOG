@@ -17,7 +17,7 @@ Next
 	* add: --item-bottom-desc (--item-help becames its alias).
 	* add: --cr-wrap (was partially implemented) to keep '\n' with "\n".
 	* add: --text-unchanged to avoid default modification.
-	* add: --tab-escape enables "\t" in text.
+	* add: --tab-escape to enable "\t" in text.
 	* add: --clear-screen to clear the screen.
 	* add: --clear-dialog to clear the dialog (was --clear).
 	* add: --calendar dialog to select a date.
