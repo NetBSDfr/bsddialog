@@ -301,10 +301,10 @@ bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
 	unsigned int flag;
 	short f, b;
 
-	flag = 0U;
-	flag |= (color & A_BOLD) ? BSDDIALOG_BOLD : 0U;
-	flag |= (color & A_REVERSE) ? BSDDIALOG_REVERSE : 0U;
-	flag |= (color & A_UNDERLINE) ? BSDDIALOG_UNDERLINE : 0U;
+	flag = 0;
+	flag |= (color & A_BOLD) ? BSDDIALOG_BOLD : 0;
+	flag |= (color & A_REVERSE) ? BSDDIALOG_REVERSE : 0;
+	flag |= (color & A_UNDERLINE) ? BSDDIALOG_UNDERLINE : 0;
 	if (flags != NULL)
 		*flags = flag;
 
