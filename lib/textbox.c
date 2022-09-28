@@ -72,7 +72,7 @@ updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
 
 	if (hpad > h - 4) {
 		wattron(widget, t.dialog.arrowcolor);
-		mvwprintw(widget, h-3, w-6, "%3d%%", 100 * (ypad+h-4)/ hpad);
+		mvwprintw(widget, h-3, w-6, "%3d%%", 100 * (ypad+h-4) / hpad);
 		wattroff(widget, t.dialog.arrowcolor);
 	}
 }
