@@ -120,4 +120,4 @@ in the _Public Domain_ to build new projects:
  - Right-To-Left text
  - --clear-screen like single option or fix with --and-dialog.
  - Merge internal "build" dialogs code with "KEY\_RESIZE" dialogs code.
- - Some terminale does not hide cursor, move it bottom-right before getch().
+ - Some terminal does not hide the cursor, move it bottom-right before to getch.
