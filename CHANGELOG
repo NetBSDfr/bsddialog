@@ -60,9 +60,9 @@ Next
 	* add: --load-theme to read and set a custom theme at runtime.
 	* add: --save-theme to save current theme.
 	* add: --bikeshed for random settings.
-	* add: --switch-buttons enables focus switching: buttons / input
-	       components. Available for: --form, --inputbox, --mixedform,
-	       --passwordform, --passwordbox, --timebox and --datebox.
+	* add: --switch-buttons to enable buttons/input widgets focus switching.
+	       Available for: --form, --inputbox, --mixedform, --passwordform,
+	       --passwordbox, --timebox and --datebox.
 	* change: rename --esc-cancelvalue to --esc-return-cancel.
 	* change: form field value is printed like multibyte charachter string,
 	          previously widechar string.
