@@ -122,3 +122,4 @@ in the _Public Domain_ to build new projects:
  - Merge internal "build" dialogs code with "KEY\_RESIZE" dialogs code.
  - Some terminal does not hide the cursor, move it bottom-right before to getch.
  - Complete bsddialog theme like sysinstall https://docs-legacy.freebsd.org/doc/7.0-RELEASE/usr/share/doc/handbook/book.html#INSTALL
+ - Multi-line backtitle.
