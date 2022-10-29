@@ -21,7 +21,7 @@ Linux:
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
 % cd bsddialog
-% make -f GNUMakefile
+% make
 % ./bsddialog --msgbox "Hello World!" 8 20
 ```
 

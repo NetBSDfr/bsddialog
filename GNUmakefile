@@ -18,11 +18,11 @@ $(OUTPUT): $(LIBBSDDIALOG) $(OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 ${LIBBSDDIALOG}:
-	make -C ${LIBPATH} -f GNUMakefile
+	make -C ${LIBPATH}
 
 %.o: %.c $(LIBBSDDIALOG)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	make -C ${LIBPATH} -f GNUMakefile clean
+	make -C ${LIBPATH} clean
 	$(RM) $(OUTPUT) *.o *~
