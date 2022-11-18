@@ -7,16 +7,7 @@ and a library to build scripts and tools with TUI dialogs and widgets.
 
 ## Getting Started
 
-FreeBSD:
-
-```
-% git clone https://gitlab.com/alfix/bsddialog.git
-% cd bsddialog
-% make
-% ./bsddialog --msgbox "Hello World!" 8 20
-```
-
-Linux:
+FreeBSD and Linux:
 
 ```
 % git clone https://gitlab.com/alfix/bsddialog.git
