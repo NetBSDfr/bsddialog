@@ -115,3 +115,4 @@ in the _Public Domain_ to build new projects:
  - Complete bsddialog theme like sysinstall https://docs-legacy.freebsd.org/doc/7.0-RELEASE/usr/share/doc/handbook/book.html#INSTALL
  - Multi-line backtitle.
  - Reverse fg with bg in blackwhite.
+ - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
