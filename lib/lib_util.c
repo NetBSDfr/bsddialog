@@ -434,9 +434,12 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 		reallen = 0;
 		i=0;
 		while (i < len) {
-			if (is_wtext_attr(str+i) == false)
+			if (is_wtext_attr(str+i) == false) {
 				reallen += wcwidth(str[i]);
-			i++;
+				i++;
+			} else {
+				i +=3 ;
+			}
 		}
 	} else
 		reallen = wcswidth(str, len);
