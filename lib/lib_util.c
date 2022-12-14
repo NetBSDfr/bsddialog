@@ -1103,7 +1103,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 	wnoutrefresh(widget);
 
 	if (textpad != NULL && text != NULL) /* textbox */
-		if (print_textpad(conf, textpad, text) !=0)
+		if (print_textpad(conf, textpad, text) != 0)
 			return (BSDDIALOG_ERROR);
 
 	return (0);
