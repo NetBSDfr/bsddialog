@@ -2,6 +2,7 @@ Next
 
 	Library:
 	* fix: t.dialog.linelowercolor no bold-black, some terminal draws grey.
+	* fix: text wrapping (actual string length) with --colors.
 
 2022-09-24 Version 0.4
 
