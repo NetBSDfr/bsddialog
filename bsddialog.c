@@ -1306,7 +1306,7 @@ static void
 print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
     int focusitem, bool ismenu)
 {
-	bool sep, sepfirst, seplast, toquote;
+	bool sep, sepbefore, sepafter, toquote;
 	int i;
 	char quotech;
 	const char *focusname, *sepstr;
@@ -1346,23 +1346,23 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		sep = true;
 	}
 
-	sepfirst = false;
+	sepbefore = false;
 	if ((sepstr = item_output_sep_opt) == NULL)
 		sepstr = item_output_sepnl_opt ? "\n" : " ";
 	else
-		sepfirst = true;
+		sepbefore = true;
 
-	seplast = false;
+	sepafter = false;
 	if (item_output_sepnl_opt) {
-		sepfirst = false;
-		seplast = true;
+		sepbefore = false;
+		sepafter = true;
 	}
 
 	for (i = 0; i < nitems; i++) {
 		if (items[i].on == false)
 			continue;
 
-		if (sep || sepfirst)
+		if (sep || sepbefore)
 			dprintf(output_fd_opt, "%s", sepstr);
 		sep = false;
 
@@ -1378,7 +1378,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		else
 			dprintf(output_fd_opt, "%s", items[i].name);
 
-		if (seplast)
+		if (sepafter)
 			dprintf(output_fd_opt, "%s", sepstr);
 	}
 }
