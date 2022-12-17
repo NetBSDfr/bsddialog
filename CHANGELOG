@@ -1,11 +1,14 @@
 Next
 
-	Library:
-	* fix: t.dialog.linelowercolor no bold-black, some terminal draws grey.
-	* fix: text wrapping (actual string length) with --colors.
+	Utility:
 	* fix: default space separator menus output, except if --separator " ".
 	* rename: GNUMakefile to GNUmakefile to simplify linux build.
 	    Thanks to https://gitlab.com/alfix/bsddialog/-/merge_requests/2.
+
+	Library:
+	* fix: t.dialog.linelowercolor no bold-black, some terminal draws grey.
+	* fix: text wrapping (actual string length) with --colors.
+
 
 2022-09-24 Version 0.4
 
