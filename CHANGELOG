@@ -3,6 +3,8 @@ Next Version 0.4.2
 	Library:
 	* fix: compile error with aarch64-gcc12 for "\Z[0-7]" check;
 	    https://gitlab.com/alfix/bsddialog/-/issues/5.
+	* fix: BSDDIALOG_FIELDCURSOREND with multiple items
+	    (warning aarch64-gcc12).
 
 2023-01-02 Version 0.4.1
 

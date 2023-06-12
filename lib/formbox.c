@@ -648,7 +648,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			items[i].fieldcols = form.w - items[i].xfield;
 		}
 		if (items[i].cursorend)
-			fieldctl(item, MOVE_CURSOR_END);
+			fieldctl(&items[i], MOVE_CURSOR_END);
 	}
 
 	form.pad = newpad(form.h, form.w);
