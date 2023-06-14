@@ -695,7 +695,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case 10: /* Enter */
 			if (focusinform && conf->button.always_active == false)
 				break;
-			retval = return_values(conf, bs.value[bs.curr],
+			retval = return_values(conf, BUTTONVALUE(bs),
 			    nitems, apiitems, items);
 			loop = false;
 			break;
@@ -898,7 +898,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else {
 				if (shortcut_buttons(input, &bs)) {
 					retval = return_values(conf,
-					    bs.value[bs.curr], nitems, apiitems,
+					    BUTTONVALUE(bs), nitems, apiitems,
 					    items);
 					loop = false;
 				}

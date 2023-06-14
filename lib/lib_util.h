@@ -69,6 +69,7 @@ struct buttons {
 	wchar_t first[MAXBUTTONS];
 	int value[MAXBUTTONS];
 	int curr;
+#define BUTTONVALUE(bs) bs.value[bs.curr]
 	unsigned int sizebutton; /* including left and right delimiters */
 };
 

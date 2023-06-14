@@ -351,7 +351,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_ENTER:
 		case 10: /* Enter */
 			if (focusbuttons || conf->button.always_active) {
-				retval = bs.value[bs.curr];
+				retval = BUTTONVALUE(bs);
 				loop = false;
 			}
 			break;
@@ -499,7 +499,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				retval = bs.value[bs.curr];
+				retval = BUTTONVALUE(bs);
 				loop = false;
 			}
 		}

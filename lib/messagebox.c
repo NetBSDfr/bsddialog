@@ -133,7 +133,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		switch (input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			retval = bs.value[bs.curr];
+			retval = BUTTONVALUE(bs);
 			loop = false;
 			break;
 		case 27: /* Esc */
@@ -221,7 +221,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
-				retval = bs.value[bs.curr];
+				retval = BUTTONVALUE(bs);
 				loop = false;
 			}
 		}

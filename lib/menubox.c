@@ -565,7 +565,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			retval = bs.value[bs.curr];
+			retval = BUTTONVALUE(bs);
 			if (abs >= 0 && pritems[abs].type == MENUMODE)
 				pritems[abs].on = true;
 			set_on_output(conf, retval, ngroups, groups, pritems);
@@ -691,7 +691,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		case ' ': /* Space */
 			if (pritems[abs].type == MENUMODE) {
-				retval = bs.value[bs.curr];
+				retval = BUTTONVALUE(bs);
 				pritems[abs].on = true;
 				set_on_output(conf, retval, ngroups, groups,
 				    pritems);
@@ -717,7 +717,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		default:
 			if (shortcut_butts) {
 				if (shortcut_buttons(input, &bs)) {
-					retval = bs.value[bs.curr];
+					retval = BUTTONVALUE(bs);
 					if (pritems[abs].type == MENUMODE)
 						pritems[abs].on = true;
 					set_on_output(conf, retval, ngroups,
