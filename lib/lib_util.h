@@ -33,6 +33,10 @@
 #define TEXTHMARGIN     1
 #define TEXTHMARGINS    (TEXTHMARGIN + TEXTHMARGIN)
 
+/* MIN and MAX */
+#define	MIN(a,b) (((a)<(b))?(a):(b))
+#define	MAX(a,b) (((a)>(b))?(a):(b))
+
 /* theme utils */
 extern struct bsddialog_theme t;
 extern bool hastermcolors;
