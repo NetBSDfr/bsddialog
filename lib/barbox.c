@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -145,8 +145,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL,
-	    false) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 
 	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
@@ -199,7 +198,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		}
 		pntext[0] = '\0';
 		if (update_dialog(conf, shadow, widget, y, x, h, w, textpad,
-		    ntext, NULL, false) != 0)
+		    ntext, NULL) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 
@@ -269,7 +268,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		return (BSDDIALOG_ERROR);
 
 	retval = new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
-	    NULL, false);
+	    NULL);
 	if (retval == BSDDIALOG_ERROR)
 		return (retval);
 
@@ -447,7 +446,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	currvalue = *value;
 	positions = max - min + 1;
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -458,8 +457,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	doupdate();
@@ -475,7 +473,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	loop = buttupdate = barupdate = true;
 	while (loop) {
 		if (buttupdate) {
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			buttupdate = false;
 		}
@@ -572,7 +570,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 				return (BSDDIALOG_ERROR);
 
 			if (update_dialog(conf, shadow, widget,y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 
 			doupdate();
@@ -614,7 +612,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	WINDOW *widget, *textpad, *bar, *shadow;
 	struct buttons bs;
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -625,8 +623,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	doupdate();
@@ -650,7 +647,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 		}
 
 		if (buttupdate) {
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			buttupdate = false;
 		}
@@ -717,7 +714,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 				return (BSDDIALOG_ERROR);
 
 			if (update_dialog(conf, shadow, widget,y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 
 			doupdate();

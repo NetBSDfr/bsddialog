@@ -379,7 +379,8 @@ redrawbuttons(WINDOW *window, struct buttons *bs, bool focus, bool shortcut)
 	selected = bs->curr;
 	if (focus == false)
 		bs->curr = -1;
-	draw_buttons(window, *bs, shortcut);
+	bs->shortcut = shortcut;
+	draw_buttons(window, *bs);
 	wrefresh(window);
 	bs->curr = selected;
 }
@@ -617,7 +618,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		items[i].xfield -= itemxbeg;
 	}
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 	form.viewrows = formheight;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -630,8 +631,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	doupdate();
@@ -718,7 +718,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 						switchfocus = true;
 					}
 				}
-				draw_buttons(widget, bs, true);
+				redrawbuttons(widget, &bs, true, true);
 				wrefresh(widget);
 			}
 			break;
@@ -728,7 +728,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					DRAWITEM_TRICK(&form, item, true);
 			} else if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, bs, true);
+				redrawbuttons(widget, &bs, true, true);
 				wrefresh(widget);
 			} else if (curritem != -1) {
 				switchfocus = true;
@@ -740,7 +740,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					DRAWITEM_TRICK(&form, item, true);
 			} else if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, bs, true);
+				redrawbuttons(widget, &bs, true, true);
 				wrefresh(widget);
 			} else if (curritem != -1) {
 				switchfocus = true;
@@ -829,8 +829,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
 
+			bs.shortcut = true; /* to check if useful */
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs) != 0)
 			return (BSDDIALOG_ERROR);
 
 			doupdate();

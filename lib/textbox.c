@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -150,7 +150,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	fclose(fp);
 	set_tabsize(defaulttablen);
 
-	get_buttons(conf, &bs, "EXIT", NULL);
+	get_buttons(conf, &bs, true, "EXIT", NULL);
 	bs.curr = 0;
 	bs.nbuttons = 1;
 
@@ -162,8 +162,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, NULL, NULL, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, NULL, NULL, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	ys = y + 1;
@@ -260,7 +259,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			printrows = h - 4;
 
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    NULL, NULL, &bs, true) != 0)
+			    NULL, NULL, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 
 			/* Important to fix grey lines expanding screen */

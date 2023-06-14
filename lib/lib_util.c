@@ -228,8 +228,7 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 	}
 }
 
-void
-draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
+void draw_buttons(WINDOW *window, struct buttons bs)
 {
 	int i, x, startx, y, rows, cols;
 	unsigned int newmargin, margin, wbuttons;
@@ -253,12 +252,12 @@ draw_buttons(WINDOW *window, struct buttons bs, bool shortcut)
 	for (i = 0; i < (int)bs.nbuttons; i++) {
 		x = i * (bs.sizebutton + margin);
 		draw_button(window, y, startx + x, bs.sizebutton, bs.label[i],
-		    bs.first[i],  i == bs.curr, shortcut);
+		    bs.first[i],  i == bs.curr, bs.shortcut);
 	}
 }
 
 void
-get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
+get_buttons(struct bsddialog_conf *conf, struct buttons *bs, bool shortcut,
     const char *yesoklabel, const char *nocancellabel)
 {
 	int i;
@@ -270,6 +269,7 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
 	bs->nbuttons = 0;
 	bs->curr = 0;
 	bs->sizebutton = 0;
+	bs->shortcut = shortcut;
 
 	if (yesoklabel != NULL && conf->button.without_ok == false) {
 		bs->label[0] = conf->button.ok_label != NULL ?
@@ -1045,7 +1045,7 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 
 static int
 draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    WINDOW *textpad, const char *text, struct buttons *bs, bool shortcutbuttons)
+    WINDOW *textpad, const char *text, struct buttons *bs)
 {
 	int h, w, wtitle, wbottomtitle, ts, ltee, rtee;
 
@@ -1089,7 +1089,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 			mvwaddch(widget, h-3, w-1, rtee);
 			wattroff(widget, t.dialog.linelowercolor);
 		}
-		draw_buttons(widget, *bs, shortcutbuttons);
+		draw_buttons(widget, *bs);
 	}
 
 	if (conf->bottomtitle != NULL) {
@@ -1115,7 +1115,7 @@ draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 int
 update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
     int y, int x, int h, int w, WINDOW *textpad, const char *text,
-    struct buttons *bs, bool shortcutbuttons)
+    struct buttons *bs)
 {
 	int error;
 
@@ -1134,16 +1134,14 @@ update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 		wresize(textpad, 1, w - HBORDERS - TEXTHMARGINS);
 	}
 
-	error = draw_dialog(conf, shadow, widget, textpad, text, bs,
-	    shortcutbuttons);
+	error = draw_dialog(conf, shadow, widget, textpad, text, bs);
 
 	return (error);
 }
 
 int
 new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
-    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs,
-    bool shortcutbuttons)
+    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs)
 {
 	int error;
 
@@ -1172,7 +1170,7 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 	}
 
 	error = draw_dialog(conf, *shadow, *widget,
-	    textpad == NULL ? NULL : *textpad, text, bs, shortcutbuttons);
+	    textpad == NULL ? NULL : *textpad, text, bs);
 
 	return (error);
 }

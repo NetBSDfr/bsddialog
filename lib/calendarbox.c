@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2022-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -310,7 +310,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	if(day > month_days(year, month))
 		day = month_days(year, month);
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -321,8 +321,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-17, x+w-2);
@@ -378,7 +377,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 					bs.curr = 0;
 				}
 			}
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_RIGHT:
@@ -395,7 +394,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			} else { /* Month or Year*/
 				sel++;
 			}
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_LEFT:
@@ -416,7 +415,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				sel = -1;
 				bs.curr = 0;
 			}
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_UP:
@@ -424,7 +423,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				sel = 2;
 				focusbuttons = false;
 				bs.curr = conf->button.always_active ? 0 : -1;
-				draw_buttons(widget, bs, true);
+				draw_buttons(widget, bs);
 				wrefresh(widget);
 			} else if (sel == 0) {
 				datectl(UP_MONTH, &year, &month, &day);
@@ -480,7 +479,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				return (BSDDIALOG_ERROR);
 
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-17, x+w-2);
 			doupdate();

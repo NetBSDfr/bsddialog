@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -136,7 +136,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			c[i].value = c[i].max;
 	}
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -148,8 +148,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
@@ -203,7 +202,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 					bs.curr = 0;
 				}
 			}
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_LEFT:
@@ -220,7 +219,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				if (focusbuttons)
 					bs.curr = (int)bs.nbuttons - 1;
 			}
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_UP:
@@ -228,7 +227,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				sel = 0;
 				focusbuttons = false;
 				bs.curr = conf->button.always_active ? 0 : -1;
-				draw_buttons(widget, bs, true);
+				draw_buttons(widget, bs);
 				wrefresh(widget);
 			} else { c[sel].value = c[sel].value > 0 ?
 			    c[sel].value - 1 : c[sel].max;
@@ -263,7 +262,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				return (BSDDIALOG_ERROR);
 
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 
 			doupdate();
@@ -353,7 +352,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	if (c[2].value > c[2].max)
 		c[2].value = c[2].max;
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -365,8 +364,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
@@ -421,7 +419,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 					bs.curr = 0;
 				}
 			}
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_LEFT:
@@ -438,7 +436,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				if (focusbuttons)
 					bs.curr = (int)bs.nbuttons - 1;
 			}
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_UP:
@@ -446,7 +444,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				sel = 0;
 				focusbuttons = false;
 				bs.curr = conf->button.always_active ? 0 : -1;
-				draw_buttons(widget, bs, true);
+				draw_buttons(widget, bs);
 				wrefresh(widget);
 			} else {
 				c[sel].value = c[sel].value > 1 ?
@@ -498,7 +496,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				return (BSDDIALOG_ERROR);
 
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			doupdate();
 

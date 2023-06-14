@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -116,8 +116,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	    true) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	printrows = h - 4;
@@ -144,20 +143,20 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			draw_buttons(widget, bs, true);
+			draw_buttons(widget, bs);
 			wnoutrefresh(widget);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, bs, true);
+				draw_buttons(widget, bs);
 				wnoutrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int)bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, bs, true);
+				draw_buttons(widget, bs);
 				wnoutrefresh(widget);
 			}
 			break;
@@ -208,7 +207,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				return (BSDDIALOG_ERROR);
 
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs, true) != 0)
+			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 
 			printrows = h - 4;
@@ -239,7 +238,7 @@ bsddialog_msgbox(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	struct buttons bs;
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, NULL);
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, NULL);
 
 	return (do_message(conf, text, rows, cols, bs));
 }
@@ -250,7 +249,7 @@ bsddialog_yesno(struct bsddialog_conf *conf, const char *text, int rows,
 {
 	struct buttons bs;
 
-	get_buttons(conf, &bs, "Yes", "No");
+	get_buttons(conf, &bs, true, "Yes", "No");
 
 	return (do_message(conf, text, rows, cols, bs));
 }

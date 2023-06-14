@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -66,6 +66,7 @@ struct buttons {
 	unsigned int nbuttons;
 #define MAXBUTTONS 6 /* ok + extra + cancel + help + 2 generics */
 	const char *label[MAXBUTTONS];
+	bool shortcut;
 	wchar_t first[MAXBUTTONS];
 	int value[MAXBUTTONS];
 	int curr;
@@ -76,12 +77,10 @@ struct buttons {
 #define BUTTON_OK_LABEL      "OK"
 #define BUTTON_CANCEL_LABEL  "Cancel"
 void
-get_buttons(struct bsddialog_conf *conf, struct buttons *bs,
+get_buttons(struct bsddialog_conf *conf, struct buttons *bs, bool shortcut,
     const char *yesoklabel, const char *nocancellabel);
 
-void
-draw_buttons(WINDOW *window, struct buttons bs, bool shortcut);
-
+void draw_buttons(WINDOW *window, struct buttons bs);
 int buttons_min_width(struct buttons bs);
 bool shortcut_buttons(wint_t key, struct buttons *bs);
 
@@ -130,13 +129,12 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 
 int
 new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
-    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs,
-    bool shortcutbuttons);
+    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs);
 
 int
 update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
     int y, int x, int h, int w, WINDOW *textpad, const char *text,
-    struct buttons *bs, bool shortcutbuttons);
+    struct buttons *bs);
 
 void
 end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,

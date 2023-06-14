@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -432,7 +432,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int menurows, enum menumode mode, unsigned int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
-	bool loop, onetrue, movefocus, automenurows, shortcut_butts;
+	bool loop, onetrue, movefocus, automenurows;
 	int i, j, y, x, h, w, retval;
 	int ymenupad, ys, ye, xs, xe, abs, next, totnitems;
 	wint_t input;
@@ -441,8 +441,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct bsddialog_menuitem *item;
 	struct privateitem *pritems;
-
-	shortcut_butts = conf->menu.shortcut_buttons;
 
 	automenurows = (menurows == BSDDIALOG_AUTOSIZE) ? true : false;
 
@@ -478,7 +476,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	pos.xdesc += (pos.maxname != 0 ? 1 : 0);
 	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
 
-	get_buttons(conf, &bs, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	get_buttons(conf, &bs, conf->menu.shortcut_buttons, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -490,8 +488,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs,
-	     shortcut_butts) != 0)
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
 	doupdate();
@@ -583,20 +580,20 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			draw_buttons(widget, bs, shortcut_butts);
+			draw_buttons(widget, bs);
 			wrefresh(widget);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				draw_buttons(widget, bs, shortcut_butts);
+				draw_buttons(widget, bs);
 				wrefresh(widget);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				draw_buttons(widget, bs, shortcut_butts);
+				draw_buttons(widget, bs);
 				wrefresh(widget);
 			}
 			break;
@@ -625,7 +622,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				return (BSDDIALOG_ERROR);
 
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs, shortcut_butts) != 0)
+			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 
 			doupdate();
@@ -715,7 +712,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
 			break;
 		default:
-			if (shortcut_butts) {
+			if (conf->menu.shortcut_buttons) {
 				if (shortcut_buttons(input, &bs)) {
 					retval = BUTTONVALUE(bs);
 					if (pritems[abs].type == MENUMODE)
