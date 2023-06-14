@@ -396,7 +396,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
+menu_checksize(int h, int w, const char *text, int menurows, int nitems,
     struct buttons bs)
 {
 	int mincols, textrow, menusize;
@@ -410,7 +410,7 @@ menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
 	 */
 	/* mincols = MAX(mincols, linelen); */
 
-	if (cols < mincols)
+	if (w < mincols)
 		RETURN_ERROR("Few cols, width < size buttons or "
 		    "name + descripion of the items");
 
@@ -421,7 +421,7 @@ menu_checksize(int rows, int cols, const char *text, int menurows, int nitems,
 		    "terminal too small");
 
 	menusize = nitems > 0 ? 3 : 0;
-	if (rows < 2  + 2 + menusize + textrow)
+	if (h < 2  + 2 + menusize + textrow)
 		RETURN_ERROR("Few lines for this menus");
 
 	return (0);

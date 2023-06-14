@@ -102,8 +102,7 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 	return (0);
 }
 
-static int
-bar_checksize(int rows, int cols, struct buttons *bs)
+static int bar_checksize(int h, int w, struct buttons *bs)
 {
 	int minheight, minwidth;
 
@@ -114,13 +113,13 @@ bar_checksize(int rows, int cols, struct buttons *bs)
 	minwidth = MAX(minwidth, MINBARWIDTH);
 	minwidth += VBORDERS;
 
-	if (cols < minwidth)
+	if (w < minwidth)
 		RETURN_ERROR("Few cols to draw bar and/or buttons");
 
 	minheight = HBORDERS + 3;
 	if (bs != NULL)
 		minheight += 2;
-	if (rows < minheight)
+	if (h < minheight)
 		RETURN_ERROR("Few rows to draw bar");
 
 	return (0);

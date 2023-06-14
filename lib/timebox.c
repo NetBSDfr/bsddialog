@@ -89,8 +89,7 @@ datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	return (0);
 }
 
-static int
-datetime_checksize(int rows, int cols, int minw, struct buttons bs)
+static int datetime_checksize(int h, int w, int minw, struct buttons bs)
 {
 	int mincols;
 
@@ -98,10 +97,10 @@ datetime_checksize(int rows, int cols, int minw, struct buttons bs)
 	mincols += buttons_min_width(bs);
 	mincols = MAX(minw, mincols);
 
-	if (cols < mincols)
+	if (w < mincols)
 		RETURN_ERROR("Few cols for this timebox/datebox");
 
-	if (rows < 7) /* 2 button + 2 borders + 3 windows */
+	if (h < 7) /* 2 button + 2 borders + 3 windows */
 		RETURN_ERROR("Few rows for this timebox/datebox, at least 7");
 
 	return (0);

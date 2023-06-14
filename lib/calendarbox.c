@@ -267,17 +267,17 @@ calendar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	return (0);
 }
 
-static int calendar_checksize(int rows, int cols, struct buttons bs)
+static int calendar_checksize(int h, int w, struct buttons bs)
 {
 	int mincols;
 
 	mincols = MAX(MINWCAL, buttons_min_width(bs));
 	mincols += VBORDERS;
 
-	if (cols < mincols)
+	if (w < mincols)
 		RETURN_ERROR("Few cols for this calendar (at least 38)");
 
-	if (rows < MINHCAL + 2 + 2) /* 2 buttons + 2 borders */
+	if (h < MINHCAL + 2 + 2) /* 2 buttons + 2 borders */
 		RETURN_ERROR("Few rows for calendar (at least 17)");
 
 	return (0);

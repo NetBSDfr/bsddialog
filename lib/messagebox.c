@@ -58,21 +58,20 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	return (0);
 }
 
-static int
-message_checksize(int rows, int cols, bool hastext, struct buttons bs)
+static int message_checksize(int h, int w, bool hastext, struct buttons bs)
 {
 	int mincols;
 
 	mincols = VBORDERS;
 	mincols += buttons_min_width(bs);
 
-	if (cols < mincols)
+	if (w < mincols)
 		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "
 		    "for borders, buttons and spaces between buttons");
 
-	if (rows < HBORDERS + 2 /* buttons */)
+	if (h < HBORDERS + 2 /* buttons */)
 		RETURN_ERROR("Msgbox and Yesno need at least 4 rows");
-	if (hastext && rows < HBORDERS + 2 /*buttons*/ + 1 /* text row */)
+	if (hastext && h < HBORDERS + 2 /*buttons*/ + 1 /* text row */)
 		RETURN_ERROR("Msgbox and Yesno with text need at least 5 rows");
 
 	return (0);

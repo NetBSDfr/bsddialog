@@ -88,18 +88,17 @@ textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 		*h = widget_min_height(conf, 0, hpad, true);
 }
 
-static int
-textbox_checksize(int rows, int cols, int hpad, struct buttons bs)
+static int textbox_checksize(int h, int w, int hpad, struct buttons bs)
 {
 	int mincols;
 
 	mincols = VBORDERS;
 	mincols += buttons_min_width(bs);
 
-	if (cols < mincols)
+	if (w < mincols)
 		RETURN_ERROR("Few cols for the textbox");
 
-	if (rows < 4 /* HBORDERS + button*/ + (hpad > 0 ? 1 : 0))
+	if (h < 4 /* HBORDERS + button*/ + (hpad > 0 ? 1 : 0))
 		RETURN_ERROR("Few rows for the textbox");
 
 	return (0);

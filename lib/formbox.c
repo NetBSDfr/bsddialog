@@ -461,7 +461,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 }
 
 static int
-form_checksize(int rows, int cols, const char *text, struct privateform *form,
+form_checksize(int h, int w, const char *text, struct privateform *form,
     int nitems, struct buttons bs)
 {
 	int mincols, textrow, menusize;
@@ -471,7 +471,7 @@ form_checksize(int rows, int cols, const char *text, struct privateform *form,
 	mincols += buttons_min_width(bs);
 	mincols = MAX(mincols, (int)form->w + 6);
 
-	if (cols < mincols)
+	if (w < mincols)
 		RETURN_ERROR("Form width, cols < buttons or xlabels/xfields");
 
 	/* rows */
@@ -485,7 +485,7 @@ form_checksize(int rows, int cols, const char *text, struct privateform *form,
 
 	textrow = text != NULL && text[0] != '\0' ? 1 : 0;
 	menusize = nitems > 0 ? 3 : 0;
-	if (rows < 2  + 2 + menusize + textrow)
+	if (h < 2  + 2 + menusize + textrow)
 		RETURN_ERROR("Few lines for this form");
 
 	return (0);
