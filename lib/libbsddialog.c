@@ -39,6 +39,7 @@
 int bsddialog_init_notheme(void)
 {
 	int i, j, c, error;
+	char *no_color;
 
 	set_error_string("");
 
@@ -66,6 +67,9 @@ int bsddialog_init_notheme(void)
 	}
 
 	hastermcolors = (error == OK && has_colors()) ? true : false;
+	no_color = getenv("NO_COLOR");
+	if (no_color != NULL && no_color[0] != '\0')
+		hastermcolors = false;
 
 	return (BSDDIALOG_OK);
 }
