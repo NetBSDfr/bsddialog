@@ -88,6 +88,9 @@ void draw_buttons(WINDOW *window, struct buttons bs);
 int buttons_min_width(struct buttons bs);
 bool shortcut_buttons(wint_t key, struct buttons *bs);
 
+/* Clear Dialog */
+int hide_dialog(int y, int x, int h, int w, bool withshadow);
+
 /* help window with F1 key */
 int f1help(struct bsddialog_conf *conf);
 
@@ -116,9 +119,6 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h,
 
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
-
-/* Clear Dialog */
-int hide_dialog(int y, int x, int h, int w, bool withshadow);
 
 /* widget builders */
 enum elevation { RAISED, LOWERED };

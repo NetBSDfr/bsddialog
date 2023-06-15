@@ -140,6 +140,27 @@ unsigned int strcols(const char *mbstring)
 	return (ncol);
 }
 
+
+/* Clear Dialog */
+int hide_dialog(int y, int x, int h, int w, bool withshadow)
+{
+	WINDOW *clear;
+
+	if ((clear = newwin(h, w, y, x)) == NULL)
+		RETURN_ERROR("Cannot hide the widget");
+	wbkgd(clear, t.screen.color);
+	wrefresh(clear);
+
+	if (withshadow) {
+		mvwin(clear, y + t.shadow.y, x + t.shadow.x);
+		wrefresh(clear);
+	}
+
+	delwin(clear);
+
+	return (0);
+}
+
 /* F1 help */
 int f1help(struct bsddialog_conf *conf)
 {
@@ -956,26 +977,6 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	if ((*x + w + wshadow) > SCREENCOLS)
 		RETURN_ERROR("The right of the box over the terminal "
 		    "(begin X + width (+ shadow) > terminal cols)");
-
-	return (0);
-}
-
-/* Clear Dialog */
-int hide_dialog(int y, int x, int h, int w, bool withshadow)
-{
-	WINDOW *clear;
-
-	if ((clear = newwin(h, w, y, x)) == NULL)
-		RETURN_ERROR("Cannot hide the widget");
-	wbkgd(clear, t.screen.color);
-	wrefresh(clear);
-
-	if (withshadow) {
-		mvwin(clear, y + t.shadow.y, x + t.shadow.x);
-		wrefresh(clear);
-	}
-
-	delwin(clear);
 
 	return (0);
 }
