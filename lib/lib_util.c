@@ -140,26 +140,6 @@ unsigned int strcols(const char *mbstring)
 	return (ncol);
 }
 
-/* Clear */
-int hide_widget(int y, int x, int h, int w, bool withshadow)
-{
-	WINDOW *clear;
-
-	if ((clear = newwin(h, w, y + t.shadow.y, x + t.shadow.x)) == NULL)
-		RETURN_ERROR("Cannot hide the widget");
-	wbkgd(clear, t.screen.color);
-
-	if (withshadow)
-		wrefresh(clear);
-
-	mvwin(clear, y, x);
-	wrefresh(clear);
-
-	delwin(clear);
-
-	return (0);
-}
-
 /* F1 help */
 int f1help(struct bsddialog_conf *conf)
 {
@@ -980,6 +960,26 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	return (0);
 }
 
+/* Clear Dialog */
+int hide_dialog(int y, int x, int h, int w, bool withshadow)
+{
+	WINDOW *clear;
+
+	if ((clear = newwin(h, w, y, x)) == NULL)
+		RETURN_ERROR("Cannot hide the widget");
+	wbkgd(clear, t.screen.color);
+	wrefresh(clear);
+
+	if (withshadow) {
+		mvwin(clear, y + t.shadow.y, x + t.shadow.x);
+		wrefresh(clear);
+	}
+
+	delwin(clear);
+
+	return (0);
+}
+
 /* Widgets build, update, destroy */
 void
 draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
@@ -1193,7 +1193,7 @@ end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 		delwin(shadow);
 
 	if (conf->clear)
-		hide_widget(y, x, h, w, conf->shadow);
+		hide_dialog(y, x, h, w, conf->shadow);
 
 	if (conf->get_height != NULL)
 		*conf->get_height = h;

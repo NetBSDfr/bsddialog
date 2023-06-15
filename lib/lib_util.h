@@ -91,9 +91,6 @@ bool shortcut_buttons(wint_t key, struct buttons *bs);
 /* help window with F1 key */
 int f1help(struct bsddialog_conf *conf);
 
-/* cleaner */
-int hide_widget(int y, int x, int h, int w, bool withshadow);
-
 /* (auto) size and (auto) position */
 #define SCREENLINES (getmaxy(stdscr))
 #define SCREENCOLS  (getmaxx(stdscr))
@@ -119,6 +116,9 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h,
 
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
+
+/* Clear Dialog */
+int hide_dialog(int y, int x, int h, int w, bool withshadow);
 
 /* widget builders */
 enum elevation { RAISED, LOWERED };

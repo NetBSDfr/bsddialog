@@ -812,7 +812,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			/* No break, screen size can change */
 		case KEY_RESIZE:
 			/* Important for decreasing screen */
-			hide_widget(y, x, h, w, conf->shadow);
+			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
 			form.viewrows = formheight;
