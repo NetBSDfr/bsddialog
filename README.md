@@ -27,7 +27,7 @@ Output:
 
 --calendar, --checklist, --datebox, --form, --gauge, --infobox, --inputbox,
 --menu, --mixedform, --mixedgauge, --msgbox, --passwordbox, --passwordform,
---pause, --radiolist, --rangebox, --textbox, --timebox, --treeview, --yesno.
+--pause, --radiolist, --rangebox, --textbox, --timebox, --yesno.
 
 **Manual**
 
