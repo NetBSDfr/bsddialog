@@ -116,4 +116,4 @@ in the _Public Domain_ to build new projects:
  - Multi-line backtitle.
  - Reverse fg with bg in blackwhite.
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
- - Fix bsddialog_progressview() bottom info with i386.
+ - Fix bsddialog\_progressview() bottom info with i386.
