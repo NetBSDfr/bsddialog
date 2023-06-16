@@ -66,6 +66,8 @@ void set_error_string(const char *string);
 } while (0)
 
 /* buttons */
+#define HBUTTONS        2
+
 struct buttons {
 	unsigned int nbuttons;
 #define MAXBUTTONS 6 /* ok + extra + cancel + help + 2 generics */
