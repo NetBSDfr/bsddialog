@@ -445,9 +445,14 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (value == NULL)
 		RETURN_ERROR("*value cannot be NULL");
-
+	if (sizeof(*value) != sizeof(int))
+		RETURN_ERROR("*value bad size");
 	if (min >= max)
 		RETURN_ERROR("min >= max");
+	if (*value < min)
+		RETURN_ERROR("value < min");
+	if (*value > max)
+		RETURN_ERROR("value > max");
 
 	currvalue = *value;
 	positions = max - min + 1;

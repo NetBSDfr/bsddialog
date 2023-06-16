@@ -2,6 +2,7 @@ WIP Version 0.5
 
 	Library:
 	* add: environment variable NO_COLOR.
+	* add: *value check size and init value in bsddialog_rangebox().
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: key '0' in bsddialog_textbox().
 
