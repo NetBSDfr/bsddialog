@@ -211,6 +211,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			break;
 		case '0':
 			xpad = 0;
+			break;
 		case KEY_LEFT:
 		case 'h':
 			xpad = xpad > 0 ? xpad - 1 : 0;
