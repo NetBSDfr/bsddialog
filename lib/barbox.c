@@ -596,7 +596,7 @@ int
 bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int sec)
 {
-	bool loop, buttupdate, barupdate;
+	bool loop, barupdate;
 	int retval, y, x, h, w, tout, sizebar;
 	wint_t input;
 	float perc;
@@ -618,7 +618,6 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	tout = sec;
 	nodelay(stdscr, TRUE);
 	timeout(1000);
-	buttupdate =false;
 	loop = barupdate = true;
 	while (loop) {
 		if (barupdate) {
@@ -626,12 +625,6 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			draw_bar(bar, 1, 1, sizebar, perc, true, tout);
 			barupdate = false;
 			wrefresh(bar);
-		}
-
-		if (buttupdate) {
-			draw_buttons(widget, bs);
-			wrefresh(widget);
-			buttupdate = false;
 		}
 
 		if (get_wch(&input) == ERR) { /* timeout */
@@ -659,18 +652,18 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			buttupdate = true;
+			DRAW_REFRESH_BUTTONS(widget, bs);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				buttupdate = true;
+				DRAW_REFRESH_BUTTONS(widget, bs);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				buttupdate = true;
+				DRAW_REFRESH_BUTTONS(widget, bs);
 			}
 			break;
 		case KEY_F(1):

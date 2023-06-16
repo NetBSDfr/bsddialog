@@ -88,6 +88,11 @@ void draw_buttons(WINDOW *window, struct buttons bs);
 int buttons_min_width(struct buttons bs);
 bool shortcut_buttons(wint_t key, struct buttons *bs);
 
+#define DRAW_REFRESH_BUTTONS(widget, bs) do {                                  \
+	draw_buttons(widget, bs);                                              \
+	wrefresh(widget);                                                      \
+} while (0)
+
 /* Clear Dialog */
 int hide_dialog(int y, int x, int h, int w, bool withshadow);
 
