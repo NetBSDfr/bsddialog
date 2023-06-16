@@ -97,7 +97,7 @@ bool shortcut_buttons(wint_t key, struct buttons *bs);
 int hide_dialog(int y, int x, int h, int w, bool withshadow);
 
 /* help window with F1 key */
-int f1help(struct bsddialog_conf *conf);
+int f1help_dialog(struct bsddialog_conf *conf);
 
 /* (auto) size and (auto) position */
 #define SCREENLINES (getmaxy(stdscr))

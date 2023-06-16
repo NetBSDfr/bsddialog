@@ -162,7 +162,7 @@ int hide_dialog(int y, int x, int h, int w, bool withshadow)
 }
 
 /* F1 help */
-int f1help(struct bsddialog_conf *conf)
+int f1help_dialog(struct bsddialog_conf *conf)
 {
 	int output;
 	struct bsddialog_conf hconf;

@@ -805,7 +805,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			    conf->key.f1_message == NULL)
 				break;
 			curs_set(0);
-			if (f1help(conf) != 0) {
+			if (f1help_dialog(conf) != 0) {
 				retval = BSDDIALOG_ERROR;
 				loop = false;
 			}
