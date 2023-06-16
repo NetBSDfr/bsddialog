@@ -592,6 +592,33 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	return (retval);
 }
 
+static int
+pause_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
+    WINDOW *textpad, const char *text, int rows, int cols, int *y, int *x,
+    int *h, int *w, WINDOW *bar, int *sizebar, bool *barupdate,
+    struct buttons *bs)
+{
+	/* Important for decreasing screen */
+	hide_dialog(*y, *x, *h, *w, conf->shadow);
+	refresh();
+
+	if (bar_size_position(conf, text, rows, cols, y, x, h, w, bs) != 0)
+		return (BSDDIALOG_ERROR);
+	if (update_dialog(conf, shadow, widget, *y, *x, *h, *w, textpad, text, bs) != 0)
+		return (BSDDIALOG_ERROR);
+	pnoutrefresh(textpad, 0, 0, *y+1, *x+1+TEXTHMARGIN, *y+*h-7, *x+*w-1-TEXTHMARGIN);
+	doupdate();
+
+	wclear(bar);
+	*sizebar = *w - HBORDERS - (2 * BARPADDING) - 2;
+	wresize(bar, 3, *sizebar + 2);
+	mvwin(bar, *y + *h - 6, *x + 1 + BARPADDING);
+	draw_borders(conf, bar, 3, *sizebar+2, RAISED);
+	*barupdate = true;
+
+	return (0);
+}
+
 int
 bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int sec)
@@ -673,29 +700,16 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			/* No break, screen size can change */
+			if (pause_redraw(conf, shadow, widget, textpad, text,
+			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
+			    &barupdate, &bs) != 0)
+				return (BSDDIALOG_ERROR);
+			break;
 		case KEY_RESIZE:
-			/* Important for decreasing screen */
-			hide_dialog(y, x, h, w, conf->shadow);
-			refresh();
-
-			if (bar_size_position(conf, text, rows, cols, &y, &x,
-			    &h, &w, &bs) != 0)
+			if (pause_redraw(conf, shadow, widget, textpad, text,
+			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
+			    &barupdate, &bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (update_dialog(conf, shadow, widget,y, x, h, w,
-			    textpad, text, &bs) != 0)
-				return (BSDDIALOG_ERROR);
-			pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
-			    x+w-1-TEXTHMARGIN);
-			doupdate();
-
-			wclear(bar);
-			sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
-			wresize(bar, 3, sizebar + 2);
-			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
-			draw_borders(conf, bar, 3, sizebar+2, RAISED);
-			barupdate = true;
-
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
