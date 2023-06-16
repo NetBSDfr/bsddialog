@@ -315,6 +315,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		}
 	}
 
+	/* text */
 	wrefresh(widget);
 	getmaxyx(textpad, htextpad, i /* unused */);
 	ypad =  y + h - 4 - htextpad;
