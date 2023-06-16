@@ -720,7 +720,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			wclear(bar);
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);
-			draw_borders(conf, bar, 3, sizebar+2, LOWERED);
+			draw_borders(conf, bar, 3, sizebar+2, RAISED);
 
 			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
 			    x+w-1-TEXTHMARGIN);

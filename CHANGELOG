@@ -2,6 +2,7 @@ WIP Version 0.5
 
 	Library:
 	* add: environment variable NO_COLOR.
+	* fix: bsddialog_pause() elevation bar after resize.
 
 2023-06-12 Version 0.4.2
 
