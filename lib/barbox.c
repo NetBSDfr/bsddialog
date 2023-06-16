@@ -614,11 +614,12 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED);
+	barupdate = true;
 
 	tout = sec;
 	nodelay(stdscr, TRUE);
 	timeout(1000);
-	loop = barupdate = true;
+	loop = true;
 	while (loop) {
 		if (barupdate) {
 			perc = (float)tout * 100 / sec;
@@ -688,13 +689,13 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			    x+w-1-TEXTHMARGIN);
 			doupdate();
 
-			sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 			wclear(bar);
-			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
+			sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 			wresize(bar, 3, sizebar + 2);
+			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			draw_borders(conf, bar, 3, sizebar+2, RAISED);
-
 			barupdate = true;
+
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
@@ -703,7 +704,6 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 		}
 	}
-
 	nodelay(stdscr, FALSE);
 
 	delwin(bar);
