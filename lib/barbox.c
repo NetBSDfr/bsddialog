@@ -331,7 +331,6 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wattroff(bar, t.bar.color);
 
 	wrefresh(bar);
-
 	/* getch(); alternate mode (port devel/ncurses) shows nothing */
 
 	delwin(bar);
