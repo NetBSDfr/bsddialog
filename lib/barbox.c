@@ -431,11 +431,39 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 	return (retval);
 }
 
+static int
+rangebox_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
+    WINDOW *textpad, const char *text, int rows, int cols, int *y, int *x,
+    int *h, int *w, WINDOW *bar, int *sizebar, bool *barupdate,int *bigchange,
+    struct buttons *bs)
+{
+	/* Important for decreasing screen */
+	hide_dialog(*y, *x, *h, *w, conf->shadow);
+	refresh();
+
+	if (bar_size_position(conf, text, rows, cols, y, x, h, w, bs) != 0)
+		return (BSDDIALOG_ERROR);
+	if (update_dialog(conf, shadow, widget, *y, *x, *h, *w, textpad, text, bs) != 0)
+		return (BSDDIALOG_ERROR);
+	pnoutrefresh(textpad, 0, 0, *y+1, *x+1+TEXTHMARGIN, *y+*h-7, *x+*w-1-TEXTHMARGIN);
+	doupdate();
+
+	wclear(bar);
+	*sizebar = *w - HBORDERS - (2 * BARPADDING) - 2;
+	*bigchange = MAX(1, *sizebar/10);
+	wresize(bar, 3, *sizebar + 2);
+	mvwin(bar, *y + *h - 6, *x + 1 + BARPADDING);
+	draw_borders(conf, bar, 3, *sizebar+2, RAISED);
+	*barupdate = true;
+
+	return (0);
+}
+
 int
 bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, int min, int max, int *value)
 {
-	bool loop, buttupdate, barupdate;
+	bool loop, barupdate;
 	int y, x, h, w;
 	int currvalue, retval, sizebar, bigchange, positions;
 	wint_t input;
@@ -462,24 +490,17 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
-
+	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 	doupdate();
-
-	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
 	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 	bigchange = MAX(1, sizebar/10);
-
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED);
+	barupdate = true;
 
-	loop = buttupdate = barupdate = true;
+	loop = true;
 	while (loop) {
-		if (buttupdate) {
-			draw_buttons(widget, bs);
-			wrefresh(widget);
-			buttupdate = false;
-		}
 		if (barupdate) {
 			perc = ((float)(currvalue - min)*100) / (positions-1);
 			draw_bar(bar, 1, 1, sizebar, perc, true, currvalue);
@@ -504,18 +525,18 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case '\t': /* TAB */
 			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			buttupdate = true;
+			DRAW_REFRESH_BUTTONS(widget, bs);
 			break;
 		case KEY_LEFT:
 			if (bs.curr > 0) {
 				bs.curr--;
-				buttupdate = true;
+				DRAW_REFRESH_BUTTONS(widget, bs);
 			}
 			break;
 		case KEY_RIGHT:
 			if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				buttupdate = true;
+				DRAW_REFRESH_BUTTONS(widget, bs);
 			}
 			break;
 		case KEY_HOME:
@@ -556,32 +577,16 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			/* No break, screen size can change */
+			if (rangebox_redraw(conf, shadow, widget, textpad, text,
+			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
+			    &barupdate, &bigchange, &bs) != 0)
+				return (BSDDIALOG_ERROR);
+			break;
 		case KEY_RESIZE:
-			/* Important for decreasing screen */
-			hide_dialog(y, x, h, w, conf->shadow);
-			refresh();
-
-			if (bar_size_position(conf, text, rows, cols, &y, &x,
-			    &h, &w, &bs) != 0)
+			if (rangebox_redraw(conf, shadow, widget, textpad, text,
+			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
+			    &barupdate, &bigchange, &bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (update_dialog(conf, shadow, widget,y, x, h, w,
-			    textpad, text, &bs) != 0)
-				return (BSDDIALOG_ERROR);
-
-			doupdate();
-
-			sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
-			bigchange = MAX(1, sizebar/10);
-			wclear(bar);
-			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
-			wresize(bar, 3, sizebar + 2);
-			draw_borders(conf, bar, 3, sizebar+2, RAISED);
-
-			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
-			    x+w-1-TEXTHMARGIN);
-
-			barupdate = true;
 			break;
 		default:
 			if (shortcut_buttons(input, &bs)) {
