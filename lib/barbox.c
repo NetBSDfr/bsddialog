@@ -222,8 +222,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int mainperc, unsigned int nminibars, const char **minilabels,
     int *minipercs, bool color)
 {
-	int i, retval, miniperc, y, x, h, w, ypad, max_minbarlen;
-	int htextpad, htext, wtext;
+	int i, miniperc, y, x, h, w, max_minbarlen;
+	int ytext, htext, wtext;
 	int colorperc, red, green;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char states[12][14] = {
@@ -273,10 +273,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	retval = new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
-	    NULL);
-	if (retval == BSDDIALOG_ERROR)
-		return (retval);
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL) != 0)
+		return (BSDDIALOG_ERROR);
 
 	/* mini bars */
 	for (i = 0; i < (int)nminibars; i++) {
@@ -317,10 +315,10 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	/* text */
 	wrefresh(widget);
-	getmaxyx(textpad, htextpad, i /* unused */);
-	ypad =  y + h - 4 - htextpad;
-	ypad = ypad < y+(int)nminibars ? y+(int)nminibars : ypad;
-	prefresh(textpad, 0, 0, ypad, x+2, y+h-4, x+w-2);
+	getmaxyx(textpad, htext, wtext); /* htext uninitialized without auto */
+	ytext =  y + h - 4 - htext;
+	ytext = ytext < y+(int)nminibars ? y+(int)nminibars : ytext;
+	prefresh(textpad, 0, 0, ytext, x+2, y+h-4, x+w-2);
 
 	/* main bar */
 	bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED);
