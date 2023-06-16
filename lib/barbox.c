@@ -608,10 +608,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
-
+	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 	doupdate();
-
-	prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 
 	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
@@ -620,7 +618,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	tout = sec;
 	nodelay(stdscr, TRUE);
 	timeout(1000);
-	loop = buttupdate = barupdate = true;
+	buttupdate =false;
+	loop = barupdate = true;
 	while (loop) {
 		if (barupdate) {
 			perc = (float)tout * 100 / sec;
@@ -692,7 +691,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			if (update_dialog(conf, shadow, widget,y, x, h, w,
 			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
-
+			pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
+			    x+w-1-TEXTHMARGIN);
 			doupdate();
 
 			sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
@@ -700,9 +700,6 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			mvwin(bar, y + h - 6, x + 1 + BARPADDING);
 			wresize(bar, 3, sizebar + 2);
 			draw_borders(conf, bar, 3, sizebar+2, RAISED);
-
-			prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7,
-			    x+w-1-TEXTHMARGIN);
 
 			barupdate = true;
 			break;
