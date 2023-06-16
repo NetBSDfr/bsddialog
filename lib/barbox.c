@@ -42,6 +42,7 @@
 #define MINBARWIDTH    (2 + 2 * BARPADDING + MINBARLEN)
 #define MINMGBARLEN    18
 #define MINMGBARWIDTH  (2 + 2 * BARPADDING + MINMGBARLEN)
+#define HBAR           3
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -85,17 +86,17 @@ bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 {
 	int htext, wtext;
 
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, bs, 3, MINBARWIDTH,
+	if (rows == BSDDIALOG_AUTOSIZE || cols == BSDDIALOG_AUTOSIZE) {
+		if (text_size(conf, rows, cols, text, bs, HBAR, MINBARWIDTH,
 		    &htext, &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 	}
 
+	if (rows == BSDDIALOG_AUTOSIZE)
+		*h = widget_min_height(conf, htext, HBAR, bs != NULL);
+		
 	if (cols == BSDDIALOG_AUTOSIZE)
 		*w = widget_min_width(conf, wtext, MINBARWIDTH, bs);
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, 3 /* bar */, bs != NULL);
 
 	return (0);
 }
@@ -104,21 +105,19 @@ static int bar_checksize(int h, int w, struct buttons *bs)
 {
 	int minheight, minwidth;
 
+	minheight = HBORDERS + HBAR;
+	if (bs != NULL)
+		minheight += HBUTTONS;
+	if (h < minheight)
+		RETURN_ERROR("Few rows to draw bar");
+
 	minwidth = 0;
 	if (bs != NULL) /* gauge has not buttons */
 		minwidth = buttons_min_width(*bs);
-
 	minwidth = MAX(minwidth, MINBARWIDTH);
 	minwidth += VBORDERS;
-
 	if (w < minwidth)
 		RETURN_ERROR("Few cols to draw bar and/or buttons");
-
-	minheight = HBORDERS + 3;
-	if (bs != NULL)
-		minheight += 2;
-	if (h < minheight)
-		RETURN_ERROR("Few rows to draw bar");
 
 	return (0);
 }
