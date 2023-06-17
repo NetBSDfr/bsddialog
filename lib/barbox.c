@@ -113,7 +113,7 @@ bar_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
 		RETURN_ERROR("Few rows to draw bar");
 
 	minwidth = 0;
-	if (bs != NULL) /* gauge has not buttons */
+	if (bs != NULL)
 		minwidth = buttons_min_width(*bs);
 	minwidth = MAX(minwidth, minw);
 	minwidth += VBORDERS;
