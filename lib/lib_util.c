@@ -873,7 +873,8 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 {
 	int min, delimtitle, wbottomtitle, wtitle;
 
-	min = 0;
+	/* dialog borders */
+	min = VBORDERS;
 
 	/* buttons */
 	if (bs != NULL)
@@ -899,8 +900,6 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 		min = MAX(min, wbottomtitle + 4);
 	}
 
-	/* dialog borders */
-	min += VBORDERS;
 	/* conf.auto_minwidth */
 	min = MAX(min, (int)conf->auto_minwidth);
 	/* avoid terminal overflow */
