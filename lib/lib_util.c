@@ -840,25 +840,24 @@ int widget_max_width(struct bsddialog_conf *conf)
 }
 
 int
-widget_min_height(struct bsddialog_conf *conf, int htext, int minwidget,
+widget_min_height(struct bsddialog_conf *conf, int htext, int hnotext,
     bool withbuttons)
 {
 	int min;
 
-	min = 0;
-
-	/* buttons */
-	if (withbuttons)
-		min += 2; /* buttons and border */
+	/* dialog borders */
+	min = HBORDERS;
 
 	/* text */
 	min += htext;
 
-	/* specific widget min height */
-	min += minwidget;
+	/* specific widget lines without text */
+	min += hnotext;
 
-	/* dialog borders */
-	min += HBORDERS;
+	/* buttons */
+	if (withbuttons)
+		min += HBUTTONS; /* buttons and their up-border */
+
 	/* conf.auto_minheight */
 	min = MAX(min, (int)conf->auto_minheight);
 	/* avoid terminal overflow */
