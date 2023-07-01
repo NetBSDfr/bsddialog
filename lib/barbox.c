@@ -157,7 +157,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 
-	bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED);
+	if ((bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED)) == NULL)
+		return (BSDDIALOG_ERROR);
 
 	input = NULL;
 	if (fd >= 0) {
@@ -304,7 +305,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	prefresh(textpad, 0, 0, ytext, x+2, y+h-4, x+w-2);
 
 	/* main bar */
-	bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED);
+	if ((bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED)) == NULL)
+		return (BSDDIALOG_ERROR);
 
 	draw_bar(bar, 1, 1, w-8, mainperc, false, -1 /*unused*/);
 
@@ -476,8 +478,9 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
 	bigchange = MAX(1, sizebar/10);
-	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
-	    sizebar + 2, RAISED);
+	if ((bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
+	    sizebar + 2, RAISED)) == NULL)
+		return (BSDDIALOG_ERROR);
 	barupdate = true;
 
 	loop = true;
@@ -630,8 +633,9 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	doupdate();
 
 	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
-	bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
-	    sizebar + 2, RAISED);
+	if ((bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
+	    sizebar + 2, RAISED)) == NULL)
+		return (BSDDIALOG_ERROR);
 	barupdate = true;
 
 	tout = sec;
