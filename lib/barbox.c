@@ -110,7 +110,8 @@ bar_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
 	if (bs != NULL)
 		minheight += HBUTTONS;
 	if (h < minheight)
-		RETURN_ERROR("Few rows to draw bar");
+		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
+		    h, minheight);
 
 	minwidth = 0;
 	if (bs != NULL)
@@ -118,7 +119,8 @@ bar_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
 	minwidth = MAX(minwidth, minw);
 	minwidth += VBORDERS;
 	if (w < minwidth)
-		RETURN_ERROR("Few cols to draw bar and/or buttons");
+		RETURN_FMTERROR("Current cols: %d, nedded at least %d",
+		    w, minwidth);
 
 	return (0);
 }
