@@ -28,8 +28,8 @@
 #ifndef _LIBBSDDIALOG_UTIL_H_
 #define _LIBBSDDIALOG_UTIL_H_
 
-#define HBORDERS	2
-#define VBORDERS	2
+#define HBORDERS        2
+#define VBORDERS        2
 #define TEXTHMARGIN     1
 #define TEXTHMARGINS    (TEXTHMARGIN + TEXTHMARGIN)
 
@@ -42,9 +42,9 @@ extern struct bsddialog_theme t;
 extern bool hastermcolors;
 
 /* debug */
-#define BSDDIALOG_DEBUG(y,x,fmt, ...) do {	\
-	mvprintw(y, x, fmt, __VA_ARGS__);	\
-	refresh();				\
+#define BSDDIALOG_DEBUG(y,x,fmt, ...) do {                                     \
+	mvprintw(y, x, fmt, __VA_ARGS__);                                      \
+	refresh();                                                             \
 } while (0)
 
 /* date */
@@ -61,14 +61,14 @@ const char *get_error_string(void);
 void set_error_string(const char *string);
 void set_fmt_error_string(const char *fmt, ...);
 
-#define RETURN_ERROR(str) do {			\
-	set_error_string(str);			\
-	return (BSDDIALOG_ERROR);		\
+#define RETURN_ERROR(str) do {                                                 \
+	set_error_string(str);                                                 \
+	return (BSDDIALOG_ERROR);                                              \
 } while (0)
 
-#define RETURN_FMTERROR(fmt, ...) do {		\
-	set_fmt_error_string(fmt, __VA_ARGS__);	\
-	return (BSDDIALOG_ERROR);		\
+#define RETURN_FMTERROR(fmt, ...) do {                                         \
+	set_fmt_error_string(fmt, __VA_ARGS__);                                \
+	return (BSDDIALOG_ERROR);                                              \
 } while (0)
 
 /* buttons */
