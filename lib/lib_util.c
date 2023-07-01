@@ -52,6 +52,15 @@ void set_error_string(const char *str)
 	strncpy(errorbuffer, str, ERRBUFLEN-1);
 }
 
+void set_fmt_error_string(const char *fmt, ...)
+{
+   va_list arg_ptr;
+
+   va_start(arg_ptr, fmt);
+   vsnprintf(errorbuffer, ERRBUFLEN-1, fmt, arg_ptr);
+   va_end(arg_ptr);
+}
+
 /* Unicode */
 wchar_t* alloc_mbstows(const char *mbstring)
 {

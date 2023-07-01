@@ -59,9 +59,15 @@ wchar_t* alloc_mbstows(const char *mbstring);
 /* error buffer */
 const char *get_error_string(void);
 void set_error_string(const char *string);
+void set_fmt_error_string(const char *fmt, ...);
 
 #define RETURN_ERROR(str) do {			\
 	set_error_string(str);			\
+	return (BSDDIALOG_ERROR);		\
+} while (0)
+
+#define RETURN_FMTERROR(fmt, ...) do {		\
+	set_fmt_error_string(fmt, __VA_ARGS__);	\
 	return (BSDDIALOG_ERROR);		\
 } while (0)
 
