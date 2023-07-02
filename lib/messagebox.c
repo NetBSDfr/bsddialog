@@ -40,7 +40,7 @@ message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 
 	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE ||
 	    hastext != NULL) {
-		if (text_size(conf, rows, cols, text, &bs, 0, 1, &htext,
+		if (text_size(conf, rows, cols, text, &bs, 0, 0, &htext,
 		    &wtext) != 0)
 			return (BSDDIALOG_ERROR);
 		if (hastext != NULL)
