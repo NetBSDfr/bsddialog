@@ -1167,7 +1167,8 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 	}
 
 	if (textpad != NULL && text != NULL) { /* textbox */
-		*textpad = newpad(1, w - HBORDERS - TEXTHMARGINS);
+		/* w textpad at least 1 for infobox without text */
+		*textpad = newpad(1, MAX(w - HBORDERS - TEXTHMARGINS, 1));
 		if (*textpad == NULL) {
 			delwin(*widget);
 			if (conf->shadow)
