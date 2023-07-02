@@ -34,17 +34,14 @@
 
 static int
 message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, const char *text, bool *hastext, struct buttons bs)
+    int *w, const char *text, struct buttons bs)
 {
 	int htext, wtext;
 
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE ||
-	    hastext != NULL) {
+	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
 		if (text_size(conf, rows, cols, text, &bs, 0, 0, &htext,
 		    &wtext) != 0)
 			return (BSDDIALOG_ERROR);
-		if (hastext != NULL)
-			*hastext = htext > 0 ? true : false;
 	}
 
 	if (cols == BSDDIALOG_AUTOSIZE)
@@ -104,9 +101,11 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	WINDOW *widget, *textpad, *shadow;
 	wint_t input;
 
+	hastext = has_word(conf, text);
+
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (message_autosize(conf, rows, cols, &h, &w, text, &hastext, bs) != 0)
+	if (message_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (message_checksize(h, w, hastext, bs) != 0)
 		return (BSDDIALOG_ERROR);
@@ -196,7 +195,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
 			if (message_autosize(conf, rows, cols, &h, &w, text,
-			    NULL, bs) != 0)
+			    bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (message_checksize(h, w, hastext, bs) != 0)
 				return (BSDDIALOG_ERROR);

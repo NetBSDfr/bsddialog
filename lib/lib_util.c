@@ -567,7 +567,7 @@ struct textproperties {
 
 static int
 text_properties(struct bsddialog_conf *conf, const char *text,
-    struct textproperties *tp)
+    struct textproperties *tp, bool just_has_text)
 {
 	int i, l, currlinecols, maxwords, wtextlen, tablen, wordcols;
 	wchar_t *wtext;
@@ -592,6 +592,9 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	wordcols = 0;
 	l = 0;
 	for (i = 0; i < wtextlen; i++) {
+		if (just_has_text && tp->nword > 0)
+			break; /* has_word() used by msgbox and yesno */
+
 		if (conf->text.highlight && is_wtext_attr(wtext + i)) {
 			i += 2; /* +1 for update statement */
 			continue;
@@ -660,6 +663,18 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	return (0);
 }
 
+bool has_word(struct bsddialog_conf *conf, const char *text)
+{
+	struct textproperties tp;
+
+	if (text_properties(conf, text, &tp, true) != 0)
+		return (BSDDIALOG_ERROR);
+
+	free(tp.words);
+	free(tp.wletters);
+
+	return (tp.nword > 0);
+}
 
 static int
 text_autosize(struct bsddialog_conf *conf, struct textproperties *tp,
@@ -785,7 +800,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		startwtext = 1;
 
 	/* Sizing calculation */
-	if (text_properties(conf, text, &tp) != 0)
+	if (text_properties(conf, text, &tp, false) != 0)
 		return (BSDDIALOG_ERROR);
 	if (tp.nword > 0 && startwtext <= 0)
 		RETURN_FMTERROR(

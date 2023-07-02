@@ -107,6 +107,9 @@ int hide_dialog(int y, int x, int h, int w, bool withshadow);
 /* help window with F1 key */
 int f1help_dialog(struct bsddialog_conf *conf);
 
+/* text */
+bool has_word(struct bsddialog_conf *conf, const char *text);
+
 /* (auto) size and (auto) position */
 #define SCREENLINES (getmaxy(stdscr))
 #define SCREENCOLS  (getmaxx(stdscr))
