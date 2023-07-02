@@ -3,6 +3,7 @@ WIP Version 0.5
 	Library:
 	* add: environment variable NO_COLOR.
 	* add: bsddialog_rangebox() *value check size and init value.
+	* improve: DIAGNOSTIC adding fmt strings for bsddialog_geterror().
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
 
