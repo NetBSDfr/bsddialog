@@ -405,86 +405,62 @@ update_formborders(struct bsddialog_conf *conf, struct privateform *form)
 	}
 }
 
-/* use menu autosizing, linelen = form.w, nitems = form.h */
 static int
-menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    const char *text, int linelen, unsigned int *menurows, int nitems,
-    struct buttons bs)
+form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
+    const char *text, struct privateform *f, struct buttons bs)
 {
-	int htext, wtext, menusize, notext;
+	int htext, wtext, hform;
 
-	notext = 2;
-	if (*menurows == BSDDIALOG_AUTOSIZE) {
-		/* algo 1): grows vertically */
-		/* notext = 1; */
-		/* algo 2): grows horizontally, better with little screens */
-		notext += nitems;
-		notext = MIN(notext, widget_max_height(conf) - HBORDERS - 3);
-	} else
-		notext += *menurows;
+	hform = (int) f->viewrows;
+	if (f->viewrows == BSDDIALOG_AUTOSIZE)
+		hform = MAX(f->w, f->minviewrows);
+	hform += 2; /* formborders */
 
-	if (text_size(conf, rows, cols, text, &bs, notext, linelen + 4, &htext,
+	if (text_size(conf, rows, cols, text, &bs, hform, f->w + 4, &htext,
 	    &wtext) != 0)
 		return (BSDDIALOG_ERROR);
 
+	if (rows == BSDDIALOG_AUTOSIZE)
+		*h = widget_min_height(conf, htext, hform, true);
+
 	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, linelen + 4, &bs);
+		*w = widget_min_width(conf, wtext, f->w + 4, &bs);
 
-	if (rows == BSDDIALOG_AUTOSIZE) {
-		if (*menurows == BSDDIALOG_AUTOSIZE) {
-			menusize = widget_max_height(conf) - HBORDERS -
-			     2 /*buttons*/ - htext;
-			menusize = MIN(menusize, nitems + 2);
-			*menurows = menusize - 2 < 0 ? 0 : menusize - 2;
-		} else /* h autosize with fixed menurows */
-			menusize = *menurows + 2;
-
-		*h = widget_min_height(conf, htext, menusize, true);
-	} else { /* fixed rows */
-		if (*menurows == BSDDIALOG_AUTOSIZE) {
-			if (*h - 6 - htext <= 0)
-				*menurows = 0; /* form_checksize() will check */
-			else
-				*menurows = MIN(*h-6-htext, nitems);
-		}
+	/* formheight: avoid overflow, "at most" and at least minviewrows */
+	if (*h - HBORDERS - htext - HBUTTONS < 2 + (int)f->minviewrows) {
+		f->viewrows = f->minviewrows; /* check for checksize() */
+	} else if (f->viewrows == BSDDIALOG_AUTOSIZE) {
+		f->viewrows = MIN(*h - HBORDERS - htext - HBUTTONS, hform) - 2;
+		f->viewrows = MAX(f->viewrows, f->minviewrows);
+	} else {
+		f->viewrows = MIN(*h - HBORDERS - htext - HBUTTONS, hform) - 2;
 	}
-
-	/* avoid menurows overflow and menurows becomes at most menurows */
-	if (*h - 6 - htext <= 0)
-		*menurows = 0; /* form_checksize() will check */
-	else
-		*menurows = MIN(*h - 6 - htext, (int)*menurows);
 
 	return (0);
 }
 
 static int
-form_checksize(int h, int w, const char *text, struct privateform *form,
-    int nitems, struct buttons bs)
+form_checksize(int h, int w, struct privateform *form, struct buttons bs)
 {
-	int mincols, textrow, menusize;
+	int mincols, minrows;
+
+	/* rows */
+	if (form->viewrows < form->minviewrows)
+		RETURN_FMTERROR("formheight, current: %u needed at least %u",
+		    form->viewrows, form->minviewrows);
+	
+	minrows = HBORDERS + 2 + form->minviewrows + HBUTTONS;
+	if (h < minrows)
+		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
+		    h, minrows);
 
 	/* cols */
 	mincols = VBORDERS;
 	mincols += buttons_min_width(bs);
 	mincols = MAX(mincols, (int)form->w + 6);
-
 	if (w < mincols)
-		RETURN_ERROR("Form width, cols < buttons or xlabels/xfields");
-
-	/* rows */
-	if (nitems > 0 && form->viewrows == 0)
-		RETURN_ERROR("items > 0 but viewrows == 0, if formheight = 0 "
-		    "terminal too small");
-
-	if (form->viewrows < form->minviewrows)
-		RETURN_ERROR("Few formheight rows, if formheight = 0 terminal "
-		    "too small");
-
-	textrow = text != NULL && text[0] != '\0' ? 1 : 0;
-	menusize = nitems > 0 ? 3 : 0;
-	if (h < 2  + 2 + menusize + textrow)
-		RETURN_ERROR("Few lines for this form");
+		RETURN_FMTERROR("Current cols: %d, needed at least: %d",
+		    w, mincols);
 
 	return (0);
 }
@@ -621,10 +597,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (menu_autosize(conf, rows, cols, &h, &w, text, form.w,
-	    &form.viewrows, form.h, bs) != 0)
+	if (form_autosize(conf, rows, cols, &h, &w, text, &form, bs) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_checksize(h, w, text, &form, nitems, bs) != 0)
+	if (form_checksize(h, w, &form, bs) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -819,10 +794,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			form.w = form.wmin;
 			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
-			if (menu_autosize(conf, rows, cols, &h, &w, text, form.w,
-			    &form.viewrows, form.h, bs) != 0)
+			if (form_autosize(conf, rows, cols, &h, &w, text, &form,
+			    bs) != 0)
 				return (BSDDIALOG_ERROR);
-			if (form_checksize(h, w, text, &form, nitems, bs) != 0)
+			if (form_checksize(h, w, &form, bs) != 0)
 				return (BSDDIALOG_ERROR);
 			if (set_widget_position(conf, &y, &x, h, w) != 0)
 				return (BSDDIALOG_ERROR);
