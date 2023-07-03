@@ -3,7 +3,7 @@
 #
 # Written in 2021 by Alfonso Sabato Siciliano
 
-VERSION = 0.4.2
+VERSION = 0.5-devel
 LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
 HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
