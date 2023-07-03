@@ -118,9 +118,6 @@ int
 text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
     struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext);
 
-int widget_max_height(struct bsddialog_conf *conf);
-int widget_max_width(struct bsddialog_conf *conf);
-
 int
 widget_min_height(struct bsddialog_conf *conf, int htext, int hnotext,
     bool withbuttons);

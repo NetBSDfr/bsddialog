@@ -39,6 +39,9 @@
 
 #define ERRBUFLEN    1024 /* Error buffer len */
 
+static int widget_max_height(struct bsddialog_conf *conf);
+static int widget_max_width(struct bsddialog_conf *conf);
+
 /* Error */
 static char errorbuffer[ERRBUFLEN];
 
@@ -817,7 +820,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 }
 
 /* Widget size and position */
-int widget_max_height(struct bsddialog_conf *conf)
+static int widget_max_height(struct bsddialog_conf *conf)
 {
 	int maxheight;
 
@@ -847,7 +850,7 @@ int widget_max_height(struct bsddialog_conf *conf)
 	return (maxheight);
 }
 
-int widget_max_width(struct bsddialog_conf *conf)
+static int widget_max_width(struct bsddialog_conf *conf)
 {
 	int maxwidth;
 
