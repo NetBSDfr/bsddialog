@@ -348,7 +348,7 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 {
 	int htext, wtext, hmenu;
 
-	hmenu = (*menurows == BSDDIALOG_AUTOSIZE) ? nitems :(int)*menurows;
+	hmenu = (*menurows == BSDDIALOG_AUTOSIZE) ? nitems : (int)*menurows;
 	hmenu += 2;
 	/* 
 	 * algo 1): grows vertically
