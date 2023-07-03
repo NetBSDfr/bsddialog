@@ -379,7 +379,7 @@ static int menu_checksize(int h, int w, int menurows, struct buttons bs)
 {
 	int minrows, mincols;
 
-	minrows = HBORDERS + 2 /* menuborders */ + menurows + HBUTTONS;
+	minrows = HBORDERS + 2 /* menuborders */ + MIN(menurows,1) + HBUTTONS;
 	if (h < minrows)
 		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
 		    h, minrows);
