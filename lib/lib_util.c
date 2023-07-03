@@ -246,7 +246,7 @@ void draw_buttons(WINDOW *window, struct buttons bs)
 	getmaxyx(window, rows, cols);
 	y = rows - 2;
 
-	newmargin = cols - VBORDERS - (bs.nbuttons * bs.sizebutton);
+	newmargin = cols - BORDERS - (bs.nbuttons * bs.sizebutton);
 	newmargin /= (bs.nbuttons + 1);
 	newmargin = MIN(newmargin, t.button.maxmargin);
 	if (newmargin == 0) {
@@ -685,13 +685,13 @@ text_autosize(struct bsddialog_conf *conf, struct textproperties *tp,
 {
 	int i, j, x, y, z, l, line, maxwidth, tablen;
 
-	maxwidth = widget_max_width(conf) - HBORDERS - TEXTHMARGINS;
+	maxwidth = widget_max_width(conf) - BORDERS - TEXTHMARGINS;
 	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
 
 	if (increasecols) {
 		mincols = MAX(mincols, tp->maxwordcols);
 		mincols = MAX(mincols,
-		    (int)conf->auto_minwidth - HBORDERS - TEXTHMARGINS);
+		    (int)conf->auto_minwidth - BORDERS - TEXTHMARGINS);
 		mincols = MIN(mincols, maxwidth);
 	}
 
@@ -778,9 +778,9 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 
 	/* Rows */
 	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
-		maxhtext = widget_max_height(conf) - VBORDERS - rowsnotext;
+		maxhtext = widget_max_height(conf) - BORDERS - rowsnotext;
 	} else { /* fixed */
-		maxhtext = rows - VBORDERS - rowsnotext;
+		maxhtext = rows - BORDERS - rowsnotext;
 	}
 	if (bs != NULL)
 		maxhtext -= 2;
@@ -792,10 +792,10 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		startwtext = MAX(startwtext, wbuttons - TEXTHMARGINS);
 		changewtext = true;
 	} else if (cols == BSDDIALOG_FULLSCREEN) {
-		startwtext = widget_max_width(conf) - VBORDERS - TEXTHMARGINS;
+		startwtext = widget_max_width(conf) - BORDERS - TEXTHMARGINS;
 		changewtext = false;
 	} else { /* fixed */
-		startwtext = cols - VBORDERS - TEXTHMARGINS;
+		startwtext = cols - BORDERS - TEXTHMARGINS;
 		changewtext = false;
 	}
 
@@ -808,7 +808,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	if (tp.nword > 0 && startwtext <= 0)
 		RETURN_FMTERROR(
 		    "(fullscreen or fixed cols) min %d cols to draw text",
-		    VBORDERS + TEXTHMARGINS + 1);
+		    BORDERS + TEXTHMARGINS + 1);
 	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, htext,
 	    wtext) != 0)
 		return (BSDDIALOG_ERROR);
@@ -875,7 +875,7 @@ widget_min_height(struct bsddialog_conf *conf, int htext, int hnotext,
 	int min;
 
 	/* dialog borders */
-	min = HBORDERS;
+	min = BORDERS;
 
 	/* text */
 	min += htext;
@@ -929,7 +929,7 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	}
 
 	/* dialog borders */
-	min += VBORDERS;
+	min += BORDERS;
 	/* conf.auto_minwidth */
 	min = MAX(min, (int)conf->auto_minwidth);
 	/* avoid terminal overflow */
@@ -1157,7 +1157,7 @@ update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
 
 	if (textpad != NULL) {
 		wclear(textpad);
-		wresize(textpad, 1, w - HBORDERS - TEXTHMARGINS);
+		wresize(textpad, 1, w - BORDERS - TEXTHMARGINS);
 	}
 
 	error = draw_dialog(conf, shadow, widget, textpad, text, bs);
@@ -1186,7 +1186,7 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 
 	if (textpad != NULL && text != NULL) { /* textbox */
 		/* w textpad at least 1 for infobox without text */
-		*textpad = newpad(1, MAX(w - HBORDERS - TEXTHMARGINS, 1));
+		*textpad = newpad(1, MAX(w - BORDERS - TEXTHMARGINS, 1));
 		if (*textpad == NULL) {
 			delwin(*widget);
 			if (conf->shadow)

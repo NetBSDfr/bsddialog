@@ -34,7 +34,7 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MIN_HEIGHT  VBORDERS + 6 /* 2 buttons 1 text 3 menu */
+#define MIN_HEIGHT  BORDERS + 6 /* 2 buttons 1 text 3 menu */
 
 enum menumode {
 	CHECKLISTMODE,
@@ -367,10 +367,10 @@ menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*w = widget_min_width(conf, wtext, linelen + 4, &bs);
 
 	/* avoid menurows overflow and menurows becomes "at most menurows" */
-	if (*h - HBORDERS - htext - HBUTTONS <= 2 /* menuborders */)
+	if (*h - BORDERS - htext - HBUTTONS <= 2 /* menuborders */)
 		*menurows = (nitems > 0) ? 1 : 0; /* check for checksize() */
 	else
-		*menurows = MIN(*h - HBORDERS - htext - HBUTTONS, hmenu) - 2;
+		*menurows = MIN(*h - BORDERS - htext - HBUTTONS, hmenu) - 2;
 
 	return (0);
 }
@@ -379,12 +379,12 @@ static int menu_checksize(int h, int w, int menurows, struct buttons bs)
 {
 	int minrows, mincols;
 
-	minrows = HBORDERS + 2 /* menuborders */ + MIN(menurows, 1) + HBUTTONS;
+	minrows = BORDERS + 2 /* menuborders */ + MIN(menurows, 1) + HBUTTONS;
 	if (h < minrows)
 		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
 		    h, minrows);
 
-	mincols = VBORDERS + buttons_min_width(bs);
+	mincols = BORDERS + buttons_min_width(bs);
 	/*
 	 * no linelen check to avoid big menu fault, then some col can be
 	 * hidden (example portconfig www/apache24).

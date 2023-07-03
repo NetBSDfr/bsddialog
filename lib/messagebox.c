@@ -57,16 +57,16 @@ static int message_checksize(int h, int w, bool hastext, struct buttons bs)
 {
 	int mincols;
 
-	mincols = VBORDERS;
+	mincols = BORDERS;
 	mincols += buttons_min_width(bs);
 
 	if (w < mincols)
 		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "
 		    "for borders, buttons and spaces between buttons");
 
-	if (h < HBORDERS + 2 /* buttons */)
+	if (h < BORDERS + 2 /* buttons */)
 		RETURN_ERROR("Msgbox and Yesno need at least 4 rows");
-	if (hastext && h < HBORDERS + 2 /*buttons*/ + 1 /* text row */)
+	if (hastext && h < BORDERS + 2 /*buttons*/ + 1 /* text row */)
 		RETURN_ERROR("Msgbox and Yesno with text need at least 5 rows");
 
 	return (0);

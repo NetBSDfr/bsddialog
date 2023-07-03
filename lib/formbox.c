@@ -427,13 +427,13 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		*w = widget_min_width(conf, wtext, f->w + 4, &bs);
 
 	/* formheight: avoid overflow, "at most" and at least minviewrows */
-	if (*h - HBORDERS - htext - HBUTTONS < 2 + (int)f->minviewrows) {
+	if (*h - BORDERS - htext - HBUTTONS < 2 + (int)f->minviewrows) {
 		f->viewrows = f->minviewrows; /* check for checksize() */
 	} else if (f->viewrows == BSDDIALOG_AUTOSIZE) {
-		f->viewrows = MIN(*h - HBORDERS - htext - HBUTTONS, hform) - 2;
+		f->viewrows = MIN(*h - BORDERS - htext - HBUTTONS, hform) - 2;
 		f->viewrows = MAX(f->viewrows, f->minviewrows);
 	} else {
-		f->viewrows = MIN(*h - HBORDERS - htext - HBUTTONS, hform) - 2;
+		f->viewrows = MIN(*h - BORDERS - htext - HBUTTONS, hform) - 2;
 	}
 
 	return (0);
@@ -449,13 +449,13 @@ form_checksize(int h, int w, struct privateform *form, struct buttons bs)
 		RETURN_FMTERROR("formheight, current: %u needed at least %u",
 		    form->viewrows, form->minviewrows);
 	
-	minrows = HBORDERS + 2 + form->minviewrows + HBUTTONS;
+	minrows = BORDERS + 2 + form->minviewrows + HBUTTONS;
 	if (h < minrows)
 		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
 		    h, minrows);
 
 	/* cols */
-	mincols = VBORDERS;
+	mincols = BORDERS;
 	mincols += buttons_min_width(bs);
 	mincols = MAX(mincols, (int)form->w + 6);
 	if (w < mincols)

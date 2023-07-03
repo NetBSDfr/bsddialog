@@ -91,7 +91,7 @@ static int datetime_checksize(int h, int w, int minw, struct buttons bs)
 {
 	int mincols;
 
-	mincols = VBORDERS;
+	mincols = BORDERS;
 	mincols += buttons_min_width(bs);
 	mincols = MAX(minw, mincols);
 

@@ -270,7 +270,7 @@ static int calendar_checksize(int h, int w, struct buttons bs)
 	int mincols;
 
 	mincols = MAX(MINWCAL, buttons_min_width(bs));
-	mincols += VBORDERS;
+	mincols += BORDERS;
 
 	if (w < mincols)
 		RETURN_ERROR("Few cols for this calendar (at least 38)");

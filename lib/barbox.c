@@ -106,7 +106,7 @@ bar_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
 {
 	int minheight, minwidth;
 
-	minheight = HBORDERS + hnotext;
+	minheight = BORDERS + hnotext;
 	if (bs != NULL)
 		minheight += HBUTTONS;
 	if (h < minheight)
@@ -117,7 +117,7 @@ bar_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
 	if (bs != NULL)
 		minwidth = buttons_min_width(*bs);
 	minwidth = MAX(minwidth, minw);
-	minwidth += VBORDERS;
+	minwidth += BORDERS;
 	if (w < minwidth)
 		RETURN_FMTERROR("Current cols: %d, nedded at least %d",
 		    w, minwidth);
@@ -432,7 +432,7 @@ rangebox_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
 	doupdate();
 
 	wclear(bar);
-	*sizebar = *w - HBORDERS - (2 * BARPADDING) - 2;
+	*sizebar = *w - BORDERS - (2 * BARPADDING) - 2;
 	*bigchange = MAX(1, *sizebar/10);
 	wresize(bar, 3, *sizebar + 2);
 	mvwin(bar, *y + *h - 6, *x + 1 + BARPADDING);
@@ -476,7 +476,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 	doupdate();
 
-	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
+	sizebar = w - BORDERS - (2 * BARPADDING) - 2;
 	bigchange = MAX(1, sizebar/10);
 	if ((bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED)) == NULL)
@@ -604,7 +604,7 @@ pause_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
 	doupdate();
 
 	wclear(bar);
-	*sizebar = *w - HBORDERS - (2 * BARPADDING) - 2;
+	*sizebar = *w - BORDERS - (2 * BARPADDING) - 2;
 	wresize(bar, 3, *sizebar + 2);
 	mvwin(bar, *y + *h - 6, *x + 1 + BARPADDING);
 	draw_borders(conf, bar, 3, *sizebar+2, RAISED);
@@ -632,7 +632,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 	doupdate();
 
-	sizebar = w - HBORDERS - (2 * BARPADDING) - 2;
+	sizebar = w - BORDERS - (2 * BARPADDING) - 2;
 	if ((bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
 	    sizebar + 2, RAISED)) == NULL)
 		return (BSDDIALOG_ERROR);
