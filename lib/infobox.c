@@ -34,7 +34,7 @@ int
 bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols)
 {
-	int y, x, h, w, htext;
+	int y, x, h, w, htext, minw;
 	WINDOW *shadow, *widget, *textpad;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
@@ -42,7 +42,8 @@ bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
 	if (set_widget_autosize(conf, rows, cols, &h, &w, text, &htext, NULL, 0,
 	    0) != 0)
 		return (BSDDIALOG_ERROR);
-	if (widget_checksize(h, w, NULL, MIN(htext,1), MIN(htext,1)) != 0)
+	minw = (htext > 0) ? 1 + TEXTHMARGINS : 0;
+	if (widget_checksize(h, w, NULL, MIN(htext,1), minw) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
