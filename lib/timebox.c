@@ -66,44 +66,6 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
 	wrefresh(win);
 }
 
-static int
-datetime_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, int minw, const char *text, struct buttons bs)
-{
-	int htext, wtext;
-
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, &bs, 3, minw, &htext,
-		    &wtext) != 0)
-			return (BSDDIALOG_ERROR);
-	}
-
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, minw, &bs);
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, 3 /* windows */, true);
-
-	return (0);
-}
-
-static int datetime_checksize(int h, int w, int minw, struct buttons bs)
-{
-	int mincols;
-
-	mincols = BORDERS;
-	mincols += buttons_min_width(bs);
-	mincols = MAX(minw, mincols);
-
-	if (w < mincols)
-		RETURN_ERROR("Few cols for this timebox/datebox");
-
-	if (h < 7) /* 2 button + 2 borders + 3 windows */
-		RETURN_ERROR("Few rows for this timebox/datebox, at least 7");
-
-	return (0);
-}
-
 int
 bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
     int cols, unsigned int *hh, unsigned int *mm, unsigned int *ss)
@@ -134,17 +96,9 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	}
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-
-	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+	if (widget_size_position(conf, rows, cols, text, 3 /*windows*/,
+	    MINWTIME, &bs, &y, &x, &h, &w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_autosize(conf, rows, cols, &h, &w, MINWTIME, text,
-	    bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (datetime_checksize(h, w, MINWTIME, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -248,16 +202,10 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
-			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+			if (widget_size_position(conf, rows, cols, text,
+			    3 /*windows*/, MINWTIME, &bs, &y, &x, &h, &w,
+			    NULL) != 0)
 				return (BSDDIALOG_ERROR);
-			if (datetime_autosize(conf, rows, cols, &h, &w,
-			    MINWTIME, text, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (datetime_checksize(h, w, MINWTIME, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return (BSDDIALOG_ERROR);
-
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
@@ -350,17 +298,9 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		c[2].value = c[2].max;
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-
-	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+	if (widget_size_position(conf, rows, cols, text, 3 /*windows*/,
+	    MINWDATE, &bs, &y, &x, &h, &w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
-	if (datetime_autosize(conf, rows, cols, &h, &w, MINWDATE, text,
-	    bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (datetime_checksize(h, w, MINWDATE, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -482,16 +422,10 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
-			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+			if (widget_size_position(conf, rows, cols, text,
+			    3 /*windows*/, MINWDATE, &bs, &y, &x, &h, &w,
+			    NULL) != 0)
 				return (BSDDIALOG_ERROR);
-			if (datetime_autosize(conf, rows, cols, &h, &w,
-			    MINWDATE, text, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (datetime_checksize(h, w, MINWDATE, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return (BSDDIALOG_ERROR);
-
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
