@@ -32,46 +32,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-static int
-message_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, const char *text, struct buttons bs)
-{
-	int htext, wtext;
-
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, &bs, 0, 0, &htext,
-		    &wtext) != 0)
-			return (BSDDIALOG_ERROR);
-	}
-
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, 0, &bs);
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, 0, true);
-
-	return (0);
-}
-
-static int message_checksize(int h, int w, bool hastext, struct buttons bs)
-{
-	int mincols;
-
-	mincols = BORDERS;
-	mincols += buttons_min_width(bs);
-
-	if (w < mincols)
-		RETURN_ERROR("Few cols, Msgbox and Yesno need at least width "
-		    "for borders, buttons and spaces between buttons");
-
-	if (h < BORDERS + 2 /* buttons */)
-		RETURN_ERROR("Msgbox and Yesno need at least 4 rows");
-	if (hastext && h < BORDERS + 2 /*buttons*/ + 1 /* text row */)
-		RETURN_ERROR("Msgbox and Yesno with text need at least 5 rows");
-
-	return (0);
-}
-
 static void
 textupdate(WINDOW *widget, WINDOW *textpad, int htextpad, int ytextpad,
     bool hastext)
@@ -92,26 +52,41 @@ textupdate(WINDOW *widget, WINDOW *textpad, int htextpad, int ytextpad,
 	pnoutrefresh(textpad, ytextpad, 0, y+1, x+2, y+h-4, x+w-2);
 }
 
+int
+message_size_position(struct bsddialog_conf *conf, int rows, int cols,
+    const char *text, struct buttons *bs, int *y, int *x, int *h, int *w,
+    int *htext)
+{
+	int minw;
+
+	if (set_widget_size(conf, rows, cols, h, w) != 0)
+		return (BSDDIALOG_ERROR);
+	if (set_widget_autosize(conf, rows, cols, h, w, text,
+	    (*htext < 0) ? htext : NULL, bs, 0, 0) != 0)
+		return (BSDDIALOG_ERROR);
+	minw = (*htext > 0) ? 1 + TEXTHMARGINS: 0;
+	if (widget_checksize(*h, *w, bs, MIN(*htext, 1), minw) != 0)
+		return (BSDDIALOG_ERROR);
+	if (set_widget_position(conf, y, x, *h, *w) != 0)
+		return (BSDDIALOG_ERROR);
+
+	return (0);
+}
+
 static int
 do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct buttons bs)
 {
 	bool hastext, loop;
-	int y, x, h, w, retval, ytextpad, htextpad, printrows, unused;
+	int y, x, h, w, retval, htext, ytextpad, htextpad, printrows, unused;
 	WINDOW *widget, *textpad, *shadow;
 	wint_t input;
 
-	hastext = has_word(conf, text);
-
-	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+	htext = -1;
+	if (message_size_position(conf, rows, cols, text, &bs, &y, &x, &h, &w,
+	    &htext) != 0)
 		return (BSDDIALOG_ERROR);
-	if (message_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (message_checksize(h, w, hastext, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-
+	hastext = (htext > 0) ? true : false;
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -192,16 +167,9 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
-			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+			if (message_size_position(conf, rows, cols, text, &bs,
+			    &y, &x, &h, &w, &htext) != 0)
 				return (BSDDIALOG_ERROR);
-			if (message_autosize(conf, rows, cols, &h, &w, text,
-			    bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (message_checksize(h, w, hastext, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return (BSDDIALOG_ERROR);
-
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
