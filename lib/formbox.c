@@ -405,6 +405,19 @@ update_formborders(struct bsddialog_conf *conf, struct privateform *form)
 	}
 }
 
+static void curriteminview(struct privateform *form, struct privateitem *item)
+{
+	unsigned int yup, ydown;
+
+	yup = MIN(item->ylabel, item->yfield);
+	ydown = MAX(item->ylabel, item->yfield);
+
+	if (form->y > yup && form->y > 0)
+		form->y = yup;
+	if ((int)(form->y + form->viewrows) - 1 < (int)ydown)
+		form->y = ydown - form->viewrows + 1;
+}
+
 static int
 form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
     const char *text, struct privateform *f, struct buttons bs)
@@ -463,19 +476,6 @@ form_checksize(int h, int w, struct privateform *form, struct buttons bs)
 		    w, mincols);
 
 	return (0);
-}
-
-static void curriteminview(struct privateform *form, struct privateitem *item)
-{
-	unsigned int yup, ydown;
-
-	yup = MIN(item->ylabel, item->yfield);
-	ydown = MAX(item->ylabel, item->yfield);
-
-	if (form->y > yup && form->y > 0)
-		form->y = yup;
-	if ((int)(form->y + form->viewrows) - 1 < (int)ydown)
-		form->y = ydown - form->viewrows + 1;
 }
 
 /* API */
