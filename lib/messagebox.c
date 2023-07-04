@@ -53,7 +53,7 @@ textupdate(WINDOW *widget, WINDOW *textpad, int ytextpad, int htextpad,
 	pnoutrefresh(textpad, ytextpad, 0, y+1, x+2, y+h-4, x+w-2);
 }
 
-int
+static int
 message_size_position(struct bsddialog_conf *conf, int rows, int cols,
     const char *text, struct buttons *bs, int *y, int *x, int *h, int *w,
     int *htext)
