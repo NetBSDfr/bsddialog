@@ -317,7 +317,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wattroff(bar, t.bar.color);
 
 	wrefresh(bar);
-	/* getch(); alternate mode (port devel/ncurses) shows nothing */
+	/* getch(); "alternate mode" shows nothing (ex. port devel/ncurses) */
 
 	delwin(bar);
 	end_dialog(conf, shadow, widget, textpad);
