@@ -30,51 +30,19 @@
 #include "bsddialog.h"
 #include "lib_util.h"
 
-static int
-infobox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, const char *text)
-{
-	int htext, wtext;
-
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, NULL, 0, 0, &htext,
-		    &wtext) != 0)
-			return (BSDDIALOG_ERROR);
-	}
-
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, 0, NULL);
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, 0, false);
-
-	return (0);
-}
-
-static int infobox_checksize(int h, int w)
-{
-	if (w < BORDERS)
-		RETURN_ERROR("Few cols, infobox needs at least width 2");
-
-	if (h < BORDERS)
-		RETURN_ERROR("Infobox needs at least height 2");
-
-	return (0);
-}
-
-/* API */
 int
 bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols)
 {
-	int y, x, h, w;
+	int y, x, h, w, htext;
 	WINDOW *shadow, *widget, *textpad;
 
 	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (infobox_autosize(conf, rows, cols, &h, &w, text) != 0)
+	if (set_widget_autosize(conf, rows, cols, &h, &w, text, &htext, NULL, 0,
+	    0) != 0)
 		return (BSDDIALOG_ERROR);
-	if (infobox_checksize(h, w) != 0)
+	if (widget_checksize(h, w, NULL, MIN(htext,1), MIN(htext,1)) != 0)
 		return (BSDDIALOG_ERROR);
 	if (set_widget_position(conf, &y, &x, h, w) != 0)
 		return (BSDDIALOG_ERROR);
