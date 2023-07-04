@@ -969,6 +969,54 @@ set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w)
 }
 
 int
+set_widget_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
+    int *w, const char *text, int *rowstext, struct buttons *bs, int hnotext,
+    int minw)
+{
+	int htext, wtext;
+
+	if (rows == BSDDIALOG_AUTOSIZE || cols == BSDDIALOG_AUTOSIZE ||
+	    rowstext != NULL) {
+		if (text_size(conf, rows, cols, text, bs, hnotext, minw,
+		    &htext, &wtext) != 0)
+			return (BSDDIALOG_ERROR);
+		if (rowstext != NULL)
+			*rowstext = htext;
+	}
+
+	if (rows == BSDDIALOG_AUTOSIZE)
+		*h = widget_min_height(conf, htext, hnotext, bs != NULL);
+		
+	if (cols == BSDDIALOG_AUTOSIZE)
+		*w = widget_min_width(conf, wtext, minw, bs);
+
+	return (0);
+}
+
+int widget_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
+{
+	int minheight, minwidth;
+
+	minheight = BORDERS + hnotext;
+	if (bs != NULL)
+		minheight += HBUTTONS;
+	if (h < minheight)
+		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
+		    h, minheight);
+
+	minwidth = 0;
+	if (bs != NULL)
+		minwidth = buttons_min_width(*bs);
+	minwidth = MAX(minwidth, minw);
+	minwidth += BORDERS;
+	if (w < minwidth)
+		RETURN_FMTERROR("Current cols: %d, nedded at least %d",
+		    w, minwidth);
+
+	return (0);
+}
+
+int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 {
 	int hshadow = conf->shadow ? (int)t.shadow.y : 0;
@@ -1005,6 +1053,24 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	if ((*x + w + wshadow) > SCREENCOLS)
 		RETURN_ERROR("The right of the box over the terminal "
 		    "(begin X + width (+ shadow) > terminal cols)");
+
+	return (0);
+}
+
+int
+widget_size_position(struct bsddialog_conf *conf, int rows, int cols,
+    const char *text, int hnotext, int minw, struct buttons *bs, int *y, int *x,
+    int *h, int *w, int *htext)
+{
+	if (set_widget_size(conf, rows, cols, h, w) != 0)
+		return (BSDDIALOG_ERROR);
+	if (set_widget_autosize(conf, rows, cols, h, w, text, htext, bs,
+	    hnotext, minw) != 0)
+		return (BSDDIALOG_ERROR);
+	if (widget_checksize(*h, *w, bs, hnotext, minw) != 0)
+		return (BSDDIALOG_ERROR);
+	if (set_widget_position(conf, y, x, *h, *w) != 0)
+		return (BSDDIALOG_ERROR);
 
 	return (0);
 }
