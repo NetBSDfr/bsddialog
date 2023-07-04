@@ -80,71 +80,6 @@ draw_bar(WINDOW *win, int y, int x, int barlen, int perc, bool withlabel,
 	}
 }
 
-static int
-bar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    const char *text, int *rowstext, struct buttons *bs, int hnotext, int minw)
-{
-	int htext, wtext;
-
-	if (rows == BSDDIALOG_AUTOSIZE || cols == BSDDIALOG_AUTOSIZE ||
-	    rowstext != NULL) {
-		if (text_size(conf, rows, cols, text, bs, hnotext, minw,
-		    &htext, &wtext) != 0)
-			return (BSDDIALOG_ERROR);
-		if (rowstext != NULL)
-			*rowstext = htext;
-	}
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, hnotext, bs != NULL);
-		
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, minw, bs);
-
-	return (0);
-}
-
-static int
-bar_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
-{
-	int minheight, minwidth;
-
-	minheight = BORDERS + hnotext;
-	if (bs != NULL)
-		minheight += HBUTTONS;
-	if (h < minheight)
-		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
-		    h, minheight);
-
-	minwidth = 0;
-	if (bs != NULL)
-		minwidth = buttons_min_width(*bs);
-	minwidth = MAX(minwidth, minw);
-	minwidth += BORDERS;
-	if (w < minwidth)
-		RETURN_FMTERROR("Current cols: %d, nedded at least %d",
-		    w, minwidth);
-
-	return (0);
-}
-
-static int
-bar_size_position(struct bsddialog_conf *conf, const char *text, int *htext,
-    int rows, int cols, int *y, int *x, int *h, int *w, struct buttons *bs,
-    int hnotext, int minw)
-{
-	if (set_widget_size(conf, rows, cols, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-	if (bar_autosize(conf, rows, cols, h, w, text, htext, bs, hnotext, minw) != 0)
-		return (BSDDIALOG_ERROR);
-	if (bar_checksize(*h, *w, bs, hnotext, minw) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, y, x, *h, *w) != 0)
-		return (BSDDIALOG_ERROR);
-
-	return (0);
-}
-
 int
 bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int perc, int fd, const char *sep)
@@ -155,8 +90,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char inputbuf[2048], ntext[2048], *pntext;
 
-	if (bar_size_position(conf, text, NULL, rows, cols, &y, &x, &h, &w,
-	    NULL, HBAR, MINBARWIDTH) != 0)
+	if (widget_size_position(conf, rows, cols, text, HBAR, MINBARWIDTH,
+		NULL, &y, &x, &h, &w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL) != 0)
 		return (BSDDIALOG_ERROR);
@@ -258,8 +193,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	max_minbarlen += 3 + 16; /* seps + [...] */
 	max_minbarlen = MAX(max_minbarlen, MINMGBARWIDTH); /* mainbar */
 
-	if (bar_size_position(conf, text, &htext, rows, cols, &y, &x, &h, &w,
-	    NULL, nminibars + HBAR, max_minbarlen) != 0)
+	if (widget_size_position(conf, rows, cols, text, nminibars + HBAR,
+	    max_minbarlen, NULL, &y, &x, &h, &w, &htext) != 0)
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL) != 0)
 		return (BSDDIALOG_ERROR);
@@ -426,8 +361,8 @@ rangebox_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
 	hide_dialog(*y, *x, *h, *w, conf->shadow);
 	refresh();
 
-	if (bar_size_position(conf, text, NULL, rows, cols, y, x, h, w, bs,
-	    HBAR, MINBARWIDTH) != 0)
+	if (widget_size_position(conf, rows, cols, text, HBAR, MINBARWIDTH, bs,
+	    y, x, h, w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (update_dialog(conf, shadow, widget, *y, *x, *h, *w, textpad, text, bs) != 0)
 		return (BSDDIALOG_ERROR);
@@ -472,8 +407,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	positions = max - min + 1;
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-	if (bar_size_position(conf, text, NULL, rows, cols, &y, &x, &h, &w, &bs,
-	    HBAR, MINBARWIDTH) != 0)
+	if (widget_size_position(conf, rows, cols, text, HBAR, MINBARWIDTH, &bs,
+	    &y, &x, &h, &w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
@@ -600,8 +535,8 @@ pause_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
 	hide_dialog(*y, *x, *h, *w, conf->shadow);
 	refresh();
 
-	if (bar_size_position(conf, text, NULL, rows, cols, y, x, h, w, bs,
-	    HBAR, MINBARWIDTH) != 0)
+	if (widget_size_position(conf, rows, cols, text, HBAR, MINBARWIDTH, bs,
+	    y, x, h, w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (update_dialog(conf, shadow, widget, *y, *x, *h, *w, textpad, text, bs) != 0)
 		return (BSDDIALOG_ERROR);
@@ -630,8 +565,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	struct buttons bs;
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-	if (bar_size_position(conf, text, NULL,rows, cols, &y, &x, &h, &w, &bs,
-	    HBAR, MINBARWIDTH) != 0)
+	if (widget_size_position(conf, rows, cols, text, HBAR, MINBARWIDTH, &bs,
+	    &y, &x, &h, &w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
