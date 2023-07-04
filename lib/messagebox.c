@@ -217,3 +217,28 @@ bsddialog_yesno(struct bsddialog_conf *conf, const char *text, int rows,
 
 	return (do_message(conf, text, rows, cols, bs));
 }
+
+int
+bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols)
+{
+	int y, x, h, w, htext;
+	WINDOW *shadow, *widget, *textpad;
+
+	htext = -1;
+	if (message_size_position(conf, rows, cols, text, NULL, &y, &x, &h, &w,
+	    &htext) != 0)
+		return (BSDDIALOG_ERROR);
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text,
+	    NULL) != 0)
+		return (BSDDIALOG_ERROR);
+
+	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-2,
+	    x+w-TEXTHMARGIN);
+
+	doupdate();
+
+	end_dialog(conf, shadow, widget, textpad);
+
+	return (BSDDIALOG_OK);
+}
