@@ -14,7 +14,7 @@
 : ${BSDDIALOG_CANCEL=1}
 : ${BSDDIALOG_ESC=5}
 
-VALUE=$(./bsddialog --title " rangebox " --rangebox "Hello World!" 0 0 0 10 5 \
+VALUE=$(./bsddialog --title " rangebox " --rangebox "Hello World!" 7 35 0 10 5 \
 3>&1 1>&2 2>&3 3>&-)
 
 case $? in
