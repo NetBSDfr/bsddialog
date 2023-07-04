@@ -303,9 +303,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	/* text */
 	wrefresh(widget);
-	ytext =  y + h - 4 - htext;
-	ytext = ytext < y+(int)nminibars ? y+(int)nminibars : ytext;
-	prefresh(textpad, 0, 0, ytext, x+2, y+h-4, x+w-2);
+	ytext = MAX(y + h - BORDER - HBAR - htext, y + BORDER + (int)nminibars);
+	prefresh(textpad, 0, 0, ytext, x+2, y+h-5, x+w-2);
 
 	/* main bar */
 	if ((bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED)) == NULL)
