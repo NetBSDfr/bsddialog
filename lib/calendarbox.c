@@ -244,43 +244,6 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
 	wrefresh(win);
 }
 
-static int
-calendar_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, const char *text, struct buttons bs)
-{
-	int htext, wtext;
-
-	if (cols == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_AUTOSIZE) {
-		if (text_size(conf, rows, cols, text, &bs, MINHCAL, MINWCAL,
-		    &htext, &wtext) != 0)
-			return (BSDDIALOG_ERROR);
-	}
-
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, MINWCAL, &bs);
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, MINHCAL, true);
-
-	return (0);
-}
-
-static int calendar_checksize(int h, int w, struct buttons bs)
-{
-	int mincols;
-
-	mincols = MAX(MINWCAL, buttons_min_width(bs));
-	mincols += BORDERS;
-
-	if (w < mincols)
-		RETURN_ERROR("Few cols for this calendar (at least 38)");
-
-	if (h < MINHCAL + 2 + 2) /* 2 buttons + 2 borders */
-		RETURN_ERROR("Few rows for calendar (at least 17)");
-
-	return (0);
-}
-
 int
 bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd)
@@ -309,16 +272,9 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		day = month_days(year, month);
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-
-	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+	if (widget_size_position(conf, rows, cols, text, MINHCAL, MINWCAL, &bs,
+	    &y, &x, &h, &w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
-	if (calendar_autosize(conf, rows, cols, &h, &w, text, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (calendar_checksize(h, w, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -466,16 +422,9 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
-			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+			if (widget_size_position(conf, rows, cols, text,
+			    MINHCAL, MINWCAL, &bs, &y, &x, &h, &w, NULL) != 0)
 				return (BSDDIALOG_ERROR);
-			if (calendar_autosize(conf, rows, cols, &h, &w, text,
-			    bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (calendar_checksize(h, w, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return (BSDDIALOG_ERROR);
-
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
