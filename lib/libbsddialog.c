@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -39,6 +39,7 @@
 int bsddialog_init_notheme(void)
 {
 	int i, j, c, error;
+	char *no_color;
 
 	set_error_string("");
 
@@ -66,6 +67,9 @@ int bsddialog_init_notheme(void)
 	}
 
 	hastermcolors = (error == OK && has_colors()) ? true : false;
+	no_color = getenv("NO_COLOR");
+	if (no_color != NULL && no_color[0] != '\0')
+		hastermcolors = false;
 
 	return (BSDDIALOG_OK);
 }
@@ -73,15 +77,13 @@ int bsddialog_init_notheme(void)
 int bsddialog_init(void)
 {
 	enum bsddialog_default_theme theme;
-	char *no_color;
 
 	bsddialog_init_notheme();
 
-	no_color = getenv("NO_COLOR");
-	if (!bsddialog_hascolors() || (no_color != NULL && no_color[0] != '\0'))
-		theme = BSDDIALOG_THEME_BLACKWHITE;
-	else
+	if (bsddialog_hascolors())
 		theme = BSDDIALOG_THEME_FLAT;
+	else
+		theme = BSDDIALOG_THEME_BLACKWHITE;
 
 	if (bsddialog_set_default_theme(theme) != 0) {
 		bsddialog_end();
