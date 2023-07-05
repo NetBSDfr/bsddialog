@@ -75,29 +75,24 @@ updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
 	}
 }
 
-static void
-textbox_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
-    int *w, int hpad, int wpad, int padmargin, struct buttons bs)
+static int
+textbox_size_position(struct bsddialog_conf *conf, int rows, int cols,
+    int hpad, int wpad, int padmargin, struct buttons *bs, int *y, int *x,
+    int *h, int *w)
 {
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, 0, wpad + padmargin, &bs);
+	const char *text = ""; /* fake */
+	int minw;
 
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, 0, hpad, true);
-}
-
-static int textbox_checksize(int h, int w, int hpad, struct buttons bs)
-{
-	int mincols;
-
-	mincols = BORDERS;
-	mincols += buttons_min_width(bs);
-
-	if (w < mincols)
-		RETURN_ERROR("Few cols for the textbox");
-
-	if (h < 4 /* BORDERS + button*/ + (hpad > 0 ? 1 : 0))
-		RETURN_ERROR("Few rows for the textbox");
+	if (set_widget_size(conf, rows, cols, h, w) != 0)
+		return (BSDDIALOG_ERROR);
+	if (set_widget_autosize(conf, rows, cols, h, w, text, NULL, bs,
+	    hpad, wpad + padmargin) != 0)
+		return (BSDDIALOG_ERROR);
+	minw = (wpad > 0) ? 2 /*multicolumn char*/ + padmargin : 0 ;
+	if (widget_checksize(*h, *w, bs, MIN(hpad, 1), minw) != 0)
+		return (BSDDIALOG_ERROR);
+	if (set_widget_position(conf, y, x, *h, *w) != 0)
+		return (BSDDIALOG_ERROR);
 
 	return (0);
 }
@@ -151,14 +146,9 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	bs.curr = 0;
 	bs.nbuttons = 1;
 
-	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+	if (textbox_size_position(conf, rows, cols, hpad, wpad, padmargin, &bs,
+	    &y, &x, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad, padmargin, bs);
-	if (textbox_checksize(h, w, hpad, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, NULL, NULL, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -240,13 +230,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
-			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return (BSDDIALOG_ERROR);
-			textbox_autosize(conf, rows, cols, &h, &w, hpad, wpad,
-			    padmargin, bs);
-			if (textbox_checksize(h, w, hpad, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (set_widget_position(conf, &y, &x, h, w) != 0)
+			if (textbox_size_position(conf, rows, cols, hpad, wpad,
+			    padmargin, &bs, &y, &x, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
 
 			ys = y + 1;
