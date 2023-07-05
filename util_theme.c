@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2022-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -298,7 +298,7 @@ void bikeshed(struct bsddialog_conf *conf)
 	t.shadow.y       = 1,
 	t.shadow.x       = 2,
 
-	t.dialog.delimtitle       = (rand() % 2 == 0) ? true : false;
+	t.dialog.delimtitle       = (~rand() & 1) ? true : false;
 	t.dialog.titlecolor       = bsddialog_color(col[3], col[5], 0);
 	t.dialog.lineraisecolor   = bsddialog_color(col[0], col[5], 0);
 	t.dialog.linelowercolor   = bsddialog_color(col[0], col[5], 0);
@@ -341,7 +341,7 @@ void bikeshed(struct bsddialog_conf *conf)
 		EXIT_FMTERROR("%s", bsddialog_geterror());
 
 	/* conf */
-	conf->button.always_active = (rand() % 2 == 0) ? true : false;
+	conf->button.always_active = (~rand() & 1) ? true : false;
 	if (conf->title != NULL) {
 		memset(title, 0, 1024);
 		margin = rand() % 5;

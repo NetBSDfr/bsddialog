@@ -1180,7 +1180,7 @@ static int date(BUILDER_ARGS, bool is_datebox)
 		localtm->tm_mday = dd;
 		strftime(stringdate, 1024, date_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringdate);
-	} else if (bikeshed_opt && (dd % 2 == 0)) {
+	} else if (bikeshed_opt && ~dd & 1) {
 		dprintf(output_fd_opt, "%u/%u/%u", dd, mm, yy);
 	} else {
 		dprintf(output_fd_opt, "%02u/%02u/%u", dd, mm, yy);
@@ -1247,7 +1247,7 @@ int timebox_builder(BUILDER_ARGS)
 		localtm->tm_sec = ss;
 		strftime(stringtime, 1024, time_fmt_opt, localtm);
 		dprintf(output_fd_opt, "%s", stringtime);
-	} else if (bikeshed_opt && (ss % 2 == 0)) {
+	} else if (bikeshed_opt && ~ss & 1) {
 		dprintf(output_fd_opt, "%u:%u:%u", hh, mm, ss);
 	} else {
 		dprintf(output_fd_opt, "%02u:%02u:%02u", hh, mm, ss);
