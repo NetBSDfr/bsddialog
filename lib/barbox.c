@@ -57,9 +57,9 @@ draw_bar(WINDOW *win, int y, int x, int barlen, int perc, int *label)
 
 	xleft = perc > 0 ? (perc * barlen) / 100 : 0;
 
-	ch = ' ' | (A_COLOR & t.bar.f_color);
+	ch = ' ' | t.bar.f_color;
 	mvwhline(win, y, x, ch, xleft);
-	ch = ' ' | (A_COLOR & t.bar.color);
+	ch = ' ' | t.bar.color;
 	mvwhline(win, y, x + xleft, ch, barlen - xleft);
 
 	if (label != NULL)
@@ -71,9 +71,9 @@ draw_bar(WINDOW *win, int y, int x, int barlen, int perc, int *label)
 	for (i = 0; i < stringlen; i++) {
 		ch = labelstr[i];
 		if (xleft <= barlen/2 - stringlen/2 + i)
-			ch |= A_COLOR & t.bar.color;
+			ch |= t.bar.color;
 		else
-			ch |= A_COLOR & t.bar.f_color;
+			ch |= t.bar.f_color;
 		waddch(win, ch);
 	}
 }
