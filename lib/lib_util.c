@@ -748,7 +748,7 @@ text_autosize(struct bsddialog_conf *conf, struct textproperties *tp,
 	return (0);
 }
 
-int
+static int
 text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
     struct buttons *bs, int rowsnotext, int startwtext, int *htext, int *wtext)
 {
@@ -852,7 +852,7 @@ static int widget_max_width(struct bsddialog_conf *conf)
 	return (maxwidth);
 }
 
-int
+static int
 widget_min_height(struct bsddialog_conf *conf, int htext, int hnotext,
     bool withbuttons)
 {
@@ -879,7 +879,7 @@ widget_min_height(struct bsddialog_conf *conf, int htext, int hnotext,
 	return (min);
 }
 
-int
+static int
 widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
     struct buttons *bs)
 
