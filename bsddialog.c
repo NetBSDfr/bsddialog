@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -1191,19 +1191,19 @@ static int date(BUILDER_ARGS, bool is_datebox)
 
 int calendar_builder(BUILDER_ARGS)
 {
-	if (rows == 2) {
-		/*
-		 * (bsdconfig/share/dialog.subr:1352) f_dialog_calendar_size()
-		 * computes height 2 for `dialog --calendar' in
-		 * (bsdconfig/usermgmt/share/user_input.subr:517)
-		 * f_dialog_input_expire_password() and
-		 * (bsdconfig/usermgmt/share/user_input.subr:660)
-		 * f_dialog_input_expire_account().
-		 * Use height auto-sizing that is min height like dialog,
-		 * documented in bsddialog(1).
-		 */
+	/* Use height autosizing with rows = 2. Documented in bsddialog(1).
+	 * 
+	 * f_dialog_calendar_size() in bsdconfig/share/dialog.subr:1352
+	 * computes height 2 for `dialog --calendar', called by:
+	 * 1) f_dialog_input_expire_password() in 
+	 * bsdconfig/usermgmt/share/user_input.subr:517 and
+	 * 2) f_dialog_input_expire_account() in
+	 * bsdconfig/usermgmt/share/user_input.subr:660.
+	 * 
+	 * Then use height autosizing with 2 that is min height like dialog.
+	 */
+	if (rows == 2)
 		rows = 0;
-	}
 
 	return (date(conf, text, rows, cols, argc, argv, false));
 }
