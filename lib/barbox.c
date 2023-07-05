@@ -70,8 +70,9 @@ draw_bar(WINDOW *win, int y, int x, int barlen, int perc, int *label)
 	wmove(win, y, x + barlen/2 - stringlen/2);
 	for (i = 0; i < stringlen; i++) {
 		ch = labelstr[i];
-		ch |= A_COLOR & t.bar.color;
-		if (xleft >= barlen/2 - stringlen/2 + i)
+		if (xleft <= barlen/2 - stringlen/2 + i)
+			ch |= A_COLOR & t.bar.color;
+		else
 			ch |= A_COLOR & t.bar.f_color;
 		waddch(win, ch);
 	}
