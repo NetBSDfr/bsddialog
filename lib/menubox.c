@@ -341,58 +341,40 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 	}
 }
 
-static int
-menu_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    const char *text, int linelen, unsigned int *menurows, int nitems,
-    struct buttons bs)
+int
+menu_size_position(struct bsddialog_conf *conf, int rows, int cols, 
+    const char *text, unsigned int *menurows, int nitems, int linelen,
+    struct buttons *bs, int *y, int *x, int *h, int *w)
 {
-	int htext, wtext, hmenu;
+	int htext, hmenu;
 
-	hmenu = (*menurows == BSDDIALOG_AUTOSIZE) ? nitems : (int)*menurows;
-	hmenu += 2;
-	/* 
-	 * algo 1): grows vertically
-	 * notext = 1;
-	 * algo 2): grows horizontally, better with little screens
-	 * notext += hmenu;
-	 */
-	if (text_size(conf, rows, cols, text, &bs, hmenu, linelen + 4, &htext,
-	    &wtext) != 0)
+	if (set_widget_size(conf, rows, cols, h, w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, hmenu, true);
-
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, linelen + 4, &bs);
-
+	hmenu = (*menurows == BSDDIALOG_AUTOSIZE) ? nitems : (int)*menurows;
+	hmenu += 2; /* menu borders */
+	/* 
+	 * algo 1: notext = 1 (grows vertically).
+	 * algo 2: notext = hmenu (grows horizontally, better for little term).
+	 */
+	if (set_widget_autosize(conf, rows, cols, h, w, text, &htext, bs,
+	    hmenu, linelen + 4) != 0)
+		return (BSDDIALOG_ERROR);
 	/* avoid menurows overflow and menurows becomes "at most menurows" */
 	if (*h - BORDERS - htext - HBUTTONS <= 2 /* menuborders */)
-		*menurows = (nitems > 0) ? 1 : 0; /* check for checksize() */
+		*menurows = (nitems > 0) ? 1 : 0; /* for widget_checksize() */
 	else
 		*menurows = MIN(*h - BORDERS - htext - HBUTTONS, hmenu) - 2;
 
-	return (0);
-}
-
-static int menu_checksize(int h, int w, int menurows, struct buttons bs)
-{
-	int minrows, mincols;
-
-	minrows = BORDERS + 2 /* menuborders */ + MIN(menurows, 1) + HBUTTONS;
-	if (h < minrows)
-		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
-		    h, minrows);
-
-	mincols = BORDERS + buttons_min_width(bs);
 	/*
-	 * no linelen check to avoid big menu fault, then some col can be
+	 * no minw=linelen to avoid big menu fault, then some col can be
 	 * hidden (example portconfig www/apache24).
-	 * mincols = MAX(mincols, linelen);
 	 */
-	if (w < mincols)
-		RETURN_FMTERROR("Current cols: %d, needed at least: %d",
-		    w, mincols);
+	if (widget_checksize(*h, *w, bs, 2/*bmenu*/ + MIN(*menurows,1), 0) != 0)
+		return (BSDDIALOG_ERROR);
+
+	if (set_widget_position(conf, y, x, *h, *w) != 0)
+		return (BSDDIALOG_ERROR);
 
 	return (0);
 }
@@ -447,17 +429,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
 
 	get_buttons(conf, &bs, conf->menu.shortcut_buttons, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-
-	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+	if (menu_size_position(conf, rows, cols, text, &menurows, totnitems,
+	    pos.line, &bs, &y, &x, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (menu_autosize(conf, rows, cols, &h, &w, text, pos.line, &menurows,
-	    totnitems, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (menu_checksize(h, w, menurows, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -579,17 +553,11 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
-			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return (BSDDIALOG_ERROR);
 			menurows = automenurows ? 0 : menurows;
-			if (menu_autosize(conf, rows, cols, &h, &w, text,
-			    pos.line, &menurows, totnitems, bs) != 0)
+			if (menu_size_position(conf, rows, cols, text,
+			    &menurows, totnitems, pos.line, &bs, &y, &x, &h,
+			    &w) != 0)
 				return (BSDDIALOG_ERROR);
-			if (menu_checksize(h, w, menurows, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (set_widget_position(conf, &y, &x, h, w) != 0)
-				return (BSDDIALOG_ERROR);
-
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
 			    textpad, text, &bs) != 0)
 				return (BSDDIALOG_ERROR);
