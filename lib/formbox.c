@@ -418,30 +418,28 @@ static void curriteminview(struct privateform *form, struct privateitem *item)
 		form->y = ydown - form->viewrows + 1;
 }
 
-static int
-form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
-    const char *text, struct privateform *f, struct buttons bs)
+int
+form_size_position(struct bsddialog_conf *conf, int rows, int cols,
+    const char *text, struct privateform *f, struct buttons *bs, int *y, int *x,
+    int *h, int *w)
 {
-	int htext, wtext, hform;
+	int htext, hform;
 
+	if (set_widget_size(conf, rows, cols, h, w) != 0)
+		return (BSDDIALOG_ERROR);
+
+	/* autosize */
 	hform = (int) f->viewrows;
 	if (f->viewrows == BSDDIALOG_AUTOSIZE)
 		hform = MAX(f->w, f->minviewrows);
 	hform += 2; /* formborders */
 
-	if (text_size(conf, rows, cols, text, &bs, hform, f->w + 4, &htext,
-	    &wtext) != 0)
+	if (set_widget_autosize(conf, rows, cols, h, w, text, &htext, bs, hform,
+	    f->w + 4) != 0)
 		return (BSDDIALOG_ERROR);
-
-	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, hform, true);
-
-	if (cols == BSDDIALOG_AUTOSIZE)
-		*w = widget_min_width(conf, wtext, f->w + 4, &bs);
-
 	/* formheight: avoid overflow, "at most" and at least minviewrows */
 	if (*h - BORDERS - htext - HBUTTONS < 2 + (int)f->minviewrows) {
-		f->viewrows = f->minviewrows; /* check for checksize() */
+		f->viewrows = f->minviewrows; /* for widget_checksize() */
 	} else if (f->viewrows == BSDDIALOG_AUTOSIZE) {
 		f->viewrows = MIN(*h - BORDERS - htext - HBUTTONS, hform) - 2;
 		f->viewrows = MAX(f->viewrows, f->minviewrows);
@@ -449,31 +447,16 @@ form_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h, int *w,
 		f->viewrows = MIN(*h - BORDERS - htext - HBUTTONS, hform) - 2;
 	}
 
-	return (0);
-}
-
-static int
-form_checksize(int h, int w, struct privateform *form, struct buttons bs)
-{
-	int mincols, minrows;
-
-	/* rows */
-	if (form->viewrows < form->minviewrows)
+	/* checksize */
+	if (f->viewrows < f->minviewrows)
 		RETURN_FMTERROR("formheight, current: %u needed at least %u",
-		    form->viewrows, form->minviewrows);
-	
-	minrows = BORDERS + 2 + form->minviewrows + HBUTTONS;
-	if (h < minrows)
-		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
-		    h, minrows);
+		    f->viewrows, f->minviewrows);
+	if (widget_checksize(*h, *w, bs, 2 /* borders */ + f->minviewrows,
+	    f->w + 6) != 0)
+		return (BSDDIALOG_ERROR);
 
-	/* cols */
-	mincols = BORDERS;
-	mincols += buttons_min_width(bs);
-	mincols = MAX(mincols, (int)form->w + 6);
-	if (w < mincols)
-		RETURN_FMTERROR("Current cols: %d, needed at least: %d",
-		    w, mincols);
+	if (set_widget_position(conf, y, x, *h, *w) != 0)
+		return (BSDDIALOG_ERROR);
 
 	return (0);
 }
@@ -594,16 +577,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 	form.viewrows = formheight;
-
-	if (set_widget_size(conf, rows, cols, &h, &w) != 0)
+	if (form_size_position(conf, rows, cols, text, &form, &bs, &y, &x, &h,
+	    &w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (form_autosize(conf, rows, cols, &h, &w, text, &form, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (form_checksize(h, w, &form, bs) != 0)
-		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, &y, &x, h, w) != 0)
-		return (BSDDIALOG_ERROR);
-
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -792,14 +768,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 			form.viewrows = formheight;
 			form.w = form.wmin;
-			if (set_widget_size(conf, rows, cols, &h, &w) != 0)
-				return (BSDDIALOG_ERROR);
-			if (form_autosize(conf, rows, cols, &h, &w, text, &form,
-			    bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (form_checksize(h, w, &form, bs) != 0)
-				return (BSDDIALOG_ERROR);
-			if (set_widget_position(conf, &y, &x, h, w) != 0)
+			if (form_size_position(conf, rows, cols, text, &form,
+			    &bs, &y, &x, &h, &w) != 0)
 				return (BSDDIALOG_ERROR);
 
 			bs.shortcut = true; /* to check if useful */
