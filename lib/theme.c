@@ -298,8 +298,8 @@ int
 bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
     enum bsddialog_color *background, unsigned int *flags)
 {
-	unsigned int flag;
 	short f, b;
+	unsigned int flag;
 
 	flag = 0;
 	flag |= (color & A_BOLD) ? BSDDIALOG_BOLD : 0;
@@ -320,5 +320,5 @@ bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
 
 bool bsddialog_hascolors(void)
 {
-	return hastermcolors;
+	return (hastermcolors);
 }
