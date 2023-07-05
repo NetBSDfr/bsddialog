@@ -59,7 +59,7 @@ draw_bar(WINDOW *win, int y, int x, int barlen, int perc, int *label)
 
 	ch = ' ' | (A_COLOR & t.bar.f_color);
 	mvwhline(win, y, x, ch, xleft);
-	ch = ' ' | (A_COLOR & t.bar.color);
+	ch &= (A_COLOR & t.bar.color);
 	mvwhline(win, y, x + xleft, ch, barlen - xleft);
 
 	if (label != NULL)
