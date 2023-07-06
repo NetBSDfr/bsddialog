@@ -51,7 +51,7 @@ int  bsddialog_total_progview;
 static void 
 draw_bar(WINDOW *win, int y, int x, int w, int perc, int *numlabel)
 {
-	int i, xleft, labellen;
+	int xleft;
 	chtype ch;
 	char label[128];
 
@@ -68,14 +68,14 @@ draw_bar(WINDOW *win, int y, int x, int w, int perc, int *numlabel)
 		sprintf(label, "%d", *numlabel);
 	else
 		sprintf(label, "%3d%%", perc);
-	labellen = (int)strlen(label); /* always 1-byte-char string */
-	wmove(win, y, x + w/2 - labellen/2);
-	x = w/2 - labellen/2;
-	for (i = 0; i < labellen; i++) {
-		ch = label[i];
-		ch |= (xleft <= x + i) ? t.bar.color : t.bar.f_color;
-		waddch(win, ch);
-	}
+	xleft = x + xleft;
+	x = x + w/2 - (int)strlen(label)/2; /* always 1-byte-char string */
+	wattron(win, t.bar.color);   /* xleft < xlabel */
+	mvwaddstr(win, y, x, label);
+	wattroff(win, t.bar.color);
+	wattron(win, t.bar.f_color); /* xleft >= xlabel */
+	mvwaddnstr(win, y, x, label, MAX(xleft - x, 0));
+	wattroff(win, t.bar.f_color);
 }
 
 int
