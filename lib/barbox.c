@@ -49,28 +49,30 @@ bool bsddialog_abortprogview;
 int  bsddialog_total_progview;
 
 static void 
-draw_bar(WINDOW *win, int y, int x, int barlen, int perc, int *label)
+draw_bar(WINDOW *win, int y, int x, int w, int perc, int *numlabel)
 {
-	int i, xleft, stringlen;
+	int i, xleft, labellen;
 	chtype ch;
-	char labelstr[128];
+	char label[128];
 
-	xleft = perc > 0 ? (perc * barlen) / 100 : 0;
+	xleft = perc > 0 ? (perc * w) / 100 : 0;
 
+	/* bar */
 	ch = ' ' | t.bar.f_color;
 	mvwhline(win, y, x, ch, xleft);
 	ch = ' ' | t.bar.color;
-	mvwhline(win, y, x + xleft, ch, barlen - xleft);
+	mvwhline(win, y, x + xleft, ch, w - xleft);
 
-	if (label != NULL)
-		sprintf(labelstr, "%d", *label);
+	/* label */
+	if (numlabel != NULL)
+		sprintf(label, "%d", *numlabel);
 	else
-		sprintf(labelstr, "%3d%%", perc);
-	stringlen = (int)strlen(labelstr); /* always 1-byte-ch string */
-	wmove(win, y, x + barlen/2 - stringlen/2);
-	for (i = 0; i < stringlen; i++) {
-		ch = labelstr[i];
-		if (xleft <= barlen/2 - stringlen/2 + i)
+		sprintf(label, "%3d%%", perc);
+	labellen = (int)strlen(label); /* always 1-byte-char string */
+	wmove(win, y, x + w/2 - labellen/2);
+	for (i = 0; i < labellen; i++) {
+		ch = label[i];
+		if (xleft <= w/2 - labellen/2 + i)
 			ch |= t.bar.color;
 		else
 			ch |= t.bar.f_color;
