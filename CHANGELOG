@@ -7,6 +7,9 @@ WIP Next Version
 	    little screens (same behavior as other dialogs).
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
+	* refactor: internal implementation.
+	    - merge (when possible) dialogs autosize.
+	    - merge (when possible) dialogs checksize.
 
 2023-06-12 Version 0.4.2
 
