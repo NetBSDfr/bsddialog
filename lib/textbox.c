@@ -52,19 +52,19 @@ updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
 
 	if (xpad > 0) {
 		arrowch = conf->ascii_lines ? '<' : ACS_LARROW;
-		arrowch |= A_ATTRIBUTES & t.dialog.arrowcolor;
+		arrowch |= t.dialog.arrowcolor;
 	} else {
 		arrowch = borderch;
-		arrowch |= A_ATTRIBUTES & t.dialog.lineraisecolor;
+		arrowch |= t.dialog.lineraisecolor;
 	}
 	mvwvline(widget, (h / 2) - 2, 0, arrowch, 4);
 
 	if (xpad + w-2-padmargin < wpad) {
 		arrowch = conf->ascii_lines ? '>' : ACS_RARROW;
-		arrowch |= A_ATTRIBUTES & t.dialog.arrowcolor;
+		arrowch |= t.dialog.arrowcolor;
 	} else {
 		arrowch = borderch;
-		arrowch |= A_ATTRIBUTES & t.dialog.linelowercolor;
+		arrowch |= t.dialog.linelowercolor;
 	}
 	mvwvline(widget, (h / 2) - 2, w - 1, arrowch, 4);
 
