@@ -70,12 +70,10 @@ draw_bar(WINDOW *win, int y, int x, int w, int perc, int *numlabel)
 		sprintf(label, "%3d%%", perc);
 	labellen = (int)strlen(label); /* always 1-byte-char string */
 	wmove(win, y, x + w/2 - labellen/2);
+	x = w/2 - labellen/2;
 	for (i = 0; i < labellen; i++) {
 		ch = label[i];
-		if (xleft <= w/2 - labellen/2 + i)
-			ch |= t.bar.color;
-		else
-			ch |= t.bar.f_color;
+		ch |= (xleft <= x + i) ? t.bar.color : t.bar.f_color;
 		waddch(win, ch);
 	}
 }
