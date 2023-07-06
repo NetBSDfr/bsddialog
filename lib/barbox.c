@@ -95,7 +95,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	if (fd >= 0) {
 		fd2 = dup(fd);
 		if ((input = fdopen(fd2, "r")) == NULL)
-			RETURN_ERROR("Cannot build FILE* from fd");
+			RETURN_FMTERROR("Cannot build FILE* from fd %d", fd);
 	}
 
 	mainloop = true;
