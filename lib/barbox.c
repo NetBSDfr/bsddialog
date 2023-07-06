@@ -160,7 +160,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 {
 	int i, miniperc, y, x, h, w, max_minbarlen;
 	int ytext, htext;
-	int colorperc, red, green;
+	int minicolor, red, green;
 	WINDOW *widget, *textpad, *bar, *shadow;
 	char states[12][14] = {
 		"  Succeeded  ", /* -1  */
@@ -208,17 +208,15 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			mvwaddstr(widget, i+1, w-2-15, states[11]);
 		else if (miniperc < 0) {
 			mvwaddstr(widget, i+1, w-2-15, "[             ]");
-			colorperc = -1;
+			minicolor = t.dialog.color;
 			if (color && miniperc == BSDDIALOG_MG_FAILED)
-				colorperc = red;
-			if (color && miniperc == BSDDIALOG_MG_DONE)
-				colorperc = green;
-			if (colorperc != -1)
-				wattron(widget, colorperc);
+				minicolor = red;
+			else if (color && miniperc == BSDDIALOG_MG_DONE)
+				minicolor = green;
+			wattron(widget, minicolor);
 			miniperc = abs(miniperc + 1);
 			mvwaddstr(widget, i+1, 1+w-2-15, states[miniperc]);
-			if (colorperc != -1)
-				wattroff(widget, colorperc);
+			wattroff(widget, minicolor);
 		}
 		else { /* miniperc >= 0 */
 			if (miniperc > 100)
