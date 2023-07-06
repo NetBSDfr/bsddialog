@@ -57,13 +57,11 @@ draw_bar(WINDOW *win, int y, int x, int w, int perc, int *numlabel)
 
 	xleft = perc > 0 ? (perc * w) / 100 : 0;
 
-	/* bar */
 	ch = ' ' | t.bar.f_color;
 	mvwhline(win, y, x, ch, xleft);
 	ch = ' ' | t.bar.color;
 	mvwhline(win, y, x + xleft, ch, w - xleft);
 
-	/* label */
 	if (numlabel != NULL)
 		sprintf(label, "%d", *numlabel);
 	else
