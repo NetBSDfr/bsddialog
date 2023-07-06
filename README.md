@@ -120,4 +120,3 @@ in the _Public Domain_ to build new projects:
  - Reverse fg with bg in blackwhite.
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
  - Fix bsddialog\_progressview() bottom info with i386.
- - Fix datetime_checksize(), check width boxes.
