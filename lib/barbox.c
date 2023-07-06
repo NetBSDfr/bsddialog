@@ -51,25 +51,24 @@ int  bsddialog_total_progview;
 static void 
 draw_bar(WINDOW *win, int y, int x, int w, int perc, const char *fmt, int numlabel)
 {
-	int xleft;
+	int barlen, xlabel;
 	chtype ch;
 	char label[128];
 
-	xleft = perc > 0 ? (perc * w) / 100 : 0;
+	barlen = perc > 0 ? (perc * w) / 100 : 0;
 
 	ch = ' ' | t.bar.f_color;
-	mvwhline(win, y, x, ch, xleft);
+	mvwhline(win, y, x, ch, barlen);
 	ch = ' ' | t.bar.color;
-	mvwhline(win, y, x + xleft, ch, w - xleft);
+	mvwhline(win, y, x + barlen, ch, w - barlen);
 
 	sprintf(label, fmt, numlabel);
-	xleft = x + xleft;
-	x = x + w/2 - (int)strlen(label)/2; /* always 1-byte-char string */
-	wattron(win, t.bar.color);   /* xleft < xlabel */
-	mvwaddstr(win, y, x, label);
+	xlabel = x + w/2 - (int)strlen(label)/2; /* always 1-byte-char string */
+	wattron(win, t.bar.color);   /* x+barlen < xlabel */
+	mvwaddstr(win, y, xlabel, label);
 	wattroff(win, t.bar.color);
-	wattron(win, t.bar.f_color); /* xleft >= xlabel */
-	mvwaddnstr(win, y, x, label, MAX(xleft - x, 0));
+	wattron(win, t.bar.f_color); /* x+barlen >= xlabel */
+	mvwaddnstr(win, y, xlabel, label, MAX((x + barlen) - xlabel, 0));
 	wattroff(win, t.bar.f_color);
 }
 
