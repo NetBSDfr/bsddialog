@@ -15,6 +15,7 @@ examples_library/form
 examples_library/gauge
 examples_library/infobox
 examples_library/menu
+examples_library/mixedgauge
 examples_library/mixedlist
 examples_library/msgbox
 examples_library/pause
