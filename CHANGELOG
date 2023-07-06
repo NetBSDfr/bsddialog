@@ -13,10 +13,10 @@ WIP Next Version
 	* fix: check/set max mixedgauge mainperc to 100.
 	* fix: timebox.c checksize (boxes width).
 	* refactor: internal implementation.
-	    - merge (when possible) dialogs autosize.
-	    - merge (when possible) dialogs checksize.
-	    - delete infobox.c, merged with messagebox.c
-	    - add internal structures to represent components.
+	    - merge: (when possible) dialogs autosize.
+	    - merge: (when possible) dialogs checksize.
+	    - delete: infobox.c, merged with messagebox.c
+	    - add: internal structures to represent components.
 
 2023-06-12 Version 0.4.2
 
