@@ -92,8 +92,10 @@ in the _Public Domain_ to build new projects:
 % ./checklist
 % ./datebox
 % ./form
+% ./gauge
 % ./infobox
 % ./menu
+% ./mixedgauge
 % ./mixedlist
 % ./msgbox
 % ./pause
