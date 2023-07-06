@@ -10,6 +10,7 @@ WIP Next Version
 	    The change allows mixedgauge to add sections.
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
+	* fix: check/set max mixedgauge mainperc to 100.
 	* refactor: internal implementation.
 	    - merge (when possible) dialogs autosize.
 	    - merge (when possible) dialogs checksize.

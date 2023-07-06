@@ -232,7 +232,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if ((bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED)) == NULL)
 		return (BSDDIALOG_ERROR);
 
-	draw_bar(bar, 1, 1, w-8, mainperc, "%3d%%", mainperc);
+	draw_bar(bar, 1, 1, w-8, MIN(mainperc, 100), "%3d%%", MIN(mainperc, 100));
 
 	wattron(bar, t.bar.color);
 	mvwaddstr(bar, 0, 2, "Overall Progress");
