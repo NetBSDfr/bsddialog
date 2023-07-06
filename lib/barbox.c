@@ -83,7 +83,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	char inputbuf[2048], ntext[2048], *pntext;
 
 	if (widget_size_position(conf, rows, cols, text, HBAR, MINBARWIDTH,
-		NULL, &y, &x, &h, &w, NULL) != 0)
+	    NULL, &y, &x, &h, &w, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL) != 0)
 		return (BSDDIALOG_ERROR);
