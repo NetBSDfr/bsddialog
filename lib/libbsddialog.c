@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -34,7 +34,7 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define COLSPERROW  10   /* Default conf.text.columns_per_row */
+#define DEFAULT_COLS_PER_ROW  10   /* Default conf.text.columns_per_row */
 
 int bsddialog_init_notheme(void)
 {
@@ -127,7 +127,7 @@ int bsddialog_initconf(struct bsddialog_conf *conf)
 	conf->y = BSDDIALOG_CENTER;
 	conf->x = BSDDIALOG_CENTER;
 	conf->shadow = true;
-	conf->text.cols_per_row = COLSPERROW;
+	conf->text.cols_per_row = DEFAULT_COLS_PER_ROW;
 
 	return (BSDDIALOG_OK);
 }
