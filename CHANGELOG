@@ -5,6 +5,9 @@ WIP Next Version
 	* improve: DIAGNOSTIC adding fmt strings for bsddialog_geterror().
 	* change: menus and form less restrictive with text, hide text with
 	    little screens (same behavior as other dialogs).
+	* change: mixedgauge BSDDIALOG_MG_BLANK does not draw minibar but prints
+	    minilabel, to restore previous behavior setting minilabel to "".
+	    The change allows mixedgauge to add sections.
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
 	* refactor: internal implementation.

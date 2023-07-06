@@ -195,8 +195,6 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	/* mini bars */
 	for (i = 0; i < (int)nminibars; i++) {
 		miniperc = minipercs[i];
-		if (miniperc == BSDDIALOG_MG_BLANK)
-			continue;
 		/* label */
 		if (color && (miniperc >= 0))
 			wattron(widget, A_BOLD);
@@ -204,10 +202,16 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		if (color && (miniperc >= 0))
 			wattroff(widget, A_BOLD);
 		/* perc */
+		if (miniperc == BSDDIALOG_MG_BLANK)
+			continue;
 		mvwaddstr(widget, i+1, w-2-15, "[             ]");
-		if (miniperc < -11)
-			mvwaddstr(widget, i+1, 1+w-2-15, states[11]);
-		else if (miniperc < 0) {
+		if (miniperc >= 0) {
+			if (miniperc > 100)
+				miniperc = 100;
+			draw_bar(widget, i+1, 1+w-2-15, 13, miniperc, "%3d%%", miniperc);
+		} else { /* miniperc < 0 */
+			if (miniperc < BSDDIALOG_MG_PENDING)
+				miniperc = -12; /* UNKNOWN */
 			minicolor = t.dialog.color;
 			if (color && miniperc == BSDDIALOG_MG_FAILED)
 				minicolor = red;
@@ -217,11 +221,6 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			miniperc = abs(miniperc + 1);
 			mvwaddstr(widget, i+1, 1+w-2-15, states[miniperc]);
 			wattroff(widget, minicolor);
-		}
-		else { /* miniperc >= 0 */
-			if (miniperc > 100)
-				miniperc = 100;
-			draw_bar(widget, i+1, 1+w-2-15, 13, miniperc, "%3d%%", miniperc);
 		}
 	}
 
