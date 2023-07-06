@@ -206,7 +206,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		/* perc */
 		mvwaddstr(widget, i+1, w-2-15, "[             ]");
 		if (miniperc < -11)
-			mvwaddstr(widget, i+1, w-2-15, states[11]);
+			mvwaddstr(widget, i+1, 1+w-2-15, states[11]);
 		else if (miniperc < 0) {
 			minicolor = t.dialog.color;
 			if (color && miniperc == BSDDIALOG_MG_FAILED)
