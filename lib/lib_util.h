@@ -47,9 +47,6 @@ extern bool hastermcolors;
 	refresh();                                                             \
 } while (0)
 
-/* date */
-#define ISLEAP(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
-
 /* unicode */
 unsigned int strcols(const char *mbstring);
 int str_props(const char *mbstring, unsigned int *cols, bool *has_multi_col);

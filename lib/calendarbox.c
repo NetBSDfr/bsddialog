@@ -38,6 +38,10 @@
 #define MINYEAR   1900
 #define MAXYEAR   999999999
 
+#define MINWDATE   23 /* 3 windows and their borders */
+
+#define ISLEAP(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+
 enum operation {
 	UP_DAY,
 	DOWN_DAY,
@@ -460,6 +464,225 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	delwin(yearwin);
 	delwin(monthwin);
 	delwin(daywin);
+	end_dialog(conf, shadow, widget, textpad);
+
+	return (retval);
+}
+
+int
+bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd)
+{
+	bool loop, focusbuttons;
+	int i, retval, y, x, h, w, sel;
+	wint_t input;
+	WINDOW *widget, *textpad, *shadow;
+	struct buttons bs;
+	struct calendar {
+		int max;
+		int value;
+		WINDOW *win;
+		unsigned int x;
+	};
+	struct month {
+		const char *name;
+		unsigned int days;
+	};
+
+	if (yy == NULL || mm == NULL || dd == NULL)
+		RETURN_ERROR("yy / mm / dd cannot be NULL");
+
+	struct calendar c[3] = {
+		{9999, *yy, NULL, 4 },
+		{12,   *mm, NULL, 9 },
+		{31,   *dd, NULL, 2 }
+	};
+
+	struct month m[12] = {
+		{ "January", 31 }, { "February", 28 }, { "March",     31 },
+		{ "April",   30 }, { "May",      31 }, { "June",      30 },
+		{ "July",    31 }, { "August",   31 }, { "September", 30 },
+		{ "October", 31 }, { "November", 30 }, { "December",  31 }
+	};
+
+	for (i = 0 ; i < 3; i++) {
+		if (c[i].value > c[i].max)
+			c[i].value = c[i].max;
+		if (c[i].value < 1)
+			c[i].value = 1;
+	}
+	c[2].max = m[c[1].value -1].days;
+	if (c[1].value == 2 && ISLEAP(c[0].value))
+		c[2].max = 29;
+	if (c[2].value > c[2].max)
+		c[2].value = c[2].max;
+
+	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	if (widget_size_position(conf, rows, cols, text, 3 /*windows*/,
+	    MINWDATE, &bs, &y, &x, &h, &w, NULL) != 0)
+		return (BSDDIALOG_ERROR);
+	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
+		return (BSDDIALOG_ERROR);
+
+	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
+	doupdate();
+
+	c[0].win = new_boxed_window(conf, y+h-6, x + w/2 - 11, 3, 6, LOWERED);
+	mvwaddch(widget, h - 5, w/2 - 5, '/');
+	c[1].win = new_boxed_window(conf, y+h-6, x + w/2 - 4, 3, 11, LOWERED);
+	mvwaddch(widget, h - 5, w/2 + 7, '/');
+	c[2].win = new_boxed_window(conf, y+h-6, x + w/2 + 8, 3, 4, LOWERED);
+
+	wrefresh(widget);
+
+	sel = -1;
+	loop = focusbuttons = true;
+	while (loop) {
+		drawsquare(conf, c[0].win, "%4d", &c[0].value, sel == 0);
+		drawsquare(conf, c[1].win, "%9s", m[c[1].value-1].name,
+		    sel == 1);
+		drawsquare(conf, c[2].win, "%02d", &c[2].value, sel == 2);
+
+		if (get_wch(&input) == ERR)
+			continue;
+		switch(input) {
+		case KEY_ENTER:
+		case 10: /* Enter */
+			if (focusbuttons || conf->button.always_active) {
+				retval = BUTTONVALUE(bs);
+				loop = false;
+			}
+			break;
+		case 27: /* Esc */
+			if (conf->key.enable_esc) {
+				retval = BSDDIALOG_ESC;
+				loop = false;
+			}
+			break;
+		case KEY_RIGHT:
+		case '\t': /* TAB */
+			if (focusbuttons) {
+				bs.curr++;
+				focusbuttons = bs.curr < (int)bs.nbuttons ?
+				    true : false;
+				if (focusbuttons == false) {
+					sel = 0;
+					bs.curr = conf->button.always_active ? 0 : -1;
+				}
+			} else {
+				sel++;
+				focusbuttons = sel > 2 ? true : false;
+				if (focusbuttons) {
+					bs.curr = 0;
+				}
+			}
+			draw_buttons(widget, bs);
+			wrefresh(widget);
+			break;
+		case KEY_LEFT:
+			if (focusbuttons) {
+				bs.curr--;
+				focusbuttons = bs.curr < 0 ? false : true;
+				if (focusbuttons == false) {
+					sel = 2;
+					bs.curr = conf->button.always_active ? 0 : -1;
+				}
+			} else {
+				sel--;
+				focusbuttons = sel < 0 ? true : false;
+				if (focusbuttons)
+					bs.curr = (int)bs.nbuttons - 1;
+			}
+			draw_buttons(widget, bs);
+			wrefresh(widget);
+			break;
+		case KEY_UP:
+			if (focusbuttons) {
+				sel = 0;
+				focusbuttons = false;
+				bs.curr = conf->button.always_active ? 0 : -1;
+				draw_buttons(widget, bs);
+				wrefresh(widget);
+			} else {
+				c[sel].value = c[sel].value > 1 ?
+				    c[sel].value - 1 : c[sel].max ;
+				/* if mount change */
+				c[2].max = m[c[1].value -1].days;
+				/* if year change */
+				if (c[1].value == 2 && ISLEAP(c[0].value))
+					c[2].max = 29;
+				/* set new day */
+				if (c[2].value > c[2].max)
+					c[2].value = c[2].max;
+			}
+			break;
+		case KEY_DOWN:
+			if (focusbuttons)
+				break;
+			c[sel].value = c[sel].value < c[sel].max ?
+			    c[sel].value + 1 : 1;
+			/* if mount change */
+			c[2].max = m[c[1].value -1].days;
+			/* if year change */
+			if (c[1].value == 2 && ISLEAP(c[0].value))
+				c[2].max = 29;
+			/* set new day */
+			if (c[2].value > c[2].max)
+				c[2].value = c[2].max;
+			break;
+		case KEY_F(1):
+			if (conf->key.f1_file == NULL &&
+			    conf->key.f1_message == NULL)
+				break;
+			if (f1help_dialog(conf) != 0)
+				return (BSDDIALOG_ERROR);
+			/* No break, screen size can change */
+		case KEY_RESIZE:
+			/* Important for decreasing screen */
+			hide_dialog(y, x, h, w, conf->shadow);
+			refresh();
+
+			if (widget_size_position(conf, rows, cols, text,
+			    3 /*windows*/, MINWDATE, &bs, &y, &x, &h, &w,
+			    NULL) != 0)
+				return (BSDDIALOG_ERROR);
+			if (update_dialog(conf, shadow, widget, y, x, h, w,
+			    textpad, text, &bs) != 0)
+				return (BSDDIALOG_ERROR);
+			doupdate();
+
+			mvwaddch(widget, h - 5, w/2 - 5, '/');
+			mvwaddch(widget, h - 5, w/2 + 7, '/');
+			wrefresh(widget);
+
+			prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
+
+			wclear(c[0].win);
+			mvwin(c[0].win, y + h - 6, x + w/2 - 11);
+			wclear(c[1].win);
+			mvwin(c[1].win, y + h - 6, x + w/2 - 4);
+			wclear(c[2].win);
+			mvwin(c[2].win, y + h - 6, x + w/2 + 8);
+
+			/* Important to avoid grey lines expanding screen */
+			refresh();
+			break;
+		default:
+			if (shortcut_buttons(input, &bs)) {
+				retval = BUTTONVALUE(bs);
+				loop = false;
+			}
+		}
+	}
+
+	if (retval == BSDDIALOG_OK) {
+		*yy = c[0].value;
+		*mm = c[1].value;
+		*dd = c[2].value;
+	}
+
+	for (i = 0; i < 3; i++)
+		delwin(c[i].win);
 	end_dialog(conf, shadow, widget, textpad);
 
 	return (retval);
