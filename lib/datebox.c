@@ -180,6 +180,27 @@ static void datectl(enum operation op, int *yy, int *mm, int *dd)
 	}
 }
 
+static int
+init_date(unsigned int *year, unsigned int *month, unsigned int *day, int *yy,
+    int *mm, int *dd)
+{
+	CHECK_PTR(year, unsigned int);
+	CHECK_PTR(month, unsigned int);
+	CHECK_PTR(day, unsigned int);
+
+	*yy = MIN(*year, MAXYEAR);
+	if (*yy < MINYEAR)
+		*yy = MINYEAR;
+	*mm = MIN(*month, 12);
+	if (*mm == 0)
+		*mm = 1;
+	*dd = (*day == 0) ? 1 : *day;
+	if(*dd > month_days(*yy, *mm))
+		*dd = month_days(*yy, *mm);
+
+	return (0);
+}
+
 static void
 print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
     bool active)
@@ -265,18 +286,8 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		"August", "September", "October", "November", "December"
 	};
 
-	if (year == NULL || month == NULL || day == NULL)
-		RETURN_ERROR("yy / mm / dd cannot be NULL");
-
-	yy = *year > MAXYEAR ? MAXYEAR : *year;
-	if (yy < MINYEAR)
-		yy = MINYEAR;
-	mm = *month > 12 ? 12 : *month;
-	if (mm == 0)
-		mm = 1;
-	dd = *day == 0 ? 1 : *day;
-	if(dd > month_days(yy, mm))
-		dd = month_days(yy, mm);
+	if(init_date(year, month, day, &yy, &mm, &dd) != 0)
+		return (BSDDIALOG_ERROR);
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 	if (widget_size_position(conf, rows, cols, text, MINHCAL, MINWCAL, &bs,
