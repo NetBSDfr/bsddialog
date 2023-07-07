@@ -35,30 +35,29 @@
 
 #define MINWTIME   14 /* 3 windows and their borders */
 
+struct clock {
+	unsigned int max;
+	unsigned int value;
+	WINDOW *win;
+};
+
 static void
-drawsquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
-    const void *value, bool focus)
+drawsquare(struct bsddialog_conf *conf, WINDOW *win, unsigned int value, bool focus)
 {
-	int h, l, w;
+	int h, w;
 
 	getmaxyx(win, h, w);
 	draw_borders(conf, win, h, w, LOWERED);
 	if (focus) {
-		l = 2 + w%2;
 		wattron(win, t.dialog.arrowcolor);
-		mvwhline(win, 0, w/2 - l/2,
-		    conf->ascii_lines ? '^' : ACS_UARROW, l);
-		mvwhline(win, h-1, w/2 - l/2,
-		    conf->ascii_lines ? 'v' : ACS_DARROW, l);
+		mvwhline(win, 0, 1, conf->ascii_lines ? '^' : ACS_UARROW, 2);
+		mvwhline(win, 2, 1, conf->ascii_lines ? 'v' : ACS_DARROW, 2);
 		wattroff(win, t.dialog.arrowcolor);
 	}
 
 	if (focus)
 		wattron(win, t.menu.f_namecolor);
-	if (strchr(fmt, 's') != NULL)
-		mvwprintw(win, 1, 1, fmt, (const char*)value);
-	else
-		mvwprintw(win, 1, 1, fmt, *((const int*)value));
+	mvwprintw(win, 1, 1, "%02d", value);
 	if (focus)
 		wattroff(win, t.menu.f_namecolor);
 
@@ -74,20 +73,15 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	wint_t input;
 	WINDOW *widget, *textpad, *shadow;
 	struct buttons bs;
-	struct myclockstruct {
-		unsigned int max;
-		unsigned int value;
-		WINDOW *win;
-	};
-
-	if (hh == NULL || mm == NULL || ss == NULL)
-		RETURN_ERROR("hh / mm / ss cannot be NULL");
-
-	struct myclockstruct c[3] = {
+	struct clock c[3] = {
 		{23, *hh, NULL},
 		{59, *mm, NULL},
 		{59, *ss, NULL}
 	};
+
+	CHECK_PTR(hh, unsigned int);
+	CHECK_PTR(mm, unsigned int);
+	CHECK_PTR(ss, unsigned int);
 
 	for (i = 0 ; i < 3; i++) {
 		if (c[i].value > c[i].max)
@@ -116,8 +110,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 	loop = focusbuttons = true;
 	while (loop) {
 		for (i = 0; i < 3; i++)
-			drawsquare(conf, c[i].win, "%02d", &c[i].value,
-			    sel == i);
+			drawsquare(conf, c[i].win, c[i].value, sel == i);
 
 		if (get_wch(&input) == ERR)
 			continue;
