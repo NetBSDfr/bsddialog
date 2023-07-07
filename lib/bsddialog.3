@@ -260,10 +260,7 @@ initializes the library, the only functions that can be called before is
 described later.
 After the initialization the input and output should be handled via the library
 API.
-.Fn bsddialog_end
-restores the screen like before
-.Fn bsddialog_init ,
-then it is not possible to use the library functions.
+.Pp
 .Fn bsddialog_init_notheme
 is equivalent to
 .Fn bsddialog_init
@@ -271,12 +268,11 @@ except it does not set the default graphical theme; see
 .Sx Theme
 subsection to set a theme explicitly.
 .Pp
-.Fn bsddialog_error
-returns a string to describe the last error, it should be called after a
-.Dv BSDDIALOG_ERROR
-returned value.
-.Fn bsddialog_clearterminal
-clears the screen.
+.Fn bsddialog_end
+restores the screen like before
+.Fn bsddialog_init ,
+after it is not possible to use the library functions.
+.Pp
 .Fn bsddialog_backtitle
 prints
 .Fa backtitle
@@ -287,10 +283,17 @@ and
 .Fa conf
 is described later.
 .Pp
-Each
+.Fn bsddialog_error
+returns a string to describe the last error, it should be called after a
+.Dv BSDDIALOG_ERROR
+returned value.
+.Pp
+.Fn bsddialog_clearterminal
+clears the screen.
+.Pp
+A
 .Fa char*
-argument has to be a well terminated string, it can be a multibyte character
-string depending on current locale, see
+parameter can be a multibyte character string depending on current locale, see
 .Xr setlocale 3 .
 .Ss Dialogs
 The dialogs have common arguments.
