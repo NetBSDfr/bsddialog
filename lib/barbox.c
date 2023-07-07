@@ -379,10 +379,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	WINDOW *widget, *textpad, *bar, *shadow;
 	struct buttons bs;
 
-	if (value == NULL)
-		RETURN_ERROR("*value cannot be NULL");
-	if (sizeof(*value) != sizeof(int))
-		RETURN_ERROR("*value bad size");
+	CHECK_PTR(value, int);
 	if (min >= max)
 		RETURN_ERROR("min >= max");
 	if (*value < min)
