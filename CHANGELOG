@@ -1,7 +1,7 @@
 WIP Next Version
 
 	Library:
-	* add: check API pointers;
+	* add: check API pointers (when possible).
 	* add: bsddialog_rangebox() *value check size and init value.
 	* improve: DIAGNOSTIC adding fmt strings for bsddialog_geterror().
 	* change: menus and form less restrictive with text, hide text with

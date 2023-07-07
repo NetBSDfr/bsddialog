@@ -394,6 +394,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	struct bsddialog_menuitem *item;
 	struct privateitem *pritems;
 
+	CHECK_PTR_SIZE(focuslist, int);
+	CHECK_PTR_SIZE(focusitem, int);
+
 	automenurows = (menurows == BSDDIALOG_AUTOSIZE) ? true : false;
 
 	totnitems = 0;

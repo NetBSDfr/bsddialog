@@ -1221,6 +1221,10 @@ new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
 {
 	int error;
 
+	CHECK_PTR(conf, struct bsddialog_conf);
+	CHECK_PTR_SIZE(conf->get_height, int);
+	CHECK_PTR_SIZE(conf->get_width, int);
+
 	if (conf->shadow) {
 		*shadow = newwin(h, w, y + t.shadow.y, x + t.shadow.x);
 		if (*shadow == NULL)
