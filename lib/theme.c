@@ -299,14 +299,16 @@ bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
 	flag |= (color & A_BOLD) ? BSDDIALOG_BOLD : 0;
 	flag |= (color & A_REVERSE) ? BSDDIALOG_REVERSE : 0;
 	flag |= (color & A_UNDERLINE) ? BSDDIALOG_UNDERLINE : 0;
-	if (flags != NULL)
+	if (flags != NULL && sizeof(flags) == sizeof(unsigned int))
 		*flags = flag;
 
 	if (pair_content(PAIR_NUMBER(color), &f, &b) != OK)
 		RETURN_ERROR("Cannot get color attributes");
-	if (foreground != NULL)
+	if (foreground != NULL &&
+	    sizeof(foreground) == sizeof(enum bsddialog_color))
 		*foreground = f;
-	if (background != NULL)
+	if (background != NULL &&
+	    sizeof(background) == sizeof(enum bsddialog_color))
 		*background = b;
 
 	return (BSDDIALOG_OK);
