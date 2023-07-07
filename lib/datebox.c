@@ -42,6 +42,21 @@
 
 #define ISLEAP(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
 
+const char *m[12] = {
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December"
+};
+
 enum operation {
 	UP_DAY,
 	DOWN_DAY,
@@ -281,10 +296,6 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	wint_t input;
 	WINDOW *widget, *textpad, *shadow, *yearwin, *monthwin, *daywin;
 	struct buttons bs;
-	const char *m[12] = {
-		"January", "February", "March", "April", "May", "June", "July",
-		"August", "September", "October", "November", "December"
-	};
 
 	if(init_date(year, month, day, &yy, &mm, &dd) != 0)
 		return (BSDDIALOG_ERROR);
@@ -488,48 +499,13 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *year, unsigned int *month, unsigned int *day)
 {
 	bool loop, focusbuttons;
-	int i, retval, y, x, h, w, sel;
+	int retval, y, x, h, w, sel, yy, mm, dd;
 	wint_t input;
-	WINDOW *widget, *textpad, *shadow;
+	WINDOW *widget, *textpad, *shadow, *yy_win, *mm_win, *dd_win;
 	struct buttons bs;
-	struct calendar {
-		int max;
-		int value;
-		WINDOW *win;
-		unsigned int x;
-	};
-	struct month {
-		const char *name;
-		unsigned int days;
-	};
 
-	if (year == NULL || month == NULL || day == NULL)
-		RETURN_ERROR("yy / mm / dd cannot be NULL");
-
-	struct calendar c[3] = {
-		{9999, *year,  NULL, 4 },
-		{12,   *month, NULL, 9 },
-		{31,   *day,   NULL, 2 }
-	};
-
-	struct month m[12] = {
-		{ "January", 31 }, { "February", 28 }, { "March",     31 },
-		{ "April",   30 }, { "May",      31 }, { "June",      30 },
-		{ "July",    31 }, { "August",   31 }, { "September", 30 },
-		{ "October", 31 }, { "November", 30 }, { "December",  31 }
-	};
-
-	for (i = 0 ; i < 3; i++) {
-		if (c[i].value > c[i].max)
-			c[i].value = c[i].max;
-		if (c[i].value < 1)
-			c[i].value = 1;
-	}
-	c[2].max = m[c[1].value -1].days;
-	if (c[1].value == 2 && ISLEAP(c[0].value))
-		c[2].max = 29;
-	if (c[2].value > c[2].max)
-		c[2].value = c[2].max;
+	if(init_date(year, month, day, &yy, &mm, &dd) != 0)
+		return (BSDDIALOG_ERROR);
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 	if (widget_size_position(conf, rows, cols, text, 3 /*windows*/,
@@ -541,23 +517,20 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
 	doupdate();
 
-	c[0].win = new_boxed_window(conf, y+h-6, x + w/2 - 11, 3, 6, LOWERED);
+	yy_win = new_boxed_window(conf, y+h-6, x + w/2 - 11, 3, 6, LOWERED);
 	mvwaddch(widget, h - 5, w/2 - 5, '/');
-	c[1].win = new_boxed_window(conf, y+h-6, x + w/2 - 4, 3, 11, LOWERED);
+	mm_win = new_boxed_window(conf, y+h-6, x + w/2 - 4, 3, 11, LOWERED);
 	mvwaddch(widget, h - 5, w/2 + 7, '/');
-	c[2].win = new_boxed_window(conf, y+h-6, x + w/2 + 8, 3, 4, LOWERED);
+	dd_win = new_boxed_window(conf, y+h-6, x + w/2 + 8, 3, 4, LOWERED);
 
 	wrefresh(widget);
 
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, c[0].win, LOWERED, "%4d", &c[0].value,
-		    sel == 0);
-		drawsquare(conf, c[1].win, LOWERED, "%9s", m[c[1].value-1].name,
-		    sel == 1);
-		drawsquare(conf, c[2].win, LOWERED, "%02d", &c[2].value,
-		    sel == 2);
+		drawsquare(conf, yy_win, LOWERED, "%4d", &yy, sel == 0);
+		drawsquare(conf, mm_win, LOWERED, "%9s", m[mm - 1], sel == 1);
+		drawsquare(conf, dd_win, LOWERED, "%02d", &dd, sel == 2);
 
 		if (get_wch(&input) == ERR)
 			continue;
@@ -620,31 +593,23 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				draw_buttons(widget, bs);
 				wrefresh(widget);
 			} else {
-				c[sel].value = c[sel].value > 1 ?
-				    c[sel].value - 1 : c[sel].max ;
-				/* if mount change */
-				c[2].max = m[c[1].value -1].days;
-				/* if year change */
-				if (c[1].value == 2 && ISLEAP(c[0].value))
-					c[2].max = 29;
-				/* set new day */
-				if (c[2].value > c[2].max)
-					c[2].value = c[2].max;
+				if (sel == 0)
+					datectl(UP_YEAR, &yy, &mm, &dd);
+				else if (sel == 1)
+					datectl(UP_MONTH, &yy, &mm, &dd);
+				else /* sel == 2*/
+					datectl(LEFT_DAY, &yy, &mm, &dd);
 			}
 			break;
 		case KEY_DOWN:
 			if (focusbuttons)
 				break;
-			c[sel].value = c[sel].value < c[sel].max ?
-			    c[sel].value + 1 : 1;
-			/* if mount change */
-			c[2].max = m[c[1].value -1].days;
-			/* if year change */
-			if (c[1].value == 2 && ISLEAP(c[0].value))
-				c[2].max = 29;
-			/* set new day */
-			if (c[2].value > c[2].max)
-				c[2].value = c[2].max;
+			if (sel == 0)
+				datectl(DOWN_YEAR, &yy, &mm, &dd);
+			else if (sel == 1)
+				datectl(DOWN_MONTH, &yy, &mm, &dd);
+			else /* sel == 2*/
+				datectl(RIGHT_DAY, &yy, &mm, &dd);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -673,12 +638,12 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 			prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
 
-			wclear(c[0].win);
-			mvwin(c[0].win, y + h - 6, x + w/2 - 11);
-			wclear(c[1].win);
-			mvwin(c[1].win, y + h - 6, x + w/2 - 4);
-			wclear(c[2].win);
-			mvwin(c[2].win, y + h - 6, x + w/2 + 8);
+			wclear(yy_win);
+			mvwin(yy_win, y + h - 6, x + w/2 - 11);
+			wclear(mm_win);
+			mvwin(mm_win, y + h - 6, x + w/2 - 4);
+			wclear(dd_win);
+			mvwin(dd_win, y + h - 6, x + w/2 + 8);
 
 			/* Important to avoid grey lines expanding screen */
 			refresh();
@@ -692,13 +657,14 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 
 	if (retval == BSDDIALOG_OK) {
-		*year  = c[0].value;
-		*month = c[1].value;
-		*day   = c[2].value;
+		*year  = yy;
+		*month = mm;
+		*day   = dd;
 	}
 
-	for (i = 0; i < 3; i++)
-		delwin(c[i].win);
+	delwin(yy_win);
+	delwin(mm_win);
+	delwin(dd_win);
 	end_dialog(conf, shadow, widget, textpad);
 
 	return (retval);
