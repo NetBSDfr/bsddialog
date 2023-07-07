@@ -93,6 +93,27 @@ static int week_day(int yy, int mm, int dd)
 	return (wd);
 }
 
+static int
+init_date(unsigned int *year, unsigned int *month, unsigned int *day, int *yy,
+    int *mm, int *dd)
+{
+	CHECK_PTR(year, unsigned int);
+	CHECK_PTR(month, unsigned int);
+	CHECK_PTR(day, unsigned int);
+
+	*yy = MIN(*year, MAXYEAR);
+	if (*yy < MINYEAR)
+		*yy = MINYEAR;
+	*mm = MIN(*month, 12);
+	if (*mm == 0)
+		*mm = 1;
+	*dd = (*day == 0) ? 1 : *day;
+	if(*dd > month_days(*yy, *mm))
+		*dd = month_days(*yy, *mm);
+
+	return (0);
+}
+
 static void datectl(enum operation op, int *yy, int *mm, int *dd)
 {
 	int ndays;
@@ -193,27 +214,6 @@ static void datectl(enum operation op, int *yy, int *mm, int *dd)
 		*mm = 12;
 		*dd = 31;
 	}
-}
-
-static int
-init_date(unsigned int *year, unsigned int *month, unsigned int *day, int *yy,
-    int *mm, int *dd)
-{
-	CHECK_PTR(year, unsigned int);
-	CHECK_PTR(month, unsigned int);
-	CHECK_PTR(day, unsigned int);
-
-	*yy = MIN(*year, MAXYEAR);
-	if (*yy < MINYEAR)
-		*yy = MINYEAR;
-	*mm = MIN(*month, 12);
-	if (*mm == 0)
-		*mm = 1;
-	*dd = (*day == 0) ? 1 : *day;
-	if(*dd > month_days(*yy, *mm))
-		*dd = month_days(*yy, *mm);
-
-	return (0);
 }
 
 static void
