@@ -42,7 +42,8 @@ struct clock {
 };
 
 static void
-drawsquare(struct bsddialog_conf *conf, WINDOW *win, unsigned int value, bool focus)
+drawsquare(struct bsddialog_conf *conf, WINDOW *win, unsigned int value,
+    bool focus)
 {
 	int h, w;
 
@@ -57,7 +58,7 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, unsigned int value, bool fo
 
 	if (focus)
 		wattron(win, t.menu.f_namecolor);
-	mvwprintw(win, 1, 1, "%02d", value);
+	mvwprintw(win, 1, 1, "%02u", value);
 	if (focus)
 		wattroff(win, t.menu.f_namecolor);
 
