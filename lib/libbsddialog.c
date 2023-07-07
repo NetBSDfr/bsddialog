@@ -99,6 +99,8 @@ int bsddialog_end(void)
 
 int bsddialog_backtitle(struct bsddialog_conf *conf, const char *backtitle)
 {
+	CHECK_PTR(conf, struct bsddialog_conf);
+
 	move(0, 1);
 	clrtoeol();
 	addstr(backtitle);
@@ -118,10 +120,7 @@ const char *bsddialog_geterror(void)
 
 int bsddialog_initconf(struct bsddialog_conf *conf)
 {
-	if (conf == NULL)
-		RETURN_ERROR("conf is NULL");
-	if (sizeof(*conf) != sizeof(struct bsddialog_conf))
-		RETURN_ERROR("Bad conf size");
+	CHECK_PTR(conf, struct bsddialog_conf);
 
 	memset(conf, 0, sizeof(struct bsddialog_conf));
 	conf->y = BSDDIALOG_CENTER;

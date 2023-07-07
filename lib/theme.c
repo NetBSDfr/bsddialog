@@ -234,10 +234,7 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 /* API */
 int bsddialog_get_theme(struct bsddialog_theme *theme)
 {
-	if (theme == NULL)
-		RETURN_ERROR("theme is NULL");
-	if (sizeof(*theme) != sizeof(struct bsddialog_theme))
-		RETURN_ERROR("Bad suze struct bsddialog_theme");
+	CHECK_PTR(theme, struct bsddialog_theme);
 
 	set_theme(theme, &t);
 
@@ -246,10 +243,7 @@ int bsddialog_get_theme(struct bsddialog_theme *theme)
 
 int bsddialog_set_theme(struct bsddialog_theme *theme)
 {
-	if (theme == NULL)
-		RETURN_ERROR("theme is NULL");
-	if (sizeof(*theme) != sizeof(struct bsddialog_theme))
-		RETURN_ERROR("Bad size struct bsddialog_theme");
+	CHECK_PTR(theme, struct bsddialog_theme);
 
 	set_theme(&t, theme);
 
