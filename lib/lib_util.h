@@ -87,7 +87,7 @@ void set_fmt_error_string(const char *fmt, ...);
 
 #define SET_PTR(p, type, value) do {                                           \
 	if (p != NULL && sizeof(*p) != sizeof(type))                           \
-		RETURN_ERROR(*p " is not NULL but bad (" #type ") size");      \
+		RETURN_ERROR(#p " is not NULL but bad (" #type ") size");      \
 	if (p != NULL)                                                         \
 		*p = value;                                                    \
 } while (0)
