@@ -71,6 +71,14 @@ void set_fmt_error_string(const char *fmt, ...);
 	return (BSDDIALOG_ERROR);                                              \
 } while (0)
 
+/* ptr checker */
+#define CHECK_PTR(p, type) do {                                                \
+	if (p == NULL)                                                         \
+		RETURN_ERROR("*" #p " is NULL");                               \
+	if (sizeof(p) != sizeof(type))                                         \
+		RETURN_ERROR("Bad *" #p " size");                              \
+} while (0)
+
 /* buttons */
 #define HBUTTONS        2
 
