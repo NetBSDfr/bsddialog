@@ -18,9 +18,8 @@ WIP Next Version
 	    - merge: (when possible) dialogs checksize.
 	    - delete: infobox.c, merged with messagebox.c
 	    - add: internal structures to represent components.
-	    - merge: bsddialog_datebox() and bsddialog_calendar() in datebox.c.
-	    - delete: calendar.c
-	    - add: datebox.c
+	    - merge: bsddialog_datebox() with bsddialog_calendar().
+	    - rename: calendar.c -> add: datebox.c
 
 2023-06-12 Version 0.4.2
 
