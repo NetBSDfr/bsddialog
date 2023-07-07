@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 6, 2023
+.Dd July 7, 2023
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -68,9 +68,9 @@
 .Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
-.Fa "unsigned int *yy"
-.Fa "unsigned int *mm"
-.Fa "unsigned int *dd"
+.Fa "unsigned int *year"
+.Fa "unsigned int *month"
+.Fa "unsigned int *day"
 .Fc
 .Ft int
 .Fo bsddialog_checklist
@@ -91,9 +91,9 @@
 .Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
-.Fa "unsigned int *yy"
-.Fa "unsigned int *mm"
-.Fa "unsigned int *dd"
+.Fa "unsigned int *year"
+.Fa "unsigned int *month"
+.Fa "unsigned int *day"
 .Fc
 .Ft int
 .Fn bsddialog_end "void"
@@ -550,10 +550,10 @@ expires or a button is pressed.
 and
 .Fn bsddialog_datebox
 build a dialog to select a date,
-.Fa yy ,
-.Fa mm ,
+.Fa year ,
+.Fa month ,
 and
-.Fa dd
+.Fa day
 are default values on startup, selected date at exit.
 .Fn bsddialog_timebox
 builds a dialog to choose a time,

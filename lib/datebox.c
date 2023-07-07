@@ -253,10 +253,10 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
 
 int
 bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd)
+    int cols, unsigned int *year, unsigned int *month, unsigned int *day)
 {
 	bool loop, focusbuttons;
-	int retval, y, x, h, w, sel, ycal, xcal, year, month, day;
+	int retval, y, x, h, w, sel, ycal, xcal, yy, mm, dd;
 	wint_t input;
 	WINDOW *widget, *textpad, *shadow, *yearwin, *monthwin, *daywin;
 	struct buttons bs;
@@ -265,18 +265,18 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		"August", "September", "October", "November", "December"
 	};
 
-	if (yy == NULL || mm == NULL || dd == NULL)
+	if (year == NULL || month == NULL || day == NULL)
 		RETURN_ERROR("yy / mm / dd cannot be NULL");
 
-	year = *yy > MAXYEAR ? MAXYEAR : *yy;
-	if (year < MINYEAR)
-		year = MINYEAR;
-	month = *mm > 12 ? 12 : *mm;
-	if (month == 0)
-		month = 1;
-	day = *dd == 0 ? 1 : *dd;
-	if(day > month_days(year, month))
-		day = month_days(year, month);
+	yy = *year > MAXYEAR ? MAXYEAR : *year;
+	if (yy < MINYEAR)
+		yy = MINYEAR;
+	mm = *month > 12 ? 12 : *month;
+	if (mm == 0)
+		mm = 1;
+	dd = *day == 0 ? 1 : *day;
+	if(dd > month_days(yy, mm))
+		dd = month_days(yy, mm);
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
 	if (widget_size_position(conf, rows, cols, text, MINHCAL, MINWCAL, &bs,
@@ -301,9 +301,9 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, monthwin, RAISED, "%15s", m[month - 1], sel == 0);
-		drawsquare(conf, yearwin, RAISED, "%15d", &year, sel == 1);
-		print_calendar(conf, daywin, year, month, day, sel == 2);
+		drawsquare(conf, monthwin, RAISED, "%15s", m[mm - 1], sel == 0);
+		drawsquare(conf, yearwin, RAISED, "%15d", &yy, sel == 1);
+		print_calendar(conf, daywin, yy, mm, dd, sel == 2);
 
 		if (get_wch(&input) == ERR)
 			continue;
@@ -351,7 +351,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 					    0 : -1;
 				}
 			} else if (sel == 2) {
-				datectl(RIGHT_DAY, &year, &month, &day);
+				datectl(RIGHT_DAY, &yy, &mm, &dd);
 			} else { /* Month or Year*/
 				sel++;
 			}
@@ -368,7 +368,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 					    0 : -1;
 				}
 			} else if (sel == 2) {
-				datectl(LEFT_DAY, &year, &month, &day);
+				datectl(LEFT_DAY, &yy, &mm, &dd);
 			} else if (sel == 1) {
 				sel = 0;
 			} else { /* sel = 0, Month */
@@ -387,35 +387,35 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				draw_buttons(widget, bs);
 				wrefresh(widget);
 			} else if (sel == 0) {
-				datectl(UP_MONTH, &year, &month, &day);
+				datectl(UP_MONTH, &yy, &mm, &dd);
 			} else if (sel == 1) {
-				datectl(UP_YEAR, &year, &month, &day);
+				datectl(UP_YEAR, &yy, &mm, &dd);
 			} else { /* sel = 2 */
-				datectl(UP_DAY, &year, &month, &day);
+				datectl(UP_DAY, &yy, &mm, &dd);
 			}
 			break;
 		case KEY_DOWN:
 			if (focusbuttons) {
 				break;
 			} else if (sel == 0) {
-				datectl(DOWN_MONTH, &year, &month, &day);
+				datectl(DOWN_MONTH, &yy, &mm, &dd);
 			} else if (sel == 1) {
-				datectl(DOWN_YEAR, &year, &month, &day);
+				datectl(DOWN_YEAR, &yy, &mm, &dd);
 			} else { /* sel = 2 */
-				datectl(DOWN_DAY, &year, &month, &day);
+				datectl(DOWN_DAY, &yy, &mm, &dd);
 			}
 			break;
 		case KEY_HOME:
-			datectl(UP_MONTH, &year, &month, &day);
+			datectl(UP_MONTH, &yy, &mm, &dd);
 			break;
 		case KEY_END:
-			datectl(DOWN_MONTH, &year, &month, &day);
+			datectl(DOWN_MONTH, &yy, &mm, &dd);
 			break;
 		case KEY_PPAGE:
-			datectl(UP_YEAR, &year, &month, &day);
+			datectl(UP_YEAR, &yy, &mm, &dd);
 			break;
 		case KEY_NPAGE:
-			datectl(DOWN_YEAR, &year, &month, &day);
+			datectl(DOWN_YEAR, &yy, &mm, &dd);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -459,9 +459,9 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 
 	if (retval == BSDDIALOG_OK) {
-		*yy = year;
-		*mm = month;
-		*dd = day;
+		*year  = yy;
+		*month = mm;
+		*day   = dd;
 	}
 
 	delwin(yearwin);
@@ -474,7 +474,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 
 int
 bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd)
+    int cols, unsigned int *year, unsigned int *month, unsigned int *day)
 {
 	bool loop, focusbuttons;
 	int i, retval, y, x, h, w, sel;
@@ -492,13 +492,13 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		unsigned int days;
 	};
 
-	if (yy == NULL || mm == NULL || dd == NULL)
+	if (year == NULL || month == NULL || day == NULL)
 		RETURN_ERROR("yy / mm / dd cannot be NULL");
 
 	struct calendar c[3] = {
-		{9999, *yy, NULL, 4 },
-		{12,   *mm, NULL, 9 },
-		{31,   *dd, NULL, 2 }
+		{9999, *year,  NULL, 4 },
+		{12,   *month, NULL, 9 },
+		{31,   *day,   NULL, 2 }
 	};
 
 	struct month m[12] = {
@@ -681,9 +681,9 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 
 	if (retval == BSDDIALOG_OK) {
-		*yy = c[0].value;
-		*mm = c[1].value;
-		*dd = c[2].value;
+		*year  = c[0].value;
+		*month = c[1].value;
+		*day   = c[2].value;
 	}
 
 	for (i = 0; i < 3; i++)

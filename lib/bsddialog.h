@@ -175,7 +175,7 @@ const char *bsddialog_geterror(void);
 /* Dialogs */
 int
 bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd);
+    int cols, unsigned int *year, unsigned int *month, unsigned int *day);
 
 int
 bsddialog_checklist(struct bsddialog_conf *conf, const char *text, int rows,
@@ -184,7 +184,7 @@ bsddialog_checklist(struct bsddialog_conf *conf, const char *text, int rows,
 
 int
 bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int *yy, unsigned int *mm, unsigned int *dd);
+    int cols, unsigned int *year, unsigned int *month, unsigned int *day);
 
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
