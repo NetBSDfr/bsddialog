@@ -7,7 +7,7 @@ VERSION = 0.5-devel
 LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
 HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
-SOURCES = barbox.c calendarbox.c formbox.c libbsddialog.c lib_util.c menubox.c \
+SOURCES = barbox.c datebox.c formbox.c libbsddialog.c lib_util.c menubox.c \
 	  messagebox.c textbox.c theme.c timebox.c
 OBJECTS = $(SOURCES:.c=.o)
 CFLAGS = -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE -D_GNU_SOURCE -Wall -Wextra \

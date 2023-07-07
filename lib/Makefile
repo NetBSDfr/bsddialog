@@ -8,7 +8,7 @@ LIBRARY = bsddialog
 LIBRARY_SO = lib${LIBRARY:=.so}
 LIBRARY_A = lib${LIBRARY:=.a}
 HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
-SOURCES = barbox.c calendarbox.c formbox.c libbsddialog.c lib_util.c menubox.c \
+SOURCES = barbox.c datebox.c formbox.c libbsddialog.c lib_util.c menubox.c \
 	  messagebox.c textbox.c theme.c timebox.c
 OBJECTS = ${SOURCES:.c=.o}
 CFLAGS += -D_XOPEN_SOURCE_EXTENDED -fPIC -Wall -Wextra
