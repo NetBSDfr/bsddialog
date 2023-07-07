@@ -76,6 +76,22 @@ void set_fmt_error_string(const char *fmt, ...);
 		RETURN_ERROR("Bad *" #p " size");                              \
 } while (0)
 
+#define CHECK_ARRAY(nitem, a, type) do {                                       \
+	if (nitem == 0)                                                        \
+		/* no check*/;                                                 \
+	else if(a == NULL)                                                     \
+		RETURN_FMTERROR(#nitem " is %d but " #a " is NULL");           \
+	else if (sizeof(*a) != sizeof(type))                                   \
+		RETURN_ERROR("Bad " #a "[0] size");                            \
+} while (0)
+
+#define SET_PTR(p, type, value) do {                                           \
+	if (p != NULL && sizeof(*p) != sizeof(type))                           \
+		RETURN_ERROR(*p " is not NULL but bad (" #type ") size");      \
+	if (p != NULL)                                                         \
+		*p = value;                                                    \
+} while (0)
+
 /* buttons */
 #define HBUTTONS        2
 
