@@ -381,11 +381,11 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	CHECK_PTR(value, int);
 	if (min >= max)
-		RETURN_ERROR("min >= max");
+		RETURN_FMTERROR("min (%d) >= max (%d)", min, max);
 	if (*value < min)
-		RETURN_ERROR("value < min");
+		RETURN_FMTERROR("value (%d) < min (%d)", *value, min);
 	if (*value > max)
-		RETURN_ERROR("value > max");
+		RETURN_FMTERROR("value (%d) > max (%d)", *value, max);
 
 	currvalue = *value;
 	positions = max - min + 1;
