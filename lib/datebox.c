@@ -222,17 +222,20 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 }
 
 static void
-drawsquare(struct bsddialog_conf *conf, WINDOW *win, const char *fmt,
-    const void *value, bool focus)
+drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
+    const char *fmt, const void *value, bool focus)
 {
-	int h, w;
+	int h, l, w;
 
 	getmaxyx(win, h, w);
-	draw_borders(conf, win, h, w, RAISED);
+	draw_borders(conf, win, h, w, elev);
 	if (focus) {
+		l = 2 + w%2;
 		wattron(win, t.dialog.arrowcolor);
-		mvwhline(win, 0, 7, conf->ascii_lines ? '^' : ACS_UARROW, 3);
-		mvwhline(win, 2, 7, conf->ascii_lines ? 'v' : ACS_DARROW, 3);
+		mvwhline(win, 0, w/2 - l/2,
+		    conf->ascii_lines ? '^' : ACS_UARROW, l);
+		mvwhline(win, h-1, w/2 - l/2,
+		    conf->ascii_lines ? 'v' : ACS_DARROW, l);
 		wattroff(win, t.dialog.arrowcolor);
 	}
 
@@ -298,8 +301,8 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, monthwin, "%15s", m[month - 1], sel == 0);
-		drawsquare(conf, yearwin, "%15d", &year, sel == 1);
+		drawsquare(conf, monthwin, RAISED, "%15s", m[month - 1], sel == 0);
+		drawsquare(conf, yearwin, RAISED, "%15d", &year, sel == 1);
 		print_calendar(conf, daywin, year, month, day, sel == 2);
 
 		if (get_wch(&input) == ERR)
@@ -538,10 +541,12 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, c[0].win, "%4d", &c[0].value, sel == 0);
-		drawsquare(conf, c[1].win, "%9s", m[c[1].value-1].name,
+		drawsquare(conf, c[0].win, LOWERED, "%4d", &c[0].value,
+		    sel == 0);
+		drawsquare(conf, c[1].win, LOWERED, "%9s", m[c[1].value-1].name,
 		    sel == 1);
-		drawsquare(conf, c[2].win, "%02d", &c[2].value, sel == 2);
+		drawsquare(conf, c[2].win, LOWERED, "%02d", &c[2].value,
+		    sel == 2);
 
 		if (get_wch(&input) == ERR)
 			continue;
