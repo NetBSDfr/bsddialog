@@ -4,6 +4,7 @@ WIP Next Version
 	* delete: theme bsddialog (partially implemented).
 	* change: --theme 3d|blackwhite|flat.
 	* improve: DIAGNOSTIC messages using new library fmt string errors.
+	* add: button delimiter to --bikeshed.
 
 	Library:
 	* add: check (when possible) API pointers.

@@ -274,7 +274,8 @@ void loadtheme(const char *file)
 void bikeshed(struct bsddialog_conf *conf)
 {
 	int margin, i;
-	int colors[8] = {0, 0, 0, 0 ,0 ,0 , 0, 0};
+	int colors[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+	char delim[8] = {'[', '<', '(', '|', ']', '>', ')', '|'};
 	enum bsddialog_color col[6];
 	time_t clock;
 
@@ -328,8 +329,9 @@ void bikeshed(struct bsddialog_conf *conf)
 
 	t.button.minmargin       = 1,
 	t.button.maxmargin       = 5,
-	t.button.leftdelim       = '[',
-	t.button.rightdelim      = ']',
+	i = rand() % 4;
+	t.button.leftdelim       = delim[i];
+	t.button.rightdelim      = delim[i + 4];
 	t.button.f_delimcolor    = bsddialog_color(col[5], col[3], 0);
 	t.button.delimcolor      = bsddialog_color(col[0], col[5], 0);
 	t.button.f_color         = bsddialog_color(col[2], col[3], 0);
