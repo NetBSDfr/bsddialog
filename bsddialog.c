@@ -391,7 +391,7 @@ static void usage(void)
 	    " --single-quoted, --sleep <secs>, --stderr, --stdout,"
 	    " --tab-escape,\n --tab-len <spaces>, --text-unchanged,"
 	    " --switch-buttons,\n --theme 3d|blackwhite|flat,"
-	    " --time-format <format>,\n --title <title>,"
+	    " --time-format <format>, --title <title>,\n"
 	    " --yes-label <label>.\n");
 	printf("\n");
 
