@@ -59,6 +59,7 @@ struct lineposition {
 
 struct privateitem {
 	bool on;
+	/* "links" to api item */
 	int group;
 	int index;
 	enum menumode type;
