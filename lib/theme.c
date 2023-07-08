@@ -205,20 +205,19 @@ int bsddialog_set_theme(struct bsddialog_theme *theme)
 
 int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 {
-	if (newtheme == BSDDIALOG_THEME_DIALOG) {
+	if (newtheme == BSDDIALOG_THEME_3D) {
 		set_theme(&t, &flat);
 		t.dialog.lineraisecolor   =
 		    GET_COLOR(COLOR_WHITE, COLOR_WHITE) | A_BOLD;
 		t.dialog.delimtitle       = false;
 		t.dialog.bottomtitlecolor = t.dialog.bottomtitlecolor | A_BOLD;
-	}
-	else if (newtheme == BSDDIALOG_THEME_BLACKWHITE)
+	} else if (newtheme == BSDDIALOG_THEME_BLACKWHITE) {
 		set_theme(&t, &blackwhite);
-	else if (newtheme == BSDDIALOG_THEME_FLAT)
+	} else if (newtheme == BSDDIALOG_THEME_FLAT) {
 		set_theme(&t, &flat);
-	else
+	} else {
 		RETURN_ERROR("Unknown default theme");
-
+	}
 	refresh();
 
 	return (BSDDIALOG_OK);

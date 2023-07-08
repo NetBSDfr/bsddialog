@@ -390,7 +390,7 @@ static void usage(void)
 	    " --separate-output, --separator <sep>, --shadow,\n"
 	    " --single-quoted, --sleep <secs>, --stderr, --stdout,"
 	    " --tab-escape,\n --tab-len <spaces>, --text-unchanged,"
-	    " --switch-buttons,\n --theme blackwhite|flat|dialog,"
+	    " --switch-buttons,\n --theme 3d|blackwhite|flat,"
 	    " --time-format <format>,\n --title <title>,"
 	    " --yes-label <label>.\n");
 	printf("\n");
@@ -698,8 +698,8 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 				theme_opt = BSDDIALOG_THEME_BLACKWHITE;
 			else if (strcasecmp(optarg, "flat") == 0)
 				theme_opt = BSDDIALOG_THEME_FLAT;
-			else if (strcasecmp(optarg, "dialog") == 0)
-				theme_opt = BSDDIALOG_THEME_DIALOG;
+			else if (strcasecmp(optarg, "3d") == 0)
+				theme_opt = BSDDIALOG_THEME_3D;
 			else
 				exit_error("--theme: <unknown> theme", false);
 			break;

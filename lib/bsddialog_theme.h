@@ -89,9 +89,9 @@ struct bsddialog_theme {
 };
 
 enum bsddialog_default_theme {
+	BSDDIALOG_THEME_3D,
 	BSDDIALOG_THEME_BLACKWHITE,
-	BSDDIALOG_THEME_FLAT,
-	BSDDIALOG_THEME_DIALOG
+	BSDDIALOG_THEME_FLAT
 };
 
 enum bsddialog_color {
