@@ -24,6 +24,7 @@ WIP Next Version
 	    - add: internal structures to represent components.
 	    - merge: bsddialog_datebox() with bsddialog_calendar().
 	    - rename: calendar.c -> add: datebox.c
+	    - real theme: flat and blackwhite.
 
 2023-06-12 Version 0.4.2
 

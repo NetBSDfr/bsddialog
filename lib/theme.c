@@ -85,16 +85,16 @@ static struct bsddialog_theme blackwhite = {
 	.button.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE
 };
 
-static struct bsddialog_theme dialogtheme = {
+static struct bsddialog_theme flat = {
 	.screen.color = GET_COLOR(COLOR_CYAN, COLOR_BLUE) | A_BOLD,
 
 	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadow.y       = 1,
 	.shadow.x       = 2,
 
-	.dialog.delimtitle       = false,
+	.dialog.delimtitle       = true,
 	.dialog.titlecolor       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
-	.dialog.lineraisecolor   = GET_COLOR(COLOR_WHITE, COLOR_WHITE) | A_BOLD,
+	.dialog.lineraisecolor   = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 	.dialog.linelowercolor   = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 	.dialog.color            = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 	.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
@@ -122,8 +122,8 @@ static struct bsddialog_theme dialogtheme = {
 
 	.button.minmargin       = 1,
 	.button.maxmargin       = 5,
-	.button.leftdelim       = '<',
-	.button.rightdelim      = '>',
+	.button.leftdelim       = '[',
+	.button.rightdelim      = ']',
 	.button.f_delimcolor    = GET_COLOR(COLOR_WHITE,  COLOR_BLUE)  | A_BOLD,
 	.button.delimcolor      = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
 	.button.f_color         = GET_COLOR(COLOR_YELLOW, COLOR_BLUE)  | A_BOLD,
@@ -205,18 +205,17 @@ int bsddialog_set_theme(struct bsddialog_theme *theme)
 
 int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 {
-	if (newtheme == BSDDIALOG_THEME_FLAT) {
-		set_theme(&t, &dialogtheme);
-		t.dialog.lineraisecolor = t.dialog.linelowercolor;
-		t.dialog.delimtitle     = true;
-		t.button.leftdelim      = '[';
-		t.button.rightdelim     = ']';
-		t.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE);
+	if (newtheme == BSDDIALOG_THEME_DIALOG) {
+		set_theme(&t, &flat);
+		t.dialog.lineraisecolor   =
+		    GET_COLOR(COLOR_WHITE, COLOR_WHITE) | A_BOLD;
+		t.dialog.delimtitle       = false;
+		t.dialog.bottomtitlecolor = t.dialog.bottomtitlecolor | A_BOLD;
 	}
 	else if (newtheme == BSDDIALOG_THEME_BLACKWHITE)
 		set_theme(&t, &blackwhite);
-	else if (newtheme == BSDDIALOG_THEME_DIALOG)
-		set_theme(&t, &dialogtheme);
+	else if (newtheme == BSDDIALOG_THEME_FLAT)
+		set_theme(&t, &flat);
 	else
 		RETURN_ERROR("Unknown default theme");
 
