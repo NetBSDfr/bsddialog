@@ -18,13 +18,11 @@ int main()
 	int output, focusitem;
 	struct bsddialog_conf conf;
 	enum bsddialog_default_theme theme;
-	struct bsddialog_menuitem items[5] = {
+	struct bsddialog_menuitem items[4] = {
 		{"", false, 0, "Flat", "dialog-like",
 		    "BSDDIALOG_THEME_FLAT" },
 		{"", false, 0, "Dialog", "dialog clone",
 		    "BSDDIALOG_THEME_DIALOG" },
-		{"", false, 0, "BSDDialog", "new theme",
-		    "BSDDIALOG_THEME_BSDDIALOG" },
 		{"", false, 0, "BlackWhite","black and white",
 		    "BSDDIALOG_THEME_BLACKWHITE" },
 		{"", false, 0, "Quit", "Exit", "Quit or Cancel to exit" }
@@ -42,10 +40,10 @@ int main()
 	conf.title = " Theme ";
 	focusitem = -1;
 	while (true) {
-		output = bsddialog_menu(&conf, "Choose theme", 15, 45, 5, 5,
+		output = bsddialog_menu(&conf, "Choose theme", 15, 45, 4, 4,
 		    items, &focusitem);
 
-		if (output != BSDDIALOG_OK || items[4].on)
+		if (output != BSDDIALOG_OK || items[3].on)
 			break;
 
 		if (items[0].on) {
@@ -57,12 +55,8 @@ int main()
 			focusitem = 1;
 		}
 		else if (items[2].on) {
-			theme = BSDDIALOG_THEME_BSDDIALOG;
-			focusitem = 2;
-		}
-		else if (items[3].on) {
 			theme = BSDDIALOG_THEME_BLACKWHITE;
-			focusitem = 3;
+			focusitem = 2;
 		}
 
 		bsddialog_set_default_theme(theme);

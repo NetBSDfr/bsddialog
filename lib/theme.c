@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,53 +35,6 @@
 
 struct bsddialog_theme t;
 bool hastermcolors;
-
-static struct bsddialog_theme bsddialogtheme = {
-	.screen.color = GET_COLOR(COLOR_BLACK, COLOR_CYAN),
-
-	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadow.y       = 1,
-	.shadow.x       = 2,
-
-	.dialog.delimtitle       = true,
-	.dialog.titlecolor       = GET_COLOR(COLOR_YELLOW, COLOR_WHITE),
-	.dialog.lineraisecolor   = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.dialog.linelowercolor   = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.dialog.color            = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.dialog.arrowcolor       = GET_COLOR(COLOR_YELLOW, COLOR_WHITE),
-
-	.menu.f_selectorcolor = GET_COLOR(COLOR_BLACK,  COLOR_YELLOW),
-	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE,  COLOR_YELLOW),
-	.menu.desccolor       = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.menu.f_namecolor     = GET_COLOR(COLOR_BLACK,  COLOR_YELLOW),
-	.menu.namecolor       = GET_COLOR(COLOR_BLACK,  COLOR_WHITE),
-	.menu.namesepcolor    = GET_COLOR(COLOR_YELLOW, COLOR_WHITE),
-	.menu.descsepcolor    = GET_COLOR(COLOR_YELLOW, COLOR_WHITE),
-	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,    COLOR_YELLOW),
-	.menu.shortcutcolor   = GET_COLOR(COLOR_RED,    COLOR_WHITE),
-	.menu.bottomdesccolor = GET_COLOR(COLOR_WHITE,  COLOR_CYAN),
-
-	.form.f_fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
-	.form.fieldcolor      = GET_COLOR(COLOR_WHITE, COLOR_CYAN),
-	.form.readonlycolor   = GET_COLOR(COLOR_CYAN,  COLOR_WHITE),
-	.form.bottomdesccolor = GET_COLOR(COLOR_WHITE, COLOR_CYAN),
-
-	.bar.f_color = GET_COLOR(COLOR_BLACK, COLOR_YELLOW),
-	.bar.color   = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
-
-	.button.minmargin       = 1,
-	.button.maxmargin       = 5,
-	.button.leftdelim       = '[',
-	.button.rightdelim      = ']',
-	.button.f_delimcolor    = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
-	.button.delimcolor      = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
-	.button.f_color         = GET_COLOR(COLOR_BLACK, COLOR_YELLOW),
-	.button.color           = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
-	.button.f_shortcutcolor = GET_COLOR(COLOR_RED,   COLOR_YELLOW),
-	.button.shortcutcolor   = GET_COLOR(COLOR_RED,   COLOR_WHITE)
-};
 
 static struct bsddialog_theme blackwhite = {
 #define fg  COLOR_WHITE
@@ -228,7 +181,6 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->button.shortcutcolor   = src->button.shortcutcolor;
 
 	bkgd(dst->screen.color);
-	refresh();
 }
 
 /* API */
@@ -246,6 +198,7 @@ int bsddialog_set_theme(struct bsddialog_theme *theme)
 	CHECK_PTR(theme, struct bsddialog_theme);
 
 	set_theme(&t, theme);
+	refresh();
 
 	return (BSDDIALOG_OK);
 }
@@ -253,21 +206,21 @@ int bsddialog_set_theme(struct bsddialog_theme *theme)
 int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 {
 	if (newtheme == BSDDIALOG_THEME_FLAT) {
-		bsddialog_set_theme(&dialogtheme);
+		set_theme(&t, &dialogtheme);
 		t.dialog.lineraisecolor = t.dialog.linelowercolor;
 		t.dialog.delimtitle     = true;
 		t.button.leftdelim      = '[';
 		t.button.rightdelim     = ']';
 		t.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE);
 	}
-	else if (newtheme == BSDDIALOG_THEME_BSDDIALOG)
-		bsddialog_set_theme(&bsddialogtheme);
 	else if (newtheme == BSDDIALOG_THEME_BLACKWHITE)
-		bsddialog_set_theme(&blackwhite);
+		set_theme(&t, &blackwhite);
 	else if (newtheme == BSDDIALOG_THEME_DIALOG)
-		bsddialog_set_theme(&dialogtheme);
+		set_theme(&t, &dialogtheme);
 	else
 		RETURN_ERROR("Unknown default theme");
+
+	refresh();
 
 	return (BSDDIALOG_OK);
 }

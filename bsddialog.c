@@ -390,7 +390,7 @@ static void usage(void)
 	    " --separate-output, --separator <sep>, --shadow,\n"
 	    " --single-quoted, --sleep <secs>, --stderr, --stdout,"
 	    " --tab-escape,\n --tab-len <spaces>, --text-unchanged,"
-	    " --switch-buttons,\n --theme blackwhite|bsddialog|flat|dialog,"
+	    " --switch-buttons,\n --theme blackwhite|flat|dialog,"
 	    " --time-format <format>,\n --title <title>,"
 	    " --yes-label <label>.\n");
 	printf("\n");
@@ -694,9 +694,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			text_unchanged_opt = true;
 			break;
 		case THEME:
-			if (strcasecmp(optarg, "bsddialog") == 0)
-				theme_opt = BSDDIALOG_THEME_BSDDIALOG;
-			else if (strcasecmp(optarg, "blackwhite") == 0)
+			if (strcasecmp(optarg, "blackwhite") == 0)
 				theme_opt = BSDDIALOG_THEME_BLACKWHITE;
 			else if (strcasecmp(optarg, "flat") == 0)
 				theme_opt = BSDDIALOG_THEME_FLAT;

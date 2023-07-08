@@ -1,5 +1,8 @@
 WIP Next Version
 
+	Utility:
+	* delete: theme bsddialog (partially implemented).
+
 	Library:
 	* add: check API pointers (when possible).
 	* add: bsddialog_rangebox() *value check size and init value.
@@ -13,6 +16,7 @@ WIP Next Version
 	* fix: bsddialog_textbox() key '0'.
 	* fix: check/set max mixedgauge mainperc to 100.
 	* fix: timebox.c checksize (boxes width).
+	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
 	* refactor: internal implementation.
 	    - merge: (when possible) dialogs autosize.
 	    - merge: (when possible) dialogs checksize.

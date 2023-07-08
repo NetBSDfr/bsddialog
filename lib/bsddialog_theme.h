@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -90,7 +90,6 @@ struct bsddialog_theme {
 
 enum bsddialog_default_theme {
 	BSDDIALOG_THEME_BLACKWHITE,
-	BSDDIALOG_THEME_BSDDIALOG,
 	BSDDIALOG_THEME_FLAT,
 	BSDDIALOG_THEME_DIALOG
 };
