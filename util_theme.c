@@ -280,13 +280,12 @@ void bikeshed(struct bsddialog_conf *conf)
 	enum bsddialog_color col[6];
 	struct timeval tv;
 
-	gettimeofday(&tv, NULL);
-	srand(tv.tv_usec);
-
 	/* theme */
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
 		EXIT_FMTERROR("%s", bsddialog_geterror());
 
+	gettimeofday(&tv, NULL);
+	srand(tv.tv_usec);
 	for (i = 0; i < 6; i++) {
 		do {
 			col[i] = rand() % 8;
