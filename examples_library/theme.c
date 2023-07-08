@@ -11,7 +11,6 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 #include <stdio.h>
-#include <string.h>
 
 int main()
 {
