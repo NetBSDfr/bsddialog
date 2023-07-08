@@ -267,7 +267,7 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 	else if (newtheme == BSDDIALOG_THEME_DIALOG)
 		bsddialog_set_theme(&dialogtheme);
 	else
-		RETURN_ERROR("Unknow default theme");
+		RETURN_ERROR("Unknown default theme");
 
 	return (BSDDIALOG_OK);
 }
