@@ -384,6 +384,7 @@ struct privatemenu {
 	WINDOW *box;           /* only for borders */
 	WINDOW *pad;           /* pad for the private items */
 	int ypad;              /* start pad line */
+	int ys, ye, xs, xe;    /* pad pos */
 	unsigned int menurows; /* real menurows after menu_size_position() */
 	int nitems;            /* total nitems (all groups * all items) */
 	int sel;               /* current focus item, can be -1 */
@@ -395,8 +396,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
 	bool loop, onetrue, movefocus;
-	int i, j, y, x, h, w, retval;
-	int ys, ye, xs, xe, next;
+	int i, j, y, x, h, w, next, retval;
 	wint_t input;
 	WINDOW  *shadow, *widget, *textpad;
 	struct buttons bs;
@@ -493,14 +493,14 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (m.sel >= 0)
 		drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], true);
 
-	ys = y + h - 5 - m.menurows + 1;
-	ye = y + h - 5 ;
+	m.ys = y + h - 5 - m.menurows + 1;
+	m.ye = y + h - 5 ;
 	if (conf->menu.align_left || (int)pos.line > w - 6) {
-		xs = x + 3;
-		xe = xs + w - 7;
+		m.xs = x + 3;
+		m.xe = m.xs + w - 7;
 	} else { /* center */
-		xs = x + 3 + (w-6)/2 - pos.line/2;
-		xe = xs + w - 5;
+		m.xs = x + 3 + (w-6)/2 - pos.line/2;
+		m.xe = m.xs + w - 5;
 	}
 
 	m.ypad = 0;
@@ -508,7 +508,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		m.ypad = m.sel - m.menurows + 1;
 	update_menuwin(conf, m.box, m.menurows+2, w-4, m.nitems, m.menurows, m.ypad);
 	wrefresh(m.box);
-	prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
+	prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 
 	movefocus = false;
 	loop = true;
@@ -586,14 +586,14 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			    m.nitems, m.menurows, m.ypad);
 			wrefresh(m.box);
 
-			ys = y + h - 5 - m.menurows + 1;
-			ye = y + h - 5 ;
+			m.ys = y + h - 5 - m.menurows + 1;
+			m.ye = y + h - 5 ;
 			if (conf->menu.align_left || (int)pos.line > w - 6) {
-				xs = x + 3;
-				xe = xs + w - 7;
+				m.xs = x + 3;
+				m.xe = m.xs + w - 7;
 			} else { /* center */
-				xs = x + 3 + (w-6)/2 - pos.line/2;
-				xe = xs + w - 5;
+				m.xs = x + 3 + (w-6)/2 - pos.line/2;
+				m.xe = m.xs + w - 5;
 			}
 
 			drawseparators(conf, m.pad, MIN((int)pos.line, w-6),
@@ -601,7 +601,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 			if ((int)(m.ypad + m.menurows) - 1 < m.sel)
 				m.ypad = m.sel - m.menurows + 1;
-			prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
+			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 
 			refresh();
 
@@ -658,7 +658,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				pritems[m.sel].on = !pritems[m.sel].on;
 			}
 			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], true);
-			prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
+			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			break;
 		default:
 			if (conf->menu.shortcut_buttons) {
@@ -690,7 +690,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			update_menuwin(conf, m.box, m.menurows+2, w-4,
 			    m.nitems, m.menurows, m.ypad);
 			wrefresh(m.box);
-			prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
+			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			movefocus = false;
 		}
 	} /* end while handler */
