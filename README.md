@@ -51,6 +51,7 @@ in the _Public Domain_ to build new projects:
 ```
 % sh ./examples_utility/calendar.sh
 % sh ./examples_utility/checklist.sh
+% sh ./examples_utility/datebox.sh
 % sh ./examples_utility/form.sh
 % sh ./examples_utility/gauge.sh
 % sh ./examples_utility/infobox.sh
