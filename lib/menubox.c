@@ -62,7 +62,7 @@ struct privateitem {
 	int group;
 	int index;
 	enum menumode type;
-	struct bsddialog_menuitem *item;
+	struct bsddialog_menuitem *apiitem;
 };
 
 static void
@@ -185,9 +185,9 @@ getnextshortcut(struct bsddialog_conf *conf, int npritems,
 			continue;
 
 		if (conf->menu.no_name)
-			mbtowc(&wch, pritems[i].item->desc, MB_CUR_MAX);
+			mbtowc(&wch, pritems[i].apiitem->desc, MB_CUR_MAX);
 		else
-			mbtowc(&wch, pritems[i].item->name, MB_CUR_MAX);
+			mbtowc(&wch, pritems[i].apiitem->name, MB_CUR_MAX);
 
 		if (wch == (wchar_t)key) {
 			if (i > abs)
@@ -232,8 +232,8 @@ drawseparators(struct bsddialog_conf *conf, WINDOW *pad, int linelen,
 			mvwhline(pad, i, 0, linech, linelen);
 			wattroff(pad, t.menu.desccolor);
 		}
-		name = pritems[i].item->name;
-		desc = pritems[i].item->desc;
+		name = pritems[i].apiitem->name;
+		desc = pritems[i].apiitem->desc;
 		labellen = strcols(name) + strcols(desc) + 1;
 		wmove(pad, i, labellen < linelen ? linelen/2 - labellen/2 : 0);
 		wattron(pad, t.menu.namesepcolor);
@@ -255,7 +255,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	wchar_t shortcut;
 	struct bsddialog_menuitem *item;
 
-	item = pritem->item;
+	item = pritem->apiitem;
 
 	/* prefix */
 	if (item->prefix != NULL && item->prefix[0] != '\0')
@@ -479,7 +479,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			pritems[m.sel].group = i;
 			pritems[m.sel].index = j;
 			pritems[m.sel].type = getmode(mode, groups[i]);
-			pritems[m.sel].item = item;
+			pritems[m.sel].apiitem = item;
 
 			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], false);
 			m.sel++;
