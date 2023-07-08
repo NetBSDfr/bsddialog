@@ -290,15 +290,13 @@ returned value.
 .Pp
 .Fn bsddialog_clearterminal
 clears the screen.
-.Pp
-A
-.Fa char*
-parameter can be a multibyte character string depending on current locale, see
-.Xr setlocale 3 .
 .Ss Dialogs
 The dialogs have common arguments.
 .Fa text
-is a string printed inside the dialog.
+is a string printed inside the dialog, each
+.Fa char*
+parameter can be a multibyte character string depending on current locale, see
+.Xr setlocale 3 .
 .Fa rows
 and
 .Fa cols
@@ -307,8 +305,8 @@ are height and width, their value can be between 2 and the screen size,
 or
 .Dv BSDDIALOG_FULLSCREEN .
 .Fa conf
-is a struct to customize the dialog, it does not set global properties to the
-library.
+is a struct to customize the current dialog, it does not set global properties
+to the library.
 .Pp
 .Bd -literal -offset indent -compact
 struct bsddialog_conf {
