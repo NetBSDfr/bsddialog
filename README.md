@@ -115,7 +115,6 @@ in the _Public Domain_ to build new projects:
  - --clear-screen like single option or fix with --and-dialog.
  - Merge internal "build" dialogs code with "KEY\_RESIZE" dialogs code.
  - Some terminal does not hide the cursor, move it bottom-right before to getch.
- - Complete bsddialog theme like sysinstall https://docs-legacy.freebsd.org/doc/7.0-RELEASE/usr/share/doc/handbook/book.html#INSTALL
  - Multi-line backtitle.
  - Reverse fg with bg in blackwhite.
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
