@@ -5,8 +5,9 @@ WIP Next Version
 	* change: --theme 3d|blackwhite|flat.
 
 	Library:
-	* add: check API pointers (when possible).
+	* add: check (when possible) API pointers.
 	* add: bsddialog_rangebox() *value check size and init value.
+	* add: bsddialog_datebox() changing one box affects the others as well.
 	* improve: DIAGNOSTIC adding fmt strings for bsddialog_geterror().
 	* change: menus and form less restrictive with text, hide text with
 	    little screens (same behavior as other dialogs).
