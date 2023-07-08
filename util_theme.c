@@ -25,10 +25,11 @@
  * SUCH DAMAGE.
  */
 
+#include <sys/time.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
@@ -277,10 +278,10 @@ void bikeshed(struct bsddialog_conf *conf)
 	int colors[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 	char delim[8] = {'[', '<', '(', '|', ']', '>', ')', '|'};
 	enum bsddialog_color col[6];
-	time_t clock;
+	struct timeval tv;
 
-	time(&clock);
-	srand(clock);
+	gettimeofday(&tv, NULL);
+	srand(tv.tv_usec);
 
 	/* theme */
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
