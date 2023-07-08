@@ -379,34 +379,41 @@ menu_size_position(struct bsddialog_conf *conf, int rows, int cols,
 	return (0);
 }
 
+struct privatemenu {
+	WINDOW *box;           /* only for borders */
+	WINDOW *pad;           /* pad for the private items */
+	int ypad;              /* start pad line */
+	unsigned int menurows; /* real menurows after menu_size_position() */
+	int nitems;            /* total nitems (all groups * all items) */
+};
+
 static int
 do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int menurows, enum menumode mode, unsigned int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
-	bool loop, onetrue, movefocus, automenurows;
+	bool loop, onetrue, movefocus;
 	int i, j, y, x, h, w, retval;
-	int ymenupad, ys, ye, xs, xe, abs, next, totnitems;
+	int ys, ye, xs, xe, abs, next;
 	wint_t input;
-	WINDOW  *shadow, *widget, *textpad, *menuwin, *menupad;
+	WINDOW  *shadow, *widget, *textpad;
 	struct buttons bs;
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct bsddialog_menuitem *item;
 	struct privateitem *pritems;
+	struct privatemenu m;
 
 	CHECK_PTR_SIZE(focuslist, int);
 	CHECK_PTR_SIZE(focusitem, int);
 
-	automenurows = (menurows == BSDDIALOG_AUTOSIZE) ? true : false;
-
-	totnitems = 0;
+	m.nitems = 0;
 	for (i = 0; i < (int)ngroups; i++) {
 		if (getmode(mode, groups[i]) == RADIOLISTMODE ||
 		    getmode(mode, groups[i]) == CHECKLISTMODE)
 			pos.selectorlen = 3;
 
 		for (j = 0; j < (int)groups[i].nitems; j++) {
-			totnitems++;
+			m.nitems++;
 			item = &groups[i].items[j];
 
 			if (groups[i].type == BSDDIALOG_SEPARATOR) {
@@ -431,8 +438,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	pos.xdesc += (pos.maxname != 0 ? 1 : 0);
 	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
 
+	m.menurows = menurows;
 	get_buttons(conf, &bs, conf->menu.shortcut_buttons, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-	if (menu_size_position(conf, rows, cols, text, &menurows, totnitems,
+	if (menu_size_position(conf, rows, cols, text, &m.menurows, m.nitems,
 	    pos.line, &bs, &y, &x, &h, &w) != 0)
 		return (BSDDIALOG_ERROR);
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
@@ -440,16 +448,16 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	doupdate();
 
-	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN, y + h - menurows,
+	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN, y + h - m.menurows,
 	    x + 1 + w - TEXTHMARGIN);
 
-	menuwin = new_boxed_window(conf, y + h - 5 - menurows, x + 2,
-	    menurows + 2, w - 4, LOWERED);
+	m.box = new_boxed_window(conf, y + h - 5 - m.menurows, x + 2,
+	    m.menurows + 2, w - 4, LOWERED);
 
-	menupad = newpad(totnitems, pos.line);
-	wbkgd(menupad, t.dialog.color);
+	m.pad = newpad(m.nitems, pos.line);
+	wbkgd(m.pad, t.dialog.color);
 
-	if ((pritems = calloc(totnitems, sizeof (struct privateitem))) == NULL)
+	if ((pritems = calloc(m.nitems, sizeof (struct privateitem))) == NULL)
 		RETURN_ERROR("Cannot allocate memory for internal menu items");
 
 	abs = 0;
@@ -472,18 +480,18 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			pritems[abs].type = getmode(mode, groups[i]);
 			pritems[abs].item = item;
 
-			drawitem(conf, menupad, abs, pos, &pritems[abs], false);
+			drawitem(conf, m.pad, abs, pos, &pritems[abs], false);
 			abs++;
 		}
 	}
-	drawseparators(conf, menupad, MIN((int)pos.line, w-6), totnitems,
+	drawseparators(conf, m.pad, MIN((int)pos.line, w-6), m.nitems,
 	    pritems);
-	abs = getfirst_with_default(totnitems, pritems, ngroups, groups,
+	abs = getfirst_with_default(m.nitems, pritems, ngroups, groups,
 	    focuslist, focusitem);
 	if (abs >= 0)
-		drawitem(conf, menupad, abs, pos, &pritems[abs], true);
+		drawitem(conf, m.pad, abs, pos, &pritems[abs], true);
 
-	ys = y + h - 5 - menurows + 1;
+	ys = y + h - 5 - m.menurows + 1;
 	ye = y + h - 5 ;
 	if (conf->menu.align_left || (int)pos.line > w - 6) {
 		xs = x + 3;
@@ -493,13 +501,12 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		xe = xs + w - 5;
 	}
 
-	ymenupad = 0;
-	if ((int)(ymenupad + menurows) - 1 < abs)
-		ymenupad = abs - menurows + 1;
-	update_menuwin(conf, menuwin, menurows+2, w-4, totnitems, menurows,
-	    ymenupad);
-	wrefresh(menuwin);
-	prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+	m.ypad = 0;
+	if ((int)(m.ypad + m.menurows) - 1 < abs)
+		m.ypad = abs - m.menurows + 1;
+	update_menuwin(conf, m.box, m.menurows+2, w-4, m.nitems, m.menurows, m.ypad);
+	wrefresh(m.box);
+	prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
 
 	movefocus = false;
 	loop = true;
@@ -556,9 +563,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			hide_dialog(y, x, h, w, conf->shadow);
 			refresh();
 
-			menurows = automenurows ? 0 : menurows;
+			m.menurows = menurows;
 			if (menu_size_position(conf, rows, cols, text,
-			    &menurows, totnitems, pos.line, &bs, &y, &x, &h,
+			    &m.menurows, m.nitems, pos.line, &bs, &y, &x, &h,
 			    &w) != 0)
 				return (BSDDIALOG_ERROR);
 			if (update_dialog(conf, shadow, widget, y, x, h, w,
@@ -568,16 +575,16 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			doupdate();
 
 			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
-			    y + h - menurows, x + 1 + w - TEXTHMARGIN);
+			    y + h - m.menurows, x + 1 + w - TEXTHMARGIN);
 
-			wclear(menuwin);
-			mvwin(menuwin, y + h - 5 - menurows, x + 2);
-			wresize(menuwin,menurows+2, w-4);
-			update_menuwin(conf, menuwin, menurows+2, w-4,
-			    totnitems, menurows, ymenupad);
-			wrefresh(menuwin);
+			wclear(m.box);
+			mvwin(m.box, y + h - 5 - m.menurows, x + 2);
+			wresize(m.box, m.menurows+2, w-4);
+			update_menuwin(conf, m.box, m.menurows+2, w-4,
+			    m.nitems, m.menurows, m.ypad);
+			wrefresh(m.box);
 
-			ys = y + h - 5 - menurows + 1;
+			ys = y + h - 5 - m.menurows + 1;
 			ye = y + h - 5 ;
 			if (conf->menu.align_left || (int)pos.line > w - 6) {
 				xs = x + 3;
@@ -587,12 +594,12 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				xe = xs + w - 5;
 			}
 
-			drawseparators(conf, menupad, MIN((int)pos.line, w-6),
-			    totnitems, pritems);
+			drawseparators(conf, m.pad, MIN((int)pos.line, w-6),
+			    m.nitems, pritems);
 
-			if ((int)(ymenupad + menurows) - 1 < abs)
-				ymenupad = abs - menurows + 1;
-			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			if ((int)(m.ypad + m.menurows) - 1 < abs)
+				m.ypad = abs - m.menurows + 1;
+			prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
 
 			refresh();
 
@@ -603,7 +610,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			continue;
 		switch(input) {
 		case KEY_HOME:
-			next = getnext(totnitems, pritems, -1);
+			next = getnext(m.nitems, pritems, -1);
 			movefocus = next != abs;
 			break;
 		case KEY_UP:
@@ -611,19 +618,19 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			movefocus = next != abs;
 			break;
 		case KEY_PPAGE:
-			next = getfastprev(menurows, pritems, abs);
+			next = getfastprev(m.menurows, pritems, abs);
 			movefocus = next != abs;
 			break;
 		case KEY_END:
-			next = getprev(pritems, totnitems);
+			next = getprev(pritems, m.nitems);
 			movefocus = next != abs;
 			break;
 		case KEY_DOWN:
-			next = getnext(totnitems, pritems, abs);
+			next = getnext(m.nitems, pritems, abs);
 			movefocus = next != abs;
 			break;
 		case KEY_NPAGE:
-			next = getfastnext(menurows, totnitems, pritems, abs);
+			next = getfastnext(m.menurows, m.nitems, pritems, abs);
 			movefocus = next != abs;
 			break;
 		case ' ': /* Space */
@@ -637,19 +644,19 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				pritems[abs].on = !pritems[abs].on;
 			} else { /* RADIOLISTMODE */
 				for (i = abs - pritems[abs].index;
-				    i < totnitems &&
+				    i < m.nitems &&
 				    pritems[i].group == pritems[abs].group;
 				    i++) {
 					if (i != abs && pritems[i].on) {
 						pritems[i].on = false;
-						drawitem(conf, menupad, i, pos,
+						drawitem(conf, m.pad, i, pos,
 						    &pritems[i], false);
 					}
 				}
 				pritems[abs].on = !pritems[abs].on;
 			}
-			drawitem(conf, menupad, abs, pos, &pritems[abs], true);
-			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			drawitem(conf, m.pad, abs, pos, &pritems[abs], true);
+			prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
 			break;
 		default:
 			if (conf->menu.shortcut_buttons) {
@@ -665,23 +672,23 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			}
 
 			/* shourtcut items */
-			next = getnextshortcut(conf, totnitems, pritems, abs,
+			next = getnextshortcut(conf, m.nitems, pritems, abs,
 			    input);
 			movefocus = next != abs;
 		} /* end switch handler */
 
 		if (movefocus) {
-			drawitem(conf, menupad, abs, pos, &pritems[abs], false);
+			drawitem(conf, m.pad, abs, pos, &pritems[abs], false);
 			abs = next;
-			drawitem(conf, menupad, abs, pos, &pritems[abs], true);
-			if (ymenupad > abs && ymenupad > 0)
-				ymenupad = abs;
-			if ((int)(ymenupad + menurows) <= abs)
-				ymenupad = abs - menurows + 1;
-			update_menuwin(conf, menuwin, menurows+2, w-4,
-			    totnitems, menurows, ymenupad);
-			wrefresh(menuwin);
-			prefresh(menupad, ymenupad, 0, ys, xs, ye, xe);
+			drawitem(conf, m.pad, abs, pos, &pritems[abs], true);
+			if (m.ypad > abs && m.ypad > 0)
+				m.ypad = abs;
+			if ((int)(m.ypad + m.menurows) <= abs)
+				m.ypad = abs - m.menurows + 1;
+			update_menuwin(conf, m.box, m.menurows+2, w-4,
+			    m.nitems, m.menurows, m.ypad);
+			wrefresh(m.box);
+			prefresh(m.pad, m.ypad, 0, ys, xs, ye, xe);
 			movefocus = false;
 		}
 	} /* end while handler */
@@ -691,8 +698,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (focusitem !=NULL)
 		*focusitem = abs < 0 ? -1 : pritems[abs].index;
 
-	delwin(menupad);
-	delwin(menuwin);
+	delwin(m.pad);
+	delwin(m.box);
 	end_dialog(conf, shadow, widget, textpad);
 	free(pritems);
 
