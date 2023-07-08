@@ -2,7 +2,7 @@ WIP Next Version
 
 	Utility:
 	* delete: theme bsddialog (partially implemented).
-	* change: --theme 3d|blackwhite|flat, default flat.
+	* change: --theme 3d|blackwhite|flat.
 
 	Library:
 	* add: check API pointers (when possible).
