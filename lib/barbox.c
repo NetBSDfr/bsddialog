@@ -116,7 +116,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 			RETURN_FMTERROR("Cannot build FILE* from fd %d", fd);
 	}
 
-	perc = MIN(perc, 100);
+	perc = MIN(perc, x100);
 	mainloop = true;
 	while (mainloop) {
 		wrefresh(widget);
