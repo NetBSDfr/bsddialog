@@ -48,10 +48,12 @@ int main()
 	}
 	bsddialog_initconf(&conf);
 	conf.title = "gauge";
-	retval = bsddialog_gauge(&conf, "Example", 7, 30, 0, fd[0], "SEP");
-	if(retval == BSDDIALOG_ERROR)
-		printf("Error: %s", bsddialog_geterror());
+	retval = bsddialog_gauge(&conf, "Example", 7, 30, 0, fd[0], "SEP",
+	    "EOF");
 	bsddialog_end();
+	
+	if(retval == BSDDIALOG_ERROR)
+		printf("Error: %s\n", bsddialog_geterror());
 
 	return (0);
 }
