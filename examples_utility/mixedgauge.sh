@@ -10,10 +10,11 @@
 #	<http://creativecommons.org/publicdomain/zero/1.0/>.
 
 perc=0
+mainperc=50
 while [ $perc -le 100 ]
 do
 	./bsddialog --sleep 1 --title " mixedgauge "    \
-		--mixedgauge "Example..." 20 45  $perc \
+		--mixedgauge "Example..." 20 45  $mainperc \
 		"Label  1"   " -1"  \
 		"Label  2"   " -2"  \
 		"Label  3"   " -3"  \
@@ -28,4 +29,5 @@ do
 		"Label  X"   $perc
 
 	perc=`expr $perc + 20`
+	mainperc=`expr $mainperc + 10`
 done
