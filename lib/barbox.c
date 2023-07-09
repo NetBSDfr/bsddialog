@@ -48,28 +48,42 @@ bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
 int  bsddialog_total_progview;
 
-static void 
-draw_bar(WINDOW *win, int y, int x, int w, int perc, const char *fmt, int numlabel)
+struct bar {
+	bool toupdate;
+	WINDOW *win;
+	int y;           /* bar y in win */
+	int x;           /* bar x in win */
+	int w;           /* width in win */
+	int perc;        /* barlen = (w * perc) / 100*/
+	const char* fmt; /* format for label */
+	int label;       /* rangebox and pause perc!=label */
+};
+
+static void draw_bar(struct bar *b)
 {
 	int barlen, xlabel;
 	chtype ch;
 	char label[128];
 
-	barlen = perc > 0 ? (perc * w) / 100 : 0;
+	barlen = b->perc > 0 ? (b->perc * b->w) / 100 : 0;
 
 	ch = ' ' | t.bar.f_color;
-	mvwhline(win, y, x, ch, barlen);
+	mvwhline(b->win, b->y, b->x, ch, barlen);
 	ch = ' ' | t.bar.color;
-	mvwhline(win, y, x + barlen, ch, w - barlen);
+	mvwhline(b->win, b->y, b->x + barlen, ch, b->w - barlen);
 
-	sprintf(label, fmt, numlabel);
-	xlabel = x + w/2 - (int)strlen(label)/2; /* always 1-byte-char string */
-	wattron(win, t.bar.color);   /* x+barlen < xlabel */
-	mvwaddstr(win, y, xlabel, label);
-	wattroff(win, t.bar.color);
-	wattron(win, t.bar.f_color); /* x+barlen >= xlabel */
-	mvwaddnstr(win, y, xlabel, label, MAX((x + barlen) - xlabel, 0));
-	wattroff(win, t.bar.f_color);
+	sprintf(label, b->fmt, b->label);
+	xlabel = b->x + b->w/2 - (int)strlen(label)/2; /* 1-byte-char string */
+	wattron(b->win, t.bar.color);   /* x+barlen < xlabel */
+	mvwaddstr(b->win, b->y, xlabel, label);
+	wattroff(b->win, t.bar.color);
+	wattron(b->win, t.bar.f_color); /* x+barlen >= xlabel */
+	mvwaddnstr(b->win, b->y, xlabel, label, MAX((b->x+barlen) - xlabel, 0));
+	wattroff(b->win, t.bar.f_color);
+
+	if (b->toupdate)
+		wrefresh(b->win);
+	b->toupdate = false;
 }
 
 int
@@ -79,7 +93,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	bool mainloop;
 	int y, x, h, w, fd2;
 	FILE *input;
-	WINDOW *widget, *textpad, *bar, *shadow;
+	WINDOW *widget, *textpad, *shadow;
+	struct bar b;
 	char inputbuf[2048], ntext[2048], *pntext;
 
 	if (widget_size_position(conf, rows, cols, text, HBAR, MINBARWIDTH,
@@ -88,8 +103,11 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if ((bar = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED)) == NULL)
+	b.y = b.x = 1;
+	b.w = w - 8;
+	if ((b.win = new_boxed_window(conf, y+h-4, x+3, 3, w-6, RAISED)) == NULL)
 		return (BSDDIALOG_ERROR);
+	b.fmt = "%3d%%";
 
 	input = NULL;
 	if (fd >= 0) {
@@ -103,9 +121,10 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		wrefresh(widget);
 		prefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-4,
 		    x+w-1-TEXTHMARGIN);
-		draw_borders(conf, bar, 3, w-6, RAISED);
-		draw_bar(bar, 1, 1, w-8, perc, "%3d%%", perc);
-		wrefresh(bar);
+		draw_borders(conf, b.win, 3, w-6, RAISED);
+		b.perc = b.label = perc;
+		b.toupdate = true;
+		draw_bar(&b);
 		if (input == NULL) /* that is fd < 0 */
 			break;
 
@@ -145,7 +164,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (input != NULL)
 		fclose(input);
-	delwin(bar);
+	delwin(b.win);
 	end_dialog(conf, shadow, widget, textpad);
 
 	return (BSDDIALOG_OK);
@@ -160,7 +179,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	int i, miniperc, y, x, h, w, max_minbarlen;
 	int ytext, htext;
 	int minicolor, red, green;
-	WINDOW *widget, *textpad, *bar, *shadow;
+	WINDOW *widget, *textpad, *shadow;
+	struct bar b;
 	char states[12][14] = {
 		"  Succeeded  ", /* -1  */
 		"   Failed    ", /* -2  */
@@ -192,6 +212,11 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		return (BSDDIALOG_ERROR);
 
 	/* mini bars */
+	b.win = widget;
+	b.x = 1 + w - 2 - 15;
+	b.w = 13;
+	b.fmt = "%3d%%";
+	b.toupdate = false;
 	for (i = 0; i < (int)nminibars; i++) {
 		miniperc = minipercs[i];
 		/* label */
@@ -205,9 +230,9 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			continue;
 		mvwaddstr(widget, i+1, w-2-15, "[             ]");
 		if (miniperc >= 0) {
-			if (miniperc > 100)
-				miniperc = 100;
-			draw_bar(widget, i+1, 1+w-2-15, 13, miniperc, "%3d%%", miniperc);
+			b.y = i + 1;
+			b.perc = b.label = MIN(miniperc, 100);
+			draw_bar(&b);
 		} else { /* miniperc < 0 */
 			if (miniperc < BSDDIALOG_MG_PENDING)
 				miniperc = -12; /* UNKNOWN */
@@ -222,26 +247,28 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			wattroff(widget, minicolor);
 		}
 	}
+	wrefresh(widget);
 
 	/* text */
-	wrefresh(widget);
 	ytext = MAX(y + h - BORDER - HBAR - htext, y + BORDER + (int)nminibars);
 	prefresh(textpad, 0, 0, ytext, x+2, y+h-5, x+w-2);
 
 	/* main bar */
-	if ((bar = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED)) == NULL)
+	if ((b.win = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED)) == NULL)
 		return (BSDDIALOG_ERROR);
+	wattron(b.win, t.bar.color);
+	mvwaddstr(b.win, 0, 2, "Overall Progress");
+	wattroff(b.win, t.bar.color);
 
-	draw_bar(bar, 1, 1, w-8, MIN(mainperc, 100), "%3d%%", MIN(mainperc, 100));
-
-	wattron(bar, t.bar.color);
-	mvwaddstr(bar, 0, 2, "Overall Progress");
-	wattroff(bar, t.bar.color);
-
-	wrefresh(bar);
+	b.y = b.x = 1;
+	b.w = w - 8;
+	b.fmt = "%3d%%";
+	b.perc = b.label = MIN(mainperc, 100);
+	b.toupdate = true;
+	draw_bar(&b);
 	/* getch(); "alternate mode" shows nothing (ex. port devel/ncurses) */
 
-	delwin(bar);
+	delwin(b.win);
 	end_dialog(conf, shadow, widget, textpad);
 
 	return (BSDDIALOG_OK);
@@ -341,8 +368,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 static int
 rangebox_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
     WINDOW *textpad, const char *text, int rows, int cols, int *y, int *x,
-    int *h, int *w, WINDOW *bar, int *sizebar, bool *barupdate,int *bigchange,
-    struct buttons *bs)
+    int *h, int *w, struct bar *b,int *bigchange, struct buttons *bs)
 {
 	/* Important for decreasing screen */
 	hide_dialog(*y, *x, *h, *w, conf->shadow);
@@ -356,13 +382,13 @@ rangebox_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
 	pnoutrefresh(textpad, 0, 0, *y+1, *x+1+TEXTHMARGIN, *y+*h-7, *x+*w-1-TEXTHMARGIN);
 	doupdate();
 
-	wclear(bar);
-	*sizebar = *w - BORDERS - (2 * BARPADDING) - 2;
-	*bigchange = MAX(1, *sizebar/10);
-	wresize(bar, 3, *sizebar + 2);
-	mvwin(bar, *y + *h - 6, *x + 1 + BARPADDING);
-	draw_borders(conf, bar, 3, *sizebar+2, RAISED);
-	*barupdate = true;
+	wclear(b->win);
+	b->w = *w - BORDERS - (2 * BARPADDING) - 2;
+	*bigchange = MAX(1, b->w  / 10);
+	wresize(b->win, 3, b->w + 2);
+	mvwin(b->win, *y + *h - 6, *x + 1 + BARPADDING);
+	draw_borders(conf, b->win, 3, b->w+2, RAISED);
+	b->toupdate = true;
 
 	return (0);
 }
@@ -371,12 +397,12 @@ int
 bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, int min, int max, int *value)
 {
-	bool loop, barupdate;
+	bool loop;
 	int y, x, h, w;
-	int currvalue, retval, sizebar, bigchange, positions;
+	int currvalue, retval, bigchange, positions;
 	wint_t input;
-	float perc;
-	WINDOW *widget, *textpad, *bar, *shadow;
+	WINDOW *widget, *textpad, *shadow;
+	struct bar b;
 	struct buttons bs;
 
 	CHECK_PTR(value, int);
@@ -399,20 +425,21 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 	doupdate();
 
-	sizebar = w - BORDERS - (2 * BARPADDING) - 2;
-	bigchange = MAX(1, sizebar/10);
-	if ((bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
-	    sizebar + 2, RAISED)) == NULL)
+	b.y = b.x = 1;
+	b.w = w - BORDERS - (2 * BARPADDING) - 2;
+	bigchange = MAX(1, b.w / 10);
+	if ((b.win = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
+	    b.w + 2, RAISED)) == NULL)
 		return (BSDDIALOG_ERROR);
-	barupdate = true;
+	b.fmt = "%d";
+	b.toupdate = true;
 
 	loop = true;
 	while (loop) {
-		if (barupdate) {
-			perc = ((float)(currvalue - min)*100) / (positions-1);
-			draw_bar(bar, 1, 1, sizebar, perc, "%d", currvalue);
-			barupdate = false;
-			wrefresh(bar);
+		if (b.toupdate) {
+			b.perc = ((float)(currvalue - min)*100) / (positions-1);
+			b.label = currvalue;
+			draw_bar(&b);
 		}
 
 		if (get_wch(&input) == ERR)
@@ -448,34 +475,34 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case KEY_HOME:
 			currvalue = max;
-			barupdate = true;
+			b.toupdate = true;
 			break;
 		case KEY_END:
 			currvalue = min;
-			barupdate = true;
+			b.toupdate = true;
 			break;
 		case KEY_NPAGE:
 			currvalue -= bigchange;
 			if (currvalue < min)
 				currvalue = min;
-			barupdate = true;
+			b.toupdate = true;
 			break;
 		case KEY_PPAGE:
 			currvalue += bigchange;
 			if (currvalue > max)
 				currvalue = max;
-			barupdate = true;
+			b.toupdate = true;
 			break;
 		case KEY_UP:
 			if (currvalue < max) {
 				currvalue++;
-				barupdate = true;
+				b.toupdate = true;
 			}
 			break;
 		case KEY_DOWN:
 			if (currvalue > min) {
 				currvalue--;
-				barupdate = true;
+				b.toupdate = true;
 			}
 			break;
 		case KEY_F(1):
@@ -485,14 +512,12 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
 			if (rangebox_redraw(conf, shadow, widget, textpad, text,
-			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
-			    &barupdate, &bigchange, &bs) != 0)
+			    rows, cols, &y, &x, &h, &w, &b, &bigchange, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
 			if (rangebox_redraw(conf, shadow, widget, textpad, text,
-			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
-			    &barupdate, &bigchange, &bs) != 0)
+			    rows, cols, &y, &x, &h, &w, &b, &bigchange, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		default:
@@ -503,7 +528,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 		}
 	}
 
-	delwin(bar);
+	delwin(b.win);
 	end_dialog(conf, shadow, widget, textpad);
 
 	return (retval);
@@ -512,8 +537,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 static int
 pause_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
     WINDOW *textpad, const char *text, int rows, int cols, int *y, int *x,
-    int *h, int *w, WINDOW *bar, int *sizebar, bool *barupdate,
-    struct buttons *bs)
+    int *h, int *w, struct bar *b, struct buttons *bs)
 {
 	/* Important for decreasing screen */
 	hide_dialog(*y, *x, *h, *w, conf->shadow);
@@ -527,12 +551,12 @@ pause_redraw(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW* widget,
 	pnoutrefresh(textpad, 0, 0, *y+1, *x+1+TEXTHMARGIN, *y+*h-7, *x+*w-1-TEXTHMARGIN);
 	doupdate();
 
-	wclear(bar);
-	*sizebar = *w - BORDERS - (2 * BARPADDING) - 2;
-	wresize(bar, 3, *sizebar + 2);
-	mvwin(bar, *y + *h - 6, *x + 1 + BARPADDING);
-	draw_borders(conf, bar, 3, *sizebar+2, RAISED);
-	*barupdate = true;
+	wclear(b->win);
+	b->w = *w - BORDERS - (2 * BARPADDING) - 2;
+	wresize(b->win, 3, b->w + 2);
+	mvwin(b->win, *y + *h - 6, *x + 1 + BARPADDING);
+	draw_borders(conf, b->win, 3, b->w+2, RAISED);
+	b->toupdate = true;
 
 	return (0);
 }
@@ -541,11 +565,11 @@ int
 bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int sec)
 {
-	bool loop, barupdate;
-	int retval, y, x, h, w, tout, sizebar;
+	bool loop;
+	int retval, y, x, h, w, tout;
 	wint_t input;
-	float perc;
-	WINDOW *widget, *textpad, *bar, *shadow;
+	WINDOW *widget, *textpad, *shadow;
+	struct bar b;
 	struct buttons bs;
 
 	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
@@ -557,22 +581,23 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	pnoutrefresh(textpad, 0, 0, y+1, x+1+TEXTHMARGIN, y+h-7, x+w-1-TEXTHMARGIN);
 	doupdate();
 
-	sizebar = w - BORDERS - (2 * BARPADDING) - 2;
-	if ((bar = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
-	    sizebar + 2, RAISED)) == NULL)
+	b.y = b.x = 1;
+	b.w = w - BORDERS - (2 * BARPADDING) - 2;
+	if ((b.win = new_boxed_window(conf, y + h - 6, x + 1 + BARPADDING, 3,
+	    b.w + 2, RAISED)) == NULL)
 		return (BSDDIALOG_ERROR);
-	barupdate = true;
+	b.fmt = "%d";
+	b.toupdate = true;
 
 	tout = sec;
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	loop = true;
 	while (loop) {
-		if (barupdate) {
-			perc = (float)tout * 100 / sec;
-			draw_bar(bar, 1, 1, sizebar, perc, "%d", tout);
-			barupdate = false;
-			wrefresh(bar);
+		if (b.toupdate) {
+			b.perc = (float)tout * 100 / sec;
+			b.label = tout;
+			draw_bar(&b);
 		}
 
 		if (get_wch(&input) == ERR) { /* timeout */
@@ -582,7 +607,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			}
 			else {
-				barupdate = true;
+				b.toupdate = true;
 				continue;
 			}
 		}
@@ -621,14 +646,12 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
 			if (pause_redraw(conf, shadow, widget, textpad, text,
-			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
-			    &barupdate, &bs) != 0)
+			    rows, cols, &y, &x, &h, &w, &b, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
 			if (pause_redraw(conf, shadow, widget, textpad, text,
-			    rows, cols, &y, &x, &h, &w, bar, &sizebar,
-			    &barupdate, &bs) != 0)
+			    rows, cols, &y, &x, &h, &w, &b, &bs) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		default:
@@ -640,7 +663,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 	nodelay(stdscr, FALSE);
 
-	delwin(bar);
+	delwin(b.win);
 	end_dialog(conf, shadow, widget, textpad);
 
 	return (retval);
