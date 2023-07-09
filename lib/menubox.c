@@ -342,7 +342,7 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 	}
 }
 
-int
+static int
 menu_size_position(struct bsddialog_conf *conf, int rows, int cols, 
     const char *text, unsigned int *menurows, int nitems, int linelen,
     struct buttons *bs, int *y, int *x, int *h, int *w)

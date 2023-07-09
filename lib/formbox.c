@@ -418,7 +418,7 @@ static void curriteminview(struct privateform *form, struct privateitem *item)
 		form->y = ydown - form->viewrows + 1;
 }
 
-int
+static int
 form_size_position(struct bsddialog_conf *conf, int rows, int cols,
     const char *text, struct privateform *f, struct buttons *bs, int *y, int *x,
     int *h, int *w)
