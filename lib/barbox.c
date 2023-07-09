@@ -88,7 +88,7 @@ static void draw_bar(struct bar *b)
 
 int
 bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int perc, int fd, const char *sep)
+    int cols, unsigned int perc, int fd, const char *sep, const char *end)
 {
 	bool mainloop;
 	int y, x, h, w, fd2;
@@ -131,7 +131,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 		while (true) {
 			fscanf(input, "%s", inputbuf);
-			if (strcmp(inputbuf,"EOF") == 0) {
+			if (strcmp(inputbuf, end) == 0) {
 				mainloop = false;
 				break;
 			}
@@ -146,7 +146,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		ntext[0] = '\0';
 		while (true) {
 			fscanf(input, "%s", inputbuf);
-			if (strcmp(inputbuf,"EOF") == 0) {
+			if (strcmp(inputbuf, end) == 0) {
 				mainloop = false;
 				break;
 			}

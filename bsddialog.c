@@ -1026,7 +1026,7 @@ int gauge_builder(BUILDER_ARGS)
 	}
 
 	output = bsddialog_gauge(conf, text, rows, cols, perc, STDIN_FILENO,
-	    "XXX");
+	    "XXX", "EOF");
 
 	return (output);
 }
