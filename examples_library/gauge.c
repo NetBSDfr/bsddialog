@@ -33,7 +33,7 @@ int main()
 	int retval, fd[2];
 	struct bsddialog_conf conf;
 
-	/* add yours checks ans sync */
+	/* add checks and sync */
 	pipe(fd);
 	if (fork() == 0) {
 		close(fd[0]);
