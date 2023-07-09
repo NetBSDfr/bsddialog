@@ -34,8 +34,6 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MIN_HEIGHT  BORDERS + 6 /* 2 buttons 1 text 3 menu */
-
 enum menumode {
 	CHECKLISTMODE,
 	MENUMODE,
