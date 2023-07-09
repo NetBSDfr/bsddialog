@@ -111,6 +111,11 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 	input = NULL;
 	if (fd >= 0) {
+		CHECK_PTR(sep, const char);
+		CHECK_ARRAY(1, sep, const char);
+		CHECK_PTR(end, const char);
+		CHECK_ARRAY(1, end, const char);
+
 		fd2 = dup(fd);
 		if ((input = fdopen(fd2, "r")) == NULL)
 			RETURN_FMTERROR("Cannot build FILE* from fd %d", fd);
