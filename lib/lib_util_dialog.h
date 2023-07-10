@@ -28,7 +28,8 @@
 #ifndef _LIBBSDDIALOG_UTIL_DIALOG_H_
 #define _LIBBSDDIALOG_UTIL_DIALOG_H_
 
-/* User Interface dialog */
+/* Dialog */
+
 struct dialog {
 	bool built;
 	const char *name;
