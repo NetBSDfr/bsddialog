@@ -32,25 +32,24 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-static void
-textupdate(WINDOW *widget, WINDOW *textpad, int ytextpad, int htextpad,
-    bool htext)
+struct scroll {
+	int htext;     /* real h text to draw, to use with htextpad */
+	int ypad;
+	int htextpad;  /* h textpad, draw_dialog() set at leat 1 */
+	int printrows; /* h - BORDER - HBUTTONS - BORDER */
+};
+
+static void textupdate(struct dialog *d, struct scroll *s)
 {
-	int printrows, y, x, h, w;
-
-	getbegyx(widget, y, x);
-	getmaxyx(widget, h, w);
-	printrows = h - BORDER - HBUTTONS - BORDER;
-
-	if (htext > 0 && htextpad > printrows) {
-		wattron(widget, t.dialog.arrowcolor);
-		mvwprintw(widget, h-HBUTTONS-BORDER, w-4-TEXTHMARGIN-BORDER,
-		    "%3d%%", 100 * (ytextpad + printrows) / htextpad);
-		wattroff(widget, t.dialog.arrowcolor);
-		wnoutrefresh(widget);
+	if (s->htext > 0 && s->htextpad > s->printrows) {
+		wattron(d->widget, t.dialog.arrowcolor);
+		mvwprintw(d->widget, d->h - HBUTTONS - BORDER,
+		    d->w - 4 - TEXTHMARGIN - BORDER,
+		    "%3d%%", 100 * (s->ypad + s->printrows) / s->htextpad);
+		wattroff(d->widget, t.dialog.arrowcolor);
+		wnoutrefresh(d->widget);
 	}
-
-	pnoutrefresh(textpad, ytextpad, 0, y+1, x+2, y+h-4, x+w-2);
+	YTEXTPAD(d, s->ypad, HBUTTONS);
 }
 
 static int message_size_position(struct dialog *d, int *htext)
@@ -71,9 +70,7 @@ static int message_size_position(struct dialog *d, int *htext)
 	return (0);
 }
 
-static int
-message_draw(struct dialog *d, int *htext, int *printrows, int *ytextpad,
-    int *htextpad)
+static int message_draw(struct dialog *d, struct scroll *s)
 {
 	int unused;
 
@@ -81,16 +78,16 @@ message_draw(struct dialog *d, int *htext, int *printrows, int *ytextpad,
 		hide_dialog(d);
 		refresh(); /* Important for decreasing screen */
 	}
-	if (message_size_position(d, htext) != 0)
+	if (message_size_position(d, &s->htext) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(d) != 0)
 		return (BSDDIALOG_ERROR);
 	if (d->built)
 		refresh(); /* Important to fix grey lines expanding screen */
 
-	*printrows = d->h - BORDER - HBUTTONS - BORDER;
-	*ytextpad = 0;
-	getmaxyx(d->textpad, *htextpad, unused);
+	s->printrows = d->h - BORDER - HBUTTONS - BORDER;
+	s->ypad = 0;
+	getmaxyx(d->textpad, s->htextpad, unused);
 	unused++; /* fix unused error */
 
 	return (0);
@@ -101,20 +98,21 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     const char *oklabel, const char *cancellabel)
 {
 	bool loop;
-	int retval, htext, ytextpad, htextpad, printrows;
+	int retval;
 	wint_t input;
+	struct scroll s;
 	struct dialog d;
 
 	if (prepare_dialog(conf, text, cols, rows, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, oklabel, cancellabel);
-	htext = -1;
-	if(message_draw(&d, &htext, &printrows, &ytextpad, &htextpad) != 0)
+	s.htext = -1;
+	if(message_draw(&d, &s) != 0)
 		return (BSDDIALOG_ERROR);
 
 	loop = true;
 	while (loop) {
-		textupdate(d.widget, d.textpad, ytextpad, htextpad, htext);
+		textupdate(&d, &s);
 		doupdate();
 		if (get_wch(&input) == ERR)
 			continue;
@@ -147,28 +145,26 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			}
 			break;
 		case KEY_UP:
-			if (ytextpad > 0)
-				ytextpad--;
+			if (s.ypad > 0)
+				s.ypad--;
 			break;
 		case KEY_DOWN:
-			if (ytextpad + printrows < htextpad)
-				ytextpad++;
+			if (s.ypad + s.printrows < s.htextpad)
+				s.ypad++;
 			break;
 		case KEY_HOME:
-			ytextpad = 0;
+			s.ypad = 0;
 			break;
 		case KEY_END:
-			ytextpad = htextpad - printrows;
-			ytextpad = ytextpad < 0 ? 0 : ytextpad;
+			s.ypad = MAX(s.htextpad - s.printrows, 0);
 			break;
 		case KEY_PPAGE:
-			ytextpad -= printrows;
-			ytextpad = ytextpad < 0 ? 0 : ytextpad;
+			s.ypad = MAX(s.ypad - s.printrows, 0);
 			break;
 		case KEY_NPAGE:
-			ytextpad += printrows;
-			if (ytextpad + printrows > htextpad)
-				ytextpad = htextpad - printrows;
+			s.ypad += s.printrows;
+			if (s.ypad + s.printrows > s.htextpad)
+				s.ypad = s.htextpad - s.printrows;
 			break;
 		case KEY_F(1):
 			if (d.conf->key.f1_file == NULL &&
@@ -176,13 +172,11 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				break;
 			if (f1help_dialog(d.conf) != 0)
 				return (BSDDIALOG_ERROR);
-			if(message_draw(&d, &htext, &printrows, &ytextpad,
-			    &htextpad) != 0)
+			if(message_draw(&d, &s) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if(message_draw(&d, &htext, &printrows, &ytextpad,
-			    &htextpad) != 0)
+			if(message_draw(&d, &s) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		default:

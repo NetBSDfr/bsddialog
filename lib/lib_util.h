@@ -179,7 +179,7 @@ new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
 void rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);
 #define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
 /* msgbox and yesno (ytext) */
-//#define YTEXTPAD(d, ytext, downnotext) textpad(d, ytext, 0, 0, downnotext)
+#define YTEXTPAD(d, ytext, downnotext) rtextpad(d, ytext, 0, 0, downnotext)
 /* mixedgauge */
 //#define YSTEXTPAD(d, upnotext, downnotext) textpad(d, 0, 0, upnotext, downnotext)
 /* textbox */
