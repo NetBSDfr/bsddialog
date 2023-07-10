@@ -48,6 +48,17 @@ void
 draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
     enum elevation elev);
 
+void
+textpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);
+
+#define TEXTPAD(d, downnotext) textpad(d, 0, 0, 0, downnotext)
+/* msgbox and yesno (ytext) */
+//#define YTEXTPAD(d, ytext, downnotext) textpad(d, ytext, 0, 0, downnotext)
+/* mixedgauge */
+//#define YSTEXTPAD(d, upnotext, downnotext) textpad(d, 0, 0, upnotext, downnotext)
+/* textbox */
+//#define YXTEXTPAD(d, ytext, xtext, downnotext) textpad(pad, ytext, xtext, 0, downnotext)
+
 /* Dialog build, update, destroy */
 int hide2_dialog(struct dialog *d);
 void destroy_dialog(struct dialog *d);

@@ -79,6 +79,17 @@ int dialog_size_position(struct dialog *d ,int *htext, int hnotext, int minw)
 	return (0);
 }
 
+void
+textpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
+{
+	pnoutrefresh(d->textpad, ytext, xtext,
+	    d->y + BORDER + upnotext,
+	     d->x + BORDER + TEXTHMARGIN,
+	    d->y + d->h - 1 - downnotext - BORDER,
+	    d->x + d->w - TEXTHMARGIN - BORDER);
+	/*caller has to call doupdate() */
+}
+
 /* Destroy */
 int hide2_dialog(struct dialog *d)
 {
