@@ -1012,6 +1012,40 @@ void custom_text(char *text, char *buf)
 }
 
 /* Dialogs */
+int infobox_builder(BUILDER_ARGS)
+{
+	if (argc > 0)
+		error_args("--infobox", argc, argv);
+
+	return (bsddialog_infobox(conf, text, rows, cols));
+}
+
+int msgbox_builder(BUILDER_ARGS)
+{
+	if (argc > 0)
+		error_args("--msgbox", argc, argv);
+
+	return (bsddialog_msgbox(conf, text, rows, cols));
+}
+
+int yesno_builder(BUILDER_ARGS)
+{
+	if (argc > 0)
+		error_args("--yesno", argc, argv);
+
+	return (bsddialog_yesno(conf, text, rows, cols));
+}
+
+/* textbox */
+int textbox_builder(BUILDER_ARGS)
+{
+	if (argc > 0)
+		error_args("--textbox", argc, argv);
+
+	return (bsddialog_textbox(conf, text, rows, cols));
+}
+
+/* bar */
 int gauge_builder(BUILDER_ARGS)
 {
 	int output;
@@ -1029,14 +1063,6 @@ int gauge_builder(BUILDER_ARGS)
 	    "XXX", "EOF");
 
 	return (output);
-}
-
-int infobox_builder(BUILDER_ARGS)
-{
-	if (argc > 0)
-		error_args("--infobox", argc, argv);
-
-	return (bsddialog_infobox(conf, text, rows, cols));
 }
 
 int mixedgauge_builder(BUILDER_ARGS)
@@ -1068,14 +1094,6 @@ int mixedgauge_builder(BUILDER_ARGS)
 	    nminibars, minilabels, minipercs);
 
 	return (output);
-}
-
-int msgbox_builder(BUILDER_ARGS)
-{
-	if (argc > 0)
-		error_args("--msgbox", argc, argv);
-
-	return (bsddialog_msgbox(conf, text, rows, cols));
 }
 
 int pause_builder(BUILDER_ARGS)
@@ -1119,23 +1137,7 @@ int rangebox_builder(BUILDER_ARGS)
 	return (output);
 }
 
-int textbox_builder(BUILDER_ARGS)
-{
-	if (argc > 0)
-		error_args("--textbox", argc, argv);
-
-	return (bsddialog_textbox(conf, text, rows, cols));
-}
-
-int yesno_builder(BUILDER_ARGS)
-{
-	if (argc > 0)
-		error_args("--yesno", argc, argv);
-
-	return (bsddialog_yesno(conf, text, rows, cols));
-}
-
-/* CALENDAR, DATE and TIME */
+/* date and time */
 static int date(BUILDER_ARGS, bool is_datebox)
 {
 	int ret;
@@ -1254,7 +1256,7 @@ int timebox_builder(BUILDER_ARGS)
 	return (output);
 }
 
-/* MENU */
+/* menu */
 static void
 get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
     bool setname, bool setdesc, bool setstatus, bool sethelp,
@@ -1484,7 +1486,7 @@ int treeview_builder(BUILDER_ARGS)
 	return (output);
 }
 
-/* FORM */
+/* form */
 static void
 print_form_items(int output, int nitems, struct bsddialog_formitem *items)
 {
