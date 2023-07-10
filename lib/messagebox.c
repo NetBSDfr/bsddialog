@@ -103,7 +103,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	struct scroll s;
 	struct dialog d;
 
-	if (prepare_dialog(conf, text, cols, rows, &d) != 0)
+	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, oklabel, cancellabel);
 	s.htext = -1;
