@@ -181,6 +181,8 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		default:
 			if (shortcut_buttons(input, &d.bs)) {
+				DRAW_BUTTONS(d);
+				doupdate();
 				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
