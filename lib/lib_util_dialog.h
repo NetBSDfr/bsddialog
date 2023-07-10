@@ -28,11 +28,8 @@
 #ifndef _LIBBSDDIALOG_UTIL_DIALOG_H_
 #define _LIBBSDDIALOG_UTIL_DIALOG_H_
 
-/* Dialog */
-
 struct dialog {
 	bool built;
-	const char *name;
 	struct bsddialog_conf *conf;
 	WINDOW *widget;   /* Size and position refer to widget */
 	int y, x;         /* Current position, API conf.[y|x]: -1, >=0 */
@@ -44,5 +41,13 @@ struct dialog {
 	struct buttons bs;/* bs.nbuttons = 0 for no buttons */
 	WINDOW *shadow;
 };
+
+/* Dialog build, update, destroy */
+int hide2_dialog(struct dialog *d);
+void destroy_dialog(struct dialog *d);
+int draw_dialog(struct dialog *d);
+int
+prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, struct dialog *d);
 
 #endif
