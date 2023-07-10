@@ -770,7 +770,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 		return (BSDDIALOG_ERROR);
 	if (tp.nword > 0 && startwtext <= 0)
 		RETURN_FMTERROR(
-		    "(fullscreen or fixed cols) min %d cols to draw text",
+		    "(fixed cols or fullscreen) at least %d cols to draw text",
 		    BORDERS + TEXTHMARGINS + 1);
 	if (text_autosize(conf, &tp, maxhtext, startwtext, changewtext, htext,
 	    wtext) != 0)
