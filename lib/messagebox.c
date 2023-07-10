@@ -62,10 +62,6 @@ static int message_size_position(struct dialog *d, int *htext)
 	if (set_widget_autosize(d->conf, d->rows, d->cols, &d->h, &d->w,
 	    d->text, (*htext < 0) ? htext : NULL, &d->bs, 0, 0) != 0)
 		return (BSDDIALOG_ERROR);
-
-	BSDDIALOG_DEBUG(5,1, "d.y:%d, d.x:%d, d.h:%d, d.w:%d, htext:%d",
-	    d->y, d->x, d->h, d->w, *htext);
-
 	minw = (*htext > 0) ? 1 + TEXTHMARGINS : 0 ;
 	if (widget_checksize(d->h, d->w, &d->bs, MIN(*htext, 1), minw) != 0)
 		return (BSDDIALOG_ERROR);
@@ -229,12 +225,10 @@ bsddialog_infobox(struct bsddialog_conf *conf, const char *text, int rows,
 	htext = -1;
 	if (message_size_position(&d, &htext) != 0)
 		return (BSDDIALOG_ERROR);
-	BSDDIALOG_DEBUG(1,1, "d.y:%d, d.x:%d, d.h:%d, d.w:%d", d.y, d.x, d.h, d.w);
 	if (draw_dialog(&d) != 0)
 		return (BSDDIALOG_ERROR);
 	TEXTPAD(&d, 0);
 	doupdate();
-	BSDDIALOG_DEBUG(2,1, "d.y:%d, d.x:%d, d.h:%d, d.w:%d", d.y, d.x, d.h, d.w);
 
 	end_dialog(&d);
 

@@ -1141,9 +1141,6 @@ int draw_dialog(struct dialog *d)
 		mvwin(d->shadow, d->y + t.shadow.y, d->x + t.shadow.x);
 		wresize(d->shadow, d->h, d->w);
 		wnoutrefresh(d->shadow);
-		BSDDIALOG_DEBUG(10, 1,"d.y:%d, d.x:%d, d.h:%d, d.w:%d|",
-		    d->y + t.shadow.y, d->x + t.shadow.x,
-		    d->h, d->w);
 	}
 
 	wclear(d->widget);
