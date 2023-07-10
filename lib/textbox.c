@@ -34,6 +34,17 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
+struct scrolltext {
+	WINDOW *pad;
+	int ypad;
+	int xpad;
+	int ys, ye, xs, xe;
+	int hpad;
+	int wpad;
+	int margin;    /* 2 with multicolumn char, 0 otherwise */
+	int printrows; /* d.h - BORDERS - HBUTTONS */
+};
+
 static void
 updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
     int hpad, int wpad, int ypad, int xpad)
@@ -75,24 +86,43 @@ updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
 	}
 }
 
-static int
-textbox_size_position(struct bsddialog_conf *conf, int rows, int cols,
-    int hpad, int wpad, int padmargin, struct buttons *bs, int *y, int *x,
-    int *h, int *w)
+static int textbox_size_position(struct dialog *d, struct scrolltext *st)
 {
-	const char *text = ""; /* fake */
 	int minw;
 
-	if (set_widget_size(conf, rows, cols, h, w) != 0)
+	if (set_widget_size(d->conf, d->rows, d->cols, &d->h, &d->w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (set_widget_autosize(conf, rows, cols, h, w, text, NULL, bs,
-	    hpad, wpad + padmargin) != 0)
+	if (set_widget_autosize(d->conf, d->rows, d->cols, &d->h, &d->w,
+	    d->text, NULL, &d->bs, st->hpad, st->wpad + st->margin) != 0)
 		return (BSDDIALOG_ERROR);
-	minw = (wpad > 0) ? 2 /*multicolumn char*/ + padmargin : 0 ;
-	if (widget_checksize(*h, *w, bs, MIN(hpad, 1), minw) != 0)
+	minw = (st->wpad > 0) ? 2 /*multicolumn char*/ + st->margin : 0 ;
+	if (widget_checksize(d->h, d->w, &d->bs, MIN(st->hpad, 1), minw) != 0)
 		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, y, x, *h, *w) != 0)
+	if (set_widget_position(d->conf, &d->y, &d->x, d->h, d->w) != 0)
 		return (BSDDIALOG_ERROR);
+
+	return (0);
+}
+
+static int textbox_draw(struct dialog *d, struct scrolltext *st)
+{
+	if (d->built) {
+		hide_dialog(d);
+		refresh(); /* Important for decreasing screen */
+	}
+	if (textbox_size_position(d, st) != 0)
+		return (BSDDIALOG_ERROR);
+	if (draw_dialog(d) != 0)
+		return (BSDDIALOG_ERROR);
+	if (d->built)
+		refresh(); /* Important to fix grey lines expanding screen */
+
+	st->ys = d->y + 1;
+	st->xs = (st->margin == 0) ? d->x + 1 : d->x + 2;
+	st->ye = st->ys + d->h - 5;
+	st->xe = st->xs + d->w - 3 - st->margin;
+	st->ypad = st->xpad = 0;
+	st->printrows = d->h-4;
 
 	return (0);
 }
@@ -102,73 +132,65 @@ int
 bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
     int cols)
 {
-	bool loop, has_multi_col;
-	int i, retval, y, x, h, w;
-	int hpad, wpad, ypad, xpad, ys, ye, xs, xe, padmargin, printrows;
+	bool loop, has_multicol_ch;
+	int i, retval;
 	unsigned int defaulttablen, linecols;
 	wint_t input;
 	char buf[BUFSIZ];
 	FILE *fp;
-	struct buttons bs;
-	WINDOW *shadow, *widget, *pad;
+	struct scrolltext st;
+	struct dialog d;
 
 	if ((fp = fopen(file, "r")) == NULL)
-		RETURN_ERROR("Cannot open file");
+		RETURN_FMTERROR("Cannot open file \"%s\"", file);
+
+	if (prepare_dialog(conf, "" /* fake */, rows, cols, &d) != 0)
+		return (BSDDIALOG_ERROR);
+	set_buttons(&d, true, "EXIT", NULL);
+	d.bs.curr = 0;
+	d.bs.nbuttons = 1;
 
 	defaulttablen = TABSIZE;
 	set_tabsize((conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen);
-	hpad = 1;
-	wpad = 1;
-	pad = newpad(hpad, wpad);
-	wbkgd(pad, t.dialog.color);
-	padmargin = 0;
+	st.hpad = 1;
+	st.wpad = 1;
+	st.pad = newpad(st.hpad, st.wpad);
+	wbkgd(st.pad, t.dialog.color);
+	st.margin = 0;
 	i = 0;
 	while (fgets(buf, BUFSIZ, fp) != NULL) {
-		if (str_props(buf, &linecols, &has_multi_col) != 0)
+		if (str_props(buf, &linecols, &has_multicol_ch) != 0)
 			continue;
-		if ((int)linecols > wpad) {
-			wpad = linecols;
-			wresize(pad, hpad, wpad);
+		if ((int)linecols > st.wpad) {
+			st.wpad = linecols;
+			wresize(st.pad, st.hpad, st.wpad);
 		}
-		if (i > hpad-1) {
-			hpad++;
-			wresize(pad, hpad, wpad);
+		if (i > st.hpad-1) {
+			st.hpad++;
+			wresize(st.pad, st.hpad, st.wpad);
 		}
-		mvwaddstr(pad, i, 0, buf);
+		mvwaddstr(st.pad, i, 0, buf);
 		i++;
-		if (has_multi_col)
-			padmargin = 2;
+		if (has_multicol_ch)
+			st.margin = 2;
 	}
 	fclose(fp);
-	set_tabsize(defaulttablen);
+	set_tabsize(defaulttablen); /* reset because it is curses global */
 
-	get_buttons(conf, &bs, true, "EXIT", NULL);
-	bs.curr = 0;
-	bs.nbuttons = 1;
-
-	if (textbox_size_position(conf, rows, cols, hpad, wpad, padmargin, &bs,
-	    &y, &x, &h, &w) != 0)
+	if (textbox_draw(&d, &st) != 0)
 		return (BSDDIALOG_ERROR);
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, NULL, NULL, &bs) != 0)
-		return (BSDDIALOG_ERROR);
-
-	ys = y + 1;
-	xs = (padmargin == 0) ? x + 1 : x + 2;
-	ye = ys + h - 5;
-	xe = xs + w - 3 - padmargin;
-	ypad = xpad = 0;
-	printrows = h-4;
+	
 	loop = true;
 	while (loop) {
-		updateborders(conf, widget, padmargin, hpad, wpad, ypad, xpad);
+		updateborders(conf, d.widget, st.margin, st.hpad, st.wpad, st.ypad, st.xpad);
 		/*
 		 * Overflow multicolumn charchter right border:
 		 * wnoutrefresh(widget);
 		 * pnoutrefresh(pad, ypad, xpad, ys, xs, ye, xe);
 		 * doupdate();
 		 */
-		wrefresh(widget);
-		prefresh(pad, ypad, xpad, ys, xs, ye, xe);
+		wrefresh(d.widget);
+		prefresh(st.pad, st.ypad, st.xpad, st.ys, st.xs, st.ye, st.xe);
 		if (get_wch(&input) == ERR)
 			continue;
 		switch(input) {
@@ -184,39 +206,40 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			}
 			break;
 		case KEY_HOME:
-			ypad = 0;
+			st.ypad = 0;
 			break;
 		case KEY_END:
-			ypad = hpad - printrows;
-			ypad = ypad < 0 ? 0 : ypad;
+			st.ypad = st.hpad - st.printrows;
+			st.ypad = st.ypad < 0 ? 0 : st.ypad;
 			break;
 		case KEY_PPAGE:
-			ypad -= printrows;
-			ypad = ypad < 0 ? 0 : ypad;
+			st.ypad -= st.printrows;
+			st.ypad = st.ypad < 0 ? 0 : st.ypad;
 			break;
 		case KEY_NPAGE:
-			ypad += printrows;
-			if (ypad + printrows > hpad)
-				ypad = hpad - printrows;
+			st.ypad += st.printrows;
+			if (st.ypad + st.printrows > st.hpad)
+				st.ypad = st.hpad - st.printrows;
 			break;
 		case '0':
-			xpad = 0;
+			st.xpad = 0;
 			break;
 		case KEY_LEFT:
 		case 'h':
-			xpad = xpad > 0 ? xpad - 1 : 0;
+			st.xpad = st.xpad > 0 ? st.xpad - 1 : 0;
 			break;
 		case KEY_RIGHT:
 		case 'l':
-			xpad = (xpad + w-2-padmargin) < wpad ? xpad + 1 : xpad;
+			if (st.xpad + d.w - 2 - st.margin < st.wpad)
+				st.xpad++;
 			break;
 		case KEY_UP:
 		case 'k':
-			ypad = ypad > 0 ? ypad - 1 : 0;
+			st.ypad = st.ypad > 0 ? st.ypad - 1 : 0;
 			break;
 		case KEY_DOWN:
 		case'j':
-			ypad = ypad + printrows <= hpad -1 ? ypad + 1 : ypad;
+			st.ypad = st.ypad + st.printrows <= st.hpad -1 ? st.ypad + 1 : st.ypad;
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -224,39 +247,23 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			/* No break, screen size can change */
+			if (textbox_draw(&d, &st) != 0)
+				return (BSDDIALOG_ERROR);
+			break;
 		case KEY_RESIZE:
-			/* Important for decreasing screen */
-			hide_dialog(y, x, h, w, conf->shadow);
-			refresh();
-
-			if (textbox_size_position(conf, rows, cols, hpad, wpad,
-			    padmargin, &bs, &y, &x, &h, &w) != 0)
+			if (textbox_draw(&d, &st) != 0)
 				return (BSDDIALOG_ERROR);
-
-			ys = y + 1;
-			xs = (padmargin == 0) ? x + 1 : x + 2;
-			ye = ys + h - 5;
-			xe = xs + w - 3 - padmargin;
-			ypad = xpad = 0;
-			printrows = h - 4;
-
-			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    NULL, NULL, &bs) != 0)
-				return (BSDDIALOG_ERROR);
-
-			/* Important to fix grey lines expanding screen */
-			refresh();
 			break;
 		default:
-			if (shortcut_buttons(input, &bs)) {
-				retval = BUTTONVALUE(bs);
+			if (shortcut_buttons(input, &d.bs)) {
+				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
 		}
 	}
 
-	end_dialog(conf, shadow, widget, pad);
+	delwin(st.pad);
+	end_dialog(&d);
 
 	return (retval);
 }
