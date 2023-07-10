@@ -152,27 +152,6 @@ unsigned int strcols(const char *mbstring)
 	return (ncol);
 }
 
-
-/* Clear Dialog */
-int hide_dialog(int y, int x, int h, int w, bool withshadow)
-{
-	WINDOW *clear;
-
-	if ((clear = newwin(h, w, y, x)) == NULL)
-		RETURN_ERROR("Cannot hide the widget");
-	wbkgd(clear, t.screen.color);
-	wrefresh(clear);
-
-	if (withshadow) {
-		mvwin(clear, y + t.shadow.y, x + t.shadow.x);
-		wrefresh(clear);
-	}
-
-	delwin(clear);
-
-	return (0);
-}
-
 /* F1 help */
 int f1help_dialog(struct bsddialog_conf *conf)
 {
@@ -238,37 +217,48 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 	}
 }
 
-void draw_buttons(WINDOW *window, struct buttons bs)
+static int buttons_min_width(struct buttons *bs)
 {
-	int i, x, startx, y, rows, cols;
+	unsigned int width;
+
+	width = bs->nbuttons * bs->sizebutton;
+	if (bs->nbuttons > 0)
+		width += (bs->nbuttons - 1) * t.button.minmargin;
+
+	return (width);
+}
+
+void draw_buttons(struct dialog *d)
+{
+	int i, x, startx, y;
 	unsigned int newmargin, margin, wbuttons;
 
-	getmaxyx(window, rows, cols);
-	y = rows - 2;
+	y = d->h - 2;
 
-	newmargin = cols - BORDERS - (bs.nbuttons * bs.sizebutton);
-	newmargin /= (bs.nbuttons + 1);
+	newmargin = d->w - BORDERS - (d->bs.nbuttons * d->bs.sizebutton);
+	newmargin /= (d->bs.nbuttons + 1);
 	newmargin = MIN(newmargin, t.button.maxmargin);
 	if (newmargin == 0) {
 		margin = t.button.minmargin;
-		wbuttons = buttons_min_width(bs);
+		wbuttons = buttons_min_width(&d->bs);
 	} else {
 		margin = newmargin;
-		wbuttons = bs.nbuttons * bs.sizebutton;
-		wbuttons += (bs.nbuttons + 1) * margin;
+		wbuttons = d->bs.nbuttons * d->bs.sizebutton;
+		wbuttons += (d->bs.nbuttons + 1) * margin;
 	}
 
-	startx = (cols)/2 - wbuttons/2 + newmargin;
-	for (i = 0; i < (int)bs.nbuttons; i++) {
-		x = i * (bs.sizebutton + margin);
-		draw_button(window, y, startx + x, bs.sizebutton, bs.label[i],
-		    bs.first[i],  i == bs.curr, bs.shortcut);
+	startx = d->w/2 - wbuttons/2 + newmargin;
+	for (i = 0; i < (int)d->bs.nbuttons; i++) {
+		x = i * (d->bs.sizebutton + margin);
+		draw_button(d->widget, y, startx + x, d->bs.sizebutton,
+		    d->bs.label[i], d->bs.first[i],  i == d->bs.curr,
+		    d->bs.shortcut);
 	}
 }
 
 void
-get_buttons(struct bsddialog_conf *conf, struct buttons *bs, bool shortcut,
-    const char *yesoklabel, const char *nocancellabel)
+set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
+    const char *cancellabel)
 {
 	int i;
 #define SIZEBUTTON              8
@@ -276,87 +266,76 @@ get_buttons(struct bsddialog_conf *conf, struct buttons *bs, bool shortcut,
 #define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
 	wchar_t first;
 
-	bs->nbuttons = 0;
-	bs->curr = 0;
-	bs->sizebutton = 0;
-	bs->shortcut = shortcut;
+	d->bs.nbuttons = 0;
+	d->bs.curr = 0;
+	d->bs.sizebutton = 0;
+	d->bs.shortcut = shortcut;
 
-	if (yesoklabel != NULL && conf->button.without_ok == false) {
-		bs->label[0] = conf->button.ok_label != NULL ?
-		    conf->button.ok_label : yesoklabel;
-		bs->value[0] = BSDDIALOG_OK;
-		bs->nbuttons += 1;
+	if (oklabel != NULL && d->conf->button.without_ok == false) {
+		d->bs.label[0] = d->conf->button.ok_label != NULL ?
+		    d->conf->button.ok_label : oklabel;
+		d->bs.value[0] = BSDDIALOG_OK;
+		d->bs.nbuttons += 1;
 	}
 
-	if (conf->button.with_extra) {
-		bs->label[bs->nbuttons] = conf->button.extra_label != NULL ?
-		    conf->button.extra_label : "Extra";
-		bs->value[bs->nbuttons] = BSDDIALOG_EXTRA;
-		bs->nbuttons += 1;
+	if (d->conf->button.with_extra) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.extra_label != NULL ?
+		    d->conf->button.extra_label : "Extra";
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_EXTRA;
+		d->bs.nbuttons += 1;
 	}
 
-	if (nocancellabel != NULL && conf->button.without_cancel == false) {
-		bs->label[bs->nbuttons] = conf->button.cancel_label ?
-		    conf->button.cancel_label : nocancellabel;
-		bs->value[bs->nbuttons] = BSDDIALOG_CANCEL;
-		if (conf->button.default_cancel)
-			bs->curr = bs->nbuttons;
-		bs->nbuttons += 1;
+	if (cancellabel != NULL && d->conf->button.without_cancel == false) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.cancel_label ?
+		    d->conf->button.cancel_label : cancellabel;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_CANCEL;
+		if (d->conf->button.default_cancel)
+			d->bs.curr = d->bs.nbuttons;
+		d->bs.nbuttons += 1;
 	}
 
-	if (conf->button.with_help) {
-		bs->label[bs->nbuttons] = conf->button.help_label != NULL ?
-		    conf->button.help_label : "Help";
-		bs->value[bs->nbuttons] = BSDDIALOG_HELP;
-		bs->nbuttons += 1;
+	if (d->conf->button.with_help) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.help_label != NULL ?
+		    d->conf->button.help_label : "Help";
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_HELP;
+		d->bs.nbuttons += 1;
 	}
 
-	if (conf->button.generic1_label != NULL) {
-		bs->label[bs->nbuttons] = conf->button.generic1_label;
-		bs->value[bs->nbuttons] = BSDDIALOG_GENERIC1;
-		bs->nbuttons += 1;
+	if (d->conf->button.generic1_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.generic1_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_GENERIC1;
+		d->bs.nbuttons += 1;
 	}
 
-	if (conf->button.generic2_label != NULL) {
-		bs->label[bs->nbuttons] = conf->button.generic2_label;
-		bs->value[bs->nbuttons] = BSDDIALOG_GENERIC2;
-		bs->nbuttons += 1;
+	if (d->conf->button.generic2_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.generic2_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_GENERIC2;
+		d->bs.nbuttons += 1;
 	}
 
-	if (bs->nbuttons == 0) {
-		bs->label[0] = DEFAULT_BUTTON_LABEL;
-		bs->value[0] = DEFAULT_BUTTON_VALUE;
-		bs->nbuttons = 1;
+	if (d->bs.nbuttons == 0) {
+		d->bs.label[0] = DEFAULT_BUTTON_LABEL;
+		d->bs.value[0] = DEFAULT_BUTTON_VALUE;
+		d->bs.nbuttons = 1;
 	}
 
-	for (i = 0; i < (int)bs->nbuttons; i++) {
-		mbtowc(&first, bs->label[i], MB_CUR_MAX);
-		bs->first[i] = first;
+	for (i = 0; i < (int)d->bs.nbuttons; i++) {
+		mbtowc(&first, d->bs.label[i], MB_CUR_MAX);
+		d->bs.first[i] = first;
 	}
 
-	if (conf->button.default_label != NULL) {
-		for (i = 0; i < (int)bs->nbuttons; i++) {
-			if (strcmp(conf->button.default_label,
-			    bs->label[i]) == 0)
-				bs->curr = i;
+	if (d->conf->button.default_label != NULL) {
+		for (i = 0; i < (int)d->bs.nbuttons; i++) {
+			if (strcmp(d->conf->button.default_label,
+			    d->bs.label[i]) == 0)
+				d->bs.curr = i;
 		}
 	}
 
-	bs->sizebutton = MAX(SIZEBUTTON - 2, strcols(bs->label[0]));
-	for (i = 1; i < (int)bs->nbuttons; i++)
-		bs->sizebutton = MAX(bs->sizebutton, strcols(bs->label[i]));
-	bs->sizebutton += 2;
-}
-
-int buttons_min_width(struct buttons bs)
-{
-	unsigned int width;
-
-	width = bs.nbuttons * bs.sizebutton;
-	if (bs.nbuttons > 0)
-		width += (bs.nbuttons - 1) * t.button.minmargin;
-
-	return (width);
+	d->bs.sizebutton = MAX(SIZEBUTTON - 2, strcols(d->bs.label[0]));
+	for (i = 1; i < (int)d->bs.nbuttons; i++)
+		d->bs.sizebutton = MAX(d->bs.sizebutton, strcols(d->bs.label[i]));
+	d->bs.sizebutton += 2;
 }
 
 bool shortcut_buttons(wint_t key, struct buttons *bs)
@@ -757,8 +736,8 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	struct textproperties tp;
 
 	wbuttons = 0;
-	if (bs != NULL)
-		wbuttons = buttons_min_width(*bs);
+	if (bs->nbuttons > 0)
+		wbuttons = buttons_min_width(bs);
 
 	/* Rows */
 	if (rows == BSDDIALOG_AUTOSIZE || rows == BSDDIALOG_FULLSCREEN) {
@@ -766,7 +745,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 	} else { /* fixed */
 		maxhtext = rows - BORDERS - rowsnotext;
 	}
-	if (bs != NULL)
+	if (bs->nbuttons > 0)
 		maxhtext -= 2;
 	if (maxhtext <= 0)
 		maxhtext = 1; /* text_autosize() computes always htext */
@@ -889,8 +868,8 @@ widget_min_width(struct bsddialog_conf *conf, int wtext, int minwidget,
 	min = 0;
 
 	/* buttons */
-	if (bs != NULL)
-		min += buttons_min_width(*bs);
+	if (bs->nbuttons > 0)
+		min += buttons_min_width(bs);
 
 	/* text */
 	if (wtext > 0)
@@ -969,7 +948,7 @@ set_widget_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 	}
 
 	if (rows == BSDDIALOG_AUTOSIZE)
-		*h = widget_min_height(conf, htext, hnotext, bs != NULL);
+		*h = widget_min_height(conf, htext, hnotext, bs->nbuttons > 0);
 		
 	if (cols == BSDDIALOG_AUTOSIZE)
 		*w = widget_min_width(conf, wtext, minw, bs);
@@ -982,15 +961,15 @@ int widget_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
 	int minheight, minwidth;
 
 	minheight = BORDERS + hnotext;
-	if (bs != NULL)
+	if (bs->nbuttons > 0)
 		minheight += HBUTTONS;
 	if (h < minheight)
 		RETURN_FMTERROR("Current rows: %d, needed at least: %d",
 		    h, minheight);
 
 	minwidth = 0;
-	if (bs != NULL)
-		minwidth = buttons_min_width(*bs);
+	if (bs->nbuttons > 0)
+		minwidth = buttons_min_width(bs);
 	minwidth = MAX(minwidth, minw);
 	minwidth += BORDERS;
 	if (w < minwidth)
@@ -1059,11 +1038,59 @@ widget_size_position(struct bsddialog_conf *conf, int rows, int cols,
 	return (0);
 }
 
-/* Widgets build, update, destroy */
-void
-draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
-    enum elevation elev)
+/* Dialog init, draw, destroy */
+int hide_dialog(struct dialog *d)
 {
+	WINDOW *clear;
+
+	if ((clear = newwin(d->h, d->w, d->y, d->x)) == NULL)
+		RETURN_ERROR("Cannot hide the widget");
+	wbkgd(clear, t.screen.color);
+	wrefresh(clear);
+
+	if (d->conf->shadow) {
+		mvwin(clear, d->y + t.shadow.y, d->x + t.shadow.x);
+		wrefresh(clear);
+	}
+
+	delwin(clear);
+
+	return (0);
+}
+
+void end_dialog(struct dialog *d)
+{
+	if (d->conf->sleep > 0)
+		sleep(d->conf->sleep);
+
+	delwin(d->textpad);
+	delwin(d->widget);
+	if (d->conf->shadow)
+		delwin(d->shadow);
+
+	if (d->conf->clear)
+		hide_dialog(d);
+
+	if (d->conf->get_height != NULL)
+		*d->conf->get_height = d->h;
+	if (d->conf->get_width != NULL)
+		*d->conf->get_width = d->w;
+}
+
+void
+rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
+{
+	pnoutrefresh(d->textpad, ytext, xtext,
+	    d->y + BORDER + upnotext,
+	     d->x + BORDER + TEXTHMARGIN,
+	    d->y + d->h - 1 - downnotext - BORDER,
+	    d->x + d->w - TEXTHMARGIN - BORDER);
+	/*caller has to call doupdate() */
+}
+
+void draw_box(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
+{
+	int h, w;
 	int leftcolor, rightcolor;
 	int ls, rs, ts, bs, tl, tr, bl, br, ltee, rtee;
 
@@ -1094,193 +1121,123 @@ draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
 	wattroff(win, leftcolor);
 
 	wattron(win, rightcolor);
-	mvwaddch(win, 0, cols-1, tr);
-	mvwvline(win, 1, cols-1, rs, rows-2);
-	mvwaddch(win, rows-1, cols-1, br);
-	mvwhline(win, rows-1, 1, bs, cols-2);
+	mvwaddch(win, 0, w-1, tr);
+	mvwvline(win, 1, w-1, rs, h-2);
+	mvwaddch(win, h-1, w-1, br);
+	mvwhline(win, h-1, 1, bs, w-2);
 	wattroff(win, rightcolor);
 }
 
-WINDOW *
-new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
-    enum elevation elev)
+int draw_dialog(struct dialog *d)
 {
-	WINDOW *win;
+	int wtitle, wbottomtitle, ts, ltee, rtee;
 
-	if ((win = newwin(rows, cols, y, x)) == NULL) {
-		set_error_string("Cannot build boxed window");
-		return (NULL);
+	ts   = d->conf->ascii_lines ? '-' : ACS_HLINE;
+	ltee = d->conf->ascii_lines ? '+' : ACS_LTEE;
+	rtee = d->conf->ascii_lines ? '+' : ACS_RTEE;
+
+	if (d->conf->shadow) {
+		wclear(d->shadow);
+		mvwin(d->shadow, d->y + t.shadow.y, d->x + t.shadow.x);
+		wresize(d->shadow, d->h, d->w);
+		wnoutrefresh(d->shadow);
+		BSDDIALOG_DEBUG(10, 1,"d.y:%d, d.x:%d, d.h:%d, d.w:%d|",
+		    d->y + t.shadow.y, d->x + t.shadow.x,
+		    d->h, d->w);
 	}
 
-	wbkgd(win, t.dialog.color);
+	wclear(d->widget);
+	mvwin(d->widget, d->y, d->x);
+	wresize(d->widget, d->h, d->w);
 
-	draw_borders(conf, win, rows, cols, elev);
+	draw_box(d->conf, d->widget, RAISED);
 
-	return (win);
-}
-
-static int
-draw_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    WINDOW *textpad, const char *text, struct buttons *bs)
-{
-	int h, w, wtitle, wbottomtitle, ts, ltee, rtee;
-
-	ts = conf->ascii_lines ? '-' : ACS_HLINE;
-	ltee = conf->ascii_lines ? '+' : ACS_LTEE;
-	rtee = conf->ascii_lines ? '+' : ACS_RTEE;
-
-	getmaxyx(widget, h, w);
-
-	if (conf->shadow)
-		wnoutrefresh(shadow);
-
-	draw_borders(conf, widget, h, w, RAISED);
-
-	if (conf->title != NULL) {
-		if ((wtitle = strcols(conf->title)) < 0)
+	if (d->conf->title != NULL) {
+		if ((wtitle = strcols(d->conf->title)) < 0)
 			return (BSDDIALOG_ERROR);
-		if (t.dialog.delimtitle && conf->no_lines == false) {
-			wattron(widget, t.dialog.lineraisecolor);
-			mvwaddch(widget, 0, w/2 - wtitle/2 -1, rtee);
-			wattroff(widget, t.dialog.lineraisecolor);
+		if (t.dialog.delimtitle && d->conf->no_lines == false) {
+			wattron(d->widget, t.dialog.lineraisecolor);
+			mvwaddch(d->widget, 0, d->w/2 - wtitle/2 -1, rtee);
+			wattroff(d->widget, t.dialog.lineraisecolor);
 		}
-		wattron(widget, t.dialog.titlecolor);
-		mvwaddstr(widget, 0, w/2 - wtitle/2, conf->title);
-		wattroff(widget, t.dialog.titlecolor);
-		if (t.dialog.delimtitle && conf->no_lines == false) {
-			wattron(widget, t.dialog.lineraisecolor);
-			waddch(widget, ltee);
-			wattroff(widget, t.dialog.lineraisecolor);
+		wattron(d->widget, t.dialog.titlecolor);
+		mvwaddstr(d->widget, 0, d->w/2 - wtitle/2, d->conf->title);
+		wattroff(d->widget, t.dialog.titlecolor);
+		if (t.dialog.delimtitle && d->conf->no_lines == false) {
+			wattron(d->widget, t.dialog.lineraisecolor);
+			waddch(d->widget, ltee);
+			wattroff(d->widget, t.dialog.lineraisecolor);
 		}
 	}
 
-	if (bs != NULL) {
-		if (conf->no_lines == false) {
-			wattron(widget, t.dialog.lineraisecolor);
-			mvwaddch(widget, h-3, 0, ltee);
-			mvwhline(widget, h-3, 1, ts, w-2);
-			wattroff(widget, t.dialog.lineraisecolor);
+	if (d->bs.nbuttons > 0) {
+		if (d->conf->no_lines == false) {
+			wattron(d->widget, t.dialog.lineraisecolor);
+			mvwaddch(d->widget, d->h-3, 0, ltee);
+			mvwhline(d->widget, d->h-3, 1, ts, d->w-2);
+			wattroff(d->widget, t.dialog.lineraisecolor);
 
-			wattron(widget, t.dialog.linelowercolor);
-			mvwaddch(widget, h-3, w-1, rtee);
-			wattroff(widget, t.dialog.linelowercolor);
+			wattron(d->widget, t.dialog.linelowercolor);
+			mvwaddch(d->widget, d->h-3, d->w-1, rtee);
+			wattroff(d->widget, t.dialog.linelowercolor);
 		}
-		draw_buttons(widget, *bs);
+		draw_buttons(d);
 	}
 
-	if (conf->bottomtitle != NULL) {
-		if ((wbottomtitle = strcols(conf->bottomtitle)) < 0)
+	if (d->conf->bottomtitle != NULL) {
+		if ((wbottomtitle = strcols(d->conf->bottomtitle)) < 0)
 			return (BSDDIALOG_ERROR);
-		wattron(widget, t.dialog.bottomtitlecolor);
-		wmove(widget, h - 1, w/2 - wbottomtitle/2 - 1);
-		waddch(widget, ' ');
-		waddstr(widget, conf->bottomtitle);
-		waddch(widget, ' ');
-		wattroff(widget, t.dialog.bottomtitlecolor);
+		wattron(d->widget, t.dialog.bottomtitlecolor);
+		wmove(d->widget, d->h - 1, d->w/2 - wbottomtitle/2 - 1);
+		waddch(d->widget, ' ');
+		waddstr(d->widget, d->conf->bottomtitle);
+		waddch(d->widget, ' ');
+		wattroff(d->widget, t.dialog.bottomtitlecolor);
 	}
 
-	wnoutrefresh(widget);
+	wnoutrefresh(d->widget);
 
-	if (textpad != NULL && text != NULL) /* textbox */
-		if (print_textpad(conf, textpad, text) != 0)
-			return (BSDDIALOG_ERROR);
+	wclear(d->textpad);
+	wresize(d->textpad, 1, d->w - BORDERS - TEXTHMARGINS); // test 1 with infobox
+
+	if (print_textpad(d->conf, d->textpad, d->text) != 0)
+		return (BSDDIALOG_ERROR);
+
+	d->built = true;
 
 	return (0);
 }
 
 int
-update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    int y, int x, int h, int w, WINDOW *textpad, const char *text,
-    struct buttons *bs)
+prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, struct dialog *d)
 {
-	int error;
-
-	if (conf->shadow) {
-		wclear(shadow);
-		mvwin(shadow, y + t.shadow.y, x + t.shadow.x);
-		wresize(shadow, h, w);
-	}
-
-	wclear(widget);
-	mvwin(widget, y, x);
-	wresize(widget, h, w);
-
-	if (textpad != NULL) {
-		wclear(textpad);
-		wresize(textpad, 1, w - BORDERS - TEXTHMARGINS);
-	}
-
-	error = draw_dialog(conf, shadow, widget, textpad, text, bs);
-
-	return (error);
-}
-
-int
-new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
-    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs)
-{
-	int error;
-
 	CHECK_PTR(conf, struct bsddialog_conf);
 	CHECK_PTR_SIZE(conf->get_height, int);
 	CHECK_PTR_SIZE(conf->get_width, int);
 
-	if (conf->shadow) {
-		*shadow = newwin(h, w, y + t.shadow.y, x + t.shadow.x);
-		if (*shadow == NULL)
-			RETURN_ERROR("Cannot build shadow");
-		wbkgd(*shadow, t.shadow.color);
+	d->built = false;
+	d->conf = conf;
+	d->rows = rows;
+	d->cols = cols;
+	d->text = (text == NULL) ? "" : text;
+	// htext? bool withhtext, mixedgauge
+	d->bs.nbuttons = 0; /* caller has to set_buttons() if has buttons */
+
+	if (d->conf->shadow) {
+		if ((d->shadow = newwin(1, 1, 1, 1)) == NULL)
+			RETURN_ERROR("Cannot build WINDOW shadow");
+		wbkgd(d->shadow, t.shadow.color);
 	}
 
-	if ((*widget = new_boxed_window(conf, y, x, h, w, RAISED)) == NULL) {
-		if (conf->shadow)
-			delwin(*shadow);
-		return (BSDDIALOG_ERROR);
-	}
+	if ((d->widget = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW widget");
+	wbkgd(d->widget, t.dialog.color);
 
-	if (textpad != NULL && text != NULL) { /* textbox */
-		/* w textpad at least 1 for infobox without text */
-		*textpad = newpad(1, MAX(w - BORDERS - TEXTHMARGINS, 1));
-		if (*textpad == NULL) {
-			delwin(*widget);
-			if (conf->shadow)
-				delwin(*shadow);
-			RETURN_ERROR("Cannot build the pad window for text");
-		}
-		wbkgd(*textpad, t.dialog.color);
-	}
+	/* fake for textpad */
+	if ((d->textpad = newpad(1, 1)) == NULL)
+		RETURN_ERROR("Cannot build the pad WINDOW for text");
+	wbkgd(d->textpad, t.dialog.color);
 
-	error = draw_dialog(conf, *shadow, *widget,
-	    textpad == NULL ? NULL : *textpad, text, bs);
-
-	return (error);
-}
-
-void
-end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    WINDOW *textpad)
-{
-	int y, x, h, w;
-
-	getbegyx(widget, y, x);
-	getmaxyx(widget, h, w);
-
-	if (conf->sleep > 0)
-		sleep(conf->sleep);
-
-	if (textpad != NULL)
-		delwin(textpad);
-
-	delwin(widget);
-
-	if (conf->shadow)
-		delwin(shadow);
-
-	if (conf->clear)
-		hide_dialog(y, x, h, w, conf->shadow);
-
-	if (conf->get_height != NULL)
-		*conf->get_height = h;
-	if (conf->get_width != NULL)
-		*conf->get_width = w;
+	return (0);
 }

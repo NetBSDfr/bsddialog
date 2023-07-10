@@ -105,14 +105,6 @@ struct buttons {
 	unsigned int sizebutton; /* including left and right delimiters */
 };
 
-#define BUTTON_OK_LABEL      "OK"
-#define BUTTON_CANCEL_LABEL  "Cancel"
-void
-get_buttons(struct bsddialog_conf *conf, struct buttons *bs, bool shortcut,
-    const char *yesoklabel, const char *nocancellabel);
-
-void draw_buttons(WINDOW *window, struct buttons bs);
-int buttons_min_width(struct buttons bs);
 bool shortcut_buttons(wint_t key, struct buttons *bs);
 
 #define DRAW_REFRESH_BUTTONS(widget, bs) do {                                  \
@@ -120,8 +112,32 @@ bool shortcut_buttons(wint_t key, struct buttons *bs);
 	wrefresh(widget);                                                      \
 } while (0)
 
-/* Clear Dialog */
-int hide_dialog(int y, int x, int h, int w, bool withshadow);
+#define DRAW_BUTTONS(d) do {                                                   \
+	draw_buttons(&d);                                                      \
+	wnoutrefresh(d.widget);                                                \
+} while (0)
+
+/* dialog */
+struct dialog {
+	bool built;
+	struct bsddialog_conf *conf;
+	WINDOW *widget;   /* Size and position refer to widget */
+	int y, x;         /* Current position, API conf.[y|x]: -1, >=0 */
+	int rows, cols;   /* API rows and cols: -1, 0, >0 */
+	int h, w;         /* Current height and width */
+	const char *text; /* Checked API *text, at least "", fake for textbox */
+	WINDOW *textpad;  /* Fake for textbox */
+	int htext;        /* Real h text: 0, >0 */
+	struct buttons bs;/* bs.nbuttons = 0 for no buttons */
+	WINDOW *shadow;
+};
+
+#define BUTTON_OK_LABEL      "OK"
+#define BUTTON_CANCEL_LABEL  "Cancel"
+void
+set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
+    const char *canclabel);
+void draw_buttons(struct dialog *d);
 
 /* help window with F1 key */
 int f1help_dialog(struct bsddialog_conf *conf);
@@ -153,24 +169,27 @@ widget_size_position(struct bsddialog_conf *conf, int rows, int cols,
 enum elevation { RAISED, LOWERED };
 
 void
-draw_borders(struct bsddialog_conf *conf, WINDOW *win, int rows, int cols,
-    enum elevation elev);
+draw_box(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
 
 WINDOW *
 new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
     enum elevation elev);
 
-int
-new_dialog(struct bsddialog_conf *conf, WINDOW **shadow, WINDOW **widget, int y,
-    int x, int h, int w, WINDOW **textpad, const char *text, struct buttons *bs);
+/* dialog */
+void rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);
+#define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
+/* msgbox and yesno (ytext) */
+//#define YTEXTPAD(d, ytext, downnotext) textpad(d, ytext, 0, 0, downnotext)
+/* mixedgauge */
+//#define YSTEXTPAD(d, upnotext, downnotext) textpad(d, 0, 0, upnotext, downnotext)
+/* textbox */
+//#define YXTEXTPAD(d, ytext, xtext, downnotext) textpad(pad, ytext, xtext, 0, downnotext)
 
+int hide_dialog(struct dialog *d);
+void end_dialog(struct dialog *d);
+int draw_dialog(struct dialog *d);
 int
-update_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    int y, int x, int h, int w, WINDOW *textpad, const char *text,
-    struct buttons *bs);
-
-void
-end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
-    WINDOW *textpad);
+prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, struct dialog *d);
 
 #endif
