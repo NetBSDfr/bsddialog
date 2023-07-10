@@ -484,8 +484,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 	}
 }
 
-//static int TMP for struct dialog!
-int
+static int
 print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 {
 	bool loop;

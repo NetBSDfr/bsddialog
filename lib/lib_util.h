@@ -173,8 +173,4 @@ void
 end_dialog(struct bsddialog_conf *conf, WINDOW *shadow, WINDOW *widget,
     WINDOW *textpad);
 
-//TMP for dialog
-int
-print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text);
-
 #endif
