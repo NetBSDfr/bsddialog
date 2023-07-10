@@ -42,6 +42,12 @@ struct dialog {
 	WINDOW *shadow;
 };
 
+int dialog_size_position(struct dialog *d ,int *htext, int hnotext, int minw);
+
+void
+draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+    enum elevation elev);
+
 /* Dialog build, update, destroy */
 int hide2_dialog(struct dialog *d);
 void destroy_dialog(struct dialog *d);

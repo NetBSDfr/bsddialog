@@ -49,8 +49,22 @@
 
 #define draw2_buttons(d) draw_buttons(d->widget, d->bs)
 
-int
-dialog_size_position(struct dialog *d ,int *htext, int hnotext, int minw)
+static void
+draw2_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
+
+void
+draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+    enum elevation elev)
+{
+	wclear(win);
+	mvwin(win, y, x);
+	wresize(win, h, w);
+	draw2_borders(conf, win, elev);
+	wnoutrefresh(win);
+	
+}
+
+int dialog_size_position(struct dialog *d ,int *htext, int hnotext, int minw)
 {
 	if (set_widget_size(d->conf, d->rows, d->cols, &d->h, &d->w) != 0)
 		return (BSDDIALOG_ERROR);
@@ -106,7 +120,7 @@ void destroy_dialog(struct dialog *d)
 
 /* Update and draw */
 static void
-draw_box(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
+draw2_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 {
 	int h, w;
 	int leftcolor, rightcolor;
@@ -170,7 +184,7 @@ int draw_dialog(struct dialog *d)
 	wclear(d->widget);
 	mvwin(d->widget, d->y, d->x);
 	wresize(d->widget, d->h, d->w);
-	draw_box(d->conf, d->widget, RAISED);
+	draw2_borders(d->conf, d->widget, RAISED);
 
 	if (d->conf->title != NULL) {
 		if ((wtitle = strcols(d->conf->title)) < 0)
