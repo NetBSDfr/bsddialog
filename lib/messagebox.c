@@ -34,7 +34,7 @@
 struct scroll {
 	int htext;     /* real h text to draw, to use with htextpad */
 	int ypad;
-	int htextpad;  /* h textpad, draw_dialog() set at leat 1 */
+	int htextpad;  /* h textpad, draw_dialog() set at least 1 */
 	int printrows; /* h - BORDER - HBUTTONS - BORDER */
 };
 
