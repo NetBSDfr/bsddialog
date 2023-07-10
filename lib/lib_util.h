@@ -171,10 +171,6 @@ enum elevation { RAISED, LOWERED };
 void
 draw_box(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
 
-WINDOW *
-new_boxed_window(struct bsddialog_conf *conf, int y, int x, int rows, int cols,
-    enum elevation elev);
-
 /* dialog */
 void rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);
 #define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
