@@ -1020,7 +1020,7 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	return (0);
 }
 
-int widget_size_position(struct dialog *d, int hnotext, int minw, int *htext)
+int dialog_size_position(struct dialog *d, int hnotext, int minw, int *htext)
 {
 	if (set_widget_size(d->conf, d->rows, d->cols, &d->h, &d->w) != 0)
 		return (BSDDIALOG_ERROR);
