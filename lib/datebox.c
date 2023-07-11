@@ -33,11 +33,12 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MINHCAL   13
-#define MINWCAL   36 /* 34 calendar, 1 + 1 margins */
 #define MINYEAR   1900
 #define MAXYEAR   999999999
-
+/* Calendar */
+#define MINHCAL   13
+#define MINWCAL   36 /* 34 calendar, 1 + 1 margins */
+/* Datebox */
 #define MINWDATE   23 /* 3 windows and their borders */
 
 #define ISLEAP(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
