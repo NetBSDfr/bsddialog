@@ -1088,7 +1088,8 @@ rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
 	/*caller has to call doupdate() */
 }
 
-void draw_box(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
+static void
+draw_box(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 {
 	int h, w;
 	int leftcolor, rightcolor;
