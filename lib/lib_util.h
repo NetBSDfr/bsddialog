@@ -160,7 +160,7 @@ int widget_checksize(int h, int w, struct buttons *bs, int hnotext, int minw);
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
 
-int widget_size_position(struct dialog *d, int hnotext, int minw, int *htext);
+int dialog_size_position(struct dialog *d, int hnotext, int minw, int *htext);
 
 /* widget components */
 enum elevation { RAISED, LOWERED };
@@ -175,9 +175,9 @@ void rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnote
 /* msgbox and yesno (ytext) */
 #define YTEXTPAD(d, ytext, downnotext) rtextpad(d, ytext, 0, 0, downnotext)
 /* mixedgauge */
-//#define YSTEXTPAD(d, upnotext, downnotext) textpad(d, 0, 0, upnotext, downnotext)
+#define YSTEXTPAD(d, upnotext, downnotext) rtextpad(d, 0, 0, upnotext, downnotext)
 /* textbox */
-//#define YXTEXTPAD(d, ytext, xtext, downnotext) textpad(pad, ytext, xtext, 0, downnotext)
+//#define YXTEXTPAD(d, ytext, xtext, downnotext) rtextpad(pad, ytext, xtext, 0, downnotext)
 
 int hide_dialog(struct dialog *d);
 void end_dialog(struct dialog *d);

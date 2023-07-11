@@ -1244,6 +1244,4 @@ draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
 	wresize(win, h, w);
 	mvwin(win, y, x);
 	draw_borders(conf, win, elev);
-	wnoutrefresh(win);
-	
 }
