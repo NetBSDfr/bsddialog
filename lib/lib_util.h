@@ -107,11 +107,6 @@ struct buttons {
 
 bool shortcut_buttons(wint_t key, struct buttons *bs);
 
-#define DRAW_REFRESH_BUTTONS(widget, bs) do {                                  \
-	draw_buttons(widget, bs);                                              \
-	wrefresh(widget);                                                      \
-} while (0)
-
 #define DRAW_BUTTONS(d) do {                                                   \
 	draw_buttons(&d);                                                      \
 	wnoutrefresh(d.widget);                                                \
