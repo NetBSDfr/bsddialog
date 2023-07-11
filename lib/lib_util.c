@@ -1085,8 +1085,7 @@ rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
 	/*caller has to call doupdate() */
 }
 
-static void
-draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
+void draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 {
 	int h, w;
 	int leftcolor, rightcolor;
@@ -1239,7 +1238,7 @@ prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
 
 /* widget components */
 void
-draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+update_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
     enum elevation elev)
 {
 	wclear(win);

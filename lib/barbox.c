@@ -145,7 +145,7 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		if (d.built)
 			refresh(); /* Important to fix grey lines expanding screen */
 		TEXTPAD(&d, HBAR);
-		draw_box(conf, b.win, d.y+d.h-4, d.x+3, HBAR, d.w-6, RAISED);
+		update_box(conf, b.win, d.y+d.h-4, d.x+3, HBAR, d.w-6, RAISED);
 		b.w = d.w - 8;
 		b.perc = b.label = perc;
 		b.toupdate = true;
@@ -267,7 +267,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	/* main bar */
 	if ((b.win = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW bar");
-	draw_box(conf, b.win, d.y+d.h - 4, d.x+3, HBAR, d.w-6, RAISED);
+	update_box(conf, b.win, d.y+d.h - 4, d.x+3, HBAR, d.w-6, RAISED);
 	wattron(b.win, t.bar.color);
 	mvwaddstr(b.win, 0, 2, "Overall Progress"); /* to check PV */
 	wattroff(b.win, t.bar.color);
@@ -395,7 +395,7 @@ static int rangebox_redraw(struct dialog *d, struct bar *b, int *bigchange)
 
 	b->w = d->w - BORDERS - (2 * BARPADDING) - 2;
 	*bigchange = MAX(1, b->w  / 10);
-	draw_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
+	update_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
 	    HBAR, b->w + 2, RAISED);
 	b->toupdate = true;
 
@@ -546,7 +546,7 @@ static int pause_redraw(struct dialog *d, struct bar *b)
 	TEXTPAD(d, HBAR + HBUTTONS);
 
 	b->w = d->w - BORDERS - (2 * BARPADDING) - 2;
-	draw_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
+	update_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
 	    HBAR, b->w + 2, RAISED);
 	b->toupdate = true;
 

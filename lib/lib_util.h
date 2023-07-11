@@ -161,7 +161,10 @@ int dialog_size_position(struct dialog *d, int hnotext, int minw, int *htext);
 enum elevation { RAISED, LOWERED };
 
 void
-draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
+
+void
+update_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
     enum elevation elev);
 
 /* dialog */
