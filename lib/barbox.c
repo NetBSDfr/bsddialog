@@ -263,7 +263,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if ((b.win = new_boxed_window(conf, y+h -4, x+3, 3, w-6, RAISED)) == NULL)
 		return (BSDDIALOG_ERROR);
 	wattron(b.win, t.bar.color);
-	mvwaddstr(b.win, 0, 2, "Overall Progress");
+	mvwaddstr(b.win, 0, 2, "Overall Progress"); /* to checl PV */
 	wattroff(b.win, t.bar.color);
 
 	b.y = b.x = 1;
