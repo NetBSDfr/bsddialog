@@ -1020,19 +1020,16 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w)
 	return (0);
 }
 
-int
-widget_size_position(struct bsddialog_conf *conf, int rows, int cols,
-    const char *text, int hnotext, int minw, struct buttons *bs, int *y, int *x,
-    int *h, int *w, int *htext)
+int widget_size_position(struct dialog *d, int hnotext, int minw, int *htext)
 {
-	if (set_widget_size(conf, rows, cols, h, w) != 0)
+	if (set_widget_size(d->conf, d->rows, d->cols, &d->h, &d->w) != 0)
 		return (BSDDIALOG_ERROR);
-	if (set_widget_autosize(conf, rows, cols, h, w, text, htext, bs,
-	    hnotext, minw) != 0)
+	if (set_widget_autosize(d->conf, d->rows, d->cols, &d->h, &d->w,
+	    d->text, htext, &d->bs, hnotext, minw) != 0)
 		return (BSDDIALOG_ERROR);
-	if (widget_checksize(*h, *w, bs, hnotext, minw) != 0)
+	if (widget_checksize(d->h, d->w, &d->bs, hnotext, minw) != 0)
 		return (BSDDIALOG_ERROR);
-	if (set_widget_position(conf, y, x, *h, *w) != 0)
+	if (set_widget_position(d->conf, &d->y, &d->x, d->h, d->w) != 0)
 		return (BSDDIALOG_ERROR);
 
 	return (0);

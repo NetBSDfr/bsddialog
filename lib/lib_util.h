@@ -160,10 +160,7 @@ int widget_checksize(int h, int w, struct buttons *bs, int hnotext, int minw);
 int
 set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
 
-int
-widget_size_position(struct bsddialog_conf *conf, int rows, int cols,
-    const char *text, int hnotext, int minw, struct buttons *bs, int *y, int *x,
-    int *h, int *w, int *htext);
+int widget_size_position(struct dialog *d, int hnotext, int minw, int *htext);
 
 /* widget components */
 enum elevation { RAISED, LOWERED };
