@@ -165,8 +165,12 @@ widget_size_position(struct bsddialog_conf *conf, int rows, int cols,
     const char *text, int hnotext, int minw, struct buttons *bs, int *y, int *x,
     int *h, int *w, int *htext);
 
-/* widget builders */
+/* widget components */
 enum elevation { RAISED, LOWERED };
+
+void
+draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+    enum elevation elev);
 
 /* dialog */
 void rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);

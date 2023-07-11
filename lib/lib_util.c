@@ -1089,7 +1089,7 @@ rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
 }
 
 static void
-draw_box(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
+draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 {
 	int h, w;
 	int leftcolor, rightcolor;
@@ -1147,8 +1147,7 @@ int draw_dialog(struct dialog *d)
 	wclear(d->widget);
 	mvwin(d->widget, d->y, d->x);
 	wresize(d->widget, d->h, d->w);
-
-	draw_box(d->conf, d->widget, RAISED);
+	draw_borders(d->conf, d->widget, RAISED);
 
 	if (d->conf->title != NULL) {
 		if ((wtitle = strcols(d->conf->title)) < 0)
@@ -1219,8 +1218,7 @@ prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
 	d->rows = rows;
 	d->cols = cols;
 	d->text = (text == NULL) ? "" : text;
-	// htext? bool withhtext, mixedgauge
-	d->bs.nbuttons = 0; /* caller has to set_buttons() if has buttons */
+	d->bs.nbuttons = 0;
 
 	if (d->conf->shadow) {
 		if ((d->shadow = newwin(1, 1, 1, 1)) == NULL)
@@ -1238,4 +1236,17 @@ prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
 	wbkgd(d->textpad, t.dialog.color);
 
 	return (0);
+}
+
+/* widget components */
+void
+draw_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+    enum elevation elev)
+{
+	wclear(win);
+	wresize(win, h, w);
+	mvwin(win, y, x);
+	draw_borders(conf, win, elev);
+	wnoutrefresh(win);
+	
 }
