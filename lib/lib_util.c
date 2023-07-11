@@ -1110,10 +1110,12 @@ draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 		rtee = ACS_RTEE;
 	}
 
+	getmaxyx(win, h, w);
 	leftcolor = elev == RAISED ?
 	    t.dialog.lineraisecolor : t.dialog.linelowercolor;
 	rightcolor = elev == RAISED ?
 	    t.dialog.linelowercolor : t.dialog.lineraisecolor;
+
 	wattron(win, leftcolor);
 	wborder(win, ls, rs, ts, bs, tl, tr, bl, br);
 	wattroff(win, leftcolor);
