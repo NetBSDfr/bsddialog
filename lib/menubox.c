@@ -322,7 +322,7 @@ static void
 update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
     int totnitems, unsigned int menurows, int ymenupad)
 {
-	draw_borders(conf, menuwin, h, w, LOWERED);
+	draw_borders(conf, menuwin, LOWERED);
 
 	if (totnitems > (int)menurows) {
 		wattron(menuwin, t.dialog.arrowcolor);
@@ -383,10 +383,56 @@ struct privatemenu {
 	WINDOW *pad;           /* pad for the private items */
 	int ypad;              /* start pad line */
 	int ys, ye, xs, xe;    /* pad pos */
+	unsigned int apimenurows;
 	unsigned int menurows; /* real menurows after menu_size_position() */
 	int nitems;            /* total nitems (all groups * all items) */
 	int sel;               /* current focus item, can be -1 */
 };
+
+static int
+mixedlist_redraw(struct dialog *d, struct lineposition *pos,
+    struct privatemenu *m, struct privateitem *pritems)
+{
+	if (d->built) {
+		hide_dialog(d);
+		refresh(); /* Important for decreasing screen */
+	}
+	m->menurows = m->apimenurows;
+	if (menu_size_position(d->conf, d->rows, d->cols, d->text,
+	    &m->menurows, m->nitems, pos->line, &d->bs, &d->y, &d->x, &d->h,
+	    &d->w) != 0)
+		return (BSDDIALOG_ERROR);
+	if (draw_dialog(d) != 0)
+		return (BSDDIALOG_ERROR);
+	if (d->built)
+		refresh(); /* Important to fix grey lines expanding screen */
+	TEXTPAD(d, 2/*bmenu*/ + m->menurows + HBUTTONS);
+
+	update_box(d->conf, m->box, d->y + d->h - 5 - m->menurows, d->x + 2,
+	    m->menurows+2, d->w-4, LOWERED);
+	update_menuwin(d->conf, m->box, m->menurows+2, d->w-4, m->nitems,
+	    m->menurows, m->ypad);
+	wnoutrefresh(m->box);
+
+	drawseparators(d->conf, m->pad, MIN((int)pos->line, d->w-6),
+	    m->nitems, pritems);
+	if ((int)(m->ypad + m->menurows) - 1 < m->sel)
+		m->ypad = m->sel - m->menurows + 1;
+	m->ys = d->y + d->h - 5 - m->menurows + 1;
+	m->ye = d->y + d->h - 5 ;
+	if (d->conf->menu.align_left || (int)pos->line > d->w - 6) {
+		m->xs = d->x + 3;
+		m->xe = m->xs + d->w - 7;
+	} else { /* center */
+		m->xs = d->x + 3 + (d->w-6)/2 - pos->line/2;
+		m->xe = m->xs + d->w - 5;
+	}
+	pnoutrefresh(m->pad, m->ypad, 0, m->ys, m->xs, m->ye, m->xe);
+
+	//refresh();//?
+
+	return (0);
+}
 
 static int
 do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
@@ -394,17 +440,21 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
 	bool loop, onetrue, movefocus;
-	int i, j, y, x, h, w, next, retval;
+	int i, j, next, retval;
 	wint_t input;
-	WINDOW  *shadow, *widget, *textpad;
-	struct buttons bs;
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	struct bsddialog_menuitem *item;
 	struct privateitem *pritems;
 	struct privatemenu m;
+	struct dialog d;
 
 	CHECK_PTR_SIZE(focuslist, int);
 	CHECK_PTR_SIZE(focusitem, int);
+
+	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
+		return (BSDDIALOG_ERROR);
+	set_buttons(&d, conf->menu.shortcut_buttons, BUTTON_OK_LABEL,
+	    BUTTON_CANCEL_LABEL);
 
 	m.nitems = 0;
 	for (i = 0; i < (int)ngroups; i++) {
@@ -438,21 +488,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	pos.xdesc += (pos.maxname != 0 ? 1 : 0);
 	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
 
-	m.menurows = menurows;
-	get_buttons(conf, &bs, conf->menu.shortcut_buttons, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-	if (menu_size_position(conf, rows, cols, text, &m.menurows, m.nitems,
-	    pos.line, &bs, &y, &x, &h, &w) != 0)
-		return (BSDDIALOG_ERROR);
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
-		return (BSDDIALOG_ERROR);
-
-	doupdate();
-
-	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN, y + h - m.menurows,
-	    x + 1 + w - TEXTHMARGIN);
-
-	m.box = new_boxed_window(conf, y + h - 5 - m.menurows, x + 2,
-	    m.menurows + 2, w - 4, LOWERED);
+	if ((m.box = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW box menu");
+	wbkgd(m.box, t.dialog.color);
 
 	m.pad = newpad(m.nitems, pos.line);
 	wbkgd(m.pad, t.dialog.color);
@@ -484,39 +522,26 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			m.sel++;
 		}
 	}
-	drawseparators(conf, m.pad, MIN((int)pos.line, w-6), m.nitems,
-	    pritems);
+
 	m.sel = getfirst_with_default(m.nitems, pritems, ngroups, groups,
 	    focuslist, focusitem);
 	if (m.sel >= 0)
 		drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], true);
-
-	m.ys = y + h - 5 - m.menurows + 1;
-	m.ye = y + h - 5 ;
-	if (conf->menu.align_left || (int)pos.line > w - 6) {
-		m.xs = x + 3;
-		m.xe = m.xs + w - 7;
-	} else { /* center */
-		m.xs = x + 3 + (w-6)/2 - pos.line/2;
-		m.xe = m.xs + w - 5;
-	}
-
 	m.ypad = 0;
-	if ((int)(m.ypad + m.menurows) - 1 < m.sel)
-		m.ypad = m.sel - m.menurows + 1;
-	update_menuwin(conf, m.box, m.menurows+2, w-4, m.nitems, m.menurows, m.ypad);
-	wrefresh(m.box);
-	prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
+	m.apimenurows = menurows;
+	if (mixedlist_redraw(&d, &pos, &m, pritems) != 0)
+		return (BSDDIALOG_ERROR);
 
 	movefocus = false;
 	loop = true;
 	while (loop) {
+		doupdate(); //buttons and mixedmenu_redraw() for now
 		if (get_wch(&input) == ERR)
 			continue;
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
-			retval = BUTTONVALUE(bs);
+			retval = BUTTONVALUE(d.bs);
 			if (m.sel >= 0 && pritems[m.sel].type == MENUMODE)
 				pritems[m.sel].on = true;
 			set_on_output(conf, retval, ngroups, groups, pritems);
@@ -533,22 +558,19 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			}
 			break;
 		case '\t': /* TAB */
-			bs.curr = (bs.curr + 1) % bs.nbuttons;
-			draw_buttons(widget, bs);
-			wrefresh(widget);
+			d.bs.curr = (d.bs.curr + 1) % d.bs.nbuttons;
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_LEFT:
-			if (bs.curr > 0) {
-				bs.curr--;
-				draw_buttons(widget, bs);
-				wrefresh(widget);
+			if (d.bs.curr > 0) {
+				d.bs.curr--;
+				DRAW_BUTTONS(d);
 			}
 			break;
 		case KEY_RIGHT:
-			if (bs.curr < (int) bs.nbuttons - 1) {
-				bs.curr++;
-				draw_buttons(widget, bs);
-				wrefresh(widget);
+			if (d.bs.curr < (int) d.bs.nbuttons - 1) {
+				d.bs.curr++;
+				DRAW_BUTTONS(d);
 			}
 			break;
 		case KEY_F(1):
@@ -557,52 +579,12 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			/* No break, screen size can change */
+			if (mixedlist_redraw(&d, &pos, &m, pritems) != 0)
+				return (BSDDIALOG_ERROR);
+			break;
 		case KEY_RESIZE:
-			/* Important for decreasing screen */
-			hide_dialog(y, x, h, w, conf->shadow);
-			refresh();
-
-			m.menurows = menurows;
-			if (menu_size_position(conf, rows, cols, text,
-			    &m.menurows, m.nitems, pos.line, &bs, &y, &x, &h,
-			    &w) != 0)
+			if (mixedlist_redraw(&d, &pos, &m, pritems) != 0)
 				return (BSDDIALOG_ERROR);
-			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs) != 0)
-				return (BSDDIALOG_ERROR);
-
-			doupdate();
-
-			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
-			    y + h - m.menurows, x + 1 + w - TEXTHMARGIN);
-
-			wclear(m.box);
-			mvwin(m.box, y + h - 5 - m.menurows, x + 2);
-			wresize(m.box, m.menurows+2, w-4);
-			update_menuwin(conf, m.box, m.menurows+2, w-4,
-			    m.nitems, m.menurows, m.ypad);
-			wrefresh(m.box);
-
-			m.ys = y + h - 5 - m.menurows + 1;
-			m.ye = y + h - 5 ;
-			if (conf->menu.align_left || (int)pos.line > w - 6) {
-				m.xs = x + 3;
-				m.xe = m.xs + w - 7;
-			} else { /* center */
-				m.xs = x + 3 + (w-6)/2 - pos.line/2;
-				m.xe = m.xs + w - 5;
-			}
-
-			drawseparators(conf, m.pad, MIN((int)pos.line, w-6),
-			    m.nitems, pritems);
-
-			if ((int)(m.ypad + m.menurows) - 1 < m.sel)
-				m.ypad = m.sel - m.menurows + 1;
-			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
-
-			refresh();
-
 			break;
 		}
 
@@ -635,7 +617,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		case ' ': /* Space */
 			if (pritems[m.sel].type == MENUMODE) {
-				retval = BUTTONVALUE(bs);
+				retval = BUTTONVALUE(d.bs);
 				pritems[m.sel].on = true;
 				set_on_output(conf, retval, ngroups, groups,
 				    pritems);
@@ -660,8 +642,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			break;
 		default:
 			if (conf->menu.shortcut_buttons) {
-				if (shortcut_buttons(input, &bs)) {
-					retval = BUTTONVALUE(bs);
+				if (shortcut_buttons(input, &d.bs)) {
+					retval = BUTTONVALUE(d.bs);
 					if (pritems[m.sel].type == MENUMODE)
 						pritems[m.sel].on = true;
 					set_on_output(conf, retval, ngroups,
@@ -685,7 +667,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				m.ypad = m.sel;
 			if ((int)(m.ypad + m.menurows) <= m.sel)
 				m.ypad = m.sel - m.menurows + 1;
-			update_menuwin(conf, m.box, m.menurows+2, w-4,
+			update_menuwin(conf, m.box, m.menurows+2, d.w-4,
 			    m.nitems, m.menurows, m.ypad);
 			wrefresh(m.box);
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
@@ -700,7 +682,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	delwin(m.pad);
 	delwin(m.box);
-	end_dialog(conf, shadow, widget, textpad);
+	end_dialog(&d);
 	free(pritems);
 
 	return (retval);
