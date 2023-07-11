@@ -1079,7 +1079,7 @@ rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
 {
 	pnoutrefresh(d->textpad, ytext, xtext,
 	    d->y + BORDER + upnotext,
-	     d->x + BORDER + TEXTHMARGIN,
+	    d->x + BORDER + TEXTHMARGIN,
 	    d->y + d->h - 1 - downnotext - BORDER,
 	    d->x + d->w - TEXTHMARGIN - BORDER);
 	/*caller has to call doupdate() */
