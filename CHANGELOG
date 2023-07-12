@@ -37,6 +37,7 @@ WIP Next Version
 	    - merge: new_dialog() with update_dialog() -> draw_dialog().
 	    - improve: replace wrefresh() -> wnoutrefresh()/doupdate().
 	    - improve: replace prefresh() -> pnoutrefresh()/doupdate().
+	    - delete: -Wno-implicit-fallthrough
 
 
 2023-06-12 Version 0.4.2

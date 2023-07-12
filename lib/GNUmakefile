@@ -11,7 +11,7 @@ SOURCES = barbox.c datebox.c formbox.c libbsddialog.c lib_util.c \
 	menubox.c messagebox.c textbox.c theme.c timebox.c
 OBJECTS = $(SOURCES:.c=.o)
 CFLAGS = -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE -D_GNU_SOURCE \
-	-Wall -Wextra -Wno-implicit-fallthrough -Werror -fpic
+	-Wall -Wextra -Werror -fpic
 LDFLAGS = -lncursesw -ltinfo
 LIBFLAG = -shared
 
