@@ -655,7 +655,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			next = getnextshortcut(conf, m.nitems, pritems, m.sel,
 			    input);
 			changeitem = next != m.sel;
-		} /* end switch handler */
+		} /* end switch get_wch() */
 
 		if (changeitem) {
 			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], false);
@@ -671,7 +671,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			changeitem = false;
 		}
-	} /* end while handler */
+	} /* end while(loop) */
 
 	if (focuslist != NULL)
 		*focuslist = m.sel < 0 ? -1 : pritems[m.sel].group;
