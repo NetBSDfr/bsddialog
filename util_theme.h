@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2022 Alfonso Sabato Siciliano
+ * Copyright (c) 2022-2023 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -25,8 +25,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _BSDDIALOG_UTILITY_THEME_H_
-#define _BSDDIALOG_UTILITY_THEME_H_
+#ifndef _BSDDIALOG_UTIL_THEME_H_
+#define _BSDDIALOG_UTIL_THEME_H_
 
 void savetheme(const char *file, const char *version);
 void loadtheme(const char *file);
