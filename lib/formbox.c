@@ -369,18 +369,17 @@ nextitem(unsigned int nitems, struct privateitem *items, int curritem)
 	return (curritem);
 }
 
-static void
-redrawbuttons(WINDOW *window, struct buttons *bs, bool focus, bool shortcut)
+static void redrawbuttons(struct dialog *d, bool focus, bool shortcut)
 {
 	int selected;
 
-	selected = bs->curr;
+	selected = d->bs.curr;
 	if (focus == false)
-		bs->curr = -1;
-	bs->shortcut = shortcut;
-	draw_buttons(window, *bs);
-	wrefresh(window);
-	bs->curr = selected;
+		d->bs.curr = -1;
+	d->bs.shortcut = shortcut;
+	draw_buttons(d);
+	wrefresh(d->widget);
+	d->bs.curr = selected;
 }
 
 static void
@@ -389,7 +388,7 @@ update_formborders(struct bsddialog_conf *conf, struct privateform *form)
 	int h, w;
 
 	getmaxyx(form->border, h, w);
-	draw_borders(conf, form->border, h, w, LOWERED);
+	draw_borders(conf, form->border, LOWERED);
 
 	if (form->viewrows < form->h) {
 		wattron(form->border, t.dialog.arrowcolor);
@@ -476,6 +475,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	struct privateitem *items, *item;
 	struct buttons bs;
 	struct privateform form;
+	struct dialog d;
 
 	for (i = 0; i < nitems; i++) {
 		if (apiitems[i].maxvaluelen == 0)
@@ -621,7 +621,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 	if (curritem != -1) {
 		focusinform = true;
-		redrawbuttons(widget, &bs, conf->button.always_active, false);
+		redrawbuttons(&d, conf->button.always_active, false);
 		form.y = 0;
 		item = &items[curritem];
 		curriteminview(&form, item);
@@ -667,7 +667,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 						switchfocus = true;
 					}
 				}
-				redrawbuttons(widget, &bs, true, true);
+				redrawbuttons(&d, true, true);
 				wrefresh(widget);
 			}
 			break;
@@ -677,7 +677,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					DRAWITEM_TRICK(&form, item, true);
 			} else if (bs.curr > 0) {
 				bs.curr--;
-				redrawbuttons(widget, &bs, true, true);
+				redrawbuttons(&d, true, true);
 				wrefresh(widget);
 			} else if (curritem != -1) {
 				switchfocus = true;
@@ -689,7 +689,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					DRAWITEM_TRICK(&form, item, true);
 			} else if (bs.curr < (int) bs.nbuttons - 1) {
 				bs.curr++;
-				redrawbuttons(widget, &bs, true, true);
+				redrawbuttons(&d, true, true);
 				wrefresh(widget);
 			} else if (curritem != -1) {
 				switchfocus = true;
@@ -808,7 +808,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 
 			if (curritem != -1) {
-				redrawbuttons(widget, &bs,
+				redrawbuttons(&d,
 				    conf->button.always_active || !focusinform,
 				    !focusinform);
 				curriteminview(&form, item);
@@ -853,7 +853,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		if (switchfocus) {
 			focusinform = !focusinform;
 			bs.curr = 0;
-			redrawbuttons(widget, &bs,
+			redrawbuttons(&d,
 			    conf->button.always_active || !focusinform,
 			    !focusinform);
 			DRAWITEM_TRICK(&form, item, focusinform);
@@ -879,7 +879,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		free(items[i].privwbuf);
 		free(items[i].pubwbuf);
 	}
-	end_dialog(conf, shadow, widget, textpad);
+	end_dialog(&d);
 
 	return (retval);
 }
