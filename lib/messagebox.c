@@ -32,8 +32,8 @@
 #include "lib_util.h"
 
 struct scroll {
+	int ypad;      /* y scrollable pad */
 	int htext;     /* real h text to draw, to use with htextpad */
-	int ypad;
 	int htextpad;  /* h textpad, draw_dialog() set at least 1 */
 	int printrows; /* h - BORDER - HBUTTONS - BORDER */
 };
