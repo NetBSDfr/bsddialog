@@ -12,6 +12,7 @@ WIP Next Version
 	* add: bsddialog_datebox() changing one box affects the others as well.
 	* add: check/set bsddialog_gauge() API MIN (perc, 100).
 	* add: "const char *end" to bsddialog_gauge().
+	* add: API bsddialog_inmode().
 	* improve: bsddialog_geterror() with fmt strings.
 	* add: focus on the "shortcut" key button at exit.
 	* fix: extend menurows after shrinking.

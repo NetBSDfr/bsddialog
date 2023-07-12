@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 11, 2023
+.Dd July 12, 2023
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -43,6 +43,7 @@
 .Nm bsddialog_init ,
 .Nm bsddialog_init_notheme ,
 .Nm bsddialog_initconf ,
+.Nm bsddialog_inmode ,
 .Nm bsddialog_menu ,
 .Nm bsddialog_mixedgauge ,
 .Nm bsddialog_mixedlist ,
@@ -131,6 +132,8 @@
 .Fn bsddialog_init "void"
 .Ft int
 .Fn bsddialog_init_notheme "void"
+.Ft bool
+.Fn bsddialog_inmode "void"
 .Ft int
 .Fn bsddialog_initconf "struct bsddialog_conf *conf"
 .Ft int
@@ -273,6 +276,18 @@ subsection to set a theme explicitly.
 restores the screen like before
 .Fn bsddialog_init ,
 after it is not possible to use the library functions.
+.Pp
+.Fn bsddialog_inmode
+returns
+.Dv true
+after
+.Fn bsddialog_init
+or
+.Fn bsddialog_init_notheme
+and before
+.Fn bsddialog_end ,
+.Dv false
+otherwise.
 .Pp
 .Fn bsddialog_backtitle
 prints

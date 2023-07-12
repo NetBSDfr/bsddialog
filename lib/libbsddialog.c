@@ -34,6 +34,8 @@
 
 #define DEFAULT_COLS_PER_ROW  10   /* Default conf.text.columns_per_row */
 
+static bool in_bsddialog_mode = false;
+
 int bsddialog_init_notheme(void)
 {
 	int i, j, c, error;
@@ -53,6 +55,7 @@ int bsddialog_init_notheme(void)
 		bsddialog_end();
 		RETURN_ERROR("Cannot init curses (keypad and cursor)");
 	}
+	in_bsddialog_mode = true;
 
 	c = 1;
 	error += start_color();
@@ -81,6 +84,7 @@ int bsddialog_init(void)
 
 	if (bsddialog_set_default_theme(theme) != 0) {
 		bsddialog_end();
+		in_bsddialog_mode = false;
 		return (BSDDIALOG_ERROR);
 	}
 
@@ -109,6 +113,11 @@ int bsddialog_backtitle(struct bsddialog_conf *conf, const char *backtitle)
 	refresh();
 
 	return (BSDDIALOG_OK);
+}
+
+bool bsddialog_inmode(void)
+{
+	return (in_bsddialog_mode);
 }
 
 const char *bsddialog_geterror(void)
