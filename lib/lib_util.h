@@ -114,16 +114,15 @@ bool shortcut_buttons(wint_t key, struct buttons *bs);
 
 /* dialog */
 struct dialog {
-	bool built;
-	struct bsddialog_conf *conf;
-	WINDOW *widget;   /* Size and position refer to widget */
-	int y, x;         /* Current position, API conf.[y|x]: -1, >=0 */
-	int rows, cols;   /* API rows and cols: -1, 0, >0 */
-	int h, w;         /* Current height and width */
-	const char *text; /* Checked API *text, at least "", fake for textbox */
-	WINDOW *textpad;  /* Fake for textbox */
-	int htext;        /* Real h text: 0, >0 */
-	struct buttons bs;/* bs.nbuttons = 0 for no buttons */
+	bool built;         /* true after the first draw_dialog() */
+	struct bsddialog_conf *conf;  /* Checked API conf */
+	WINDOW *widget;     /* Size and position refer to widget */
+	int y, x;           /* Current position, API conf.[y|x]: -1, >=0 */
+	int rows, cols;     /* API rows and cols: -1, 0, >0 */
+	int h, w;           /* Current height and width */
+	const char *text;   /* Checked API text, at least "" */
+	WINDOW *textpad;    /* Fake for textbox */
+	struct buttons bs;  /* bs.nbuttons = 0 for no buttons */
 	WINDOW *shadow;
 };
 
