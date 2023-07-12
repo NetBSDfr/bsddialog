@@ -26,8 +26,6 @@
  */
 
 #include <curses.h>
-#include <stdlib.h>
-#include <string.h>
 #include <wchar.h>
 
 #include "bsddialog.h"
