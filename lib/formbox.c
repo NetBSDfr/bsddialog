@@ -61,8 +61,7 @@ struct privateitem {
 };
 
 struct privateform {
-	WINDOW *border;
-
+	WINDOW *box;       /* window to draw borders */
 	WINDOW *pad;
 	unsigned int h;    /* only to create pad */
 	unsigned int w;    /* only to create pad */
@@ -74,7 +73,6 @@ struct privateform {
 	unsigned int y;    /* changes moving focus around items */
 	unsigned int viewrows;    /* visible rows, real formheight */
 	unsigned int minviewrows; /* min viewrows, ylabel != yfield */
-
 	wchar_t securewch; /* wide char of conf.form.secure[mb]ch */
 };
 
@@ -386,24 +384,24 @@ static void redrawbuttons(struct dialog *d, bool focus, bool shortcut)
 }
 
 static void
-update_formborders(struct bsddialog_conf *conf, struct privateform *form)
+update_formbox(struct bsddialog_conf *conf, struct privateform *form)
 {
 	int h, w;
 
-	getmaxyx(form->border, h, w);
-	draw_borders(conf, form->border, LOWERED);
+	getmaxyx(form->box, h, w);
+	draw_borders(conf, form->box, LOWERED);
 
 	if (form->viewrows < form->h) {
-		wattron(form->border, t.dialog.arrowcolor);
+		wattron(form->box, t.dialog.arrowcolor);
 		if (form->y > 0)
-			mvwhline(form->border, 0, (w / 2) - 2,
+			mvwhline(form->box, 0, (w / 2) - 2,
 			    conf->ascii_lines ? '^' : ACS_UARROW, 5);
 
 		if (form->y + form->viewrows < form->h)
-			mvwhline(form->border, h-1, (w / 2) - 2,
+			mvwhline(form->box, h-1, (w / 2) - 2,
 			    conf->ascii_lines ? 'v' : ACS_DARROW, 5);
-		wattroff(form->border, t.dialog.arrowcolor);
-		wrefresh(form->border);
+		wattroff(form->box, t.dialog.arrowcolor);
+		wrefresh(form->box);
 	}
 }
 
@@ -591,7 +589,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
 	    y + h - form.viewrows, x + 1 + w - TEXTHMARGIN);
 
-	form.border = new_boxed_window(conf, y + h - 5 - form.viewrows, x + 2,
+	form.box = new_boxed_window(conf, y + h - 5 - form.viewrows, x + 2,
 	    form.viewrows + 2, w - 4, LOWERED);
 
 	for (i = 0; i < nitems; i++) {
@@ -628,13 +626,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.y = 0;
 		item = &items[curritem];
 		curriteminview(&form, item);
-		update_formborders(conf, &form);
-		wrefresh(form.border);
+		update_formbox(conf, &form);
+		wrefresh(form.box);
 		DRAWITEM_TRICK(&form, item, true);
 	} else {
 		item = NULL;
 		focusinform = false;
-		wrefresh(form.border);
+		wrefresh(form.box);
 	}
 
 	changeitem = switchfocus = false;
@@ -785,9 +783,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			prefresh(textpad, 0, 0, y + 1, x + 1 + TEXTHMARGIN,
 			    y + h - form.viewrows, x + 1 + w - TEXTHMARGIN);
 
-			wclear(form.border);
-			mvwin(form.border, y + h - 5 - form.viewrows, x + 2);
-			wresize(form.border, form.viewrows + 2, w - 4);
+			wclear(form.box);
+			mvwin(form.box, y + h - 5 - form.viewrows, x + 2);
+			wresize(form.box, form.viewrows + 2, w - 4);
 
 			for (i = 0; i < nitems; i++) {
 				fieldctl(&items[i], MOVE_CURSOR_BEGIN);
@@ -815,12 +813,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				    conf->button.always_active || !focusinform,
 				    !focusinform);
 				curriteminview(&form, item);
-				update_formborders(conf, &form);
-				wrefresh(form.border);
+				update_formbox(conf, &form);
+				wrefresh(form.box);
 				/* drawitem just to prefresh() pad */
 				DRAWITEM_TRICK(&form, item, focusinform);
 			} else {
-				wrefresh(form.border);
+				wrefresh(form.box);
 			}
 			break;
 		default:
@@ -868,7 +866,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			curritem = next;
 			item = &items[curritem];
 			curriteminview(&form, item);
-			update_formborders(conf, &form);
+			update_formbox(conf, &form);
 			DRAWITEM_TRICK(&form, item, true);
 			changeitem = false;
 		}
@@ -877,7 +875,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	curs_set(0);
 
 	delwin(form.pad);
-	delwin(form.border);
+	delwin(form.box);
 	for (i = 0; i < nitems; i++) {
 		free(items[i].privwbuf);
 		free(items[i].pubwbuf);
