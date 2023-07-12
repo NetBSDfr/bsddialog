@@ -94,14 +94,10 @@ static int week_day(int yy, int mm, int dd)
 	return (wd);
 }
 
-static int
+static void
 init_date(unsigned int *year, unsigned int *month, unsigned int *day, int *yy,
     int *mm, int *dd)
 {
-	CHECK_PTR(year, unsigned int);
-	CHECK_PTR(month, unsigned int);
-	CHECK_PTR(day, unsigned int);
-
 	*yy = MIN(*year, MAXYEAR);
 	if (*yy < MINYEAR)
 		*yy = MINYEAR;
@@ -111,8 +107,6 @@ init_date(unsigned int *year, unsigned int *month, unsigned int *day, int *yy,
 	*dd = (*day == 0) ? 1 : *day;
 	if(*dd > month_days(*yy, *mm))
 		*dd = month_days(*yy, *mm);
-
-	return (0);
 }
 
 static void datectl(enum operation op, int *yy, int *mm, int *dd)
@@ -225,7 +219,7 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 
 	getmaxyx(win, h, w);
 	wclear(win);
-	draw_borders(conf, win, h, w, RAISED);
+	draw_borders(conf, win, RAISED);
 	if (active) {
 		wattron(win, t.dialog.arrowcolor);
 		mvwhline(win, 0, 15, conf->ascii_lines ? '^' : ACS_UARROW, 4);
@@ -255,7 +249,7 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 		}
 	}
 
-	wrefresh(win);
+	wnoutrefresh(win);
 }
 
 static void
@@ -265,7 +259,7 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
 	int h, l, w;
 
 	getmaxyx(win, h, w);
-	draw_borders(conf, win, h, w, elev);
+	draw_borders(conf, win, elev);
 	if (focus) {
 		l = 2 + w%2;
 		wattron(win, t.dialog.arrowcolor);
@@ -285,7 +279,37 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
 	if (focus)
 		wattroff(win, t.menu.f_namecolor);
 
-	wrefresh(win);
+	wnoutrefresh(win);
+}
+
+static int
+calendar_redraw(struct dialog *d, WINDOW *yy_win, WINDOW *mm_win,
+    WINDOW *dd_win)
+{
+	int ycal, xcal;
+
+	if (d->built) {
+		hide_dialog(d);
+		refresh(); /* Important for decreasing screen */
+	}
+	if (dialog_size_position(d, MINHCAL, MINWCAL, NULL) != 0)
+		return (BSDDIALOG_ERROR);
+	if (draw_dialog(d) != 0)
+		return (BSDDIALOG_ERROR);
+	if (d->built)
+		refresh(); /* Important to fix grey lines expanding screen */
+	TEXTPAD(d, MINHCAL + HBUTTONS);
+
+	ycal = d->y + d->h - 15;
+	xcal = d->x + d->w/2 - 17;
+	mvwaddstr(d->widget, d->h - 16, d->w/2 - 17, "Month");
+	update_box(d->conf, mm_win, ycal, xcal, 3, 17, RAISED);
+	mvwaddstr(d->widget, d->h - 16, d->w/2, "Year");
+	update_box(d->conf, yy_win, ycal, xcal + 17, 3, 17, RAISED);
+	update_box(d->conf, dd_win, ycal + 3, xcal, 9, 34, RAISED);
+	wnoutrefresh(d->widget);
+
+	return (0);
 }
 
 int
@@ -293,40 +317,38 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *year, unsigned int *month, unsigned int *day)
 {
 	bool loop, focusbuttons;
-	int retval, y, x, h, w, sel, ycal, xcal, yy, mm, dd;
+	int retval, sel, yy, mm, dd;
 	wint_t input;
-	WINDOW *widget, *textpad, *shadow, *yearwin, *monthwin, *daywin;
-	struct buttons bs;
+	WINDOW *yy_win, *mm_win, *dd_win;
+	struct dialog d;
 
-	if(init_date(year, month, day, &yy, &mm, &dd) != 0)
+	CHECK_PTR(year, unsigned int);
+	CHECK_PTR(month, unsigned int);
+	CHECK_PTR(day, unsigned int);
+	init_date(year, month, day, &yy, &mm, &dd);
+
+	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-
-	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-	if (widget_size_position(conf, rows, cols, text, MINHCAL, MINWCAL, &bs,
-	    &y, &x, &h, &w, NULL) != 0)
+	set_buttons(&d, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	if ((yy_win = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW for yy");
+	wbkgd(yy_win, t.dialog.color);
+	if ((mm_win = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW for mm");
+	wbkgd(mm_win, t.dialog.color);
+	if ((dd_win = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW for dd");
+	wbkgd(dd_win, t.dialog.color);
+	if (calendar_redraw(&d, yy_win, mm_win, dd_win) != 0)
 		return (BSDDIALOG_ERROR);
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
-		return (BSDDIALOG_ERROR);
-
-	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-17, x+w-2);
-	doupdate();
-
-	ycal = y + h - 15;
-	xcal = x + w/2 - 17;
-	mvwaddstr(widget, h - 16, w/2 - 17, "Month");
-	monthwin = new_boxed_window(conf, ycal, xcal, 3, 17, RAISED);
-	mvwaddstr(widget, h - 16, w/2, "Year");
-	yearwin = new_boxed_window(conf, ycal, xcal + 17, 3, 17, RAISED);
-	daywin = new_boxed_window(conf, ycal + 3, xcal, 9, 34, RAISED);
-
-	wrefresh(widget);
 
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, monthwin, RAISED, "%15s", m[mm - 1], sel == 0);
-		drawsquare(conf, yearwin, RAISED, "%15d", &yy, sel == 1);
-		print_calendar(conf, daywin, yy, mm, dd, sel == 2);
+		drawsquare(conf, mm_win, RAISED, "%15s", m[mm - 1], sel == 0);
+		drawsquare(conf, yy_win, RAISED, "%15d", &yy, sel == 1);
+		print_calendar(conf, dd_win, yy, mm, dd, sel == 2);
+		doupdate();
 
 		if (get_wch(&input) == ERR)
 			continue;
@@ -334,7 +356,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_ENTER:
 		case 10: /* Enter */
 			if (focusbuttons || conf->button.always_active) {
-				retval = BUTTONVALUE(bs);
+				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
 			break;
@@ -346,11 +368,11 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case '\t': /* TAB */
 			if (focusbuttons) {
-				bs.curr++;
-				if (bs.curr >= (int)bs.nbuttons) {
+				d.bs.curr++;
+				if (d.bs.curr >= (int)d.bs.nbuttons) {
 					focusbuttons = false;
 					sel = 0;
-					bs.curr = conf->button.always_active ?
+					d.bs.curr = conf->button.always_active ?
 					    0 : -1;
 				}
 			} else {
@@ -358,19 +380,18 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				if (sel > 2) {
 					focusbuttons = true;
 					sel = -1;
-					bs.curr = 0;
+					d.bs.curr = 0;
 				}
 			}
-			draw_buttons(widget, bs);
-			wrefresh(widget);
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_RIGHT:
 			if (focusbuttons) {
-				bs.curr++;
-				if (bs.curr >= (int)bs.nbuttons) {
+				d.bs.curr++;
+				if (d.bs.curr >= (int)d.bs.nbuttons) {
 					focusbuttons = false;
 					sel = 0;
-					bs.curr = conf->button.always_active ?
+					d.bs.curr = conf->button.always_active ?
 					    0 : -1;
 				}
 			} else if (sel == 2) {
@@ -378,16 +399,15 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			} else { /* Month or Year*/
 				sel++;
 			}
-			draw_buttons(widget, bs);
-			wrefresh(widget);
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_LEFT:
 			if (focusbuttons) {
-				bs.curr--;
-				if (bs.curr < 0) {
+				d.bs.curr--;
+				if (d.bs.curr < 0) {
 					focusbuttons = false;
 					sel = 2;
-					bs.curr = conf->button.always_active ?
+					d.bs.curr = conf->button.always_active ?
 					    0 : -1;
 				}
 			} else if (sel == 2) {
@@ -397,18 +417,16 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			} else { /* sel = 0, Month */
 				focusbuttons = true;
 				sel = -1;
-				bs.curr = 0;
+				d.bs.curr = 0;
 			}
-			draw_buttons(widget, bs);
-			wrefresh(widget);
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_UP:
 			if (focusbuttons) {
 				sel = 2;
 				focusbuttons = false;
-				bs.curr = conf->button.always_active ? 0 : -1;
-				draw_buttons(widget, bs);
-				wrefresh(widget);
+				d.bs.curr = conf->button.always_active ? 0 : -1;
+				DRAW_BUTTONS(d);
 			} else if (sel == 0) {
 				datectl(UP_MONTH, &yy, &mm, &dd);
 			} else if (sel == 1) {
@@ -446,36 +464,16 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			/* No break, screen size can change */
+			if (calendar_redraw(&d, yy_win, mm_win, dd_win) != 0)
+				return (BSDDIALOG_ERROR);
+			break;
 		case KEY_RESIZE:
-			/* Important for decreasing screen */
-			hide_dialog(y, x, h, w, conf->shadow);
-			refresh();
-
-			if (widget_size_position(conf, rows, cols, text,
-			    MINHCAL, MINWCAL, &bs, &y, &x, &h, &w, NULL) != 0)
+			if (calendar_redraw(&d, yy_win, mm_win, dd_win) != 0)
 				return (BSDDIALOG_ERROR);
-			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs) != 0)
-				return (BSDDIALOG_ERROR);
-			pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-17, x+w-2);
-			doupdate();
-
-			ycal = y + h - 15;
-			xcal = x + w/2 - 17;
-			mvwaddstr(widget, h - 16, w/2 - 17, "Month");
-			mvwin(monthwin, ycal, xcal);
-			mvwaddstr(widget, h - 16, w/2, "Year");
-			mvwin(yearwin, ycal, xcal + 17);
-			mvwin(daywin, ycal + 3, xcal);
-			wrefresh(widget);
-
-			/* Important to avoid grey lines expanding screen */
-			refresh();
 			break;
 		default:
-			if (shortcut_buttons(input, &bs)) {
-				retval = BUTTONVALUE(bs);
+			if (shortcut_buttons(input, &d.bs)) {
+				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
 		}
@@ -487,12 +485,41 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 		*day   = dd;
 	}
 
-	delwin(yearwin);
-	delwin(monthwin);
-	delwin(daywin);
-	end_dialog(conf, shadow, widget, textpad);
+	delwin(yy_win);
+	delwin(mm_win);
+	delwin(dd_win);
+	end_dialog(&d);
 
 	return (retval);
+}
+
+static int
+datebox_redraw(struct dialog *d, WINDOW *yy_win, WINDOW *mm_win, WINDOW *dd_win)
+{
+	int y, x;
+
+	if (d->built) {
+		hide_dialog(d);
+		refresh(); /* Important for decreasing screen */
+	}
+	if (dialog_size_position(d, 3 /*windows*/, MINWDATE, NULL) != 0)
+		return (BSDDIALOG_ERROR);
+	if (draw_dialog(d) != 0)
+		return (BSDDIALOG_ERROR);
+	if (d->built)
+		refresh(); /* Important to fix grey lines expanding screen */
+	TEXTPAD(d, 3 /*windows*/ + HBUTTONS);
+
+	y = d->y + d->h - 6;
+	x = d->x + d->w / 2;
+	update_box(d->conf, yy_win, y, x - 11, 3, 6, LOWERED);
+	mvwaddch(d->widget, d->h - 5, d->w / 2 - 5, '/');
+	update_box(d->conf, mm_win, y, x - 4, 3, 11, LOWERED);
+	mvwaddch(d->widget, d->h - 5, d->w / 2 + 7, '/');
+	update_box(d->conf, dd_win, y, x + 8, 3, 4, LOWERED);
+	wnoutrefresh(d->widget);
+
+	return (0);
 }
 
 int
@@ -500,31 +527,30 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *year, unsigned int *month, unsigned int *day)
 {
 	bool loop, focusbuttons;
-	int retval, y, x, h, w, sel, yy, mm, dd;
+	int retval, sel, yy, mm, dd;
 	wint_t input;
-	WINDOW *widget, *textpad, *shadow, *yy_win, *mm_win, *dd_win;
-	struct buttons bs;
+	WINDOW *yy_win, *mm_win, *dd_win;
+	struct dialog d;
 
-	if(init_date(year, month, day, &yy, &mm, &dd) != 0)
+	CHECK_PTR(year, unsigned int);
+	CHECK_PTR(month, unsigned int);
+	CHECK_PTR(day, unsigned int);
+	init_date(year, month, day, &yy, &mm, &dd);
+
+	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-
-	get_buttons(conf, &bs, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
-	if (widget_size_position(conf, rows, cols, text, 3 /*windows*/,
-	    MINWDATE, &bs, &y, &x, &h, &w, NULL) != 0)
+	set_buttons(&d, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	if ((yy_win = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW for yy");
+	wbkgd(yy_win, t.dialog.color);
+	if ((mm_win = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW for mm");
+	wbkgd(mm_win, t.dialog.color);
+	if ((dd_win = newwin(1, 1, 1, 1)) == NULL)
+		RETURN_ERROR("Cannot build WINDOW for dd");
+	wbkgd(dd_win, t.dialog.color);
+	if (datebox_redraw(&d, yy_win, mm_win, dd_win) != 0)
 		return (BSDDIALOG_ERROR);
-	if (new_dialog(conf, &shadow, &widget, y, x, h, w, &textpad, text, &bs) != 0)
-		return (BSDDIALOG_ERROR);
-
-	pnoutrefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
-	doupdate();
-
-	yy_win = new_boxed_window(conf, y+h-6, x + w/2 - 11, 3, 6, LOWERED);
-	mvwaddch(widget, h - 5, w/2 - 5, '/');
-	mm_win = new_boxed_window(conf, y+h-6, x + w/2 - 4, 3, 11, LOWERED);
-	mvwaddch(widget, h - 5, w/2 + 7, '/');
-	dd_win = new_boxed_window(conf, y+h-6, x + w/2 + 8, 3, 4, LOWERED);
-
-	wrefresh(widget);
 
 	sel = -1;
 	loop = focusbuttons = true;
@@ -532,6 +558,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		drawsquare(conf, yy_win, LOWERED, "%4d", &yy, sel == 0);
 		drawsquare(conf, mm_win, LOWERED, "%9s", m[mm - 1], sel == 1);
 		drawsquare(conf, dd_win, LOWERED, "%02d", &dd, sel == 2);
+		doupdate();
 
 		if (get_wch(&input) == ERR)
 			continue;
@@ -539,7 +566,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_ENTER:
 		case 10: /* Enter */
 			if (focusbuttons || conf->button.always_active) {
-				retval = BUTTONVALUE(bs);
+				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
 			break;
@@ -552,47 +579,44 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_RIGHT:
 		case '\t': /* TAB */
 			if (focusbuttons) {
-				bs.curr++;
-				focusbuttons = bs.curr < (int)bs.nbuttons ?
+				d.bs.curr++;
+				focusbuttons = d.bs.curr < (int)d.bs.nbuttons ?
 				    true : false;
 				if (focusbuttons == false) {
 					sel = 0;
-					bs.curr = conf->button.always_active ? 0 : -1;
+					d.bs.curr = conf->button.always_active ? 0 : -1;
 				}
 			} else {
 				sel++;
 				focusbuttons = sel > 2 ? true : false;
 				if (focusbuttons) {
-					bs.curr = 0;
+					d.bs.curr = 0;
 				}
 			}
-			draw_buttons(widget, bs);
-			wrefresh(widget);
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_LEFT:
 			if (focusbuttons) {
-				bs.curr--;
-				focusbuttons = bs.curr < 0 ? false : true;
+				d.bs.curr--;
+				focusbuttons = d.bs.curr < 0 ? false : true;
 				if (focusbuttons == false) {
 					sel = 2;
-					bs.curr = conf->button.always_active ? 0 : -1;
+					d.bs.curr = conf->button.always_active ? 0 : -1;
 				}
 			} else {
 				sel--;
 				focusbuttons = sel < 0 ? true : false;
 				if (focusbuttons)
-					bs.curr = (int)bs.nbuttons - 1;
+					d.bs.curr = (int)d.bs.nbuttons - 1;
 			}
-			draw_buttons(widget, bs);
-			wrefresh(widget);
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_UP:
 			if (focusbuttons) {
 				sel = 0;
 				focusbuttons = false;
-				bs.curr = conf->button.always_active ? 0 : -1;
-				draw_buttons(widget, bs);
-				wrefresh(widget);
+				d.bs.curr = conf->button.always_active ? 0 : -1;
+				DRAW_BUTTONS(d);
 			} else {
 				if (sel == 0)
 					datectl(UP_YEAR, &yy, &mm, &dd);
@@ -618,40 +642,16 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			/* No break, screen size can change */
+			if (datebox_redraw(&d, yy_win, mm_win, dd_win) != 0)
+				return (BSDDIALOG_ERROR);
+			break;
 		case KEY_RESIZE:
-			/* Important for decreasing screen */
-			hide_dialog(y, x, h, w, conf->shadow);
-			refresh();
-
-			if (widget_size_position(conf, rows, cols, text,
-			    3 /*windows*/, MINWDATE, &bs, &y, &x, &h, &w,
-			    NULL) != 0)
+			if (datebox_redraw(&d, yy_win, mm_win, dd_win) != 0)
 				return (BSDDIALOG_ERROR);
-			if (update_dialog(conf, shadow, widget, y, x, h, w,
-			    textpad, text, &bs) != 0)
-				return (BSDDIALOG_ERROR);
-			doupdate();
-
-			mvwaddch(widget, h - 5, w/2 - 5, '/');
-			mvwaddch(widget, h - 5, w/2 + 7, '/');
-			wrefresh(widget);
-
-			prefresh(textpad, 0, 0, y+1, x+2, y+h-7, x+w-2);
-
-			wclear(yy_win);
-			mvwin(yy_win, y + h - 6, x + w/2 - 11);
-			wclear(mm_win);
-			mvwin(mm_win, y + h - 6, x + w/2 - 4);
-			wclear(dd_win);
-			mvwin(dd_win, y + h - 6, x + w/2 + 8);
-
-			/* Important to avoid grey lines expanding screen */
-			refresh();
 			break;
 		default:
-			if (shortcut_buttons(input, &bs)) {
-				retval = BUTTONVALUE(bs);
+			if (shortcut_buttons(input, &d.bs)) {
+				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
 		}
@@ -666,7 +666,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	delwin(yy_win);
 	delwin(mm_win);
 	delwin(dd_win);
-	end_dialog(conf, shadow, widget, textpad);
+	end_dialog(&d);
 
 	return (retval);
 }
