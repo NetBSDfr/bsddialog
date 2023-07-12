@@ -95,6 +95,7 @@ int bsddialog_end(void)
 {
 	if (endwin() != OK)
 		RETURN_ERROR("Cannot end curses (endwin)");
+	in_bsddialog_mode = false;
 
 	return (BSDDIALOG_OK);
 }
