@@ -33,6 +33,11 @@ WIP Next Version
 	    - merge: bsddialog_datebox() with bsddialog_calendar().
 	    - rename: calendar.c -> add: datebox.c
 	    - real theme: flat and blackwhite.
+	    - merge: for each dialog "build" with "resize" -> <dialog>_redraw().
+	    - merge: new_dialog() with update_dialog() -> draw_dialog().
+	    - improve: replace wrefresh() -> wnoutrefresh()/doupdate().
+	    - improve: replace prefresh() -> pnoutrefresh()/doupdate().
+
 
 2023-06-12 Version 0.4.2
 
