@@ -848,7 +848,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				}
 			}
 			break;
-		} /* end switch handler */
+		} /* end switch get_wch() */
 
 		if (switchfocus) {
 			focusinform = !focusinform;
@@ -869,7 +869,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			DRAWITEM_TRICK(&form, item, true);
 			changeitem = false;
 		}
-	} /* end while handler */
+	} /* end while(loop) */
 
 	curs_set(0);
 
