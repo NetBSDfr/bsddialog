@@ -437,7 +437,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int menurows, enum menumode mode, unsigned int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
-	bool loop, onetrue, movefocus;
+	bool loop, onetrue, changeitem;
 	int i, j, next, retval;
 	wint_t input;
 	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -530,7 +530,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (mixedlist_redraw(&d, &pos, &m, pritems) != 0)
 		return (BSDDIALOG_ERROR);
 
-	movefocus = false;
+	changeitem = false;
 	loop = true;
 	while (loop) {
 		doupdate(); //buttons and mixedmenu_redraw() for now
@@ -591,27 +591,27 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		switch(input) {
 		case KEY_HOME:
 			next = getnext(m.nitems, pritems, -1);
-			movefocus = next != m.sel;
+			changeitem = next != m.sel;
 			break;
 		case KEY_UP:
 			next = getprev(pritems, m.sel);
-			movefocus = next != m.sel;
+			changeitem = next != m.sel;
 			break;
 		case KEY_PPAGE:
 			next = getfastprev(m.menurows, pritems, m.sel);
-			movefocus = next != m.sel;
+			changeitem = next != m.sel;
 			break;
 		case KEY_END:
 			next = getprev(pritems, m.nitems);
-			movefocus = next != m.sel;
+			changeitem = next != m.sel;
 			break;
 		case KEY_DOWN:
 			next = getnext(m.nitems, pritems, m.sel);
-			movefocus = next != m.sel;
+			changeitem = next != m.sel;
 			break;
 		case KEY_NPAGE:
 			next = getfastnext(m.menurows, m.nitems, pritems, m.sel);
-			movefocus = next != m.sel;
+			changeitem = next != m.sel;
 			break;
 		case ' ': /* Space */
 			if (pritems[m.sel].type == MENUMODE) {
@@ -654,10 +654,10 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			/* shourtcut items */
 			next = getnextshortcut(conf, m.nitems, pritems, m.sel,
 			    input);
-			movefocus = next != m.sel;
+			changeitem = next != m.sel;
 		} /* end switch handler */
 
-		if (movefocus) {
+		if (changeitem) {
 			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], false);
 			m.sel = next;
 			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], true);
@@ -669,7 +669,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			    m.nitems, m.menurows, m.ypad);
 			wrefresh(m.box);
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
-			movefocus = false;
+			changeitem = false;
 		}
 	} /* end while handler */
 
