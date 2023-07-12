@@ -190,7 +190,8 @@ static bool fieldctl(struct privateitem *item, enum operation op)
 }
 
 static void
-drawitem(struct privateform *form, struct privateitem *item, bool focus)
+drawitem(struct privateform *form, struct privateitem *item, bool focus,
+    bool refresh)
 {
 	int color;
 	unsigned int n, cols;
@@ -235,7 +236,9 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
 	curs_set((focus && item->cursor) ? 1 : 0);
 	wmove(form->pad, item->yfield, item->xfield + item->xcursor);
 
-	prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye, form->xe);
+	if(refresh)
+		prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye,
+		    form->xe);
 }
 
 /*
@@ -248,8 +251,8 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus)
  * Case2: some terminal, tmux and ssh does not show the cursor.
  */
 #define DRAWITEM_TRICK(form, item, focus) do {                                 \
-	drawitem(form, item, !focus);                                          \
-	drawitem(form, item, focus);                                           \
+	drawitem(form, item, !focus, true);                                    \
+	drawitem(form, item, focus, true);                                     \
 } while (0)
 
 static bool
@@ -615,7 +618,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	curritem = -1;
 	for (i=0 ; i < nitems; i++) {
-		DRAWITEM_TRICK(&form, &items[i], false);
+		drawitem(&form, &items[i], false, false);
 		if (curritem == -1 && items[i].readonly == false)
 			curritem = i;
 	}
