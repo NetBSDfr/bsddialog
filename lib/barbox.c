@@ -69,7 +69,7 @@ struct bar {
 	int y;           /* bar y in win */
 	int x;           /* bar x in win */
 	int w;           /* width in win */
-	int perc;        /* barlen = (w * perc) / 100*/
+	int perc;        /* barlen = (w * perc) / 100 */
 	const char* fmt; /* format for label */
 	int label;       /* rangebox and pause perc!=label */
 };
