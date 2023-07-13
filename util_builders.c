@@ -36,7 +36,7 @@
 
 #include "util.h"
 
-/* Dialogs */
+/* message */
 int infobox_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
