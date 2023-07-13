@@ -36,51 +36,50 @@ struct scrolltext {
 	WINDOW *pad;
 	int ypad;
 	int xpad;
-	int ys, ye, xs, xe;
+	int ys;
+	int ye;
+	int xs;
+	int xe;
 	int hpad;
 	int wpad;
 	int margin;    /* 2 with multicolumn char, 0 otherwise */
 	int printrows; /* d.h - BORDERS - HBUTTONS */
 };
 
-static void
-updateborders(struct bsddialog_conf *conf, WINDOW *widget, int padmargin,
-    int hpad, int wpad, int ypad, int xpad)
+static void updateborders(struct dialog *d, struct scrolltext *st)
 {
-	int h, w;
 	chtype arrowch, borderch;
 
-	getmaxyx(widget, h, w);
-
-	if (conf->no_lines)
+	if (d->conf->no_lines)
 		borderch = ' ';
-	else if (conf->ascii_lines)
+	else if (d->conf->ascii_lines)
 		borderch = '|';
 	else
 		borderch = ACS_VLINE;
 
-	if (xpad > 0) {
-		arrowch = conf->ascii_lines ? '<' : ACS_LARROW;
+	if (st->xpad > 0) {
+		arrowch = d->conf->ascii_lines ? '<' : ACS_LARROW;
 		arrowch |= t.dialog.arrowcolor;
 	} else {
 		arrowch = borderch;
 		arrowch |= t.dialog.lineraisecolor;
 	}
-	mvwvline(widget, (h / 2) - 2, 0, arrowch, 4);
+	mvwvline(d->widget, (d->h / 2) - 2, 0, arrowch, 4);
 
-	if (xpad + w-2-padmargin < wpad) {
-		arrowch = conf->ascii_lines ? '>' : ACS_RARROW;
+	if (st->xpad + d->w - 2 - st->margin < st->wpad) {
+		arrowch = d->conf->ascii_lines ? '>' : ACS_RARROW;
 		arrowch |= t.dialog.arrowcolor;
 	} else {
 		arrowch = borderch;
 		arrowch |= t.dialog.linelowercolor;
 	}
-	mvwvline(widget, (h / 2) - 2, w - 1, arrowch, 4);
+	mvwvline(d->widget, (d->h / 2) - 2, d->w - 1, arrowch, 4);
 
-	if (hpad > h - 4) {
-		wattron(widget, t.dialog.arrowcolor);
-		mvwprintw(widget, h-3, w-6, "%3d%%", 100 * (ypad+h-4) / hpad);
-		wattroff(widget, t.dialog.arrowcolor);
+	if (st->hpad > d->h - 4) {
+		wattron(d->widget, t.dialog.arrowcolor);
+		mvwprintw(d->widget, d->h - 3, d->w - 6, 
+		    "%3d%%", 100 * (st->ypad + d->h - 4) / st->hpad);
+		wattroff(d->widget, t.dialog.arrowcolor);
 	}
 }
 
@@ -149,7 +148,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	d.bs.nbuttons = 1;
 
 	defaulttablen = TABSIZE;
-	set_tabsize((conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen);
+	if (conf->text.tablen > 0)
+		set_tabsize(conf->text.tablen);
 	st.hpad = 1;
 	st.wpad = 1;
 	st.pad = newpad(st.hpad, st.wpad);
@@ -180,7 +180,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 
 	loop = true;
 	while (loop) {
-		updateborders(conf, d.widget, st.margin, st.hpad, st.wpad, st.ypad, st.xpad);
+		updateborders(&d, &st);
 		/*
 		 * Overflow multicolumn charchter right border:
 		 * wnoutrefresh(widget);
@@ -207,12 +207,10 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			st.ypad = 0;
 			break;
 		case KEY_END:
-			st.ypad = st.hpad - st.printrows;
-			st.ypad = st.ypad < 0 ? 0 : st.ypad;
+			st.ypad = MAX(st.hpad - st.printrows, 0);
 			break;
 		case KEY_PPAGE:
-			st.ypad -= st.printrows;
-			st.ypad = st.ypad < 0 ? 0 : st.ypad;
+			st.ypad = MAX(st.ypad - st.printrows, 0);
 			break;
 		case KEY_NPAGE:
 			st.ypad += st.printrows;
@@ -224,7 +222,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			break;
 		case KEY_LEFT:
 		case 'h':
-			st.xpad = st.xpad > 0 ? st.xpad - 1 : 0;
+			st.xpad = MAX(st.xpad - 1, 0);
 			break;
 		case KEY_RIGHT:
 		case 'l':
@@ -233,11 +231,12 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 			break;
 		case KEY_UP:
 		case 'k':
-			st.ypad = st.ypad > 0 ? st.ypad - 1 : 0;
+			st.ypad = MAX(st.ypad - 1, 0);
 			break;
 		case KEY_DOWN:
 		case'j':
-			st.ypad = st.ypad + st.printrows <= st.hpad -1 ? st.ypad + 1 : st.ypad;
+			if (st.ypad + st.printrows <= st.hpad -1)
+				st.ypad++;
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
