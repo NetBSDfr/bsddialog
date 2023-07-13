@@ -243,11 +243,12 @@ static struct option longopts[] = {
 
 /* Functions */
 #define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
-static void custom_text(char *text, char *buf);
 static void usage(void);
 /* Dialogs */
+struct options;
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
-	int cols, int argc, char **argv
+	int cols, int argc, char **argv, struct options *opt
+
 static int calendar_builder(BUILDER_ARGS);
 static int checklist_builder(BUILDER_ARGS);
 static int datebox_builder(BUILDER_ARGS);
@@ -309,11 +310,7 @@ struct options {
 	int (*dialogbuilder)(BUILDER_ARGS);
 };
 
-struct options o;
-struct options *opt = &o;
-
-/* init, exit and internals */
-static bool mandatory_dialog;
+static void custom_text(struct options *opt, char *text, char *buf);
 
 static void exit_error(bool usage, const char *fmt, ...)
 {
@@ -439,7 +436,9 @@ static void usage(void)
 	printf("See 'man 1 bsddialog' for more information.\n");
 }
 
-static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
+static int
+parseargs(int argc, char **argv, struct bsddialog_conf *conf,
+    struct options *opt, bool *mandatory_dialog)
 {
 	int arg, parsed, i;
 	struct winsize ws;
@@ -505,7 +504,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->clear = true;
 			break;
 		case CLEAR_SCREEN:
-			mandatory_dialog = false;
+			*mandatory_dialog = false;
 			opt->clearscreen = true;
 			break;
 		case COLORS:
@@ -628,7 +627,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			opt->item_always_quote = true;
 			break;
 		case PRINT_MAXSIZE:
-			mandatory_dialog = false;
+			*mandatory_dialog = false;
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
 			dprintf(opt->output_fd, "MaxSize: %d, %d\n",
 			    ws.ws_row, ws.ws_col);
@@ -638,12 +637,12 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->get_width = &opt->getW;
 			break;
 		case PRINT_VERSION:
-			mandatory_dialog = false;
+			*mandatory_dialog = false;
 			dprintf(opt->output_fd, "Version: %s\n",
 			    LIBBSDDIALOG_VERSION);
 			break;
 		case SAVE_THEME:
-			mandatory_dialog = false;
+			*mandatory_dialog = false;
 			opt->savethemefile = optarg;
 			break;
 		case SEPARATE_OUTPUT:
@@ -855,9 +854,11 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 
 int main(int argc, char *argv[argc])
 {
+	bool mandatory_dialog;
 	int i, rows, cols, retval, parsed, nargc, firstoptind;
 	char *text, **nargv, *pn;
 	struct bsddialog_conf conf;
+	struct options opt;
 
 	setlocale(LC_ALL, "");
 
@@ -878,32 +879,32 @@ int main(int argc, char *argv[argc])
 	}
 
 	while (true) {
-		parsed = parseargs(argc, argv, &conf);
+		parsed = parseargs(argc, argv, &conf, &opt, &mandatory_dialog);
 		nargc = argc - parsed;
 		nargv = argv + parsed;
 		argc = parsed - optind;
 		argv += optind;
 
-		if (mandatory_dialog && opt->dialogbuilder == NULL)
+		if (mandatory_dialog && opt.dialogbuilder == NULL)
 			exit_error(true, "expected a --<dialog>");
 
-		if (opt->dialogbuilder == NULL && argc > 0)
+		if (opt.dialogbuilder == NULL && argc > 0)
 			error_args("(no --<dialog>)", argc, argv);
 
 		/* --print-maxsize or --print-version */
-		if (mandatory_dialog == false && opt->savethemefile == NULL &&
-		    opt->clearscreen == false)
+		if (mandatory_dialog == false && opt.savethemefile == NULL &&
+		    opt.clearscreen == false)
 			return (BSDDIALOG_OK);
 
 		/* --<dialog>, --save-theme or clear-screen */
-		if (opt->dialogbuilder != NULL) {
+		if (opt.dialogbuilder != NULL) {
 			if (argc < 3)
 				exit_error(true,
 				    "expected <text> <rows> <cols>");
 			if ((text = strdup(argv[0])) == NULL)
 				exit_error(false, "cannot allocate <text>");
-			if (opt->dialogbuilder != textbox_builder)
-				custom_text(argv[0], text);
+			if (opt.dialogbuilder != textbox_builder)
+				custom_text(&opt, argv[0], text);
 			rows = (int)strtol(argv[1], NULL, 10);
 			cols = (int)strtol(argv[2], NULL, 10);
 			argc -= 3;
@@ -913,11 +914,11 @@ int main(int argc, char *argv[argc])
 		/* bsddialog terminal mode (first iteration) */
 		start_bsddialog_mode();
 
-		if (opt->screen_mode != NULL) {
-			opt->screen_mode = tigetstr(opt->screen_mode);
-			if (opt->screen_mode != NULL &&
-			    opt->screen_mode != (char*)-1) {
-				tputs(opt->screen_mode, 1, putchar);
+		if (opt.screen_mode != NULL) {
+			opt.screen_mode = tigetstr(opt.screen_mode);
+			if (opt.screen_mode != NULL &&
+			    opt.screen_mode != (char*)-1) {
+				tputs(opt.screen_mode, 1, putchar);
 				fflush(stdout);
 				 /* only to refresh, useless in the library */
 				bsddialog_clearterminal();
@@ -925,33 +926,33 @@ int main(int argc, char *argv[argc])
 		}
 
 		/* theme */
-		if (opt->theme >= 0)
-			bsddialog_set_default_theme(opt->theme);
-		if (opt->loadthemefile != NULL)
-			loadtheme(opt->loadthemefile);
-		if (opt->bikeshed)
+		if (opt.theme >= 0)
+			bsddialog_set_default_theme(opt.theme);
+		if (opt.loadthemefile != NULL)
+			loadtheme(opt.loadthemefile);
+		if (opt.bikeshed)
 			bikeshed(&conf);
-		if (opt->savethemefile != NULL)
-			savetheme(opt->savethemefile, LIBBSDDIALOG_VERSION);
+		if (opt.savethemefile != NULL)
+			savetheme(opt.savethemefile, LIBBSDDIALOG_VERSION);
 
 		/* backtitle and dialog */
-		if (opt->dialogbuilder == NULL)
+		if (opt.dialogbuilder == NULL)
 			break;
-		if (opt->backtitle != NULL)
-			if(bsddialog_backtitle(&conf, opt->backtitle))
+		if (opt.backtitle != NULL)
+			if(bsddialog_backtitle(&conf, opt.backtitle))
 				exit_error(false, bsddialog_geterror());
-		retval = opt->dialogbuilder(&conf, text, rows, cols, argc, argv);
+		retval = opt.dialogbuilder(&conf, text, rows, cols, argc, argv, &opt);
 		free(text);
 		if (retval == BSDDIALOG_ERROR)
 			exit_error(false, bsddialog_geterror());
-		if (retval == BSDDIALOG_ESC && opt->esc_return_cancel)
+		if (retval == BSDDIALOG_ESC && opt.esc_return_cancel)
 			retval = BSDDIALOG_CANCEL;
 		if (conf.get_height != NULL && conf.get_width != NULL)
-			dprintf(opt->output_fd, "DialogSize: %d, %d\n",
+			dprintf(opt.output_fd, "DialogSize: %d, %d\n",
 			    *conf.get_height, *conf.get_width);
-		if (opt->clearscreen)
+		if (opt.clearscreen)
 			bsddialog_clearterminal();
-		opt->clearscreen = false;
+		opt.clearscreen = false;
 		/* --and-dialog ends loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
@@ -968,7 +969,7 @@ int main(int argc, char *argv[argc])
 
 	if (bsddialog_inmode()) {
 		/* --clear-screen can be a single option */
-		if (opt->clearscreen)
+		if (opt.clearscreen)
 			bsddialog_clearterminal();
 		bsddialog_end();
 	}
@@ -977,7 +978,7 @@ int main(int argc, char *argv[argc])
 	return (retval);
 }
 
-void custom_text(char *text, char *buf)
+void custom_text(struct options *opt, char *text, char *buf)
 {
 	bool trim, crwrap;
 	int i, j;
@@ -1038,7 +1039,7 @@ void custom_text(char *text, char *buf)
 int infobox_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
-		error_args("--infobox", argc, argv);
+		error_args(opt->name, argc, argv);
 
 	return (bsddialog_infobox(conf, text, rows, cols));
 }
@@ -1046,7 +1047,7 @@ int infobox_builder(BUILDER_ARGS)
 int msgbox_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
-		error_args("--msgbox", argc, argv);
+		error_args(opt->name, argc, argv);
 
 	return (bsddialog_msgbox(conf, text, rows, cols));
 }
@@ -1054,7 +1055,7 @@ int msgbox_builder(BUILDER_ARGS)
 int yesno_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
-		error_args("--yesno", argc, argv);
+		error_args(opt->name, argc, argv);
 
 	return (bsddialog_yesno(conf, text, rows, cols));
 }
@@ -1063,7 +1064,7 @@ int yesno_builder(BUILDER_ARGS)
 int textbox_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
-		error_args("--textbox", argc, argv);
+		error_args(opt->name, argc, argv);
 
 	return (bsddialog_textbox(conf, text, rows, cols));
 }
@@ -1079,7 +1080,7 @@ int gauge_builder(BUILDER_ARGS)
 		perc = (u_int)strtoul(argv[0], NULL, 10);
 		perc = perc > 100 ? 100 : perc;
 	} else if (argc > 1) {
-		error_args("--gauge", argc - 1, argv + 1);
+		error_args(opt->name, argc - 1, argv + 1);
 	}
 
 	output = bsddialog_gauge(conf, text, rows, cols, perc, STDIN_FILENO,
@@ -1095,10 +1096,10 @@ int mixedgauge_builder(BUILDER_ARGS)
 	const char **minilabels;
 
 	if (argc < 1)
-		exit_error(true, "--mixedgauge missing <mainperc>");
+		exit_error(true, "%s missing <mainperc>", opt->name);
 	if (((argc-1) % 2) != 0)
 		exit_error(true,
-		    "bad --mixedgauge pair number [<minilabel> <miniperc>]");
+		    "bad %s pair number [<minilabel> <miniperc>]", opt->name);
 
 	mainperc = (u_int)strtoul(argv[0], NULL, 10);
 	mainperc = mainperc > 100 ? 100 : mainperc;
@@ -1130,7 +1131,7 @@ int pause_builder(BUILDER_ARGS)
 	if (argc == 0)
 		exit_error(true, "--pause missing <seconds>");
 	if (argc > 1)
-		error_args("--pause", argc - 1, argv + 1);
+		error_args(opt->name, argc - 1, argv + 1);
 
 	secs = (u_int)strtoul(argv[0], NULL, 10);
 	output = bsddialog_pause(conf, text, rows, cols, secs);
@@ -1164,16 +1165,14 @@ int rangebox_builder(BUILDER_ARGS)
 }
 
 /* date and time */
-static int date(BUILDER_ARGS, bool is_datebox)
+static int date(BUILDER_ARGS)
 {
 	int ret;
 	unsigned int yy, mm, dd;
 	time_t cal;
 	struct tm *localtm;
 	char stringdate[1024];
-	const char *name;
 
-	name = is_datebox ? "--datebox" : "--calendar";
 	time(&cal);
 	localtm = localtime(&cal);
 	yy = localtm->tm_year + 1900;
@@ -1181,7 +1180,7 @@ static int date(BUILDER_ARGS, bool is_datebox)
 	dd = localtm->tm_mday;
 
 	if (argc > 3) {
-		error_args(name, argc - 3, argv + 3);
+		error_args(opt->name, argc - 3, argv + 3);
 	} else if (argc == 3) {
 		dd = (u_int)strtoul(argv[0], NULL, 10);
 		mm = (u_int)strtoul(argv[1], NULL, 10);
@@ -1191,7 +1190,7 @@ static int date(BUILDER_ARGS, bool is_datebox)
 		/* max yy check is in lib */
 	}
 
-	if (is_datebox)
+	if (strcmp(opt->name, "--datebox"))
 		ret = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
 	else
 		ret = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
@@ -1231,12 +1230,12 @@ int calendar_builder(BUILDER_ARGS)
 	if (rows == 2)
 		rows = 0;
 
-	return (date(conf, text, rows, cols, argc, argv, false));
+	return (date(conf, text, rows, cols, argc, argv, opt));
 }
 
 int datebox_builder(BUILDER_ARGS)
 {
-	return (date(conf, text, rows, cols, argc, argv, true));
+	return (date(conf, text, rows, cols, argc, argv,opt));
 }
 
 int timebox_builder(BUILDER_ARGS)
@@ -1286,7 +1285,8 @@ int timebox_builder(BUILDER_ARGS)
 static void
 get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
     bool setname, bool setdesc, bool setstatus, bool sethelp,
-    unsigned int *nitems, struct bsddialog_menuitem **items, int *focusitem)
+    unsigned int *nitems, struct bsddialog_menuitem **items, int *focusitem,
+    struct options *opt)
 {
 	unsigned int i, j, sizeitem;
 
@@ -1300,13 +1300,13 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 	sizeitem += setstatus ? 1 : 0;
 	sizeitem += sethelp   ? 1 : 0;
 	if ((argc % sizeitem) != 0)
-		exit_error(true, "\"menu\" bad arguments items number");
+		exit_error(true, "%s bad arguments items number", opt->name);
 
 	*nitems = argc / sizeitem;
 
 	*items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
 	if (items == NULL)
-		exit_error(false, "cannot allocate memory \"menu\" items");
+		exit_error(false, "%s cannot allocate items", opt->name);
 
 	j = 0;
 	for (i = 0; i < *nitems; i++) {
@@ -1330,7 +1330,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 
 static void
 print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
-    int focusitem, bool ismenu)
+    int focusitem, bool ismenu, struct options *opt)
 {
 	bool sep, sepbefore, sepafter, sepsecond, toquote;
 	int i;
@@ -1428,12 +1428,12 @@ int checklist_builder(BUILDER_ARGS)
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
-	    true, true, opt->item_bottomdesc, &nitems, &items, &focusitem);
+	    true, true, opt->item_bottomdesc, &nitems, &items, &focusitem, opt);
 
 	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, false);
+	print_menu_items(output, nitems, items, focusitem, false, opt);
 
 	free(items);
 
@@ -1451,12 +1451,13 @@ int menu_builder(BUILDER_ARGS)
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
-	    true, false, opt->item_bottomdesc, &nitems, &items, &focusitem);
+	    true, false, opt->item_bottomdesc, &nitems, &items, &focusitem,
+	    opt);
 
 	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, true);
+	print_menu_items(output, nitems, items, focusitem, true, opt);
 
 	free(items);
 
@@ -1474,12 +1475,12 @@ int radiolist_builder(BUILDER_ARGS)
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
-	    true, true, opt->item_bottomdesc, &nitems, &items, &focusitem);
+	    true, true, opt->item_bottomdesc, &nitems, &items, &focusitem, opt);
 
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, false);
+	print_menu_items(output, nitems, items, focusitem, false, opt);
 
 	free(items);
 
@@ -1497,7 +1498,7 @@ int treeview_builder(BUILDER_ARGS)
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, true, true, true, true,
-	    opt->item_bottomdesc, &nitems, &items, &focusitem);
+	    opt->item_bottomdesc, &nitems, &items, &focusitem, opt);
 
 	conf->menu.no_name = true;
 	conf->menu.align_left = true;
@@ -1505,7 +1506,7 @@ int treeview_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, false);
+	print_menu_items(output, nitems, items, focusitem, false, opt);
 
 	free(items);
 
@@ -1514,7 +1515,8 @@ int treeview_builder(BUILDER_ARGS)
 
 /* form */
 static void
-print_form_items(int output, int nitems, struct bsddialog_formitem *items)
+print_form_items(int output, int nitems, struct bsddialog_formitem *items,
+    struct options *opt)
 {
 	int i;
 
@@ -1569,7 +1571,7 @@ int form_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(output, nitems, items);
+	print_form_items(output, nitems, items, opt);
 	free(items);
 
 	return (output);
@@ -1597,7 +1599,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
-	print_form_items(output, 1, &item);
+	print_form_items(output, 1, &item, opt);
 
 	return (output);
 }
@@ -1637,7 +1639,7 @@ int mixedform_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(output, nitems, items);
+	print_form_items(output, nitems, items, opt);
 	free(items);
 
 	return (output);
@@ -1666,7 +1668,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
-	print_form_items(output, 1, &item);
+	print_form_items(output, 1, &item, opt);
 
 	return (output);
 }
@@ -1714,7 +1716,7 @@ int passwordform_builder(BUILDER_ARGS)
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items);
-	print_form_items(output, nitems, items);
+	print_form_items(output, nitems, items, opt);
 	free(items);
 
 	return (output);
