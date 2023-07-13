@@ -30,6 +30,7 @@
 #include <getopt.h>
 #include <locale.h>
 #include <signal.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -304,6 +305,7 @@ struct options {
 	char *savethemefile;
 	const char *screen_mode;
 	/* Dialog */
+	const char *name;
 	int (*dialogbuilder)(BUILDER_ARGS);
 };
 
@@ -313,12 +315,18 @@ struct options *opt = &o;
 /* init, exit and internals */
 static bool mandatory_dialog;
 
-static void exit_error(const char *errstr, bool with_usage)
+static void exit_error(bool usage, const char *fmt, ...)
 {
+	va_list arg_ptr;
+
 	if (bsddialog_inmode())
 		bsddialog_end();
-	printf("Error: %s.\n\n", errstr);
-	if (with_usage) {
+	printf("Error: ");
+	va_start(arg_ptr, fmt);
+	vprintf(fmt, arg_ptr);
+	va_end(arg_ptr);
+	printf(".\n\n");
+	if (usage) {
 		printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
 		printf("for more information.\n");
 	}
@@ -463,8 +471,8 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			break;
 		case AND_DIALOG:
 			if (opt->dialogbuilder == NULL)
-				exit_error("--and-dialog without previous "
-				    "--<dialog>", true);
+				exit_error(true,"--and-dialog without "
+				    "previous --<dialog>");
 			break;
 		case ASCII_LINES:
 			conf->ascii_lines = true;
@@ -674,7 +682,8 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			else if (strcasecmp(optarg, "3d") == 0)
 				opt->theme = BSDDIALOG_THEME_3D;
 			else
-				exit_error("--theme: <unknown> theme", false);
+				exit_error(true,
+				    "--theme: \"%s\" is unknown", optarg);
 			break;
 		case TIME_FORMAT:
 			opt->time_fmt = optarg;
@@ -685,117 +694,157 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		/* Dialogs */
 		case CALENDAR:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --calendar", true);
+				exit_error(true, "%s and --calendar without "
+				    "--and-dialog", opt->name);
+			opt->name = "--calendar";
 			opt->dialogbuilder = calendar_builder;
 			break;
 		case CHECKLIST:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --checklist", true);
+				exit_error(true, "%s and --checklist without "
+				    "--and-dialog", opt->name);
+			opt->name = "--checklist";
 			opt->dialogbuilder = checklist_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case DATEBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --datebox", true);
+				exit_error(true, "%s and --datebox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--datebox";
 			opt->dialogbuilder = datebox_builder;
 			break;
 		case FORM:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --form", true);
+				exit_error(true, "%s and --form without "
+				    "--and-dialog", opt->name);
+			opt->name = "--form";
 			opt->dialogbuilder = form_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case GAUGE:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --gauge", true);
+				exit_error(true, "%s and --gauge without "
+				    "--and-dialog", opt->name);
+			opt->name = "--gauge";
 			opt->dialogbuilder = gauge_builder;
 			break;
 		case INFOBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --infobox", true);
+				exit_error(true, "%s and --infobox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--infobox";
 			opt->dialogbuilder = infobox_builder;
 			break;
 		case INPUTBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --inputbox", true);
+				exit_error(true, "%s and --inputbox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--inputbox";
 			opt->dialogbuilder = inputbox_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case MENU:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --menu", true);
+				exit_error(true, "%s and --menu without "
+				    "--and-dialog", opt->name);
+			opt->name = "--menu";
 			opt->dialogbuilder = menu_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case MIXEDFORM:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --mixedform", true);
+				exit_error(true, "%s and --mixedform without "
+				    "--and-dialog", opt->name);
+			opt->name = "--mixedform";
 			opt->dialogbuilder = mixedform_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case MIXEDGAUGE:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --mixedgauge", true);
+				exit_error(true, "%s and --mixedgauge without "
+				    "--and-dialog", opt->name);
+			opt->name = "--mixedgauge";
 			opt->dialogbuilder = mixedgauge_builder;
 			break;
 		case MSGBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --msgbox", true);
+				exit_error(true, "%s and --msgbox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--";
 			opt->dialogbuilder = msgbox_builder;
 			break;
 		case PAUSE:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --pause", true);
+				exit_error(true, "%s and --pause without "
+				    "--and-dialog", opt->name);
+			opt->name = "--pause";
 			opt->dialogbuilder = pause_builder;
 			break;
 		case PASSWORDBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --passwordbox", true);
+				exit_error(true, "%s and --passwordbox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--passwordbox";
 			opt->dialogbuilder = passwordbox_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case PASSWORDFORM:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --passwordform", true);
+				exit_error(true, "%s and --passwordform "
+				    "without --and-dialog", opt->name);
+			opt->name = "--passwordform";
 			opt->dialogbuilder = passwordform_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case RADIOLIST:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --radiolist", true);
+				exit_error(true, "%s and --radiolist without "
+				    "--and-dialog", opt->name);
+			opt->name = "--radiolist";
 			opt->dialogbuilder = radiolist_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case RANGEBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --rangebox", true);
+				exit_error(true, "%s and --rangebox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--rangebox";
 			opt->dialogbuilder = rangebox_builder;
 			break;
 		case TEXTBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --textbox", true);
+				exit_error(true, "%s and --textbox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--textbox";
 			opt->dialogbuilder = textbox_builder;
 			break;
 		case TIMEBOX:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --timebox", true);
+				exit_error(true, "%s and --timebox without "
+				    "--and-dialog", opt->name);
+			opt->name = "--timebox";
 			opt->dialogbuilder = timebox_builder;
 			break;
 		case TREEVIEW:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --treeview", true);
+				exit_error(true, "%s and --treeview without "
+				    "--and-dialog", opt->name);
+			opt->name = "--treeview";
 			opt->dialogbuilder = treeview_builder;
 			conf->auto_downmargin = 1;
 			break;
 		case YESNO:
 			if (opt->dialogbuilder != NULL)
-				exit_error("unexpected --yesno", true);
+				exit_error(true, "%s and --yesno without "
+				    "--and-dialog", opt->name);
+			opt->name = "--yesno";
 			opt->dialogbuilder = yesno_builder;
 			break;
 		default: /* Error */
 			if (opt->ignore == true)
 				break;
-			exit_error("--ignore to continue", true);
+			exit_error(true, "--ignore to continue");
 		}
 	}
 
@@ -834,7 +883,7 @@ int main(int argc, char *argv[argc])
 		argv += optind;
 
 		if (mandatory_dialog && opt->dialogbuilder == NULL)
-			exit_error("expected a --<dialog>", true);
+			exit_error(true, "expected a --<dialog>");
 
 		if (opt->dialogbuilder == NULL && argc > 0)
 			error_args("(no --<dialog>)", argc, argv);
@@ -847,8 +896,8 @@ int main(int argc, char *argv[argc])
 		/* --<dialog>, --save-theme or clear-screen */
 		if (opt->dialogbuilder != NULL) {
 			if (argc < 3)
-				exit_error("expected <text> <rows> <cols>",
-				    true);
+				exit_error(true,
+				    "expected <text> <rows> <cols>");
 			if ((text = strdup(argv[0])) == NULL)
 				exit_error("cannot allocate text", false);
 			if (opt->dialogbuilder != textbox_builder)
@@ -1043,8 +1092,11 @@ int mixedgauge_builder(BUILDER_ARGS)
 	unsigned int i, mainperc, nminibars;
 	const char **minilabels;
 
-	if (argc < 1 || (((argc-1) % 2) != 0) )
-		exit_error("bad --mixedgauge arguments", true);
+	if (argc < 1)
+		exit_error(true, "--mixedgauge missing <mainperc>");
+	if (((argc-1) % 2) != 0)
+		exit_error(true,
+		    "bad --mixedgauge pair number [<minilabel> <miniperc>]");
 
 	mainperc = (u_int)strtoul(argv[0], NULL, 10);
 	mainperc = mainperc > 100 ? 100 : mainperc;
@@ -1074,7 +1126,7 @@ int pause_builder(BUILDER_ARGS)
 	unsigned int secs;
 
 	if (argc == 0)
-		exit_error("--pause missing <seconds>", true);
+		exit_error(true, "--pause missing <seconds>");
 	if (argc > 1)
 		error_args("--pause", argc - 1, argv + 1);
 
@@ -1089,7 +1141,7 @@ int rangebox_builder(BUILDER_ARGS)
 	int output, min, max, value;
 
 	if (argc < 2)
-		exit_error("--rangebox missing <min> <max> [<init>]", true);
+		exit_error(true, "--rangebox missing <min> <max> [<init>]");
 	if (argc > 3)
 		error_args("--rangebox", argc - 3, argv + 3);
 
@@ -1246,7 +1298,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 	sizeitem += setstatus ? 1 : 0;
 	sizeitem += sethelp   ? 1 : 0;
 	if ((argc % sizeitem) != 0)
-		exit_error("\"menu\" bad arguments items number", true);
+		exit_error(true, "\"menu\" bad arguments items number");
 
 	*nitems = argc / sizeitem;
 
@@ -1370,7 +1422,7 @@ int checklist_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1)
-		exit_error("--checklist missing <menurows>", true);
+		exit_error(true, "--checklist missing <menurows>");
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
@@ -1393,7 +1445,7 @@ int menu_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1)
-		exit_error("--menu missing <menurows>", true);
+		exit_error(true, "--menu missing <menurows>");
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
@@ -1416,7 +1468,7 @@ int radiolist_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1)
-		exit_error("--radiolist missing <menurows>", true);
+		exit_error(true, "--radiolist missing <menurows>");
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
@@ -1439,7 +1491,7 @@ int treeview_builder(BUILDER_ARGS)
 	struct bsddialog_menuitem *items;
 
 	if (argc < 1)
-		exit_error("--treeview missing <menurows>", true);
+		exit_error(true, "--treeview missing <menurows>");
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
 	get_menu_items(argc-1, argv+1, opt->item_prefix, true, true, true, true,
@@ -1480,14 +1532,14 @@ int form_builder(BUILDER_ARGS)
 	struct bsddialog_formitem *items;
 
 	if (argc < 1)
-		exit_error("--form missing <formheight>", true);
+		exit_error(true, "--form missing <formheight>");
 	formheight = (u_int)strtoul(argv[0], NULL, 10);
 
 	argc--;
 	argv++;
 	sizeitem = opt->item_bottomdesc ? 9 : 8;
 	if (argc % sizeitem != 0)
-		exit_error("--form bad number of arguments items", true);
+		exit_error(true, "--form bad number of arguments items");
 
 	nitems = argc / sizeitem;
 	if ((items = calloc(nitems, sizeof(struct bsddialog_formitem))) == NULL)
@@ -1555,14 +1607,14 @@ int mixedform_builder(BUILDER_ARGS)
 	struct bsddialog_formitem *items;
 
 	if (argc < 1)
-		exit_error("--mixedform missing <formheight>", true);
+		exit_error(true, "--mixedform missing <formheight>");
 	formheight = (u_int)strtoul(argv[0], NULL, 10);
 
 	argc--;
 	argv++;
 	sizeitem = opt->item_bottomdesc ? 10 : 9;
 	if (argc % sizeitem != 0)
-		exit_error("--mixedform bad number of arguments items", true);
+		exit_error(true, "--mixedform bad number of arguments items");
 
 	nitems = argc / sizeitem;
 	if ((items = calloc(nitems, sizeof(struct bsddialog_formitem))) == NULL)
@@ -1624,14 +1676,14 @@ int passwordform_builder(BUILDER_ARGS)
 	struct bsddialog_formitem *items;
 
 	if (argc < 1)
-		exit_error("--passwordform missing <formheight>", true);
+		exit_error(true, "--passwordform missing <formheight>");
 	formheight = (u_int)strtoul(argv[0], NULL, 10);
 
 	argc--;
 	argv++;
 	sizeitem = opt->item_bottomdesc ? 9 : 8;
 	if (argc % sizeitem != 0)
-		exit_error("--passwordform bad arguments items number", true);
+		exit_error(true, "--passwordform bad arguments items number");
 
 	flags = BSDDIALOG_FIELDHIDDEN;
 	nitems = argc / sizeitem;
