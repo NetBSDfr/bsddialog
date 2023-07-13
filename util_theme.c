@@ -139,7 +139,7 @@ void savetheme(const char *file, const char *version)
 		EXIT_FMTERROR("cannot open %s to save profile", file);
 
 	fprintf(fp, "### bsddialog theme - %s", ctime(&clock));
-	fputs("# Refer to bsddialog(3) manual for theme.* properties\n", fp);
+	fputs("# f_ refers to elements with focus.\n", fp);
 	fprintf(fp, "version %s\n", version);
 
 	for (i = 0; i < NPROPERTY; i++) {
