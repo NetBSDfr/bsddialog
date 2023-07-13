@@ -35,8 +35,6 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
-#include "util_theme.h"
-
 static struct bsddialog_theme t;
 static char title[1024];
 
