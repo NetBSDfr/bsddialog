@@ -972,7 +972,7 @@ int widget_checksize(int h, int w, struct buttons *bs, int hnotext, int minw)
 	minwidth = MAX(minwidth, minw);
 	minwidth += BORDERS;
 	if (w < minwidth)
-		RETURN_FMTERROR("Current cols: %d, nedded at least %d",
+		RETURN_FMTERROR("Current cols: %d, nedeed at least %d",
 		    w, minwidth);
 
 	return (0);
