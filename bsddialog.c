@@ -623,7 +623,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			opt->item_always_quote_opt = true;
 			break;
 		case PRINT_MAXSIZE:
-			opt->mandatory_dialog = false;
+			mandatory_dialog = false;
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
 			dprintf(opt->output_fd_opt, "MaxSize: %d, %d\n",
 			    ws.ws_row, ws.ws_col);
@@ -633,12 +633,12 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->get_width = &opt->getW_opt;
 			break;
 		case PRINT_VERSION:
-			opt->mandatory_dialog = false;
+			mandatory_dialog = false;
 			dprintf(opt->output_fd_opt, "Version: %s\n",
 			    LIBBSDDIALOG_VERSION);
 			break;
 		case SAVE_THEME:
-			opt->mandatory_dialog = false;
+			mandatory_dialog = false;
 			opt->savethemefile = optarg;
 			break;
 		case SEPARATE_OUTPUT:
@@ -816,7 +816,7 @@ int main(int argc, char *argv[argc])
 	setlocale(LC_ALL, "");
 
 	in_bsddialog_mode = false;
-	opt->mandatory_dialog = true;
+	mandatory_dialog = true;
 	firstoptind = optind;
 	pn = argv[0];
 	retval = BSDDIALOG_OK;
@@ -839,14 +839,14 @@ int main(int argc, char *argv[argc])
 		argc = parsed - optind;
 		argv += optind;
 
-		if (opt->mandatory_dialog && opt->dialogbuilder == NULL)
+		if (mandatory_dialog && opt->dialogbuilder == NULL)
 			exit_error("expected a --<dialog>", true);
 
 		if (opt->dialogbuilder == NULL && argc > 0)
 			error_args("(no --<dialog>)", argc, argv);
 
 		/* --print-maxsize or --print-version */
-		if (opt->mandatory_dialog == false && opt->savethemefile == NULL &&
+		if (mandatory_dialog == false && opt->savethemefile == NULL &&
 		    opt->clear_screen_opt == false)
 			return (BSDDIALOG_OK);
 
