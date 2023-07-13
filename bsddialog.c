@@ -270,39 +270,39 @@ static int yesno_builder(BUILDER_ARGS);
 
 struct options {
 	/* Menus options */
-	bool item_always_quote_opt;
-	bool item_bottomdesc_opt;
-	char *item_default_opt;
-	bool item_depth_opt;
-	bool item_help_print_name_opt;
-	char *item_output_sep_opt;
-	bool item_output_sepnl_opt;
-	bool item_prefix_opt;
-	bool item_singlequote_opt;
-	bool list_items_on_opt;
+	bool item_always_quote;
+	bool item_bottomdesc;
+	char *item_default;
+	bool item_depth;
+	bool item_help_print_name;
+	char *item_output_sep;
+	bool item_output_sepnl;
+	bool item_prefix;
+	bool item_singlequote;
+	bool list_items_on;
 	/* Date and Time options */
-	char *date_fmt_opt;
-	char *time_fmt_opt;
+	char *date_fmt;
+	char *time_fmt;
 	/* Forms options */
-	int unsigned max_input_form_opt;
+	int unsigned max_input_form;
 	/* General options */
-	bool esc_return_cancel_opt;
-	int getH_opt;
-	int getW_opt;
-	bool ignore_opt;
-	int output_fd_opt;
+	bool esc_return_cancel;
+	int getH;
+	int getW;
+	bool ignore;
+	int output_fd;
 	/* Text option */
-	bool cr_wrap_opt;
-	bool tab_escape_opt;
-	bool text_unchanged_opt;
+	bool cr_wrap;
+	bool tab_escape;
+	bool text_unchanged;
 	/* Theme and Screen options*/
-	char *backtitle_opt;
-	bool bikeshed_opt;
-	enum bsddialog_default_theme theme_opt;
-	bool clear_screen_opt;
+	char *backtitle;
+	bool bikeshed;
+	enum bsddialog_default_theme theme;
+	bool clearscreen;
 	char *loadthemefile;
 	char *savethemefile;
-	const char *screen_mode_opt;
+	const char *screen_mode;
 	/* Dialog */
 	int (*dialogbuilder)(BUILDER_ARGS);
 };
@@ -447,9 +447,9 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 	conf->button.always_active = true;
 
 	memset(opt, 0, sizeof(struct options));
-	opt->theme_opt = -1;
-	opt->output_fd_opt = STDERR_FILENO;
-	opt->max_input_form_opt = 2048;
+	opt->theme = -1;
+	opt->output_fd = STDERR_FILENO;
+	opt->max_input_form = 2048;
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "--and-dialog") == 0 ||
@@ -463,7 +463,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		switch (arg) {
 		/* Options */
 		case ALTERNATE_SCREEN:
-			opt->screen_mode_opt = "smcup";
+			opt->screen_mode = "smcup";
 			break;
 		case AND_DIALOG:
 			if (opt->dialogbuilder == NULL)
@@ -474,7 +474,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->ascii_lines = true;
 			break;
 		case BACKTITLE:
-			opt->backtitle_opt = optarg;
+			opt->backtitle = optarg;
 			if (conf->y == BSDDIALOG_CENTER)
 				conf->auto_topmargin = 2;
 			break;
@@ -490,7 +490,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->auto_topmargin = 0;
 			break;
 		case BIKESHED:
-			opt->bikeshed_opt = true;
+			opt->bikeshed = true;
 			break;
 		case CANCEL_LABEL:
 			conf->button.cancel_label = optarg;
@@ -500,7 +500,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			break;
 		case CLEAR_SCREEN:
 			mandatory_dialog = false;
-			opt->clear_screen_opt = true;
+			opt->clearscreen = true;
 			break;
 		case COLORS:
 			conf->text.highlight = true;
@@ -510,16 +510,16 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			    (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case CR_WRAP:
-			opt->cr_wrap_opt = true;
+			opt->cr_wrap = true;
 			break;
 		case DATE_FORMAT:
-			opt->date_fmt_opt = optarg;
+			opt->date_fmt = optarg;
 			break;
 		case DEFAULT_BUTTON:
 			conf->button.default_label = optarg;
 			break;
 		case DEFAULT_ITEM:
-			opt->item_default_opt = optarg;
+			opt->item_default = optarg;
 			break;
 		case DEFAULT_NO:
 			conf->button.default_cancel = true;
@@ -528,7 +528,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->key.enable_esc = false;
 			break;
 		case ESC_RETURNCANCEL:
-			opt->esc_return_cancel_opt = true;
+			opt->esc_return_cancel = true;
 			break;
 		case EXIT_LABEL:
 			conf->button.ok_label = optarg;
@@ -552,10 +552,10 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->button.help_label = optarg;
 			break;
 		case HELP_PRINT_NAME:
-			opt->item_help_print_name_opt = true;
+			opt->item_help_print_name = true;
 			break;
 		case HELP_STATUS:
-			opt->list_items_on_opt = true;
+			opt->list_items_on = true;
 			break;
 		case HFILE:
 			conf->key.f1_file = optarg;
@@ -568,25 +568,25 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->key.f1_message = optarg;
 			break;
 		case IGNORE:
-			opt->ignore_opt = true;
+			opt->ignore = true;
 			break;
 		case INSECURE:
 			conf->form.securech = '*';
 			break;
 		case ITEM_BOTTOM_DESC:
-			opt->item_bottomdesc_opt = true;
+			opt->item_bottomdesc = true;
 			break;
 		case ITEM_DEPTH:
-			opt->item_depth_opt = true;
+			opt->item_depth = true;
 			break;
 		case ITEM_PREFIX:
-			opt->item_prefix_opt = true;
+			opt->item_prefix = true;
 			break;
 		case LOAD_THEME:
 			opt->loadthemefile = optarg;
 			break;
 		case MAX_INPUT:
-			opt->max_input_form_opt = (u_int)strtoul(optarg, NULL, 10);
+			opt->max_input_form = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case NO_CANCEL:
 			conf->button.without_cancel = true;
@@ -607,33 +607,33 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			conf->shadow = false;
 			break;
 		case NORMAL_SCREEN:
-			opt->screen_mode_opt = "rmcup";
+			opt->screen_mode = "rmcup";
 			break;
 		case OK_LABEL:
 			conf->button.ok_label = optarg;
 			break;
 		case OUTPUT_FD:
-			opt->output_fd_opt = (int)strtol(optarg, NULL, 10);
+			opt->output_fd = (int)strtol(optarg, NULL, 10);
 			break;
 		case OUTPUT_SEPARATOR:
-			opt->item_output_sep_opt = optarg;
+			opt->item_output_sep = optarg;
 			break;
 		case QUOTED:
-			opt->item_always_quote_opt = true;
+			opt->item_always_quote = true;
 			break;
 		case PRINT_MAXSIZE:
 			mandatory_dialog = false;
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
-			dprintf(opt->output_fd_opt, "MaxSize: %d, %d\n",
+			dprintf(opt->output_fd, "MaxSize: %d, %d\n",
 			    ws.ws_row, ws.ws_col);
 			break;
 		case PRINT_SIZE:
-			conf->get_height = &opt->getH_opt;
-			conf->get_width = &opt->getW_opt;
+			conf->get_height = &opt->getH;
+			conf->get_width = &opt->getW;
 			break;
 		case PRINT_VERSION:
 			mandatory_dialog = false;
-			dprintf(opt->output_fd_opt, "Version: %s\n",
+			dprintf(opt->output_fd, "Version: %s\n",
 			    LIBBSDDIALOG_VERSION);
 			break;
 		case SAVE_THEME:
@@ -641,47 +641,47 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			opt->savethemefile = optarg;
 			break;
 		case SEPARATE_OUTPUT:
-			opt->item_output_sepnl_opt = true;
+			opt->item_output_sepnl = true;
 			break;
 		case SHADOW:
 			conf->shadow = true;
 			break;
 		case SINGLE_QUOTED:
-			opt->item_singlequote_opt = true;
+			opt->item_singlequote = true;
 			break;
 		case SLEEP:
 			conf->sleep = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case STDERR:
-			opt->output_fd_opt = STDERR_FILENO;
+			opt->output_fd = STDERR_FILENO;
 			break;
 		case STDOUT:
-			opt->output_fd_opt = STDOUT_FILENO;
+			opt->output_fd = STDOUT_FILENO;
 			break;
 		case SWITCH_BUTTONS:
 			conf->button.always_active = false;
 			break;
 		case TAB_ESCAPE:
-			opt->tab_escape_opt = true;
+			opt->tab_escape = true;
 			break;
 		case TAB_LEN:
 			conf->text.tablen = (u_int)strtoul(optarg, NULL, 10);
 			break;
 		case TEXT_UNCHANGED:
-			opt->text_unchanged_opt = true;
+			opt->text_unchanged = true;
 			break;
 		case THEME:
 			if (strcasecmp(optarg, "blackwhite") == 0)
-				opt->theme_opt = BSDDIALOG_THEME_BLACKWHITE;
+				opt->theme = BSDDIALOG_THEME_BLACKWHITE;
 			else if (strcasecmp(optarg, "flat") == 0)
-				opt->theme_opt = BSDDIALOG_THEME_FLAT;
+				opt->theme = BSDDIALOG_THEME_FLAT;
 			else if (strcasecmp(optarg, "3d") == 0)
-				opt->theme_opt = BSDDIALOG_THEME_3D;
+				opt->theme = BSDDIALOG_THEME_3D;
 			else
 				exit_error("--theme: <unknown> theme", false);
 			break;
 		case TIME_FORMAT:
-			opt->time_fmt_opt = optarg;
+			opt->time_fmt = optarg;
 			break;
 		case TITLE:
 			conf->title = optarg;
@@ -797,7 +797,7 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 			opt->dialogbuilder = yesno_builder;
 			break;
 		default: /* Error */
-			if (opt->ignore_opt == true)
+			if (opt->ignore == true)
 				break;
 			exit_error("--ignore to continue", true);
 		}
@@ -845,7 +845,7 @@ int main(int argc, char *argv[argc])
 
 		/* --print-maxsize or --print-version */
 		if (mandatory_dialog == false && opt->savethemefile == NULL &&
-		    opt->clear_screen_opt == false)
+		    opt->clearscreen == false)
 			return (BSDDIALOG_OK);
 
 		/* --<dialog>, --save-theme or clear-screen */
@@ -866,11 +866,11 @@ int main(int argc, char *argv[argc])
 		/* bsddialog terminal mode (first iteration) */
 		start_bsddialog_mode();
 
-		if (opt->screen_mode_opt != NULL) {
-			opt->screen_mode_opt = tigetstr(opt->screen_mode_opt);
-			if (opt->screen_mode_opt != NULL &&
-			    opt->screen_mode_opt != (char*)-1) {
-				tputs(opt->screen_mode_opt, 1, putchar);
+		if (opt->screen_mode != NULL) {
+			opt->screen_mode = tigetstr(opt->screen_mode);
+			if (opt->screen_mode != NULL &&
+			    opt->screen_mode != (char*)-1) {
+				tputs(opt->screen_mode, 1, putchar);
 				fflush(stdout);
 				 /* only to refresh, useless in the library */
 				bsddialog_clearterminal();
@@ -878,11 +878,11 @@ int main(int argc, char *argv[argc])
 		}
 
 		/* theme */
-		if (opt->theme_opt >= 0)
-			bsddialog_set_default_theme(opt->theme_opt);
+		if (opt->theme >= 0)
+			bsddialog_set_default_theme(opt->theme);
 		if (opt->loadthemefile != NULL)
 			loadtheme(opt->loadthemefile);
-		if (opt->bikeshed_opt)
+		if (opt->bikeshed)
 			bikeshed(&conf);
 		if (opt->savethemefile != NULL)
 			savetheme(opt->savethemefile, LIBBSDDIALOG_VERSION);
@@ -890,21 +890,21 @@ int main(int argc, char *argv[argc])
 		/* backtitle and dialog */
 		if (opt->dialogbuilder == NULL)
 			break;
-		if (opt->backtitle_opt != NULL)
-			if(bsddialog_backtitle(&conf, opt->backtitle_opt))
+		if (opt->backtitle != NULL)
+			if(bsddialog_backtitle(&conf, opt->backtitle))
 				exit_error(bsddialog_geterror(), false);
 		retval = opt->dialogbuilder(&conf, text, rows, cols, argc, argv);
 		free(text);
 		if (retval == BSDDIALOG_ERROR)
 			exit_error(bsddialog_geterror(), false);
-		if (retval == BSDDIALOG_ESC && opt->esc_return_cancel_opt)
+		if (retval == BSDDIALOG_ESC && opt->esc_return_cancel)
 			retval = BSDDIALOG_CANCEL;
 		if (conf.get_height != NULL && conf.get_width != NULL)
-			dprintf(opt->output_fd_opt, "DialogSize: %d, %d\n",
+			dprintf(opt->output_fd, "DialogSize: %d, %d\n",
 			    *conf.get_height, *conf.get_width);
-		if (opt->clear_screen_opt)
+		if (opt->clearscreen)
 			bsddialog_clearterminal();
-		opt->clear_screen_opt = false;
+		opt->clearscreen = false;
 		/* --and-dialog ends loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
 			break;
@@ -921,7 +921,7 @@ int main(int argc, char *argv[argc])
 
 	if (bsddialog_inmode()) {
 		/* --clear-screen can be a single option */
-		if (opt->clear_screen_opt)
+		if (opt->clearscreen)
 			bsddialog_clearterminal();
 		bsddialog_end();
 	}
@@ -941,9 +941,9 @@ void custom_text(char *text, char *buf)
 		crwrap = true;
 	} else {
 		trim = false;
-		crwrap = opt->cr_wrap_opt;
+		crwrap = opt->cr_wrap;
 	}
-	if (opt->text_unchanged_opt) {
+	if (opt->text_unchanged) {
 		trim = false;
 		crwrap = true;
 	}
@@ -961,7 +961,7 @@ void custom_text(char *text, char *buf)
 					i++;
 				break;
 			case 't':
-				if (opt->tab_escape_opt) {
+				if (opt->tab_escape) {
 					buf[j] = '\t';
 				} else {
 					j++;
@@ -975,7 +975,7 @@ void custom_text(char *text, char *buf)
 			buf[j] = crwrap ? '\n' : ' ';
 			break;
 		case '\t':
-			buf[j] = opt->text_unchanged_opt ? '\t' : ' ';
+			buf[j] = opt->text_unchanged ? '\t' : ' ';
 			break;
 		default:
 			buf[j] = text[i];
@@ -1108,7 +1108,7 @@ int rangebox_builder(BUILDER_ARGS)
 		value = min;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, &value);
-	dprintf(opt->output_fd_opt, "%d", value);
+	dprintf(opt->output_fd, "%d", value);
 
 	return (output);
 }
@@ -1148,18 +1148,18 @@ static int date(BUILDER_ARGS, bool is_datebox)
 	if (ret != BSDDIALOG_OK)
 		return (ret);
 
-	if (opt->date_fmt_opt != NULL) {
+	if (opt->date_fmt != NULL) {
 		time(&cal);
 		localtm = localtime(&cal);
 		localtm->tm_year = yy - 1900;
 		localtm->tm_mon = mm - 1;
 		localtm->tm_mday = dd;
-		strftime(stringdate, 1024, opt->date_fmt_opt, localtm);
-		dprintf(opt->output_fd_opt, "%s", stringdate);
-	} else if (opt->bikeshed_opt && ~dd & 1) {
-		dprintf(opt->output_fd_opt, "%u/%u/%u", dd, mm, yy);
+		strftime(stringdate, 1024, opt->date_fmt, localtm);
+		dprintf(opt->output_fd, "%s", stringdate);
+	} else if (opt->bikeshed && ~dd & 1) {
+		dprintf(opt->output_fd, "%u/%u/%u", dd, mm, yy);
 	} else {
-		dprintf(opt->output_fd_opt, "%02u/%02u/%u", dd, mm, yy);
+		dprintf(opt->output_fd, "%02u/%02u/%u", dd, mm, yy);
 	}
 
 	return (ret);
@@ -1215,18 +1215,18 @@ int timebox_builder(BUILDER_ARGS)
 	if (output != BSDDIALOG_OK)
 		return (output);
 
-	if (opt->time_fmt_opt != NULL) {
+	if (opt->time_fmt != NULL) {
 		time(&clock);
 		localtm = localtime(&clock);
 		localtm->tm_hour = hh;
 		localtm->tm_min = mm;
 		localtm->tm_sec = ss;
-		strftime(stringtime, 1024, opt->time_fmt_opt, localtm);
-		dprintf(opt->output_fd_opt, "%s", stringtime);
-	} else if (opt->bikeshed_opt && ~ss & 1) {
-		dprintf(opt->output_fd_opt, "%u:%u:%u", hh, mm, ss);
+		strftime(stringtime, 1024, opt->time_fmt, localtm);
+		dprintf(opt->output_fd, "%s", stringtime);
+	} else if (opt->bikeshed && ~ss & 1) {
+		dprintf(opt->output_fd, "%u:%u:%u", hh, mm, ss);
 	} else {
-		dprintf(opt->output_fd_opt, "%02u:%02u:%02u", hh, mm, ss);
+		dprintf(opt->output_fd, "%02u:%02u:%02u", hh, mm, ss);
 	}
 
 	return (output);
@@ -1272,8 +1272,8 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 			(*items)[i].on = false;
 		(*items)[i].bottomdesc = sethelp ? argv[j++] : "";
 
-		if (opt->item_default_opt != NULL && *focusitem == -1)
-			if (strcmp((*items)[i].name, opt->item_default_opt) == 0)
+		if (opt->item_default != NULL && *focusitem == -1)
+			if (strcmp((*items)[i].name, opt->item_default) == 0)
 				*focusitem = i;
 	}
 }
@@ -1288,44 +1288,44 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 	const char *focusname, *sepstr;
 
 	sep = false;
-	quotech = opt->item_singlequote_opt ? '\'' : '"';
+	quotech = opt->item_singlequote ? '\'' : '"';
 
 	if (output == BSDDIALOG_ERROR || output == BSDDIALOG_CANCEL ||
 	    output == BSDDIALOG_ESC)
 		return;
 
 	if (output == BSDDIALOG_HELP) {
-		dprintf(opt->output_fd_opt, "HELP ");
+		dprintf(opt->output_fd, "HELP ");
 
 		if (focusitem >= 0) {
 			focusname = items[focusitem].name;
-			if (opt->item_bottomdesc_opt &&
-			    opt->item_help_print_name_opt == false)
+			if (opt->item_bottomdesc &&
+			    opt->item_help_print_name == false)
 				focusname = items[focusitem].bottomdesc;
 
 			toquote = false;
 			if (strchr(focusname, ' ') != NULL) {
-				toquote = opt->item_always_quote_opt;
+				toquote = opt->item_always_quote;
 				if (ismenu == false &&
-				    opt->item_output_sepnl_opt == false)
+				    opt->item_output_sepnl == false)
 					toquote = true;
 			}
 			if (toquote) {
-				dprintf(opt->output_fd_opt, "%c%s%c",
+				dprintf(opt->output_fd, "%c%s%c",
 				    quotech, focusname, quotech);
 			} else
-				dprintf(opt->output_fd_opt, "%s", focusname);
+				dprintf(opt->output_fd, "%s", focusname);
 		}
 
-		if (ismenu || opt->list_items_on_opt == false)
+		if (ismenu || opt->list_items_on == false)
 			return;
 		sep = true;
 	}
 
 	sepbefore = false;
 	sepsecond = false;
-	if ((sepstr = opt->item_output_sep_opt) == NULL) {
-		if (opt->item_output_sepnl_opt)
+	if ((sepstr = opt->item_output_sep) == NULL) {
+		if (opt->item_output_sepnl)
 			sepstr = "\n";
 		else {
 			sepstr = " ";
@@ -1335,7 +1335,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		sepbefore = true;
 
 	sepafter = false;
-	if (opt->item_output_sepnl_opt) {
+	if (opt->item_output_sepnl) {
 		sepbefore = false;
 		sepafter = true;
 	}
@@ -1345,25 +1345,25 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 			continue;
 
 		if (sep || sepbefore)
-			dprintf(opt->output_fd_opt, "%s", sepstr);
+			dprintf(opt->output_fd, "%s", sepstr);
 		sep = false;
 		if (sepsecond)
 			sep = true;
 
 		toquote = false;
 		if (strchr(items[i].name, ' ') != NULL) {
-			toquote = opt->item_always_quote_opt;
-			if (ismenu == false && opt->item_output_sepnl_opt == false)
+			toquote = opt->item_always_quote;
+			if (ismenu == false && opt->item_output_sepnl == false)
 				toquote = true;
 		}
 		if (toquote)
-			dprintf(opt->output_fd_opt, "%c%s%c",
+			dprintf(opt->output_fd, "%c%s%c",
 			    quotech, items[i].name, quotech);
 		else
-			dprintf(opt->output_fd_opt, "%s", items[i].name);
+			dprintf(opt->output_fd, "%s", items[i].name);
 
 		if (sepafter)
-			dprintf(opt->output_fd_opt, "%s", sepstr);
+			dprintf(opt->output_fd, "%s", sepstr);
 	}
 }
 
@@ -1377,8 +1377,8 @@ int checklist_builder(BUILDER_ARGS)
 		exit_error("--checklist missing <menurows>", true);
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	get_menu_items(argc-1, argv+1, opt->item_prefix_opt, opt->item_depth_opt, true,
-	    true, true, opt->item_bottomdesc_opt, &nitems, &items, &focusitem);
+	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
+	    true, true, opt->item_bottomdesc, &nitems, &items, &focusitem);
 
 	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
@@ -1400,8 +1400,8 @@ int menu_builder(BUILDER_ARGS)
 		exit_error("--menu missing <menurows>", true);
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	get_menu_items(argc-1, argv+1, opt->item_prefix_opt, opt->item_depth_opt, true,
-	    true, false, opt->item_bottomdesc_opt, &nitems, &items, &focusitem);
+	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
+	    true, false, opt->item_bottomdesc, &nitems, &items, &focusitem);
 
 	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
@@ -1423,8 +1423,8 @@ int radiolist_builder(BUILDER_ARGS)
 		exit_error("--radiolist missing <menurows>", true);
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	get_menu_items(argc-1, argv+1, opt->item_prefix_opt, opt->item_depth_opt, true,
-	    true, true, opt->item_bottomdesc_opt, &nitems, &items, &focusitem);
+	get_menu_items(argc-1, argv+1, opt->item_prefix, opt->item_depth, true,
+	    true, true, opt->item_bottomdesc, &nitems, &items, &focusitem);
 
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
@@ -1446,8 +1446,8 @@ int treeview_builder(BUILDER_ARGS)
 		exit_error("--treeview missing <menurows>", true);
 	menurows = (u_int)strtoul(argv[0], NULL, 10);
 
-	get_menu_items(argc-1, argv+1, opt->item_prefix_opt, true, true, true, true,
-	    opt->item_bottomdesc_opt, &nitems, &items, &focusitem);
+	get_menu_items(argc-1, argv+1, opt->item_prefix, true, true, true, true,
+	    opt->item_bottomdesc, &nitems, &items, &focusitem);
 
 	conf->menu.no_name = true;
 	conf->menu.align_left = true;
@@ -1472,7 +1472,7 @@ print_form_items(int output, int nitems, struct bsddialog_formitem *items)
 		return;
 
 	for (i = 0; i < nitems; i++) {
-		dprintf(opt->output_fd_opt, "%s\n", items[i].value);
+		dprintf(opt->output_fd, "%s\n", items[i].value);
 		free(items[i].value);
 	}
 }
@@ -1489,7 +1489,7 @@ int form_builder(BUILDER_ARGS)
 
 	argc--;
 	argv++;
-	sizeitem = opt->item_bottomdesc_opt ? 9 : 8;
+	sizeitem = opt->item_bottomdesc ? 9 : 8;
 	if (argc % sizeitem != 0)
 		exit_error("--form bad number of arguments items", true);
 
@@ -1514,7 +1514,7 @@ int form_builder(BUILDER_ARGS)
 		flags = (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
 
-		items[i].bottomdesc = opt->item_bottomdesc_opt ? argv[j++] : "";
+		items[i].bottomdesc = opt->item_bottomdesc ? argv[j++] : "";
 	}
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
@@ -1540,7 +1540,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.yfield	 = 0;
 	item.xfield	 = 0;
 	item.fieldlen    = 1;
-	item.maxvaluelen = opt->max_input_form_opt;
+	item.maxvaluelen = opt->max_input_form;
 	item.flags	 = BSDDIALOG_FIELDNOCOLOR;
 	item.flags      |= BSDDIALOG_FIELDCURSOREND;
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
@@ -1564,7 +1564,7 @@ int mixedform_builder(BUILDER_ARGS)
 
 	argc--;
 	argv++;
-	sizeitem = opt->item_bottomdesc_opt ? 10 : 9;
+	sizeitem = opt->item_bottomdesc ? 10 : 9;
 	if (argc % sizeitem != 0)
 		exit_error("--mixedform bad number of arguments items", true);
 
@@ -1582,7 +1582,7 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].fieldlen    = (u_int)strtoul(argv[j++], NULL, 10);
 		items[i].maxvaluelen = (u_int)strtoul(argv[j++], NULL, 10);
 		items[i].flags       = (u_int)strtoul(argv[j++], NULL, 10);
-		items[i].bottomdesc  = opt->item_bottomdesc_opt ? argv[j++] : "";
+		items[i].bottomdesc  = opt->item_bottomdesc ? argv[j++] : "";
 	}
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
@@ -1608,7 +1608,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.yfield	 = 0;
 	item.xfield	 = 0;
 	item.fieldlen	 = 1;
-	item.maxvaluelen = opt->max_input_form_opt;
+	item.maxvaluelen = opt->max_input_form;
 	item.flags       = BSDDIALOG_FIELDHIDDEN;
 	item.flags      |= BSDDIALOG_FIELDNOCOLOR;
 	item.flags      |= BSDDIALOG_FIELDCURSOREND;
@@ -1633,7 +1633,7 @@ int passwordform_builder(BUILDER_ARGS)
 
 	argc--;
 	argv++;
-	sizeitem = opt->item_bottomdesc_opt ? 9 : 8;
+	sizeitem = opt->item_bottomdesc ? 9 : 8;
 	if (argc % sizeitem != 0)
 		exit_error("--passwordform bad arguments items number", true);
 
@@ -1659,7 +1659,7 @@ int passwordform_builder(BUILDER_ARGS)
 		flags |= (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
 		items[i].flags = flags;
 
-		items[i].bottomdesc  = opt->item_bottomdesc_opt ? argv[j++] : "";
+		items[i].bottomdesc  = opt->item_bottomdesc ? argv[j++] : "";
 	}
 
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
