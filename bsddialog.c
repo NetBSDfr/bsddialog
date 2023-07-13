@@ -241,34 +241,9 @@ static struct option longopts[] = {
 	{ NULL, 0, NULL, 0}
 };
 
-/* Functions */
-#define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
-static void usage(void);
-/* Dialogs */
 struct options;
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv, struct options *opt
-
-static int calendar_builder(BUILDER_ARGS);
-static int checklist_builder(BUILDER_ARGS);
-static int datebox_builder(BUILDER_ARGS);
-static int form_builder(BUILDER_ARGS);
-static int gauge_builder(BUILDER_ARGS);
-static int infobox_builder(BUILDER_ARGS);
-static int inputbox_builder(BUILDER_ARGS);
-static int menu_builder(BUILDER_ARGS);
-static int mixedform_builder(BUILDER_ARGS);
-static int mixedgauge_builder(BUILDER_ARGS);
-static int msgbox_builder(BUILDER_ARGS);
-static int passwordbox_builder(BUILDER_ARGS);
-static int passwordform_builder(BUILDER_ARGS);
-static int pause_builder(BUILDER_ARGS);
-static int radiolist_builder(BUILDER_ARGS);
-static int rangebox_builder(BUILDER_ARGS);
-static int textbox_builder(BUILDER_ARGS);
-static int timebox_builder(BUILDER_ARGS);
-static int treeview_builder(BUILDER_ARGS);
-static int yesno_builder(BUILDER_ARGS);
 
 struct options {
 	/* Menus options */
@@ -310,7 +285,31 @@ struct options {
 	int (*dialogbuilder)(BUILDER_ARGS);
 };
 
+/* Functions */
+#define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
+static void usage(void);
 static void custom_text(struct options *opt, char *text, char *buf);
+/* Dialogs */
+static int calendar_builder(BUILDER_ARGS);
+static int checklist_builder(BUILDER_ARGS);
+static int datebox_builder(BUILDER_ARGS);
+static int form_builder(BUILDER_ARGS);
+static int gauge_builder(BUILDER_ARGS);
+static int infobox_builder(BUILDER_ARGS);
+static int inputbox_builder(BUILDER_ARGS);
+static int menu_builder(BUILDER_ARGS);
+static int mixedform_builder(BUILDER_ARGS);
+static int mixedgauge_builder(BUILDER_ARGS);
+static int msgbox_builder(BUILDER_ARGS);
+static int passwordbox_builder(BUILDER_ARGS);
+static int passwordform_builder(BUILDER_ARGS);
+static int pause_builder(BUILDER_ARGS);
+static int radiolist_builder(BUILDER_ARGS);
+static int rangebox_builder(BUILDER_ARGS);
+static int textbox_builder(BUILDER_ARGS);
+static int timebox_builder(BUILDER_ARGS);
+static int treeview_builder(BUILDER_ARGS);
+static int yesno_builder(BUILDER_ARGS);
 
 static void exit_error(bool usage, const char *fmt, ...)
 {
