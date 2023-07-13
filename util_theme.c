@@ -38,7 +38,7 @@
 static struct bsddialog_theme t;
 static char title[1024];
 
-enum typeprop {
+enum typeproperty {
 	BOOL,
 	CHAR,
 	INT,
@@ -48,7 +48,7 @@ enum typeprop {
 
 struct property {
 	const char* name;
-	enum typeprop type;
+	enum typeproperty type;
 	void *value;
 };
 
