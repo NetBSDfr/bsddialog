@@ -317,12 +317,27 @@ static void exit_error(const char *errstr, bool with_usage)
 {
 	if (bsddialog_inmode())
 		bsddialog_end();
-
 	printf("Error: %s.\n\n", errstr);
 	if (with_usage) {
 		printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
 		printf("for more information.\n");
 	}
+
+	exit (255);
+}
+
+static void error_args(const char *dialog, int argc, char **argv)
+{
+	int i;
+
+	if (bsddialog_inmode())
+		bsddialog_end();
+	printf("Error: %s unexpected argument%s:", dialog, argc > 1 ? "s" : "");
+	for (i = 0; i < argc; i++)
+		printf(" \"%s\"", argv[i]);
+	printf(".\n\n");
+	printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
+	printf("for more information.\n");
 
 	exit (255);
 }
@@ -338,29 +353,10 @@ static void start_bsddialog_mode(void)
 {
 	if (bsddialog_inmode())
 		return;
-
 	if (bsddialog_init() != BSDDIALOG_OK)
 		exit_error(bsddialog_geterror(), false);
 
 	signal(SIGINT, sigint_handler);
-}
-
-static void error_args(const char *dialog, int argc, char **argv)
-{
-	int i;
-
-	if (bsddialog_inmode())
-		bsddialog_end();
-
-	printf("Error: %s unexpected argument%s:", dialog,
-	    argc > 1 ? "s" : "");
-	for (i = 0; i < argc; i++)
-		printf(" \"%s\"", argv[i]);
-	printf(".\n\n");
-	printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
-	printf("for more information.\n");
-
-	exit (255);
 }
 
 static void usage(void)
