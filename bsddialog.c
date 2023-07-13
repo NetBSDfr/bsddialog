@@ -241,16 +241,16 @@ static struct option longopts[] = {
 };
 
 /* Menus options */
-static bool item_prefix_opt;
+static bool item_always_quote_opt;
 static bool item_bottomdesc_opt;
+static char *item_default_opt;
+static bool item_depth_opt;
+static bool item_help_print_name_opt;
+static char *item_output_sep_opt;
 static bool item_output_sepnl_opt;
+static bool item_prefix_opt;
 static bool item_singlequote_opt;
 static bool list_items_on_opt;
-static bool item_help_print_name_opt;
-static bool item_always_quote_opt;
-static bool item_depth_opt;
-static char *item_output_sep_opt;
-static char *item_default_opt;
 /* Date and Time options */
 static char *date_fmt_opt;
 static char *time_fmt_opt;
@@ -258,18 +258,18 @@ static char *time_fmt_opt;
 static int unsigned max_input_form_opt;
 /* General options */
 static bool esc_return_cancel_opt;
-static bool ignore_opt;
-static int output_fd_opt;
 static int getH_opt;
 static int getW_opt;
+static bool ignore_opt;
+static int output_fd_opt;
 /* Text option */
 static bool cr_wrap_opt;
 static bool tab_escape_opt;
 static bool text_unchanged_opt;
 /* Theme and Screen options*/
+static char *backtitle_opt;
 static bool bikeshed_opt;
 static enum bsddialog_default_theme theme_opt;
-static char *backtitle_opt;
 static bool clear_screen_opt;
 static char *loadthemefile;
 static char *savethemefile;
