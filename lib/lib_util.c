@@ -948,7 +948,7 @@ set_widget_autosize(struct bsddialog_conf *conf, int rows, int cols, int *h,
 
 	if (rows == BSDDIALOG_AUTOSIZE)
 		*h = widget_min_height(conf, htext, hnotext, bs->nbuttons > 0);
-		
+
 	if (cols == BSDDIALOG_AUTOSIZE)
 		*w = widget_min_width(conf, wtext, minw, bs);
 

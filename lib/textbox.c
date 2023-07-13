@@ -177,7 +177,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 
 	if (textbox_draw(&d, &st) != 0)
 		return (BSDDIALOG_ERROR);
-	
+
 	loop = true;
 	while (loop) {
 		updateborders(conf, d.widget, st.margin, st.hpad, st.wpad, st.ypad, st.xpad);

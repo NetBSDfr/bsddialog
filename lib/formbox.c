@@ -211,7 +211,7 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus,
 	mvwhline(form->pad, item->yfield, item->xfield, ' ', item->fieldcols);
 	n = 0;
 	cols = wcwidth(item->pubwbuf[item->xposdraw]);
-	while (cols <= item->fieldcols && 
+	while (cols <= item->fieldcols &&
 	    item->xposdraw + n < wcslen(item->pubwbuf)) {
 		n++;
 		cols += wcwidth(item->pubwbuf[item->xposdraw + n]);

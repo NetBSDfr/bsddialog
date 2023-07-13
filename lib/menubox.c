@@ -339,7 +339,7 @@ update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 }
 
 static int
-menu_size_position(struct bsddialog_conf *conf, int rows, int cols, 
+menu_size_position(struct bsddialog_conf *conf, int rows, int cols,
     const char *text, unsigned int *menurows, int nitems, int linelen,
     struct buttons *bs, int *y, int *x, int *h, int *w)
 {
@@ -350,7 +350,7 @@ menu_size_position(struct bsddialog_conf *conf, int rows, int cols,
 
 	hmenu = (*menurows == BSDDIALOG_AUTOSIZE) ? nitems : (int)*menurows;
 	hmenu += 2; /* menu borders */
-	/* 
+	/*
 	 * algo 1: notext = 1 (grows vertically).
 	 * algo 2: notext = hmenu (grows horizontally, better for little term).
 	 */

@@ -218,14 +218,14 @@ static int date(BUILDER_ARGS)
 int calendar_builder(BUILDER_ARGS)
 {
 	/* Use height autosizing with rows = 2. Documented in bsddialog(1).
-	 * 
+	 *
 	 * f_dialog_calendar_size() in bsdconfig/share/dialog.subr:1352
 	 * computes height 2 for `dialog --calendar', called by:
-	 * 1) f_dialog_input_expire_password() in 
+	 * 1) f_dialog_input_expire_password() in
 	 * bsdconfig/usermgmt/share/user_input.subr:517 and
 	 * 2) f_dialog_input_expire_account() in
 	 * bsdconfig/usermgmt/share/user_input.subr:660.
-	 * 
+	 *
 	 * Then use height autosizing with 2 that is min height like dialog.
 	 */
 	if (rows == 2)

@@ -88,7 +88,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
  */
 #define BUILDER_ARGS struct bsddialog_conf *conf, char* text, int rows,        \
 	int cols, int argc, char **argv, struct options *opt
- 
 int calendar_builder(BUILDER_ARGS);
 int checklist_builder(BUILDER_ARGS);
 int datebox_builder(BUILDER_ARGS);
