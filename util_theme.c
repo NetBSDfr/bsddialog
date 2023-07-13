@@ -207,7 +207,7 @@ void loadtheme(const char *file)
 		}
 		if (i >= NPROPERTY) {
 			if (strcmp(name, "version") == 0)
-				continue;
+				continue; /* nothing for now */
 			PROP_ERROR(name, "Unknown theme property name");
 		}
 		switch (p[i].type) {
