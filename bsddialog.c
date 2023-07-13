@@ -304,13 +304,12 @@ static int treeview_builder(BUILDER_ARGS);
 static int yesno_builder(BUILDER_ARGS);
 
 /* init, exit and internals */
-static bool in_bsddialog_mode;
 static bool mandatory_dialog;
 static int (*dialogbuilder)(BUILDER_ARGS);
 
 static void exit_error(const char *errstr, bool with_usage)
 {
-	if (in_bsddialog_mode)
+	if (bsddialog_inmode())
 		bsddialog_end();
 
 	printf("Error: %s.\n\n", errstr);
@@ -331,13 +330,12 @@ static void sigint_handler(int UNUSED_PAR(sig))
 
 static void start_bsddialog_mode(void)
 {
-	if (in_bsddialog_mode)
+	if (bsddialog_inmode())
 		return;
 
 	if (bsddialog_init() != BSDDIALOG_OK)
 		exit_error(bsddialog_geterror(), false);
 
-	in_bsddialog_mode = true;
 	signal(SIGINT, sigint_handler);
 }
 
@@ -345,7 +343,7 @@ static void error_args(const char *dialog, int argc, char **argv)
 {
 	int i;
 
-	if (in_bsddialog_mode)
+	if (bsddialog_inmode())
 		bsddialog_end();
 
 	printf("Error: %s unexpected argument%s:", dialog,
@@ -837,7 +835,6 @@ int main(int argc, char *argv[argc])
 
 	setlocale(LC_ALL, "");
 
-	in_bsddialog_mode = false;
 	mandatory_dialog = true;
 	firstoptind = optind;
 	pn = argv[0];
@@ -943,7 +940,7 @@ int main(int argc, char *argv[argc])
 		optind = firstoptind;
 	}
 
-	if (in_bsddialog_mode) {
+	if (bsddialog_inmode()) {
 		/* --clear-screen can be a single option */
 		if (clear_screen_opt)
 			bsddialog_clearterminal();
