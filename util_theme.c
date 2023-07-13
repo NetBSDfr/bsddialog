@@ -35,8 +35,17 @@
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
 
+#include "util.h"
+
 static struct bsddialog_theme t;
 static char title[1024];
+
+#define NPROPERTY 38
+
+#define PROP_ERROR(name, error) do {                                           \
+	fclose(fp);                                                            \
+	exit_error(false, "%s for \"%s\"", error, name);                       \
+} while (0)
 
 enum typeproperty {
 	BOOL,
@@ -52,7 +61,17 @@ struct property {
 	void *value;
 };
 
-#define NPROPERTY 38
+static const char *color[8] = {
+	"black",
+	"red",
+	"green",
+	"yellow",
+	"blue",
+	"magenta",
+	"cyan",
+	"white"
+};
+
 static struct property p[NPROPERTY] = {
 	{ "theme.screen.color", COLOR, &t.screen.color },
 
@@ -100,25 +119,6 @@ static struct property p[NPROPERTY] = {
 	{ "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor}
 };
 
-static const char *color[8] = {
-	"black",
-	"red",
-	"green",
-	"yellow",
-	"blue",
-	"magenta",
-	"cyan",
-	"white"
-};
-
-#define EXIT_FMTERROR(fmt, ...) do {                                           \
-	bsddialog_end();                                                       \
-	printf("Error: ");                                                     \
-	printf(fmt, __VA_ARGS__);                                              \
-	printf(".\n");                                                         \
-	exit (255);                                                            \
-} while (0)
-
 void savetheme(const char *file, const char *version)
 {
 	int i;
@@ -128,13 +128,14 @@ void savetheme(const char *file, const char *version)
 	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
-		EXIT_FMTERROR("cannot save theme: %s", bsddialog_geterror());
+		exit_error(false,
+		    "cannot save theme: %s", bsddialog_geterror());
 
 	if(time(&clock) < 0)
-		EXIT_FMTERROR("%s", "cannot save profile getting current time");
+		exit_error(false, "cannot save profile getting current time");
 
 	if ((fp = fopen(file, "w")) == NULL)
-		EXIT_FMTERROR("cannot open %s to save profile", file);
+		exit_error(false, "cannot open %s to save profile", file);
 
 	fprintf(fp, "### bsddialog theme - %s", ctime(&clock));
 	fputs("# f_ refers to elements with focus.\n", fp);
@@ -174,7 +175,7 @@ void savetheme(const char *file, const char *version)
 void setdeftheme(enum bsddialog_default_theme theme)
 {
 	if (bsddialog_set_default_theme(theme) != BSDDIALOG_OK)
-		EXIT_FMTERROR("%s", bsddialog_geterror());
+		exit_error(false, bsddialog_geterror());
 }
 
 void loadtheme(const char *file)
@@ -188,16 +189,11 @@ void loadtheme(const char *file)
 	FILE *fp;
 
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
-		EXIT_FMTERROR("Cannot get current theme: %s",
+		exit_error(false, "Cannot get current theme: %s",
 		    bsddialog_geterror());
 
 	if((fp = fopen(file, "r")) == NULL)
-		EXIT_FMTERROR("Cannot open theme \"%s\"", file);
-
-#define EXIT_ERROR(name, error) do {                                           \
-	fclose(fp);                                                            \
-	EXIT_FMTERROR("%s for \"%s\"", error, name);                           \
-} while (0)
+		exit_error(false, "Cannot open theme \"%s\" file", file);
 
 	while(fgets(line, BUFSIZ, fp) != NULL) {
 		if(line[0] == '#' || line[0] == '\n')
@@ -212,7 +208,7 @@ void loadtheme(const char *file)
 		if (i >= NPROPERTY) {
 			if (strcmp(name, "version") == 0)
 				continue;
-			EXIT_ERROR(name, "Unknown theme property name");
+			PROP_ERROR(name, "Unknown theme property name");
 		}
 		switch (p[i].type) {
 		case CHAR:
@@ -220,17 +216,17 @@ void loadtheme(const char *file)
 			    value[0] == '\0')
 				value++;
 			if (sscanf(value, "%c", &charvalue) != 1)
-				EXIT_ERROR(p[i].name, "Cannot get a char");
+				PROP_ERROR(p[i].name, "Cannot get a char");
 			*((int*)p[i].value) = charvalue;
 			break;
 		case INT:
 			if (sscanf(value, "%d", &intvalue) != 1)
-				EXIT_ERROR(p[i].name, "Cannot get a int");
+				PROP_ERROR(p[i].name, "Cannot get a int");
 			*((int*)p[i].value) = intvalue;
 			break;
 		case UINT:
 			if (sscanf(value, "%u", &uintvalue) != 1)
-				EXIT_ERROR(p[i].name, "Cannot get a uint");
+				PROP_ERROR(p[i].name, "Cannot get a uint");
 			*((unsigned int*)p[i].value) = uintvalue;
 			break;
 		case BOOL:
@@ -240,19 +236,19 @@ void loadtheme(const char *file)
 			break;
 		case COLOR:
 			if (sscanf(value, "%s %s", c1, c2) != 2)
-				EXIT_ERROR(p[i].name, "Cannot get 2 colors");
+				PROP_ERROR(p[i].name, "Cannot get 2 colors");
 			/* Foreground */
 			for (j = 0; j < 8 ; j++)
 				if ((strstr(c1, color[j])) != NULL)
 					break;
 			if ((fg = j) > 7)
-				EXIT_ERROR(p[i].name, "Bad foreground");
+				PROP_ERROR(p[i].name, "Bad foreground");
 			/* Background */
 			for (j = 0; j < 8 ; j++)
 				if ((value = strstr(c2, color[j])) != NULL)
 					break;
 			if ((bg = j) > 7)
-				EXIT_ERROR(p[i].name, "Bad background");
+				PROP_ERROR(p[i].name, "Bad background");
 			/* Flags */
 			flags = 0;
 			if (strstr(value, "bold") != NULL)
@@ -281,7 +277,7 @@ void bikeshed(struct bsddialog_conf *conf)
 
 	/* theme */
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
-		EXIT_FMTERROR("%s", bsddialog_geterror());
+		exit_error(false, bsddialog_geterror());
 
 	gettimeofday(&tv, NULL);
 	srand(tv.tv_usec);
@@ -339,7 +335,7 @@ void bikeshed(struct bsddialog_conf *conf)
 	t.button.shortcutcolor   = bsddialog_color(col[1], col[5], 0);
 
 	if (bsddialog_set_theme(&t))
-		EXIT_FMTERROR("%s", bsddialog_geterror());
+		exit_error(false, bsddialog_geterror());
 
 	/* conf */
 	conf->button.always_active = (~rand() & 1) ? true : false;
