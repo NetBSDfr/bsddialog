@@ -37,52 +37,52 @@ struct bsddialog_theme t;
 bool hastermcolors;
 
 static struct bsddialog_theme blackwhite = {
-#define fg  COLOR_WHITE
-#define bk  COLOR_BLACK
-	.screen.color = GET_COLOR(fg, bk),
+#define WHITE GET_COLOR(COLOR_WHITE, COLOR_BLACK)
+#define BLACK GET_COLOR(COLOR_WHITE, COLOR_BLACK) | A_REVERSE
+	.screen.color = WHITE,
 
 	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
 	.shadow.y       = 1,
 	.shadow.x       = 2,
 
 	.dialog.delimtitle       = true,
-	.dialog.titlecolor       = GET_COLOR(fg, bk),
-	.dialog.lineraisecolor   = GET_COLOR(fg, bk),
-	.dialog.linelowercolor   = GET_COLOR(fg, bk),
-	.dialog.color            = GET_COLOR(fg, bk),
-	.dialog.bottomtitlecolor = GET_COLOR(fg, bk),
-	.dialog.arrowcolor       = GET_COLOR(fg, bk),
+	.dialog.titlecolor       = WHITE,
+	.dialog.lineraisecolor   = WHITE,
+	.dialog.linelowercolor   = WHITE,
+	.dialog.color            = WHITE,
+	.dialog.bottomtitlecolor = WHITE,
+	.dialog.arrowcolor       = WHITE,
 
-	.menu.f_selectorcolor = GET_COLOR(fg, bk) | A_REVERSE,
-	.menu.selectorcolor   = GET_COLOR(fg, bk),
-	.menu.f_desccolor     = GET_COLOR(fg, bk) | A_REVERSE,
-	.menu.desccolor       = GET_COLOR(fg, bk),
-	.menu.f_namecolor     = GET_COLOR(fg, bk) | A_REVERSE,
-	.menu.namecolor       = GET_COLOR(fg, bk),
-	.menu.namesepcolor    = GET_COLOR(fg, bk),
-	.menu.descsepcolor    = GET_COLOR(fg, bk),
-	.menu.f_shortcutcolor = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
-	.menu.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE,
-	.menu.bottomdesccolor = GET_COLOR(fg, bk),
+	.menu.f_selectorcolor = BLACK,
+	.menu.selectorcolor   = WHITE,
+	.menu.f_desccolor     = BLACK,
+	.menu.desccolor       = WHITE,
+	.menu.f_namecolor     = BLACK,
+	.menu.namecolor       = WHITE,
+	.menu.namesepcolor    = WHITE,
+	.menu.descsepcolor    = WHITE,
+	.menu.f_shortcutcolor = BLACK | A_UNDERLINE,
+	.menu.shortcutcolor   = WHITE | A_UNDERLINE,
+	.menu.bottomdesccolor = WHITE,
 
-	.form.f_fieldcolor    = GET_COLOR(fg, bk) | A_REVERSE,
-	.form.fieldcolor      = GET_COLOR(fg, bk),
-	.form.readonlycolor   = GET_COLOR(fg, bk),
-	.form.bottomdesccolor = GET_COLOR(fg, bk),
+	.form.f_fieldcolor    = BLACK,
+	.form.fieldcolor      = WHITE,
+	.form.readonlycolor   = WHITE,
+	.form.bottomdesccolor = WHITE,
 
-	.bar.f_color = GET_COLOR(fg, bk) | A_REVERSE,
-	.bar.color   = GET_COLOR(fg, bk),
+	.bar.f_color = BLACK,
+	.bar.color   = WHITE,
 
 	.button.minmargin       = 1,
 	.button.maxmargin       = 5,
 	.button.leftdelim       = '[',
 	.button.rightdelim      = ']',
-	.button.f_delimcolor    = GET_COLOR(fg, bk),
-	.button.delimcolor      = GET_COLOR(fg, bk),
-	.button.f_color         = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
-	.button.color           = GET_COLOR(fg, bk) | A_UNDERLINE,
-	.button.f_shortcutcolor = GET_COLOR(fg, bk) | A_UNDERLINE | A_REVERSE,
-	.button.shortcutcolor   = GET_COLOR(fg, bk) | A_UNDERLINE
+	.button.f_delimcolor    = WHITE,
+	.button.delimcolor      = WHITE,
+	.button.f_color         = BLACK | A_UNDERLINE,
+	.button.color           = WHITE | A_UNDERLINE,
+	.button.f_shortcutcolor = BLACK | A_UNDERLINE,
+	.button.shortcutcolor   = WHITE | A_UNDERLINE
 };
 
 static struct bsddialog_theme flat = {
