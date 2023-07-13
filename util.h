@@ -29,7 +29,7 @@
 #define _BSDDIALOG_UTIL_H_
 
 /*
- * Errorrs, bsddialog.c
+ * Errors, bsddialog.c
  */
 void exit_error(bool usage, const char *fmt, ...);
 void error_args(const char *dialog, int argc, char **argv);
