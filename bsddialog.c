@@ -362,7 +362,7 @@ static void start_bsddialog_mode(void)
 	if (bsddialog_inmode())
 		return;
 	if (bsddialog_init() != BSDDIALOG_OK)
-		exit_error(bsddialog_geterror(), false);
+		exit_error(false, bsddialog_geterror());
 
 	signal(SIGINT, sigint_handler);
 }
@@ -485,13 +485,15 @@ static int parseargs(int argc, char **argv, struct bsddialog_conf *conf)
 		case BEGIN_X:
 			conf->x = (int)strtol(optarg, NULL, 10);
 			if (conf->x < BSDDIALOG_CENTER)
-				exit_error("--begin-x < -1", false);
+				exit_error(false, "--begin-x %d is < %d",
+				    conf->x, BSDDIALOG_CENTER);
 			break;
 		case BEGIN_Y:
 			conf->y = (int)strtol(optarg, NULL, 10);
 			if (conf->y < BSDDIALOG_CENTER)
-				exit_error("--begin-y < -1", false);
-			conf->auto_topmargin = 0;
+				exit_error(false, "--begin-y %d is < %d",
+				    conf->y, BSDDIALOG_CENTER);
+			conf->auto_topmargin = 0; // to check!	 
 			break;
 		case BIKESHED:
 			opt->bikeshed = true;
@@ -899,7 +901,7 @@ int main(int argc, char *argv[argc])
 				exit_error(true,
 				    "expected <text> <rows> <cols>");
 			if ((text = strdup(argv[0])) == NULL)
-				exit_error("cannot allocate text", false);
+				exit_error(false, "cannot allocate <text>");
 			if (opt->dialogbuilder != textbox_builder)
 				custom_text(argv[0], text);
 			rows = (int)strtol(argv[1], NULL, 10);
@@ -937,11 +939,11 @@ int main(int argc, char *argv[argc])
 			break;
 		if (opt->backtitle != NULL)
 			if(bsddialog_backtitle(&conf, opt->backtitle))
-				exit_error(bsddialog_geterror(), false);
+				exit_error(false, bsddialog_geterror());
 		retval = opt->dialogbuilder(&conf, text, rows, cols, argc, argv);
 		free(text);
 		if (retval == BSDDIALOG_ERROR)
-			exit_error(bsddialog_geterror(), false);
+			exit_error(false, bsddialog_geterror());
 		if (retval == BSDDIALOG_ESC && opt->esc_return_cancel)
 			retval = BSDDIALOG_CANCEL;
 		if (conf.get_height != NULL && conf.get_width != NULL)
@@ -1105,9 +1107,9 @@ int mixedgauge_builder(BUILDER_ARGS)
 
 	nminibars  = argc / 2;
 	if ((minilabels = calloc(nminibars, sizeof(char*))) == NULL)
-		exit_error("Cannot allocate memory for minilabels", false);
+		exit_error(false, "Cannot allocate memory for minilabels");
 	if ((minipercs = calloc(nminibars, sizeof(int))) == NULL)
-		exit_error("Cannot allocate memory for minipercs", false);
+		exit_error(false, "Cannot allocate memory for minipercs");
 
 	for (i = 0; i < nminibars; i++) {
 		minilabels[i] = argv[i * 2];
@@ -1304,7 +1306,7 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 
 	*items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
 	if (items == NULL)
-		exit_error("cannot allocate memory \"menu\" items", false);
+		exit_error(false, "cannot allocate memory \"menu\" items");
 
 	j = 0;
 	for (i = 0; i < *nitems; i++) {
@@ -1543,7 +1545,7 @@ int form_builder(BUILDER_ARGS)
 
 	nitems = argc / sizeitem;
 	if ((items = calloc(nitems, sizeof(struct bsddialog_formitem))) == NULL)
-		exit_error("cannot allocate memory for form items", false);
+		exit_error(false, "cannot allocate memory for form items");
 	j = 0;
 	for (i = 0; i < nitems; i++) {
 		items[i].label	= argv[j++];
@@ -1618,7 +1620,7 @@ int mixedform_builder(BUILDER_ARGS)
 
 	nitems = argc / sizeitem;
 	if ((items = calloc(nitems, sizeof(struct bsddialog_formitem))) == NULL)
-		exit_error("cannot allocate memory for form items", false);
+		exit_error(false, "cannot allocate memory for form items");
 	j = 0;
 	for (i = 0; i < nitems; i++) {
 		items[i].label	     = argv[j++];
@@ -1688,7 +1690,7 @@ int passwordform_builder(BUILDER_ARGS)
 	flags = BSDDIALOG_FIELDHIDDEN;
 	nitems = argc / sizeitem;
 	if ((items = calloc(nitems, sizeof(struct bsddialog_formitem))) == NULL)
-		exit_error("cannot allocate memory for form items", false);
+		exit_error(false, "cannot allocate memory for form items");
 	j = 0;
 	for (i = 0; i < nitems; i++) {
 		items[i].label	= argv[j++];
