@@ -58,7 +58,6 @@ enum OPTS {
 	DEFAULT_ITEM,
 	DEFAULT_NO,
 	DISABLE_ESC,
-	ESC_RETURNCANCEL,
 	EXIT_LABEL,
 	EXTRA_BUTTON,
 	EXTRA_LABEL,
@@ -153,7 +152,6 @@ static struct option longopts[] = {
 	{"default-item",      required_argument, NULL, DEFAULT_ITEM},
 	{"default-no",        no_argument,       NULL, DEFAULT_NO},
 	{"disable-esc",       no_argument,       NULL, DISABLE_ESC},
-	{"esc-return-cancel", no_argument,       NULL, ESC_RETURNCANCEL},
 	{"exit-label",        required_argument, NULL, EXIT_LABEL},
 	{"extra-button",      no_argument,       NULL, EXTRA_BUTTON},
 	{"extra-label",       required_argument, NULL, EXTRA_LABEL},
@@ -253,7 +251,7 @@ void usage(void)
 	    " --colors, --columns-per-row <columns>, --cr-wrap,\n"
 	    " --date-format <format>, --default-button <label>,"
 	    " --default-item <name>,\n --default-no, --disable-esc,"
-	    " --esc-return-cancel, --exit-label <label>,\n --extra-button,"
+	    " --exit-label <label>,\n --extra-button,"
 	    " --extra-label <label>, --generic-button1 <label>,\n"
 	    " --generic-button2 <label>, --help-button, --help-label <label>,\n"
 	    " --help-print-name, --help-status, --hfile <file>,"
@@ -403,9 +401,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			break;
 		case DISABLE_ESC:
 			conf->key.enable_esc = false;
-			break;
-		case ESC_RETURNCANCEL:
-			opt->esc_return_cancel = true;
 			break;
 		case EXIT_LABEL:
 			conf->button.ok_label = optarg;

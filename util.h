@@ -57,7 +57,6 @@ struct options {
 	/* Forms options */
 	int unsigned max_input_form;
 	/* General options */
-	bool esc_return_cancel;
 	int getH;
 	int getW;
 	bool ignore;

@@ -18,6 +18,7 @@ WIP Next Version
 	* add: BSDDIALOG_GENERIC2.
 	* add: BSDDIALOG_ITEM_HELP.
 	* add: --color attrs "\Zd \Zk \Zs \ZD \ZK \ZS".
+	* delete: --sce-return-cancel
 
 	Library:
 	* add: check (when possible) API pointers.

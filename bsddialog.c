@@ -250,8 +250,6 @@ int main(int argc, char *argv[argc])
 		free(text);
 		if (retval == BSDDIALOG_ERROR)
 			exit_error(false, bsddialog_geterror());
-		if (retval == BSDDIALOG_ESC && opt.esc_return_cancel)
-			retval = BSDDIALOG_CANCEL;
 		if (conf.get_height != NULL && conf.get_width != NULL)
 			dprintf(opt.output_fd, "DialogSize: %d, %d\n",
 			    *conf.get_height, *conf.get_width);
