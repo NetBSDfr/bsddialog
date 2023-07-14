@@ -139,7 +139,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
 	struct dialog d;
 
 	if (file == NULL)
-		RETURN_ERROR("*file is NULLx");
+		RETURN_ERROR("*file is NULL");
 	if ((fp = fopen(file, "r")) == NULL)
 		RETURN_FMTERROR("Cannot open file \"%s\"", file);
 
