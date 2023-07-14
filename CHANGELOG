@@ -7,6 +7,16 @@ WIP Next Version
 	* add: button delimiter to --bikeshed.
 	* refactor: modularize utilty in more files.
 	* add: env NO_COLOR.
+	* add: BSDDIALOG_ERROR.
+	* add: BSDDIALOG_OK.
+	* add: BSDDIALOG_CANCEL.
+	* add: BSDDIALOG_HELP.
+	* add: BSDDIALOG_EXTRA.
+	* add: BSDDIALOG_TIMEOUT.
+	* add: BSDDIALOG_ESC.
+	* add: BSDDIALOG_GENERIC1.
+	* add: BSDDIALOG_GENERIC2.
+	* add: BSDDIALOG_ITEM_HELP.
 
 	Library:
 	* add: check (when possible) API pointers.

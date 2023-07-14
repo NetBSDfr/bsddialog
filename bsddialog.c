@@ -26,6 +26,7 @@
  */
 
 #include <getopt.h>
+#include <limits.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdarg.h>
@@ -44,22 +45,27 @@
 static void custom_text(struct options *opt, char *text, char *buf);
 
 /* Exit codes */
-static int exitcodes[10] = {
-	255, /* BSDDIALOG_ERROR */
-	  0, /* BSDDIALOG_OK */
-	  1, /* BSDDIALOG_CANCEL */
-	  2, /* BSDDIALOG_HELP */
-	  3, /* BSDDIALOG_EXTRA */
-	  4, /* BSDDIALOG_TIMEOUT */
-	  5, /* BSDDIALOG_ESC */
-	  6, /* BSDDIALOG_GENERIC1 */
-	  7, /* BSDDIALOG_GENERIC2 */
-	  2, /* BSDDIALOG_ITEM_HELP */
+struct exitcode {
+	const char *name;
+	int value;
+};
+
+static struct exitcode exitcodes[10] = {
+	{ "BSDDIALOG_ERROR", 255 },
+	{ "BSDDIALOG_OK", 0 },
+	{ "BSDDIALOG_CANCEL", 1 },
+	{ "BSDDIALOG_HELP", 2 },
+	{ "BSDDIALOG_EXTRA", 3 },
+	{ "BSDDIALOG_TIMEOUT", 4 },
+	{ "BSDDIALOG_ESC", 5 },
+	{ "BSDDIALOG_GENERIC1", 6 },
+	{ "BSDDIALOG_GENERIC2",7 },
+	{ "BSDDIALOG_ITEM_HELP", 2 }
 };
 
 static int exitcode(int bsddialog_retval)
 {
-	return (exitcodes[bsddialog_retval + 1]);
+	return (exitcodes[bsddialog_retval + 1].value);
 }
 
 void exit_error(bool usage, const char *fmt, ...)
@@ -127,6 +133,23 @@ static bool getenv_color()
 	return (color);
 }
 
+static void getenv_exitcodes()
+{
+	int i;
+	long int value;
+	char *envvalue;
+
+	for (i = 0; i < 10; i++) {
+		envvalue = getenv(exitcodes[i].name);
+		if (envvalue == NULL)
+			continue;
+		value = (int)strtol(envvalue, NULL, 10);
+		if (value == LONG_MIN || value == LONG_MAX)
+			continue;
+		exitcodes[i].value = value;
+	}
+}
+
 int main(int argc, char *argv[argc])
 {
 	bool mandatory_dialog, envcolor;
@@ -136,6 +159,8 @@ int main(int argc, char *argv[argc])
 	struct options opt;
 
 	setlocale(LC_ALL, "");
+
+	getenv_exitcodes();
 
 	mandatory_dialog = true;
 	firstoptind = optind;
