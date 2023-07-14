@@ -237,6 +237,12 @@ bsddialog_color(enum bsddialog_color foreground,
 		cursesflags |= A_REVERSE;
 	if (flags & BSDDIALOG_UNDERLINE)
 		cursesflags |= A_UNDERLINE;
+	if (flags & BSDDIALOG_HIGHLIGHT)
+		cursesflags |= A_STANDOUT;
+	if (flags & BSDDIALOG_HALFBRIGHT)
+		cursesflags |= A_DIM;
+	if (flags & BSDDIALOG_BLINK)
+		cursesflags |= A_BLINK;
 
 	return (GET_COLOR(foreground, background) | cursesflags);
 }

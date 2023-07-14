@@ -27,6 +27,8 @@ WIP Next Version
 	    - add: --generic1-exit-code.
 	    - add: --generic2-exit-code.
 	* add: --color "\Zd \Zk \Zs \ZD \ZK \ZS" escapes.
+	* fix: --load-theme ignores flags.
+	* add: --save-theme and --load-theme "blink", "halfbright", "highlight".
 	* delete: --esc-return-cancel
 	* refactor: modularize in more files.
 

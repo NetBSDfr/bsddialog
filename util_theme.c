@@ -160,11 +160,16 @@ void savetheme(const char *file, const char *version)
 		case COLOR:
 			bsddialog_color_attrs(*(int*)p[i].value, &fg, &bg,
 			    &flags);
-			fprintf(fp, "%s %s %s%s%s%s\n",
-			    p[i].name, color[fg], color[bg],
-			    flags & BSDDIALOG_BOLD ? " bold" : "",
-			    flags & BSDDIALOG_REVERSE ? " reverse" : "",
-			    flags & BSDDIALOG_UNDERLINE ? " underline" : "");
+			fprintf(fp, "%s %s %s%s%s%s%s%s%s\n",
+			    p[i].name,
+			    color[fg],
+			    color[bg],
+			    flags & BSDDIALOG_BOLD       ? " bold"       : "",
+			    flags & BSDDIALOG_REVERSE    ? " reverse"    : "",
+			    flags & BSDDIALOG_UNDERLINE  ? " underline"  : "",
+			    flags & BSDDIALOG_BLINK      ? " blink"      : "",
+			    flags & BSDDIALOG_HALFBRIGHT ? " halfbright" : "",
+			    flags & BSDDIALOG_HIGHLIGHT  ? " highlight"  : "");
 			break;
 		}
 	}
@@ -183,8 +188,8 @@ void loadtheme(const char *file)
 	bool boolvalue;
 	char charvalue, *value;
 	char line[BUFSIZ], name[BUFSIZ], c1[BUFSIZ], c2[BUFSIZ];
-	int i, j, intvalue, flags;
-	unsigned int uintvalue;
+	int i, j, intvalue;
+	unsigned int uintvalue, flags;
 	enum bsddialog_color bg, fg;
 	FILE *fp;
 
@@ -245,7 +250,7 @@ void loadtheme(const char *file)
 				PROP_ERROR(p[i].name, "Bad foreground");
 			/* Background */
 			for (j = 0; j < 8 ; j++)
-				if ((value = strstr(c2, color[j])) != NULL)
+				if ((strstr(c2, color[j])) != NULL)
 					break;
 			if ((bg = j) > 7)
 				PROP_ERROR(p[i].name, "Bad background");
@@ -257,6 +262,12 @@ void loadtheme(const char *file)
 				flags |= BSDDIALOG_REVERSE;
 			if (strstr(value, "underline") != NULL)
 				flags |= BSDDIALOG_UNDERLINE;
+			if (strstr(value, "blink") != NULL)
+				flags |= BSDDIALOG_BLINK;
+			if (strstr(value, "halfbright") != NULL)
+				flags |= BSDDIALOG_HALFBRIGHT;
+			if (strstr(value, "highlight") != NULL)
+				flags |= BSDDIALOG_HIGHLIGHT;
 			*((int*)p[i].value) = bsddialog_color(fg, bg, flags);
 			break;
 		}
@@ -264,7 +275,8 @@ void loadtheme(const char *file)
 
 	fclose(fp);
 
-	bsddialog_set_theme(&t);
+	if(bsddialog_set_theme(&t) != BSDDIALOG_OK)
+		exit_error(false, bsddialog_geterror());
 }
 
 void bikeshed(struct bsddialog_conf *conf)
