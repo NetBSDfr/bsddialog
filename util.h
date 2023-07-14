@@ -28,11 +28,11 @@
 #ifndef _BSDDIALOG_UTIL_H_
 #define _BSDDIALOG_UTIL_H_
 
+/*
+ * Exit codes and errors, bsddialog.c
+ */
 #define BSDDIALOG_ITEM_HELP 8
 
-/*
- * Errors, bsddialog.c
- */
 void exit_error(bool usage, const char *fmt, ...);
 void error_args(const char *dialog, int argc, char **argv);
 
