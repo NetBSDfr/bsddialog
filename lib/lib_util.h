@@ -173,8 +173,6 @@ void rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnote
 #define YTEXTPAD(d, ytext, downnotext) rtextpad(d, ytext, 0, 0, downnotext)
 /* mixedgauge */
 #define YSTEXTPAD(d, upnotext, downnotext) rtextpad(d, 0, 0, upnotext, downnotext)
-/* textbox */
-//#define YXTEXTPAD(d, ytext, xtext, downnotext) rtextpad(pad, ytext, xtext, 0, downnotext)
 
 int hide_dialog(struct dialog *d);
 void end_dialog(struct dialog *d);
