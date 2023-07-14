@@ -6,6 +6,7 @@ WIP Next Version
 	* improve: DIAGNOSTIC messages using fmt string errors.
 	* add: button delimiter to --bikeshed.
 	* refactor: modularize utilty.
+	* add: env NO_COLOR.
 
 	Library:
 	* add: check (when possible) API pointers.

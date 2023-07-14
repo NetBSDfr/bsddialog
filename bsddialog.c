@@ -95,9 +95,22 @@ static void start_bsddialog_mode(void)
 	signal(SIGINT, sigint_handler);
 }
 
+static bool getenv_color()
+{
+	bool color;
+	char *no_color;
+
+	color = true;
+	no_color = getenv("NO_COLOR");
+	if (no_color != NULL && no_color[0] != '\0')
+		color = false;
+
+	return (color);
+}
+
 int main(int argc, char *argv[argc])
 {
-	bool mandatory_dialog;
+	bool mandatory_dialog, envcolor;
 	int i, rows, cols, retval, parsed, nargc, firstoptind;
 	char *text, **nargv, *pn;
 	struct bsddialog_conf conf;
@@ -120,6 +133,8 @@ int main(int argc, char *argv[argc])
 			return (BSDDIALOG_OK);
 		}
 	}
+
+	envcolor = getenv_color();
 
 	while (true) {
 		parsed = parseargs(argc, argv, &conf, &opt, &mandatory_dialog);
@@ -169,8 +184,11 @@ int main(int argc, char *argv[argc])
 		}
 
 		/* theme */
-		if (opt.theme >= 0)
-			bsddialog_set_default_theme(opt.theme);
+		if (envcolor)
+			setdeftheme(BSDDIALOG_THEME_BLACKWHITE);
+		envcolor = false;
+		if ((int)opt.theme >= 0)
+			setdeftheme(opt.theme);
 		if (opt.loadthemefile != NULL)
 			loadtheme(opt.loadthemefile);
 		if (opt.bikeshed)
