@@ -126,7 +126,7 @@ static int textbox_draw(struct dialog *d, struct scrolltext *st)
 
 /* API */
 int
-bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
+bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
     int cols)
 {
 	bool loop, has_multicol_ch;
@@ -138,6 +138,8 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char* file, int rows,
 	struct scrolltext st;
 	struct dialog d;
 
+	if (file == NULL)
+		RETURN_ERROR("*file is NULLx");
 	if ((fp = fopen(file, "r")) == NULL)
 		RETURN_FMTERROR("Cannot open file \"%s\"", file);
 
