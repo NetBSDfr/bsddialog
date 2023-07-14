@@ -43,6 +43,25 @@
 
 static void custom_text(struct options *opt, char *text, char *buf);
 
+/* Exit codes */
+static int exitcodes[10] = {
+	255, /* BSDDIALOG_ERROR */
+	  0, /* BSDDIALOG_OK */
+	  1, /* BSDDIALOG_CANCEL */
+	  2, /* BSDDIALOG_HELP */
+	  3, /* BSDDIALOG_EXTRA */
+	  4, /* BSDDIALOG_TIMEOUT */
+	  5, /* BSDDIALOG_ESC */
+	  6, /* BSDDIALOG_GENERIC1 */
+	  7, /* BSDDIALOG_GENERIC2 */
+	  2, /* BSDDIALOG_ITEM_HELP */
+};
+
+int exitcode(int bsddialog_retval)
+{
+	return (exitcodes[bsddialog_retval + 1]);
+}
+
 void exit_error(bool usage, const char *fmt, ...)
 {
 	va_list arg_ptr;
@@ -59,7 +78,7 @@ void exit_error(bool usage, const char *fmt, ...)
 		printf("for more information.\n");
 	}
 
-	exit (255);
+	exit (exitcode(BSDDIALOG_ERROR));
 }
 
 void error_args(const char *dialog, int argc, char **argv)
@@ -75,14 +94,14 @@ void error_args(const char *dialog, int argc, char **argv)
 	printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
 	printf("for more information.\n");
 
-	exit (255);
+	exit (exitcode(BSDDIALOG_ERROR));
 }
 
 static void sigint_handler(int UNUSED_PAR(sig))
 {
 	bsddialog_end();
 
-	exit(255);
+	exit(exitcode(BSDDIALOG_ERROR));
 }
 
 static void start_bsddialog_mode(void)
