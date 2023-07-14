@@ -33,6 +33,7 @@
  */
 #define BSDDIALOG_ITEM_HELP 8
 
+void set_exit_code(int lib_retval, int exitcode);
 void exit_error(bool usage, const char *fmt, ...);
 void error_args(const char *dialog, int argc, char **argv);
 

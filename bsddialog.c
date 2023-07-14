@@ -65,6 +65,11 @@ static struct exitcode exitcodes[10] = {
 	{ "BSDDIALOG_ITEM_HELP", 2 }
 };
 
+void set_exit_code(int lib_retval, int exitcode)
+{
+	exitcodes[lib_retval + 1].value = exitcode;
+}
+
 void exit_error(bool usage, const char *fmt, ...)
 {
 	va_list arg_ptr;
@@ -117,7 +122,7 @@ static void start_bsddialog_mode(void)
 	signal(SIGINT, sigint_handler);
 }
 
-static bool getenv_color()
+static bool getenv_color(void)
 {
 	bool color;
 	char *no_color;
@@ -130,7 +135,7 @@ static bool getenv_color()
 	return (color);
 }
 
-static void getenv_exitcodes()
+static void getenv_exitcodes(void)
 {
 	int i;
 	long int value;

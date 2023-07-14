@@ -47,6 +47,7 @@ enum OPTS {
 	BEGIN_X,
 	BEGIN_Y,
 	BIKESHED,
+	CANCEL_EXIT_CODE,
 	CANCEL_LABEL,
 	CLEAR_DIALOG,
 	CLEAR_SCREEN,
@@ -58,12 +59,18 @@ enum OPTS {
 	DEFAULT_ITEM,
 	DEFAULT_NO,
 	DISABLE_ESC,
+	ERROR_EXIT_CODE,
+	ESC_EXIT_CODE,
 	EXIT_LABEL,
 	EXTRA_BUTTON,
+	EXTRA_EXIT_CODE,
 	EXTRA_LABEL,
+	GENERIC1_EXIT_CODE,
+	GENERIC2_EXIT_CODE,
 	GENERIC_BUTTON1,
 	GENERIC_BUTTON2,
 	HELP_BUTTON,
+	HELP_EXIT_CODE,
 	HELP_LABEL,
 	HELP_PRINT_NAME,
 	HELP_STATUS,
@@ -84,6 +91,7 @@ enum OPTS {
 	NO_OK,
 	NO_SHADOW,
 	NORMAL_SCREEN,
+	OK_EXIT_CODE,
 	OK_LABEL,
 	OUTPUT_FD,
 	OUTPUT_SEPARATOR,
@@ -103,6 +111,7 @@ enum OPTS {
 	TAB_LEN,
 	TEXT_UNCHANGED,
 	THEME,
+	TIMEOUT_EXIT_CODE,
 	TIME_FORMAT,
 	TITLE,
 	/* Dialogs */
@@ -139,6 +148,7 @@ static struct option longopts[] = {
 	{"begin-x",           required_argument, NULL, BEGIN_X},
 	{"begin-y",           required_argument, NULL, BEGIN_Y},
 	{"bikeshed",          no_argument,       NULL, BIKESHED},
+	{"cancel-exit-code",  required_argument, NULL, CANCEL_EXIT_CODE},
 	{"cancel-label",      required_argument, NULL, CANCEL_LABEL},
 	{"clear",             no_argument,       NULL, CLEAR_SCREEN},
 	{"clear-dialog",      no_argument,       NULL, CLEAR_DIALOG},
@@ -152,12 +162,18 @@ static struct option longopts[] = {
 	{"default-item",      required_argument, NULL, DEFAULT_ITEM},
 	{"default-no",        no_argument,       NULL, DEFAULT_NO},
 	{"disable-esc",       no_argument,       NULL, DISABLE_ESC},
+	{"error-exit-code",   required_argument, NULL, ERROR_EXIT_CODE},
+	{"esc_exit-code",     required_argument, NULL, ESC_EXIT_CODE},
 	{"exit-label",        required_argument, NULL, EXIT_LABEL},
 	{"extra-button",      no_argument,       NULL, EXTRA_BUTTON},
+	{"extra-exit-code",   required_argument, NULL, EXTRA_EXIT_CODE},
 	{"extra-label",       required_argument, NULL, EXTRA_LABEL},
+	{"generic1-exit-code",required_argument, NULL, GENERIC1_EXIT_CODE},
+	{"generic2-exit-code",required_argument, NULL, GENERIC2_EXIT_CODE},
 	{"generic-button1",   required_argument, NULL, GENERIC_BUTTON1},
 	{"generic-button2",   required_argument, NULL, GENERIC_BUTTON2},
 	{"help-button",       no_argument,       NULL, HELP_BUTTON},
+	{"help-exit-code",    required_argument, NULL, HELP_EXIT_CODE},
 	{"help-label",        required_argument, NULL, HELP_LABEL},
 	{"help-print-name",   no_argument,       NULL, HELP_PRINT_NAME},
 	{"help-status",       no_argument,       NULL, HELP_STATUS},
@@ -186,6 +202,7 @@ static struct option longopts[] = {
 	{"no-shadow",         no_argument,       NULL, NO_SHADOW},
 	{"no-tags",           no_argument,       NULL, NO_NAMES},
 	{"normal-screen",     no_argument,       NULL, NORMAL_SCREEN},
+	{"ok-exit-code",      required_argument, NULL, OK_EXIT_CODE},
 	{"ok-label",          required_argument, NULL, OK_LABEL},
 	{"output-fd",         required_argument, NULL, OUTPUT_FD},
 	{"output-separator",  required_argument, NULL, OUTPUT_SEPARATOR},
@@ -206,6 +223,7 @@ static struct option longopts[] = {
 	{"tab-len",           required_argument, NULL, TAB_LEN},
 	{"text-unchanged",    no_argument,       NULL, TEXT_UNCHANGED},
 	{"theme",             required_argument, NULL, THEME},
+	{"timeout-exit-code", required_argument, NULL, TIMEOUT_EXIT_CODE},
 	{"time-format",       required_argument, NULL, TIME_FORMAT},
 	{"title",             required_argument, NULL, TITLE},
 	{"yes-label",         required_argument, NULL, OK_LABEL},
@@ -246,29 +264,32 @@ void usage(void)
 
 	printf("Options:\n");
 	printf(" --alternate-screen, --ascii-lines, --backtitle <backtitle>,"
-	    " --begin-x <x>,\n --begin-y <y>, --bikeshed, --calendar,"
-	    " --cancel-label <label>, --clear-dialog,\n --clear-screen,"
-	    " --colors, --columns-per-row <columns>, --cr-wrap,\n"
-	    " --date-format <format>, --default-button <label>,"
-	    " --default-item <name>,\n --default-no, --disable-esc,"
-	    " --exit-label <label>,\n --extra-button,"
-	    " --extra-label <label>, --generic-button1 <label>,\n"
-	    " --generic-button2 <label>, --help-button, --help-label <label>,\n"
-	    " --help-print-name, --help-status, --hfile <file>,"
-	    " --hline <string>,\n --hmsg <string>, --ignore, --insecure,"
-	    " --item-bottom-desc, --item-depth,\n --item-prefix,"
-	    " --load-theme <file>, --max-input <size>, --no-cancel,\n"
-	    " --no-descriptions, --no-label <label>, --no-lines, --no-names,"
-	    " --no-ok,\n --no-shadow, --normal-screen, --ok-label <label>,"
-	    " --output-fd <fd>,\n --output-separator <sep>, --print-maxsize,"
-	    " --print-size, --print-version,\n --quoted, --save-theme <file>,"
-	    " --separate-output, --separator <sep>, --shadow,\n"
-	    " --single-quoted, --sleep <secs>, --stderr, --stdout,"
+	    " --begin-x <x>,\n --begin-y <y>, --bikeshed,"
+	    " --cancel-exit-code <retval>, --cancel-label <label>,\n"
+	    " --clear-dialog, --clear-screen, --colors,"
+	    " --columns-per-row <columns>,\n --cr-wrap, --date-format <format>,"
+	    " --default-button <label>,\n --default-item <name>, --default-no,"
+	    " --disable-esc, --error-exit-code <retval>,\n"
+	    " --esc_exit-code <retval>, --exit-label <label>, --extra-button,\n"
+	    " --extra-exit-code <retval>, --extra-label <label>,\n"
+	    " --generic1-exit-code <retval>, --generic2-exit-code <retval>,\n"
+	    " --generic-button1 <label>, --generic-button2 <label>,"
+	    " --help-button,\n --help-exit-code <retval>, --help-label <label>,"
+	    " --help-print-name,\n --help-status, --hfile <file>,"
+	    " --hline <string>, --hmsg <string>, --ignore,\n --insecure,"
+	    " --item-bottom-desc, --item-depth, --item-prefix,\n"
+	    " --load-theme <file>, --max-input <size>, --no-cancel,"
+	    " --no-descriptions,\n --no-label <label>, --no-lines, --no-names,"
+	    " --no-ok, --no-shadow,\n --normal-screen, --ok-exit-code <retval>,"
+	    " --ok-label <label>, --output-fd <fd>,\n --output-separator <sep>,"
+	    " --print-maxsize, --print-size, --print-version,\n --quoted,"
+	    " --save-theme <file>, --separate-output, --separator <sep>,"
+	    " --shadow,\n --single-quoted, --sleep <secs>, --stderr, --stdout,"
 	    " --tab-escape,\n --tab-len <spaces>, --text-unchanged,"
-	    " --switch-buttons,\n --theme 3d|blackwhite|flat,"
-	    " --time-format <format>, --title <title>,\n"
-	    " --yes-label <label>.\n");
-	printf("\n");
+	    " --timeout-exit-code <retval>,\n --switch-buttons,"
+	    " --theme 3d|blackwhite|flat, --time-format <format>,\n"
+	    " --title <title>, --yes-label <label>.");
+	printf("\n\n");
 
 	printf("Dialogs:\n");
 	printf(" --calendar <text> <rows> <cols> [<dd> <mm> <yy>]\n");
@@ -367,6 +388,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 		case BIKESHED:
 			opt->bikeshed = true;
 			break;
+		case CANCEL_EXIT_CODE:
+			set_exit_code(BSDDIALOG_CANCEL,
+			    (int)strtol(optarg, NULL, 10));
+			break;
 		case CANCEL_LABEL:
 			conf->button.cancel_label = optarg;
 			break;
@@ -402,14 +427,34 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 		case DISABLE_ESC:
 			conf->key.enable_esc = false;
 			break;
+		case ERROR_EXIT_CODE:
+			set_exit_code(BSDDIALOG_ERROR,
+			    (int)strtol(optarg, NULL, 10));
+			break;
+		case ESC_EXIT_CODE:
+			set_exit_code(BSDDIALOG_ESC,
+			    (int)strtol(optarg, NULL, 10));
+			break;
 		case EXIT_LABEL:
 			conf->button.ok_label = optarg;
 			break;
 		case EXTRA_BUTTON:
 			conf->button.with_extra = true;
 			break;
+		case EXTRA_EXIT_CODE:
+			set_exit_code(BSDDIALOG_EXTRA,
+			    (int)strtol(optarg, NULL, 10));
+			break;
 		case EXTRA_LABEL:
 			conf->button.extra_label = optarg;
+			break;
+		case GENERIC1_EXIT_CODE:
+			set_exit_code(BSDDIALOG_GENERIC1,
+			    (int)strtol(optarg, NULL, 10));
+			break;
+		case GENERIC2_EXIT_CODE:
+			set_exit_code(BSDDIALOG_GENERIC2,
+			    (int)strtol(optarg, NULL, 10));
 			break;
 		case GENERIC_BUTTON1:
 			conf->button.generic1_label = optarg;
@@ -419,6 +464,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			break;
 		case HELP_BUTTON:
 			conf->button.with_help = true;
+			break;
+		case HELP_EXIT_CODE:
+			set_exit_code(BSDDIALOG_HELP,
+			    (int)strtol(optarg, NULL, 10));
 			break;
 		case HELP_LABEL:
 			conf->button.help_label = optarg;
@@ -480,6 +529,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			break;
 		case NORMAL_SCREEN:
 			opt->screen_mode = "rmcup";
+			break;
+		case OK_EXIT_CODE:
+			set_exit_code(BSDDIALOG_OK,
+			    (int)strtol(optarg, NULL, 10));
 			break;
 		case OK_LABEL:
 			conf->button.ok_label = optarg;
@@ -552,6 +605,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			else
 				exit_error(true,
 				    "--theme: \"%s\" is unknown", optarg);
+			break;
+		case TIMEOUT_EXIT_CODE:
+			set_exit_code(BSDDIALOG_TIMEOUT,
+			    (int)strtol(optarg, NULL, 10));
 			break;
 		case TIME_FORMAT:
 			opt->time_fmt = optarg;

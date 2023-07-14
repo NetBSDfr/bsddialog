@@ -92,6 +92,10 @@ Buttons always active or TAB to switch focus with input components, see
 .Fl Fl switch-buttons .
 Zero padding with time or date output.
 Button delimiter.
+.It Fl Fl cancel-exit-code Ar retval
+Set an exit code value for the
+.Dq Cancel
+button.
 .It Fl Fl cancel-label Ar label
 Label for the
 .Dq Cancel
@@ -179,15 +183,35 @@ or
 button on startup.
 .It Fl Fl disable-esc
 Disable ESC key to quit.
+.It Fl Fl error-exit-code Ar retval
+Set an exit code value for the
+.Nm
+errors.
+.It Fl Fl esc-exit-code Ar retval
+Set an exit code value for the
+.Dv ESC
+key.
 .It Fl Fl extra-button
 Add a button with
 .Dq Extra
 label.
+.It Fl Fl extra-exit-code Ar retval
+Set an exit code value for the
+.Dq Extra
+button.
 .It Fl Fl extra-label Ar label
 Set
 .Ar label
 for the
 .Dq Extra
+button.
+.It Fl Fl generic1-exit-code Ar retval
+Set an exit code value for the
+.Fl Fl generic-button1
+button.
+.It Fl Fl generic2-exit-code Ar retval
+Set an exit code value for the
+.Fl Fl generic-button2
 button.
 .It Fl Fl generic-button1 Ar label
 Add a button with
@@ -199,6 +223,10 @@ Add a button with
 Add a button with
 .Dq Help
 label.
+.It Fl Fl help-exit-code Ar retval
+Set an exit code value for the
+.Dq Help
+button.
 .It Fl Fl help-label Ar label
 Set
 .Ar label
@@ -266,6 +294,10 @@ Set
 .Ar label
 for
 .Dq OK
+button.
+.It Fl Fl ok-exit-code Ar retval
+Set an exit code value for the
+.Dq Ok
 button.
 .It Fl Fl normal-screen
 If available set normal screen mode, see
@@ -340,6 +372,10 @@ String accepted by
 .Xr strftime 3
 to customize the output of
 .Fl Fl timebox .
+.It Fl Fl timeout-exit-code Ar retval
+Set an exit code value for the
+.Fl Fl pause
+timeout.
 .It Fl Fl title Ar title
 Dialog title.
 .El
@@ -550,10 +586,12 @@ and
 UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to navigate the text.
 .El
 .Sh ENVIRONMENT
+The environment variables take effect only at startup, other options can their
+setting.
+.Pp
 .Ev NO_COLOR
 equivalent to
-.Fl Fl theme Ar theme blackwhite ,
-takes effect only at startup, other options can turn color back on.
+.Fl Fl theme Ar theme blackwhite .
 .Pp
 The following environment variables can set the exit codes:
 .Ev BSDDIALOG_ERROR ,
@@ -703,7 +741,7 @@ was written by
 .Aq Mt asiciliano@FreeBSD.org .
 .Pp
 .Nm bsddialog
-provides a subset of the functionality described in the
+provides also a subset of the functionality described in the
 .Nm dialog
 manual.
 The following features were reimplemented:

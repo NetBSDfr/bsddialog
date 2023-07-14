@@ -5,20 +5,30 @@ WIP Next Version
 	* change: --theme names: 3d|blackwhite|flat.
 	* improve: DIAGNOSTIC messages using fmt string errors.
 	* add: button delimiter to --bikeshed.
-	* refactor: modularize utilty in more files.
 	* add: env NO_COLOR.
-	* add: BSDDIALOG_ERROR.
-	* add: BSDDIALOG_OK.
-	* add: BSDDIALOG_CANCEL.
-	* add: BSDDIALOG_HELP.
-	* add: BSDDIALOG_EXTRA.
-	* add: BSDDIALOG_TIMEOUT.
-	* add: BSDDIALOG_ESC.
-	* add: BSDDIALOG_GENERIC1.
-	* add: BSDDIALOG_GENERIC2.
-	* add: BSDDIALOG_ITEM_HELP.
-	* add: --color attrs "\Zd \Zk \Zs \ZD \ZK \ZS".
+	* add: dynamic exit codes
+	    - add: env BSDDIALOG_ERROR.
+	    - add: env BSDDIALOG_OK.
+	    - add: env BSDDIALOG_CANCEL.
+	    - add: env BSDDIALOG_HELP.
+	    - add: env BSDDIALOG_EXTRA.
+	    - add: env BSDDIALOG_TIMEOUT.
+	    - add: env BSDDIALOG_ESC.
+	    - add: env BSDDIALOG_GENERIC1.
+	    - add: env BSDDIALOG_GENERIC2.
+	    - add: env BSDDIALOG_ITEM_HELP.
+	    - add: --error-exit-code.
+	    - add: --ok-exit-code.
+	    - add: --cancel-exit-code.
+	    - add: --help-exit-code.
+	    - add: --extra-exit-code.
+	    - add: --timeout-exit-code.
+	    - add: --esc-exit-code.
+	    - add: --generic1-exit-code.
+	    - add: --generic2-exit-code.
+	* add: --color "\Zd \Zk \Zs \ZD \ZK \ZS" escapes.
 	* delete: --esc-return-cancel
+	* refactor: modularize in more files.
 
 	Library:
 	* add: check (when possible) API pointers.
