@@ -357,13 +357,16 @@ bool shortcut_buttons(wint_t key, struct buttons *bs)
 /* Text */
 static bool is_wtext_attr(const wchar_t *wtext)
 {
+	bool att;
+
 	if (wcsnlen(wtext, 3) < 3)
 		return (false);
-
 	if (wtext[0] != L'\\' || wtext[1] != L'Z')
 		return (false);
 
-	return (wcschr(L"nbBrRuU01234567", wtext[2]) == NULL ? false : true);
+	att = wcschr(L"nbBdDkKrRsSuU01234567", wtext[2]) == NULL ? false : true;
+
+	return (att);
 }
 
 static bool check_set_wtext_attr(WINDOW *win, wchar_t *wtext)
@@ -390,11 +393,29 @@ static bool check_set_wtext_attr(WINDOW *win, wchar_t *wtext)
 	case L'B':
 		wattroff(win, A_BOLD);
 		break;
+	case L'd':
+		wattron(win, A_DIM);
+		break;
+	case L'D':
+		wattroff(win, A_DIM);
+		break;
+	case L'k':
+		wattron(win, A_BLINK);
+		break;
+	case L'K':
+		wattroff(win, A_BLINK);
+		break;
 	case L'r':
 		wattron(win, A_REVERSE);
 		break;
 	case L'R':
 		wattroff(win, A_REVERSE);
+		break;
+	case L's':
+		wattron(win, A_STANDOUT);
+		break;
+	case L'S':
+		wattroff(win, A_STANDOUT);
 		break;
 	case L'u':
 		wattron(win, A_UNDERLINE);

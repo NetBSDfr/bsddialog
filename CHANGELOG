@@ -17,6 +17,7 @@ WIP Next Version
 	* add: BSDDIALOG_GENERIC1.
 	* add: BSDDIALOG_GENERIC2.
 	* add: BSDDIALOG_ITEM_HELP.
+	* add: --color attrs "\Zd \Zk \Zs \ZD \ZK \ZS".
 
 	Library:
 	* add: check (when possible) API pointers.
@@ -38,6 +39,7 @@ WIP Next Version
 	* fix: check/set max mixedgauge mainperc to 100.
 	* fix: timebox.c checksize (boxes width).
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
+	* add: attrs for conf.text.highlight "\Zd \Zk \Zs \ZD \ZK \ZS".
 	* refactor: internal implementation.
 	    - merge: (when possible) dialogs autosize.
 	    - merge: (when possible) dialogs checksize.
