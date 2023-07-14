@@ -216,7 +216,9 @@ int bsddialog_set_default_theme(enum bsddialog_default_theme newtheme)
 	} else if (newtheme == BSDDIALOG_THEME_FLAT) {
 		set_theme(&t, &flat);
 	} else {
-		RETURN_ERROR("Unknown default theme");
+		RETURN_FMTERROR("Unknown default theme (%d), "
+		    "to use enum bsddialog_default_theme",
+		    newtheme);
 	}
 	refresh();
 
