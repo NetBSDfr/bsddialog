@@ -57,7 +57,7 @@ static int exitcodes[10] = {
 	  2, /* BSDDIALOG_ITEM_HELP */
 };
 
-int exitcode(int bsddialog_retval)
+static int exitcode(int bsddialog_retval)
 {
 	return (exitcodes[bsddialog_retval + 1]);
 }
@@ -255,7 +255,7 @@ int main(int argc, char *argv[argc])
 	}
 	/* end bsddialog terminal mode */
 
-	return (retval);
+	return (exitcode(retval));
 }
 
 void custom_text(struct options *opt, char *text, char *buf)

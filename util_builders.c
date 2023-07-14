@@ -435,8 +435,10 @@ int checklist_builder(BUILDER_ARGS)
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem, false, opt);
-
 	free(items);
+
+	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
+		output = BSDDIALOG_ITEM_HELP;
 
 	return (output);
 }
@@ -459,8 +461,10 @@ int menu_builder(BUILDER_ARGS)
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem, true, opt);
-
 	free(items);
+
+	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
+		output = BSDDIALOG_ITEM_HELP;
 
 	return (output);
 }
@@ -482,8 +486,10 @@ int radiolist_builder(BUILDER_ARGS)
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem, false, opt);
-
 	free(items);
+
+	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
+		output = BSDDIALOG_ITEM_HELP;
 
 	return (output);
 }
@@ -508,8 +514,10 @@ int treeview_builder(BUILDER_ARGS)
 	    items, &focusitem);
 
 	print_menu_items(output, nitems, items, focusitem, false, opt);
-
 	free(items);
+
+	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
+		output = BSDDIALOG_ITEM_HELP;
 
 	return (output);
 }
@@ -574,6 +582,9 @@ int form_builder(BUILDER_ARGS)
 	    items);
 	print_form_items(output, nitems, items, opt);
 	free(items);
+
+	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
+		output = BSDDIALOG_ITEM_HELP;
 
 	return (output);
 }
@@ -642,6 +653,9 @@ int mixedform_builder(BUILDER_ARGS)
 	    items);
 	print_form_items(output, nitems, items, opt);
 	free(items);
+
+	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
+		output = BSDDIALOG_ITEM_HELP;
 
 	return (output);
 }
@@ -719,6 +733,9 @@ int passwordform_builder(BUILDER_ARGS)
 	    items);
 	print_form_items(output, nitems, items, opt);
 	free(items);
+
+	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
+		output = BSDDIALOG_ITEM_HELP;
 
 	return (output);
 }
