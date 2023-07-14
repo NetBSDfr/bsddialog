@@ -28,7 +28,7 @@
 #ifndef _BSDDIALOG_UTIL_H_
 #define _BSDDIALOG_UTIL_H_
 
-#define BSDDIALOG_ITEM_HELP 9
+#define BSDDIALOG_ITEM_HELP 8
 
 /*
  * Errors, bsddialog.c
