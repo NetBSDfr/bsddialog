@@ -32,13 +32,13 @@
 #include "lib_util.h"
 
 #define GET_COLOR(bg, fg) (COLOR_PAIR(bg * 8 + fg +1))
+#define WHITE GET_COLOR(COLOR_WHITE, COLOR_BLACK)
+#define BLACK GET_COLOR(COLOR_WHITE, COLOR_BLACK) | A_REVERSE
 
 struct bsddialog_theme t;
 bool hastermcolors;
 
 static struct bsddialog_theme blackwhite = {
-#define WHITE GET_COLOR(COLOR_WHITE, COLOR_BLACK)
-#define BLACK GET_COLOR(COLOR_WHITE, COLOR_BLACK) | A_REVERSE
 	.screen.color = WHITE,
 
 	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
