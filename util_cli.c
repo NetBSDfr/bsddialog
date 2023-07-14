@@ -364,7 +364,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			if (conf->y < BSDDIALOG_CENTER)
 				exit_error(false, "--begin-y %d is < %d",
 				    conf->y, BSDDIALOG_CENTER);
-			conf->auto_topmargin = 0; // to check!	 
+			conf->auto_topmargin = 0;
 			break;
 		case BIKESHED:
 			opt->bikeshed = true;
