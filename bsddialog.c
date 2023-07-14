@@ -144,6 +144,9 @@ static void getenv_exitcodes()
 		if (value == LONG_MIN || value == LONG_MAX)
 			continue;
 		exitcodes[i].value = value;
+		/* ITEM_HELP follows HELP without explicit settings */
+		if(i == BSDDIALOG_HELP + 1)
+			exitcodes[BSDDIALOG_ITEM_HELP + 1].value = value;
 	}
 }
 
