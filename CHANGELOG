@@ -40,6 +40,8 @@ WIP Next Version
 	* fix: timebox.c checksize (boxes width).
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
 	* add: attrs for conf.text.highlight "\Zd \Zk \Zs \ZD \ZK \ZS".
+	* add: bsddialog_theme.h BSDDIALOG_BLINK, BSDDIALOG_HALFBRIGHT,
+	    BSDDIALOG_HIGHLIGHT.
 	* refactor: internal implementation.
 	    - merge: (when possible) dialogs autosize.
 	    - merge: (when possible) dialogs checksize.

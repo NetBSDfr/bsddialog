@@ -29,9 +29,12 @@
 #define _LIBBSDDIALOG_THEME_H_
 
 /* color flags */
-#define BSDDIALOG_BOLD         1U
-#define BSDDIALOG_REVERSE      2U
-#define BSDDIALOG_UNDERLINE    4U
+#define BSDDIALOG_BLINK       1U
+#define BSDDIALOG_BOLD        2U
+#define BSDDIALOG_HALFBRIGHT  4U
+#define BSDDIALOG_HIGHLIGHT   8U
+#define BSDDIALOG_REVERSE    16U
+#define BSDDIALOG_UNDERLINE  32U
 
 struct bsddialog_theme {
 	struct {

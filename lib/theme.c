@@ -253,7 +253,10 @@ bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
 	CHECK_PTR_SIZE(flags, unsigned int);
 
 	flag = 0;
+	flag |= (color & A_STANDOUT) ? BSDDIALOG_HIGHLIGHT : 0;
+	flag |= (color & A_BLINK) ? BSDDIALOG_BLINK : 0;
 	flag |= (color & A_BOLD) ? BSDDIALOG_BOLD : 0;
+	flag |= (color & A_DIM) ? BSDDIALOG_HALFBRIGHT : 0;
 	flag |= (color & A_REVERSE) ? BSDDIALOG_REVERSE : 0;
 	flag |= (color & A_UNDERLINE) ? BSDDIALOG_UNDERLINE : 0;
 	if (flags != NULL)
