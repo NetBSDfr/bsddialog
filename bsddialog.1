@@ -546,6 +546,25 @@ UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to navigate the text.
 equivalent to
 .Fl Fl theme Ar theme blackwhite ,
 takes effect only at startup, other options can turn color back on.
+.Pp
+The following environment variables can set the exit codes:
+.Ev BSDDIALOG_ERROR ,
+.Ev BSDDIALOG_OK ,
+.Ev BSDDIALOG_CANCEL ,
+.Ev BSDDIALOG_HELP ,
+.Ev BSDDIALOG_EXTRA ,
+.Ev BSDDIALOG_TIMEOUT ,
+.Ev BSDDIALOG_ESC ,
+.Ev BSDDIALOG_GENERIC1
+(generic button 1),
+.Ev BSDDIALOG_GENERIC2
+(generic button 2),
+.Ev BSDDIALOG_ITEM_HELP
+(takes effect with the
+.Dq Help
+button and the
+.Fl Fl item-bottom-desc
+option).
 .Sh EXIT STATUS
 The
 .Nm
