@@ -1,8 +1,8 @@
 WIP Next Version
 
 	Utility:
-	* delete: theme bsddialog (partially implemented).
-	* change: --theme 3d|blackwhite|flat.
+	* delete: bsddialog theme (partially implemented).
+	* change: --theme names: 3d|blackwhite|flat.
 	* improve: DIAGNOSTIC messages using fmt string errors.
 	* add: button delimiter to --bikeshed.
 	* refactor: modularize utilty in more files.
