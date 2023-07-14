@@ -45,28 +45,25 @@
 static void custom_text(struct options *opt, char *text, char *buf);
 
 /* Exit codes */
+#define EXITCODE(retval) (exitcodes[retval + 1].value)
+
 struct exitcode {
 	const char *name;
 	int value;
 };
 
 static struct exitcode exitcodes[10] = {
-	{ "BSDDIALOG_ERROR", 255 },
-	{ "BSDDIALOG_OK", 0 },
-	{ "BSDDIALOG_CANCEL", 1 },
-	{ "BSDDIALOG_HELP", 2 },
-	{ "BSDDIALOG_EXTRA", 3 },
-	{ "BSDDIALOG_TIMEOUT", 4 },
-	{ "BSDDIALOG_ESC", 5 },
-	{ "BSDDIALOG_GENERIC1", 6 },
-	{ "BSDDIALOG_GENERIC2",7 },
+	{ "BSDDIALOG_ERROR",   255 },
+	{ "BSDDIALOG_OK",        0 },
+	{ "BSDDIALOG_CANCEL",    1 },
+	{ "BSDDIALOG_HELP",      2 },
+	{ "BSDDIALOG_EXTRA",     3 },
+	{ "BSDDIALOG_TIMEOUT",   4 },
+	{ "BSDDIALOG_ESC",       5 },
+	{ "BSDDIALOG_GENERIC1",  6 },
+	{ "BSDDIALOG_GENERIC2",  7 },
 	{ "BSDDIALOG_ITEM_HELP", 2 }
 };
-
-static int exitcode(int bsddialog_retval)
-{
-	return (exitcodes[bsddialog_retval + 1].value);
-}
 
 void exit_error(bool usage, const char *fmt, ...)
 {
@@ -84,7 +81,7 @@ void exit_error(bool usage, const char *fmt, ...)
 		printf("for more information.\n");
 	}
 
-	exit (exitcode(BSDDIALOG_ERROR));
+	exit (EXITCODE(BSDDIALOG_ERROR));
 }
 
 void error_args(const char *dialog, int argc, char **argv)
@@ -100,14 +97,14 @@ void error_args(const char *dialog, int argc, char **argv)
 	printf("See \'bsddialog --help\' or \'man 1 bsddialog\' ");
 	printf("for more information.\n");
 
-	exit (exitcode(BSDDIALOG_ERROR));
+	exit (EXITCODE(BSDDIALOG_ERROR));
 }
 
 static void sigint_handler(int UNUSED_PAR(sig))
 {
 	bsddialog_end();
 
-	exit(exitcode(BSDDIALOG_ERROR));
+	exit(EXITCODE(BSDDIALOG_ERROR));
 }
 
 static void start_bsddialog_mode(void)
@@ -280,7 +277,7 @@ int main(int argc, char *argv[argc])
 	}
 	/* end bsddialog terminal mode */
 
-	return (exitcode(retval));
+	return (EXITCODE(retval));
 }
 
 void custom_text(struct options *opt, char *text, char *buf)
