@@ -203,9 +203,9 @@ int main(int argc, char *argv[argc])
 		}
 
 		/* theme */
-		if (envcolor)
+		if (envcolor == false)
 			setdeftheme(BSDDIALOG_THEME_BLACKWHITE);
-		envcolor = false;
+		envcolor = true;
 		if ((int)opt.theme >= 0)
 			setdeftheme(opt.theme);
 		if (opt.loadthemefile != NULL)
