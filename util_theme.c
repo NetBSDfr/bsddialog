@@ -40,7 +40,9 @@
 static struct bsddialog_theme t;
 static char title[1024];
 
-#define NPROPERTY 38
+#define NPROPERTY  38
+#define NCOLOR      8
+#define NATTR       6
 
 #define PROP_ERROR(name, error) do {                                           \
 	fclose(fp);                                                            \
@@ -62,15 +64,29 @@ struct property {
 	void *value;
 };
 
-static const char *color[8] = {
-	"black",
-	"red",
-	"green",
-	"yellow",
-	"blue",
-	"magenta",
-	"cyan",
-	"white"
+struct namevalue {
+	const char *name;
+	unsigned int value;
+};
+
+static struct namevalue color[NCOLOR] = {
+	{"black",   BSDDIALOG_BLACK},
+	{"red",     BSDDIALOG_RED},
+	{"green",   BSDDIALOG_GREEN},
+	{"yellow",  BSDDIALOG_YELLOW},
+	{"blue",    BSDDIALOG_BLUE},
+	{"magenta", BSDDIALOG_MAGENTA},
+	{"cyan",    BSDDIALOG_CYAN},
+	{"white",   BSDDIALOG_WHITE}
+};
+
+static struct namevalue attr[NATTR] = {
+ 	{"bold",       BSDDIALOG_BOLD},
+	{"reverse",    BSDDIALOG_REVERSE},
+	{"underline",  BSDDIALOG_UNDERLINE},
+	{"blink",      BSDDIALOG_BLINK},
+	{"halfbright", BSDDIALOG_HALFBRIGHT},
+	{"highlight",  BSDDIALOG_HIGHLIGHT}
 };
 
 static struct property p[NPROPERTY] = {
@@ -130,7 +146,7 @@ static struct property p[NPROPERTY] = {
 
 void savetheme(const char *file, const char *version)
 {
-	int i;
+	int i, j;
 	unsigned int flags;
 	enum bsddialog_color bg, fg;
 	time_t clock;
@@ -147,7 +163,13 @@ void savetheme(const char *file, const char *version)
 		exit_error(false, "cannot open %s to save profile", file);
 
 	fprintf(fp, "### bsddialog theme - %s\n", ctime(&clock));
-	fputs("# f_ refers to elements with focus.\n\n", fp);
+	fputs("# Colors:", fp);
+	for (i = 0; i < NCOLOR; i++)
+		fprintf(fp, " %s", color[i].name);
+	fputs(".\n# Attributes: ", fp);
+	for (i = 0; i < NATTR; i++)
+		fprintf(fp, " %s", attr[i].name);
+	fputs(".\n# f_* refers to elements with focus.\n\n", fp);
 	fprintf(fp, "version %s\n", version);
 
 	for (i = 0; i < NPROPERTY; i++) {
@@ -169,15 +191,11 @@ void savetheme(const char *file, const char *version)
 		case COLOR:
 			bsddialog_color_attrs(*(int*)p[i].value, &fg, &bg,
 			    &flags);
-			fprintf(fp, " %s %s%s%s%s%s%s%s\n",
-			    color[fg],
-			    color[bg],
-			    flags & BSDDIALOG_BOLD       ? " bold"       : "",
-			    flags & BSDDIALOG_REVERSE    ? " reverse"    : "",
-			    flags & BSDDIALOG_UNDERLINE  ? " underline"  : "",
-			    flags & BSDDIALOG_BLINK      ? " blink"      : "",
-			    flags & BSDDIALOG_HALFBRIGHT ? " halfbright" : "",
-			    flags & BSDDIALOG_HIGHLIGHT  ? " highlight"  : "");
+			fprintf(fp, " %s %s", color[fg].name, color[bg].name);
+			for (j = 0; j < NATTR; j++)
+				if (flags & attr[j].value)
+					fprintf(fp, " %s", attr[j].name);
+			fputs("\n", fp);
 			break;
 		}
 	}
@@ -251,31 +269,24 @@ void loadtheme(const char *file)
 			if (sscanf(value, "%s %s", c1, c2) != 2)
 				PROP_ERROR(p[i].name, "Cannot get 2 colors");
 			/* Foreground */
-			for (j = 0; j < 8 ; j++)
-				if ((strstr(c1, color[j])) != NULL)
+			for (j = 0; j < NCOLOR ; j++)
+				if ((strstr(c1, color[j].name)) != NULL)
 					break;
-			if ((fg = j) > 7)
+			if (j >= NCOLOR)
 				PROP_ERROR(p[i].name, "Bad foreground");
+			fg = color[j].value;
 			/* Background */
-			for (j = 0; j < 8 ; j++)
-				if ((strstr(c2, color[j])) != NULL)
+			for (j = 0; j < NCOLOR ; j++)
+				if ((strstr(c2, color[j].name)) != NULL)
 					break;
-			if ((bg = j) > 7)
+			if (j >= NCOLOR)
 				PROP_ERROR(p[i].name, "Bad background");
+			bg = color[j].value;
 			/* Flags */
 			flags = 0;
-			if (strstr(value, "bold") != NULL)
-				flags |= BSDDIALOG_BOLD;
-			if (strstr(value, "reverse") != NULL)
-				flags |= BSDDIALOG_REVERSE;
-			if (strstr(value, "underline") != NULL)
-				flags |= BSDDIALOG_UNDERLINE;
-			if (strstr(value, "blink") != NULL)
-				flags |= BSDDIALOG_BLINK;
-			if (strstr(value, "halfbright") != NULL)
-				flags |= BSDDIALOG_HALFBRIGHT;
-			if (strstr(value, "highlight") != NULL)
-				flags |= BSDDIALOG_HIGHLIGHT;
+			for (j = 0; j < NATTR; j++)
+				if (strstr(value, attr[j].name) != NULL)
+					flags |= attr[j].value;
 			*((int*)p[i].value) = bsddialog_color(fg, bg, flags);
 			break;
 		}
