@@ -614,14 +614,14 @@ option).
 .Sh FILES
 The following files are read at startup if exist:
 .Bl -tag -width indent
-.It $HOME/.dialogrc
+.It Pa $HOME/.dialogrc
 to read
 .Dq use_shadow ,
 this feature is provided to allow some existing utility to be
 converted to use
 .Nm bsddialog ,
 can be deleted in the future.
-.It $HOME/.bsddialog.conf
+.It Pa $HOME/.bsddialog.conf
 is equivalent to
 .Fl Fl load-theme .
 .El
@@ -839,7 +839,8 @@ Dialogs:
 .Fl Fl treeview ,
 .Fl Fl yesno .
 .Pp
-File: $HOME/.dialogrc .
+File:
+.Pa $HOME/.dialogrc .
 .Pp
 Some feature differs in input, output, or behavior.
 Compatibility is not a priority for future development.
