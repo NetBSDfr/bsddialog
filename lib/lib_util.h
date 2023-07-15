@@ -44,6 +44,7 @@ extern bool hastermcolors;
 #define SCREENCOLS  (getmaxx(stdscr))
 #define	MIN(a,b) (((a)<(b))?(a):(b))
 #define	MAX(a,b) (((a)>(b))?(a):(b))
+#define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
 
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {                                     \
 	mvprintw(y, x, fmt, __VA_ARGS__);                                      \
@@ -85,8 +86,6 @@ extern bool hastermcolors;
 	draw_buttons(&d);                                                      \
 	wnoutrefresh(d.widget);                                                \
 } while (0)
-
-#define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
 
 enum elevation { RAISED, LOWERED };
 
