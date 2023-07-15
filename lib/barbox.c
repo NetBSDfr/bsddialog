@@ -43,6 +43,8 @@
 #define MIN_WMGBAR   18
 #define MIN_WMGBOX   (BARPADDING + BOXBORDERS + MIN_WMGBAR + BARPADDING)
 #define HBOX         3
+#define WBOX(d)      ((d)->w - BORDERS - BARPADDING - BARPADDING)
+#define WBAR(d)      (WBOX(d) - BOXBORDERS)
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -101,6 +103,17 @@ static void draw_bar(struct bar *b)
 	b->toupdate = false;
 }
 
+static void update_barbox(struct dialog *d, struct bar *b, bool buttons)
+{
+	int y;
+
+	y = d->y + d->h - BORDER - HBOX;
+	if (buttons)
+		y -= HBUTTONS;
+	update_box(d->conf, b->win, y, d->x + BORDER + BARPADDING, HBOX,
+	    WBOX(d), RAISED);
+}
+
 int
 bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int perc, int fd, const char *sep, const char *end)
@@ -143,10 +156,10 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 		if (draw_dialog(&d))
 			return (BSDDIALOG_ERROR);
 		if (d.built)
-			refresh(); /* Important to fix grey lines expanding screen */
+			refresh(); /* fix grey lines expanding screen */
 		TEXTPAD(&d, HBOX);
-		update_box(conf, b.win, d.y+d.h-4, d.x+3, HBOX, d.w-6, RAISED);
-		b.w = d.w - 8;
+		update_barbox(&d, &b, false);
+		b.w = WBAR(&d);
 		b.perc = b.label = perc;
 		b.toupdate = true;
 		draw_bar(&b);
@@ -217,7 +230,8 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	if (dialog_size_position(&d, nminibars + HBOX, max_minbarlen, &htext) != 0)
+	if (dialog_size_position(&d, nminibars + HBOX, max_minbarlen,
+	    &htext) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(&d) != 0)
 		return (BSDDIALOG_ERROR);
@@ -267,13 +281,13 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	/* main bar */
 	if ((b.win = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW bar");
-	update_box(conf, b.win, d.y+d.h - 4, d.x+3, HBOX, d.w-6, RAISED);
+	update_barbox(&d, &b, false);
 	wattron(b.win, t.bar.color);
 	mvwaddstr(b.win, 0, 2, "Overall Progress");
 	wattroff(b.win, t.bar.color);
 
 	b.y = b.x = 1;
-	b.w = d.w - 8;
+	b.w = WBAR(&d);
 	b.fmt = "%3d%%";
 	b.perc = b.label = MIN(mainperc, 100);
 	b.toupdate = true;
@@ -367,7 +381,8 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 			minipercs[i] = BSDDIALOG_MG_DONE;
 			update = true;
 			i++;
-		} else if (minibar[i].status == BSDDIALOG_MG_FAILED || perc < 0) {
+		} else if (minibar[i].status == BSDDIALOG_MG_FAILED ||
+		    perc < 0) {
 			minipercs[i] = BSDDIALOG_MG_FAILED;
 			update = true;
 		} else /* perc >= 0 */
@@ -393,10 +408,9 @@ static int rangebox_redraw(struct dialog *d, struct bar *b, int *bigchange)
 		refresh(); /* Important to fix grey lines expanding screen */
 	TEXTPAD(d, HBOX + HBUTTONS);
 
-	b->w = d->w - BORDERS - (2 * BARPADDING) - 2;
+	b->w = WBAR(d);
 	*bigchange = MAX(1, b->w  / 10);
-	update_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
-	    HBOX, b->w + 2, RAISED);
+	update_barbox(d, b, true);
 	b->toupdate = true;
 
 	return (0);
@@ -545,9 +559,8 @@ static int pause_redraw(struct dialog *d, struct bar *b)
 		refresh(); /* Important to fix grey lines expanding screen */
 	TEXTPAD(d, HBOX + HBUTTONS);
 
-	b->w = d->w - BORDERS - (2 * BARPADDING) - 2;
-	update_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
-	    HBOX, b->w + 2, RAISED);
+	b->w = WBAR(d);
+	update_barbox(d, b, true);
 	b->toupdate = true;
 
 	return (0);
