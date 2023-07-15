@@ -533,6 +533,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &d.bs)) {
+				DRAW_BUTTONS(d);
+				doupdate();
 				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
@@ -651,6 +653,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &d.bs)) {
+				DRAW_BUTTONS(d);
+				doupdate();
 				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
