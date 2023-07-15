@@ -268,7 +268,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		RETURN_ERROR("Cannot build WINDOW bar");
 	update_box(conf, b.win, d.y+d.h - 4, d.x+3, HBAR, d.w-6, RAISED);
 	wattron(b.win, t.bar.color);
-	mvwaddstr(b.win, 0, 2, "Overall Progress"); /* to check PV */
+	mvwaddstr(b.win, 0, 2, "Overall Progress");
 	wattroff(b.win, t.bar.color);
 
 	b.y = b.x = 1;
