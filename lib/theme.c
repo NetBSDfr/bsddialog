@@ -79,10 +79,10 @@ static struct bsddialog_theme blackwhite = {
 	.button.rightdelim      = ']',
 	.button.f_delimcolor    = WHITE,
 	.button.delimcolor      = WHITE,
-	.button.f_color         = BLACK | A_UNDERLINE,
-	.button.color           = WHITE | A_UNDERLINE,
-	.button.f_shortcutcolor = BLACK | A_UNDERLINE,
-	.button.shortcutcolor   = WHITE | A_UNDERLINE
+	.button.f_color         = BLACK,
+	.button.color           = WHITE,
+	.button.f_shortcutcolor = BLACK | A_UNDERLINE | A_BOLD,
+	.button.shortcutcolor   = WHITE | A_UNDERLINE | A_BOLD
 };
 
 static struct bsddialog_theme flat = {
