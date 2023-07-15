@@ -31,7 +31,7 @@ Output:
 
 --calendar, --checklist, --datebox, --form, --gauge, --infobox, --inputbox,
 --menu, --mixedform, --mixedgauge, --msgbox, --passwordbox, --passwordform,
---pause, --radiolist, --rangebox, --textbox, --timebox, --yesno.
+--pause, --radiolist, --rangebox, --textbox, --timebox, --treeview, --yesno.
 
 **Manual**
 
@@ -122,3 +122,4 @@ in the _Public Domain_ to build new projects:
  - Multi-line backtitle.
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
  - Fix bsddialog\_progressview() bottom info with i386.
+ - add bool conf.menu.depthlines or char conf.menu.depthch (default ' ').
