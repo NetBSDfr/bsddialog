@@ -123,3 +123,4 @@ in the _Public Domain_ to build new projects:
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
  - add bool conf.menu.depthlines or char conf.menu.depthch (default ' ').
  - implement custom getopt_long().
+ - refator gauge().
