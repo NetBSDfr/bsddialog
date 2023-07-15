@@ -158,18 +158,17 @@ void savetheme(const char *file, const char *version)
 
 	if(time(&clock) < 0)
 		exit_error(false, "cannot save profile getting current time");
-
 	if ((fp = fopen(file, "w")) == NULL)
 		exit_error(false, "cannot open %s to save profile", file);
 
 	fprintf(fp, "### bsddialog theme - %s\n", ctime(&clock));
-	fputs("# Colors:", fp);
-	for (i = 0; i < NCOLOR; i++)
-		fprintf(fp, " %s", color[i].name);
-	fputs(".\n# Attributes: ", fp);
-	for (i = 0; i < NATTR; i++)
-		fprintf(fp, " %s", attr[i].name);
-	fputs(".\n# f_* refers to elements with focus.\n\n", fp);
+
+	fputs("# Colors: ", fp);
+	fputs("black red green yellow blue magenta cyan white.\n", fp);
+	fputs("# Attributes: ", fp);
+	fputs("bold reverse underline blink halfbright highlight.\n", fp);
+	fputs("# f_* refers to elements with focus.\n\n", fp);
+
 	fprintf(fp, "version %s\n", version);
 
 	for (i = 0; i < NPROPERTY; i++) {
