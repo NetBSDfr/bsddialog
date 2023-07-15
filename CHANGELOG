@@ -1,12 +1,22 @@
 WIP Next Version
 
 	Utility:
-	* delete: bsddialog theme (partially implemented).
-	* change: --theme names: 3d|blackwhite|flat.
-	* improve: DIAGNOSTIC messages using fmt string errors.
-	* add: button delimiter to --bikeshed.
+	* add --save-theme file comments to property.
+	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
+	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --color.
+	* add: $HOME/.bsddialog.conf file.
 	* add: env NO_COLOR.
-	* add: dynamic exit codes
+	* add: read use_shadow from .dialogrc for bsdconfig(8) compatibility.
+	* add: dynamic exit codes.
+	    - add: --error-exit-code.
+	    - add: --ok-exit-code.
+	    - add: --cancel-exit-code.
+	    - add: --help-exit-code.
+	    - add: --extra-exit-code.
+	    - add: --timeout-exit-code.
+	    - add: --esc-exit-code.
+	    - add: --generic1-exit-code.
+	    - add: --generic2-exit-code.
 	    - add: env BSDDIALOG_ERROR.
 	    - add: env BSDDIALOG_OK.
 	    - add: env BSDDIALOG_CANCEL.
@@ -17,60 +27,48 @@ WIP Next Version
 	    - add: env BSDDIALOG_GENERIC1.
 	    - add: env BSDDIALOG_GENERIC2.
 	    - add: env BSDDIALOG_ITEM_HELP.
-	    - add: --error-exit-code.
-	    - add: --ok-exit-code.
-	    - add: --cancel-exit-code.
-	    - add: --help-exit-code.
-	    - add: --extra-exit-code.
-	    - add: --timeout-exit-code.
-	    - add: --esc-exit-code.
-	    - add: --generic1-exit-code.
-	    - add: --generic2-exit-code.
-	* add: --color "\Zd \Zk \Zs \ZD \ZK \ZS" escapes.
+	* change: rename --theme 3d|blackwhite|flat.
+	* improve: DIAGNOSTIC messages adding fmt string errors.
+	* improve: button delimiter for --bikeshed.
 	* fix: --load-theme ignores flags.
-	* add: --save-theme and --load-theme "blink", "halfbright", "highlight".
-	* add --save-theme file comments to property.
-	* delete: --esc-return-cancel
-	* refactor: modularize in more files.
-	* add: file $HOME/.bsddialog.conf.
-	* add: use_shadow from $HOME/.dialogrc for bsdconfig(8) compatibility.
+	* delete: --theme bsddialog (partially implemented).
+	* delete: --esc-return-cancel (replaced by a new env and option).
+	* refactor: modularize in more files (main, cli, builders, theme).
 
 	Library:
-	* add: check (when possible) API pointers.
-	* add: bsddialog_rangebox() *value check size and init value.
-	* add: bsddialog_datebox() changing one box affects the others as well.
-	* add: check/set bsddialog_gauge() API MIN (perc, 100).
+	* add: bsddialog_inmode().
 	* add: "const char *end" to bsddialog_gauge().
-	* add: API bsddialog_inmode().
-	* improve: bsddialog_geterror() with fmt strings.
+	* add: check (when possible) API pointers.
+	* add: bsddialog_datebox() changing one box affects the others as well.
 	* add: focus on the "shortcut" key button at exit.
-	* fix: extend menurows after shrinking.
+	* add: escapes for conf.text.highlight \Zd, \Zk, \Zs, \ZD, \ZK, \ZS.
+	* add: BSDDIALOG_BLINK, BSDDIALOG_HALFBRIGHT, BSDDIALOG_HIGHLIGHT.
+	* add/improve: bsddialog_geterror() with fmt strings.
 	* change: menus and form less restrictive with text, hide text with
 	    little screens (same behavior as other dialogs).
 	* change: mixedgauge BSDDIALOG_MG_BLANK does not draw minibar but prints
-	    minilabel, to restore previous behavior setting minilabel to "".
-	    The change allows mixedgauge to add sections.
+	    minilabel. The change allows mixedgauge to add sections. To restore
+	    the previous behavior setting minilabel to "".
+	* change: check/set bsddialog_gauge() perc max 100.
+	* change: check/set bsddialog_mixedgauge() mainperc max 100.
+	* change: dialog *text is set to "" if NULL.
+	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
-	* fix: check/set max mixedgauge mainperc to 100.
 	* fix: timebox.c checksize (boxes width).
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
-	* add: attrs for conf.text.highlight "\Zd \Zk \Zs \ZD \ZK \ZS".
-	* add: bsddialog_theme.h BSDDIALOG_BLINK, BSDDIALOG_HALFBRIGHT,
-	    BSDDIALOG_HIGHLIGHT.
 	* refactor: internal implementation.
+	    - add: internal structures to represent components.
 	    - merge: (when possible) dialogs autosize.
 	    - merge: (when possible) dialogs checksize.
-	    - delete: infobox.c, merged with messagebox.c
-	    - add: internal structures to represent components.
-	    - merge: bsddialog_datebox() with bsddialog_calendar().
-	    - rename: calendar.c -> add: datebox.c
-	    - real theme: flat and blackwhite.
 	    - merge: for each dialog "build" with "resize" -> <dialog>_redraw().
 	    - merge: new_dialog() with update_dialog() -> draw_dialog().
+	    - merge: infobox.c with messagebox.c (delete infobox.c)
+	    - merge: bsddialog_datebox() + bsddialog_calendar() -> datebox.c
+	    - change: flat and blackwhite  real themes.
 	    - improve: replace wrefresh() -> wnoutrefresh()/doupdate().
 	    - improve: replace prefresh() -> pnoutrefresh()/doupdate().
-	    - delete: -Wno-implicit-fallthrough
+	    - fix/delete: -Wno-implicit-fallthrough.
 
 
 2023-06-12 Version 0.4.2
@@ -80,6 +78,7 @@ WIP Next Version
 	    https://gitlab.com/alfix/bsddialog/-/issues/5.
 	* fix: BSDDIALOG_FIELDCURSOREND with multiple items
 	    (warning aarch64-gcc12).
+
 
 2023-01-02 Version 0.4.1
 
