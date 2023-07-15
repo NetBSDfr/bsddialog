@@ -33,30 +33,23 @@
 #define TEXTHMARGIN     1
 #define TEXTHMARGINS    (TEXTHMARGIN + TEXTHMARGIN)
 
-/* MIN and MAX */
-#define	MIN(a,b) (((a)<(b))?(a):(b))
-#define	MAX(a,b) (((a)>(b))?(a):(b))
+#define HBUTTONS        2
+#define BUTTON_OK_LABEL      "OK"
+#define BUTTON_CANCEL_LABEL  "Cancel"
 
 /* theme utils */
 extern struct bsddialog_theme t;
 extern bool hastermcolors;
 
-/* debug */
+#define SCREENLINES (getmaxy(stdscr))
+#define SCREENCOLS  (getmaxx(stdscr))
+#define	MIN(a,b) (((a)<(b))?(a):(b))
+#define	MAX(a,b) (((a)>(b))?(a):(b))
+
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {                                     \
 	mvprintw(y, x, fmt, __VA_ARGS__);                                      \
 	refresh();                                                             \
 } while (0)
-
-/* unicode */
-unsigned int strcols(const char *mbstring);
-int str_props(const char *mbstring, unsigned int *cols, bool *has_multi_col);
-void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch);
-wchar_t* alloc_mbstows(const char *mbstring);
-
-/* error buffer */
-const char *get_error_string(void);
-void set_error_string(const char *string);
-void set_fmt_error_string(const char *fmt, ...);
 
 #define RETURN_ERROR(str) do {                                                 \
 	set_error_string(str);                                                 \
@@ -68,7 +61,6 @@ void set_fmt_error_string(const char *fmt, ...);
 	return (BSDDIALOG_ERROR);                                              \
 } while (0)
 
-/* ptr checker */
 #define CHECK_PTR(p, type) do {                                                \
 	if (p == NULL)                                                         \
 		RETURN_ERROR("*" #p " is NULL");                               \
@@ -90,8 +82,14 @@ void set_fmt_error_string(const char *fmt, ...);
 		RETURN_ERROR(#p " is not NULL but its size is not " #type);    \
 } while (0)
 
-/* buttons */
-#define HBUTTONS        2
+#define DRAW_BUTTONS(d) do {                                                   \
+	draw_buttons(&d);                                                      \
+	wnoutrefresh(d.widget);                                                \
+} while (0)
+
+#define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
+
+enum elevation { RAISED, LOWERED };
 
 struct buttons {
 	unsigned int nbuttons;
@@ -105,14 +103,6 @@ struct buttons {
 	unsigned int sizebutton; /* including left and right delimiters */
 };
 
-bool shortcut_buttons(wint_t key, struct buttons *bs);
-
-#define DRAW_BUTTONS(d) do {                                                   \
-	draw_buttons(&d);                                                      \
-	wnoutrefresh(d.widget);                                                \
-} while (0)
-
-/* dialog */
 struct dialog {
 	bool built;         /* true after the first draw_dialog() */
 	struct bsddialog_conf *conf;  /* Checked API conf */
@@ -126,20 +116,39 @@ struct dialog {
 	WINDOW *shadow;
 };
 
-#define BUTTON_OK_LABEL      "OK"
-#define BUTTON_CANCEL_LABEL  "Cancel"
+/* error and diagnostic */
+const char *get_error_string(void);
+void set_error_string(const char *string);
+void set_fmt_error_string(const char *fmt, ...);
+
+/* multicolumn character string */
+unsigned int strcols(const char *mbstring);
+int str_props(const char *mbstring, unsigned int *cols, bool *has_multi_col);
+void mvwaddwch(WINDOW *w, int y, int x, wchar_t wch);
+wchar_t* alloc_mbstows(const char *mbstring);
+
+/* buttons */
 void
 set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
     const char *canclabel);
 void draw_buttons(struct dialog *d);
+bool shortcut_buttons(wint_t key, struct buttons *bs);
 
-/* help window with F1 key */
+/* widget utils  */
+int hide_dialog(struct dialog *d);
+
+void
+draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
+
+void
+update_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+    enum elevation elev);
+
+void
+rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);
 int f1help_dialog(struct bsddialog_conf *conf);
 
 /* (auto) size and (auto) position */
-#define SCREENLINES (getmaxy(stdscr))
-#define SCREENCOLS  (getmaxx(stdscr))
-
 int
 set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w);
@@ -156,27 +165,10 @@ set_widget_position(struct bsddialog_conf *conf, int *y, int *x, int h, int w);
 
 int dialog_size_position(struct dialog *d, int hnotext, int minw, int *htext);
 
-/* widget components */
-enum elevation { RAISED, LOWERED };
-
-void
-draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
-
-void
-update_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
-    enum elevation elev);
-
 /* dialog */
-void rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);
-#define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
-/* msgbox and yesno (ytext) */
-#define YTEXTPAD(d, ytext, downnotext) rtextpad(d, ytext, 0, 0, downnotext)
-/* mixedgauge */
-#define YSTEXTPAD(d, upnotext, downnotext) rtextpad(d, 0, 0, upnotext, downnotext)
-
-int hide_dialog(struct dialog *d);
 void end_dialog(struct dialog *d);
 int draw_dialog(struct dialog *d);
+
 int
 prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, struct dialog *d);

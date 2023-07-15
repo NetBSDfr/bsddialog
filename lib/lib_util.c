@@ -35,12 +35,72 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define ERRBUFLEN    1024 /* Error buffer len */
+/*
+ * -1- Error and diagnostic
+ * 
+ *	get_error_string();
+ *	set_error_string();
+ *	set_fmt_error_string();
+ * 
+ * ----------------------------------------------------
+ * -2- (Unicode) Multicolumn character strings
+ * 
+ *	alloc_mbstows();
+ *	mvwaddwch();
+ *	str_props();
+ *	strcols();
+ * 
+ * ----------------------------------------------------
+ * -3- Buttons
+ * 
+ * [static] buttons_min_width();
+ * [static] draw_button();
+ *          draw_buttons();
+ *          set_buttons(); (to call 1 time after prepare_dialog()).
+ *          shortcut_buttons();
+ * 
+ * ----------------------------------------------------
+ * -4- (Auto) Sizing and (Auto) Position
+ * 
+ * [static] widget_max_height(conf);
+ * [static] widget_max_width(struct bsddialog_conf *conf)
+ * [static] is_wtext_attr();
+ * [static] text_properties();
+ * [static] text_autosize();
+ * [static] text_size();
+ * [static] widget_min_height(conf, htext, hnotext, bool buttons);
+ * [static] widget_min_width(conf, wtext, minw, buttons);
+ *          set_widget_size();
+ *          set_widget_autosize();  (not for all dialogs).
+ *          widget_checksize();     (not for all dialogs).
+ *          set_widget_position();
+ *          dialog_size_position(struct dialog); (not for all dialogs).
+ * 
+ * ----------------------------------------------------
+ * -5- (Dialog) Widget components and utils
+ * 
+ *	hide_dialog(struct dialog);
+ *	f1help_dialog(conf);
+ *	draw_borders(conf, win, elev);
+ *	update_box(conf, win, y, x, h, w, elev);
+ *	rtextpad(); (helper for pnoutrefresh(textpad)).
+ * 
+ * ----------------------------------------------------
+ * -6- Dialog init/build, update/draw, destroy
+ * 
+ *          end_dialog(struct dialog);
+ * [static] check_set_wtext_attr();
+ * [static] print_string(); (word wrapping).
+ * [static] print_textpad();
+ *          draw_dialog(struct dialog);
+ *          prepare_dialog(struct dialog);
+ */
 
-static int widget_max_height(struct bsddialog_conf *conf);
-static int widget_max_width(struct bsddialog_conf *conf);
+#define ERRBUFLEN    1024
 
-/* Error */
+/*
+ * -1- Error and diagnostic
+ */
 static char errorbuffer[ERRBUFLEN];
 
 const char *get_error_string(void)
@@ -62,7 +122,9 @@ void set_fmt_error_string(const char *fmt, ...)
    va_end(arg_ptr);
 }
 
-/* Unicode */
+/*
+ * -2- (Unicode) Multicolumn character strings
+ */
 wchar_t* alloc_mbstows(const char *mbstring)
 {
 	size_t charlen, nchar;
@@ -150,32 +212,20 @@ unsigned int strcols(const char *mbstring)
 	return (ncol);
 }
 
-/* F1 help */
-int f1help_dialog(struct bsddialog_conf *conf)
+/*
+ * -3- Buttons
+ */
+static int buttons_min_width(struct buttons *bs)
 {
-	int output;
-	struct bsddialog_conf hconf;
+	unsigned int width;
 
-	bsddialog_initconf(&hconf);
-	hconf.title           = "HELP";
-	hconf.button.ok_label = "EXIT";
-	hconf.clear           = true;
-	hconf.ascii_lines     = conf->ascii_lines;
-	hconf.no_lines        = conf->no_lines;
-	hconf.shadow          = conf->shadow;
-	hconf.text.highlight  = conf->text.highlight;
+	width = bs->nbuttons * bs->sizebutton;
+	if (bs->nbuttons > 0)
+		width += (bs->nbuttons - 1) * t.button.minmargin;
 
-	output = BSDDIALOG_OK;
-	if (conf->key.f1_message != NULL)
-		output = bsddialog_msgbox(&hconf, conf->key.f1_message, 0, 0);
-
-	if (output != BSDDIALOG_ERROR && conf->key.f1_file != NULL)
-		output = bsddialog_textbox(&hconf, conf->key.f1_file, 0, 0);
-
-	return (output == BSDDIALOG_ERROR ? BSDDIALOG_ERROR : 0);
+	return (width);
 }
 
-/* Buttons */
 static void
 draw_button(WINDOW *window, int y, int x, int size, const char *text,
     wchar_t first, bool selected, bool shortcut)
@@ -213,17 +263,6 @@ draw_button(WINDOW *window, int y, int x, int size, const char *text,
 		mvwaddwch(window, y, x, first);
 		wattroff(window, color_shortkey);
 	}
-}
-
-static int buttons_min_width(struct buttons *bs)
-{
-	unsigned int width;
-
-	width = bs->nbuttons * bs->sizebutton;
-	if (bs->nbuttons > 0)
-		width += (bs->nbuttons - 1) * t.button.minmargin;
-
-	return (width);
 }
 
 void draw_buttons(struct dialog *d)
@@ -353,7 +392,57 @@ bool shortcut_buttons(wint_t key, struct buttons *bs)
 	return (match);
 }
 
-/* Text */
+/*
+ * -4- (Auto) Sizing and (Auto) Position
+ */
+static int widget_max_height(struct bsddialog_conf *conf)
+{
+	int maxheight;
+
+	maxheight = conf->shadow ? SCREENLINES - (int)t.shadow.y : SCREENLINES;
+	if (maxheight <= 0)
+		RETURN_ERROR("Terminal too small, screen lines - shadow <= 0");
+
+	if (conf->y != BSDDIALOG_CENTER && conf->auto_topmargin > 0)
+		RETURN_ERROR("conf.y > 0 and conf->auto_topmargin > 0");
+	else if (conf->y == BSDDIALOG_CENTER) {
+		maxheight -= conf->auto_topmargin;
+		if (maxheight <= 0)
+			RETURN_ERROR("Terminal too small, screen lines - top "
+			    "margins <= 0");
+	} else if (conf->y > 0) {
+		maxheight -= conf->y;
+		if (maxheight <= 0)
+			RETURN_ERROR("Terminal too small, screen lines - "
+			    "shadow - y <= 0");
+	}
+
+	maxheight -= conf->auto_downmargin;
+	if (maxheight <= 0)
+		RETURN_ERROR("Terminal too small, screen lines - Down margins "
+		    "<= 0");
+
+	return (maxheight);
+}
+
+static int widget_max_width(struct bsddialog_conf *conf)
+{
+	int maxwidth;
+
+	maxwidth = conf->shadow ? SCREENCOLS - (int)t.shadow.x : SCREENCOLS;
+	if (maxwidth <= 0)
+		RETURN_ERROR("Terminal too small, screen cols - shadow <= 0");
+
+	if (conf->x > 0) {
+		maxwidth -= conf->x;
+		if (maxwidth <= 0)
+			RETURN_ERROR("Terminal too small, screen cols - shadow "
+			    "- x <= 0");
+	}
+
+	return (maxwidth);
+}
+
 static bool is_wtext_attr(const wchar_t *wtext)
 {
 	bool att;
@@ -368,191 +457,6 @@ static bool is_wtext_attr(const wchar_t *wtext)
 	return (att);
 }
 
-static bool check_set_wtext_attr(WINDOW *win, wchar_t *wtext)
-{
-	enum bsddialog_color bg;
-
-	if (is_wtext_attr(wtext) == false)
-		return (false);
-
-	if ((wtext[2] >= L'0') && (wtext[2] <= L'7')) {
-		bsddialog_color_attrs(t.dialog.color, NULL, &bg, NULL);
-		wattron(win, bsddialog_color(wtext[2] - L'0', bg, 0));
-		return (true);
-	}
-
-	switch (wtext[2]) {
-	case L'n':
-		wattron(win, t.dialog.color);
-		wattrset(win, A_NORMAL);
-		break;
-	case L'b':
-		wattron(win, A_BOLD);
-		break;
-	case L'B':
-		wattroff(win, A_BOLD);
-		break;
-	case L'd':
-		wattron(win, A_DIM);
-		break;
-	case L'D':
-		wattroff(win, A_DIM);
-		break;
-	case L'k':
-		wattron(win, A_BLINK);
-		break;
-	case L'K':
-		wattroff(win, A_BLINK);
-		break;
-	case L'r':
-		wattron(win, A_REVERSE);
-		break;
-	case L'R':
-		wattroff(win, A_REVERSE);
-		break;
-	case L's':
-		wattron(win, A_STANDOUT);
-		break;
-	case L'S':
-		wattroff(win, A_STANDOUT);
-		break;
-	case L'u':
-		wattron(win, A_UNDERLINE);
-		break;
-	case L'U':
-		wattroff(win, A_UNDERLINE);
-		break;
-	}
-
-	return (true);
-}
-
-/* Word Wrapping */
-static void
-print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
-    bool color)
-{
-	int i, j, len, reallen, wc;
-	wchar_t ws[2];
-
-	ws[1] = L'\0';
-
-	len = wcslen(str);
-	if (color) {
-		reallen = 0;
-		i=0;
-		while (i < len) {
-			if (is_wtext_attr(str+i) == false) {
-				reallen += wcwidth(str[i]);
-				i++;
-			} else {
-				i +=3 ;
-			}
-		}
-	} else
-		reallen = wcswidth(str, len);
-
-	i = 0;
-	while (i < len) {
-		if (*x + reallen > cols) {
-			*y = (*x != 0 ? *y+1 : *y);
-			if (*y >= *rows) {
-				*rows = *y + 1;
-				wresize(win, *rows, cols);
-			}
-			*x = 0;
-		}
-		j = *x;
-		while (j < cols && i < len) {
-			if (color && check_set_wtext_attr(win, str+i)) {
-				i += 3;
-			} else if (j + wcwidth(str[i]) > cols) {
-				break;
-			} else {
-				/* inline mvwaddwch() for efficiency */
-				ws[0] = str[i];
-				mvwaddwstr(win, *y, j, ws);
-				wc = wcwidth(str[i]);;
-				reallen -= wc;
-				j += wc;
-				i++;
-				*x = j;
-			}
-		}
-	}
-}
-
-static int
-print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
-{
-	bool loop;
-	int i, j, z, rows, cols, x, y, tablen;
-	wchar_t *wtext, *string;
-
-	if ((wtext = alloc_mbstows(text)) == NULL)
-		RETURN_ERROR("Cannot allocate/print text in wchar_t*");
-
-	if ((string = calloc(wcslen(wtext) + 1, sizeof(wchar_t))) == NULL)
-		RETURN_ERROR("Cannot build (analyze) text");
-
-	getmaxyx(pad, rows, cols);
-	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
-
-	i = j = x = y = 0;
-	loop = true;
-	while (loop) {
-		string[j] = wtext[i];
-
-		if (wcschr(L"\n\t  ", string[j]) != NULL || string[j] == L'\0') {
-			string[j] = L'\0';
-			print_string(pad, &rows, cols, &y, &x, string,
-			    conf->text.highlight);
-		}
-
-		switch (wtext[i]) {
-		case L'\0':
-			loop = false;
-			break;
-		case L'\n':
-			x = 0;
-			y++;
-			j = -1;
-			break;
-		case L'\t':
-			for (z = 0; z < tablen; z++) {
-				if (x >= cols) {
-					x = 0;
-					y++;
-				}
-				x++;
-			}
-			j = -1;
-			break;
-		case L' ':
-			x++;
-			if (x >= cols) {
-				x = 0;
-				y++;
-			}
-			j = -1;
-		}
-
-		if (y >= rows) {
-			rows = y + 1;
-			wresize(pad, rows, cols);
-		}
-
-		j++;
-		i++;
-	}
-
-	free(wtext);
-	free(string);
-
-	return (0);
-}
-
-/* Text Autosize */
 #define NL  -1
 #define WS  -2
 #define TB  -3
@@ -800,56 +704,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 
 	return (0);
 }
-
-/* Widget size and position */
-static int widget_max_height(struct bsddialog_conf *conf)
-{
-	int maxheight;
-
-	maxheight = conf->shadow ? SCREENLINES - (int)t.shadow.y : SCREENLINES;
-	if (maxheight <= 0)
-		RETURN_ERROR("Terminal too small, screen lines - shadow <= 0");
-
-	if (conf->y != BSDDIALOG_CENTER && conf->auto_topmargin > 0)
-		RETURN_ERROR("conf.y > 0 and conf->auto_topmargin > 0");
-	else if (conf->y == BSDDIALOG_CENTER) {
-		maxheight -= conf->auto_topmargin;
-		if (maxheight <= 0)
-			RETURN_ERROR("Terminal too small, screen lines - top "
-			    "margins <= 0");
-	} else if (conf->y > 0) {
-		maxheight -= conf->y;
-		if (maxheight <= 0)
-			RETURN_ERROR("Terminal too small, screen lines - "
-			    "shadow - y <= 0");
-	}
-
-	maxheight -= conf->auto_downmargin;
-	if (maxheight <= 0)
-		RETURN_ERROR("Terminal too small, screen lines - Down margins "
-		    "<= 0");
-
-	return (maxheight);
-}
-
-static int widget_max_width(struct bsddialog_conf *conf)
-{
-	int maxwidth;
-
-	maxwidth = conf->shadow ? SCREENCOLS - (int)t.shadow.x : SCREENCOLS;
-	if (maxwidth <= 0)
-		RETURN_ERROR("Terminal too small, screen cols - shadow <= 0");
-
-	if (conf->x > 0) {
-		maxwidth -= conf->x;
-		if (maxwidth <= 0)
-			RETURN_ERROR("Terminal too small, screen cols - shadow "
-			    "- x <= 0");
-	}
-
-	return (maxwidth);
-}
-
+ 
 static int
 widget_min_height(struct bsddialog_conf *conf, int htext, int hnotext,
     bool withbuttons)
@@ -1054,7 +909,9 @@ int dialog_size_position(struct dialog *d, int hnotext, int minw, int *htext)
 	return (0);
 }
 
-/* Dialog init, draw, destroy */
+/*
+ * -5- Widget components and utilities
+ */
 int hide_dialog(struct dialog *d)
 {
 	WINDOW *clear;
@@ -1074,34 +931,28 @@ int hide_dialog(struct dialog *d)
 	return (0);
 }
 
-void end_dialog(struct dialog *d)
+int f1help_dialog(struct bsddialog_conf *conf)
 {
-	if (d->conf->sleep > 0)
-		sleep(d->conf->sleep);
+	int output;
+	struct bsddialog_conf hconf;
 
-	delwin(d->textpad);
-	delwin(d->widget);
-	if (d->conf->shadow)
-		delwin(d->shadow);
+	bsddialog_initconf(&hconf);
+	hconf.title           = "HELP";
+	hconf.button.ok_label = "EXIT";
+	hconf.clear           = true;
+	hconf.ascii_lines     = conf->ascii_lines;
+	hconf.no_lines        = conf->no_lines;
+	hconf.shadow          = conf->shadow;
+	hconf.text.highlight  = conf->text.highlight;
 
-	if (d->conf->clear)
-		hide_dialog(d);
+	output = BSDDIALOG_OK;
+	if (conf->key.f1_message != NULL)
+		output = bsddialog_msgbox(&hconf, conf->key.f1_message, 0, 0);
 
-	if (d->conf->get_height != NULL)
-		*d->conf->get_height = d->h;
-	if (d->conf->get_width != NULL)
-		*d->conf->get_width = d->w;
-}
+	if (output != BSDDIALOG_ERROR && conf->key.f1_file != NULL)
+		output = bsddialog_textbox(&hconf, conf->key.f1_file, 0, 0);
 
-void
-rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
-{
-	pnoutrefresh(d->textpad, ytext, xtext,
-	    d->y + BORDER + upnotext,
-	    d->x + BORDER + TEXTHMARGIN,
-	    d->y + d->h - 1 - downnotext - BORDER,
-	    d->x + d->w - TEXTHMARGIN - BORDER);
-	/*caller has to call doupdate() */
+	return (output == BSDDIALOG_ERROR ? BSDDIALOG_ERROR : 0);
 }
 
 void draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
@@ -1144,6 +995,231 @@ void draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 	mvwaddch(win, h-1, w-1, br);
 	mvwhline(win, h-1, 1, bs, w-2);
 	wattroff(win, rightcolor);
+}
+
+void
+update_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
+    enum elevation elev)
+{
+	wclear(win);
+	wresize(win, h, w);
+	mvwin(win, y, x);
+	draw_borders(conf, win, elev);
+}
+
+void
+rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext)
+{
+	pnoutrefresh(d->textpad, ytext, xtext,
+	    d->y + BORDER + upnotext,
+	    d->x + BORDER + TEXTHMARGIN,
+	    d->y + d->h - 1 - downnotext - BORDER,
+	    d->x + d->w - TEXTHMARGIN - BORDER);
+}
+
+/*
+ * -6- Dialog init/build, update/draw, destroy
+ */
+void end_dialog(struct dialog *d)
+{
+	if (d->conf->sleep > 0)
+		sleep(d->conf->sleep);
+
+	delwin(d->textpad);
+	delwin(d->widget);
+	if (d->conf->shadow)
+		delwin(d->shadow);
+
+	if (d->conf->clear)
+		hide_dialog(d);
+
+	if (d->conf->get_height != NULL)
+		*d->conf->get_height = d->h;
+	if (d->conf->get_width != NULL)
+		*d->conf->get_width = d->w;
+}
+
+static bool check_set_wtext_attr(WINDOW *win, wchar_t *wtext)
+{
+	enum bsddialog_color bg;
+
+	if (is_wtext_attr(wtext) == false)
+		return (false);
+
+	if ((wtext[2] >= L'0') && (wtext[2] <= L'7')) {
+		bsddialog_color_attrs(t.dialog.color, NULL, &bg, NULL);
+		wattron(win, bsddialog_color(wtext[2] - L'0', bg, 0));
+		return (true);
+	}
+
+	switch (wtext[2]) {
+	case L'n':
+		wattron(win, t.dialog.color);
+		wattrset(win, A_NORMAL);
+		break;
+	case L'b':
+		wattron(win, A_BOLD);
+		break;
+	case L'B':
+		wattroff(win, A_BOLD);
+		break;
+	case L'd':
+		wattron(win, A_DIM);
+		break;
+	case L'D':
+		wattroff(win, A_DIM);
+		break;
+	case L'k':
+		wattron(win, A_BLINK);
+		break;
+	case L'K':
+		wattroff(win, A_BLINK);
+		break;
+	case L'r':
+		wattron(win, A_REVERSE);
+		break;
+	case L'R':
+		wattroff(win, A_REVERSE);
+		break;
+	case L's':
+		wattron(win, A_STANDOUT);
+		break;
+	case L'S':
+		wattroff(win, A_STANDOUT);
+		break;
+	case L'u':
+		wattron(win, A_UNDERLINE);
+		break;
+	case L'U':
+		wattroff(win, A_UNDERLINE);
+		break;
+	}
+
+	return (true);
+}
+
+static void
+print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
+    bool color)
+{
+	int i, j, len, reallen, wc;
+	wchar_t ws[2];
+
+	ws[1] = L'\0';
+
+	len = wcslen(str);
+	if (color) {
+		reallen = 0;
+		i=0;
+		while (i < len) {
+			if (is_wtext_attr(str+i) == false) {
+				reallen += wcwidth(str[i]);
+				i++;
+			} else {
+				i +=3 ;
+			}
+		}
+	} else
+		reallen = wcswidth(str, len);
+
+	i = 0;
+	while (i < len) {
+		if (*x + reallen > cols) {
+			*y = (*x != 0 ? *y+1 : *y);
+			if (*y >= *rows) {
+				*rows = *y + 1;
+				wresize(win, *rows, cols);
+			}
+			*x = 0;
+		}
+		j = *x;
+		while (j < cols && i < len) {
+			if (color && check_set_wtext_attr(win, str+i)) {
+				i += 3;
+			} else if (j + wcwidth(str[i]) > cols) {
+				break;
+			} else {
+				/* inline mvwaddwch() for efficiency */
+				ws[0] = str[i];
+				mvwaddwstr(win, *y, j, ws);
+				wc = wcwidth(str[i]);;
+				reallen -= wc;
+				j += wc;
+				i++;
+				*x = j;
+			}
+		}
+	}
+}
+
+static int
+print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
+{
+	bool loop;
+	int i, j, z, rows, cols, x, y, tablen;
+	wchar_t *wtext, *string;
+
+	if ((wtext = alloc_mbstows(text)) == NULL)
+		RETURN_ERROR("Cannot allocate/print text in wchar_t*");
+
+	if ((string = calloc(wcslen(wtext) + 1, sizeof(wchar_t))) == NULL)
+		RETURN_ERROR("Cannot build (analyze) text");
+
+	getmaxyx(pad, rows, cols);
+	tablen = (conf->text.tablen == 0) ? TABSIZE : (int)conf->text.tablen;
+
+	i = j = x = y = 0;
+	loop = true;
+	while (loop) {
+		string[j] = wtext[i];
+
+		if (wcschr(L"\n\t  ", string[j]) != NULL || string[j] == L'\0') {
+			string[j] = L'\0';
+			print_string(pad, &rows, cols, &y, &x, string,
+			    conf->text.highlight);
+		}
+
+		switch (wtext[i]) {
+		case L'\0':
+			loop = false;
+			break;
+		case L'\n':
+			x = 0;
+			y++;
+			j = -1;
+			break;
+		case L'\t':
+			for (z = 0; z < tablen; z++) {
+				if (x >= cols) {
+					x = 0;
+					y++;
+				}
+				x++;
+			}
+			j = -1;
+			break;
+		case L' ':
+			x++;
+			if (x >= cols) {
+				x = 0;
+				y++;
+			}
+			j = -1;
+		}
+
+		if (y >= rows) {
+			rows = y + 1;
+			wresize(pad, rows, cols);
+		}
+
+		j++;
+		i++;
+	}
+
+	free(wtext);
+	free(string);
+
+	return (0);
 }
 
 int draw_dialog(struct dialog *d)
@@ -1254,15 +1330,4 @@ prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
 	wbkgd(d->textpad, t.dialog.color);
 
 	return (0);
-}
-
-/* widget components */
-void
-update_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
-    enum elevation elev)
-{
-	wclear(win);
-	wresize(win, h, w);
-	mvwin(win, y, x);
-	draw_borders(conf, win, elev);
 }
