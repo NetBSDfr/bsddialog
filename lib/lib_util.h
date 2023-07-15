@@ -32,10 +32,9 @@
 #define BORDERS         (BORDER + BORDER)
 #define TEXTHMARGIN     1
 #define TEXTHMARGINS    (TEXTHMARGIN + TEXTHMARGIN)
-
 #define HBUTTONS        2
-#define BUTTON_OK_LABEL      "OK"
-#define BUTTON_CANCEL_LABEL  "Cancel"
+#define OK_LABEL        "OK"
+#define CANCEL_LABEL    "Cancel"
 
 /* theme utils */
 extern struct bsddialog_theme t;

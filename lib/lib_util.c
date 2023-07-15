@@ -299,7 +299,7 @@ set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
 {
 	int i;
 #define SIZEBUTTON              8
-#define DEFAULT_BUTTON_LABEL	BUTTON_OK_LABEL
+#define DEFAULT_BUTTON_LABEL	OK_LABEL
 #define DEFAULT_BUTTON_VALUE	BSDDIALOG_OK
 	wchar_t first;
 

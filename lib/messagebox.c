@@ -198,7 +198,7 @@ int
 bsddialog_msgbox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols)
 {
-	return (do_message(conf, text, rows, cols, BUTTON_OK_LABEL, NULL));
+	return (do_message(conf, text, rows, cols, OK_LABEL, NULL));
 }
 
 int

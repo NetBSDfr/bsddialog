@@ -439,7 +439,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	set_buttons(&d, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);
 	if ((b.win = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW bar");
 	b.y = b.x = 1;
@@ -580,7 +580,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	set_buttons(&d, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);
 	if ((b.win = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW bar");
 	b.y = b.x = 1;

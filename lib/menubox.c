@@ -451,8 +451,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	set_buttons(&d, conf->menu.shortcut_buttons, BUTTON_OK_LABEL,
-	    BUTTON_CANCEL_LABEL);
+	set_buttons(&d, conf->menu.shortcut_buttons, OK_LABEL, CANCEL_LABEL);
 
 	m.nitems = 0;
 	for (i = 0; i < (int)ngroups; i++) {

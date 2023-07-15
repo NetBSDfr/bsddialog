@@ -111,7 +111,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	set_buttons(&d, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);
 	for (i=0; i<3; i++) {
 		if ((c[i].win = newwin(1, 1, 1, 1)) == NULL)
 			RETURN_FMTERROR("Cannot build WINDOW for time[%d]", i);

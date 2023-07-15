@@ -644,7 +644,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	set_buttons(&d, true, BUTTON_OK_LABEL, BUTTON_CANCEL_LABEL);
+	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);
 
 	if ((form.box = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW menu box");
