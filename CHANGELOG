@@ -31,6 +31,7 @@ WIP Next Version
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: button delimiter for --bikeshed.
 	* fix: --load-theme attributes.
+	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: --theme bsddialog (partially implemented).
 	* delete: --esc-return-cancel (replaced by a new env and option).
 	* refactor: modularize in more files (main, cli, builders, theme).
