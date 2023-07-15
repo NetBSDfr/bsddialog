@@ -1,7 +1,7 @@
 WIP Next Version
 
 	Utility:
-	* add --save-theme file comments to property.
+	* add: comments to -save-theme output file.
 	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
 	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --color.
 	* add: $HOME/.bsddialog.conf file.
@@ -27,10 +27,10 @@ WIP Next Version
 	    - add: env BSDDIALOG_GENERIC1.
 	    - add: env BSDDIALOG_GENERIC2.
 	    - add: env BSDDIALOG_ITEM_HELP.
-	* change: rename --theme 3d|blackwhite|flat.
+	* change: rename themes --theme 3d|blackwhite|flat.
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: button delimiter for --bikeshed.
-	* fix: --load-theme ignores flags.
+	* fix: --load-theme attributes.
 	* delete: --theme bsddialog (partially implemented).
 	* delete: --esc-return-cancel (replaced by a new env and option).
 	* refactor: modularize in more files (main, cli, builders, theme).
