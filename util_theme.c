@@ -151,12 +151,6 @@ static struct property p[NPROPERTY] = {
 	    "use_shadow", COMPAT, NULL}
 };
 
-void setdeftheme(enum bsddialog_default_theme theme)
-{
-	if (bsddialog_set_default_theme(theme) != BSDDIALOG_OK)
-		exit_error(false, bsddialog_geterror());
-}
-
 void savetheme(const char *file, const char *version)
 {
 	int i, j;
@@ -318,6 +312,12 @@ void loadtheme(const char *file, bool compatibility)
 	fclose(fp);
 
 	if(bsddialog_set_theme(&t) != BSDDIALOG_OK)
+		exit_error(false, bsddialog_geterror());
+}
+
+void setdeftheme(enum bsddialog_default_theme theme)
+{
+	if (bsddialog_set_default_theme(theme) != BSDDIALOG_OK)
 		exit_error(false, bsddialog_geterror());
 }
 
