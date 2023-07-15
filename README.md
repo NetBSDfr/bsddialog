@@ -123,3 +123,4 @@ in the _Public Domain_ to build new projects:
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
  - Fix bsddialog\_progressview() bottom info with i386.
  - add bool conf.menu.depthlines or char conf.menu.depthch (default ' ').
+ - implement custom getopt_long().
