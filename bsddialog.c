@@ -234,7 +234,8 @@ int main(int argc, char *argv[argc])
 		if (opt.backtitle != NULL)
 			if(bsddialog_backtitle(&conf, opt.backtitle))
 				exit_error(false, bsddialog_geterror());
-		retval = opt.dialogbuilder(&conf, text, rows, cols, argc, argv, &opt);
+		retval = opt.dialogbuilder(&conf, text, rows, cols, argc, argv,
+		    &opt);
 		free(text);
 		if (retval == BSDDIALOG_ERROR)
 			exit_error(false, bsddialog_geterror());
