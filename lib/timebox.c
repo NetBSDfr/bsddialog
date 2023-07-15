@@ -90,6 +90,7 @@ static int timebox_redraw(struct dialog *d, struct clock *c)
 	return (0);
 }
 
+/* API */
 int
 bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
     int cols, unsigned int *hh, unsigned int *mm, unsigned int *ss)
@@ -150,7 +151,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				    true : false;
 				if (focusbuttons == false) {
 					sel = 0;
-					d.bs.curr = conf->button.always_active ? 0 : -1;
+					d.bs.curr =
+					    conf->button.always_active ? 0 : -1;
 				}
 			} else {
 				sel++;
@@ -167,7 +169,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				focusbuttons = d.bs.curr < 0 ? false : true;
 				if (focusbuttons == false) {
 					sel = 2;
-					d.bs.curr = conf->button.always_active ? 0 : -1;
+					d.bs.curr =
+					    conf->button.always_active ? 0 : -1;
 				}
 			} else {
 				sel--;
@@ -209,6 +212,8 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &d.bs)) {
+				DRAW_BUTTONS(d);
+				doupdate();
 				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
