@@ -32,6 +32,8 @@ WIP Next Version
 	* add --save-theme file comments to property.
 	* delete: --esc-return-cancel
 	* refactor: modularize in more files.
+	* add: file $HOME/.bsddialog.conf.
+	* add: use_shadow from $HOME/.dialogrc for bsdconfig(8) compatibility.
 
 	Library:
 	* add: check (when possible) API pointers.

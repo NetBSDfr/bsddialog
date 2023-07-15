@@ -27,10 +27,13 @@
 
 #include <sys/time.h>
 
+#include <fcntl.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
@@ -40,7 +43,7 @@
 static struct bsddialog_theme t;
 static char title[1024];
 
-#define NPROPERTY  38
+#define NPROPERTY  39
 #define NCOLOR      8
 #define NATTR       6
 
@@ -54,7 +57,8 @@ enum typeproperty {
 	CHAR,
 	INT,
 	UINT,
-	COLOR
+	COLOR,
+	COMPAT
 };
 
 struct property {
@@ -141,8 +145,17 @@ static struct property p[NPROPERTY] = {
 	{"", "theme.button.color", COLOR, &t.button.color},
 	{"", "theme.button.f_color", COLOR, &t.button.f_color},
 	{"", "theme.button.shortcutcolor", COLOR, &t.button.shortcutcolor},
-	{"", "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor}
+	{"", "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor},
+
+	{"\n#Compatibility. Do not use, can be deleted\n",
+	    "use_shadow", COMPAT, NULL}
 };
+
+void setdeftheme(enum bsddialog_default_theme theme)
+{
+	if (bsddialog_set_default_theme(theme) != BSDDIALOG_OK)
+		exit_error(false, bsddialog_geterror());
+}
 
 void savetheme(const char *file, const char *version)
 {
@@ -196,19 +209,16 @@ void savetheme(const char *file, const char *version)
 					fprintf(fp, " %s", attr[j].name);
 			fputs("\n", fp);
 			break;
+		case COMPAT:
+			/* Do not save compat property for now */
+			break;
 		}
 	}
 
 	fclose(fp);
 }
 
-void setdeftheme(enum bsddialog_default_theme theme)
-{
-	if (bsddialog_set_default_theme(theme) != BSDDIALOG_OK)
-		exit_error(false, bsddialog_geterror());
-}
-
-void loadtheme(const char *file)
+void loadtheme(const char *file, bool compatibility)
 {
 	bool boolvalue;
 	char charvalue, *value;
@@ -238,7 +248,10 @@ void loadtheme(const char *file)
 		if (i >= NPROPERTY) {
 			if (strcmp(name, "version") == 0)
 				continue; /* nothing for now */
-			PROP_ERROR(name, "Unknown theme property name");
+			if (compatibility == false)
+				PROP_ERROR(name, "Unknown theme property name");
+			else
+				continue;
 		}
 		switch (p[i].type) {
 		case CHAR:
@@ -288,6 +301,17 @@ void loadtheme(const char *file)
 					flags |= attr[j].value;
 			*((int*)p[i].value) = bsddialog_color(fg, bg, flags);
 			break;
+		case COMPAT:
+			/*
+			 * usr.sbin/bsdconfig/share/dialog.subr:2255
+			 * uses this parameter to set NO_SHADOW.
+			 * Set t.shadow.y|x for compatibilty.
+			 */
+			if (strcmp(name, "use_shadow") == 0) {
+				 if (strcasestr(value, "off") != NULL)
+				 	t.shadow.y = t.shadow.x = 0;
+			}
+			break;
 		}
 	}
 
@@ -295,6 +319,23 @@ void loadtheme(const char *file)
 
 	if(bsddialog_set_theme(&t) != BSDDIALOG_OK)
 		exit_error(false, bsddialog_geterror());
+}
+
+void startuptheme(void)
+{
+	char *env, path[PATH_MAX];
+
+	env = getenv("NO_COLOR");
+	if (env != NULL && env[0] != '\0')
+		setdeftheme(BSDDIALOG_THEME_BLACKWHITE);
+
+	env = getenv("HOME");
+	snprintf(path, PATH_MAX, "%s/%s", env, ".dialogrc");
+	if (access(path, F_OK) == 0)
+		loadtheme(path, true);
+	snprintf(path, PATH_MAX, "%s/%s", env, ".bsddialog.conf");
+	if (access(path, F_OK) == 0)
+		loadtheme(path, false);
 }
 
 void bikeshed(struct bsddialog_conf *conf)

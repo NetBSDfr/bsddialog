@@ -122,19 +122,6 @@ static void start_bsddialog_mode(void)
 	signal(SIGINT, sigint_handler);
 }
 
-static bool getenv_color(void)
-{
-	bool color;
-	char *no_color;
-
-	color = true;
-	no_color = getenv("NO_COLOR");
-	if (no_color != NULL && no_color[0] != '\0')
-		color = false;
-
-	return (color);
-}
-
 static void getenv_exitcodes(void)
 {
 	int i;
@@ -157,16 +144,14 @@ static void getenv_exitcodes(void)
 
 int main(int argc, char *argv[argc])
 {
-	bool mandatory_dialog, envcolor;
+	bool mandatory_dialog, startup;
 	int i, rows, cols, retval, parsed, nargc, firstoptind;
 	char *text, **nargv, *pn;
 	struct bsddialog_conf conf;
 	struct options opt;
 
 	setlocale(LC_ALL, "");
-
 	getenv_exitcodes();
-
 	mandatory_dialog = true;
 	firstoptind = optind;
 	pn = argv[0];
@@ -183,8 +168,7 @@ int main(int argc, char *argv[argc])
 		}
 	}
 
-	envcolor = getenv_color();
-
+	startup = true;
 	while (true) {
 		parsed = parseargs(argc, argv, &conf, &opt, &mandatory_dialog);
 		nargc = argc - parsed;
@@ -233,13 +217,12 @@ int main(int argc, char *argv[argc])
 		}
 
 		/* theme */
-		if (envcolor == false)
-			setdeftheme(BSDDIALOG_THEME_BLACKWHITE);
-		envcolor = true;
+		if (startup)
+			startuptheme();
 		if ((int)opt.theme >= 0)
 			setdeftheme(opt.theme);
 		if (opt.loadthemefile != NULL)
-			loadtheme(opt.loadthemefile);
+			loadtheme(opt.loadthemefile, false);
 		if (opt.bikeshed)
 			bikeshed(&conf);
 		if (opt.savethemefile != NULL)
@@ -268,6 +251,7 @@ int main(int argc, char *argv[argc])
 		argv = nargv;
 		if (argc <= 0)
 			break;
+		startup = false;
 		/* prepare next parseargs() call */
 		argc++;
 		argv--;
