@@ -48,7 +48,7 @@ static void textupdate(struct dialog *d, struct scroll *s)
 		wattroff(d->widget, t.dialog.arrowcolor);
 		wnoutrefresh(d->widget);
 	}
-	YTEXTPAD(d, s->ypad, HBUTTONS);
+	rtextpad(d, s->ypad, 0, 0, HBUTTONS);
 }
 
 static int message_size_position(struct dialog *d, int *htext)

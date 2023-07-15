@@ -276,7 +276,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 
 	/* text */
 	ystext = MAX(d.h - BORDERS - htext - HBOX, (int)nminibars);
-	YSTEXTPAD(&d, ystext, HBOX);
+	rtextpad(&d, 0, 0, ystext, HBOX);
 
 	/* main bar */
 	if ((b.win = newwin(1, 1, 1, 1)) == NULL)
