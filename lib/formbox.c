@@ -29,7 +29,6 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wchar.h>
 
 #include "bsddialog.h"
 #include "bsddialog_theme.h"
