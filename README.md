@@ -121,5 +121,6 @@ in the _Public Domain_ to build new projects:
  - Some terminal does not hide the cursor, move it bottom-right before to getch.
  - Multi-line backtitle.
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
+ - Fix bsddialog\_progressview() bottom info with i386.
  - add bool conf.menu.depthlines or char conf.menu.depthch (default ' ').
  - implement custom getopt_long().

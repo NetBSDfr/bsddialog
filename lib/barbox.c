@@ -45,7 +45,7 @@
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
-long long int bsddialog_total_progview;
+int  bsddialog_total_progview;
 
 static const char states[12][14] = {
 	"  Succeeded  ", /* -1  */
