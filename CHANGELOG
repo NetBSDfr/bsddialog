@@ -29,6 +29,7 @@ WIP Next Version
 	* add: --color "\Zd \Zk \Zs \ZD \ZK \ZS" escapes.
 	* fix: --load-theme ignores flags.
 	* add: --save-theme and --load-theme "blink", "halfbright", "highlight".
+	* add --save-theme file comments to property.
 	* delete: --esc-return-cancel
 	* refactor: modularize in more files.
 

@@ -56,7 +56,8 @@ enum typeproperty {
 };
 
 struct property {
-	const char* name;
+	const char *comment;
+	const char *name;
 	enum typeproperty type;
 	void *value;
 };
@@ -73,50 +74,58 @@ static const char *color[8] = {
 };
 
 static struct property p[NPROPERTY] = {
-	{ "theme.screen.color", COLOR, &t.screen.color },
+	{"\n#Terminal\n", "theme.screen.color", COLOR, &t.screen.color},
 
-	{ "theme.shadow.color", COLOR, &t.shadow.color },
-	{ "theme.shadow.y", UINT, &t.shadow.y },
-	{ "theme.shadow.x", UINT, &t.shadow.x },
+	{"\n# Shadow\n",
+	    "theme.shadow.color", COLOR, &t.shadow.color},
+	{"# shift down right from main widget\n",
+	    "theme.shadow.y", UINT, &t.shadow.y},
+	{"", "theme.shadow.x", UINT, &t.shadow.x},
 
-	{ "theme.dialog.color", COLOR, &t.dialog.color },
-	{ "theme.dialog.delimtitle", BOOL, &t.dialog.delimtitle },
-	{ "theme.dialog.titlecolor", COLOR, &t.dialog.titlecolor },
-	{ "theme.dialog.lineraisecolor", COLOR, &t.dialog.lineraisecolor },
-	{ "theme.dialog.linelowercolor", COLOR, &t.dialog.linelowercolor },
-	{ "theme.dialog.bottomtitlecolor", COLOR, &t.dialog.bottomtitlecolor },
-	{ "theme.dialog.arrowcolor", COLOR, &t.dialog.arrowcolor },
+	{"\n# Main widget\n",
+	    "theme.dialog.color", COLOR, &t.dialog.color},
+	{"", "theme.dialog.delimtitle", BOOL, &t.dialog.delimtitle},
+	{"", "theme.dialog.titlecolor", COLOR, &t.dialog.titlecolor},
+	{"", "theme.dialog.lineraisecolor", COLOR, &t.dialog.lineraisecolor},
+	{"", "theme.dialog.linelowercolor", COLOR, &t.dialog.linelowercolor},
+	{"", "theme.dialog.bottomtitlecolor", COLOR,
+	    &t.dialog.bottomtitlecolor},
+	{"", "theme.dialog.arrowcolor", COLOR, &t.dialog.arrowcolor},
 
-	{ "theme.menu.f_selectorcolor", COLOR, &t.menu.f_selectorcolor},
-	{ "theme.menu.selectorcolor", COLOR, &t.menu.selectorcolor},
-	{ "theme.menu.f_namecolor", COLOR, &t.menu.f_namecolor},
-	{ "theme.menu.namecolor", COLOR, &t.menu.namecolor},
-	{ "theme.menu.f_desccolor", COLOR, &t.menu.f_desccolor},
-	{ "theme.menu.desccolor", COLOR, &t.menu.desccolor},
-	{ "theme.menu.namesepcolor", COLOR, &t.menu.namesepcolor},
-	{ "theme.menu.descsepcolor", COLOR, &t.menu.descsepcolor},
-	{ "theme.menu.f_shortcutcolor", COLOR, &t.menu.f_shortcutcolor},
-	{ "theme.menu.shortcutcolor", COLOR, &t.menu.shortcutcolor},
-	{ "theme.menu.bottomdesccolor", COLOR, &t.menu.bottomdesccolor},
+	{"\n# --checklist, --menu, --radiolist, --treeview\n",
+	    "theme.menu.f_selectorcolor", COLOR, &t.menu.f_selectorcolor},
+	{"", "theme.menu.selectorcolor", COLOR, &t.menu.selectorcolor},
+	{"", "theme.menu.f_namecolor", COLOR, &t.menu.f_namecolor},
+	{"", "theme.menu.namecolor", COLOR, &t.menu.namecolor},
+	{"", "theme.menu.f_desccolor", COLOR, &t.menu.f_desccolor},
+	{"", "theme.menu.desccolor", COLOR, &t.menu.desccolor},
+	{"", "theme.menu.namesepcolor", COLOR, &t.menu.namesepcolor},
+	{"", "theme.menu.descsepcolor", COLOR, &t.menu.descsepcolor},
+	{"", "theme.menu.f_shortcutcolor", COLOR, &t.menu.f_shortcutcolor},
+	{"", "theme.menu.shortcutcolor", COLOR, &t.menu.shortcutcolor},
+	{"", "theme.menu.bottomdesccolor", COLOR, &t.menu.bottomdesccolor},
 
-	{ "theme.form.f_fieldcolor", COLOR, &t.form.f_fieldcolor},
-	{ "theme.form.fieldcolor", COLOR, &t.form.fieldcolor},
-	{ "theme.form.readonlycolor", COLOR, &t.form.readonlycolor},
-	{ "theme.form.bottomdesccolor", COLOR, &t.form.bottomdesccolor},
+	{"\n# Forms\n",
+	    "theme.form.f_fieldcolor", COLOR, &t.form.f_fieldcolor},
+	{"", "theme.form.fieldcolor", COLOR, &t.form.fieldcolor},
+	{"", "theme.form.readonlycolor", COLOR, &t.form.readonlycolor},
+	{"", "theme.form.bottomdesccolor", COLOR, &t.form.bottomdesccolor},
 
-	{ "theme.bar.f_color", COLOR, &t.bar.f_color},
-	{ "theme.bar.color", COLOR, &t.bar.color},
+	{"\n# Bar of --gauge, --mixedgauge, --pause, --rangebox\n",
+	    "theme.bar.f_color", COLOR, &t.bar.f_color},
+	{"", "theme.bar.color", COLOR, &t.bar.color},
 
-	{ "theme.button.minmargin", UINT, &t.button.minmargin},
-	{ "theme.button.maxmargin", UINT, &t.button.maxmargin},
-	{ "theme.button.leftdelim", CHAR, &t.button.leftdelim},
-	{ "theme.button.rightdelim", CHAR, &t.button.rightdelim},
-	{ "theme.button.delimcolor", COLOR, &t.button.delimcolor},
-	{ "theme.button.f_delimcolor", COLOR, &t.button.f_delimcolor},
-	{ "theme.button.color", COLOR, &t.button.color},
-	{ "theme.button.f_color", COLOR, &t.button.f_color},
-	{ "theme.button.shortcutcolor", COLOR, &t.button.shortcutcolor},
-	{ "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor}
+	{"\n# Buttons\n",
+	    "theme.button.minmargin", UINT, &t.button.minmargin},
+	{"", "theme.button.maxmargin", UINT, &t.button.maxmargin},
+	{"", "theme.button.leftdelim", CHAR, &t.button.leftdelim},
+	{"", "theme.button.rightdelim", CHAR, &t.button.rightdelim},
+	{"", "theme.button.delimcolor", COLOR, &t.button.delimcolor},
+	{"", "theme.button.f_delimcolor", COLOR, &t.button.f_delimcolor},
+	{"", "theme.button.color", COLOR, &t.button.color},
+	{"", "theme.button.f_color", COLOR, &t.button.f_color},
+	{"", "theme.button.shortcutcolor", COLOR, &t.button.shortcutcolor},
+	{"", "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor}
 };
 
 void savetheme(const char *file, const char *version)
@@ -137,31 +146,30 @@ void savetheme(const char *file, const char *version)
 	if ((fp = fopen(file, "w")) == NULL)
 		exit_error(false, "cannot open %s to save profile", file);
 
-	fprintf(fp, "### bsddialog theme - %s", ctime(&clock));
-	fputs("# f_ refers to elements with focus.\n", fp);
+	fprintf(fp, "### bsddialog theme - %s\n", ctime(&clock));
+	fputs("# f_ refers to elements with focus.\n\n", fp);
 	fprintf(fp, "version %s\n", version);
 
 	for (i = 0; i < NPROPERTY; i++) {
+		fprintf(fp, "%s%s", p[i].comment, p[i].name);
 		switch (p[i].type) {
 		case CHAR:
-			fprintf(fp, "%s %c\n", p[i].name, *((char*)p[i].value));
+			fprintf(fp, " %c\n", *((char*)p[i].value));
 			break;
 		case INT:
-			fprintf(fp, "%s %d\n", p[i].name, *((int*)p[i].value));
+			fprintf(fp, " %d\n", *((int*)p[i].value));
 			break;
 		case UINT:
-			fprintf(fp, "%s %u\n", p[i].name,
-			    *((unsigned int*)p[i].value));
+			fprintf(fp, " %u\n", *((unsigned int*)p[i].value));
 			break;
 		case BOOL:
-			fprintf(fp, "%s %s\n", p[i].name,
+			fprintf(fp, " %s\n",
 			    *((bool*)p[i].value) ? "true" : "false");
 			break;
 		case COLOR:
 			bsddialog_color_attrs(*(int*)p[i].value, &fg, &bg,
 			    &flags);
-			fprintf(fp, "%s %s %s%s%s%s%s%s%s\n",
-			    p[i].name,
+			fprintf(fp, " %s %s%s%s%s%s%s%s\n",
 			    color[fg],
 			    color[bg],
 			    flags & BSDDIALOG_BOLD       ? " bold"       : "",
