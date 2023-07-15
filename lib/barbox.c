@@ -36,12 +36,13 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define BARPADDING     2
-#define MINBARLEN      15
-#define MINBARWIDTH    (2 + 2 * BARPADDING + MINBARLEN)
-#define MINMGBARLEN    18
-#define MINMGBARWIDTH  (2 + 2 * BARPADDING + MINMGBARLEN)
-#define HBAR           3
+#define BARPADDING   2  /* widget border | BARPADDING | box bar */
+#define BOXBORDERS   2
+#define MIN_WBAR     15
+#define MIN_WBOX     (BARPADDING + BOXBORDERS + MIN_WBAR + BARPADDING)
+#define MIN_WMGBAR   18
+#define MIN_WMGBOX   (BARPADDING + BOXBORDERS + MIN_WMGBAR + BARPADDING)
+#define HBOX         3
 
 bool bsddialog_interruptprogview;
 bool bsddialog_abortprogview;
@@ -137,14 +138,14 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 			hide_dialog(&d);
 			refresh(); /* Important for decreasing screen */
 		}
-		if (dialog_size_position(&d, HBAR, MINBARWIDTH, NULL) != 0)
+		if (dialog_size_position(&d, HBOX, MIN_WBOX, NULL) != 0)
 			return (BSDDIALOG_ERROR);
 		if (draw_dialog(&d))
 			return (BSDDIALOG_ERROR);
 		if (d.built)
 			refresh(); /* Important to fix grey lines expanding screen */
-		TEXTPAD(&d, HBAR);
-		update_box(conf, b.win, d.y+d.h-4, d.x+3, HBAR, d.w-6, RAISED);
+		TEXTPAD(&d, HBOX);
+		update_box(conf, b.win, d.y+d.h-4, d.x+3, HBOX, d.w-6, RAISED);
 		b.w = d.w - 8;
 		b.perc = b.label = perc;
 		b.toupdate = true;
@@ -212,11 +213,11 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	for (i = 0; i < (int)nminibars; i++)
 		max_minbarlen = MAX(max_minbarlen, (int)strcols(minilabels[i]));
 	max_minbarlen += 3 + 16; /* seps + [...] */
-	max_minbarlen = MAX(max_minbarlen, MINMGBARWIDTH); /* mainbar */
+	max_minbarlen = MAX(max_minbarlen, MIN_WMGBOX); /* mainbar */
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	if (dialog_size_position(&d, nminibars + HBAR, max_minbarlen, &htext) != 0)
+	if (dialog_size_position(&d, nminibars + HBOX, max_minbarlen, &htext) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(&d) != 0)
 		return (BSDDIALOG_ERROR);
@@ -260,13 +261,13 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wnoutrefresh(d.widget);
 
 	/* text */
-	ystext = MAX(d.h - BORDERS - htext - HBAR, (int)nminibars);
-	YSTEXTPAD(&d, ystext, HBAR);
+	ystext = MAX(d.h - BORDERS - htext - HBOX, (int)nminibars);
+	YSTEXTPAD(&d, ystext, HBOX);
 
 	/* main bar */
 	if ((b.win = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW bar");
-	update_box(conf, b.win, d.y+d.h - 4, d.x+3, HBAR, d.w-6, RAISED);
+	update_box(conf, b.win, d.y+d.h - 4, d.x+3, HBOX, d.w-6, RAISED);
 	wattron(b.win, t.bar.color);
 	mvwaddstr(b.win, 0, 2, "Overall Progress");
 	wattroff(b.win, t.bar.color);
@@ -384,18 +385,18 @@ static int rangebox_redraw(struct dialog *d, struct bar *b, int *bigchange)
 		hide_dialog(d);
 		refresh(); /* Important for decreasing screen */
 	}
-	if (dialog_size_position(d, HBAR, MINBARWIDTH, NULL) != 0)
+	if (dialog_size_position(d, HBOX, MIN_WBOX, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(d) != 0)
 		return (BSDDIALOG_ERROR);
 	if (d->built)
 		refresh(); /* Important to fix grey lines expanding screen */
-	TEXTPAD(d, HBAR + HBUTTONS);
+	TEXTPAD(d, HBOX + HBUTTONS);
 
 	b->w = d->w - BORDERS - (2 * BARPADDING) - 2;
 	*bigchange = MAX(1, b->w  / 10);
 	update_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
-	    HBAR, b->w + 2, RAISED);
+	    HBOX, b->w + 2, RAISED);
 	b->toupdate = true;
 
 	return (0);
@@ -536,17 +537,17 @@ static int pause_redraw(struct dialog *d, struct bar *b)
 		hide_dialog(d);
 		refresh(); /* Important for decreasing screen */
 	}
-	if (dialog_size_position(d, HBAR, MINBARWIDTH, NULL) != 0)
+	if (dialog_size_position(d, HBOX, MIN_WBOX, NULL) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(d) != 0)
 		return (BSDDIALOG_ERROR);
 	if (d->built)
 		refresh(); /* Important to fix grey lines expanding screen */
-	TEXTPAD(d, HBAR + HBUTTONS);
+	TEXTPAD(d, HBOX + HBUTTONS);
 
 	b->w = d->w - BORDERS - (2 * BARPADDING) - 2;
 	update_box(d->conf, b->win, d->y + d->h - 6, d->x + 1 + BARPADDING,
-	    HBAR, b->w + 2, RAISED);
+	    HBOX, b->w + 2, RAISED);
 	b->toupdate = true;
 
 	return (0);
