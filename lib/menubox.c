@@ -110,10 +110,10 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 		m->nitems += (int)groups[i].nitems;
 	}
 
-	/* alloc and set private items */
-	if ((m->pritems = calloc(m->nitems, sizeof (struct privateitem))) == NULL)
+	/* alloc and set private items */ù
+	m->pritems = calloc(m->nitems, sizeof (struct privateitem));
+	if (m->pritems == NULL)
 		RETURN_ERROR("Cannot allocate memory for internal menu items");
-
 	m->hasbottomdesc = false;
 	abs = 0;
 	for (i = 0; i < (int)ngroups; i++) {
