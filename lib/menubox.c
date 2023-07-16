@@ -503,6 +503,8 @@ mixedlist_redraw(struct dialog *d, struct privatemenu *m, struct privateitem *pr
 	    m->menurows, m->ypad);
 	wnoutrefresh(m->box);
 
+	if (m->sel > 0)
+		drawitem(d->conf, m, m->sel, true);
 	drawseparators(d->conf, m->pad, MIN((int)m->line, d->w-6),
 	    m->nitems, pritems);
 	if ((int)(m->ypad + m->menurows) - 1 < m->sel)
@@ -555,7 +557,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		drawitem(conf, &m, i, false);
 	m.sel = getfirst_with_default(m.nitems, m.pritems, ngroups, groups,
 	    focuslist, focusitem);
-	// aggiiungere draw on focus a startup, forse in mixedlist_redraw()
 	m.ypad = 0;
 	m.apimenurows = menurows;
 	if (mixedlist_redraw(&d, &m, m.pritems) != 0)
