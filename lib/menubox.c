@@ -709,6 +709,10 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (focusitem !=NULL)
 		*focusitem = m.sel < 0 ? -1 : m.pritems[m.sel].index;
 
+	if (m.hasbottomdesc) {
+		move(SCREENLINES - 1, 2);
+		clrtoeol();
+	}
 	delwin(m.pad);
 	delwin(m.box);
 	end_dialog(&d);
