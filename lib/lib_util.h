@@ -65,7 +65,7 @@ extern bool hastermcolors;
 	if(nitem > 0 && a == NULL)                                             \
 		RETURN_FMTERROR(#nitem " is %d but " #a " is NULL", nitem);    \
 } while (0)
-/* tui utils */
+/* widget utils */
 #define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
 #define SCREENLINES (getmaxy(stdscr))
 #define SCREENCOLS  (getmaxx(stdscr))
@@ -122,6 +122,7 @@ bool shortcut_buttons(wint_t key, struct buttons *bs);
 
 /* widget utils */
 int hide_dialog(struct dialog *d);
+int f1help_dialog(struct bsddialog_conf *conf);
 
 void
 draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev);
@@ -132,9 +133,8 @@ update_box(struct bsddialog_conf *conf, WINDOW *win, int y, int x, int h, int w,
 
 void
 rtextpad(struct dialog *d, int ytext, int xtext, int upnotext, int downnotext);
-int f1help_dialog(struct bsddialog_conf *conf);
 
-/* (auto) size and (auto) position */
+/* (auto) sizing and (auto) position */
 int
 set_widget_size(struct bsddialog_conf *conf, int rows, int cols, int *h,
     int *w);
