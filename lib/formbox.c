@@ -431,7 +431,7 @@ form_size_position(struct bsddialog_conf *conf, int rows, int cols,
 	/* autosize */
 	hform = (int) f->viewrows;
 	if (f->viewrows == BSDDIALOG_AUTOSIZE)
-		hform = MAX(f->w, f->minviewrows);
+		hform = MAX(f->h, f->minviewrows);
 	hform += 2; /* formborders */
 
 	if (set_widget_autosize(conf, rows, cols, h, w, text, &htext, bs, hform,
