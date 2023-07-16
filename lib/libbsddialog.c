@@ -102,7 +102,7 @@ int bsddialog_end(void)
 
 int bsddialog_backtitle(struct bsddialog_conf *conf, const char *backtitle)
 {
-	CHECK_PTR(conf, struct bsddialog_conf);
+	CHECK_PTR(conf);
 
 	move(0, 1);
 	clrtoeol();
@@ -128,7 +128,7 @@ const char *bsddialog_geterror(void)
 
 int bsddialog_initconf(struct bsddialog_conf *conf)
 {
-	CHECK_PTR(conf, struct bsddialog_conf);
+	CHECK_PTR(conf);
 
 	memset(conf, 0, sizeof(struct bsddialog_conf));
 	conf->y = BSDDIALOG_CENTER;

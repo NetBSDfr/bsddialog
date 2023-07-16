@@ -39,7 +39,6 @@ WIP Next Version
 	Library:
 	* add: bsddialog_inmode().
 	* add: "const char *end" to bsddialog_gauge().
-	* add: check (when possible) API pointers.
 	* add: bsddialog_datebox() changing one box affects the others as well.
 	* add: focus on the "shortcut" key button at exit.
 	* add: escapes for conf.text.highlight \Zd, \Zk, \Zs, \ZD, \ZK, \ZS.
@@ -53,6 +52,7 @@ WIP Next Version
 	* change: check/set bsddialog_gauge() perc max 100.
 	* change: check/set bsddialog_mixedgauge() mainperc max 100.
 	* change: dialog *text is set to "" if NULL.
+	* improve: check (when possible) API pointers.
 	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.

@@ -105,10 +105,9 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 		{59, *ss, NULL}
 	};
 
-	CHECK_PTR(hh, unsigned int);
-	CHECK_PTR(mm, unsigned int);
-	CHECK_PTR(ss, unsigned int);
-
+	CHECK_PTR(hh);
+	CHECK_PTR(mm);
+	CHECK_PTR(ss);
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);

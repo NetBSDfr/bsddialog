@@ -134,10 +134,8 @@ bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,
 
 	input = NULL;
 	if (fd >= 0) {
-		CHECK_PTR(sep, const char);
-		CHECK_ARRAY(1, sep, const char);
-		CHECK_PTR(end, const char);
-		CHECK_ARRAY(1, end, const char);
+		CHECK_PTR(sep);
+		CHECK_PTR(end);
 
 		fd2 = dup(fd);
 		if ((input = fdopen(fd2, "r")) == NULL)
@@ -426,7 +424,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 	struct bar b;
 	struct dialog d;
 
-	CHECK_PTR(value, int);
+	CHECK_PTR(value);
 	if (min >= max)
 		RETURN_FMTERROR("min (%d) >= max (%d)", min, max);
 	if (*value < min)

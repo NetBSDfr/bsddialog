@@ -186,8 +186,7 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 /* API */
 int bsddialog_get_theme(struct bsddialog_theme *theme)
 {
-	CHECK_PTR(theme, struct bsddialog_theme);
-
+	CHECK_PTR(theme);
 	set_theme(theme, &t);
 
 	return (BSDDIALOG_OK);
@@ -195,8 +194,7 @@ int bsddialog_get_theme(struct bsddialog_theme *theme)
 
 int bsddialog_set_theme(struct bsddialog_theme *theme)
 {
-	CHECK_PTR(theme, struct bsddialog_theme);
-
+	CHECK_PTR(theme);
 	set_theme(&t, theme);
 	refresh();
 
@@ -253,10 +251,6 @@ bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
 {
 	short f, b;
 	unsigned int flag;
-
-	CHECK_PTR_SIZE(foreground, enum bsddialog_color);
-	CHECK_PTR_SIZE(background, enum bsddialog_color);
-	CHECK_PTR_SIZE(flags, unsigned int);
 
 	flag = 0;
 	flag |= (color & A_STANDOUT) ? BSDDIALOG_HIGHLIGHT : 0;

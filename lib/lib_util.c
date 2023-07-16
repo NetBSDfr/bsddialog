@@ -1303,9 +1303,7 @@ int
 prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, struct dialog *d)
 {
-	CHECK_PTR(conf, struct bsddialog_conf);
-	CHECK_PTR_SIZE(conf->get_height, int);
-	CHECK_PTR_SIZE(conf->get_width, int);
+	CHECK_PTR(conf);
 
 	d->built = false;
 	d->conf = conf;

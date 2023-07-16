@@ -322,9 +322,9 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	WINDOW *yy_win, *mm_win, *dd_win;
 	struct dialog d;
 
-	CHECK_PTR(year, unsigned int);
-	CHECK_PTR(month, unsigned int);
-	CHECK_PTR(day, unsigned int);
+	CHECK_PTR(year);
+	CHECK_PTR(month);
+	CHECK_PTR(day);
 	init_date(year, month, day, &yy, &mm, &dd);
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
@@ -532,9 +532,9 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	WINDOW *yy_win, *mm_win, *dd_win;
 	struct dialog d;
 
-	CHECK_PTR(year, unsigned int);
-	CHECK_PTR(month, unsigned int);
-	CHECK_PTR(day, unsigned int);
+	CHECK_PTR(year);
+	CHECK_PTR(month);
+	CHECK_PTR(day);
 	init_date(year, month, day, &yy, &mm, &dd);
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)

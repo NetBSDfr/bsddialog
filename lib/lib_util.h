@@ -61,25 +61,14 @@ extern bool hastermcolors;
 	return (BSDDIALOG_ERROR);                                              \
 } while (0)
 
-#define CHECK_PTR(p, type) do {                                                \
+#define CHECK_PTR(p) do {                                                      \
 	if (p == NULL)                                                         \
 		RETURN_ERROR("*" #p " is NULL");                               \
-	if (sizeof(*p) != sizeof(type))                                        \
-		RETURN_ERROR("Bad *" #p " size for a " #type);                 \
 } while (0)
 
-#define CHECK_ARRAY(nitem, a, type) do {                                       \
-	if (nitem == 0)                                                        \
-		/* no check*/;                                                 \
-	else if(a == NULL)                                                     \
+#define CHECK_ARRAY(nitem, a) do {                                             \
+	if(nitem == 0 && a == NULL)                                            \
 		RETURN_FMTERROR(#nitem " is %d but " #a " is NULL", nitem);    \
-	else if (sizeof(*a) != sizeof(type))                                   \
-		RETURN_ERROR("Bad " #a "[0] size");                            \
-} while (0)
-
-#define CHECK_PTR_SIZE(p, type) do {                                           \
-	if (p != NULL && sizeof(*p) != sizeof(type))                           \
-		RETURN_ERROR(#p " is not NULL but its size is not " #type);    \
 } while (0)
 
 #define DRAW_BUTTONS(d) do {                                                   \

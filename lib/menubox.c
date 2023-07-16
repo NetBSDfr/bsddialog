@@ -446,9 +446,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	struct privatemenu m;
 	struct dialog d;
 
-	CHECK_PTR_SIZE(focuslist, int);
-	CHECK_PTR_SIZE(focusitem, int);
-
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, conf->menu.shortcut_buttons, OK_LABEL, CANCEL_LABEL);
