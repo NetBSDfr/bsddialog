@@ -41,15 +41,14 @@ enum menumode {
 };
 
 struct privateitem {
-	/* API */
 	const char *prefix;
-	bool on;             /* menu changes, not API on */
+	bool on;                /* menu changes, not API on */
 	unsigned int depth;
 	const char *name;
 	const char *desc;
 	const char *bottomdesc; //can be NULL?
-	int group;//?
-	int index;//?
+	int group;             /* index menu in menugroup */
+	int index;             /* real item index inside its menu */
 	enum menumode type;
 	wchar_t shortcut;
 };
@@ -398,7 +397,6 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 	}
 }
 
-/* the caller has to call prefresh(menupad, ymenupad, 0, ys, xs, ye, xe); */
 static void update_menubox(struct bsddialog_conf *conf, struct privatemenu *m)
 {
 	int h, w;
@@ -494,8 +492,6 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 		m->xe = m->xs + d->w - 5;
 	}
 	pnoutrefresh(m->pad, m->ypad, 0, m->ys, m->xs, m->ye, m->xe);
-
-	//refresh();//?
 
 	return (0);
 }
