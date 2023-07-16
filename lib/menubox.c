@@ -310,34 +310,34 @@ getnextshortcut(int npritems, struct privateitem *pritems, int abs, wint_t key)
 	return (next != -1 ? next : abs);
 }
 
-static void
-drawseparators(struct bsddialog_conf *conf, WINDOW *pad, int linelen,
-    int nitems, struct privateitem *pritems)
+static void drawseparators(struct bsddialog_conf *conf, struct privatemenu *m)
 {
-	int i, linech, labellen;
+	int i, linech;
+	unsigned int labellen;
 	const char *desc, *name;
 
-	for (i = 0; i < nitems; i++) {
-		if (pritems[i].type != SEPARATORMODE)
+	for (i = 0; i < m->nitems; i++) {
+		if (m->pritems[i].type != SEPARATORMODE)
 			continue;
 		if (conf->no_lines == false) {
-			wattron(pad, t.menu.desccolor);
+			wattron(m->pad, t.menu.desccolor);
 			linech = conf->ascii_lines ? '-' : ACS_HLINE;
-			mvwhline(pad, i, 0, linech, linelen);
-			wattroff(pad, t.menu.desccolor);
+			mvwhline(m->pad, i, 0, linech, m->line);
+			wattroff(m->pad, t.menu.desccolor);
 		}
-		name = pritems[i].apiitem->name;
-		desc = pritems[i].apiitem->desc;
+		name = m->pritems[i].name;
+		desc = m->pritems[i].desc;
 		labellen = strcols(name) + strcols(desc) + 1;
-		wmove(pad, i, labellen < linelen ? linelen/2 - labellen/2 : 0);
-		wattron(pad, t.menu.namesepcolor);
-		waddstr(pad, name);
-		wattroff(pad, t.menu.namesepcolor);
+		wmove(m->pad, i,
+		    labellen < m->line ? m->line/2 - labellen/2 : 0);
+		wattron(m->pad, t.menu.namesepcolor);
+		waddstr(m->pad, name);
+		wattroff(m->pad, t.menu.namesepcolor);
 		if (strcols(name) > 0 && strcols(desc) > 0)
-			waddch(pad, ' ');
-		wattron(pad, t.menu.descsepcolor);
-		waddstr(pad, desc);
-		wattroff(pad, t.menu.descsepcolor);
+			waddch(m->pad, ' ');
+		wattron(m->pad, t.menu.descsepcolor);
+		waddstr(m->pad, desc);
+		wattroff(m->pad, t.menu.descsepcolor);
 	}
 }
 
@@ -493,8 +493,7 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 
 	if (m->sel > 0)
 		drawitem(d->conf, m, m->sel, true);
-	drawseparators(d->conf, m->pad, MIN((int)m->line, d->w-6),
-	    m->nitems, m->pritems);
+	drawseparators(d->conf, m);
 	if ((int)(m->ypad + m->menurows) - 1 < m->sel)
 		m->ypad = m->sel - m->menurows + 1;
 	m->ys = d->y + d->h - 5 - m->menurows + 1;
