@@ -48,15 +48,35 @@ struct lineposition { /* immutable strings positions in pad */
 };
 
 struct privateitem {
-	struct bsddialog_menuitem *apiitem;
+	struct bsddialog_menuitem *apiitem; // set on at end, ? 
+	/* API */
+	const char *prefix;
+	//bool on;
+	unsigned int depth;
+	const char *name;
+	const char *desc;
+	const char *bottomdesc; //solo che può essere NULL
 	/* menu fields */
 	bool on;
-	/* "links" to api item */
-	int group;
-	int index;
+	int group;//?
+	int index;//?
 	enum menumode type;
 	//w_char shrtcut; to add
 };
+
+struct privatemenu {
+	WINDOW *box;           /* only for borders */
+	WINDOW *pad;           /* pad for the private items */
+	int ypad;              /* start pad line */
+	int ys, ye, xs, xe;    /* pad pos */
+	unsigned int apimenurows;
+	unsigned int menurows; /* real menurows after menu_size_position() */
+	int nitems;            /* total nitems (all groups * all items) */
+	struct privateitem *pritems;
+	int sel;               /* current focus item, can be -1 */
+	bool hasbottomdesc;
+};
+
 
 static enum menumode
 getmode(enum menumode mode, struct bsddialog_menugroup group)
@@ -74,57 +94,86 @@ getmode(enum menumode mode, struct bsddialog_menugroup group)
 }
 
 static int
-get_nitem_positions(struct bsddialog_conf *conf, int *nitems,
+build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
     struct lineposition *pos, enum menumode mode, unsigned int ngroups,
     struct bsddialog_menugroup *groups)
 {
-	int i, j, n;
+	bool onetrue;
+	int i, j, abs;
 	unsigned int maxsepstr, maxprefix, selectorlen, maxdepth;
 	unsigned int maxname, maxdesc;
-	const char *prefix, *name, *desc;
 	struct bsddialog_menuitem *item;
 
 	/* nitems and fault checks */
 	CHECK_ARRAY(ngroups, groups);
-	n = 0;
+	m->nitems = 0;
 	for (i = 0; i < (int)ngroups; i++) {
 		CHECK_ARRAY(groups[i].nitems, groups[i].items);
-		n += (int)groups[i].nitems;
+		m->nitems += (int)groups[i].nitems;
 	}
-	*nitems = n;
 
-	/* positions */
-	maxsepstr = maxprefix = selectorlen = maxdepth = maxname = maxdesc = 0;
+	/* alloc and set private items */
+	if ((m->pritems = calloc(m->nitems, sizeof (struct privateitem))) == NULL)
+		RETURN_ERROR("Cannot allocate memory for internal menu items");
+
+	m->hasbottomdesc = false;
+	abs = 0;
 	for (i = 0; i < (int)ngroups; i++) {
-		CHECK_ARRAY(groups[i].nitems, groups[i].items);
-
-		if (getmode(mode, groups[i]) == RADIOLISTMODE ||
-		    getmode(mode, groups[i]) == CHECKLISTMODE)
-			selectorlen = 3;
-
+		onetrue = false;
 		for (j = 0; j < (int)groups[i].nitems; j++) {
 			item = &groups[i].items[j];
-			prefix = CHECK_STR(item->prefix);
-			name = CHECK_STR(item->name);
-			desc = CHECK_STR(item->desc);
-			if (groups[i].type == BSDDIALOG_SEPARATOR) {
-				maxsepstr = MAX(maxsepstr,
-				    strcols(name) + strcols(desc));
-				continue;
-			}
 
-			maxprefix = MAX(maxprefix, strcols(prefix));
-			maxdepth  = MAX(maxdepth, groups[i].items[j].depth);
-			maxname   = MAX(maxname, strcols(name));
-			maxdesc   = MAX(maxdesc, strcols(desc));
+			if (getmode(mode, groups[i]) == MENUMODE) {
+				m->pritems[abs].on = false;
+			} else if (getmode(mode, groups[i]) == RADIOLISTMODE) {
+				m->pritems[abs].on = onetrue ? false : item->on;
+				if (m->pritems[abs].on)
+					onetrue = true;
+			} else { /* CHECKLISTMODE */
+				m->pritems[abs].on = item->on;
+			}
+			m->pritems[abs].group = i;
+			m->pritems[abs].index = j;
+			m->pritems[abs].type = getmode(mode, groups[i]);
+			m->pritems[abs].apiitem = item;
+
+			m->pritems[abs].prefix = CHECK_STR(item->prefix);
+			m->pritems[abs].depth = item->depth;
+			m->pritems[abs].name = CHECK_STR(item->name);
+			m->pritems[abs].desc = CHECK_STR(item->desc);
+			m->pritems[abs].bottomdesc = item->bottomdesc;
+			if (item->bottomdesc)
+				m->hasbottomdesc = true;
+
+			abs++;
 		}
+	}
+
+	/* positions */
+	pos->xselector = pos->xname = pos->xdesc = pos->line = 0;
+	maxsepstr = maxprefix = selectorlen = maxdepth = maxname = maxdesc = 0;
+	for (i = 0; i < m->nitems; i++) {
+		if (m->pritems[i].type == RADIOLISTMODE ||
+		    m->pritems[i].type == CHECKLISTMODE)
+			selectorlen = 4;
+
+		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+			maxsepstr = MAX(maxsepstr,
+			    strcols(m->pritems[i].name) +
+			    strcols(m->pritems[i].desc));
+			continue;
+		}
+
+		maxprefix = MAX(maxprefix, strcols(m->pritems[i].prefix));
+		maxdepth  = MAX(maxdepth, m->pritems[i].depth);
+		maxname   = MAX(maxname, strcols(m->pritems[i].name));
+		maxdesc   = MAX(maxdesc, strcols(m->pritems[i].desc));
 	}
 	maxname = conf->menu.no_name ? 0 : maxname;
 	maxdesc = conf->menu.no_desc ? 0 : maxdesc;
 
 	pos->xselector = maxprefix + (maxprefix != 0 ? 1 : 0);
-	pos->xname = pos->xselector + selectorlen +
-	    (selectorlen > 0 ? 1 : 0);
+	pos->xname = pos->xselector + selectorlen;
 	pos->xdesc = maxdepth + pos->xname + maxname;
 	pos->xdesc += (maxname != 0 ? 1 : 0);
 	pos->line = MAX(maxsepstr + 3, pos->xdesc + maxdesc);
@@ -360,6 +409,7 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 	}
 
 	/* bottom description */
+	//if (m->hasbottomdesc) {
 	move(SCREENLINES - 1, 2);
 	clrtoeol();
 	if (item->bottomdesc != NULL && focus) {
@@ -431,18 +481,6 @@ menu_size_position(struct bsddialog_conf *conf, int rows, int cols,
 	return (0);
 }
 
-struct privatemenu {
-	WINDOW *box;           /* only for borders */
-	WINDOW *pad;           /* pad for the private items */
-	int ypad;              /* start pad line */
-	int ys, ye, xs, xe;    /* pad pos */
-	unsigned int apimenurows;
-	unsigned int menurows; /* real menurows after menu_size_position() */
-	int nitems;            /* total nitems (all groups * all items) */
-	struct privateitem *pritems;
-	int sel;               /* current focus item, can be -1 */
-};
-
 static int
 mixedlist_redraw(struct dialog *d, struct lineposition *pos,
     struct privatemenu *m, struct privateitem *pritems)
@@ -493,11 +531,10 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int menurows, enum menumode mode, unsigned int ngroups,
     struct bsddialog_menugroup *groups, int *focuslist, int *focusitem)
 {
-	bool loop, onetrue, changeitem;
-	int i, j, next, retval;
+	bool loop, changeitem;
+	int i, next, retval;
 	wint_t input;
-	struct lineposition pos = { 0, 0, 0, 0 };
-	struct bsddialog_menuitem *item;
+	struct lineposition pos;
 	struct privatemenu m;
 	struct dialog d;
 
@@ -508,7 +545,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (d.conf->menu.no_name && d.conf->menu.no_desc)
 		RETURN_ERROR("Both conf.menu.no_name and conf.menu.no_desc");
 
-	if (get_nitem_positions(conf, &m.nitems, &pos, mode, ngroups, groups) != 0)
+	if (build_privatemenu(conf, &m, &pos, mode, ngroups, groups) != 0)
 		return (BSDDIALOG_ERROR);
 
 	if ((m.box = newwin(1, 1, 1, 1)) == NULL)
@@ -518,38 +555,10 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	m.pad = newpad(m.nitems, pos.line);
 	wbkgd(m.pad, t.dialog.color);
 
-	if ((m.pritems = calloc(m.nitems, sizeof (struct privateitem))) == NULL)
-		RETURN_ERROR("Cannot allocate memory for internal menu items");
-
-	m.sel = 0;
-	for (i = 0; i < (int)ngroups; i++) {
-		onetrue = false;
-		for (j = 0; j < (int)groups[i].nitems; j++) {
-			item = &groups[i].items[j];
-
-			if (getmode(mode, groups[i]) == MENUMODE) {
-				m.pritems[m.sel].on = false;
-			} else if (getmode(mode, groups[i]) == RADIOLISTMODE) {
-				m.pritems[m.sel].on = onetrue ? false : item->on;
-				if (m.pritems[m.sel].on)
-					onetrue = true;
-			} else {
-				m.pritems[m.sel].on = item->on;
-			}
-			m.pritems[m.sel].group = i;
-			m.pritems[m.sel].index = j;
-			m.pritems[m.sel].type = getmode(mode, groups[i]);
-			m.pritems[m.sel].apiitem = item;
-
-			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], false);
-			m.sel++;
-		}
-	}
-
 	m.sel = getfirst_with_default(m.nitems, m.pritems, ngroups, groups,
 	    focuslist, focusitem);
-	if (m.sel >= 0)
-		drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], true);
+	for (i = 0; i < m.nitems; i++)
+		drawitem(conf, m.pad, i, pos, &m.pritems[i], m.sel == i);
 	m.ypad = 0;
 	m.apimenurows = menurows;
 	if (mixedlist_redraw(&d, &pos, &m, m.pritems) != 0)
