@@ -139,8 +139,8 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 			m->pritems[abs].depth = item->depth;
 			m->pritems[abs].name = CHECK_STR(item->name);
 			m->pritems[abs].desc = CHECK_STR(item->desc);
-			m->pritems[abs].bottomdesc = item->bottomdesc;
-			if (item->bottomdesc)
+			m->pritems[abs].bottomdesc = CHECK_STR(item->bottomdesc);
+			if (item->bottomdesc != NULL)
 				m->hasbottomdesc = true;
 
 			abs++;
@@ -347,18 +347,17 @@ drawseparators(struct bsddialog_conf *conf, WINDOW *pad, int linelen,
 }
 
 static void
-drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y,
-    struct privateitem *pritem, bool focus)
+drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 {
 	int colordesc, colorname, colorshortcut;
 	wchar_t shortcut;
-	struct bsddialog_menuitem *item;
+	struct privateitem *pritem;
 
-	item = pritem->apiitem;
+	pritem = &m->pritems[y];
 
 	/* prefix */
-	if (item->prefix != NULL && item->prefix[0] != '\0')
-		mvwaddstr(m->pad, y, 0, item->prefix);
+	if (pritem->prefix != NULL && pritem->prefix[0] != '\0')
+		mvwaddstr(m->pad, y, 0, pritem->prefix);
 
 	/* selector */
 	wmove(m->pad, y, m->xselector);
@@ -373,7 +372,7 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y,
 	colorname = focus ? t.menu.f_namecolor : t.menu.namecolor;
 	if (conf->menu.no_name == false) {
 		wattron(m->pad, colorname);
-		mvwaddstr(m->pad, y, m->xname + item->depth, item->name);
+		mvwaddstr(m->pad, y, m->xname + pritem->depth, pritem->name);
 		wattroff(m->pad, colorname);
 	}
 
@@ -386,9 +385,9 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y,
 	if (conf->menu.no_desc == false) {
 		wattron(m->pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(m->pad, y, m->xname + item->depth, item->desc);
+			mvwaddstr(m->pad, y, m->xname + pritem->depth, pritem->desc);
 		else
-			mvwaddstr(m->pad, y, m->xdesc, item->desc);
+			mvwaddstr(m->pad, y, m->xdesc, pritem->desc);
 		wattroff(m->pad, colordesc);
 	}
 
@@ -399,22 +398,23 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y,
 		wattron(m->pad, colorshortcut);
 
 		if (conf->menu.no_name)
-			mbtowc(&shortcut, item->desc, MB_CUR_MAX);
+			mbtowc(&shortcut, pritem->desc, MB_CUR_MAX);
 		else
-			mbtowc(&shortcut, item->name, MB_CUR_MAX);
-		mvwaddwch(m->pad, y, m->xname + item->depth, shortcut);
+			mbtowc(&shortcut, pritem->name, MB_CUR_MAX);
+		mvwaddwch(m->pad, y, m->xname + pritem->depth, shortcut);
 		wattroff(m->pad, colorshortcut);
 	}
 
 	/* bottom description */
-	//if (m->hasbottomdesc) {
-	move(SCREENLINES - 1, 2);
-	clrtoeol();
-	if (item->bottomdesc != NULL && focus) {
-		attron(t.menu.bottomdesccolor);
-		addstr(item->bottomdesc);
-		attroff(t.menu.bottomdesccolor);
-		refresh();
+	if (m->hasbottomdesc) {
+		move(SCREENLINES - 1, 2);
+		clrtoeol();
+		if (focus) {
+			attron(t.menu.bottomdesccolor);
+			addstr(pritem->bottomdesc);
+			attroff(t.menu.bottomdesccolor);
+			refresh();
+		}
 	}
 }
 
@@ -552,7 +552,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wbkgd(m.pad, t.dialog.color);
 
 	for (i = 0; i < m.nitems; i++)
-		drawitem(conf, &m, i, &m.pritems[i], false);
+		drawitem(conf, &m, i, false);
 	m.sel = getfirst_with_default(m.nitems, m.pritems, ngroups, groups,
 	    focuslist, focusitem);
 	// aggiiungere draw on focus a startup, forse in mixedlist_redraw()
@@ -660,13 +660,12 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				    i++) {
 					if (i != m.sel && m.pritems[i].on) {
 						m.pritems[i].on = false;
-						drawitem(conf, &m, i, 
-						    &m.pritems[i], false);
+						drawitem(conf, &m, i, false);
 					}
 				}
 				m.pritems[m.sel].on = !m.pritems[m.sel].on;
 			}
-			drawitem(conf, &m, m.sel, &m.pritems[m.sel], true);
+			drawitem(conf, &m, m.sel, true);
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			break;
 		default:
@@ -689,9 +688,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		} /* end switch get_wch() */
 
 		if (changeitem) {
-			drawitem(conf, &m, m.sel, &m.pritems[m.sel], false);
+			drawitem(conf, &m, m.sel, false);
 			m.sel = next;
-			drawitem(conf, &m, m.sel, &m.pritems[m.sel], true);
+			drawitem(conf, &m, m.sel, true);
 			if (m.ypad > m.sel && m.ypad > 0)
 				m.ypad = m.sel;
 			if ((int)(m.ypad + m.menurows) <= m.sel)
