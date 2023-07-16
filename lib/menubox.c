@@ -43,7 +43,7 @@ enum menumode {
 struct privateitem {
 	/* API */
 	const char *prefix;
-	bool on;             /* menu changes this not API on */
+	bool on;             /* menu changes, not API on */
 	unsigned int depth;
 	const char *name;
 	const char *desc;
