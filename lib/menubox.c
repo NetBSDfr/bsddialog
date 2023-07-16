@@ -479,8 +479,7 @@ menu_size_position(struct bsddialog_conf *conf, int rows, int cols,
 	return (0);
 }
 
-static int
-mixedlist_redraw(struct dialog *d, struct privatemenu *m, struct privateitem *pritems)
+static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 {
 	if (d->built) {
 		hide_dialog(d);
@@ -506,7 +505,7 @@ mixedlist_redraw(struct dialog *d, struct privatemenu *m, struct privateitem *pr
 	if (m->sel > 0)
 		drawitem(d->conf, m, m->sel, true);
 	drawseparators(d->conf, m->pad, MIN((int)m->line, d->w-6),
-	    m->nitems, pritems);
+	    m->nitems, m->pritems);
 	if ((int)(m->ypad + m->menurows) - 1 < m->sel)
 		m->ypad = m->sel - m->menurows + 1;
 	m->ys = d->y + d->h - 5 - m->menurows + 1;
@@ -559,7 +558,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	    focuslist, focusitem);
 	m.ypad = 0;
 	m.apimenurows = menurows;
-	if (mixedlist_redraw(&d, &m, m.pritems) != 0)
+	if (mixedlist_redraw(&d, &m) != 0)
 		return (BSDDIALOG_ERROR);
 
 	changeitem = false;
@@ -609,11 +608,11 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			if (mixedlist_redraw(&d, &m, m.pritems) != 0)
+			if (mixedlist_redraw(&d, &m) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if (mixedlist_redraw(&d, &m, m.pritems) != 0)
+			if (mixedlist_redraw(&d, &m) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		}
