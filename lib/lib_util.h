@@ -120,7 +120,7 @@ set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
 void draw_buttons(struct dialog *d);
 bool shortcut_buttons(wint_t key, struct buttons *bs);
 
-/* widget utils  */
+/* widget utils */
 int hide_dialog(struct dialog *d);
 
 void
