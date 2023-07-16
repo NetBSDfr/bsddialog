@@ -408,25 +408,26 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 }
 
 /* the caller has to call prefresh(menupad, ymenupad, 0, ys, xs, ye, xe); */
-static void
-update_menubox(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
-    int totnitems, unsigned int menurows, int ymenupad)
+static void update_menubox(struct bsddialog_conf *conf, struct privatemenu *m)
 {
-	draw_borders(conf, menuwin, LOWERED);
+	int h, w;
 
-	if (totnitems > (int)menurows) {
-		wattron(menuwin, t.dialog.arrowcolor);
-		if (ymenupad > 0)
-			mvwhline(menuwin, 0, 2,
+	draw_borders(conf, m->box, LOWERED);
+	getmaxyx(m->box, h, w);
+
+	if (m->nitems > (int)m->menurows) {
+		wattron(m->box, t.dialog.arrowcolor);
+		if (m->ypad > 0)
+			mvwhline(m->box, 0, 2,
 			    conf->ascii_lines ? '^' : ACS_UARROW, 3);
 
-		if ((ymenupad + (int)menurows) < totnitems)
-			mvwhline(menuwin, h-1, 2,
+		if ((m->ypad + (int)m->menurows) < m->nitems)
+			mvwhline(m->box, h-1, 2,
 			    conf->ascii_lines ? 'v' : ACS_DARROW, 3);
 
-		mvwprintw(menuwin, h-1, w-6, "%3d%%",
-		    100 * (ymenupad + menurows) / totnitems);
-		wattroff(menuwin, t.dialog.arrowcolor);
+		mvwprintw(m->box, h-1, w-6, "%3d%%",
+		    100 * (m->ypad + m->menurows) / m->nitems);
+		wattroff(m->box, t.dialog.arrowcolor);
 	}
 }
 
@@ -484,8 +485,7 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 
 	update_box(d->conf, m->box, d->y + d->h - 5 - m->menurows, d->x + 2,
 	    m->menurows+2, d->w-4, LOWERED);
-	update_menubox(d->conf, m->box, m->menurows+2, d->w-4, m->nitems,
-	    m->menurows, m->ypad);
+	update_menubox(d->conf, m);
 	wnoutrefresh(m->box);
 
 	if (m->sel >= 0)
@@ -680,8 +680,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				m.ypad = m.sel;
 			if ((int)(m.ypad + m.menurows) <= m.sel)
 				m.ypad = m.sel - m.menurows + 1;
-			update_menubox(conf, m.box, m.menurows+2, d.w-4,
-			    m.nitems, m.menurows, m.ypad);
+			update_menubox(conf, &m);
 			wrefresh(m.box);
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			changeitem = false;
