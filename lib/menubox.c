@@ -40,13 +40,6 @@ enum menumode {
 	SEPARATORMODE
 };
 
-struct lineposition { /* immutable strings positions in pad */
-	unsigned int xselector; /* [ ] */
-	unsigned int xname;     /* real x: xname + item.depth */
-	unsigned int xdesc;     /* real x: xdesc + item.depth */
-	unsigned int line;      /* width: prefix [ ] depth name desc */
-};
-
 struct privateitem {
 	struct bsddialog_menuitem *apiitem; // set on at end, ? 
 	/* API */
@@ -75,6 +68,11 @@ struct privatemenu {
 	struct privateitem *pritems;
 	int sel;               /* current focus item, can be -1 */
 	bool hasbottomdesc;
+	/* immutable strings positions in pad, except SEPARATORMODE */
+	unsigned int xselector; /* [ ] */
+	unsigned int xname;     /* real x: xname + item.depth */
+	unsigned int xdesc;     /* real x: xdesc + item.depth */
+	unsigned int line;      /* wpad: prefix [ ] depth name desc */
 };
 
 
@@ -95,7 +93,7 @@ getmode(enum menumode mode, struct bsddialog_menugroup group)
 
 static int
 build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
-    struct lineposition *pos, enum menumode mode, unsigned int ngroups,
+    enum menumode mode, unsigned int ngroups,
     struct bsddialog_menugroup *groups)
 {
 	bool onetrue;
@@ -150,7 +148,7 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 	}
 
 	/* positions */
-	pos->xselector = pos->xname = pos->xdesc = pos->line = 0;
+	m->xselector = m->xname = m->xdesc = m->line = 0;
 	maxsepstr = maxprefix = selectorlen = maxdepth = maxname = maxdesc = 0;
 	for (i = 0; i < m->nitems; i++) {
 		if (m->pritems[i].type == RADIOLISTMODE ||
@@ -172,11 +170,11 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 	maxname = conf->menu.no_name ? 0 : maxname;
 	maxdesc = conf->menu.no_desc ? 0 : maxdesc;
 
-	pos->xselector = maxprefix + (maxprefix != 0 ? 1 : 0);
-	pos->xname = pos->xselector + selectorlen;
-	pos->xdesc = maxdepth + pos->xname + maxname;
-	pos->xdesc += (maxname != 0 ? 1 : 0);
-	pos->line = MAX(maxsepstr + 3, pos->xdesc + maxdesc);
+	m->xselector = maxprefix + (maxprefix != 0 ? 1 : 0);
+	m->xname = m->xselector + selectorlen;
+	m->xdesc = maxdepth + m->xname + maxname;
+	m->xdesc += (maxname != 0 ? 1 : 0);
+	m->line = MAX(maxsepstr + 3, m->xdesc + maxdesc);
 
 	return (0);
 }
@@ -349,8 +347,8 @@ drawseparators(struct bsddialog_conf *conf, WINDOW *pad, int linelen,
 }
 
 static void
-drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
-    struct lineposition pos, struct privateitem *pritem, bool focus)
+drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y,
+    struct privateitem *pritem, bool focus)
 {
 	int colordesc, colorname, colorshortcut;
 	wchar_t shortcut;
@@ -360,23 +358,23 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 
 	/* prefix */
 	if (item->prefix != NULL && item->prefix[0] != '\0')
-		mvwaddstr(pad, y, 0, item->prefix);
+		mvwaddstr(m->pad, y, 0, item->prefix);
 
 	/* selector */
-	wmove(pad, y, pos.xselector);
-	wattron(pad, focus ? t.menu.f_selectorcolor : t.menu.selectorcolor);
+	wmove(m->pad, y, m->xselector);
+	wattron(m->pad, focus ? t.menu.f_selectorcolor : t.menu.selectorcolor);
 	if (pritem->type == CHECKLISTMODE)
-		wprintw(pad, "[%c]", pritem->on ? 'X' : ' ');
+		wprintw(m->pad, "[%c]", pritem->on ? 'X' : ' ');
 	if (pritem->type == RADIOLISTMODE)
-		wprintw(pad, "(%c)", pritem->on ? '*' : ' ');
-	wattroff(pad, focus ? t.menu.f_selectorcolor : t.menu.selectorcolor);
+		wprintw(m->pad, "(%c)", pritem->on ? '*' : ' ');
+	wattroff(m->pad, focus ? t.menu.f_selectorcolor : t.menu.selectorcolor);
 
 	/* name */
 	colorname = focus ? t.menu.f_namecolor : t.menu.namecolor;
 	if (conf->menu.no_name == false) {
-		wattron(pad, colorname);
-		mvwaddstr(pad, y, pos.xname + item->depth, item->name);
-		wattroff(pad, colorname);
+		wattron(m->pad, colorname);
+		mvwaddstr(m->pad, y, m->xname + item->depth, item->name);
+		wattroff(m->pad, colorname);
 	}
 
 	/* description */
@@ -386,26 +384,26 @@ drawitem(struct bsddialog_conf *conf, WINDOW *pad, int y,
 		colordesc = focus ? t.menu.f_desccolor : t.menu.desccolor;
 
 	if (conf->menu.no_desc == false) {
-		wattron(pad, colordesc);
+		wattron(m->pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(pad, y, pos.xname + item->depth, item->desc);
+			mvwaddstr(m->pad, y, m->xname + item->depth, item->desc);
 		else
-			mvwaddstr(pad, y, pos.xdesc, item->desc);
-		wattroff(pad, colordesc);
+			mvwaddstr(m->pad, y, m->xdesc, item->desc);
+		wattroff(m->pad, colordesc);
 	}
 
 	/* shortcut */
 	if (conf->menu.shortcut_buttons == false) {
 		colorshortcut = focus ?
 		    t.menu.f_shortcutcolor : t.menu.shortcutcolor;
-		wattron(pad, colorshortcut);
+		wattron(m->pad, colorshortcut);
 
 		if (conf->menu.no_name)
 			mbtowc(&shortcut, item->desc, MB_CUR_MAX);
 		else
 			mbtowc(&shortcut, item->name, MB_CUR_MAX);
-		mvwaddwch(pad, y, pos.xname + item->depth, shortcut);
-		wattroff(pad, colorshortcut);
+		mvwaddwch(m->pad, y, m->xname + item->depth, shortcut);
+		wattroff(m->pad, colorshortcut);
 	}
 
 	/* bottom description */
@@ -482,8 +480,7 @@ menu_size_position(struct bsddialog_conf *conf, int rows, int cols,
 }
 
 static int
-mixedlist_redraw(struct dialog *d, struct lineposition *pos,
-    struct privatemenu *m, struct privateitem *pritems)
+mixedlist_redraw(struct dialog *d, struct privatemenu *m, struct privateitem *pritems)
 {
 	if (d->built) {
 		hide_dialog(d);
@@ -491,7 +488,7 @@ mixedlist_redraw(struct dialog *d, struct lineposition *pos,
 	}
 	m->menurows = m->apimenurows;
 	if (menu_size_position(d->conf, d->rows, d->cols, d->text,
-	    &m->menurows, m->nitems, pos->line, &d->bs, &d->y, &d->x, &d->h,
+	    &m->menurows, m->nitems, m->line, &d->bs, &d->y, &d->x, &d->h,
 	    &d->w) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(d) != 0)
@@ -506,17 +503,17 @@ mixedlist_redraw(struct dialog *d, struct lineposition *pos,
 	    m->menurows, m->ypad);
 	wnoutrefresh(m->box);
 
-	drawseparators(d->conf, m->pad, MIN((int)pos->line, d->w-6),
+	drawseparators(d->conf, m->pad, MIN((int)m->line, d->w-6),
 	    m->nitems, pritems);
 	if ((int)(m->ypad + m->menurows) - 1 < m->sel)
 		m->ypad = m->sel - m->menurows + 1;
 	m->ys = d->y + d->h - 5 - m->menurows + 1;
 	m->ye = d->y + d->h - 5 ;
-	if (d->conf->menu.align_left || (int)pos->line > d->w - 6) {
+	if (d->conf->menu.align_left || (int)m->line > d->w - 6) {
 		m->xs = d->x + 3;
 		m->xe = m->xs + d->w - 7;
 	} else { /* center */
-		m->xs = d->x + 3 + (d->w-6)/2 - pos->line/2;
+		m->xs = d->x + 3 + (d->w-6)/2 - m->line/2;
 		m->xe = m->xs + d->w - 5;
 	}
 	pnoutrefresh(m->pad, m->ypad, 0, m->ys, m->xs, m->ye, m->xe);
@@ -534,7 +531,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	bool loop, changeitem;
 	int i, next, retval;
 	wint_t input;
-	struct lineposition pos;
 	struct privatemenu m;
 	struct dialog d;
 
@@ -545,23 +541,23 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (d.conf->menu.no_name && d.conf->menu.no_desc)
 		RETURN_ERROR("Both conf.menu.no_name and conf.menu.no_desc");
 
-	if (build_privatemenu(conf, &m, &pos, mode, ngroups, groups) != 0)
+	if (build_privatemenu(conf, &m, mode, ngroups, groups) != 0)
 		return (BSDDIALOG_ERROR);
 
 	if ((m.box = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW box menu");
 	wbkgd(m.box, t.dialog.color);
 
-	m.pad = newpad(m.nitems, pos.line);
+	m.pad = newpad(m.nitems, m.line);
 	wbkgd(m.pad, t.dialog.color);
 
 	m.sel = getfirst_with_default(m.nitems, m.pritems, ngroups, groups,
 	    focuslist, focusitem);
 	for (i = 0; i < m.nitems; i++)
-		drawitem(conf, m.pad, i, pos, &m.pritems[i], m.sel == i);
+		drawitem(conf, &m, i, &m.pritems[i], m.sel == i);
 	m.ypad = 0;
 	m.apimenurows = menurows;
-	if (mixedlist_redraw(&d, &pos, &m, m.pritems) != 0)
+	if (mixedlist_redraw(&d, &m, m.pritems) != 0)
 		return (BSDDIALOG_ERROR);
 
 	changeitem = false;
@@ -611,11 +607,11 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			if (mixedlist_redraw(&d, &pos, &m, m.pritems) != 0)
+			if (mixedlist_redraw(&d, &m, m.pritems) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if (mixedlist_redraw(&d, &pos, &m, m.pritems) != 0)
+			if (mixedlist_redraw(&d, &m, m.pritems) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		}
@@ -663,13 +659,13 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				    i++) {
 					if (i != m.sel && m.pritems[i].on) {
 						m.pritems[i].on = false;
-						drawitem(conf, m.pad, i, pos,
+						drawitem(conf, &m, i, 
 						    &m.pritems[i], false);
 					}
 				}
 				m.pritems[m.sel].on = !m.pritems[m.sel].on;
 			}
-			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], true);
+			drawitem(conf, &m, m.sel, &m.pritems[m.sel], true);
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			break;
 		default:
@@ -692,9 +688,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		} /* end switch get_wch() */
 
 		if (changeitem) {
-			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], false);
+			drawitem(conf, &m, m.sel, &m.pritems[m.sel], false);
 			m.sel = next;
-			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], true);
+			drawitem(conf, &m, m.sel, &m.pritems[m.sel], true);
 			if (m.ypad > m.sel && m.ypad > 0)
 				m.ypad = m.sel;
 			if ((int)(m.ypad + m.menurows) <= m.sel)
