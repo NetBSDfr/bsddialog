@@ -75,7 +75,6 @@ struct privatemenu {
 	unsigned int line;      /* wpad: prefix [ ] depth name desc */
 };
 
-
 static enum menumode
 getmode(enum menumode mode, struct bsddialog_menugroup group)
 {
