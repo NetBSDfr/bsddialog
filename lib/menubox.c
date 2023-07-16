@@ -48,13 +48,13 @@ struct privateitem {
 	unsigned int depth;
 	const char *name;
 	const char *desc;
-	const char *bottomdesc; //solo che può essere NULL
+	const char *bottomdesc; //can be NULL?
 	/* menu fields */
 	bool on;
 	int group;//?
 	int index;//?
 	enum menumode type;
-	//w_char shrtcut; to add
+	wchar_t shortcut;
 };
 
 struct privatemenu {
@@ -100,6 +100,7 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 	unsigned int maxsepstr, maxprefix, selectorlen, maxdepth;
 	unsigned int maxname, maxdesc;
 	struct bsddialog_menuitem *item;
+	struct privateitem *pritem;
 
 	/* nitems and fault checks */
 	CHECK_ARRAY(ngroups, groups);
@@ -119,6 +120,7 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 		onetrue = false;
 		for (j = 0; j < (int)groups[i].nitems; j++) {
 			item = &groups[i].items[j];
+			pritem = &m->pritems[abs];
 
 			if (getmode(mode, groups[i]) == MENUMODE) {
 				m->pritems[abs].on = false;
@@ -129,18 +131,21 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 			} else { /* CHECKLISTMODE */
 				m->pritems[abs].on = item->on;
 			}
-			m->pritems[abs].group = i;
-			m->pritems[abs].index = j;
-			m->pritems[abs].type = getmode(mode, groups[i]);
-			m->pritems[abs].apiitem = item;
+			pritem->group = i;
+			pritem->index = j;
+			pritem->type = getmode(mode, groups[i]);
+			pritem->apiitem = item;
 
-			m->pritems[abs].prefix = CHECK_STR(item->prefix);
-			m->pritems[abs].depth = item->depth;
-			m->pritems[abs].name = CHECK_STR(item->name);
-			m->pritems[abs].desc = CHECK_STR(item->desc);
-			m->pritems[abs].bottomdesc = CHECK_STR(item->bottomdesc);
+			pritem->prefix = CHECK_STR(item->prefix);
+			pritem->depth = item->depth;
+			pritem->name = CHECK_STR(item->name);
+			pritem->desc = CHECK_STR(item->desc);
+			pritem->bottomdesc = CHECK_STR(item->bottomdesc);
 			if (item->bottomdesc != NULL)
 				m->hasbottomdesc = true;
+
+			mbtowc(&pritem->shortcut, conf->menu.no_name ?
+			    pritem->desc : pritem->name, MB_CUR_MAX);
 
 			abs++;
 		}
@@ -286,26 +291,17 @@ getfastprev(int menurows, struct privateitem *pritems, int abs)
 }
 
 static int
-getnextshortcut(struct bsddialog_conf *conf, int npritems,
-    struct privateitem *pritems, int abs, wint_t key)
+getnextshortcut(int npritems, struct privateitem *pritems, int abs, wint_t key)
 {
 	int i, next;
-	wchar_t wch;
 
 	next = -1;
 	for (i = 0; i < npritems; i++) {
 		if (pritems[i].type == SEPARATORMODE)
 			continue;
-
-		if (conf->menu.no_name)
-			mbtowc(&wch, pritems[i].apiitem->desc, MB_CUR_MAX);
-		else
-			mbtowc(&wch, pritems[i].apiitem->name, MB_CUR_MAX);
-
-		if (wch == (wchar_t)key) {
+		if (pritems[i].shortcut == (wchar_t)key) {
 			if (i > abs)
 				return (i);
-
 			if (i < abs && next == -1)
 				next = i;
 		}
@@ -349,7 +345,6 @@ static void
 drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 {
 	int colordesc, colorname, colorshortcut;
-	wchar_t shortcut;
 	struct privateitem *pritem;
 
 	pritem = &m->pritems[y];
@@ -395,12 +390,7 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 		colorshortcut = focus ?
 		    t.menu.f_shortcutcolor : t.menu.shortcutcolor;
 		wattron(m->pad, colorshortcut);
-
-		if (conf->menu.no_name)
-			mbtowc(&shortcut, pritem->desc, MB_CUR_MAX);
-		else
-			mbtowc(&shortcut, pritem->name, MB_CUR_MAX);
-		mvwaddwch(m->pad, y, m->xname + pritem->depth, shortcut);
+		mvwaddwch(m->pad, y, m->xname + pritem->depth, pritem->shortcut);
 		wattroff(m->pad, colorshortcut);
 	}
 
@@ -681,7 +671,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			}
 
 			/* shourtcut items */
-			next = getnextshortcut(conf, m.nitems, m.pritems, m.sel,
+			next = getnextshortcut(m.nitems, m.pritems, m.sel,
 			    input);
 			changeitem = next != m.sel;
 		} /* end switch get_wch() */
