@@ -41,7 +41,6 @@ enum menumode {
 };
 
 struct privateitem {
-	struct bsddialog_menuitem *apiitem; // set on at end, ? 
 	/* API */
 	const char *prefix;
 	//bool on;
@@ -134,7 +133,6 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 			pritem->group = i;
 			pritem->index = j;
 			pritem->type = getmode(mode, groups[i]);
-			pritem->apiitem = item;
 
 			pritem->prefix = CHECK_STR(item->prefix);
 			pritem->depth = item->depth;
@@ -184,24 +182,20 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 }
 
 static void
-set_on_output(struct bsddialog_conf *conf, int output, int ngroups,
-    struct bsddialog_menugroup *groups, struct privateitem *pritems)
+set_return_on(struct bsddialog_conf *conf, int retval, struct privatemenu *m,
+    struct bsddialog_menugroup *groups)
 {
-	int i, j, abs;
+	int i;
+	struct privateitem *pritem;
 
-	if (output != BSDDIALOG_OK && !conf->menu.on_without_ok)
+	if (retval != BSDDIALOG_OK && !conf->menu.on_without_ok)
 		return;
 
-	for(i = abs = 0; i < ngroups; i++) {
-		if (groups[i].type == BSDDIALOG_SEPARATOR) {
-			abs += groups[i].nitems;
+	for(i = 0; i < m->nitems; i++) {
+		if (m->pritems[i].type == SEPARATORMODE)
 			continue;
-		}
-
-		for(j = 0; j < (int)groups[i].nitems; j++) {
-			groups[i].items[j].on = pritems[abs].on;
-			abs++;
-		}
+		pritem = &m->pritems[i];
+		groups[pritem->group].items[pritem->index].on = pritem->on;
 	}
 }
 
@@ -523,7 +517,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, conf->menu.shortcut_buttons, OK_LABEL, CANCEL_LABEL);
-
 	if (d.conf->menu.no_name && d.conf->menu.no_desc)
 		RETURN_ERROR("Both conf.menu.no_name and conf.menu.no_desc");
 
@@ -533,7 +526,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if ((m.box = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW box menu");
 	wbkgd(m.box, t.dialog.color);
-
 	m.pad = newpad(m.nitems, m.line);
 	wbkgd(m.pad, t.dialog.color);
 
@@ -558,7 +550,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			retval = BUTTONVALUE(d.bs);
 			if (m.sel >= 0 && m.pritems[m.sel].type == MENUMODE)
 				m.pritems[m.sel].on = true;
-			set_on_output(conf, retval, ngroups, groups, m.pritems);
+			set_return_on(conf, retval, &m, groups);
 			loop = false;
 			break;
 		case 27: /* Esc */
@@ -566,8 +558,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				retval = BSDDIALOG_ESC;
 				if (m.sel >= 0 && m.pritems[m.sel].type == MENUMODE)
 					m.pritems[m.sel].on = true;
-				set_on_output(conf, retval, ngroups, groups,
-				    m.pritems);
+				set_return_on(conf, retval, &m, groups);
 				loop = false;
 			}
 			break;
@@ -633,8 +624,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if (m.pritems[m.sel].type == MENUMODE) {
 				retval = BUTTONVALUE(d.bs);
 				m.pritems[m.sel].on = true;
-				set_on_output(conf, retval, ngroups, groups,
-				    m.pritems);
+				set_return_on(conf, retval, &m, groups);
 				loop = false;
 			} else if (m.pritems[m.sel].type == CHECKLISTMODE) {
 				m.pritems[m.sel].on = !m.pritems[m.sel].on;
@@ -659,8 +649,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 					retval = BUTTONVALUE(d.bs);
 					if (m.pritems[m.sel].type == MENUMODE)
 						m.pritems[m.sel].on = true;
-					set_on_output(conf, retval, ngroups,
-					    groups, m.pritems);
+					set_return_on(conf, retval, &m, groups);
 					loop = false;
 				}
 				break;
