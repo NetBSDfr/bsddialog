@@ -40,42 +40,41 @@
 extern struct bsddialog_theme t;
 extern bool hastermcolors;
 
-#define SCREENLINES (getmaxy(stdscr))
-#define SCREENCOLS  (getmaxx(stdscr))
 #define	MIN(a,b) (((a)<(b))?(a):(b))
 #define	MAX(a,b) (((a)>(b))?(a):(b))
-#define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
-
+/* debug */
 #define BSDDIALOG_DEBUG(y,x,fmt, ...) do {                                     \
 	mvprintw(y, x, fmt, __VA_ARGS__);                                      \
 	refresh();                                                             \
 } while (0)
-
+/* error and diagnostic*/
 #define RETURN_ERROR(str) do {                                                 \
 	set_error_string(str);                                                 \
 	return (BSDDIALOG_ERROR);                                              \
 } while (0)
-
 #define RETURN_FMTERROR(fmt, ...) do {                                         \
 	set_fmt_error_string(fmt, __VA_ARGS__);                                \
 	return (BSDDIALOG_ERROR);                                              \
 } while (0)
-
+/* check ptr */
 #define CHECK_PTR(p) do {                                                      \
 	if (p == NULL)                                                         \
 		RETURN_ERROR("*" #p " is NULL");                               \
 } while (0)
-
 #define CHECK_ARRAY(nitem, a) do {                                             \
 	if(nitem > 0 && a == NULL)                                             \
 		RETURN_FMTERROR(#nitem " is %d but " #a " is NULL", nitem);    \
 } while (0)
-
+/* tui utils */
+#define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
+#define SCREENLINES (getmaxy(stdscr))
+#define SCREENCOLS  (getmaxx(stdscr))
 #define DRAW_BUTTONS(d) do {                                                   \
 	draw_buttons(&d);                                                      \
 	wnoutrefresh(d.widget);                                                \
 } while (0)
 
+/* internal types */
 enum elevation { RAISED, LOWERED };
 
 struct buttons {
