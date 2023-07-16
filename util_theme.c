@@ -221,6 +221,9 @@ void loadtheme(const char *file, bool compatibility)
 	enum bsddialog_color bg, fg;
 	FILE *fp;
 
+	if (bsddialog_hascolors() == false)
+		return;
+
 	if (bsddialog_get_theme(&t) != BSDDIALOG_OK)
 		exit_error(false, "Cannot get current theme: %s",
 		    bsddialog_geterror());
@@ -316,6 +319,8 @@ void loadtheme(const char *file, bool compatibility)
 
 void setdeftheme(enum bsddialog_default_theme theme)
 {
+	if (bsddialog_hascolors() == false)
+		return;
 	if (bsddialog_set_default_theme(theme) != BSDDIALOG_OK)
 		exit_error(false, bsddialog_geterror());
 }

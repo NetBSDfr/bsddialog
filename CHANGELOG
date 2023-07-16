@@ -29,6 +29,7 @@ WIP Next Version
 	    - add: env BSDDIALOG_ITEM_HELP.
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* improve: DIAGNOSTIC messages adding fmt string errors.
+	* improve: disable theme setting with no color terminals.
 	* improve: button delimiter for --bikeshed.
 	* fix: --load-theme attributes.
 	* fix: increment bsddialog_total_progview for i386 and more general use.
