@@ -551,10 +551,11 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	m.pad = newpad(m.nitems, m.line);
 	wbkgd(m.pad, t.dialog.color);
 
+	for (i = 0; i < m.nitems; i++)
+		drawitem(conf, &m, i, &m.pritems[i], false);
 	m.sel = getfirst_with_default(m.nitems, m.pritems, ngroups, groups,
 	    focuslist, focusitem);
-	for (i = 0; i < m.nitems; i++)
-		drawitem(conf, &m, i, &m.pritems[i], m.sel == i);
+	// aggiiungere draw on focus a startup, forse in mixedlist_redraw()
 	m.ypad = 0;
 	m.apimenurows = menurows;
 	if (mixedlist_redraw(&d, &m, m.pritems) != 0)
