@@ -40,7 +40,7 @@ enum menumode {
 	SEPARATORMODE
 };
 
-struct lineposition {
+struct lineposition { /* immutable strings positions in pad */
 	unsigned int xselector; /* [ ] */
 	unsigned int xname;     /* real x: xname + item.depth */
 	unsigned int xdesc;     /* real x: xdesc + item.depth */
@@ -48,12 +48,13 @@ struct lineposition {
 };
 
 struct privateitem {
+	struct bsddialog_menuitem *apiitem;
+	/* menu fields */
 	bool on;
 	/* "links" to api item */
 	int group;
 	int index;
 	enum menumode type;
-	struct bsddialog_menuitem *apiitem;
 	//w_char shrtcut; to add
 };
 
@@ -83,10 +84,17 @@ get_nitem_positions(struct bsddialog_conf *conf, int *nitems,
 	const char *prefix, *name, *desc;
 	struct bsddialog_menuitem *item;
 
+	/* nitems and fault checks */
 	CHECK_ARRAY(ngroups, groups);
-
-	maxsepstr = maxprefix = selectorlen = maxdepth = maxname = maxdesc = 0;
 	n = 0;
+	for (i = 0; i < (int)ngroups; i++) {
+		CHECK_ARRAY(groups[i].nitems, groups[i].items);
+		n += (int)groups[i].nitems;
+	}
+	*nitems = n;
+
+	/* positions */
+	maxsepstr = maxprefix = selectorlen = maxdepth = maxname = maxdesc = 0;
 	for (i = 0; i < (int)ngroups; i++) {
 		CHECK_ARRAY(groups[i].nitems, groups[i].items);
 
@@ -95,7 +103,6 @@ get_nitem_positions(struct bsddialog_conf *conf, int *nitems,
 			selectorlen = 3;
 
 		for (j = 0; j < (int)groups[i].nitems; j++) {
-			n++;
 			item = &groups[i].items[j];
 			prefix = CHECK_STR(item->prefix);
 			name = CHECK_STR(item->name);
@@ -121,8 +128,6 @@ get_nitem_positions(struct bsddialog_conf *conf, int *nitems,
 	pos->xdesc = maxdepth + pos->xname + maxname;
 	pos->xdesc += (maxname != 0 ? 1 : 0);
 	pos->line = MAX(maxsepstr + 3, pos->xdesc + maxdesc);
-
-	*nitems = n;
 
 	return (0);
 }
