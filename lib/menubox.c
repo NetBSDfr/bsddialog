@@ -41,16 +41,10 @@ enum menumode {
 };
 
 struct lineposition {
-	unsigned int maxsepstr;
-	unsigned int maxprefix;
-	unsigned int xselector;
-	unsigned int selectorlen;
-	unsigned int maxdepth;
-	unsigned int xname;
-	unsigned int maxname;
-	unsigned int xdesc;
-	unsigned int maxdesc;
-	unsigned int line;
+	unsigned int xselector; /* [ ] */
+	unsigned int xname;     /* real x: xname + item.depth */
+	unsigned int xdesc;     /* real x: xdesc + item.depth */
+	unsigned int line;      /* width: prefix [ ] depth name desc */
 };
 
 struct privateitem {
@@ -61,6 +55,76 @@ struct privateitem {
 	enum menumode type;
 	struct bsddialog_menuitem *apiitem;
 };
+
+static enum menumode
+getmode(enum menumode mode, struct bsddialog_menugroup group)
+{
+	if (mode == MIXEDLISTMODE) {
+		if (group.type == BSDDIALOG_SEPARATOR)
+			mode = SEPARATORMODE;
+		else if (group.type == BSDDIALOG_RADIOLIST)
+			mode = RADIOLISTMODE;
+		else if (group.type == BSDDIALOG_CHECKLIST)
+			mode = CHECKLISTMODE;
+	}
+
+	return (mode);
+}
+
+static int
+get_nitem_positions(struct bsddialog_conf *conf, int *nitems,
+    struct lineposition *pos, enum menumode mode, unsigned int ngroups,
+    struct bsddialog_menugroup *groups)
+{
+	int i, j, n;
+	unsigned int maxsepstr, maxprefix, selectorlen, maxdepth;
+	unsigned int maxname, maxdesc;
+	const char *prefix, *name, *desc;
+	struct bsddialog_menuitem *item;
+
+	CHECK_ARRAY(ngroups, groups);
+
+	maxsepstr = maxprefix = selectorlen = maxdepth = maxname = maxdesc = 0;
+	n = 0;
+	for (i = 0; i < (int)ngroups; i++) {
+		CHECK_ARRAY(groups[i].nitems, groups[i].items);
+
+		if (getmode(mode, groups[i]) == RADIOLISTMODE ||
+		    getmode(mode, groups[i]) == CHECKLISTMODE)
+			selectorlen = 3;
+
+		for (j = 0; j < (int)groups[i].nitems; j++) {
+			n++;
+			item = &groups[i].items[j];
+			prefix = CHECK_STR(item->prefix);
+			name = CHECK_STR(item->name);
+			desc = CHECK_STR(item->desc);
+			if (groups[i].type == BSDDIALOG_SEPARATOR) {
+				maxsepstr = MAX(maxsepstr,
+				    strcols(name) + strcols(desc));
+				continue;
+			}
+
+			maxprefix = MAX(maxprefix, strcols(prefix));
+			maxdepth  = MAX(maxdepth, groups[i].items[j].depth);
+			maxname   = MAX(maxname, strcols(name));
+			maxdesc   = MAX(maxdesc, strcols(desc));
+		}
+	}
+	maxname = conf->menu.no_name ? 0 : maxname;
+	maxdesc = conf->menu.no_desc ? 0 : maxdesc;
+
+	pos->xselector = maxprefix + (maxprefix != 0 ? 1 : 0);
+	pos->xname = pos->xselector + selectorlen +
+	    (selectorlen > 0 ? 1 : 0);
+	pos->xdesc = maxdepth + pos->xname + maxname;
+	pos->xdesc += (maxname != 0 ? 1 : 0);
+	pos->line = MAX(maxsepstr + 3, pos->xdesc + maxdesc);
+
+	*nitems = n;
+
+	return (0);
+}
 
 static void
 set_on_output(struct bsddialog_conf *conf, int output, int ngroups,
@@ -196,21 +260,6 @@ getnextshortcut(struct bsddialog_conf *conf, int npritems,
 	}
 
 	return (next != -1 ? next : abs);
-}
-
-static enum menumode
-getmode(enum menumode mode, struct bsddialog_menugroup group)
-{
-	if (mode == MIXEDLISTMODE) {
-		if (group.type == BSDDIALOG_SEPARATOR)
-			mode = SEPARATORMODE;
-		else if (group.type == BSDDIALOG_RADIOLIST)
-			mode = RADIOLISTMODE;
-		else if (group.type == BSDDIALOG_CHECKLIST)
-			mode = CHECKLISTMODE;
-	}
-
-	return (mode);
 }
 
 static void
@@ -440,7 +489,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	bool loop, onetrue, changeitem;
 	int i, j, next, retval;
 	wint_t input;
-	struct lineposition pos = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	struct lineposition pos = { 0, 0, 0, 0 };
 	struct bsddialog_menuitem *item;
 	struct privateitem *pritems;
 	struct privatemenu m;
@@ -453,37 +502,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	if (d.conf->menu.no_name && d.conf->menu.no_desc)
 		RETURN_ERROR("Both conf.menu.no_name and conf.menu.no_desc");
 
-	m.nitems = 0;
-	for (i = 0; i < (int)ngroups; i++) {
-		if (getmode(mode, groups[i]) == RADIOLISTMODE ||
-		    getmode(mode, groups[i]) == CHECKLISTMODE)
-			pos.selectorlen = 3;
-
-		for (j = 0; j < (int)groups[i].nitems; j++) {
-			m.nitems++;
-			item = &groups[i].items[j];
-
-			if (groups[i].type == BSDDIALOG_SEPARATOR) {
-				pos.maxsepstr = MAX(pos.maxsepstr,
-				    strcols(item->name) + strcols(item->desc));
-				continue;
-			}
-
-			pos.maxprefix = MAX(pos.maxprefix,strcols(item->prefix));
-			pos.maxdepth  = MAX(pos.maxdepth, item->depth);
-			pos.maxname   = MAX(pos.maxname, strcols(item->name));
-			pos.maxdesc   = MAX(pos.maxdesc, strcols(item->desc));
-		}
-	}
-	pos.maxname = conf->menu.no_name ? 0 : pos.maxname;
-	pos.maxdesc = conf->menu.no_desc ? 0 : pos.maxdesc;
-
-	pos.xselector = pos.maxprefix + (pos.maxprefix != 0 ? 1 : 0);
-	pos.xname = pos.xselector + pos.selectorlen +
-	    (pos.selectorlen > 0 ? 1 : 0);
-	pos.xdesc = pos.maxdepth + pos.xname + pos.maxname;
-	pos.xdesc += (pos.maxname != 0 ? 1 : 0);
-	pos.line = MAX(pos.maxsepstr + 3, pos.xdesc + pos.maxdesc);
+	if (get_nitem_positions(conf, &m.nitems, &pos, mode, ngroups, groups) != 0)
+		return (BSDDIALOG_ERROR);
 
 	if ((m.box = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW box menu");
