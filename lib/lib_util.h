@@ -69,6 +69,7 @@ extern bool hastermcolors;
 #define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
 #define SCREENLINES (getmaxy(stdscr))
 #define SCREENCOLS  (getmaxx(stdscr))
+#define CHECK_STR(s) (s == NULL ? "" : s)
 #define DRAW_BUTTONS(d) do {                                                   \
 	draw_buttons(&d);                                                      \
 	wnoutrefresh(d.widget);                                                \

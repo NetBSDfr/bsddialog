@@ -1309,7 +1309,7 @@ prepare_dialog(struct bsddialog_conf *conf, const char *text, int rows,
 	d->conf = conf;
 	d->rows = rows;
 	d->cols = cols;
-	d->text = (text == NULL) ? "" : text;
+	d->text = CHECK_STR(text);
 	d->bs.nbuttons = 0;
 
 	if (d->conf->shadow) {
