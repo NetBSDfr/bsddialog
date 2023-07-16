@@ -6,7 +6,8 @@ WIP Next Version
 	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --color.
 	* add: $HOME/.bsddialog.conf file.
 	* add: env NO_COLOR.
-	* add: read use_shadow from .dialogrc for bsdconfig(8) compatibility.
+	* add: env BSDDIALOG_THEMEFILE.
+	* add: env BSDDIALOG_COMPATRC for bsdconfig(8) use_shadow compatibility.
 	* add: dynamic exit codes.
 	    - add: --error-exit-code.
 	    - add: --ok-exit-code.

@@ -325,21 +325,30 @@ void setdeftheme(enum bsddialog_default_theme theme)
 		exit_error(false, bsddialog_geterror());
 }
 
+static void startup_files(char *home, char *file, bool compat)
+{
+	char path[PATH_MAX];
+
+	if (file == NULL || file[0] == '\0')
+		return;
+	snprintf(path, PATH_MAX, "%s/%s", home, file);
+	if (access(path, F_OK) == 0)
+		loadtheme(path, compat);
+}
+
 void startuptheme(void)
 {
-	char *env, path[PATH_MAX];
+	char *env;
 
 	env = getenv("NO_COLOR");
 	if (env != NULL && env[0] != '\0')
 		setdeftheme(BSDDIALOG_THEME_BLACKWHITE);
 
-	env = getenv("HOME");
-	snprintf(path, PATH_MAX, "%s/%s", env, ".dialogrc");
-	if (access(path, F_OK) == 0)
-		loadtheme(path, true);
-	snprintf(path, PATH_MAX, "%s/%s", env, ".bsddialog.conf");
-	if (access(path, F_OK) == 0)
-		loadtheme(path, false);
+	if ((env = getenv("HOME")) == NULL)
+		return;
+	startup_files(env, ".bsddialog.conf", false);
+	startup_files(env, getenv("BSDDIALOG_COMPATRC"), true);
+	startup_files(env, getenv("BSDDIALOG_THEMEFILE"), false);
 }
 
 void bikeshed(struct bsddialog_conf *conf)

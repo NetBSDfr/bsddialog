@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 15, 2023
+.Dd July 16, 2023
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -611,20 +611,14 @@ The following environment variables can set the exit codes:
 button and the
 .Fl Fl item-bottom-desc
 option).
+.Pp
+.Ev BSDDIALOG_THEMEFILE Ar file
+equivalent to
+.Fl Fl load-theme Ar file .
 .Sh FILES
-The following files are read at startup if exist:
-.Bl -tag -width indent
-.It Pa $HOME/.dialogrc
-to read
-.Dq use_shadow ,
-this feature is provided to allow some existing utility to be
-converted to use
-.Nm bsddialog ,
-can be deleted in the future.
-.It Pa $HOME/.bsddialog.conf
-is equivalent to
-.Fl Fl load-theme .
-.El
+The theme file
+.Pa $HOME/.bsddialog.conf
+is read at startup if exists.
 .Sh EXIT STATUS
 The
 .Nm
@@ -740,7 +734,6 @@ Obsolete                     Equivalent
 --nook                       --no-ok
 --separator                  --output-separator
 --yes-label                  --ok-label
-\&.dialogrc use_shadow off     .bsddialog.conf theme.shadow.[y|x] 0
 .Ed
 .Sh SEE ALSO
 .Xr bsddialog 3
@@ -838,9 +831,6 @@ Dialogs:
 .Fl Fl timebox ,
 .Fl Fl treeview ,
 .Fl Fl yesno .
-.Pp
-File:
-.Pa $HOME/.dialogrc .
 .Pp
 Some feature differs in input, output, or behavior.
 Compatibility is not a priority for future development.
