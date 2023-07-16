@@ -439,7 +439,7 @@ static int menu_size_position(struct dialog *d, struct privatemenu *m)
 		return (BSDDIALOG_ERROR);
 	/* avoid menurows overflow and menurows becomes "at most menurows" */
 	if (d->h - BORDERS - htext - HBUTTONS <= 2 /* menuborders */)
-		m->menurows = (m->nitems > 0) ? 1 : 0; /* for widget_checksize() */
+		m->menurows = (m->nitems > 0) ? 1 : 0; /* widget_checksize() */
 	else
 		m->menurows = MIN(d->h - BORDERS - htext - HBUTTONS, hmenu) - 2;
 
@@ -534,7 +534,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	changeitem = false;
 	loop = true;
 	while (loop) {
-		doupdate(); //buttons and mixedmenu_redraw() for now
+		doupdate();
 		if (get_wch(&input) == ERR)
 			continue;
 		switch(input) {
@@ -663,8 +663,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if ((int)(m.ypad + m.menurows) <= m.sel)
 				m.ypad = m.sel - m.menurows + 1;
 			update_menubox(conf, &m);
-			wrefresh(m.box);
-			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
+			wnoutrefresh(m.box);
+			pnoutrefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			changeitem = false;
 		}
 	} /* end while(loop) */
