@@ -450,6 +450,9 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, conf->menu.shortcut_buttons, OK_LABEL, CANCEL_LABEL);
 
+	if (d.conf->menu.no_name && d.conf->menu.no_desc)
+		RETURN_ERROR("Both conf.menu.no_name and conf.menu.no_desc");
+
 	m.nitems = 0;
 	for (i = 0; i < (int)ngroups; i++) {
 		if (getmode(mode, groups[i]) == RADIOLISTMODE ||

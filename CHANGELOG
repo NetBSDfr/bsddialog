@@ -29,6 +29,7 @@ WIP Next Version
 	    - add: env BSDDIALOG_GENERIC2.
 	    - add: env BSDDIALOG_ITEM_HELP.
 	* change: rename themes --theme 3d|blackwhite|flat.
+	* change: --no-names and --no-descriptions mutually exclusive.
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: disable theme setting with no color terminals.
 	* improve: button delimiter for --bikeshed.
@@ -54,6 +55,7 @@ WIP Next Version
 	* change: check/set bsddialog_gauge() perc max 100.
 	* change: check/set bsddialog_mixedgauge() mainperc max 100.
 	* change: dialog *text is set to "" if NULL.
+	* change: conf.menu.no_name and conf.menu.no_desc mutually exclusive.
 	* improve: check (when possible) API pointers.
 	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.
