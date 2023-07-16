@@ -54,6 +54,7 @@ struct privateitem {
 	int index;
 	enum menumode type;
 	struct bsddialog_menuitem *apiitem;
+	//w_char shrtcut; to add
 };
 
 static enum menumode
@@ -433,6 +434,7 @@ struct privatemenu {
 	unsigned int apimenurows;
 	unsigned int menurows; /* real menurows after menu_size_position() */
 	int nitems;            /* total nitems (all groups * all items) */
+	struct privateitem *pritems;
 	int sel;               /* current focus item, can be -1 */
 };
 
@@ -491,7 +493,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	wint_t input;
 	struct lineposition pos = { 0, 0, 0, 0 };
 	struct bsddialog_menuitem *item;
-	struct privateitem *pritems;
 	struct privatemenu m;
 	struct dialog d;
 
@@ -512,7 +513,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	m.pad = newpad(m.nitems, pos.line);
 	wbkgd(m.pad, t.dialog.color);
 
-	if ((pritems = calloc(m.nitems, sizeof (struct privateitem))) == NULL)
+	if ((m.pritems = calloc(m.nitems, sizeof (struct privateitem))) == NULL)
 		RETURN_ERROR("Cannot allocate memory for internal menu items");
 
 	m.sel = 0;
@@ -522,31 +523,31 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			item = &groups[i].items[j];
 
 			if (getmode(mode, groups[i]) == MENUMODE) {
-				pritems[m.sel].on = false;
+				m.pritems[m.sel].on = false;
 			} else if (getmode(mode, groups[i]) == RADIOLISTMODE) {
-				pritems[m.sel].on = onetrue ? false : item->on;
-				if (pritems[m.sel].on)
+				m.pritems[m.sel].on = onetrue ? false : item->on;
+				if (m.pritems[m.sel].on)
 					onetrue = true;
 			} else {
-				pritems[m.sel].on = item->on;
+				m.pritems[m.sel].on = item->on;
 			}
-			pritems[m.sel].group = i;
-			pritems[m.sel].index = j;
-			pritems[m.sel].type = getmode(mode, groups[i]);
-			pritems[m.sel].apiitem = item;
+			m.pritems[m.sel].group = i;
+			m.pritems[m.sel].index = j;
+			m.pritems[m.sel].type = getmode(mode, groups[i]);
+			m.pritems[m.sel].apiitem = item;
 
-			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], false);
+			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], false);
 			m.sel++;
 		}
 	}
 
-	m.sel = getfirst_with_default(m.nitems, pritems, ngroups, groups,
+	m.sel = getfirst_with_default(m.nitems, m.pritems, ngroups, groups,
 	    focuslist, focusitem);
 	if (m.sel >= 0)
-		drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], true);
+		drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], true);
 	m.ypad = 0;
 	m.apimenurows = menurows;
-	if (mixedlist_redraw(&d, &pos, &m, pritems) != 0)
+	if (mixedlist_redraw(&d, &pos, &m, m.pritems) != 0)
 		return (BSDDIALOG_ERROR);
 
 	changeitem = false;
@@ -559,18 +560,18 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		case KEY_ENTER:
 		case 10: /* Enter */
 			retval = BUTTONVALUE(d.bs);
-			if (m.sel >= 0 && pritems[m.sel].type == MENUMODE)
-				pritems[m.sel].on = true;
-			set_on_output(conf, retval, ngroups, groups, pritems);
+			if (m.sel >= 0 && m.pritems[m.sel].type == MENUMODE)
+				m.pritems[m.sel].on = true;
+			set_on_output(conf, retval, ngroups, groups, m.pritems);
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
 				retval = BSDDIALOG_ESC;
-				if (m.sel >= 0 && pritems[m.sel].type == MENUMODE)
-					pritems[m.sel].on = true;
+				if (m.sel >= 0 && m.pritems[m.sel].type == MENUMODE)
+					m.pritems[m.sel].on = true;
 				set_on_output(conf, retval, ngroups, groups,
-				    pritems);
+				    m.pritems);
 				loop = false;
 			}
 			break;
@@ -596,11 +597,11 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			if (mixedlist_redraw(&d, &pos, &m, pritems) != 0)
+			if (mixedlist_redraw(&d, &pos, &m, m.pritems) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if (mixedlist_redraw(&d, &pos, &m, pritems) != 0)
+			if (mixedlist_redraw(&d, &pos, &m, m.pritems) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		}
@@ -609,77 +610,77 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			continue;
 		switch(input) {
 		case KEY_HOME:
-			next = getnext(m.nitems, pritems, -1);
+			next = getnext(m.nitems, m.pritems, -1);
 			changeitem = next != m.sel;
 			break;
 		case KEY_UP:
-			next = getprev(pritems, m.sel);
+			next = getprev(m.pritems, m.sel);
 			changeitem = next != m.sel;
 			break;
 		case KEY_PPAGE:
-			next = getfastprev(m.menurows, pritems, m.sel);
+			next = getfastprev(m.menurows, m.pritems, m.sel);
 			changeitem = next != m.sel;
 			break;
 		case KEY_END:
-			next = getprev(pritems, m.nitems);
+			next = getprev(m.pritems, m.nitems);
 			changeitem = next != m.sel;
 			break;
 		case KEY_DOWN:
-			next = getnext(m.nitems, pritems, m.sel);
+			next = getnext(m.nitems, m.pritems, m.sel);
 			changeitem = next != m.sel;
 			break;
 		case KEY_NPAGE:
-			next = getfastnext(m.menurows, m.nitems, pritems, m.sel);
+			next = getfastnext(m.menurows, m.nitems, m.pritems, m.sel);
 			changeitem = next != m.sel;
 			break;
 		case ' ': /* Space */
-			if (pritems[m.sel].type == MENUMODE) {
+			if (m.pritems[m.sel].type == MENUMODE) {
 				retval = BUTTONVALUE(d.bs);
-				pritems[m.sel].on = true;
+				m.pritems[m.sel].on = true;
 				set_on_output(conf, retval, ngroups, groups,
-				    pritems);
+				    m.pritems);
 				loop = false;
-			} else if (pritems[m.sel].type == CHECKLISTMODE) {
-				pritems[m.sel].on = !pritems[m.sel].on;
+			} else if (m.pritems[m.sel].type == CHECKLISTMODE) {
+				m.pritems[m.sel].on = !m.pritems[m.sel].on;
 			} else { /* RADIOLISTMODE */
-				for (i = m.sel - pritems[m.sel].index;
+				for (i = m.sel - m.pritems[m.sel].index;
 				    i < m.nitems &&
-				    pritems[i].group == pritems[m.sel].group;
+				    m.pritems[i].group == m.pritems[m.sel].group;
 				    i++) {
-					if (i != m.sel && pritems[i].on) {
-						pritems[i].on = false;
+					if (i != m.sel && m.pritems[i].on) {
+						m.pritems[i].on = false;
 						drawitem(conf, m.pad, i, pos,
-						    &pritems[i], false);
+						    &m.pritems[i], false);
 					}
 				}
-				pritems[m.sel].on = !pritems[m.sel].on;
+				m.pritems[m.sel].on = !m.pritems[m.sel].on;
 			}
-			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], true);
+			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], true);
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			break;
 		default:
 			if (conf->menu.shortcut_buttons) {
 				if (shortcut_buttons(input, &d.bs)) {
 					retval = BUTTONVALUE(d.bs);
-					if (pritems[m.sel].type == MENUMODE)
-						pritems[m.sel].on = true;
+					if (m.pritems[m.sel].type == MENUMODE)
+						m.pritems[m.sel].on = true;
 					set_on_output(conf, retval, ngroups,
-					    groups, pritems);
+					    groups, m.pritems);
 					loop = false;
 				}
 				break;
 			}
 
 			/* shourtcut items */
-			next = getnextshortcut(conf, m.nitems, pritems, m.sel,
+			next = getnextshortcut(conf, m.nitems, m.pritems, m.sel,
 			    input);
 			changeitem = next != m.sel;
 		} /* end switch get_wch() */
 
 		if (changeitem) {
-			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], false);
+			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], false);
 			m.sel = next;
-			drawitem(conf, m.pad, m.sel, pos, &pritems[m.sel], true);
+			drawitem(conf, m.pad, m.sel, pos, &m.pritems[m.sel], true);
 			if (m.ypad > m.sel && m.ypad > 0)
 				m.ypad = m.sel;
 			if ((int)(m.ypad + m.menurows) <= m.sel)
@@ -693,14 +694,14 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 	} /* end while(loop) */
 
 	if (focuslist != NULL)
-		*focuslist = m.sel < 0 ? -1 : pritems[m.sel].group;
+		*focuslist = m.sel < 0 ? -1 : m.pritems[m.sel].group;
 	if (focusitem !=NULL)
-		*focusitem = m.sel < 0 ? -1 : pritems[m.sel].index;
+		*focusitem = m.sel < 0 ? -1 : m.pritems[m.sel].index;
 
 	delwin(m.pad);
 	delwin(m.box);
 	end_dialog(&d);
-	free(pritems);
+	free(m.pritems);
 
 	return (retval);
 }
