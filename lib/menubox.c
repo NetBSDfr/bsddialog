@@ -43,13 +43,11 @@ enum menumode {
 struct privateitem {
 	/* API */
 	const char *prefix;
-	//bool on;
+	bool on;             /* menu changes this not API on */
 	unsigned int depth;
 	const char *name;
 	const char *desc;
 	const char *bottomdesc; //can be NULL?
-	/* menu fields */
-	bool on;
 	int group;//?
 	int index;//?
 	enum menumode type;
@@ -57,21 +55,20 @@ struct privateitem {
 };
 
 struct privatemenu {
-	WINDOW *box;           /* only for borders */
-	WINDOW *pad;           /* pad for the private items */
-	int ypad;              /* start pad line */
-	int ys, ye, xs, xe;    /* pad pos */
+	WINDOW *box;              /* only for borders */
+	WINDOW *pad;              /* pad for the private items */
+	int ypad;                 /* start pad line */
+	int ys, ye, xs, xe;       /* pad pos */
+	unsigned int xselector;   /* [] */
+	unsigned int xname;       /* real x: xname + item.depth */
+	unsigned int xdesc;       /* real x: xdesc + item.depth */
+	unsigned int line;        /* wpad: prefix [] depth name desc */
 	unsigned int apimenurows;
-	unsigned int menurows; /* real menurows after menu_size_position() */
-	int nitems;            /* total nitems (all groups * all items) */
+	unsigned int menurows;    /* real menurows after menu_size_position() */
+	int nitems;               /* total nitems (all groups * all items) */
 	struct privateitem *pritems;
-	int sel;               /* current focus item, can be -1 */
+	int sel;                  /* current focus item, can be -1 */
 	bool hasbottomdesc;
-	/* immutable strings positions in pad, except SEPARATORMODE */
-	unsigned int xselector; /* [ ] */
-	unsigned int xname;     /* real x: xname + item.depth */
-	unsigned int xdesc;     /* real x: xdesc + item.depth */
-	unsigned int line;      /* wpad: prefix [ ] depth name desc */
 };
 
 static enum menumode
