@@ -430,39 +430,38 @@ update_menubox(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
 	}
 }
 
-static int
-menu_size_position(struct bsddialog_conf *conf, int rows, int cols,
-    const char *text, unsigned int *menurows, int nitems, int linelen,
-    struct buttons *bs, int *y, int *x, int *h, int *w)
+static int menu_size_position(struct dialog *d, struct privatemenu *m)
 {
 	int htext, hmenu;
 
-	if (set_widget_size(conf, rows, cols, h, w) != 0)
+	if (set_widget_size(d->conf, d->rows, d->cols, &d->h, &d->w) != 0)
 		return (BSDDIALOG_ERROR);
 
-	hmenu = (*menurows == BSDDIALOG_AUTOSIZE) ? nitems : (int)*menurows;
+	hmenu = (int)(m->menurows == BSDDIALOG_AUTOSIZE) ?
+	    (int)m->nitems : (int)m->menurows;
 	hmenu += 2; /* menu borders */
 	/*
 	 * algo 1: notext = 1 (grows vertically).
 	 * algo 2: notext = hmenu (grows horizontally, better for little term).
 	 */
-	if (set_widget_autosize(conf, rows, cols, h, w, text, &htext, bs,
-	    hmenu, linelen + 4) != 0)
+	if (set_widget_autosize(d->conf, d->rows, d->cols, &d->h, &d->w,
+	    d->text, &htext, &d->bs, hmenu, m->line + 4) != 0)
 		return (BSDDIALOG_ERROR);
 	/* avoid menurows overflow and menurows becomes "at most menurows" */
-	if (*h - BORDERS - htext - HBUTTONS <= 2 /* menuborders */)
-		*menurows = (nitems > 0) ? 1 : 0; /* for widget_checksize() */
+	if (d->h - BORDERS - htext - HBUTTONS <= 2 /* menuborders */)
+		m->menurows = (m->nitems > 0) ? 1 : 0; /* for widget_checksize() */
 	else
-		*menurows = MIN(*h - BORDERS - htext - HBUTTONS, hmenu) - 2;
+		m->menurows = MIN(d->h - BORDERS - htext - HBUTTONS, hmenu) - 2;
 
 	/*
 	 * no minw=linelen to avoid big menu fault, then some col can be
 	 * hidden (example portconfig www/apache24).
 	 */
-	if (widget_checksize(*h, *w, bs, 2/*bmenu*/ + MIN(*menurows,1), 0) != 0)
+	if (widget_checksize(d->h, d->w, &d->bs,
+	    2 /* border box */ + MIN(m->menurows, 1), 0) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (set_widget_position(conf, y, x, *h, *w) != 0)
+	if (set_widget_position(d->conf, &d->y, &d->x, d->h, d->w) != 0)
 		return (BSDDIALOG_ERROR);
 
 	return (0);
@@ -475,9 +474,7 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 		refresh(); /* Important for decreasing screen */
 	}
 	m->menurows = m->apimenurows;
-	if (menu_size_position(d->conf, d->rows, d->cols, d->text,
-	    &m->menurows, m->nitems, m->line, &d->bs, &d->y, &d->x, &d->h,
-	    &d->w) != 0)
+	if (menu_size_position(d, m) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(d) != 0)
 		return (BSDDIALOG_ERROR);
