@@ -76,7 +76,7 @@ static void updateborders(struct dialog *d, struct scrolltext *st)
 
 	if (st->hpad > d->h - 4) {
 		wattron(d->widget, t.dialog.arrowcolor);
-		mvwprintw(d->widget, d->h - 3, d->w - 6, 
+		mvwprintw(d->widget, d->h - 3, d->w - 6,
 		    "%3d%%", 100 * (st->ypad + d->h - 4) / st->hpad);
 		wattroff(d->widget, t.dialog.arrowcolor);
 	}

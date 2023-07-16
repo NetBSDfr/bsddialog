@@ -37,31 +37,31 @@
 
 /*
  * -1- Error and diagnostic
- * 
+ *
  *	get_error_string();
  *	set_error_string();
  *	set_fmt_error_string();
- * 
+ *
  * ----------------------------------------------------
  * -2- (Unicode) Multicolumn character strings
- * 
+ *
  *	alloc_mbstows();
  *	mvwaddwch();
  *	str_props();
  *	strcols();
- * 
+ *
  * ----------------------------------------------------
  * -3- Buttons
- * 
+ *
  * [static] buttons_min_width();
  * [static] draw_button();
  *          draw_buttons();
  *          set_buttons(); (to call 1 time after prepare_dialog()).
  *          shortcut_buttons();
- * 
+ *
  * ----------------------------------------------------
  * -4- (Auto) Sizing and (Auto) Position
- * 
+ *
  * [static] widget_max_height(conf);
  * [static] widget_max_width(struct bsddialog_conf *conf)
  * [static] is_wtext_attr();
@@ -75,19 +75,19 @@
  *          widget_checksize();     (not for all dialogs).
  *          set_widget_position();
  *          dialog_size_position(struct dialog); (not for all dialogs).
- * 
+ *
  * ----------------------------------------------------
  * -5- (Dialog) Widget components and utils
- * 
+ *
  *	hide_dialog(struct dialog);
  *	f1help_dialog(conf);
  *	draw_borders(conf, win, elev);
  *	update_box(conf, win, y, x, h, w, elev);
  *	rtextpad(); (helper for pnoutrefresh(textpad)).
- * 
+ *
  * ----------------------------------------------------
  * -6- Dialog init/build, update/draw, destroy
- * 
+ *
  *          end_dialog(struct dialog);
  * [static] check_set_wtext_attr();
  * [static] print_string(); (word wrapping).
@@ -704,7 +704,7 @@ text_size(struct bsddialog_conf *conf, int rows, int cols, const char *text,
 
 	return (0);
 }
- 
+
 static int
 widget_min_height(struct bsddialog_conf *conf, int htext, int hnotext,
     bool withbuttons)

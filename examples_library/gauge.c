@@ -51,7 +51,7 @@ int main()
 	retval = bsddialog_gauge(&conf, "Example", 7, 30, 0, fd[0], "SEP",
 	    "EOF");
 	bsddialog_end();
-	
+
 	if(retval == BSDDIALOG_ERROR)
 		printf("Error: %s\n", bsddialog_geterror());
 
