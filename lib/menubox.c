@@ -420,7 +420,7 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 
 /* the caller has to call prefresh(menupad, ymenupad, 0, ys, xs, ye, xe); */
 static void
-update_menuwin(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
+update_menubox(struct bsddialog_conf *conf, WINDOW *menuwin, int h, int w,
     int totnitems, unsigned int menurows, int ymenupad)
 {
 	draw_borders(conf, menuwin, LOWERED);
@@ -499,7 +499,7 @@ mixedlist_redraw(struct dialog *d, struct privatemenu *m, struct privateitem *pr
 
 	update_box(d->conf, m->box, d->y + d->h - 5 - m->menurows, d->x + 2,
 	    m->menurows+2, d->w-4, LOWERED);
-	update_menuwin(d->conf, m->box, m->menurows+2, d->w-4, m->nitems,
+	update_menubox(d->conf, m->box, m->menurows+2, d->w-4, m->nitems,
 	    m->menurows, m->ypad);
 	wnoutrefresh(m->box);
 
@@ -696,7 +696,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				m.ypad = m.sel;
 			if ((int)(m.ypad + m.menurows) <= m.sel)
 				m.ypad = m.sel - m.menurows + 1;
-			update_menuwin(conf, m.box, m.menurows+2, d.w-4,
+			update_menubox(conf, m.box, m.menurows+2, d.w-4,
 			    m.nitems, m.menurows, m.ypad);
 			wrefresh(m.box);
 			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
