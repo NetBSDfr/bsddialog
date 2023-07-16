@@ -488,7 +488,7 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 	    m->menurows, m->ypad);
 	wnoutrefresh(m->box);
 
-	if (m->sel > 0)
+	if (m->sel >= 0)
 		drawitem(d->conf, m, m->sel, true);
 	drawseparators(d->conf, m);
 	if ((int)(m->ypad + m->menurows) - 1 < m->sel)
