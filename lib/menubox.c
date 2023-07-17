@@ -642,7 +642,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				m.pritems[m.sel].on = !m.pritems[m.sel].on;
 			}
 			drawitem(conf, &m, m.sel, true);
-			prefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
+			pnoutrefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			break;
 		default:
 			if (conf->menu.shortcut_buttons) {
