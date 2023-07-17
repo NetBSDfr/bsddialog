@@ -475,9 +475,9 @@ drawitem(struct privateform *form, int idx, bool focus, bool refresh)
  * again. It seems fixed by new items pad and prefresh(), previously WINDOW.
  * Case2: some terminal, tmux and ssh does not show the cursor.
  */
-#define DRAWITEM_TRICK(form, item, focus) do {                                 \
-	drawitem(form, item, !focus, true);                                    \
-	drawitem(form, item, focus, true);                                     \
+#define DRAWITEM_TRICK(form, idx, focus) do {                                  \
+	drawitem(form, idx, !focus, true);                                     \
+	drawitem(form, idx, focus, true);                                      \
 } while (0)
 
 static unsigned int firstitem(unsigned int nitems, struct privateitem *items)
