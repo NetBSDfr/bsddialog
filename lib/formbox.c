@@ -441,12 +441,11 @@ static void redrawbuttons(struct dialog *d, bool focus, bool shortcut)
 		d->bs.curr = -1;
 	d->bs.shortcut = shortcut;
 	draw_buttons(d);
-	wrefresh(d->widget);
 	d->bs.curr = selected;
 }
 
 static void
-drawitem(struct privateform *f, int idx, bool focus, bool refresh)
+drawitem(struct privateform *f, int idx, bool focus)
 {
 	int color;
 	unsigned int n, cols;
@@ -494,10 +493,7 @@ drawitem(struct privateform *f, int idx, bool focus, bool refresh)
 
 	/* Cursor */
 	curs_set((focus && item->cursor) ? 1 : 0);
-	wmove(f->pad, item->yfield, item->xfield + item->xcursor);
-
-	if(refresh)
-		prefresh(f->pad, f->y, 0, f->ys, f->xs, f->ye, f->xe);
+	wmove(f->pad, item->yfield, item->xfield + item->xcursor);	
 }
 
 /*
@@ -510,8 +506,10 @@ drawitem(struct privateform *f, int idx, bool focus, bool refresh)
  * Case2: some terminal, tmux and ssh does not show the cursor.
  */
 #define DRAWITEM_TRICK(f, idx, focus) do {                                     \
-	drawitem(f, idx, !focus, true);                                        \
-	drawitem(f, idx, focus, true);                                         \
+	drawitem(f, idx, !focus);                                              \
+	prefresh((f)->pad, (f)->y, 0, (f)->ys, (f)->xs, (f)->ye, (f)->xe);     \
+	drawitem(f, idx, focus);                                               \
+	prefresh((f)->pad, (f)->y, 0, (f)->ys, (f)->xs, (f)->ye, (f)->xe);     \
 } while (0)
 
 static void update_formbox(struct bsddialog_conf *conf, struct privateform *f)
@@ -531,7 +529,6 @@ static void update_formbox(struct bsddialog_conf *conf, struct privateform *f)
 			mvwhline(f->box, h-1, (w / 2) - 2,
 			    conf->ascii_lines ? 'v' : ACS_DARROW, 5);
 		wattroff(f->box, t.dialog.arrowcolor);
-		wrefresh(f->box);
 	}
 }
 
@@ -612,8 +609,6 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 		refresh(); /* Important to fix grey lines expanding screen */
 	TEXTPAD(d, 2 /* box borders */ + f->viewrows + HBUTTONS);
 
-	doupdate();// ?
-
 	update_box(d->conf, f->box, d->y + d->h - 5 - f->viewrows, d->x + 2,
 	    f->viewrows + 2, d->w - 4, LOWERED);
 
@@ -629,7 +624,7 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 
 	wresize(f->pad, f->h, f->w);
 	for (i = 0; i < f->nitems; i++)
-		drawitem(f, i, false, false);
+		drawitem(f, i, false);
 
 	f->ys = d->y + d->h - 5 - f->viewrows + 1;
 	f->ye = d->y + d->h - 5 ;
@@ -645,12 +640,13 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 		redrawbuttons(d,
 		    d->conf->button.always_active || !focusinform,
 		    !focusinform);
+		wnoutrefresh(d->widget);
 		curriteminview(f, &f->pritems[f->sel]);
 		update_formbox(d->conf, f);
-		wrefresh(f->box);
+		wnoutrefresh(f->box);
 		DRAWITEM_TRICK(f, f->sel, focusinform);
 	} else {
-		wrefresh(f->box);
+		wnoutrefresh(f->box);
 	}
 
 	return (0);
@@ -706,6 +702,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	changeitem = switchfocus = false;
 	loop = true;
 	while (loop) {
+		doupdate();
 		if ((wchtype = get_wch(&input)) == ERR)
 			continue;
 		switch(input) {
@@ -737,7 +734,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					}
 				}
 				redrawbuttons(&d, true, true);
-				wrefresh(d.widget);
+				wnoutrefresh(d.widget);
 			}
 			break;
 		case KEY_LEFT:
@@ -747,7 +744,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else if (d.bs.curr > 0) {
 				d.bs.curr--;
 				redrawbuttons(&d, true, true);
-				wrefresh(d.widget);
+				wnoutrefresh(d.widget);
 			} else if (form.sel != -1) {
 				switchfocus = true;
 			}
@@ -759,7 +756,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else if (d.bs.curr < (int) d.bs.nbuttons - 1) {
 				d.bs.curr++;
 				redrawbuttons(&d, true, true);
-				wrefresh(d.widget);
+				wnoutrefresh(d.widget);
 			} else if (form.sel != -1) {
 				switchfocus = true;
 			}
@@ -873,6 +870,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			redrawbuttons(&d,
 			    conf->button.always_active || !focusinform,
 			    !focusinform);
+			wnoutrefresh(d.widget);
 			DRAWITEM_TRICK(&form, form.sel, focusinform);
 			switchfocus = false;
 		}
@@ -883,6 +881,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			item = &form.pritems[form.sel];
 			curriteminview(&form, item);
 			update_formbox(conf, &form);
+			wnoutrefresh(form.box);
 			DRAWITEM_TRICK(&form, form.sel, true);
 			changeitem = false;
 		}
