@@ -602,7 +602,6 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 	f->w = f->wmin;
 	if (form_size_position(d, f) != 0)
 		return (BSDDIALOG_ERROR);
-	d->bs.shortcut = true; /* to check if useful, redrawbuttons() after */
 	if (draw_dialog(d) != 0)
 		return (BSDDIALOG_ERROR);
 	if (d->built)
