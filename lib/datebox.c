@@ -212,6 +212,36 @@ static void datectl(enum operation op, int *yy, int *mm, int *dd)
 }
 
 static void
+drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
+    const char *fmt, const void *value, bool focus)
+{
+	int h, l, w;
+
+	getmaxyx(win, h, w);
+	draw_borders(conf, win, elev);
+	if (focus) {
+		l = 2 + w%2;
+		wattron(win, t.dialog.arrowcolor);
+		mvwhline(win, 0, w/2 - l/2,
+		    conf->ascii_lines ? '^' : ACS_UARROW, l);
+		mvwhline(win, h-1, w/2 - l/2,
+		    conf->ascii_lines ? 'v' : ACS_DARROW, l);
+		wattroff(win, t.dialog.arrowcolor);
+	}
+
+	if (focus)
+		wattron(win, t.menu.f_namecolor);
+	if (strchr(fmt, 's') != NULL)
+		mvwprintw(win, 1, 1, fmt, (const char*)value);
+	else
+		mvwprintw(win, 1, 1, fmt, *((const int*)value));
+	if (focus)
+		wattroff(win, t.menu.f_namecolor);
+
+	wnoutrefresh(win);
+}
+
+static void
 print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
     bool active)
 {
@@ -248,36 +278,6 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 			y++;
 		}
 	}
-
-	wnoutrefresh(win);
-}
-
-static void
-drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
-    const char *fmt, const void *value, bool focus)
-{
-	int h, l, w;
-
-	getmaxyx(win, h, w);
-	draw_borders(conf, win, elev);
-	if (focus) {
-		l = 2 + w%2;
-		wattron(win, t.dialog.arrowcolor);
-		mvwhline(win, 0, w/2 - l/2,
-		    conf->ascii_lines ? '^' : ACS_UARROW, l);
-		mvwhline(win, h-1, w/2 - l/2,
-		    conf->ascii_lines ? 'v' : ACS_DARROW, l);
-		wattroff(win, t.dialog.arrowcolor);
-	}
-
-	if (focus)
-		wattron(win, t.menu.f_namecolor);
-	if (strchr(fmt, 's') != NULL)
-		mvwprintw(win, 1, 1, fmt, (const char*)value);
-	else
-		mvwprintw(win, 1, 1, fmt, *((const int*)value));
-	if (focus)
-		wattroff(win, t.menu.f_namecolor);
 
 	wnoutrefresh(win);
 }
