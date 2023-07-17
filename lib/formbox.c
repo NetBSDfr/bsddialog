@@ -378,6 +378,28 @@ return_values(struct bsddialog_conf *conf, int output, int nitems,
 	return (output);
 }
 
+static unsigned int firstitem(unsigned int nitems, struct privateitem *items)
+{
+	int i;
+
+	for (i = 0; i < (int)nitems; i++)
+		if (items[i].readonly == false)
+			break;
+
+	return (i);
+}
+
+static unsigned int lastitem(unsigned int nitems, struct privateitem *items)
+{
+	int i;
+
+	for (i = nitems - 1; i >= 0 ; i--)
+		if (items[i].readonly == false)
+			break;
+
+	return (i);
+}
+
 static unsigned int
 previtem(unsigned int nitems, struct privateitem *items, int curritem)
 {
@@ -408,6 +430,19 @@ nextitem(unsigned int nitems, struct privateitem *items, int curritem)
 			return(i);
 
 	return (curritem);
+}
+
+static void redrawbuttons(struct dialog *d, bool focus, bool shortcut)
+{
+	int selected;
+
+	selected = d->bs.curr;
+	if (focus == false)
+		d->bs.curr = -1;
+	d->bs.shortcut = shortcut;
+	draw_buttons(d);
+	wrefresh(d->widget);
+	d->bs.curr = selected;
 }
 
 static void
@@ -479,41 +514,6 @@ drawitem(struct privateform *form, int idx, bool focus, bool refresh)
 	drawitem(form, idx, !focus, true);                                     \
 	drawitem(form, idx, focus, true);                                      \
 } while (0)
-
-static unsigned int firstitem(unsigned int nitems, struct privateitem *items)
-{
-	int i;
-
-	for (i = 0; i < (int)nitems; i++)
-		if (items[i].readonly == false)
-			break;
-
-	return (i);
-}
-
-static unsigned int lastitem(unsigned int nitems, struct privateitem *items)
-{
-	int i;
-
-	for (i = nitems - 1; i >= 0 ; i--)
-		if (items[i].readonly == false)
-			break;
-
-	return (i);
-}
-
-static void redrawbuttons(struct dialog *d, bool focus, bool shortcut)
-{
-	int selected;
-
-	selected = d->bs.curr;
-	if (focus == false)
-		d->bs.curr = -1;
-	d->bs.shortcut = shortcut;
-	draw_buttons(d);
-	wrefresh(d->widget);
-	d->bs.curr = selected;
-}
 
 static void
 update_formbox(struct bsddialog_conf *conf, struct privateform *form)
