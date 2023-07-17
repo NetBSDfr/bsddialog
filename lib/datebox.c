@@ -584,7 +584,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				    true : false;
 				if (focusbuttons == false) {
 					sel = 0;
-					d.bs.curr = conf->button.always_active ? 0 : -1;
+					d.bs.curr = conf->button.always_active ?
+					    0 : -1;
 				}
 			} else {
 				sel++;
@@ -601,7 +602,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				focusbuttons = d.bs.curr < 0 ? false : true;
 				if (focusbuttons == false) {
 					sel = 2;
-					d.bs.curr = conf->button.always_active ? 0 : -1;
+					d.bs.curr = conf->button.always_active ?
+					    0 : -1;
 				}
 			} else {
 				sel--;
