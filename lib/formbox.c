@@ -631,7 +631,6 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 		}
 		if (f->pritems[i].cursorend)
 			fieldctl(&f->pritems[i], MOVE_CURSOR_END);
-		drawitem(f, i, false, false);
 	}
 
 	wresize(f->pad, f->h, f->w);
