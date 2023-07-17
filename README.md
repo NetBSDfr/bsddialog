@@ -124,4 +124,7 @@ in the _Public Domain_ to build new projects:
  - add bool conf.menu.depthlines or char conf.menu.depthch (default ' ').
  - implement custom getopt_long().
  - refactor gauge().
- - refactor backtitle and bottom desc using a WINDOW to clear.
+ - refactor backtitle and bottom desc using a WINDOW or pad.
+ - fix bottomdesc expanding terminal.
+ - add backtitle to dialog, conf.backtitle.
+ - fix grey lines expanding terminal (maybe redrawwin() in hide_dialog()).
