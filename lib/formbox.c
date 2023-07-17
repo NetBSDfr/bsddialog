@@ -671,10 +671,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		return (BSDDIALOG_ERROR);
 
 	if ((form.box = newwin(1, 1, 1, 1)) == NULL)
-		RETURN_ERROR("Cannot build WINDOW menu box");
+		RETURN_ERROR("Cannot build WINDOW form box");
 	wbkgd(form.box, t.dialog.color);
 	if ((form.pad = newpad(1, 1)) == NULL)
-		RETURN_ERROR("Cannot build WINDOW menu box");
+		RETURN_ERROR("Cannot build WINDOW form pad");
 	wbkgd(form.pad, t.dialog.color);
 
 	form.sel = -1;
