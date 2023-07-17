@@ -42,11 +42,11 @@ enum menumode {
 
 struct privateitem {
 	const char *prefix;
-	bool on;                /* menu changes, not API on */
+	bool on;               /* menu changes, not API on */
 	unsigned int depth;
 	const char *name;
 	const char *desc;
-	const char *bottomdesc; //can be NULL?
+	const char *bottomdesc;
 	int group;             /* index menu in menugroup */
 	int index;             /* real item index inside its menu */
 	enum menumode type;
@@ -340,8 +340,7 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 	pritem = &m->pritems[y];
 
 	/* prefix */
-	if (pritem->prefix != NULL && pritem->prefix[0] != '\0')
-		mvwaddstr(m->pad, y, 0, pritem->prefix);
+	mvwaddstr(m->pad, y, 0, pritem->prefix);
 
 	/* selector */
 	wmove(m->pad, y, m->xselector);
