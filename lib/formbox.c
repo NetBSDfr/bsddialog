@@ -899,7 +899,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	curs_set(0);
 
-	if (form.hasbottomdesc) {
+	if (form.hasbottomdesc && conf->clear) {
 		move(SCREENLINES - 1, 2);
 		clrtoeol();
 	}
