@@ -211,24 +211,28 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
     unsigned int mainperc, unsigned int nminibars, const char **minilabels,
     int *minipercs, bool color)
 {
-	int i, miniperc, max_minbarlen;
+	int i, miniperc, max_minibarlen;
 	int ystext, htext;
 	int minicolor, red, green;
 	struct bar b;
 	struct dialog d;
 
+	CHECK_ARRAY(nminibars, minilabels);
+	CHECK_ARRAY(nminibars, minipercs);
+
 	red   = bsddialog_color(BSDDIALOG_WHITE,BSDDIALOG_RED,  BSDDIALOG_BOLD);
 	green = bsddialog_color(BSDDIALOG_WHITE,BSDDIALOG_GREEN,BSDDIALOG_BOLD);
 
-	max_minbarlen = 0;
+	max_minibarlen = 0;
 	for (i = 0; i < (int)nminibars; i++)
-		max_minbarlen = MAX(max_minbarlen, (int)strcols(minilabels[i]));
-	max_minbarlen += 3 + 16; /* seps + [...] */
-	max_minbarlen = MAX(max_minbarlen, MIN_WMGBOX); /* mainbar */
+		max_minibarlen = MAX(max_minibarlen,
+		    (int)strcols(CHECK_STR(minilabels[i])));
+	max_minibarlen += 3 + 16; /* seps + [...] */
+	max_minibarlen = MAX(max_minibarlen, MIN_WMGBOX); /* mainbar */
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
-	if (dialog_size_position(&d, nminibars + HBOX, max_minbarlen,
+	if (dialog_size_position(&d, nminibars + HBOX, max_minibarlen,
 	    &htext) != 0)
 		return (BSDDIALOG_ERROR);
 	if (draw_dialog(&d) != 0)
@@ -245,7 +249,7 @@ do_mixedgauge(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		/* label */
 		if (color && miniperc >= 0)
 			wattron(d.widget, A_BOLD);
-		mvwaddstr(d.widget, i+1, 2, minilabels[i]);
+		mvwaddstr(d.widget, i+1, 2, CHECK_STR(minilabels[i]));
 		if (color && miniperc >= 0)
 			wattroff(d.widget, A_BOLD);
 		/* perc */

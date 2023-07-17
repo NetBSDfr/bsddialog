@@ -54,9 +54,9 @@ WIP Next Version
 	    the previous behavior setting minilabel to "".
 	* change: check/set bsddialog_gauge() perc max 100.
 	* change: check/set bsddialog_mixedgauge() mainperc max 100.
-	* change: dialog *text is set to "" if NULL.
 	* change: conf.menu.no_name and conf.menu.no_desc mutually exclusive.
 	* improve: check (when possible) API pointers.
+	* change: API strings like "" if NULL, except gauge *sep and *end.
 	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
