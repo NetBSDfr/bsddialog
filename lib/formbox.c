@@ -60,20 +60,22 @@ struct privateitem {
 };
 
 struct privateform {
-	WINDOW *box;       /* window to draw borders */
+	WINDOW *box;         /* window to draw borders */
 	WINDOW *pad;
-	unsigned int h;    /* only to create pad */
-	unsigned int w;    /* only to create pad */
-	unsigned int wmin; /* to refresh, w can change for FIELDEXTEND */
-	unsigned int ys;   /* to refresh */
-	unsigned int ye;   /* to refresh */
-	unsigned int xs;   /* to refresh */
-	unsigned int xe;   /* to refresh */
-	unsigned int y;    /* changes moving focus around items */
+	unsigned int h;      /* only to create pad */
+	unsigned int w;      /* only to create pad */
+	unsigned int wmin;   /* to refresh, w can change for FIELDEXTEND */
+	unsigned int ys;     /* to refresh */
+	unsigned int ye;     /* to refresh */
+	unsigned int xs;     /* to refresh */
+	unsigned int xe;     /* to refresh */
+	unsigned int y;      /* changes moving focus around items */
 	unsigned int formheight;  /* API formheight */
 	unsigned int viewrows;    /* visible rows, real formheight */
 	unsigned int minviewrows; /* min viewrows, ylabel != yfield */
-	wchar_t securewch; /* wide char of conf.form.secure[mb]ch */
+	wchar_t securewch;   /* wide char of conf.form.secure[mb]ch */
+
+	unsigned int nitems; /* like API nkitems */
 };
 
 enum operation {
@@ -548,7 +550,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	struct privateform form;
 	struct dialog d;
 
-	for (i = 0; i < nitems; i++) {
+	form.nitems = nitems;
+	for (i = 0; i < form.nitems; i++) {
 		if (apiitems[i].maxvaluelen == 0)
 			RETURN_ERROR("maxvaluelen cannot be zero");
 		if (apiitems[i].fieldlen == 0)
@@ -568,10 +571,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		form.securewch = L' ';
 	}
 
-	if ((items = malloc(nitems * sizeof(struct privateitem))) == NULL)
+	if ((items = malloc(form.nitems * sizeof(struct privateitem))) == NULL)
 		RETURN_ERROR("Cannot allocate internal items");
 	form.h = form.w = form.minviewrows = 0;
-	for (i = 0; i < nitems; i++) {
+	for (i = 0; i < form.nitems; i++) {
 		item = &items[i];
 		item->label = apiitems[i].label;
 		item->ylabel = apiitems[i].ylabel;
@@ -633,13 +636,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		tmp = abs((int)items[i].ylabel - (int)items[i].yfield);
 		form.minviewrows = MAX(form.minviewrows, tmp);
 	}
-	if (nitems > 0) {
+	if (form.nitems > 0) {
 		form.h = form.h + 1 - itemybeg;
 		form.w -= itemxbeg;
 		form.minviewrows += 1;
 	}
 	form.wmin = form.w;
-	for (i = 0; i < nitems; i++) {
+	for (i = 0; i < form.nitems; i++) {
 		items[i].ylabel -= itemybeg;
 		items[i].yfield -= itemybeg;
 		items[i].xlabel -= itemxbeg;
@@ -659,7 +662,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	wbkgd(form.pad, t.dialog.color);
 
 	curritem = -1;
-	for (i=0 ; i < nitems; i++) {
+	for (i=0 ; i < form.nitems; i++) {
 		if (curritem == -1 && items[i].readonly == false)
 			curritem = i;
 	}
@@ -674,7 +677,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 
 	form.formheight = formheight;
-	if (form_redraw(&d, &form, nitems, items, curritem, focusinform,
+	if (form_redraw(&d, &form, form.nitems, items, curritem, focusinform,
 	    item) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -689,13 +692,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform && conf->button.always_active == false)
 				break;
 			retval = return_values(conf, BUTTONVALUE(d.bs),
-			    nitems, apiitems, items);
+			    form.nitems, apiitems, items);
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
 				retval = return_values(conf, BSDDIALOG_ESC,
-				    nitems, apiitems, items);
+				    form.nitems, apiitems, items);
 				loop = false;
 			}
 			break;
@@ -741,7 +744,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case KEY_UP:
 			if (focusinform) {
-				next = previtem(nitems, items, curritem);
+				next = previtem(form.nitems, items, curritem);
 				changeitem = curritem != next;
 			} else if (curritem != -1) {
 				switchfocus = true;
@@ -750,22 +753,22 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_DOWN:
 			if (focusinform == false)
 				break;
-			if (nitems == 1) {
+			if (form.nitems == 1) {
 				switchfocus = true;
 			} else {
-				next = nextitem(nitems, items, curritem);
+				next = nextitem(form.nitems, items, curritem);
 				changeitem = curritem != next;
 			}
 			break;
 		case KEY_PPAGE:
 			if (focusinform) {
-				next = firstitem(nitems, items);
+				next = firstitem(form.nitems, items);
 				changeitem = curritem != next;
 			}
 			break;
 		case KEY_NPAGE:
 			if (focusinform) {
-				next = lastitem(nitems, items);
+				next = lastitem(form.nitems, items);
 				changeitem = curritem != next;
 			}
 			break;
@@ -804,12 +807,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				retval = BSDDIALOG_ERROR;
 				loop = false;
 			}
-			if (form_redraw(&d, &form, nitems, items, curritem,
+			if (form_redraw(&d, &form, form.nitems, items, curritem,
 			    focusinform, item) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if (form_redraw(&d, &form, nitems, items, curritem,
+			if (form_redraw(&d, &form, form.nitems, items, curritem,
 			    focusinform, item) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
@@ -835,7 +838,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else {
 				if (shortcut_buttons(input, &d.bs)) {
 					retval = return_values(conf,
-					    BUTTONVALUE(d.bs), nitems, apiitems,
+					    BUTTONVALUE(d.bs), form.nitems, apiitems,
 					    items);
 					loop = false;
 				}
@@ -866,7 +869,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	curs_set(0);
 
-	for (i = 0; i < nitems; i++) {
+	for (i = 0; i < form.nitems; i++) {
 		free(items[i].privwbuf);
 		free(items[i].pubwbuf);
 	}
