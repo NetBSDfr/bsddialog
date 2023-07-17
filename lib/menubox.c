@@ -472,16 +472,21 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 		refresh(); /* Important to fix grey lines expanding screen */
 	TEXTPAD(d, 2/*bmenu*/ + m->menurows + HBUTTONS);
 
+	/* selected item in view*/
+	if (m->ypad > m->sel && m->ypad > 0)
+		m->ypad = m->sel;
+	if ((int)(m->ypad + m->menurows) <= m->sel)
+		m->ypad = m->sel - m->menurows + 1;
+	/* lower pad after a terminal expansion */
+	if (m->ypad > 0 && (m->nitems - m->ypad) < (int)m->menurows)
+		m->ypad = m->nitems - m->menurows;
+
 	update_box(d->conf, m->box, d->y + d->h - 5 - m->menurows, d->x + 2,
 	    m->menurows+2, d->w-4, LOWERED);
 	update_menubox(d->conf, m);
 	wnoutrefresh(m->box);
 
-	if (m->sel >= 0)
-		drawitem(d->conf, m, m->sel, true);
 	drawseparators(d->conf, m);
-	if ((int)(m->ypad + m->menurows) - 1 < m->sel)
-		m->ypad = m->sel - m->menurows + 1;
 	m->ys = d->y + d->h - 5 - m->menurows + 1;
 	m->ye = d->y + d->h - 5 ;
 	if (d->conf->menu.align_left || (int)m->line > d->w - 6) {
@@ -526,6 +531,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		drawitem(conf, &m, i, false);
 	m.sel = getfirst_with_default(m.nitems, m.pritems, ngroups, groups,
 	    focuslist, focusitem);
+	if (m.sel >= 0)
+		drawitem(d.conf, &m, m.sel, true);
 	m.ypad = 0;
 	m.apimenurows = menurows;
 	if (mixedlist_redraw(&d, &m) != 0)

@@ -61,6 +61,7 @@ WIP Next Version
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
 	* fix: timebox.c checksize (boxes width).
+	* fix: menu pad and form pad "re-expansion" after shrink and enlarge.
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
 	* refactor: internal implementation.
 	    - add: internal structures to represent components.

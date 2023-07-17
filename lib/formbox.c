@@ -412,10 +412,14 @@ static void curriteminview(struct privateform *form, struct privateitem *item)
 	yup = MIN(item->ylabel, item->yfield);
 	ydown = MAX(item->ylabel, item->yfield);
 
+	/* selected item in view */
 	if (form->y > yup && form->y > 0)
 		form->y = yup;
 	if ((int)(form->y + form->viewrows) - 1 < (int)ydown)
 		form->y = ydown - form->viewrows + 1;
+	/* lower pad after a terminal expansion */
+	if (form->y > 0 && (form->h - form->y) < form->viewrows)
+		form->y = form->h - form->viewrows;
 }
 
 static int
