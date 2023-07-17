@@ -34,9 +34,24 @@
 #define GET_COLOR(bg, fg) (COLOR_PAIR(bg * 8 + fg +1))
 #define WHITE GET_COLOR(COLOR_WHITE, COLOR_BLACK)
 #define BLACK GET_COLOR(COLOR_WHITE, COLOR_BLACK) | A_REVERSE
+#define NFLAGS 6
 
 struct bsddialog_theme t;
 bool hastermcolors;
+
+struct flag_converter {
+	unsigned int public;
+	unsigned int private;
+};
+
+static struct flag_converter flagconv[NFLAGS] = {
+	{BSDDIALOG_BLINK,      A_BLINK},
+	{BSDDIALOG_BOLD,       A_BOLD},
+	{BSDDIALOG_HALFBRIGHT, A_DIM},
+	{BSDDIALOG_HIGHLIGHT,  A_STANDOUT},
+	{BSDDIALOG_REVERSE,    A_REVERSE},
+	{BSDDIALOG_UNDERLINE,  A_UNDERLINE}
+};
 
 static struct bsddialog_theme blackwhite = {
 	.screen.color = WHITE,
@@ -227,20 +242,12 @@ int
 bsddialog_color(enum bsddialog_color foreground,
     enum bsddialog_color background, unsigned int flags)
 {
-	unsigned int cursesflags = 0;
+	unsigned int i, cursesflags;
 
-	if (flags & BSDDIALOG_BOLD)
-		cursesflags |= A_BOLD;
-	if (flags & BSDDIALOG_REVERSE)
-		cursesflags |= A_REVERSE;
-	if (flags & BSDDIALOG_UNDERLINE)
-		cursesflags |= A_UNDERLINE;
-	if (flags & BSDDIALOG_HIGHLIGHT)
-		cursesflags |= A_STANDOUT;
-	if (flags & BSDDIALOG_HALFBRIGHT)
-		cursesflags |= A_DIM;
-	if (flags & BSDDIALOG_BLINK)
-		cursesflags |= A_BLINK;
+	cursesflags = 0;
+	for (i=0; i < NFLAGS; i++)
+		if (flags & flagconv[i].public)
+			cursesflags |= flagconv[i].private;
 
 	return (GET_COLOR(foreground, background) | cursesflags);
 }
@@ -250,18 +257,15 @@ bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
     enum bsddialog_color *background, unsigned int *flags)
 {
 	short f, b;
-	unsigned int flag;
+	unsigned int i, flag;
 
-	flag = 0;
-	flag |= (color & A_STANDOUT) ? BSDDIALOG_HIGHLIGHT : 0;
-	flag |= (color & A_BLINK) ? BSDDIALOG_BLINK : 0;
-	flag |= (color & A_BOLD) ? BSDDIALOG_BOLD : 0;
-	flag |= (color & A_DIM) ? BSDDIALOG_HALFBRIGHT : 0;
-	flag |= (color & A_REVERSE) ? BSDDIALOG_REVERSE : 0;
-	flag |= (color & A_UNDERLINE) ? BSDDIALOG_UNDERLINE : 0;
-	if (flags != NULL)
+	if (flags != NULL) {
+		flag = 0;
+		for (i=0; i < NFLAGS; i++)
+			if (color & flagconv[i].private)
+				flag |= flagconv[i].public;
 		*flags = flag;
-
+	}
 	if (pair_content(PAIR_NUMBER(color), &f, &b) != OK)
 		RETURN_ERROR("Cannot get color attributes");
 	if (foreground != NULL)
