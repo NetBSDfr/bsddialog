@@ -315,6 +315,101 @@ static bool fieldctl(struct privateitem *item, enum field_action act)
 	return (change);
 }
 
+static bool
+insertch(struct privateform *form, struct privateitem *item, wchar_t wch)
+{
+	int i;
+
+	if (item->nletters >= item->maxletters)
+		return (false);
+
+	for (i = (int)item->nletters - 1; i >= (int)item->pos; i--) {
+		item->privwbuf[i+1] = item->privwbuf[i];
+		item->pubwbuf[i+1] = item->pubwbuf[i];
+	}
+
+	item->privwbuf[item->pos] = wch;
+	item->pubwbuf[item->pos] = item->secure ? form->securewch : wch;
+	item->nletters += 1;
+	item->privwbuf[item->nletters] = L'\0';
+	item->pubwbuf[item->nletters] = L'\0';
+
+	return (true);
+}
+
+static char* alloc_wstomb(wchar_t *wstr)
+{
+	int len, nbytes, i;
+	char mbch[MB_LEN_MAX], *mbstr;
+
+	nbytes = MB_LEN_MAX; /* to ensure a null terminated string */
+	len = wcslen(wstr);
+	for (i = 0; i < len; i++) {
+		wctomb(mbch, wstr[i]);
+		nbytes += mblen(mbch, MB_LEN_MAX);
+	}
+	if((mbstr = malloc(nbytes)) == NULL)
+		return (NULL);
+
+	wcstombs(mbstr,	wstr, nbytes);
+
+	return (mbstr);
+}
+
+static int
+return_values(struct bsddialog_conf *conf, int output, int nitems,
+    struct bsddialog_formitem *apiitems, struct privateitem *items)
+{
+	int i;
+
+	if (output != BSDDIALOG_OK && conf->form.value_without_ok == false)
+		return (output);
+
+	for (i = 0; i < nitems; i++) {
+		if (conf->form.value_wchar) {
+			apiitems[i].value = (char*)wcsdup(items[i].privwbuf);
+		} else {
+			apiitems[i].value = alloc_wstomb(items[i].privwbuf);
+		}
+		if (apiitems[i].value == NULL)
+			RETURN_ERROR("Cannot allocate memory for form value");
+	}
+
+	return (output);
+}
+
+static unsigned int
+previtem(unsigned int nitems, struct privateitem *items, int curritem)
+{
+	int i;
+
+	for (i = curritem - 1; i >= 0; i--)
+		if (items[i].readonly == false)
+			return(i);
+
+	for (i = nitems - 1; i > curritem - 1; i--)
+		if (items[i].readonly == false)
+			return(i);
+
+	return (curritem);
+}
+
+static unsigned int
+nextitem(unsigned int nitems, struct privateitem *items, int curritem)
+{
+	int i;
+
+	for (i = curritem + 1; i < (int)nitems; i++)
+		if (items[i].readonly == false)
+			return(i);
+
+	for (i = 0; i < curritem; i++)
+		if (items[i].readonly == false)
+			return(i);
+
+	return (curritem);
+}
+
 static void
 drawitem(struct privateform *form, struct privateitem *item, bool focus,
     bool refresh)
@@ -383,69 +478,6 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus,
 	drawitem(form, item, focus, true);                                     \
 } while (0)
 
-static bool
-insertch(struct privateform *form, struct privateitem *item, wchar_t wch)
-{
-	int i;
-
-	if (item->nletters >= item->maxletters)
-		return (false);
-
-	for (i = (int)item->nletters - 1; i >= (int)item->pos; i--) {
-		item->privwbuf[i+1] = item->privwbuf[i];
-		item->pubwbuf[i+1] = item->pubwbuf[i];
-	}
-
-	item->privwbuf[item->pos] = wch;
-	item->pubwbuf[item->pos] = item->secure ? form->securewch : wch;
-	item->nletters += 1;
-	item->privwbuf[item->nletters] = L'\0';
-	item->pubwbuf[item->nletters] = L'\0';
-
-	return (true);
-}
-
-static char* alloc_wstomb(wchar_t *wstr)
-{
-	int len, nbytes, i;
-	char mbch[MB_LEN_MAX], *mbstr;
-
-	nbytes = MB_LEN_MAX; /* to ensure a null terminated string */
-	len = wcslen(wstr);
-	for (i = 0; i < len; i++) {
-		wctomb(mbch, wstr[i]);
-		nbytes += mblen(mbch, MB_LEN_MAX);
-	}
-	if((mbstr = malloc(nbytes)) == NULL)
-		return (NULL);
-
-	wcstombs(mbstr,	wstr, nbytes);
-
-	return (mbstr);
-}
-
-static int
-return_values(struct bsddialog_conf *conf, int output, int nitems,
-    struct bsddialog_formitem *apiitems, struct privateitem *items)
-{
-	int i;
-
-	if (output != BSDDIALOG_OK && conf->form.value_without_ok == false)
-		return (output);
-
-	for (i = 0; i < nitems; i++) {
-		if (conf->form.value_wchar) {
-			apiitems[i].value = (char*)wcsdup(items[i].privwbuf);
-		} else {
-			apiitems[i].value = alloc_wstomb(items[i].privwbuf);
-		}
-		if (apiitems[i].value == NULL)
-			RETURN_ERROR("Cannot allocate memory for form value");
-	}
-
-	return (output);
-}
-
 static unsigned int firstitem(unsigned int nitems, struct privateitem *items)
 {
 	int i;
@@ -466,38 +498,6 @@ static unsigned int lastitem(unsigned int nitems, struct privateitem *items)
 			break;
 
 	return (i);
-}
-
-static unsigned int
-previtem(unsigned int nitems, struct privateitem *items, int curritem)
-{
-	int i;
-
-	for (i = curritem - 1; i >= 0; i--)
-		if (items[i].readonly == false)
-			return(i);
-
-	for (i = nitems - 1; i > curritem - 1; i--)
-		if (items[i].readonly == false)
-			return(i);
-
-	return (curritem);
-}
-
-static unsigned int
-nextitem(unsigned int nitems, struct privateitem *items, int curritem)
-{
-	int i;
-
-	for (i = curritem + 1; i < (int)nitems; i++)
-		if (items[i].readonly == false)
-			return(i);
-
-	for (i = 0; i < curritem; i++)
-		if (items[i].readonly == false)
-			return(i);
-
-	return (curritem);
 }
 
 static void redrawbuttons(struct dialog *d, bool focus, bool shortcut)
