@@ -91,7 +91,7 @@ struct privateform {
 
 static int
 build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
-    struct bsddialog_formitem *items, struct privateform *form)
+    struct bsddialog_formitem *items, struct privateform *f)
 {
 	bool insecurecursor;
 	int mbchsize;
@@ -109,30 +109,30 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 			RETURN_FMTERROR("item %u [0-%u] fieldlen = 0",
 			    i, nitems);
 	}
-	form->nitems = nitems;
+	f->nitems = nitems;
 
 	/* insecure ch */
 	insecurecursor = false;
 	if (conf->form.securembch != NULL) {
 		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
-		if(mbtowc(&form->securewch, conf->form.securembch, mbchsize) < 0)
+		if(mbtowc(&f->securewch, conf->form.securembch, mbchsize) < 0)
 			RETURN_ERROR("Cannot convert securembch to wchar_t");
 		insecurecursor = true;
 	} else if (conf->form.securech != '\0') {
-		form->securewch = btowc(conf->form.securech);
+		f->securewch = btowc(conf->form.securech);
 		insecurecursor = true;
 	} else {
-		form->securewch = L' ';
+		f->securewch = L' ';
 	}
 
 	/* alloc and set private items */
-	form->pritems = malloc(form->nitems * sizeof(struct privateitem));
-	if (form->pritems == NULL)
+	f->pritems = malloc(f->nitems * sizeof(struct privateitem));
+	if (f->pritems == NULL)
 		RETURN_ERROR("Cannot allocate internal form.pritems");
-	form->hasbottomdesc = false;
-	form->h = form->w = form->minviewrows = 0;
-	for (i = 0; i < form->nitems; i++) {
-		item = &form->pritems[i];
+	f->hasbottomdesc = false;
+	f->h = f->w = f->minviewrows = 0;
+	for (i = 0; i < f->nitems; i++) {
+		item = &f->pritems[i];
 		item->label = CHECK_STR(items[i].label);
 		item->ylabel = items[i].ylabel;
 		item->xlabel = items[i].xlabel;
@@ -147,7 +147,7 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 		item->cursorend = items[i].flags & BSDDIALOG_FIELDCURSOREND;
 		item->bottomdesc = CHECK_STR(items[i].bottomdesc);
 		if (items[i].bottomdesc != NULL)
-			form->hasbottomdesc = true;
+			f->hasbottomdesc = true;
 		if (item->readonly || (item->secure && !insecurecursor))
 			item->cursor = false;
 		else
@@ -171,7 +171,7 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 		item->nletters = wcslen(item->pubwbuf);
 		if (item->secure) {
 			for (j = 0; j < item->nletters; j++)
-				item->pubwbuf[j] = form->securewch;
+				item->pubwbuf[j] = f->securewch;
 		}
 
 		item->fieldcols = items[i].fieldlen;
@@ -180,10 +180,10 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 		item->pos = 0;
 
 		/* size and position */
-		form->h = MAX(form->h, item->ylabel);
-		form->h = MAX(form->h, item->yfield);
-		form->w = MAX(form->w, item->xlabel + strcols(item->label));
-		form->w = MAX(form->w, item->xfield + item->fieldcols);
+		f->h = MAX(f->h, item->ylabel);
+		f->h = MAX(f->h, item->yfield);
+		f->w = MAX(f->w, item->xlabel + strcols(item->label));
+		f->w = MAX(f->w, item->xfield + item->fieldcols);
 		if (i == 0) {
 			itemybeg = MIN(item->ylabel, item->yfield);
 			itemxbeg = MIN(item->xlabel, item->xfield);
@@ -194,19 +194,19 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 			itemxbeg = MIN(itemxbeg, tmp);
 		}
 		tmp = abs((int)item->ylabel - (int)item->yfield);
-		form->minviewrows = MAX(form->minviewrows, tmp);
+		f->minviewrows = MAX(f->minviewrows, tmp);
 	}
-	if (form->nitems > 0) {
-		form->h = form->h + 1 - itemybeg;
-		form->w -= itemxbeg;
-		form->minviewrows += 1;
+	if (f->nitems > 0) {
+		f->h = f->h + 1 - itemybeg;
+		f->w -= itemxbeg;
+		f->minviewrows += 1;
 	}
-	form->wmin = form->w;
-	for (i = 0; i < form->nitems; i++) {
-		form->pritems[i].ylabel -= itemybeg;
-		form->pritems[i].yfield -= itemybeg;
-		form->pritems[i].xlabel -= itemxbeg;
-		form->pritems[i].xfield -= itemxbeg;
+	f->wmin = f->w;
+	for (i = 0; i < f->nitems; i++) {
+		f->pritems[i].ylabel -= itemybeg;
+		f->pritems[i].yfield -= itemybeg;
+		f->pritems[i].xlabel -= itemxbeg;
+		f->pritems[i].xfield -= itemxbeg;
 	}
 
 	return (0);
@@ -446,18 +446,18 @@ static void redrawbuttons(struct dialog *d, bool focus, bool shortcut)
 }
 
 static void
-drawitem(struct privateform *form, int idx, bool focus, bool refresh)
+drawitem(struct privateform *f, int idx, bool focus, bool refresh)
 {
 	int color;
 	unsigned int n, cols;
 	struct privateitem *item;
 
-	item = &form->pritems[idx];
+	item = &f->pritems[idx];
 
 	/* Label */
-	wattron(form->pad, t.dialog.color);
-	mvwaddstr(form->pad, item->ylabel, item->xlabel, item->label);
-	wattroff(form->pad, t.dialog.color);
+	wattron(f->pad, t.dialog.color);
+	mvwaddstr(f->pad, item->ylabel, item->xlabel, item->label);
+	wattroff(f->pad, t.dialog.color);
 
 	/* Field */
 	if (item->readonly)
@@ -466,8 +466,8 @@ drawitem(struct privateform *form, int idx, bool focus, bool refresh)
 		color = t.dialog.color;
 	else
 		color = focus ? t.form.f_fieldcolor : t.form.fieldcolor;
-	wattron(form->pad, color);
-	mvwhline(form->pad, item->yfield, item->xfield, ' ', item->fieldcols);
+	wattron(f->pad, color);
+	mvwhline(f->pad, item->yfield, item->xfield, ' ', item->fieldcols);
 	n = 0;
 	cols = wcwidth(item->pubwbuf[item->xposdraw]);
 	while (cols <= item->fieldcols &&
@@ -476,12 +476,12 @@ drawitem(struct privateform *form, int idx, bool focus, bool refresh)
 		cols += wcwidth(item->pubwbuf[item->xposdraw + n]);
 
 	}
-	mvwaddnwstr(form->pad, item->yfield, item->xfield,
+	mvwaddnwstr(f->pad, item->yfield, item->xfield, 
 	    &item->pubwbuf[item->xposdraw], n);
-	wattroff(form->pad, color);
+	wattroff(f->pad, color);
 
 	/* Bottom Desc */
-	if (form->hasbottomdesc) {
+	if (f->hasbottomdesc) {
 		move(SCREENLINES - 1, 2);
 		clrtoeol();
 		if (item->bottomdesc != NULL && focus) {
@@ -494,11 +494,10 @@ drawitem(struct privateform *form, int idx, bool focus, bool refresh)
 
 	/* Cursor */
 	curs_set((focus && item->cursor) ? 1 : 0);
-	wmove(form->pad, item->yfield, item->xfield + item->xcursor);
+	wmove(f->pad, item->yfield, item->xfield + item->xcursor);
 
 	if(refresh)
-		prefresh(form->pad, form->y, 0, form->ys, form->xs, form->ye,
-		    form->xe);
+		prefresh(f->pad, f->y, 0, f->ys, f->xs, f->ye, f->xe);
 }
 
 /*
@@ -510,34 +509,33 @@ drawitem(struct privateform *form, int idx, bool focus, bool refresh)
  * again. It seems fixed by new items pad and prefresh(), previously WINDOW.
  * Case2: some terminal, tmux and ssh does not show the cursor.
  */
-#define DRAWITEM_TRICK(form, idx, focus) do {                                  \
-	drawitem(form, idx, !focus, true);                                     \
-	drawitem(form, idx, focus, true);                                      \
+#define DRAWITEM_TRICK(f, idx, focus) do {                                     \
+	drawitem(f, idx, !focus, true);                                        \
+	drawitem(f, idx, focus, true);                                         \
 } while (0)
 
-static void
-update_formbox(struct bsddialog_conf *conf, struct privateform *form)
+static void update_formbox(struct bsddialog_conf *conf, struct privateform *f)
 {
 	int h, w;
 
-	getmaxyx(form->box, h, w);
-	draw_borders(conf, form->box, LOWERED);
+	getmaxyx(f->box, h, w);
+	draw_borders(conf, f->box, LOWERED);
 
-	if (form->viewrows < form->h) {
-		wattron(form->box, t.dialog.arrowcolor);
-		if (form->y > 0)
-			mvwhline(form->box, 0, (w / 2) - 2,
+	if (f->viewrows < f->h) {
+		wattron(f->box, t.dialog.arrowcolor);
+		if (f->y > 0)
+			mvwhline(f->box, 0, (w / 2) - 2,
 			    conf->ascii_lines ? '^' : ACS_UARROW, 5);
 
-		if (form->y + form->viewrows < form->h)
-			mvwhline(form->box, h-1, (w / 2) - 2,
+		if (f->y + f->viewrows < f->h)
+			mvwhline(f->box, h-1, (w / 2) - 2,
 			    conf->ascii_lines ? 'v' : ACS_DARROW, 5);
-		wattroff(form->box, t.dialog.arrowcolor);
-		wrefresh(form->box);
+		wattroff(f->box, t.dialog.arrowcolor);
+		wrefresh(f->box);
 	}
 }
 
-static void curriteminview(struct privateform *form, struct privateitem *item)
+static void curriteminview(struct privateform *f, struct privateitem *item)
 {
 	unsigned int yup, ydown;
 
@@ -545,13 +543,13 @@ static void curriteminview(struct privateform *form, struct privateitem *item)
 	ydown = MAX(item->ylabel, item->yfield);
 
 	/* selected item in view */
-	if (form->y > yup && form->y > 0)
-		form->y = yup;
-	if ((int)(form->y + form->viewrows) - 1 < (int)ydown)
-		form->y = ydown - form->viewrows + 1;
+	if (f->y > yup && f->y > 0)
+		f->y = yup;
+	if ((int)(f->y + f->viewrows) - 1 < (int)ydown)
+		f->y = ydown - f->viewrows + 1;
 	/* lower pad after a terminal expansion */
-	if (form->y > 0 && (form->h - form->y) < form->viewrows)
-		form->y = form->h - form->viewrows;
+	if (f->y > 0 && (f->h - f->y) < f->viewrows)
+		f->y = f->h - f->viewrows;
 }
 
 static int
