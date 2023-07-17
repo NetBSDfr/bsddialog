@@ -596,9 +596,7 @@ form_size_position(struct bsddialog_conf *conf, int rows, int cols,
 }
 
 static int
-form_redraw(struct dialog *d, struct privateform *f, unsigned int nitems,
-    struct privateitem *items, int curritem, bool focusinform,
-    struct privateitem *item)
+form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 {
 	unsigned int i;
 
@@ -616,27 +614,27 @@ form_redraw(struct dialog *d, struct privateform *f, unsigned int nitems,
 		return (BSDDIALOG_ERROR);
 	if (d->built)
 		refresh(); /* Important to fix grey lines expanding screen */
-	TEXTPAD(d, 2/*bform*/ + f->viewrows + HBUTTONS);
+	TEXTPAD(d, 2 /* box borders */ + f->viewrows + HBUTTONS);
 
 	doupdate();// ?
 
 	update_box(d->conf, f->box, d->y + d->h - 5 - f->viewrows, d->x + 2,
 	    f->viewrows + 2, d->w - 4, LOWERED);
 
-	for (i = 0; i < nitems; i++) {
-		fieldctl(&items[i], MOVE_CURSOR_BEGIN);
-		if (items[i].extendfield) {
+	for (i = 0; i < f->nitems; i++) {
+		fieldctl(&f->pritems[i], MOVE_CURSOR_BEGIN);
+		if (f->pritems[i].extendfield) {
 			f->w = d->w - 6;
-			items[i].fieldcols = f->w - items[i].xfield;
+			f->pritems[i].fieldcols = f->w - f->pritems[i].xfield;
 		}
-		if (items[i].cursorend)
-			fieldctl(&items[i], MOVE_CURSOR_END);
-		drawitem(f, &items[i], false, false);
+		if (f->pritems[i].cursorend)
+			fieldctl(&f->pritems[i], MOVE_CURSOR_END);
+		drawitem(f, &f->pritems[i], false, false);
 	}
 
 	wresize(f->pad, f->h, f->w);
-	for (i = 0; i < nitems; i++)
-		drawitem(f, &items[i], false, false);
+	for (i = 0; i < f->nitems; i++)
+		drawitem(f, &f->pritems[i], false, false);
 
 	f->ys = d->y + d->h - 5 - f->viewrows + 1;
 	f->ye = d->y + d->h - 5 ;
@@ -648,14 +646,14 @@ form_redraw(struct dialog *d, struct privateform *f, unsigned int nitems,
 		f->xe = f->xs + d->w - 5;
 	}
 
-	if (curritem != -1) {
+	if (f->sel != -1) {
 		redrawbuttons(d,
 		    d->conf->button.always_active || !focusinform,
 		    !focusinform);
-		curriteminview(f, item);
+		curriteminview(f, &f->pritems[f->sel]);
 		update_formbox(d->conf, f);
 		wrefresh(f->box);
-		DRAWITEM_TRICK(f, item, focusinform);
+		DRAWITEM_TRICK(f, &f->pritems[f->sel], focusinform);
 	} else {
 		wrefresh(f->box);
 	}
@@ -707,8 +705,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 
 	form.formheight = formheight;
-	if (form_redraw(&d, &form, form.nitems, form.pritems, form.sel, focusinform,
-	    item) != 0)
+	if (form_redraw(&d, &form, focusinform) != 0)
 		return (BSDDIALOG_ERROR);
 
 	changeitem = switchfocus = false;
@@ -837,13 +834,11 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				retval = BSDDIALOG_ERROR;
 				loop = false;
 			}
-			if (form_redraw(&d, &form, form.nitems, form.pritems, form.sel,
-			    focusinform, item) != 0)
+			if (form_redraw(&d, &form, focusinform) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if (form_redraw(&d, &form, form.nitems, form.pritems, form.sel,
-			    focusinform, item) != 0)
+			if (form_redraw(&d, &form, focusinform) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		default:
