@@ -537,23 +537,18 @@ form_redraw(struct dialog *d, struct privateform *f, unsigned int nitems,
 	return (0);
 }
 
-/* API */
-int
-bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int formheight, unsigned int nitems,
-    struct bsddialog_formitem *items)
+static int
+build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
+    struct bsddialog_formitem *items, struct privateform *form)
 {
-	bool switchfocus, changeitem, focusinform, insecurecursor, loop;
-	int mbchsize, next, retval, wchtype;
+	bool insecurecursor;
+	int mbchsize;
 	unsigned int i, j, itemybeg, itemxbeg, tmp;
 	wchar_t *winit;
-	wint_t input;
 	struct privateitem *item;
-	struct privateform form;
-	struct dialog d;
 
-	form.nitems = nitems;
-	for (i = 0; i < form.nitems; i++) {
+	form->nitems = nitems;
+	for (i = 0; i < form->nitems; i++) {
 		if (items[i].maxvaluelen == 0)
 			RETURN_ERROR("maxvaluelen cannot be zero");
 		if (items[i].fieldlen == 0)
@@ -563,21 +558,21 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	insecurecursor = false;
 	if (conf->form.securembch != NULL) {
 		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
-		if(mbtowc(&form.securewch, conf->form.securembch, mbchsize) < 0)
+		if(mbtowc(&form->securewch, conf->form.securembch, mbchsize) < 0)
 			RETURN_ERROR("Cannot convert securembch to wchar_t");
 		insecurecursor = true;
 	} else if (conf->form.securech != '\0') {
-		form.securewch = btowc(conf->form.securech);
+		form->securewch = btowc(conf->form.securech);
 		insecurecursor = true;
 	} else {
-		form.securewch = L' ';
+		form->securewch = L' ';
 	}
 
-	if ((form.pritems = malloc(form.nitems * sizeof(struct privateitem))) == NULL)
+	if ((form->pritems = malloc(form->nitems * sizeof(struct privateitem))) == NULL)
 		RETURN_ERROR("Cannot allocate internal form.pritems");
-	form.h = form.w = form.minviewrows = 0;
-	for (i = 0; i < form.nitems; i++) {
-		item = &form.pritems[i];
+	form->h = form->w = form->minviewrows = 0;
+	for (i = 0; i < form->nitems; i++) {
+		item = &form->pritems[i];
 		item->label = items[i].label;
 		item->ylabel = items[i].ylabel;
 		item->xlabel = items[i].xlabel;
@@ -614,7 +609,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->nletters = wcslen(item->pubwbuf);
 		if (item->secure) {
 			for (j = 0; j < item->nletters; j++)
-				item->pubwbuf[j] = form.securewch;
+				item->pubwbuf[j] = form->securewch;
 		}
 
 		item->fieldcols = items[i].fieldlen;
@@ -622,38 +617,58 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		item->xcursor = 0;
 		item->pos = 0;
 
-		form.h = MAX(form.h, form.pritems[i].ylabel);
-		form.h = MAX(form.h, form.pritems[i].yfield);
-		form.w = MAX(form.w, form.pritems[i].xlabel + strcols(form.pritems[i].label));
-		form.w = MAX(form.w, form.pritems[i].xfield + form.pritems[i].fieldcols);
+		form->h = MAX(form->h, form->pritems[i].ylabel);
+		form->h = MAX(form->h, form->pritems[i].yfield);
+		form->w = MAX(form->w, form->pritems[i].xlabel + strcols(form->pritems[i].label));
+		form->w = MAX(form->w, form->pritems[i].xfield + form->pritems[i].fieldcols);
 		if (i == 0) {
-			itemybeg = MIN(form.pritems[i].ylabel, form.pritems[i].yfield);
-			itemxbeg = MIN(form.pritems[i].xlabel, form.pritems[i].xfield);
+			itemybeg = MIN(form->pritems[i].ylabel, form->pritems[i].yfield);
+			itemxbeg = MIN(form->pritems[i].xlabel, form->pritems[i].xfield);
 		} else {
-			tmp = MIN(form.pritems[i].ylabel, form.pritems[i].yfield);
+			tmp = MIN(form->pritems[i].ylabel, form->pritems[i].yfield);
 			itemybeg = MIN(itemybeg, tmp);
-			tmp = MIN(form.pritems[i].xlabel, form.pritems[i].xfield);
+			tmp = MIN(form->pritems[i].xlabel, form->pritems[i].xfield);
 			itemxbeg = MIN(itemxbeg, tmp);
 		}
-		tmp = abs((int)form.pritems[i].ylabel - (int)form.pritems[i].yfield);
-		form.minviewrows = MAX(form.minviewrows, tmp);
+		tmp = abs((int)form->pritems[i].ylabel - (int)form->pritems[i].yfield);
+		form->minviewrows = MAX(form->minviewrows, tmp);
 	}
-	if (form.nitems > 0) {
-		form.h = form.h + 1 - itemybeg;
-		form.w -= itemxbeg;
-		form.minviewrows += 1;
+	if (form->nitems > 0) {
+		form->h = form->h + 1 - itemybeg;
+		form->w -= itemxbeg;
+		form->minviewrows += 1;
 	}
-	form.wmin = form.w;
-	for (i = 0; i < form.nitems; i++) {
-		form.pritems[i].ylabel -= itemybeg;
-		form.pritems[i].yfield -= itemybeg;
-		form.pritems[i].xlabel -= itemxbeg;
-		form.pritems[i].xfield -= itemxbeg;
+	form->wmin = form->w;
+	for (i = 0; i < form->nitems; i++) {
+		form->pritems[i].ylabel -= itemybeg;
+		form->pritems[i].yfield -= itemybeg;
+		form->pritems[i].xlabel -= itemxbeg;
+		form->pritems[i].xfield -= itemxbeg;
 	}
+
+	return (0);
+}
+
+/* API */
+int
+bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
+    int cols, unsigned int formheight, unsigned int nitems,
+    struct bsddialog_formitem *items)
+{
+	bool switchfocus, changeitem, focusinform, loop;
+	int next, retval, wchtype;
+	unsigned int i;
+	wint_t input;
+	struct privateitem *item;
+	struct privateform form;
+	struct dialog d;
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);
+
+	if (build_privateform(conf, nitems, items, &form) != 0)
+		return (BSDDIALOG_ERROR);
 
 	if ((form.box = newwin(1, 1, 1, 1)) == NULL)
 		RETURN_ERROR("Cannot build WINDOW menu box");
