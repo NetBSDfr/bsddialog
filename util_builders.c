@@ -191,7 +191,7 @@ static int date(BUILDER_ARGS)
 		/* max yy check is in lib */
 	}
 
-	if (strcmp(opt->name, "--datebox"))
+	if (strcmp(opt->name, "--datebox") == 0)
 		ret = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
 	else
 		ret = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
