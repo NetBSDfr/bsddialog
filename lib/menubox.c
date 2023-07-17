@@ -717,6 +717,7 @@ bsddialog_checklist(struct bsddialog_conf *conf, const char *text, int rows,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
+	CHECK_ARRAY(nitems, items); /* efficiency, avoid do_mixedlist() */
 	retval = do_mixedlist(conf, text, rows, cols, menurows, CHECKLISTMODE,
 	    1, &group, &focuslist, focusitem);
 
@@ -732,6 +733,7 @@ bsddialog_menu(struct bsddialog_conf *conf, const char *text, int rows,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_CHECKLIST /* unused */, nitems, items};
 
+	CHECK_ARRAY(nitems, items); /* efficiency, avoid do_mixedlist() */
 	retval = do_mixedlist(conf, text, rows, cols, menurows, MENUMODE, 1,
 	    &group, &focuslist, focusitem);
 
@@ -747,6 +749,7 @@ bsddialog_radiolist(struct bsddialog_conf *conf, const char *text, int rows,
 	struct bsddialog_menugroup group = {
 	    BSDDIALOG_RADIOLIST /* unused */, nitems, items};
 
+	CHECK_ARRAY(nitems, items); /* efficiency, avoid do_mixedlist() */
 	retval = do_mixedlist(conf, text, rows, cols, menurows, RADIOLISTMODE,
 	    1, &group, &focuslist, focusitem);
 
