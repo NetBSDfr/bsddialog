@@ -86,6 +86,7 @@ struct privateform {
 	unsigned int nitems; /* like API nkitems */
 	struct privateitem *pritems;
 	int sel;             /* selected item in pritem, can be -1 */
+	bool hasbottomdesc;  /* some item has bottomdesc */
 };
 
 static int
@@ -128,6 +129,7 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 	form->pritems = malloc(form->nitems * sizeof(struct privateitem));
 	if (form->pritems == NULL)
 		RETURN_ERROR("Cannot allocate internal form.pritems");
+	form->hasbottomdesc = false;
 	form->h = form->w = form->minviewrows = 0;
 	for (i = 0; i < form->nitems; i++) {
 		item = &form->pritems[i];
@@ -144,6 +146,8 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 		    BSDDIALOG_FIELDSINGLEBYTE;
 		item->cursorend = items[i].flags & BSDDIALOG_FIELDCURSOREND;
 		item->bottomdesc = items[i].bottomdesc;
+		if (items[i].bottomdesc != NULL)
+			form->hasbottomdesc = true;
 		if (item->readonly || (item->secure && !insecurecursor))
 			item->cursor = false;
 		else
@@ -345,13 +349,15 @@ drawitem(struct privateform *form, struct privateitem *item, bool focus,
 	wattroff(form->pad, color);
 
 	/* Bottom Desc */
-	move(SCREENLINES - 1, 2);
-	clrtoeol();
-	if (item->bottomdesc != NULL && focus) {
-		attron(t.form.bottomdesccolor);
-		addstr(item->bottomdesc);
-		attroff(t.form.bottomdesccolor);
-		refresh();
+	if (form->hasbottomdesc) {
+		move(SCREENLINES - 1, 2);
+		clrtoeol();
+		if (item->bottomdesc != NULL && focus) {
+			attron(t.form.bottomdesccolor);
+			addstr(item->bottomdesc);
+			attroff(t.form.bottomdesccolor);
+			refresh();
+		}
 	}
 
 	/* Cursor */
@@ -893,6 +899,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	curs_set(0);
 
+	if (form.hasbottomdesc) {
+		move(SCREENLINES - 1, 2);
+		clrtoeol();
+	}
 	for (i = 0; i < form.nitems; i++) {
 		free(form.pritems[i].privwbuf);
 		free(form.pritems[i].pubwbuf);
