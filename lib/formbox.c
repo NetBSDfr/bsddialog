@@ -133,7 +133,7 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 	form->h = form->w = form->minviewrows = 0;
 	for (i = 0; i < form->nitems; i++) {
 		item = &form->pritems[i];
-		item->label = items[i].label;
+		item->label = CHECK_STR(items[i].label);
 		item->ylabel = items[i].ylabel;
 		item->xlabel = items[i].xlabel;
 		item->yfield = items[i].yfield;
@@ -145,7 +145,7 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 		item->fieldonebyte = items[i].flags &
 		    BSDDIALOG_FIELDSINGLEBYTE;
 		item->cursorend = items[i].flags & BSDDIALOG_FIELDCURSOREND;
-		item->bottomdesc = items[i].bottomdesc;
+		item->bottomdesc = CHECK_STR(items[i].bottomdesc);
 		if (items[i].bottomdesc != NULL)
 			form->hasbottomdesc = true;
 		if (item->readonly || (item->secure && !insecurecursor))
@@ -163,7 +163,7 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 			RETURN_ERROR("Cannot allocate item private buffer");
 		memset(item->pubwbuf, 0, item->maxletters + 1);
 
-		if ((winit = alloc_mbstows(items[i].init)) == NULL)
+		if ((winit = alloc_mbstows(CHECK_STR(items[i].init))) == NULL)
 			RETURN_ERROR("Cannot allocate item.init in wchar_t*");
 		wcsncpy(item->privwbuf, winit, item->maxletters);
 		wcsncpy(item->pubwbuf, winit, item->maxletters);
