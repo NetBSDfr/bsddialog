@@ -547,14 +547,19 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 	wchar_t *winit;
 	struct privateitem *item;
 
-	form->nitems = nitems;
-	for (i = 0; i < form->nitems; i++) {
+	/* checks */
+	CHECK_ARRAY(nitems, items);
+	for (i = 0; i < nitems; i++) {
 		if (items[i].maxvaluelen == 0)
-			RETURN_ERROR("maxvaluelen cannot be zero");
+			RETURN_FMTERROR("item %u [0-%u] maxvaluelen = 0",
+			    i, nitems);
 		if (items[i].fieldlen == 0)
-			RETURN_ERROR("fieldlen cannot be zero");
+			RETURN_FMTERROR("item %u [0-%u] fieldlen = 0",
+			    i, nitems);
 	}
+	form->nitems = nitems;
 
+	/* insecure ch */
 	insecurecursor = false;
 	if (conf->form.securembch != NULL) {
 		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
@@ -617,20 +622,21 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 		item->xcursor = 0;
 		item->pos = 0;
 
-		form->h = MAX(form->h, form->pritems[i].ylabel);
-		form->h = MAX(form->h, form->pritems[i].yfield);
-		form->w = MAX(form->w, form->pritems[i].xlabel + strcols(form->pritems[i].label));
-		form->w = MAX(form->w, form->pritems[i].xfield + form->pritems[i].fieldcols);
+		/* size and position */
+		form->h = MAX(form->h, item->ylabel);
+		form->h = MAX(form->h, item->yfield);
+		form->w = MAX(form->w, item->xlabel + strcols(item->label));
+		form->w = MAX(form->w, item->xfield + item->fieldcols);
 		if (i == 0) {
-			itemybeg = MIN(form->pritems[i].ylabel, form->pritems[i].yfield);
-			itemxbeg = MIN(form->pritems[i].xlabel, form->pritems[i].xfield);
+			itemybeg = MIN(item->ylabel, item->yfield);
+			itemxbeg = MIN(item->xlabel, item->xfield);
 		} else {
-			tmp = MIN(form->pritems[i].ylabel, form->pritems[i].yfield);
+			tmp = MIN(item->ylabel, item->yfield);
 			itemybeg = MIN(itemybeg, tmp);
-			tmp = MIN(form->pritems[i].xlabel, form->pritems[i].xfield);
+			tmp = MIN(item->xlabel, item->xfield);
 			itemxbeg = MIN(itemxbeg, tmp);
 		}
-		tmp = abs((int)form->pritems[i].ylabel - (int)form->pritems[i].yfield);
+		tmp = abs((int)item->ylabel - (int)item->yfield);
 		form->minviewrows = MAX(form->minviewrows, tmp);
 	}
 	if (form->nitems > 0) {
