@@ -314,8 +314,7 @@ static bool fieldctl(struct privateitem *item, enum field_action act)
 	return (change);
 }
 
-static bool
-insertch(struct privateitem *item, wchar_t wch, wchar_t securewch)
+static bool insertch(struct privateitem *item, wchar_t wch, wchar_t securewch)
 {
 	int i;
 
