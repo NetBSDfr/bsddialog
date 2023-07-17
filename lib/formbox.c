@@ -77,6 +77,7 @@ struct privateform {
 
 	unsigned int nitems; /* like API nkitems */
 	struct privateitem *pritems;
+	int sel;             /* selected item in pritem, can be -1 */
 };
 
 enum operation {
@@ -543,7 +544,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     struct bsddialog_formitem *apiitems)
 {
 	bool switchfocus, changeitem, focusinform, insecurecursor, loop;
-	int curritem, mbchsize, next, retval, wchtype;
+	int mbchsize, next, retval, wchtype;
 	unsigned int i, j, itemybeg, itemxbeg, tmp;
 	wchar_t *winit;
 	wint_t input;
@@ -662,23 +663,23 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		RETURN_ERROR("Cannot build WINDOW menu box");
 	wbkgd(form.pad, t.dialog.color);
 
-	curritem = -1;
+	form.sel = -1;
 	for (i=0 ; i < form.nitems; i++) {
-		if (curritem == -1 && form.pritems[i].readonly == false)
-			curritem = i;
+		if (form.sel == -1 && form.pritems[i].readonly == false)
+			form.sel = i;
 	}
 
-	if (curritem != -1) {
+	if (form.sel != -1) {
 		focusinform = true;
 		form.y = 0;
-		item = &form.pritems[curritem];
+		item = &form.pritems[form.sel];
 	} else {
 		item = NULL;
 		focusinform = false;
 	}
 
 	form.formheight = formheight;
-	if (form_redraw(&d, &form, form.nitems, form.pritems, curritem, focusinform,
+	if (form_redraw(&d, &form, form.nitems, form.pritems, form.sel, focusinform,
 	    item) != 0)
 		return (BSDDIALOG_ERROR);
 
@@ -711,7 +712,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					d.bs.curr++;
 				} else {
 					d.bs.curr = 0;
-					if (curritem != -1) {
+					if (form.sel != -1) {
 						switchfocus = true;
 					}
 				}
@@ -727,7 +728,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				d.bs.curr--;
 				redrawbuttons(&d, true, true);
 				wrefresh(d.widget);
-			} else if (curritem != -1) {
+			} else if (form.sel != -1) {
 				switchfocus = true;
 			}
 			break;
@@ -739,15 +740,15 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				d.bs.curr++;
 				redrawbuttons(&d, true, true);
 				wrefresh(d.widget);
-			} else if (curritem != -1) {
+			} else if (form.sel != -1) {
 				switchfocus = true;
 			}
 			break;
 		case KEY_UP:
 			if (focusinform) {
-				next = previtem(form.nitems, form.pritems, curritem);
-				changeitem = curritem != next;
-			} else if (curritem != -1) {
+				next = previtem(form.nitems, form.pritems, form.sel);
+				changeitem = form.sel != next;
+			} else if (form.sel != -1) {
 				switchfocus = true;
 			}
 			break;
@@ -757,20 +758,20 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (form.nitems == 1) {
 				switchfocus = true;
 			} else {
-				next = nextitem(form.nitems, form.pritems, curritem);
-				changeitem = curritem != next;
+				next = nextitem(form.nitems, form.pritems, form.sel);
+				changeitem = form.sel != next;
 			}
 			break;
 		case KEY_PPAGE:
 			if (focusinform) {
 				next = firstitem(form.nitems, form.pritems);
-				changeitem = curritem != next;
+				changeitem = form.sel != next;
 			}
 			break;
 		case KEY_NPAGE:
 			if (focusinform) {
 				next = lastitem(form.nitems, form.pritems);
-				changeitem = curritem != next;
+				changeitem = form.sel != next;
 			}
 			break;
 		case KEY_BACKSPACE:
@@ -808,12 +809,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				retval = BSDDIALOG_ERROR;
 				loop = false;
 			}
-			if (form_redraw(&d, &form, form.nitems, form.pritems, curritem,
+			if (form_redraw(&d, &form, form.nitems, form.pritems, form.sel,
 			    focusinform, item) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if (form_redraw(&d, &form, form.nitems, form.pritems, curritem,
+			if (form_redraw(&d, &form, form.nitems, form.pritems, form.sel,
 			    focusinform, item) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
@@ -859,8 +860,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 		if (changeitem) {
 			DRAWITEM_TRICK(&form, item, false);
-			curritem = next;
-			item = &form.pritems[curritem];
+			form.sel = next;
+			item = &form.pritems[form.sel];
 			curriteminview(&form, item);
 			update_formbox(conf, &form);
 			DRAWITEM_TRICK(&form, item, true);
