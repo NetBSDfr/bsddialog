@@ -82,7 +82,6 @@ struct privateform {
 	unsigned int viewrows;    /* visible rows, real formheight */
 	unsigned int minviewrows; /* min viewrows, ylabel != yfield */
 	wchar_t securewch;   /* wide char of conf.form.secure[mb]ch */
-
 	unsigned int nitems; /* like API nkitems */
 	struct privateitem *pritems;
 	int sel;             /* selected item in pritem, can be -1 */
