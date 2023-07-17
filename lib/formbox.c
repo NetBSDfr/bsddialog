@@ -541,7 +541,7 @@ form_redraw(struct dialog *d, struct privateform *f, unsigned int nitems,
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
-    struct bsddialog_formitem *apiitems)
+    struct bsddialog_formitem *items)
 {
 	bool switchfocus, changeitem, focusinform, insecurecursor, loop;
 	int mbchsize, next, retval, wchtype;
@@ -554,9 +554,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 
 	form.nitems = nitems;
 	for (i = 0; i < form.nitems; i++) {
-		if (apiitems[i].maxvaluelen == 0)
+		if (items[i].maxvaluelen == 0)
 			RETURN_ERROR("maxvaluelen cannot be zero");
-		if (apiitems[i].fieldlen == 0)
+		if (items[i].fieldlen == 0)
 			RETURN_ERROR("fieldlen cannot be zero");
 	}
 
@@ -578,25 +578,25 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	form.h = form.w = form.minviewrows = 0;
 	for (i = 0; i < form.nitems; i++) {
 		item = &form.pritems[i];
-		item->label = apiitems[i].label;
-		item->ylabel = apiitems[i].ylabel;
-		item->xlabel = apiitems[i].xlabel;
-		item->yfield = apiitems[i].yfield;
-		item->xfield = apiitems[i].xfield;
-		item->secure = apiitems[i].flags & BSDDIALOG_FIELDHIDDEN;
-		item->readonly = apiitems[i].flags & BSDDIALOG_FIELDREADONLY;
-		item->fieldnocolor = apiitems[i].flags & BSDDIALOG_FIELDNOCOLOR;
-		item->extendfield = apiitems[i].flags & BSDDIALOG_FIELDEXTEND;
-		item->fieldonebyte = apiitems[i].flags &
+		item->label = items[i].label;
+		item->ylabel = items[i].ylabel;
+		item->xlabel = items[i].xlabel;
+		item->yfield = items[i].yfield;
+		item->xfield = items[i].xfield;
+		item->secure = items[i].flags & BSDDIALOG_FIELDHIDDEN;
+		item->readonly = items[i].flags & BSDDIALOG_FIELDREADONLY;
+		item->fieldnocolor = items[i].flags & BSDDIALOG_FIELDNOCOLOR;
+		item->extendfield = items[i].flags & BSDDIALOG_FIELDEXTEND;
+		item->fieldonebyte = items[i].flags &
 		    BSDDIALOG_FIELDSINGLEBYTE;
-		item->cursorend = apiitems[i].flags & BSDDIALOG_FIELDCURSOREND;
-		item->bottomdesc = apiitems[i].bottomdesc;
+		item->cursorend = items[i].flags & BSDDIALOG_FIELDCURSOREND;
+		item->bottomdesc = items[i].bottomdesc;
 		if (item->readonly || (item->secure && !insecurecursor))
 			item->cursor = false;
 		else
 			item->cursor = true;
 
-		item->maxletters = apiitems[i].maxvaluelen;
+		item->maxletters = items[i].maxvaluelen;
 		item->privwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
 		if (item->privwbuf == NULL)
 			RETURN_ERROR("Cannot allocate item private buffer");
@@ -606,7 +606,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			RETURN_ERROR("Cannot allocate item private buffer");
 		memset(item->pubwbuf, 0, item->maxletters + 1);
 
-		if ((winit = alloc_mbstows(apiitems[i].init)) == NULL)
+		if ((winit = alloc_mbstows(items[i].init)) == NULL)
 			RETURN_ERROR("Cannot allocate item.init in wchar_t*");
 		wcsncpy(item->privwbuf, winit, item->maxletters);
 		wcsncpy(item->pubwbuf, winit, item->maxletters);
@@ -617,7 +617,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				item->pubwbuf[j] = form.securewch;
 		}
 
-		item->fieldcols = apiitems[i].fieldlen;
+		item->fieldcols = items[i].fieldlen;
 		item->xposdraw = 0;
 		item->xcursor = 0;
 		item->pos = 0;
@@ -694,13 +694,13 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (focusinform && conf->button.always_active == false)
 				break;
 			retval = return_values(conf, BUTTONVALUE(d.bs),
-			    form.nitems, apiitems, form.pritems);
+			    form.nitems, items, form.pritems);
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
 				retval = return_values(conf, BSDDIALOG_ESC,
-				    form.nitems, apiitems, form.pritems);
+				    form.nitems, items, form.pritems);
 				loop = false;
 			}
 			break;
@@ -840,7 +840,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else {
 				if (shortcut_buttons(input, &d.bs)) {
 					retval = return_values(conf,
-					    BUTTONVALUE(d.bs), form.nitems, apiitems,
+					    BUTTONVALUE(d.bs), form.nitems, items,
 					    form.pritems);
 					loop = false;
 				}
