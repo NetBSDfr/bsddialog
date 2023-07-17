@@ -552,14 +552,11 @@ static void curriteminview(struct privateform *f, struct privateitem *item)
 		f->y = f->h - f->viewrows;
 }
 
-static int
-form_size_position(struct bsddialog_conf *conf, int rows, int cols,
-    const char *text, struct privateform *f, struct buttons *bs, int *y, int *x,
-    int *h, int *w)
+static int form_size_position(struct dialog *d, struct privateform *f)
 {
 	int htext, hform;
 
-	if (set_widget_size(conf, rows, cols, h, w) != 0)
+	if (set_widget_size(d->conf, d->rows, d->cols, &d->h, &d->w) != 0)
 		return (BSDDIALOG_ERROR);
 
 	/* autosize */
@@ -568,28 +565,28 @@ form_size_position(struct bsddialog_conf *conf, int rows, int cols,
 		hform = MAX(f->h, f->minviewrows);
 	hform += 2; /* formborders */
 
-	if (set_widget_autosize(conf, rows, cols, h, w, text, &htext, bs, hform,
-	    f->w + 4) != 0)
+	if (set_widget_autosize(d->conf, d->rows, d->cols, &d->h, &d->w,
+	    d->text, &htext, &d->bs, hform, f->w + 4) != 0)
 		return (BSDDIALOG_ERROR);
 	/* formheight: avoid overflow, "at most" and at least minviewrows */
-	if (*h - BORDERS - htext - HBUTTONS < 2 + (int)f->minviewrows) {
+	if (d->h - BORDERS - htext - HBUTTONS < 2 + (int)f->minviewrows) {
 		f->viewrows = f->minviewrows; /* for widget_checksize() */
 	} else if (f->viewrows == BSDDIALOG_AUTOSIZE) {
-		f->viewrows = MIN(*h - BORDERS - htext - HBUTTONS, hform) - 2;
+		f->viewrows = MIN(d->h - BORDERS - htext - HBUTTONS, hform) - 2;
 		f->viewrows = MAX(f->viewrows, f->minviewrows);
 	} else {
-		f->viewrows = MIN(*h - BORDERS - htext - HBUTTONS, hform) - 2;
+		f->viewrows = MIN(d->h - BORDERS - htext - HBUTTONS, hform) - 2;
 	}
 
 	/* checksize */
 	if (f->viewrows < f->minviewrows)
 		RETURN_FMTERROR("formheight, current: %u needed at least %u",
 		    f->viewrows, f->minviewrows);
-	if (widget_checksize(*h, *w, bs, 2 /* borders */ + f->minviewrows,
-	    f->w + 6) != 0)
+	if (widget_checksize(d->h, d->w, &d->bs,
+	    2 /* borders */ + f->minviewrows, f->w + 6) != 0)
 		return (BSDDIALOG_ERROR);
 
-	if (set_widget_position(conf, y, x, *h, *w) != 0)
+	if (set_widget_position(d->conf, &d->y, &d->x, d->h, d->w) != 0)
 		return (BSDDIALOG_ERROR);
 
 	return (0);
@@ -606,8 +603,7 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 	}
 	f->viewrows = f->formheight;
 	f->w = f->wmin;
-	if (form_size_position(d->conf, d->rows, d->cols, d->text, f, &d->bs,
-	    &d->y, &d->x, &d->h, &d->w) != 0)
+	if (form_size_position(d, f) != 0)
 		return (BSDDIALOG_ERROR);
 	d->bs.shortcut = true; /* to check if useful, redrawbuttons() after */
 	if (draw_dialog(d) != 0)
