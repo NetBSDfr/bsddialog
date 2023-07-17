@@ -126,5 +126,5 @@ in the _Public Domain_ to build new projects:
  - refactor gauge().
  - refactor backtitle and bottom desc using a WINDOW or pad.
  - fix bottomdesc expanding terminal.
- - add backtitle to dialog, conf.backtitle.
+ - add conf.backtitle (specific backtitle for dialog).
  - improve grey lines expanding terminal (maybe redrawwin() in hide_dialog()).
