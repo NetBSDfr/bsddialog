@@ -316,7 +316,7 @@ static bool fieldctl(struct privateitem *item, enum field_action act)
 }
 
 static bool
-insertch(struct privateform *form, struct privateitem *item, wchar_t wch)
+insertch(struct privateitem *item, wchar_t wch, wchar_t securewch)
 {
 	int i;
 
@@ -329,7 +329,7 @@ insertch(struct privateform *form, struct privateitem *item, wchar_t wch)
 	}
 
 	item->privwbuf[item->pos] = wch;
-	item->pubwbuf[item->pos] = item->secure ? form->securewch : wch;
+	item->pubwbuf[item->pos] = item->secure ? securewch : wch;
 	item->nletters += 1;
 	item->privwbuf[item->nletters] = L'\0';
 	item->pubwbuf[item->nletters] = L'\0';
@@ -853,7 +853,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				 * because the cursor remains on the new letter,
 				 * "if" and "while" update the positions.
 				 */
-				if(insertch(&form, item, input)) {
+				if(insertch(item, input, form.securewch)) {
 					fieldctl(item, MOVE_CURSOR_RIGHT);
 					/*
 					 * no if(fieldctl), update always
