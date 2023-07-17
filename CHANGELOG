@@ -62,6 +62,7 @@ WIP Next Version
 	* fix: bsddialog_textbox() key '0'.
 	* fix: timebox.c checksize (boxes width).
 	* fix: menu pad and form pad "re-expansion" after shrink and enlarge.
+	* fix: shadow top-left corner (trick wresize() before wmove()).
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
 	* refactor: internal implementation.
 	    - add: internal structures to represent components.

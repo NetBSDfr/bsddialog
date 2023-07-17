@@ -1232,14 +1232,14 @@ int draw_dialog(struct dialog *d)
 
 	if (d->conf->shadow) {
 		wclear(d->shadow);
-		mvwin(d->shadow, d->y + t.shadow.y, d->x + t.shadow.x);
 		wresize(d->shadow, d->h, d->w);
+		mvwin(d->shadow, d->y + t.shadow.y, d->x + t.shadow.x);
 		wnoutrefresh(d->shadow);
 	}
 
 	wclear(d->widget);
-	mvwin(d->widget, d->y, d->x);
 	wresize(d->widget, d->h, d->w);
+	mvwin(d->widget, d->y, d->x);
 	draw_borders(d->conf, d->widget, RAISED);
 
 	if (d->conf->title != NULL) {
