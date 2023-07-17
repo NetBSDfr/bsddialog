@@ -34,6 +34,14 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
+enum field_action {
+	MOVE_CURSOR_BEGIN,
+	MOVE_CURSOR_END,
+	MOVE_CURSOR_RIGHT,
+	MOVE_CURSOR_LEFT,
+	DEL_LETTER
+};
+
 struct privateitem {
 	const char *label;      /* formitem.label */
 	unsigned int ylabel;    /* formitem.ylabel */
@@ -80,22 +88,134 @@ struct privateform {
 	int sel;             /* selected item in pritem, can be -1 */
 };
 
-enum operation {
-	MOVE_CURSOR_BEGIN,
-	MOVE_CURSOR_END,
-	MOVE_CURSOR_RIGHT,
-	MOVE_CURSOR_LEFT,
-	DEL_LETTER
-};
+static int
+build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
+    struct bsddialog_formitem *items, struct privateform *form)
+{
+	bool insecurecursor;
+	int mbchsize;
+	unsigned int i, j, itemybeg, itemxbeg, tmp;
+	wchar_t *winit;
+	struct privateitem *item;
 
-static bool fieldctl(struct privateitem *item, enum operation op)
+	/* checks */
+	CHECK_ARRAY(nitems, items);
+	for (i = 0; i < nitems; i++) {
+		if (items[i].maxvaluelen == 0)
+			RETURN_FMTERROR("item %u [0-%u] maxvaluelen = 0",
+			    i, nitems);
+		if (items[i].fieldlen == 0)
+			RETURN_FMTERROR("item %u [0-%u] fieldlen = 0",
+			    i, nitems);
+	}
+	form->nitems = nitems;
+
+	/* insecure ch */
+	insecurecursor = false;
+	if (conf->form.securembch != NULL) {
+		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
+		if(mbtowc(&form->securewch, conf->form.securembch, mbchsize) < 0)
+			RETURN_ERROR("Cannot convert securembch to wchar_t");
+		insecurecursor = true;
+	} else if (conf->form.securech != '\0') {
+		form->securewch = btowc(conf->form.securech);
+		insecurecursor = true;
+	} else {
+		form->securewch = L' ';
+	}
+
+	/* alloc and set private items */
+	form->pritems = malloc(form->nitems * sizeof(struct privateitem));
+	if (form->pritems == NULL)
+		RETURN_ERROR("Cannot allocate internal form.pritems");
+	form->h = form->w = form->minviewrows = 0;
+	for (i = 0; i < form->nitems; i++) {
+		item = &form->pritems[i];
+		item->label = items[i].label;
+		item->ylabel = items[i].ylabel;
+		item->xlabel = items[i].xlabel;
+		item->yfield = items[i].yfield;
+		item->xfield = items[i].xfield;
+		item->secure = items[i].flags & BSDDIALOG_FIELDHIDDEN;
+		item->readonly = items[i].flags & BSDDIALOG_FIELDREADONLY;
+		item->fieldnocolor = items[i].flags & BSDDIALOG_FIELDNOCOLOR;
+		item->extendfield = items[i].flags & BSDDIALOG_FIELDEXTEND;
+		item->fieldonebyte = items[i].flags &
+		    BSDDIALOG_FIELDSINGLEBYTE;
+		item->cursorend = items[i].flags & BSDDIALOG_FIELDCURSOREND;
+		item->bottomdesc = items[i].bottomdesc;
+		if (item->readonly || (item->secure && !insecurecursor))
+			item->cursor = false;
+		else
+			item->cursor = true;
+
+		item->maxletters = items[i].maxvaluelen;
+		item->privwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
+		if (item->privwbuf == NULL)
+			RETURN_ERROR("Cannot allocate item private buffer");
+		memset(item->privwbuf, 0, item->maxletters + 1);
+		item->pubwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
+		if (item->pubwbuf == NULL)
+			RETURN_ERROR("Cannot allocate item private buffer");
+		memset(item->pubwbuf, 0, item->maxletters + 1);
+
+		if ((winit = alloc_mbstows(items[i].init)) == NULL)
+			RETURN_ERROR("Cannot allocate item.init in wchar_t*");
+		wcsncpy(item->privwbuf, winit, item->maxletters);
+		wcsncpy(item->pubwbuf, winit, item->maxletters);
+		free(winit);
+		item->nletters = wcslen(item->pubwbuf);
+		if (item->secure) {
+			for (j = 0; j < item->nletters; j++)
+				item->pubwbuf[j] = form->securewch;
+		}
+
+		item->fieldcols = items[i].fieldlen;
+		item->xposdraw = 0;
+		item->xcursor = 0;
+		item->pos = 0;
+
+		/* size and position */
+		form->h = MAX(form->h, item->ylabel);
+		form->h = MAX(form->h, item->yfield);
+		form->w = MAX(form->w, item->xlabel + strcols(item->label));
+		form->w = MAX(form->w, item->xfield + item->fieldcols);
+		if (i == 0) {
+			itemybeg = MIN(item->ylabel, item->yfield);
+			itemxbeg = MIN(item->xlabel, item->xfield);
+		} else {
+			tmp = MIN(item->ylabel, item->yfield);
+			itemybeg = MIN(itemybeg, tmp);
+			tmp = MIN(item->xlabel, item->xfield);
+			itemxbeg = MIN(itemxbeg, tmp);
+		}
+		tmp = abs((int)item->ylabel - (int)item->yfield);
+		form->minviewrows = MAX(form->minviewrows, tmp);
+	}
+	if (form->nitems > 0) {
+		form->h = form->h + 1 - itemybeg;
+		form->w -= itemxbeg;
+		form->minviewrows += 1;
+	}
+	form->wmin = form->w;
+	for (i = 0; i < form->nitems; i++) {
+		form->pritems[i].ylabel -= itemybeg;
+		form->pritems[i].yfield -= itemybeg;
+		form->pritems[i].xlabel -= itemxbeg;
+		form->pritems[i].xfield -= itemxbeg;
+	}
+
+	return (0);
+}
+
+static bool fieldctl(struct privateitem *item, enum field_action act)
 {
 	bool change;
 	int width, oldwidth, nextwidth, cols;
 	unsigned int i;
 
 	change = false;
-	switch (op){
+	switch (act){
 	case MOVE_CURSOR_BEGIN:
 		if (item->pos == 0 && item->xcursor == 0)
 			break;
@@ -532,126 +652,6 @@ form_redraw(struct dialog *d, struct privateform *f, unsigned int nitems,
 		DRAWITEM_TRICK(f, item, focusinform);
 	} else {
 		wrefresh(f->box);
-	}
-
-	return (0);
-}
-
-static int
-build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
-    struct bsddialog_formitem *items, struct privateform *form)
-{
-	bool insecurecursor;
-	int mbchsize;
-	unsigned int i, j, itemybeg, itemxbeg, tmp;
-	wchar_t *winit;
-	struct privateitem *item;
-
-	/* checks */
-	CHECK_ARRAY(nitems, items);
-	for (i = 0; i < nitems; i++) {
-		if (items[i].maxvaluelen == 0)
-			RETURN_FMTERROR("item %u [0-%u] maxvaluelen = 0",
-			    i, nitems);
-		if (items[i].fieldlen == 0)
-			RETURN_FMTERROR("item %u [0-%u] fieldlen = 0",
-			    i, nitems);
-	}
-	form->nitems = nitems;
-
-	/* insecure ch */
-	insecurecursor = false;
-	if (conf->form.securembch != NULL) {
-		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
-		if(mbtowc(&form->securewch, conf->form.securembch, mbchsize) < 0)
-			RETURN_ERROR("Cannot convert securembch to wchar_t");
-		insecurecursor = true;
-	} else if (conf->form.securech != '\0') {
-		form->securewch = btowc(conf->form.securech);
-		insecurecursor = true;
-	} else {
-		form->securewch = L' ';
-	}
-
-	/* alloc and set private items */
-	form->pritems = malloc(form->nitems * sizeof(struct privateitem));
-	if (form->pritems == NULL)
-		RETURN_ERROR("Cannot allocate internal form.pritems");
-	form->h = form->w = form->minviewrows = 0;
-	for (i = 0; i < form->nitems; i++) {
-		item = &form->pritems[i];
-		item->label = items[i].label;
-		item->ylabel = items[i].ylabel;
-		item->xlabel = items[i].xlabel;
-		item->yfield = items[i].yfield;
-		item->xfield = items[i].xfield;
-		item->secure = items[i].flags & BSDDIALOG_FIELDHIDDEN;
-		item->readonly = items[i].flags & BSDDIALOG_FIELDREADONLY;
-		item->fieldnocolor = items[i].flags & BSDDIALOG_FIELDNOCOLOR;
-		item->extendfield = items[i].flags & BSDDIALOG_FIELDEXTEND;
-		item->fieldonebyte = items[i].flags &
-		    BSDDIALOG_FIELDSINGLEBYTE;
-		item->cursorend = items[i].flags & BSDDIALOG_FIELDCURSOREND;
-		item->bottomdesc = items[i].bottomdesc;
-		if (item->readonly || (item->secure && !insecurecursor))
-			item->cursor = false;
-		else
-			item->cursor = true;
-
-		item->maxletters = items[i].maxvaluelen;
-		item->privwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
-		if (item->privwbuf == NULL)
-			RETURN_ERROR("Cannot allocate item private buffer");
-		memset(item->privwbuf, 0, item->maxletters + 1);
-		item->pubwbuf = calloc(item->maxletters + 1, sizeof(wchar_t));
-		if (item->pubwbuf == NULL)
-			RETURN_ERROR("Cannot allocate item private buffer");
-		memset(item->pubwbuf, 0, item->maxletters + 1);
-
-		if ((winit = alloc_mbstows(items[i].init)) == NULL)
-			RETURN_ERROR("Cannot allocate item.init in wchar_t*");
-		wcsncpy(item->privwbuf, winit, item->maxletters);
-		wcsncpy(item->pubwbuf, winit, item->maxletters);
-		free(winit);
-		item->nletters = wcslen(item->pubwbuf);
-		if (item->secure) {
-			for (j = 0; j < item->nletters; j++)
-				item->pubwbuf[j] = form->securewch;
-		}
-
-		item->fieldcols = items[i].fieldlen;
-		item->xposdraw = 0;
-		item->xcursor = 0;
-		item->pos = 0;
-
-		/* size and position */
-		form->h = MAX(form->h, item->ylabel);
-		form->h = MAX(form->h, item->yfield);
-		form->w = MAX(form->w, item->xlabel + strcols(item->label));
-		form->w = MAX(form->w, item->xfield + item->fieldcols);
-		if (i == 0) {
-			itemybeg = MIN(item->ylabel, item->yfield);
-			itemxbeg = MIN(item->xlabel, item->xfield);
-		} else {
-			tmp = MIN(item->ylabel, item->yfield);
-			itemybeg = MIN(itemybeg, tmp);
-			tmp = MIN(item->xlabel, item->xfield);
-			itemxbeg = MIN(itemxbeg, tmp);
-		}
-		tmp = abs((int)item->ylabel - (int)item->yfield);
-		form->minviewrows = MAX(form->minviewrows, tmp);
-	}
-	if (form->nitems > 0) {
-		form->h = form->h + 1 - itemybeg;
-		form->w -= itemxbeg;
-		form->minviewrows += 1;
-	}
-	form->wmin = form->w;
-	for (i = 0; i < form->nitems; i++) {
-		form->pritems[i].ylabel -= itemybeg;
-		form->pritems[i].yfield -= itemybeg;
-		form->pritems[i].xlabel -= itemxbeg;
-		form->pritems[i].xfield -= itemxbeg;
 	}
 
 	return (0);
