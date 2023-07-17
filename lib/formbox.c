@@ -772,7 +772,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case KEY_UP:
 			if (focusinform) {
-				next = previtem(form.nitems, form.pritems, form.sel);
+				next = previtem(form.nitems, form.pritems,
+				    form.sel);
 				changeitem = form.sel != next;
 			} else if (form.sel != -1) {
 				switchfocus = true;
@@ -784,7 +785,8 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (form.nitems == 1) {
 				switchfocus = true;
 			} else {
-				next = nextitem(form.nitems, form.pritems, form.sel);
+				next = nextitem(form.nitems, form.pritems,
+				    form.sel);
 				changeitem = form.sel != next;
 			}
 			break;
