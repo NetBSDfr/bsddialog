@@ -411,11 +411,13 @@ nextitem(unsigned int nitems, struct privateitem *items, int curritem)
 }
 
 static void
-drawitem(struct privateform *form, struct privateitem *item, bool focus,
-    bool refresh)
+drawitem(struct privateform *form, int idx, bool focus, bool refresh)
 {
 	int color;
 	unsigned int n, cols;
+	struct privateitem *item;
+
+	item = &form->pritems[idx];
 
 	/* Label */
 	wattron(form->pad, t.dialog.color);
@@ -629,12 +631,12 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 		}
 		if (f->pritems[i].cursorend)
 			fieldctl(&f->pritems[i], MOVE_CURSOR_END);
-		drawitem(f, &f->pritems[i], false, false);
+		drawitem(f, i, false, false);
 	}
 
 	wresize(f->pad, f->h, f->w);
 	for (i = 0; i < f->nitems; i++)
-		drawitem(f, &f->pritems[i], false, false);
+		drawitem(f, i, false, false);
 
 	f->ys = d->y + d->h - 5 - f->viewrows + 1;
 	f->ye = d->y + d->h - 5 ;
@@ -653,7 +655,7 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 		curriteminview(f, &f->pritems[f->sel]);
 		update_formbox(d->conf, f);
 		wrefresh(f->box);
-		DRAWITEM_TRICK(f, &f->pritems[f->sel], focusinform);
+		DRAWITEM_TRICK(f, f->sel, focusinform);
 	} else {
 		wrefresh(f->box);
 	}
@@ -748,7 +750,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_LEFT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_LEFT))
-					DRAWITEM_TRICK(&form, item, true);
+					DRAWITEM_TRICK(&form, form.sel, true);
 			} else if (d.bs.curr > 0) {
 				d.bs.curr--;
 				redrawbuttons(&d, true, true);
@@ -760,7 +762,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_RIGHT:
 			if (focusinform) {
 				if(fieldctl(item, MOVE_CURSOR_RIGHT))
-					DRAWITEM_TRICK(&form, item, true);
+					DRAWITEM_TRICK(&form, form.sel, true);
 			} else if (d.bs.curr < (int) d.bs.nbuttons - 1) {
 				d.bs.curr++;
 				redrawbuttons(&d, true, true);
@@ -805,25 +807,25 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if(fieldctl(item, MOVE_CURSOR_LEFT))
 				if(fieldctl(item, DEL_LETTER))
-					DRAWITEM_TRICK(&form, item, true);
+					DRAWITEM_TRICK(&form, form.sel, true);
 			break;
 		case KEY_DC:
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, DEL_LETTER))
-				DRAWITEM_TRICK(&form, item, true);
+				DRAWITEM_TRICK(&form, form.sel, true);
 			break;
 		case KEY_HOME:
 			if (focusinform == false)
 				break;
 			if(fieldctl(item, MOVE_CURSOR_BEGIN))
-				DRAWITEM_TRICK(&form, item, true);
+				DRAWITEM_TRICK(&form, form.sel, true);
 			break;
 		case KEY_END:
 			if (focusinform == false)
 				break;
 			if (fieldctl(item, MOVE_CURSOR_END))
-				DRAWITEM_TRICK(&form, item, true);
+				DRAWITEM_TRICK(&form, form.sel, true);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -858,7 +860,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 					 * no if(fieldctl), update always
 					 * because it fails with maxletters.
 					 */
-					DRAWITEM_TRICK(&form, item, true);
+					DRAWITEM_TRICK(&form, form.sel, true);
 				}
 			} else {
 				if (shortcut_buttons(input, &d.bs)) {
@@ -877,17 +879,17 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			redrawbuttons(&d,
 			    conf->button.always_active || !focusinform,
 			    !focusinform);
-			DRAWITEM_TRICK(&form, item, focusinform);
+			DRAWITEM_TRICK(&form, form.sel, focusinform);
 			switchfocus = false;
 		}
 
 		if (changeitem) {
-			DRAWITEM_TRICK(&form, item, false);
+			DRAWITEM_TRICK(&form, form.sel, false);
 			form.sel = next;
 			item = &form.pritems[form.sel];
 			curriteminview(&form, item);
 			update_formbox(conf, &form);
-			DRAWITEM_TRICK(&form, item, true);
+			DRAWITEM_TRICK(&form, form.sel, true);
 			changeitem = false;
 		}
 	} /* end while(loop) */
