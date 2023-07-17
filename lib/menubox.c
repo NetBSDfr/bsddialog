@@ -369,7 +369,8 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 	if (conf->menu.no_desc == false) {
 		wattron(m->pad, colordesc);
 		if (conf->menu.no_name)
-			mvwaddstr(m->pad, y, m->xname + pritem->depth, pritem->desc);
+			mvwaddstr(m->pad, y, m->xname + pritem->depth,
+			    pritem->desc);
 		else
 			mvwaddstr(m->pad, y, m->xdesc, pritem->desc);
 		wattroff(m->pad, colordesc);
@@ -556,7 +557,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
 				retval = BSDDIALOG_ESC;
-				if (m.sel >= 0 && m.pritems[m.sel].type == MENUMODE)
+				if (m.sel >= 0 &&
+				   m.pritems[m.sel].type == MENUMODE)
 					m.pritems[m.sel].on = true;
 				set_return_on(conf, retval, &m, groups);
 				loop = false;
