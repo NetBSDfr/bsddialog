@@ -573,7 +573,9 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 		form->securewch = L' ';
 	}
 
-	if ((form->pritems = malloc(form->nitems * sizeof(struct privateitem))) == NULL)
+	/* alloc and set private items */
+	form->pritems = malloc(form->nitems * sizeof(struct privateitem));
+	if (form->pritems == NULL)
 		RETURN_ERROR("Cannot allocate internal form.pritems");
 	form->h = form->w = form->minviewrows = 0;
 	for (i = 0; i < form->nitems; i++) {
