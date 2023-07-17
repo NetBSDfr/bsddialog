@@ -236,7 +236,7 @@ int calendar_builder(BUILDER_ARGS)
 
 int datebox_builder(BUILDER_ARGS)
 {
-	return (date(conf, text, rows, cols, argc, argv,opt));
+	return (date(conf, text, rows, cols, argc, argv, opt));
 }
 
 int timebox_builder(BUILDER_ARGS)
