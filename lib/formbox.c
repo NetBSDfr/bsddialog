@@ -357,25 +357,25 @@ static char* alloc_wstomb(wchar_t *wstr)
 }
 
 static int
-return_values(struct bsddialog_conf *conf, int output, int nitems,
-    struct bsddialog_formitem *apiitems, struct privateitem *items)
+return_values(struct bsddialog_conf *conf, int retval, struct privateform *f,
+    struct bsddialog_formitem *items)
 {
-	int i;
+	unsigned int i;
 
-	if (output != BSDDIALOG_OK && conf->form.value_without_ok == false)
-		return (output);
+	if (retval != BSDDIALOG_OK && conf->form.value_without_ok == false)
+		return (retval);
 
-	for (i = 0; i < nitems; i++) {
+	for (i = 0; i < f->nitems; i++) {
 		if (conf->form.value_wchar) {
-			apiitems[i].value = (char*)wcsdup(items[i].privwbuf);
+			items[i].value = (char*)wcsdup(f->pritems[i].privwbuf);
 		} else {
-			apiitems[i].value = alloc_wstomb(items[i].privwbuf);
+			items[i].value = alloc_wstomb(f->pritems[i].privwbuf);
 		}
-		if (apiitems[i].value == NULL)
+		if (items[i].value == NULL)
 			RETURN_ERROR("Cannot allocate memory for form value");
 	}
 
-	return (output);
+	return (retval);
 }
 
 static unsigned int firstitem(unsigned int nitems, struct privateitem *items)
@@ -719,14 +719,14 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case 10: /* Enter */
 			if (focusinform && conf->button.always_active == false)
 				break;
-			retval = return_values(conf, BUTTONVALUE(d.bs),
-			    form.nitems, items, form.pritems);
+			retval = return_values(conf, BUTTONVALUE(d.bs), &form,
+			    items);
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
 				retval = return_values(conf, BSDDIALOG_ESC,
-				    form.nitems, items, form.pritems);
+				    &form, items);
 				loop = false;
 			}
 			break;
@@ -864,8 +864,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			} else {
 				if (shortcut_buttons(input, &d.bs)) {
 					retval = return_values(conf,
-					    BUTTONVALUE(d.bs), form.nitems, items,
-					    form.pritems);
+					    BUTTONVALUE(d.bs), &form, items);
 					loop = false;
 				}
 			}
