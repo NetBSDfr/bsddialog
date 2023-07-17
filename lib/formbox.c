@@ -473,7 +473,7 @@ drawitem(struct privateform *f, int idx, bool focus)
 		cols += wcwidth(item->pubwbuf[item->xposdraw + n]);
 
 	}
-	mvwaddnwstr(f->pad, item->yfield, item->xfield, 
+	mvwaddnwstr(f->pad, item->yfield, item->xfield,
 	    &item->pubwbuf[item->xposdraw], n);
 	wattroff(f->pad, color);
 
@@ -491,7 +491,7 @@ drawitem(struct privateform *f, int idx, bool focus)
 
 	/* Cursor */
 	curs_set((focus && item->cursor) ? 1 : 0);
-	wmove(f->pad, item->yfield, item->xfield + item->xcursor);	
+	wmove(f->pad, item->yfield, item->xfield + item->xcursor);
 }
 
 /*
