@@ -34,14 +34,14 @@
 #include "lib_util.h"
 
 /* Calendar */
-#define MIN_YEAR_CAL 0
-#define MAX_YEAR_CAL 999999999
-#define MINHCAL   13
-#define MINWCAL   36 /* 34 calendar, 1 + 1 margins */
+#define MIN_YEAR_CAL   0
+#define MAX_YEAR_CAL   999999999
+#define MINHCAL        13
+#define MINWCAL        36 /* 34 calendar, 1 + 1 margins */
 /* Datebox */
 #define MIN_YEAR_DATE  0
 #define MAX_YEAR_DATE  9999
-#define MINWDATE   23 /* 3 windows and their borders */
+#define MINWDATE       23 /* 3 windows and their borders */
 
 #define ISLEAP(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
 
