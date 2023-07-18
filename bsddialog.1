@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 18, 2023
+.Dd July 19, 2023
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -216,20 +216,24 @@ Set
 for the
 .Dq Extra
 button.
-.It Fl Fl generic1-exit-code Ar retval
-Set an exit code value for the
-.Fl Fl generic-button1
-button.
-.It Fl Fl generic2-exit-code Ar retval
-Set an exit code value for the
-.Fl Fl generic-button2
-button.
-.It Fl Fl generic-button1 Ar label
+.It Fl Fl left1-button Ar label
 Add a button with
 .Ar label .
-.It Fl Fl generic-button2 Ar label
+.It Fl Fl left1-exit-code Ar retval
+Set an exit code for
+.Fl Fl left1-button .
+.It Fl Fl left2-button Ar label
 Add a button with
 .Ar label .
+.It Fl Fl left2-exit-code Ar retval
+Set an exit code for
+.Fl Fl left2-button .
+.It Fl Fl left3-button Ar label
+Add a button with
+.Ar label .
+.It Fl Fl left3-exit-code Ar retval
+Set an exit code for
+.Fl Fl left3-button .
 .It Fl Fl help-button
 Add a button with
 .Dq Help
@@ -331,6 +335,24 @@ Print version.
 This option can be used without a dialog.
 .It Fl Fl quoted
 Quote items in output, default only when necessary.
+.It Fl Fl right1-button Ar label
+Add a button with
+.Ar label .
+.It Fl Fl right1-exit-code Ar retval
+Set an exit code for
+.Fl Fl right1-button .
+.It Fl Fl right2-button Ar label
+Add a button with
+.Ar label .
+.It Fl Fl right2-exit-code Ar retval
+Set an exit code for
+.Fl Fl right2-button .
+.It Fl Fl right3-button Ar label
+Add a button with
+.Ar label .
+.It Fl Fl right3-exit-code Ar retval
+Set an exit code for
+.Fl Fl right3-button .
 .It Fl Fl save-theme Ar file
 Save the current theme.
 This option can be used without a dialog.
@@ -616,10 +638,12 @@ The following environment variables can set the exit codes:
 .Ev BSDDIALOG_EXTRA ,
 .Ev BSDDIALOG_TIMEOUT ,
 .Ev BSDDIALOG_ESC ,
-.Ev BSDDIALOG_GENERIC1
-(generic button 1),
-.Ev BSDDIALOG_GENERIC2
-(generic button 2),
+.Ev BSDDIALOG_LEFT1 ,
+.Ev BSDDIALOG_LEFT2 ,
+.Ev BSDDIALOG_LEFT3 ,
+.Ev BSDDIALOG_RIGHT1 ,
+.Ev BSDDIALOG_RIGHT2 ,
+.Ev BSDDIALOG_RIGHT3 ,
 .Ev BSDDIALOG_ITEM_HELP
 (takes effect with the
 .Dq Help
@@ -662,10 +686,19 @@ Timeout.
 .It 5
 ESC key.
 .It 6
-Generic 1 button.
+Left1 generic button.
 .It 7
-Generic 2 button.
+Left2 generic button.
+.It 8
+Left3 generic button.
+.It 9
+Right1 generic button.
+.It 10
+Right2 generic button.
+.It 11
+Right2 generic button.
 .El
+Options and environment variables can change exit status.
 .Sh EXAMPLES
 Backtitle, title and message:
 .Dl bsddialog --backtitle MESSAGE --title Msgbox --msgbox Message 0 0

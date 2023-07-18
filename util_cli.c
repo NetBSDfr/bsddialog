@@ -66,10 +66,6 @@ enum OPTS {
 	EXTRA_BUTTON,
 	EXTRA_EXIT_CODE,
 	EXTRA_LABEL,
-	GENERIC1_EXIT_CODE,
-	GENERIC2_EXIT_CODE,
-	GENERIC_BUTTON1,
-	GENERIC_BUTTON2,
 	HELP_BUTTON,
 	HELP_EXIT_CODE,
 	HELP_LABEL,
@@ -83,6 +79,12 @@ enum OPTS {
 	ITEM_BOTTOM_DESC,
 	ITEM_DEPTH,
 	ITEM_PREFIX,
+	LEFT1_BUTTON,
+	LEFT1_EXIT_CODE,
+	LEFT2_BUTTON,
+	LEFT2_EXIT_CODE,
+	LEFT3_BUTTON,
+	LEFT3_EXIT_CODE,
 	LOAD_THEME,
 	MAX_INPUT,
 	NO_CANCEL,
@@ -100,6 +102,12 @@ enum OPTS {
 	PRINT_SIZE,
 	PRINT_VERSION,
 	QUOTED,
+	RIGHT1_BUTTON,
+	RIGHT1_EXIT_CODE,
+	RIGHT2_BUTTON,
+	RIGHT2_EXIT_CODE,
+	RIGHT3_BUTTON,
+	RIGHT3_EXIT_CODE,
 	SAVE_THEME,
 	SEPARATE_OUTPUT,
 	SHADOW,
@@ -170,10 +178,6 @@ static struct option longopts[] = {
 	{"extra-button",      no_argument,       NULL, EXTRA_BUTTON},
 	{"extra-exit-code",   required_argument, NULL, EXTRA_EXIT_CODE},
 	{"extra-label",       required_argument, NULL, EXTRA_LABEL},
-	{"generic1-exit-code",required_argument, NULL, GENERIC1_EXIT_CODE},
-	{"generic2-exit-code",required_argument, NULL, GENERIC2_EXIT_CODE},
-	{"generic-button1",   required_argument, NULL, GENERIC_BUTTON1},
-	{"generic-button2",   required_argument, NULL, GENERIC_BUTTON2},
 	{"help-button",       no_argument,       NULL, HELP_BUTTON},
 	{"help-exit-code",    required_argument, NULL, HELP_EXIT_CODE},
 	{"help-label",        required_argument, NULL, HELP_LABEL},
@@ -190,6 +194,12 @@ static struct option longopts[] = {
 	{"item-help",         no_argument,       NULL, ITEM_BOTTOM_DESC},
 	{"item-prefix",       no_argument,       NULL, ITEM_PREFIX},
 	{"keep-tite",         no_argument,       NULL, ALTERNATE_SCREEN},
+	{"left1-button",      required_argument, NULL, LEFT1_BUTTON},
+	{"left1-exit-code",   required_argument, NULL, LEFT1_EXIT_CODE},
+	{"left2-button",      required_argument, NULL, LEFT2_BUTTON},
+	{"left2-exit-code",   required_argument, NULL, LEFT2_EXIT_CODE},
+	{"left3-button",      required_argument, NULL, LEFT3_BUTTON},
+	{"left3-exit-code",   required_argument, NULL, LEFT3_EXIT_CODE},
 	{"load-theme",        required_argument, NULL, LOAD_THEME},
 	{"max-input",         required_argument, NULL, MAX_INPUT},
 	{"no-cancel",         no_argument,       NULL, NO_CANCEL},
@@ -212,6 +222,12 @@ static struct option longopts[] = {
 	{"print-size",        no_argument,       NULL, PRINT_SIZE},
 	{"print-version",     no_argument,       NULL, PRINT_VERSION},
 	{"quoted",            no_argument,       NULL, QUOTED},
+	{"right1-button",     required_argument, NULL, RIGHT1_BUTTON},
+	{"right1-exit-code",  required_argument, NULL, RIGHT1_EXIT_CODE},
+	{"right2-button",     required_argument, NULL, RIGHT2_BUTTON},
+	{"right2-exit-code",  required_argument, NULL, RIGHT2_EXIT_CODE},
+	{"right3-button",     required_argument, NULL, RIGHT3_BUTTON},
+	{"right3-exit-code",  required_argument, NULL, RIGHT3_EXIT_CODE},
 	{"save-theme",        required_argument, NULL, SAVE_THEME},
 	{"separate-output",   no_argument,       NULL, SEPARATE_OUTPUT},
 	{"separator",         required_argument, NULL, OUTPUT_SEPARATOR},
@@ -274,8 +290,12 @@ void usage(void)
 	    " --error-exit-code <retval>, --esc_exit-code <retval>,"
 	    " --exit-label <label>,\n --extra-button,"
 	    " --extra-exit-code <retval>, --extra-label <label>,\n"
-	    " --generic1-exit-code <retval>, --generic2-exit-code <retval>,\n"
-	    " --generic-button1 <label>, --generic-button2 <label>,"
+	    " --left1-button <label>, --left1-exit-code <retval>,"
+	    " --left2-button <label>, --left2-exit-code <retval>,"
+	    " --left3-button <label>, --left3-exit-code <retval>,"
+	    " --right1-button <label>, --right1-exit-code <retval>,"
+	    " --right2-button <label>, --right2-exit-code <retval>,"
+	    " --right3-button <label>, --right3-exit-code <retval>,"
 	    " --help-button,\n --help-exit-code <retval>, --help-label <label>,"
 	    " --help-print-name,\n --help-status, --hfile <file>,"
 	    " --hline <string>, --hmsg <string>, --ignore,\n --insecure,"
@@ -453,20 +473,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 		case EXTRA_LABEL:
 			conf->button.extra_label = optarg;
 			break;
-		case GENERIC1_EXIT_CODE:
-			set_exit_code(BSDDIALOG_GENERIC1,
-			    (int)strtol(optarg, NULL, 10));
-			break;
-		case GENERIC2_EXIT_CODE:
-			set_exit_code(BSDDIALOG_GENERIC2,
-			    (int)strtol(optarg, NULL, 10));
-			break;
-		case GENERIC_BUTTON1:
-			conf->button.generic1_label = optarg;
-			break;
-		case GENERIC_BUTTON2:
-			conf->button.generic2_label = optarg;
-			break;
 		case HELP_BUTTON:
 			conf->button.with_help = true;
 			break;
@@ -507,6 +513,27 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			break;
 		case ITEM_PREFIX:
 			opt->item_prefix = true;
+			break;
+		case LEFT1_BUTTON:
+			conf->button.left1_label = optarg;
+			break;
+		case LEFT1_EXIT_CODE:
+			set_exit_code(BSDDIALOG_LEFT1,
+			    (int)strtol(optarg, NULL, 10));
+			break;
+		case LEFT2_BUTTON:
+			conf->button.left2_label = optarg;
+			break;
+		case LEFT2_EXIT_CODE:
+			set_exit_code(BSDDIALOG_LEFT2,
+			    (int)strtol(optarg, NULL, 10));
+			break;
+		case LEFT3_BUTTON:
+			conf->button.left3_label = optarg;
+			break;
+		case LEFT3_EXIT_CODE:
+			set_exit_code(BSDDIALOG_LEFT3,
+			    (int)strtol(optarg, NULL, 10));
 			break;
 		case LOAD_THEME:
 			opt->loadthemefile = optarg;
@@ -565,6 +592,27 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			*mandatory_dialog = false;
 			dprintf(opt->output_fd, "Version: %s\n",
 			    LIBBSDDIALOG_VERSION);
+			break;
+		case RIGHT1_BUTTON:
+			conf->button.right1_label = optarg;
+			break;
+		case RIGHT1_EXIT_CODE:
+			set_exit_code(BSDDIALOG_RIGHT1,
+			    (int)strtol(optarg, NULL, 10));
+			break;
+		case RIGHT2_BUTTON:
+			conf->button.right2_label = optarg;
+			break;
+		case RIGHT2_EXIT_CODE:
+			set_exit_code(BSDDIALOG_RIGHT2,
+			    (int)strtol(optarg, NULL, 10));
+			break;
+		case RIGHT3_BUTTON:
+			conf->button.right3_label = optarg;
+			break;
+		case RIGHT3_EXIT_CODE:
+			set_exit_code(BSDDIALOG_RIGHT3,
+			    (int)strtol(optarg, NULL, 10));
 			break;
 		case SAVE_THEME:
 			*mandatory_dialog = false;

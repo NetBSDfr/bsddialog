@@ -31,7 +31,7 @@
 /*
  * Exit codes and errors, bsddialog.c
  */
-#define BSDDIALOG_ITEM_HELP 8
+#define BSDDIALOG_ITEM_HELP 12
 
 void set_exit_code(int lib_retval, int exitcode);
 void exit_error(bool usage, const char *fmt, ...);

@@ -17,8 +17,12 @@ WIP Next Version
 	    - add: --extra-exit-code.
 	    - add: --timeout-exit-code.
 	    - add: --esc-exit-code.
-	    - add: --generic1-exit-code.
-	    - add: --generic2-exit-code.
+	    - add: --left1-exit-code.
+	    - add: --left2-exit-code.
+	    - add: --left3-exit-code.
+	    - add: --right1-exit-code.
+	    - add: --right2-exit-code.
+	    - add: --right3-exit-code.
 	    - add: env BSDDIALOG_ERROR.
 	    - add: env BSDDIALOG_OK.
 	    - add: env BSDDIALOG_CANCEL.
@@ -26,8 +30,12 @@ WIP Next Version
 	    - add: env BSDDIALOG_EXTRA.
 	    - add: env BSDDIALOG_TIMEOUT.
 	    - add: env BSDDIALOG_ESC.
-	    - add: env BSDDIALOG_GENERIC1.
-	    - add: env BSDDIALOG_GENERIC2.
+	    - add: env BSDDIALOG_LEFT1.
+	    - add: env BSDDIALOG_LEFT2.
+	    - add: env BSDDIALOG_LEFT3.
+	    - add: env BSDDIALOG_RIGHT1.
+	    - add: env BSDDIALOG_RIGHT2.
+	    - add: env BSDDIALOG_RIGHT3.
 	    - add: env BSDDIALOG_ITEM_HELP.
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* change: --no-names and --no-descriptions mutually exclusive.
@@ -39,6 +47,8 @@ WIP Next Version
 	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: --theme bsddialog (partially implemented).
 	* delete: --esc-return-cancel (replaced by a new env and option).
+	* delete: --generic-button1 (replaced by --right1-button).
+	* delete: --generic-button2 (replaced by --right2-button).
 	* refactor: modularize in more files (main, cli, builders, theme).
 
 	Library:
