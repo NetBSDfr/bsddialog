@@ -34,12 +34,12 @@
 #include "lib_util.h"
 
 /* Calendar */
-#define MIN_YEAR_CAL 1900
+#define MIN_YEAR_CAL 0
 #define MAX_YEAR_CAL 999999999
 #define MINHCAL   13
 #define MINWCAL   36 /* 34 calendar, 1 + 1 margins */
 /* Datebox */
-#define MIN_YEAR_DATE  1900
+#define MIN_YEAR_DATE  0
 #define MAX_YEAR_DATE  9999
 #define MINWDATE   23 /* 3 windows and their borders */
 
@@ -218,7 +218,7 @@ static void datectl(enum operation op, int *yy, int *mm, int *dd)
 
 static void
 drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
-    const char *fmt, const void *value, bool focus)
+    const char *fmt, int value, bool focus)
 {
 	int h, l, w;
 
@@ -237,9 +237,9 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
 	if (focus)
 		wattron(win, t.menu.f_namecolor);
 	if (strchr(fmt, 's') != NULL)
-		mvwprintw(win, 1, 1, fmt, (const char*)value);
+		mvwprintw(win, 1, 1, fmt, m[value - 1]);
 	else
-		mvwprintw(win, 1, 1, fmt, *((const int*)value));
+		mvwprintw(win, 1, 1, fmt, value);
 	if (focus)
 		wattroff(win, t.menu.f_namecolor);
 
@@ -352,8 +352,8 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, mm_win, RAISED, "%15s", m[mm - 1], sel == 0);
-		drawsquare(conf, yy_win, RAISED, "%15d", &yy, sel == 1);
+		drawsquare(conf, mm_win, RAISED, "%15s", mm, sel == 0);
+		drawsquare(conf, yy_win, RAISED, "%15d", yy, sel == 1);
 		print_calendar(conf, dd_win, yy, mm, dd, sel == 2);
 		doupdate();
 
@@ -564,9 +564,9 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, yy_win, LOWERED, "%4d", &yy, sel == 0);
-		drawsquare(conf, mm_win, LOWERED, "%9s", m[mm - 1], sel == 1);
-		drawsquare(conf, dd_win, LOWERED, "%02d", &dd, sel == 2);
+		drawsquare(conf, yy_win, LOWERED, "%4d", yy, sel == 0);
+		drawsquare(conf, mm_win, LOWERED, "%9s", mm, sel == 1);
+		drawsquare(conf, dd_win, LOWERED, "%02d", dd, sel == 2);
 		doupdate();
 
 		if (get_wch(&input) == ERR)
