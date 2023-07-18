@@ -98,7 +98,7 @@ struct bsddialog_conf {
 	} key;
 	struct {
 		unsigned int cols_per_row;
-		bool highlight;
+		bool escape;
 		unsigned int tablen;
 	} text;
 	struct {

@@ -521,7 +521,7 @@ text_properties(struct bsddialog_conf *conf, const char *text,
 	wordcols = 0;
 	l = 0;
 	for (i = 0; i < wtextlen; i++) {
-		if (conf->text.highlight && is_wtext_attr(wtext + i)) {
+		if (conf->text.escape && is_wtext_attr(wtext + i)) {
 			i += 2; /* +1 for update statement */
 			continue;
 		}
@@ -967,7 +967,7 @@ int f1help_dialog(struct bsddialog_conf *conf)
 	hconf.ascii_lines     = conf->ascii_lines;
 	hconf.no_lines        = conf->no_lines;
 	hconf.shadow          = conf->shadow;
-	hconf.text.highlight  = conf->text.highlight;
+	hconf.text.escape     = conf->text.escape;
 
 	output = BSDDIALOG_OK;
 	if (conf->key.f1_message != NULL)
@@ -1200,7 +1200,7 @@ print_textpad(struct bsddialog_conf *conf, WINDOW *pad, const char *text)
 		if (wcschr(L"\n\t  ", string[j]) != NULL || string[j] == L'\0') {
 			string[j] = L'\0';
 			print_string(pad, &rows, cols, &y, &x, string,
-			    conf->text.highlight);
+			    conf->text.escape);
 		}
 
 		switch (wtext[i]) {

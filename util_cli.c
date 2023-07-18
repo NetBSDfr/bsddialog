@@ -51,7 +51,6 @@ enum OPTS {
 	CANCEL_LABEL,
 	CLEAR_DIALOG,
 	CLEAR_SCREEN,
-	COLORS,
 	COLUMNS_PER_ROW,
 	CR_WRAP,
 	DATEBOX_FORMAT,
@@ -118,6 +117,7 @@ enum OPTS {
 	SWITCH_BUTTONS,
 	TAB_ESCAPE,
 	TAB_LEN,
+	TEXT_ESCAPE,
 	TEXT_UNCHANGED,
 	THEME,
 	TIMEOUT_EXIT_CODE,
@@ -162,7 +162,7 @@ static struct option longopts[] = {
 	{"clear",             no_argument,       NULL, CLEAR_SCREEN},
 	{"clear-dialog",      no_argument,       NULL, CLEAR_DIALOG},
 	{"clear-screen",      no_argument,       NULL, CLEAR_SCREEN},
-	{"colors",            no_argument,       NULL, COLORS},
+	{"colors",            no_argument,       NULL, TEXT_ESCAPE},
 	{"columns-per-row",   required_argument, NULL, COLUMNS_PER_ROW},
 	{"cr-wrap",           no_argument,       NULL, CR_WRAP},
 	{"datebox-format",    required_argument, NULL, DATEBOX_FORMAT},
@@ -239,6 +239,7 @@ static struct option longopts[] = {
 	{"switch-buttons",    no_argument,       NULL, SWITCH_BUTTONS},
 	{"tab-escape",        no_argument,       NULL, TAB_ESCAPE},
 	{"tab-len",           required_argument, NULL, TAB_LEN},
+	{"text-escape",       no_argument,       NULL, TEXT_ESCAPE},
 	{"text-unchanged",    no_argument,       NULL, TEXT_UNCHANGED},
 	{"theme",             required_argument, NULL, THEME},
 	{"timeout-exit-code", required_argument, NULL, TIMEOUT_EXIT_CODE},
@@ -307,7 +308,7 @@ void usage(void)
 	    " --print-maxsize, --print-size, --print-version,\n --quoted,"
 	    " --save-theme <file>, --separate-output, --separator <sep>,"
 	    " --shadow,\n --single-quoted, --sleep <secs>, --stderr, --stdout,"
-	    " --tab-escape,\n --tab-len <spaces>, --text-unchanged,"
+	    " --tab-escape,\n --tab-len <spaces>, --text-escape, --text-unchanged,"
 	    " --timeout-exit-code <retval>,\n --switch-buttons,"
 	    " --theme 3d|blackwhite|flat, --time-format <format>,\n"
 	    " --title <title>, --yes-label <label>.");
@@ -423,9 +424,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 		case CLEAR_SCREEN:
 			*mandatory_dialog = false;
 			opt->clearscreen = true;
-			break;
-		case COLORS:
-			conf->text.highlight = true;
 			break;
 		case COLUMNS_PER_ROW:
 			conf->text.cols_per_row =
@@ -644,6 +642,9 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			break;
 		case TAB_LEN:
 			conf->text.tablen = (u_int)strtoul(optarg, NULL, 10);
+			break;
+		case TEXT_ESCAPE:
+			conf->text.escape = true;
 			break;
 		case TEXT_UNCHANGED:
 			opt->text_unchanged = true;

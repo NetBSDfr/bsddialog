@@ -39,6 +39,7 @@ WIP Next Version
 	    - add: env BSDDIALOG_ITEM_HELP.
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* change: --no-names and --no-descriptions mutually exclusive.
+	* rename: --color -> --text-escape (--color available in compatibility).
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: disable theme setting with no color terminals.
 	* improve: button delimiter for --bikeshed.
@@ -64,6 +65,8 @@ WIP Next Version
 	* add: 3 generic buttons to left conf.button.left[1-3]_label.
 	* add: 3 generic buttons to right conf.button.right[1-3].label.
 	* add: BSDDIALOG_LEFT[1-3], BSDDIALOG_RIGHT[1-3] return values.
+	* improve: check (when possible) API pointers.
+	* change: API strings like "" if NULL, except gauge *sep and *end.
 	* change: menus and form less restrictive with text, hide text with
 	    little screens (same behavior as other dialogs).
 	* change: mixedgauge BSDDIALOG_MG_BLANK does not draw minibar but prints
@@ -72,8 +75,7 @@ WIP Next Version
 	* change: check/set bsddialog_gauge() perc max 100.
 	* change: check/set bsddialog_mixedgauge() mainperc max 100.
 	* change: conf.menu.no_name and conf.menu.no_desc mutually exclusive.
-	* improve: check (when possible) API pointers.
-	* change: API strings like "" if NULL, except gauge *sep and *end.
+	* rename: conf.text.highlight -> conf.text.escape.
 	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.

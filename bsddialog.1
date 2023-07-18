@@ -108,52 +108,6 @@ button.
 Hide the dialog at exit.
 .It Fl Fl clear-screen
 Clear the screen, after the dialog exit if a dialog is built.
-.It Fl Fl colors
-Enable highlights for text, the following sequences are considered escapes:
-.Bl -column -compact
-.It Dq \eZ0
-black.
-.It Dq \eZ1
-red.
-.It Dq \eZ2
-green.
-.It Dq \eZ3
-yellow.
-.It Dq \eZ4
-blue.
-.It Dq \eZ5
-magenta.
-.It Dq \eZ6
-cyan.
-.It Dq \eZ7
-white.
-.It Dq \eZb
-bold.
-.It Dq \eZB
-disable bold.
-.It Dq \eZd
-Half bright.
-.It Dq \eZD
-disable half bright.
-.It Dq \eZk
-Blink.
-.It Dq \eZK
-disable blinking.
-.It Dq \eZr
-reverse foreground and background.
-.It Dq \eZR
-disable reverse.
-.It Dq \eZs
-Highlight.
-.It Dq \eZS
-disable highlighting.
-.It Dq \eZu
-underline.
-.It Dq \eZU
-disable underline.
-.It Dq \eZn
-disable each customization.
-.El
 .It Fl Fl columns-per-row Ar columns
 Try to set the number of columns for a row of text with autosizing; default
 .Dv 10 .
@@ -391,6 +345,53 @@ with a tab in
 .It Fl Fl tab-len Ar spaces
 Number of spaces to print a TAB in
 .Ar text .
+.It Fl Fl text-escape
+Enable escapes in
+.Ar text :
+.Bl -column -compact
+.It Dq \eZ0
+black.
+.It Dq \eZ1
+red.
+.It Dq \eZ2
+green.
+.It Dq \eZ3
+yellow.
+.It Dq \eZ4
+blue.
+.It Dq \eZ5
+magenta.
+.It Dq \eZ6
+cyan.
+.It Dq \eZ7
+white.
+.It Dq \eZb
+bold.
+.It Dq \eZB
+disable bold.
+.It Dq \eZd
+Half bright.
+.It Dq \eZD
+disable half bright.
+.It Dq \eZk
+Blink.
+.It Dq \eZK
+disable blinking.
+.It Dq \eZr
+reverse foreground and background.
+.It Dq \eZR
+disable reverse.
+.It Dq \eZs
+Highlight.
+.It Dq \eZS
+disable highlighting.
+.It Dq \eZu
+underline.
+.It Dq \eZU
+disable underline.
+.It Dq \eZn
+disable each customization.
+.El
 .It Fl Fl text-unchanged
 By default the
 .Ar text
@@ -770,6 +771,7 @@ Obsolete                     Equivalent
 --and-widget                 --and-dialog
 --calendar <text> 2 <cols>   --calendar <text> 0 <cols>
 --clear                      --clear-screen
+--colors                     --text-escape
 --defaultno                  --default-no
 --exit-label                 --ok-label
 --help-tags                  --help-print-name
