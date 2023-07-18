@@ -63,6 +63,7 @@ WIP Next Version
 	* add/improve: bsddialog_geterror() with fmt strings.
 	* add: 3 generic buttons to left conf.button.left[1-3]_label.
 	* add: 3 generic buttons to right conf.button.right[1-3].label.
+	* add: BSDDIALOG_LEFT[1-3], BSDDIALOG_RIGHT[1-3] return values.
 	* change: menus and form less restrictive with text, hide text with
 	    little screens (same behavior as other dialogs).
 	* change: mixedgauge BSDDIALOG_MG_BLANK does not draw minibar but prints
@@ -81,6 +82,7 @@ WIP Next Version
 	* fix: shadow top-left corner (trick wresize() before wmove()).
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
 	* delete: conf.button.generic1_label and conf.button.generic1_label.
+	* delete: BSDDIALOG_GENERIC[1-2] return values.
 	* refactor: internal implementation.
 	    - add: internal structures to represent components.
 	    - merge: (when possible) dialogs autosize.
