@@ -265,7 +265,7 @@ void usage(void)
 
 	printf("Options:\n");
 	printf(" --alternate-screen, --ascii-lines, --backtitle <backtitle>,"
-	    "--begin-x <x>,\n --begin-y <y>, --bikeshed,"
+	    " --begin-x <x>,\n --begin-y <y>, --bikeshed,"
 	    " --cancel-exit-code <retval>, --cancel-label <label>,\n"
 	    " --clear-dialog, --clear-screen, --colors,"
 	    " --columns-per-row <columns>,\n --cr-wrap, --date-format <format>,"
@@ -274,11 +274,11 @@ void usage(void)
 	    " --error-exit-code <retval>, --esc_exit-code <retval>,"
 	    " --exit-label <label>,\n --extra-button,"
 	    " --extra-exit-code <retval>, --extra-label <label>,\n"
- 	    " --generic1-exit-code <retval>, --generic2-exit-code <retval>,\n"
+	    " --generic1-exit-code <retval>, --generic2-exit-code <retval>,\n"
 	    " --generic-button1 <label>, --generic-button2 <label>,"
 	    " --help-button,\n --help-exit-code <retval>, --help-label <label>,"
 	    " --help-print-name,\n --help-status, --hfile <file>,"
-	    " --hline <string>, --hmsg <string>,\n --ignore, --insecure,"
+	    " --hline <string>, --hmsg <string>, --ignore,\n --insecure,"
 	    " --item-bottom-desc, --item-depth, --item-prefix,\n"
 	    " --load-theme <file>, --max-input <size>, --no-cancel,"
 	    " --no-descriptions,\n --no-label <label>, --no-lines, --no-names,"
