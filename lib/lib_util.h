@@ -36,9 +36,8 @@
 #define OK_LABEL        "OK"
 #define CANCEL_LABEL    "Cancel"
 
-/* theme utils */
+/* theme util */
 extern struct bsddialog_theme t;
-extern bool hastermcolors;
 
 #define	MIN(a,b) (((a)<(b))?(a):(b))
 #define	MAX(a,b) (((a)>(b))?(a):(b))

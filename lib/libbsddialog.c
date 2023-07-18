@@ -34,6 +34,7 @@
 
 #define DEFAULT_COLS_PER_ROW  10   /* Default conf.text.columns_per_row */
 
+extern bool hastermcolors;
 static bool in_bsddialog_mode = false;
 
 int bsddialog_init_notheme(void)
