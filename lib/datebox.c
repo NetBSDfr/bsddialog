@@ -74,6 +74,16 @@ enum operation {
 	DOWN_YEAR
 };
 
+/* private datebox item */
+struct dateitem {
+	enum operation up;
+	enum operation down;
+	WINDOW *win;
+	int width;
+	const char *fmt;
+	int *value;
+};
+
 static int month_days(int yy, int mm)
 {
 	int days;
@@ -500,8 +510,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	return (retval);
 }
 
-static int
-datebox_redraw(struct dialog *d, WINDOW *yy_win, WINDOW *mm_win, WINDOW *dd_win)
+static int datebox_redraw(struct dialog *d, struct dateitem *di)
 {
 	int y, x;
 
@@ -518,13 +527,54 @@ datebox_redraw(struct dialog *d, WINDOW *yy_win, WINDOW *mm_win, WINDOW *dd_win)
 	TEXTPAD(d, 3 /*windows*/ + HBUTTONS);
 
 	y = d->y + d->h - 6;
-	x = d->x + d->w / 2;
-	update_box(d->conf, yy_win, y, x - 11, 3, 6, LOWERED);
-	mvwaddch(d->widget, d->h - 5, d->w / 2 - 5, '/');
-	update_box(d->conf, mm_win, y, x - 4, 3, 11, LOWERED);
-	mvwaddch(d->widget, d->h - 5, d->w / 2 + 7, '/');
-	update_box(d->conf, dd_win, y, x + 8, 3, 4, LOWERED);
+	x = (d->x + d->w / 2) - 11;
+	update_box(d->conf, di[0].win, y, x, 3, di[0].width, LOWERED);
+	mvwaddch(d->widget, d->h - 5, x - d->x + di[0].width, '/');
+	x += di[0].width + 1;
+	update_box(d->conf, di[1].win, y, x , 3, di[1].width, LOWERED);
+	mvwaddch(d->widget, d->h - 5, x - d->x + di[1].width, '/');
+	x += di[1].width + 1;
+	update_box(d->conf, di[2].win, y, x, 3, di[2].width, LOWERED);
 	wnoutrefresh(d->widget);
+
+	return (0);
+}
+
+static int
+build_dateitem(const char *format, int *yy, int *mm, int *dd,
+    struct dateitem *dt)
+{
+	int i;
+	wchar_t *wformat;
+	struct dateitem init[3] = {
+		{UP_YEAR,  DOWN_YEAR,  NULL, 6,  "%4d",  yy},
+		{UP_MONTH, DOWN_MONTH, NULL, 11, "%9s",  mm},
+		{LEFT_DAY, RIGHT_DAY,  NULL, 4,  "%02d", dd},
+	};
+
+	for (i = 0; i < 3; i++) {
+		if ((init[i].win = newwin(1, 1, 1, 1)) == NULL)
+			RETURN_FMTERROR("Cannot build WINDOW dateitem[%d]", i);
+		wbkgd(init[i].win, t.dialog.color);
+	}
+
+	if ((wformat = alloc_mbstows(CHECK_STR(format))) == NULL)
+		RETURN_ERROR("Cannot allocate conf.date.format in wchar_t*");
+	if (format == NULL || wcscmp(wformat, L"d/m/y") == 0) {
+		dt[0] = init[2];
+		dt[1] = init[1];
+		dt[2] = init[0];
+	} else if (wcscmp(wformat, L"m/d/y") == 0) {
+		dt[0] = init[1];
+		dt[1] = init[2];
+		dt[2] = init[0];
+	} else if (wcscmp(wformat, L"y/m/d") == 0) {
+		dt[0] = init[0];
+		dt[1] = init[1];
+		dt[2] = init[2];
+	} else
+		RETURN_FMTERROR("Invalid conf.date.format=\"%s\"", format);
+	free(wformat);
 
 	return (0);
 }
@@ -534,9 +584,9 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int *year, unsigned int *month, unsigned int *day)
 {
 	bool loop, focusbuttons;
-	int retval, sel, yy, mm, dd;
+	int retval, i, sel, yy, mm, dd;
 	wint_t input;
-	WINDOW *yy_win, *mm_win, *dd_win;
+	struct dateitem  di[3];
 	struct dialog d;
 
 	CHECK_PTR(year);
@@ -549,24 +599,17 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);
-	if ((yy_win = newwin(1, 1, 1, 1)) == NULL)
-		RETURN_ERROR("Cannot build WINDOW for yy");
-	wbkgd(yy_win, t.dialog.color);
-	if ((mm_win = newwin(1, 1, 1, 1)) == NULL)
-		RETURN_ERROR("Cannot build WINDOW for mm");
-	wbkgd(mm_win, t.dialog.color);
-	if ((dd_win = newwin(1, 1, 1, 1)) == NULL)
-		RETURN_ERROR("Cannot build WINDOW for dd");
-	wbkgd(dd_win, t.dialog.color);
-	if (datebox_redraw(&d, yy_win, mm_win, dd_win) != 0)
+	if (build_dateitem(conf->date.format, &yy, &mm, &dd, di) != 0)
+		return (BSDDIALOG_ERROR);
+	if (datebox_redraw(&d, di) != 0)
 		return (BSDDIALOG_ERROR);
 
 	sel = -1;
 	loop = focusbuttons = true;
 	while (loop) {
-		drawsquare(conf, yy_win, LOWERED, "%4d", yy, sel == 0);
-		drawsquare(conf, mm_win, LOWERED, "%9s", mm, sel == 1);
-		drawsquare(conf, dd_win, LOWERED, "%02d", dd, sel == 2);
+		for (i = 0; i < 3; i++)
+			drawsquare(conf, di[i].win, LOWERED, di[i].fmt,
+			    *di[i].value, sel == i);
 		doupdate();
 
 		if (get_wch(&input) == ERR)
@@ -629,23 +672,13 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				d.bs.curr = conf->button.always_active ? 0 : -1;
 				DRAW_BUTTONS(d);
 			} else {
-				if (sel == 0)
-					datectl(UP_YEAR, &yy, &mm, &dd);
-				else if (sel == 1)
-					datectl(UP_MONTH, &yy, &mm, &dd);
-				else /* sel == 2*/
-					datectl(LEFT_DAY, &yy, &mm, &dd);
+				datectl(di[sel].up, &yy, &mm, &dd);
 			}
 			break;
 		case KEY_DOWN:
 			if (focusbuttons)
 				break;
-			if (sel == 0)
-				datectl(DOWN_YEAR, &yy, &mm, &dd);
-			else if (sel == 1)
-				datectl(DOWN_MONTH, &yy, &mm, &dd);
-			else /* sel == 2*/
-				datectl(RIGHT_DAY, &yy, &mm, &dd);
+			datectl(di[sel].down, &yy, &mm, &dd);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
@@ -653,11 +686,11 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				break;
 			if (f1help_dialog(conf) != 0)
 				return (BSDDIALOG_ERROR);
-			if (datebox_redraw(&d, yy_win, mm_win, dd_win) != 0)
+			if (datebox_redraw(&d, di) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if (datebox_redraw(&d, yy_win, mm_win, dd_win) != 0)
+			if (datebox_redraw(&d, di) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		default:
@@ -674,9 +707,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 		*day   = dd;
 	}
 
-	delwin(yy_win);
-	delwin(mm_win);
-	delwin(dd_win);
+	for (i = 0; i < 3 ; i++)
+		delwin(di[i].win);
 	end_dialog(&d);
 
 	return (retval);

@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 12, 2023
+.Dd July 18, 2023
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -365,6 +365,9 @@ struct bsddialog_conf {
 		bool value_without_ok;
 	} form;
 	struct {
+		const char *format;
+	} date;
+	struct {
 		bool always_active;
 		bool without_ok;
 		const char *ok_label;
@@ -513,7 +516,7 @@ function.
 .Pp
 .Bl -column -compact
 .It Fa conf.button.always_active
-buttons always active, avoidind focus switch between buttons and input fields or
+buttons always active, avoiding focus switch between buttons and input fields or
 input boxes in
 .Fn bsddialog_form ,
 .Fn bsddialog_datebox ,
@@ -584,6 +587,15 @@ build a dialog to select a date,
 and
 .Fa day
 are default values on startup, selected date at exit.
+The
+.Fa conf.date.format
+is a string to set the date format shown by
+.Fn bsddialog_datebox ,
+possible values:
+.Dq d/m/y ,
+.Dq m/d/y ,
+.Dq y/m/d .
+.Pp
 .Fn bsddialog_timebox
 builds a dialog to choose a time,
 .Fa hh ,

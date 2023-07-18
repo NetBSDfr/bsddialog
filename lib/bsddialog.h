@@ -111,6 +111,9 @@ struct bsddialog_conf {
 		bool value_without_ok;
 	} form;
 	struct {
+		const char *format;
+	} date;
+	struct {
 		bool always_active;
 		bool without_ok;
 		const char *ok_label;

@@ -41,6 +41,8 @@ WIP Next Version
 
 	Library:
 	* add: bsddialog_inmode().
+	* add: conf.date.format="d/m/y"|"m/d/y"|"y/m/d" to customize the date
+	    format (boxes) shown by bsddialog_datebox().
 	* add: "const char *end" to bsddialog_gauge().
 	* add: bsddialog_datebox() changing one box affects the others as well.
 	* add: focus on the "shortcut" key button at exit.
