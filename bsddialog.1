@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 16, 2023
+.Dd July 18, 2023
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -160,6 +160,13 @@ also if it constains a
 .Dq \en ,
 see
 .Fl Fl text-unchanged .
+.It Fl Fl datebox-format Ar format
+String to customize
+.Fl Fl datebox
+interface, possible values:
+.Dq d/m/y ,
+.Dq m/y/d ,
+.Dq y/m/d .
 .It Fl Fl date-format Ar format
 String accepted by
 .Xr strftime 3

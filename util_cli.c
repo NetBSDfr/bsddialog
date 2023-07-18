@@ -54,6 +54,7 @@ enum OPTS {
 	COLORS,
 	COLUMNS_PER_ROW,
 	CR_WRAP,
+	DATEBOX_FORMAT,
 	DATE_FORMAT,
 	DEFAULT_BUTTON,
 	DEFAULT_ITEM,
@@ -156,6 +157,7 @@ static struct option longopts[] = {
 	{"colors",            no_argument,       NULL, COLORS},
 	{"columns-per-row",   required_argument, NULL, COLUMNS_PER_ROW},
 	{"cr-wrap",           no_argument,       NULL, CR_WRAP},
+	{"datebox-format",    required_argument, NULL, DATEBOX_FORMAT},
 	{"date-format",       required_argument, NULL, DATE_FORMAT},
 	{"defaultno",         no_argument,       NULL, DEFAULT_NO},
 	{"default-button",    required_argument, NULL, DEFAULT_BUTTON},
@@ -263,20 +265,21 @@ void usage(void)
 	printf("\n");
 
 	printf("Options:\n");
-	printf(" --alternate-screen, --ascii-lines, --backtitle <backtitle>,"
-	    " --begin-x <x>,\n --begin-y <y>, --bikeshed,"
+	printf("  --alternate-screen, --ascii-lines, --backtitle <backtitle>,"
+	    "--begin-x <x>,\n --begin-y <y>, --bikeshed,"
 	    " --cancel-exit-code <retval>, --cancel-label <label>,\n"
 	    " --clear-dialog, --clear-screen, --colors,"
 	    " --columns-per-row <columns>,\n --cr-wrap, --date-format <format>,"
-	    " --default-button <label>,\n --default-item <name>, --default-no,"
-	    " --disable-esc, --error-exit-code <retval>,\n"
-	    " --esc_exit-code <retval>, --exit-label <label>, --extra-button,\n"
+	    " --datebox-format d/m/y|m/d/y|y/m/d,\n --default-button <label>,"
+	    " --default-item <name>, --default-no, --disable-esc,\n"
+	    " --error-exit-code <retval>, --esc_exit-code <retval>,"
+	    " --exit-label <label>,\n --extra-button,"
 	    " --extra-exit-code <retval>, --extra-label <label>,\n"
-	    " --generic1-exit-code <retval>, --generic2-exit-code <retval>,\n"
+ 	    " --generic1-exit-code <retval>, --generic2-exit-code <retval>,\n"
 	    " --generic-button1 <label>, --generic-button2 <label>,"
 	    " --help-button,\n --help-exit-code <retval>, --help-label <label>,"
 	    " --help-print-name,\n --help-status, --hfile <file>,"
-	    " --hline <string>, --hmsg <string>, --ignore,\n --insecure,"
+	    " --hline <string>, --hmsg <string>,\n --ignore, --insecure,"
 	    " --item-bottom-desc, --item-depth, --item-prefix,\n"
 	    " --load-theme <file>, --max-input <size>, --no-cancel,"
 	    " --no-descriptions,\n --no-label <label>, --no-lines, --no-names,"
@@ -411,6 +414,9 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			break;
 		case CR_WRAP:
 			opt->cr_wrap = true;
+			break;
+		case DATEBOX_FORMAT:
+			conf->date.format = optarg;
 			break;
 		case DATE_FORMAT:
 			opt->date_fmt = optarg;

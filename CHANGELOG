@@ -4,6 +4,7 @@ WIP Next Version
 	* add: comments to -save-theme output file.
 	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
 	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --color.
+	* add: --datebox-format d/m/y|m/d/y|y/m/d to set --datebox UI.
 	* add: $HOME/.bsddialog.conf file.
 	* add: env NO_COLOR.
 	* add: env BSDDIALOG_THEMEFILE.
