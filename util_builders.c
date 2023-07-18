@@ -186,9 +186,7 @@ static int date(BUILDER_ARGS)
 		dd = (u_int)strtoul(argv[0], NULL, 10);
 		mm = (u_int)strtoul(argv[1], NULL, 10);
 		yy = (u_int)strtoul(argv[2], NULL, 10);
-		if (yy < 1900)
-			yy = 1900;
-		/* max yy check is in lib */
+		/* yy check/set in lib */
 	}
 
 	if (strcmp(opt->name, "--datebox") == 0)

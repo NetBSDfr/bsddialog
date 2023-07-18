@@ -33,15 +33,20 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define MINYEAR   1900
-#define MAXYEAR   999999999
 /* Calendar */
+#define MIN_YEAR_CAL 1900
+#define MAX_YEAR_CAL 999999999
 #define MINHCAL   13
 #define MINWCAL   36 /* 34 calendar, 1 + 1 margins */
 /* Datebox */
+#define MIN_YEAR_DATE  1900
+#define MAX_YEAR_DATE  9999
 #define MINWDATE   23 /* 3 windows and their borders */
 
 #define ISLEAP(year) ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
+
+static int minyear;
+static int maxyear;
 
 const char *m[12] = {
 	"January",
@@ -98,9 +103,9 @@ static void
 init_date(unsigned int *year, unsigned int *month, unsigned int *day, int *yy,
     int *mm, int *dd)
 {
-	*yy = MIN(*year, MAXYEAR);
-	if (*yy < MINYEAR)
-		*yy = MINYEAR;
+	*yy = MIN(*year, (unsigned int)maxyear);
+	if (*yy < minyear)
+		*yy = minyear;
 	*mm = MIN(*month, 12);
 	if (*mm == 0)
 		*mm = 1;
@@ -199,13 +204,13 @@ static void datectl(enum operation op, int *yy, int *mm, int *dd)
 		break;
 	}
 
-	if (*yy < MINYEAR) {
-		*yy = MINYEAR;
+	if (*yy < minyear) {
+		*yy = minyear;
 		*mm = 1;
 		*dd = 1;
 	}
-	if (*yy > MAXYEAR) {
-		*yy = MAXYEAR;
+	if (*yy > maxyear) {
+		*yy = maxyear;
 		*mm = 12;
 		*dd = 31;
 	}
@@ -325,6 +330,8 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 	CHECK_PTR(year);
 	CHECK_PTR(month);
 	CHECK_PTR(day);
+	minyear = MIN_YEAR_CAL;
+	maxyear = MAX_YEAR_CAL;
 	init_date(year, month, day, &yy, &mm, &dd);
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
@@ -535,6 +542,8 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 	CHECK_PTR(year);
 	CHECK_PTR(month);
 	CHECK_PTR(day);
+	minyear = MIN_YEAR_DATE;
+	maxyear = MAX_YEAR_DATE;
 	init_date(year, month, day, &yy, &mm, &dd);
 
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
