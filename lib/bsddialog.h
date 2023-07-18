@@ -42,8 +42,12 @@
 #define BSDDIALOG_EXTRA           3
 #define BSDDIALOG_TIMEOUT         4
 #define BSDDIALOG_ESC             5
-#define BSDDIALOG_GENERIC1        6
-#define BSDDIALOG_GENERIC2        7
+#define BSDDIALOG_LEFT1           6
+#define BSDDIALOG_LEFT2           7
+#define BSDDIALOG_LEFT3           8
+#define BSDDIALOG_RIGHT1          9
+#define BSDDIALOG_RIGHT2          10
+#define BSDDIALOG_RIGHT3          11
 
 /* Size and position */
 #define BSDDIALOG_FULLSCREEN     -1
@@ -115,6 +119,9 @@ struct bsddialog_conf {
 	} date;
 	struct {
 		bool always_active;
+		const char *left1_label;
+		const char *left2_label;
+		const char *left3_label;
 		bool without_ok;
 		const char *ok_label;
 		bool with_extra;
@@ -124,8 +131,9 @@ struct bsddialog_conf {
 		bool default_cancel;
 		bool with_help;
 		const char *help_label;
-		const char *generic1_label;
-		const char *generic2_label;
+		const char *right1_label;
+		const char *right2_label;
+		const char *right3_label;
 		const char *default_label;
 	} button;
 };

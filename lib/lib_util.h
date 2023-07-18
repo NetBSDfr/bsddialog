@@ -79,7 +79,7 @@ enum elevation { RAISED, LOWERED };
 
 struct buttons {
 	unsigned int nbuttons;
-#define MAXBUTTONS 6 /* ok + extra + cancel + help + 2 generics */
+#define MAXBUTTONS 10 /* 3left + ok + extra + cancel + help + 3 right */
 	const char *label[MAXBUTTONS];
 	bool shortcut;
 	wchar_t first[MAXBUTTONS];

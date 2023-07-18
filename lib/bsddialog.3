@@ -369,6 +369,9 @@ struct bsddialog_conf {
 	} date;
 	struct {
 		bool always_active;
+		const char *left1_label;
+		const char *left2_label;
+		const char *left3_label;
 		bool without_ok;
 		const char *ok_label;
 		bool with_extra;
@@ -378,8 +381,9 @@ struct bsddialog_conf {
 		bool default_cancel;
 		bool with_help;
 		const char *help_label;
-		const char *generic1_label;
-		const char *generic2_label;
+		const char *right1_label;
+		const char *right2_label;
+		const char *right3_label;
 		const char *default_label;
 	} button;
 };
@@ -523,6 +527,12 @@ input boxes in
 .Fn bsddialog_calendar
 and
 .Fn bsddialog_timebox .
+.It Fa conf.button.left1_label
+add a button with the specified label.
+.It Fa conf.button.left2_label
+add a button with the specified label.
+.It Fa conf.button.left3_label
+add a button with the specified label.
 .It Fa conf.button.without_ok
 disable OK button.
 .It Fa conf.button.ok_label
@@ -541,9 +551,11 @@ on startup focus on the Cancel button.
 add Help button.
 .It Fa conf.button.help_label
 set a label for Help button.
-.It Fa conf.button.generic1_label
+.It Fa conf.button.right1_label
 add a button with the specified label.
-.It Fa conf.button.generic2_label
+.It Fa conf.button.right2_label
+add a button with the specified label.
+.It Fa conf.button.right3_label
 add a button with the specified label.
 .It Fa conf.button.default_label
 focus on the button with the specified label.
@@ -993,9 +1005,12 @@ returned:
 .Dv BSDDIALOG_CANCEL ,
 .Dv BSDDIALOG_HELP ,
 .Dv BSDDIALOG_EXTRA ,
-.Dv BSDDIALOG_GENERIC1
-or
-.Dv BSDDIALOG_GENERIC2 .
+.Dv BSDDIALOG_LEFT1 ,
+.Dv BSDDIALOG_LEFT2 ,
+.Dv BSDDIALOG_LEFT3 ,
+.Dv BSDDIALOG_RIGHT1 ,
+.Dv BSDDIALOG_RIGHT2 ,
+.Dv BSDDIALOG_RIGHT3 .
 .Dv BSDDIALOG_YES
 and
 .Dv BSDDIALOG_NO

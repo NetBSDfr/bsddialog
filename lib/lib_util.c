@@ -308,6 +308,24 @@ set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
 	d->bs.sizebutton = 0;
 	d->bs.shortcut = shortcut;
 
+	if (d->conf->button.left1_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.left1_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_LEFT1;
+		d->bs.nbuttons += 1;
+	}
+
+	if (d->conf->button.left2_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.left2_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_LEFT2;
+		d->bs.nbuttons += 1;
+	}
+
+	if (d->conf->button.left3_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.left3_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_LEFT3;
+		d->bs.nbuttons += 1;
+	}
+
 	if (oklabel != NULL && d->conf->button.without_ok == false) {
 		d->bs.label[0] = d->conf->button.ok_label != NULL ?
 		    d->conf->button.ok_label : oklabel;
@@ -338,15 +356,21 @@ set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
 		d->bs.nbuttons += 1;
 	}
 
-	if (d->conf->button.generic1_label != NULL) {
-		d->bs.label[d->bs.nbuttons] = d->conf->button.generic1_label;
-		d->bs.value[d->bs.nbuttons] = BSDDIALOG_GENERIC1;
+	if (d->conf->button.right1_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.right1_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_RIGHT1;
 		d->bs.nbuttons += 1;
 	}
 
-	if (d->conf->button.generic2_label != NULL) {
-		d->bs.label[d->bs.nbuttons] = d->conf->button.generic2_label;
-		d->bs.value[d->bs.nbuttons] = BSDDIALOG_GENERIC2;
+	if (d->conf->button.right2_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.right2_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_RIGHT2;
+		d->bs.nbuttons += 1;
+	}
+
+	if (d->conf->button.right3_label != NULL) {
+		d->bs.label[d->bs.nbuttons] = d->conf->button.right3_label;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_RIGHT3;
 		d->bs.nbuttons += 1;
 	}
 
