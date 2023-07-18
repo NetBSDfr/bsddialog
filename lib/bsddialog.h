@@ -32,7 +32,7 @@
 
 #define LIBBSDDIALOG_VERSION     "0.5-devel"
 
-/* Exit status */
+/* Return values */
 #define BSDDIALOG_ERROR          -1
 #define BSDDIALOG_OK              0
 #define BSDDIALOG_YES             BSDDIALOG_OK
