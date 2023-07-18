@@ -47,7 +47,7 @@ extern bool hastermcolors;
 	mvprintw(y, x, fmt, __VA_ARGS__);                                      \
 	refresh();                                                             \
 } while (0)
-/* error and diagnostic*/
+/* error and diagnostic */
 #define RETURN_ERROR(str) do {                                                 \
 	set_error_string(str);                                                 \
 	return (BSDDIALOG_ERROR);                                              \
