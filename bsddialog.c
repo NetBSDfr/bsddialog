@@ -211,7 +211,7 @@ int main(int argc, char *argv[argc])
 			    opt.screen_mode != (char*)-1) {
 				tputs(opt.screen_mode, 1, putchar);
 				fflush(stdout);
-				 /* only to refresh, useless in the library */
+				/* only to refresh, useless in the library */
 				bsddialog_clearterminal();
 			}
 		}
