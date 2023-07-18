@@ -327,9 +327,9 @@ set_buttons(struct dialog *d, bool shortcut, const char *oklabel,
 	}
 
 	if (oklabel != NULL && d->conf->button.without_ok == false) {
-		d->bs.label[0] = d->conf->button.ok_label != NULL ?
+		d->bs.label[d->bs.nbuttons] = d->conf->button.ok_label != NULL ?
 		    d->conf->button.ok_label : oklabel;
-		d->bs.value[0] = BSDDIALOG_OK;
+		d->bs.value[d->bs.nbuttons] = BSDDIALOG_OK;
 		d->bs.nbuttons += 1;
 	}
 
