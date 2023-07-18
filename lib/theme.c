@@ -242,36 +242,36 @@ int
 bsddialog_color(enum bsddialog_color foreground,
     enum bsddialog_color background, unsigned int flags)
 {
-	unsigned int i, cursesflags;
+	unsigned int i, f;
 
-	cursesflags = 0;
+	f = 0;
 	for (i=0; i < NFLAGS; i++)
 		if (flags & flagconv[i].public)
-			cursesflags |= flagconv[i].private;
+			f |= flagconv[i].private;
 
-	return (GET_COLOR(foreground, background) | cursesflags);
+	return (GET_COLOR(foreground, background) | f);
 }
 
 int
 bsddialog_color_attrs(int color, enum bsddialog_color *foreground,
     enum bsddialog_color *background, unsigned int *flags)
 {
-	short f, b;
-	unsigned int i, flag;
+	short fg, bg;
+	unsigned int i, f;
 
 	if (flags != NULL) {
-		flag = 0;
+		f = 0;
 		for (i=0; i < NFLAGS; i++)
 			if (color & flagconv[i].private)
-				flag |= flagconv[i].public;
-		*flags = flag;
+				f |= flagconv[i].public;
+		*flags = f;
 	}
-	if (pair_content(PAIR_NUMBER(color), &f, &b) != OK)
+	if (pair_content(PAIR_NUMBER(color), &fg, &bg) != OK)
 		RETURN_ERROR("Cannot get color attributes");
 	if (foreground != NULL)
-		*foreground = f;
+		*foreground = fg;
 	if (background != NULL)
-		*background = b;
+		*background = bg;
 
 	return (BSDDIALOG_OK);
 }
