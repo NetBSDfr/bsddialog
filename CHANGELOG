@@ -75,10 +75,10 @@ WIP Next Version
 	    - merge: new_dialog() with update_dialog() -> draw_dialog().
 	    - merge: infobox.c with messagebox.c (delete infobox.c)
 	    - merge: bsddialog_datebox() + bsddialog_calendar() -> datebox.c
-	    - change: flat and blackwhite  real themes.
+	    - change: flat and blackwhite real themes.
 	    - improve: replace wrefresh() -> wnoutrefresh()/doupdate().
 	    - improve: replace prefresh() -> pnoutrefresh()/doupdate().
-	    - fix/delete: -Wno-implicit-fallthrough.
+	    - delete: -Wno-implicit-fallthrough.
 
 
 2023-06-12 Version 0.4.2
