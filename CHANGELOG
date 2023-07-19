@@ -44,6 +44,7 @@ WIP Next Version
 	* improve: disable theme setting with no color terminals.
 	* improve: button delimiter for --bikeshed.
 	* improve: --date-format for --bikeshed.
+	* improve: menus on|off: strcasecmp, diagnostic, real off check.
 	* fix: --load-theme attributes.
 	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: --theme bsddialog (partially implemented).

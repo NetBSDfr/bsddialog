@@ -314,10 +314,17 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 		    (u_int)strtoul(argv[j++], NULL, 0) : 0;
 		(*items)[i].name = setname ? argv[j++] : "";
 		(*items)[i].desc = setdesc ? argv[j++] : "";
-		if (setstatus)
-			(*items)[i].on = strcmp(argv[j++], "on") == 0 ?
-			    true : false;
-		else
+		if (setstatus) {
+			if (strcasecmp(argv[j], "on") == 0)
+				(*items)[i].on = true;
+			else if (strcasecmp(argv[j], "off") == 0)
+				(*items)[i].on = false;
+			else
+				exit_error(true,
+				    "\"%s\" (item %i) invalid status \"%s\"",
+				    (*items)[i].name, i+1, argv[j]);
+			j++;
+		} else
 			(*items)[i].on = false;
 		(*items)[i].bottomdesc = sethelp ? argv[j++] : "";
 
