@@ -433,7 +433,15 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			opt->cr_wrap = true;
 			break;
 		case DATEBOX_FORMAT:
-			conf->date.format = optarg;
+			if (strcasecmp(optarg, "d/m/y") == 0)
+				conf->date.format = "d/m/y";
+			else if (strcasecmp(optarg, "m/d/y") == 0)
+				conf->date.format = "m/d/y";
+			else if (strcasecmp(optarg, "y/m/d") == 0)
+				conf->date.format = "y/m/d";
+			else
+				exit_error(true,
+				    "date format \"%s\" is invalid", optarg);
 			break;
 		case DATE_FORMAT:
 			opt->date_fmt = optarg;
