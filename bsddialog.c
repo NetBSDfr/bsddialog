@@ -66,7 +66,7 @@ static struct exitcode exitcodes[14] = {
 	{ "BSDDIALOG_RIGHT1",     9 },
 	{ "BSDDIALOG_RIGHT2",    10 },
 	{ "BSDDIALOG_RIGHT3",    11 },
-	{ "BSDDIALOG_ITEM_HELP",  2 } /* like ITEM_HELP by default */
+	{ "BSDDIALOG_ITEM_HELP",  2 } /* like HELP by default */
 };
 
 void set_exit_code(int lib_retval, int exitcode)
