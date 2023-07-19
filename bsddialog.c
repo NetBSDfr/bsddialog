@@ -40,13 +40,12 @@
 
 #include "util.h"
 
+#define EXITCODE(retval) (exitcodes[retval + 1].value)
 #define UNUSED_PAR(x) UNUSED_ ## x __attribute__((__unused__))
 
 static void custom_text(struct options *opt, char *text, char *buf);
 
 /* Exit codes */
-#define EXITCODE(retval) (exitcodes[retval + 1].value)
-
 struct exitcode {
 	const char *name;
 	int value;
