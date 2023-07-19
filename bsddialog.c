@@ -74,6 +74,7 @@ void set_exit_code(int lib_retval, int exitcode)
 	exitcodes[lib_retval + 1].value = exitcode;
 }
 
+/* Error */
 void exit_error(bool usage, const char *fmt, ...)
 {
 	va_list arg_ptr;
@@ -109,6 +110,7 @@ void error_args(const char *dialog, int argc, char **argv)
 	exit (EXITCODE(BSDDIALOG_ERROR));
 }
 
+/* init */
 static void sigint_handler(int UNUSED_PAR(sig))
 {
 	bsddialog_end();
@@ -146,6 +148,9 @@ static void getenv_exitcodes(void)
 	}
 }
 
+/*
+ * bsddialog utility: TUI widgets and dialogs.
+ */
 int main(int argc, char *argv[argc])
 {
 	bool mandatory_dialog, startup;
@@ -331,4 +336,3 @@ void custom_text(struct options *opt, char *text, char *buf)
 	}
 	buf[j] = '\0';
 }
-
