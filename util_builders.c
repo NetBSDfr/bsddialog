@@ -41,7 +41,6 @@ int infobox_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
 		error_args(opt->name, argc, argv);
-
 	return (bsddialog_infobox(conf, text, rows, cols));
 }
 
@@ -49,7 +48,6 @@ int msgbox_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
 		error_args(opt->name, argc, argv);
-
 	return (bsddialog_msgbox(conf, text, rows, cols));
 }
 
@@ -57,7 +55,6 @@ int yesno_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
 		error_args(opt->name, argc, argv);
-
 	return (bsddialog_yesno(conf, text, rows, cols));
 }
 
@@ -66,7 +63,6 @@ int textbox_builder(BUILDER_ARGS)
 {
 	if (argc > 0)
 		error_args(opt->name, argc, argv);
-
 	return (bsddialog_textbox(conf, text, rows, cols));
 }
 
@@ -302,7 +298,6 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 		exit_error(true, "%s bad arguments items number", opt->name);
 
 	*nitems = argc / sizeitem;
-
 	*items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
 	if (items == NULL)
 		exit_error(false, "%s cannot allocate items", opt->name);
