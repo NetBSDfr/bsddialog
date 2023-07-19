@@ -335,13 +335,14 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 
 static void
 print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
-    int focusitem, bool ismenu, struct options *opt)
+    int focusitem, struct options *opt)
 {
-	bool sep, sepbefore, sepafter, sepsecond, toquote;
+	bool sep, sepbefore, sepafter, sepsecond, toquote, ismenu;
 	int i;
 	char quotech;
 	const char *focusname, *sepstr;
 
+	ismenu = (strcmp(opt->name, "--menu") == 0) ? true : false;
 	sep = false;
 	quotech = opt->item_singlequote ? '\'' : '"';
 
@@ -438,7 +439,7 @@ int checklist_builder(BUILDER_ARGS)
 	output = bsddialog_checklist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, false, opt);
+	print_menu_items(output, nitems, items, focusitem, opt);
 	free(items);
 
 	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
@@ -464,7 +465,7 @@ int menu_builder(BUILDER_ARGS)
 	output = bsddialog_menu(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, true, opt);
+	print_menu_items(output, nitems, items, focusitem, opt);
 	free(items);
 
 	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
@@ -489,7 +490,7 @@ int radiolist_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, false, opt);
+	print_menu_items(output, nitems, items, focusitem, opt);
 	free(items);
 
 	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
@@ -517,7 +518,7 @@ int treeview_builder(BUILDER_ARGS)
 	output = bsddialog_radiolist(conf, text, rows, cols, menurows, nitems,
 	    items, &focusitem);
 
-	print_menu_items(output, nitems, items, focusitem, false, opt);
+	print_menu_items(output, nitems, items, focusitem, opt);
 	free(items);
 
 	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
