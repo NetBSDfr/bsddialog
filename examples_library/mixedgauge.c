@@ -30,7 +30,7 @@ static const char *minilabels[NMINIBAR] = {
 	"Label   X",
 	"Label   Y",
 };
-	
+
 static int minipercs[NMINIBAR] = {
 	BSDDIALOG_MG_SUCCEEDED,
 	BSDDIALOG_MG_FAILED,
