@@ -302,7 +302,6 @@ get_menu_items(int argc, char **argv, bool setprefix, bool setdepth,
 		exit_error(true, "%s bad arguments items number", opt->name);
 
 	*nitems = argc / sizeitem;
-
 	*items = calloc(*nitems, sizeof(struct bsddialog_menuitem));
 	if (items == NULL)
 		exit_error(false, "%s cannot allocate items", opt->name);
