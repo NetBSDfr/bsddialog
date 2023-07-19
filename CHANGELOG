@@ -3,11 +3,11 @@ WIP Next Version
 	Utility:
 	* add: comments to -save-theme output file.
 	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
-	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --color.
+	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for <text>.
 	* add: --datebox-format d/m/y|m/d/y|y/m/d to set --datebox UI.
-	* add: $HOME/.bsddialog.conf file.
-	* add: env NO_COLOR.
-	* add: env BSDDIALOG_THEMEFILE.
+	* add: env NO_COLOR, to set blackwhte theme.
+	* add: $HOME/.bsddialog.conf to load a startup file theme.
+	* add: env BSDDIALOG_THEMEFILE to set a startup theme file.
 	* add: dynamic exit codes.
 	    - add: --error-exit-code.
 	    - add: --ok-exit-code.
@@ -37,19 +37,18 @@ WIP Next Version
 	    - add: env BSDDIALOG_RIGHT3.
 	* add: undocumented envs for bsdconfig(8) comatibility.
 	    - env BSDDIALOG_COMPATRC for use_shadow setting.
-	    - env BSDDIALOG_ITEM_HELP to add/set new exit code.
+	    - env BSDDIALOG_ITEM_HELP to add/set exit code.
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* change: --no-names and --no-descriptions mutually exclusive.
-	* rename: --color -> --text-escape (--color available in compatibility).
+	* rename: --colors -> --text-escape (--colors available as alias).
 	* improve: DIAGNOSTIC messages adding fmt string errors.
-	* improve: disable theme setting with no color terminals.
-	* improve: button delimiter for --bikeshed.
-	* improve: --date-format for --bikeshed.
+	* improve: disable theme setting (opt/env) with no color terminals.
 	* improve: menus on|off: strcasecmp, diagnostic, real off check.
+	* improve: --bikeshed with button delimiter and --date-format
 	* fix: --load-theme attributes.
 	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: --theme bsddialog (partially implemented).
-	* delete: --esc-return-cancel (replaced by a new env and option).
+	* delete: --esc-return-cancel (replaced by new env and option).
 	* delete: --generic-button1 (replaced by --right1-button).
 	* delete: --generic-button2 (replaced by --right2-button).
 	* refactor: modularize in more files (main, cli, builders, theme).
