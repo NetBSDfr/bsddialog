@@ -8,7 +8,6 @@ WIP Next Version
 	* add: $HOME/.bsddialog.conf file.
 	* add: env NO_COLOR.
 	* add: env BSDDIALOG_THEMEFILE.
-	* add: env BSDDIALOG_COMPATRC for bsdconfig(8) use_shadow compatibility.
 	* add: dynamic exit codes.
 	    - add: --error-exit-code.
 	    - add: --ok-exit-code.
@@ -36,7 +35,9 @@ WIP Next Version
 	    - add: env BSDDIALOG_RIGHT1.
 	    - add: env BSDDIALOG_RIGHT2.
 	    - add: env BSDDIALOG_RIGHT3.
-	    - add: env BSDDIALOG_ITEM_HELP.
+	* add: undocumented envs for bsdconfig(8) comatibility.
+	    - env BSDDIALOG_COMPATRC for use_shadow setting.
+	    - env BSDDIALOG_ITEM_HELP to add/set new exit code.
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* change: --no-names and --no-descriptions mutually exclusive.
 	* rename: --color -> --text-escape (--color available in compatibility).

@@ -483,8 +483,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			conf->button.with_help = true;
 			break;
 		case HELP_EXIT_CODE:
-			set_exit_code(BSDDIALOG_HELP,
-			    (int)strtol(optarg, NULL, 10));
+			i = (int)strtol(optarg, NULL, 10);
+			set_exit_code(BSDDIALOG_HELP, i);
+			/* _TEM_HELP follows _HELP */
+			set_exit_code(BSDDIALOG_ITEM_HELP, i);
 			break;
 		case HELP_LABEL:
 			conf->button.help_label = optarg;
