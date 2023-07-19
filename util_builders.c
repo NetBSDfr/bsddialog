@@ -337,12 +337,13 @@ static void
 print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
     int focusitem, struct options *opt)
 {
-	bool sep, sepbefore, sepafter, sepsecond, toquote, ismenu;
+	bool sep, sepbefore, sepafter, sepsecond, toquote, ismenu, ischecklist;
 	int i;
 	char quotech;
 	const char *focusname, *sepstr;
 
 	ismenu = (strcmp(opt->name, "--menu") == 0) ? true : false;
+	ischecklist = (strcmp(opt->name, "--checklist") == 0) ? true : false;
 	sep = false;
 	quotech = opt->item_singlequote ? '\'' : '"';
 
@@ -409,7 +410,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		toquote = false;
 		if (strchr(items[i].name, ' ') != NULL) {
 			toquote = opt->item_always_quote;
-			if (ismenu == false && opt->item_output_sepnl == false)
+			if (ischecklist && opt->item_output_sepnl == false)
 				toquote = true;
 		}
 		if (toquote)

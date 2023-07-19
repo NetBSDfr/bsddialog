@@ -40,6 +40,7 @@ WIP Next Version
 	    - env BSDDIALOG_ITEM_HELP to add/set exit code.
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* change: --no-names and --no-descriptions mutually exclusive.
+	* change: quote only checklist output items if necessary.
 	* rename: --colors -> --text-escape (--colors available as alias).
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: disable theme setting (opt/env) with no color terminals.
