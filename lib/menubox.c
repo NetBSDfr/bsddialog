@@ -564,20 +564,15 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			}
 			break;
 		case '\t': /* TAB */
+		case KEY_RIGHT:
 			d.bs.curr = (d.bs.curr + 1) % d.bs.nbuttons;
 			DRAW_BUTTONS(d);
 			break;
 		case KEY_LEFT:
-			if (d.bs.curr > 0) {
-				d.bs.curr--;
-				DRAW_BUTTONS(d);
-			}
-			break;
-		case KEY_RIGHT:
-			if (d.bs.curr < (int) d.bs.nbuttons - 1) {
-				d.bs.curr++;
-				DRAW_BUTTONS(d);
-			}
+			d.bs.curr--;
+			if (d.bs.curr < 0)
+				 d.bs.curr = d.bs.nbuttons - 1;
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_F(1):
 			if (conf->key.f1_file == NULL &&
