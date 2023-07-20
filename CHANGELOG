@@ -35,7 +35,7 @@ WIP Next Version
 	    - add: env BSDDIALOG_RIGHT1.
 	    - add: env BSDDIALOG_RIGHT2.
 	    - add: env BSDDIALOG_RIGHT3.
-	* add: undocumented envs for bsdconfig(8) comatibility.
+	* add: undocumented envs for bsdconfig(8) compatibility.
 	    - env BSDDIALOG_COMPATRC for use_shadow setting.
 	    - env BSDDIALOG_ITEM_HELP to add/set exit code.
 	* change: rename themes --theme 3d|blackwhite|flat.
