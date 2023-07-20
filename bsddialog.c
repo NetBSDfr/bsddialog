@@ -130,16 +130,14 @@ static void start_bsddialog_mode(void)
 static void getenv_exitcodes(void)
 {
 	int i;
-	long int value;
+	int value;
 	char *envvalue;
 
 	for (i = 0; i < 10; i++) {
 		envvalue = getenv(exitcodes[i].name);
-		if (envvalue == NULL)
+		if (envvalue == NULL || envvalue[0] == '\0')
 			continue;
 		value = (int)strtol(envvalue, NULL, 10);
-		if (value == LONG_MIN || value == LONG_MAX)
-			continue;
 		exitcodes[i].value = value;
 		/* ITEM_HELP follows HELP without explicit setting */
 		if(i == BSDDIALOG_HELP + 1)
