@@ -46,6 +46,7 @@ WIP Next Version
 	* improve: disable theme setting (opt/env) with no color terminals.
 	* improve: menus on|off: strcasecmp, diagnostic, real off check.
 	* improve: --bikeshed with button delimiter and --date-format.
+	* improve: --textbox accepts buttons options.
 	* fix: --load-theme attributes.
 	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: --theme bsddialog (partially implemented).
@@ -70,6 +71,7 @@ WIP Next Version
 	* improve: check (when possible) API pointers.
 	* improve: left and right keys move circolar buttons for msgbox, yesno,
 	    menus, rangebox and pause.
+	* improve: bsddialog_textbox() manages conf.buttons.
 	* change: API strings like "" if NULL, except gauge *sep and *end.
 	* change: menus and form less restrictive with text, hide text with
 	    little screens (same behavior as other dialogs).

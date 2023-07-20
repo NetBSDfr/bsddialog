@@ -145,8 +145,6 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
 	if (prepare_dialog(conf, "" /* fake */, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, "EXIT", NULL);
-	d.bs.curr = 0;
-	d.bs.nbuttons = 1;
 
 	defaulttablen = TABSIZE;
 	if (conf->text.tablen > 0)
@@ -192,6 +190,10 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
 		prefresh(st.pad, st.ypad, st.xpad, st.ys, st.xs, st.ye, st.xe);
 		if (get_wch(&input) == ERR)
 			continue;
+		if (shortcut_buttons(input, &d.bs)) {
+			retval = BUTTONVALUE(d.bs);
+			break; /* loop */
+		}
 		switch(input) {
 		case KEY_ENTER:
 		case 10: /* Enter */
@@ -203,6 +205,10 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
 				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
+			break;
+		case '\t': /* TAB */
+			d.bs.curr = (d.bs.curr + 1) % d.bs.nbuttons;
+			DRAW_BUTTONS(d);
 			break;
 		case KEY_HOME:
 			st.ypad = 0;
@@ -252,11 +258,6 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
 			if (textbox_draw(&d, &st) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
-		default:
-			if (shortcut_buttons(input, &d.bs)) {
-				retval = BUTTONVALUE(d.bs);
-				loop = false;
-			}
 		}
 	}
 

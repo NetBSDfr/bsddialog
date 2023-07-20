@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 19, 2023
+.Dd July 20, 2023
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -559,7 +559,7 @@ otherwise
 Dialog to diplay a message without the
 .Dq Cancel
 button.
-UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to navigate the text.
+UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to scroll the text.
 .It Fl Fl passwordbox Ar text Ar rows Ar cols Op Ar init
 Dialog to get a password,
 .Ar init
@@ -599,8 +599,9 @@ is the default value, the keys UP, DOWN, HOME, END, PAGEUP and PAGEDOWN can
 change it.
 .It Fl Fl textbox Ar file Ar rows Ar cols
 Opens and prints
-.Ar file
-the UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to navigate;
+.Ar file .
+UP, DOWN, LEFT, RIGHT, HOME, END, PAGEUP and PAGEDOWN keys are available to
+navigate the file, TAB changes button.
 .Dq OK
 button is renamed
 .Dq EXIT .
@@ -621,7 +622,7 @@ buttons are renamed
 .Dq Yes
 and
 .Dq \&No .
-UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to navigate the text.
+UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to scroll the text.
 .El
 .Sh ENVIRONMENT
 The environment variables take effect only at startup, other options can
