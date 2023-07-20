@@ -424,7 +424,7 @@ void bikeshed(struct bsddialog_conf *conf)
 	/* conf */
 	conf->button.always_active = (~rand() & 1) ? true : false;
 	if ((i = rand() % 3) != 0) /* default "d/m/y" */
-	conf->date.format = (i & 1) ? "m/d/y" : "y/m/d" ;
+		conf->date.format = (i & 1) ? "m/d/y" : "y/m/d" ;
 	if (conf->title != NULL) {
 		memset(title, 0, 1024);
 		margin = rand() % 5;
