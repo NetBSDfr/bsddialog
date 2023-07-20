@@ -6,7 +6,7 @@
 OUTPUT=  bsddialog
 SOURCES= bsddialog.c util_builders.c util_cli.c util_theme.c
 OBJECTS= $(SOURCES:.c=.o)
-LIBPATH= ./lib
+LIBPATH= $(CURDIR)/lib
 LIBBSDDIALOG= $(LIBPATH)/libbsddialog.so
 CFLAGS= -D_GNU_SOURCE -Wall -Wextra -I$(LIBPATH)
 LDFLAGS= -ltinfo -Wl,-rpath=$(LIBPATH) -L$(LIBPATH) -lbsddialog
