@@ -10,7 +10,6 @@ OBJECTS = ${SOURCES:.c=.o}
 CFLAGS += -I${LIBPATH} -std=gnu99 -Wall -Wextra -Werror
 .if defined(DEBUG)
 CFLAGS = -g -Wall -I${LIBPATH}
-LIBDEBUG= -DDEBUG
 .endif
 LDFLAGS += -ltinfow -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
 
