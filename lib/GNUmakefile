@@ -10,7 +10,7 @@ SOURCES = barbox.c datebox.c formbox.c libbsddialog.c lib_util.c \
 	menubox.c messagebox.c textbox.c theme.c timebox.c
 OBJECTS = $(SOURCES:.c=.o)
 
-ifneq ($(DEBUG), 0)
+ifneq ($(ENABLEDEBUG),)
 CFLAGS += -g
 endif
 CFLAGS += -D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE -D_GNU_SOURCE \

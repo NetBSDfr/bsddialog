@@ -7,7 +7,7 @@ OUTPUT =  bsddialog
 SOURCES = bsddialog.c util_builders.c util_cli.c util_theme.c
 OBJECTS = $(SOURCES:.c=.o)
 
-ifneq ($(DEBUG), 0)
+ifneq ($(ENABLEDEBUG),)
 CFLAGS += -g
 endif
 CFLAGS += -D_GNU_SOURCE -Wall -Wextra -I$(LIBPATH)

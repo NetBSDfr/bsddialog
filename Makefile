@@ -18,8 +18,8 @@ LN = ln -s -f
 NORPATH ?= 0
 # `make -DDEBUG`
 # `gmake DEBUG=1`
-ARGDEBUG ?= 0
-export DEBUG=${ARGDEBUG}
+DEBUG ?=
+export ENABLEDEBUG=${DEBUG}
 
 all : ${OUTPUT}
 
