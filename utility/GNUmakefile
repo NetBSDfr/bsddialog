@@ -7,8 +7,11 @@ OUTPUT =  bsddialog
 SOURCES = bsddialog.c util_builders.c util_cli.c util_theme.c
 OBJECTS = $(SOURCES:.c=.o)
 
-CFLAGS = -D_GNU_SOURCE -Wall -Wextra -I$(LIBPATH)
-LDFLAGS = -ltinfo -Wl,-rpath=$(LIBPATH) -L$(LIBPATH) -lbsddialog
+ifneq ($(DEBUG), 0)
+CFLAGS += -g
+endif
+CFLAGS += -D_GNU_SOURCE -Wall -Wextra -I$(LIBPATH)
+LDFLAGS += -ltinfo -Wl,-rpath=$(LIBPATH) -L$(LIBPATH) -lbsddialog
 RM = rm -f
 
 all : $(OUTPUT)
