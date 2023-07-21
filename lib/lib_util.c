@@ -1312,7 +1312,7 @@ int draw_dialog(struct dialog *d)
 	wnoutrefresh(d->widget);
 
 	wclear(d->textpad);
-	/* infobox "" 0 2 fails but text is empty and textcpad remains 1 1 */
+	/* `infobox "" 0 2` fails but text is empty and textpad remains 1 1 */
 	wresize(d->textpad, 1, d->w - BORDERS - TEXTHMARGINS);
 
 	if (print_textpad(d->conf, d->textpad, d->text) != 0)
