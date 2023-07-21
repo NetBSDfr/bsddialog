@@ -4,6 +4,7 @@
 # Written in 2023 by Alfonso Sabato Siciliano
 
 OUTPUT =  bsddialog
+export VERSION=0.5-devel
 .CURDIR ?= ${CURDIR}
 LIBPATH = ${.CURDIR}/lib
 LIBBSDDIALOG = ${LIBPATH}/libbsddialog.so
@@ -12,6 +13,7 @@ UTILITYPATH = ${.CURDIR}/utility
 RM= rm -f
 LN = ln -s -f
 
+### cli options ###
 # ports/pkg Makefile: MAKE_ARGS NORPATH=1
 NORPATH ?= 0
 # `make -DDEBUG`
