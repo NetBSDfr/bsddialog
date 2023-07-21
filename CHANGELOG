@@ -41,7 +41,6 @@ WIP Next Version
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* change: --no-names and --no-descriptions mutually exclusive.
 	* change: quote only checklist output items if necessary.
-	* change: bsddialog_pause() sec -> *sec to know remaining time at exit.
 	* rename: --colors -> --text-escape (--colors available as alias).
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: disable theme setting (opt/env) with no color terminals.
@@ -82,6 +81,7 @@ WIP Next Version
 	* change: check/set bsddialog_gauge() perc max 100.
 	* change: check/set bsddialog_mixedgauge() mainperc max 100.
 	* change: conf.menu.no_name and conf.menu.no_desc mutually exclusive.
+	* change: bsddialog_pause() sec -> *sec to know remaining time at exit.
 	* rename: conf.text.highlight -> conf.text.escape.
 	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.
