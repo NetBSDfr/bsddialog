@@ -219,11 +219,9 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 		}
 	}
 
-	if (retval == BSDDIALOG_OK) {
-		*hh = c[0].value;
-		*mm = c[1].value;
-		*ss = c[2].value;
-	}
+	*hh = c[0].value;
+	*mm = c[1].value;
+	*ss = c[2].value;
 
 	for (i = 0; i < 3; i++)
 		delwin(c[i].win);

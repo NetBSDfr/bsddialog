@@ -463,7 +463,6 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 		case KEY_ENTER:
 		case 10: /* Enter */
 			retval = BUTTONVALUE(d.bs);
-			*value = currvalue;
 			loop = false;
 			break;
 		case 27: /* Esc */
@@ -537,6 +536,8 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 		}
 	}
+
+	*value = currvalue;
 
 	delwin(b.win);
 	end_dialog(&d);

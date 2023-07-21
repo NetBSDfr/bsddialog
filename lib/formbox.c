@@ -355,13 +355,10 @@ static char* alloc_wstomb(wchar_t *wstr)
 }
 
 static int
-return_values(struct bsddialog_conf *conf, int retval, struct privateform *f,
+return_values(struct bsddialog_conf *conf, struct privateform *f,
     struct bsddialog_formitem *items)
 {
 	unsigned int i;
-
-	if (retval != BSDDIALOG_OK && conf->form.value_without_ok == false)
-		return (retval);
 
 	for (i = 0; i < f->nitems; i++) {
 		if (conf->form.value_wchar) {
@@ -370,10 +367,11 @@ return_values(struct bsddialog_conf *conf, int retval, struct privateform *f,
 			items[i].value = alloc_wstomb(f->pritems[i].privwbuf);
 		}
 		if (items[i].value == NULL)
-			RETURN_ERROR("Cannot allocate memory for form value");
+			RETURN_FMTERROR(
+			    "Cannot allocate memory form item[%d].value", i);
 	}
 
-	return (retval);
+	return (0);
 }
 
 static void set_first_with_default(struct privateform *f, int *focusitem)
@@ -719,14 +717,12 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case 10: /* Enter */
 			if (focusinform && conf->button.always_active == false)
 				break;
-			retval = return_values(conf, BUTTONVALUE(d.bs), &form,
-			    items);
+			retval = BUTTONVALUE(d.bs);
 			loop = false;
 			break;
 		case 27: /* Esc */
 			if (conf->key.enable_esc) {
-				retval = return_values(conf, BSDDIALOG_ESC,
-				    &form, items);
+				retval = BSDDIALOG_ESC;
 				loop = false;
 			}
 			break;
@@ -865,8 +861,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				}
 			} else {
 				if (shortcut_buttons(input, &d.bs)) {
-					retval = return_values(conf,
-					    BUTTONVALUE(d.bs), &form, items);
+					DRAW_BUTTONS(d);
+					doupdate();
+					retval = BUTTONVALUE(d.bs);
 					loop = false;
 				}
 			}
@@ -897,6 +894,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	} /* end while(loop) */
 
 	curs_set(0);
+
+	if (return_values(conf, &form, items) == BSDDIALOG_ERROR)
+		return (BSDDIALOG_ERROR);
 
 	if (focusitem != NULL)
 		*focusitem = form.sel;

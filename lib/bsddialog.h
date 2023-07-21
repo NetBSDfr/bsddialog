@@ -105,14 +105,12 @@ struct bsddialog_conf {
 		bool align_left;
 		bool no_desc;
 		bool no_name;
-		bool on_without_ok;
 		bool shortcut_buttons;
 	} menu;
 	struct {
 		char securech;
 		char *securembch;
 		bool value_wchar;
-		bool value_without_ok;
 	} form;
 	struct {
 		const char *format;

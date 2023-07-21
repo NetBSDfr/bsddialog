@@ -359,8 +359,6 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 
 	bsddialog_initconf(conf);
 	conf->key.enable_esc = true;
-	conf->menu.on_without_ok = true;
-	conf->form.value_without_ok = true;
 	conf->button.always_active = true;
 
 	memset(opt, 0, sizeof(struct options));

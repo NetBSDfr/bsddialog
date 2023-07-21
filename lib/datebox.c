@@ -490,17 +490,17 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &d.bs)) {
+				DRAW_BUTTONS(d);
+				doupdate();
 				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
 		}
 	}
 
-	if (retval == BSDDIALOG_OK) {
-		*year  = yy;
-		*month = mm;
-		*day   = dd;
-	}
+	*year  = yy;
+	*month = mm;
+	*day   = dd;
 
 	delwin(yy_win);
 	delwin(mm_win);
@@ -695,17 +695,17 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		default:
 			if (shortcut_buttons(input, &d.bs)) {
+				DRAW_BUTTONS(d);
+				doupdate();
 				retval = BUTTONVALUE(d.bs);
 				loop = false;
 			}
 		}
 	}
 
-	if (retval == BSDDIALOG_OK) {
-		*year  = yy;
-		*month = mm;
-		*day   = dd;
-	}
+	*year  = yy;
+	*month = mm;
+	*day   = dd;
 
 	for (i = 0; i < 3 ; i++)
 		delwin(di[i].win);

@@ -61,7 +61,7 @@ WIP Next Version
 	    format (boxes) shown by bsddialog_datebox().
 	* add: "const char *end" to bsddialog_gauge().
 	* add: bsddialog_datebox() changing one box affects the others as well.
-	* add: focus on the "shortcut" key button at exit.
+	* add: focus on the shortcut-key-selected button at exit.
 	* add: escapes for conf.text.highlight \Zd, \Zk, \Zs, \ZD, \ZK, \ZS.
 	* add: BSDDIALOG_BLINK, BSDDIALOG_HALFBRIGHT, BSDDIALOG_HIGHLIGHT.
 	* add/improve: bsddialog_geterror() with fmt strings.
@@ -83,6 +83,10 @@ WIP Next Version
 	* change: conf.menu.no_name and conf.menu.no_desc mutually exclusive.
 	* change: bsddialog_pause() sec -> *sec to know remaining time at exit.
 	* change: add *focusitem to bsddialog_form() like menus.
+	* change: "pointer" values are always set except when BSDDIALOG_ERROR
+	    occurs. Examples *yy/*mm/*ss or rangebox *value.
+	    - delete conf.menu.on_without_ok.
+	    - delete conf.form.value_without_ok.
 	* rename: conf.text.highlight -> conf.text.escape.
 	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.

@@ -177,15 +177,11 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 	return (0);
 }
 
-static void
-set_return_on(struct bsddialog_conf *conf, int retval, struct privatemenu *m,
-    struct bsddialog_menugroup *groups)
+static void 
+set_return_on(struct privatemenu *m, struct bsddialog_menugroup *groups)
 {
 	int i;
 	struct privateitem *pritem;
-
-	if (retval != BSDDIALOG_OK && !conf->menu.on_without_ok)
-		return;
 
 	for(i = 0; i < m->nitems; i++) {
 		if (m->pritems[i].type == SEPARATORMODE)
@@ -550,7 +546,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			retval = BUTTONVALUE(d.bs);
 			if (m.sel >= 0 && m.pritems[m.sel].type == MENUMODE)
 				m.pritems[m.sel].on = true;
-			set_return_on(conf, retval, &m, groups);
 			loop = false;
 			break;
 		case 27: /* Esc */
@@ -559,7 +554,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				if (m.sel >= 0 &&
 				   m.pritems[m.sel].type == MENUMODE)
 					m.pritems[m.sel].on = true;
-				set_return_on(conf, retval, &m, groups);
 				loop = false;
 			}
 			break;
@@ -620,7 +614,6 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if (m.pritems[m.sel].type == MENUMODE) {
 				retval = BUTTONVALUE(d.bs);
 				m.pritems[m.sel].on = true;
-				set_return_on(conf, retval, &m, groups);
 				loop = false;
 			} else if (m.pritems[m.sel].type == CHECKLISTMODE) {
 				m.pritems[m.sel].on = !m.pritems[m.sel].on;
@@ -642,10 +635,11 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		default:
 			if (conf->menu.shortcut_buttons) {
 				if (shortcut_buttons(input, &d.bs)) {
+					DRAW_BUTTONS(d);
+					doupdate();
 					retval = BUTTONVALUE(d.bs);
 					if (m.pritems[m.sel].type == MENUMODE)
 						m.pritems[m.sel].on = true;
-					set_return_on(conf, retval, &m, groups);
 					loop = false;
 				}
 				break;
@@ -671,6 +665,8 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			changeitem = false;
 		}
 	} /* end while(loop) */
+
+	set_return_on(&m, groups);
 
 	if (focuslist != NULL)
 		*focuslist = m.sel < 0 ? -1 : m.pritems[m.sel].group;
