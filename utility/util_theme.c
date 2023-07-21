@@ -325,7 +325,7 @@ void setdeftheme(enum bsddialog_default_theme theme)
 		exit_error(false, bsddialog_geterror());
 }
 
-static void startup_files(char *home, char *file, bool compat)
+static void startup_file(char *home, char *file, bool compat)
 {
 	char path[PATH_MAX];
 
@@ -346,9 +346,9 @@ void startuptheme(void)
 
 	if ((env = getenv("HOME")) == NULL)
 		return;
-	startup_files(env, ".bsddialog.conf", false);
-	startup_files(env, getenv("BSDDIALOG_COMPATRC"), true);
-	startup_files(env, getenv("BSDDIALOG_THEMEFILE"), false);
+	startup_file(env, ".bsddialog.conf", false);
+	startup_file(env, getenv("BSDDIALOG_COMPATRC"), true);
+	startup_file(env, getenv("BSDDIALOG_THEMEFILE"), false);
 }
 
 void bikeshed(struct bsddialog_conf *conf)
