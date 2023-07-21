@@ -56,9 +56,9 @@ static struct flag_converter flagconv[NFLAGS] = {
 static struct bsddialog_theme blackwhite = {
 	.screen.color = WHITE,
 
-	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadow.y       = 1,
-	.shadow.x       = 2,
+	.shadow.color = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.y     = 1,
+	.shadow.x     = 2,
 
 	.dialog.delimtitle       = true,
 	.dialog.titlecolor       = WHITE,
@@ -103,9 +103,9 @@ static struct bsddialog_theme blackwhite = {
 static struct bsddialog_theme flat = {
 	.screen.color = GET_COLOR(COLOR_CYAN, COLOR_BLUE) | A_BOLD,
 
-	.shadow.color   = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
-	.shadow.y       = 1,
-	.shadow.x       = 2,
+	.shadow.color = GET_COLOR(COLOR_BLACK, COLOR_BLACK),
+	.shadow.y     = 1,
+	.shadow.x     = 2,
 
 	.dialog.delimtitle       = true,
 	.dialog.titlecolor       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE) | A_BOLD,
