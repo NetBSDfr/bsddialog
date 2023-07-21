@@ -11,7 +11,12 @@ OBJECTS = ${SOURCES:.c=.o}
 CFLAGS += -g
 .endif
 CFLAGS += -I${LIBPATH} -std=gnu99 -Wall -Wextra -Werror
+
+.if defined(NORPATH)
+LDFLAGS += -ltinfow -L${LIBPATH} -lbsddialog
+.else
 LDFLAGS += -ltinfow -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
+.endif
 
 INSTALL = install
 RM = rm -f
