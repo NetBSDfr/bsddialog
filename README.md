@@ -128,5 +128,5 @@ in the _Public Domain_ to build new projects:
  - fix bottomdesc expanding terminal.
  - add conf.backtitle (specific backtitle for dialog).
  - improve grey lines expanding terminal (maybe redrawwin() in hide_dialog()).
- - improve strtol() and strtoul().
+ - more restictive strtol() and strtoul().
  - implement a global buttons handler.
