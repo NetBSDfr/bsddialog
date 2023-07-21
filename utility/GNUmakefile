@@ -6,23 +6,19 @@
 OUTPUT=  bsddialog
 SOURCES= bsddialog.c util_builders.c util_cli.c util_theme.c
 OBJECTS= $(SOURCES:.c=.o)
-LIBPATH= $(CURDIR)/lib
-LIBBSDDIALOG= $(LIBPATH)/libbsddialog.so
+LIBPATH= $(PARENTDIR)/lib
 CFLAGS= -D_GNU_SOURCE -Wall -Wextra -I$(LIBPATH)
 LDFLAGS= -ltinfo -Wl,-rpath=$(LIBPATH) -L$(LIBPATH) -lbsddialog
 RM = rm -f
 
 all : $(OUTPUT)
 
-$(OUTPUT): $(LIBBSDDIALOG) $(OBJECTS)
+$(OUTPUT): $(OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-$(LIBBSDDIALOG):
-	make -C $(LIBPATH)
 
-%.o: %.c $(LIBBSDDIALOG)
+%.o: %.c
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	make -C $(LIBPATH) clean
 	$(RM) $(OUTPUT) *.o *~

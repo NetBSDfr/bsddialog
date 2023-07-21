@@ -1,50 +1,32 @@
 # PUBLIC DOMAIN - NO WARRANTY, see:
 #     <http://creativecommons.org/publicdomain/zero/1.0/>
 #
-# Written in 2021 by Alfonso Sabato Siciliano
+# Written in 2023 by Alfonso Sabato Siciliano
 
 OUTPUT=  bsddialog
-SOURCES= bsddialog.c util_builders.c util_cli.c util_theme.c
-OBJECTS= ${SOURCES:.c=.o}
-LIBPATH= ${.CURDIR}/lib
+LIBPATH= ${PWD}/lib
 LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
+UTILITYPATH= ${PWD}/utility
 
-CFLAGS+= -I${LIBPATH} -std=gnu99 -Wall -Wextra -Werror
-# `make -DDEBUG`
-.if defined(DEBUG)
-CFLAGS= -g -Wall -I${LIBPATH}
-LIBDEBUG= -DDEBUG
-.endif
-LDFLAGS+= -ltinfow -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
-
-BINDIR= /usr/local/bin
-MAN= ${OUTPUT}.1
-GZIP= gzip -cn
-MANDIR= /usr/local/share/man/man1
-
-INSTALL= install
 RM= rm -f
+LN = ln -s -f
+
+export DEBUG
+PARENTDIR= ${PWD}
+export PARENTDIR
 
 all : ${OUTPUT}
 
+
 ${OUTPUT}: ${LIBBSDDIALOG} ${OBJECTS}
-	${CC} ${LDFLAGS} ${OBJECTS} -o ${.PREFIX}
+	${MAKE} -C ${UTILITYPATH}
+	${LN} ${UTILITYPATH}/${OUTPUT} ${PWD}/${OUTPUT}
+
 
 ${LIBBSDDIALOG}:
-	make -C ${LIBPATH} ${LIBDEBUG}
-
-.c.o:
-	${CC} ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
-
-install:
-	${INSTALL} -s -m 555 ${OUTPUT} ${BINDIR}
-	${GZIP} ${MAN} > ${MAN}.gz
-	${INSTALL} -m 444 ${MAN}.gz ${MANDIR}
-
-unistall:
-	${RM} ${BINDIR}/${OUTPUT}
-	${RM} ${MANDIR}/${MAN}.gz
+	${MAKE} -C ${LIBPATH}
 
 clean:
-	make -C ${LIBPATH} clean
-	${RM} ${OUTPUT} *.o *~ *.core ${MAN}.gz
+	${MAKE} -C ${LIBPATH} clean
+	${MAKE} -C ${UTILITYPATH} clean
+	${RM} ${OUTPUT} *.core
