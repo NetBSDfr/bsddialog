@@ -135,7 +135,7 @@ int pause_builder(BUILDER_ARGS)
 		error_args(opt->name, argc - 1, argv + 1);
 
 	secs = (u_int)strtoul(argv[0], NULL, 10);
-	output = bsddialog_pause(conf, text, rows, cols, secs);
+	output = bsddialog_pause(conf, text, rows, cols, &secs);
 
 	return (output);
 }

@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 20, 2023
+.Dd July 21, 2023
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -183,7 +183,7 @@
 .Fa "const char *text"
 .Fa "int rows"
 .Fa "int cols"
-.Fa "unsigned int seconds"
+.Fa "unsigned int *seconds"
 .Fc
 .Ft int
 .Fo bsddialog_radiolist
@@ -589,6 +589,9 @@ the labels on buttons are Yes and No.
 builds a dialog waiting until the timeout in
 .Fa seconds
 expires or a button is pressed.
+At exit
+.Fa seconds
+is set like remaining time.
 .Pp
 .Fn bsddialog_calendar
 and

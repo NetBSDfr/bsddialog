@@ -567,7 +567,7 @@ static int pause_redraw(struct dialog *d, struct bar *b)
 
 int
 bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
-    int cols, unsigned int sec)
+    int cols, unsigned int *seconds)
 {
 	bool loop;
 	int retval, tout;
@@ -575,6 +575,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	struct bar b;
 	struct dialog d;
 
+	CHECK_PTR(seconds);
 	if (prepare_dialog(conf, text, rows, cols, &d) != 0)
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, OK_LABEL, CANCEL_LABEL);
@@ -585,13 +586,13 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	if (pause_redraw(&d, &b) != 0)
 		return (BSDDIALOG_ERROR);
 
-	tout = sec;
+	tout = *seconds;
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	loop = true;
 	while (loop) {
 		if (b.toupdate) {
-			b.perc = (float)tout * 100 / sec;
+			b.perc = (float)tout * 100 / *seconds;
 			b.label = tout;
 			draw_bar(&b);
 		}
@@ -654,6 +655,8 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 	nodelay(stdscr, FALSE);
 
+	*seconds = tout;
+	
 	delwin(b.win);
 	end_dialog(&d);
 
