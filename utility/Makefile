@@ -7,10 +7,10 @@ OUTPUT =  bsddialog
 SOURCES = bsddialog.c util_builders.c util_cli.c util_theme.c
 OBJECTS = ${SOURCES:.c=.o}
 
-CFLAGS += -I${LIBPATH} -std=gnu99 -Wall -Wextra -Werror
 .if defined(DEBUG)
-CFLAGS = -g -Wall -I${LIBPATH}
+CFLAGS += -g
 .endif
+CFLAGS += -I${LIBPATH} -std=gnu99 -Wall -Wextra -Werror
 LDFLAGS += -ltinfow -Wl,-rpath=${LIBPATH} -L${LIBPATH} -lbsddialog
 
 INSTALL = install

@@ -10,16 +10,15 @@ HEADERS = bsddialog.h bsddialog_theme.h bsddialog_progressview.h
 SOURCES = barbox.c datebox.c formbox.c libbsddialog.c lib_util.c \
 	menubox.c messagebox.c textbox.c theme.c timebox.c
 OBJECTS = ${SOURCES:.c=.o}
-CFLAGS += -D_XOPEN_SOURCE_EXTENDED -fPIC -Wall -Wextra
+
+.if defined(DEBUG)
+CFLAGS += -g
+.endif
+CFLAGS += -D_XOPEN_SOURCE_EXTENDED -fPIC -Wall -Wextra -std=gnu99 \
+	-fstack-protector-strong
 LDFLAGS += -fstack-protector-strong -shared -Wl,-x -Wl,--fatal-warnings \
 	-Wl,--warn-shared-textrel -Wl,-soname,${LIBRARY_SO}.${VERSION} \
 	-L/usr/lib -lncursesw -ltinfow
-
-.if defined(DEBUG)
-CFLAGS = -g -D_XOPEN_SOURCE_EXTENDED -fPIC -Wall -Wextra
-.else
-CFLAGS += -std=gnu99 -fstack-protector-strong
-.endif
 
 LN = ln -s -f
 RM = rm -f
