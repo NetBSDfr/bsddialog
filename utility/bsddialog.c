@@ -232,7 +232,7 @@ int main(int argc, char *argv[argc])
 		if (opt.bikeshed)
 			bikeshed(&conf);
 		if (opt.savethemefile != NULL)
-			savetheme(opt.savethemefile, LIBBSDDIALOG_VERSION);
+			savetheme(opt.savethemefile);
 
 		/* backtitle and dialog */
 		if (opt.dialogbuilder == NULL)

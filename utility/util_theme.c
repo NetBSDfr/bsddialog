@@ -150,7 +150,7 @@ static struct property p[NPROPERTY] = {
 	    "use_shadow", COMPAT, NULL}
 };
 
-void savetheme(const char *file, const char *version)
+void savetheme(const char *file)
 {
 	int i, j;
 	unsigned int flags;
@@ -175,7 +175,7 @@ void savetheme(const char *file, const char *version)
 	fputs("bold reverse underline blink halfbright highlight.\n", fp);
 	fputs("# f_* refers to elements with focus.\n\n", fp);
 
-	fprintf(fp, "version %s\n", version);
+	fprintf(fp, "version %s\n", LIBBSDDIALOG_VERSION);
 
 	for (i = 0; i < NPROPERTY; i++) {
 		fprintf(fp, "%s%s", p[i].comment, p[i].name);

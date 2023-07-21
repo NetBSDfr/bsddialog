@@ -114,7 +114,7 @@ int yesno_builder(BUILDER_ARGS);
 /*
  * Theme, util_theme.c
  */
-void savetheme(const char *file, const char *version);
+void savetheme(const char *file);
 void loadtheme(const char *file, bool compatibility);
 void setdeftheme(enum bsddialog_default_theme theme);
 void bikeshed(struct bsddialog_conf *conf);
