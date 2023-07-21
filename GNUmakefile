@@ -17,12 +17,12 @@ all : $(OUTPUT)
 $(OUTPUT): $(LIBBSDDIALOG) $(OBJECTS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-${LIBBSDDIALOG}:
-	make -C ${LIBPATH}
+$(LIBBSDDIALOG):
+	make -C $(LIBPATH)
 
 %.o: %.c $(LIBBSDDIALOG)
 	$(CC) $(CFLAGS) -c $<
 
 clean:
-	make -C ${LIBPATH} clean
+	make -C $(LIBPATH) clean
 	$(RM) $(OUTPUT) *.o *~
