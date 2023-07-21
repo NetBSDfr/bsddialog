@@ -82,6 +82,7 @@ WIP Next Version
 	* change: check/set bsddialog_mixedgauge() mainperc max 100.
 	* change: conf.menu.no_name and conf.menu.no_desc mutually exclusive.
 	* change: bsddialog_pause() sec -> *sec to know remaining time at exit.
+	* change: add *focusitem to bsddialog_form() like menus.
 	* rename: conf.text.highlight -> conf.text.escape.
 	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.

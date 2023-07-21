@@ -376,6 +376,23 @@ return_values(struct bsddialog_conf *conf, int retval, struct privateform *f,
 	return (retval);
 }
 
+static void set_first_with_default(struct privateform *f, int *focusitem)
+{
+	unsigned int i;
+
+	f->sel = -1;
+	if(focusitem != NULL && *focusitem >=0 && *focusitem < (int)f->nitems)
+		if (f->pritems[*focusitem].readonly == false) {
+			f->sel = *focusitem;
+			return;
+		}
+	for (i = 0 ; i < f->nitems; i++)
+		if (f->pritems[i].readonly == false) {
+			f->sel = i;
+			break;
+		}
+}
+
 static unsigned int firstitem(unsigned int nitems, struct privateitem *items)
 {
 	int i;
@@ -653,7 +670,7 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
-    struct bsddialog_formitem *items)
+    struct bsddialog_formitem *items, int *focusitem)
 {
 	bool switchfocus, changeitem, focusinform, loop;
 	int next, retval, wchtype;
@@ -677,12 +694,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		RETURN_ERROR("Cannot build WINDOW form pad");
 	wbkgd(form.pad, t.dialog.color);
 
-	form.sel = -1;
-	for (i=0 ; i < form.nitems; i++) {
-		if (form.sel == -1 && form.pritems[i].readonly == false)
-			form.sel = i;
-	}
-
+	set_first_with_default(&form, focusitem);
 	if (form.sel != -1) {
 		focusinform = true;
 		form.y = 0;
@@ -885,6 +897,9 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 	} /* end while(loop) */
 
 	curs_set(0);
+
+	if (focusitem != NULL)
+		*focusitem = form.sel;
 
 	if (form.hasbottomdesc && conf->clear) {
 		move(SCREENLINES - 1, 2);

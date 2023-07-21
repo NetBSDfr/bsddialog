@@ -107,6 +107,7 @@
 .Fa "unsigned int formrows"
 .Fa "unsigned int nitems"
 .Fa "struct bsddialog_formitem *items"
+.Fa "int *focusitem"
 .Fc
 .Ft int
 .Fo bsddialog_gauge
@@ -761,6 +762,9 @@ struct bsddialog_formitem {
 	const char *bottomdesc;
 };
 .Ed
+.Fa focusitem
+specifies the default item on startup and the last focused item at exit, could
+be a negative value if no item is focused.
 .Pp
 .Fa label
 is a string to describe the request, it is printed at the position

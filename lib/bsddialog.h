@@ -201,7 +201,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 int
 bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
     int cols, unsigned int formheight, unsigned int nitems,
-    struct bsddialog_formitem *items);
+    struct bsddialog_formitem *items, int *focusitem);
 
 int
 bsddialog_gauge(struct bsddialog_conf *conf, const char *text, int rows,

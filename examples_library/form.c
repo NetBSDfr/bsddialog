@@ -36,7 +36,7 @@ int main()
 	bsddialog_initconf(&conf);
 	conf.title = "form";
 	conf.form.securech = '*';
-	output = bsddialog_form(&conf, "Example", 10, 50, 3, 3, items);
+	output = bsddialog_form(&conf, "Example", 10, 50, 3, 3, items, NULL);
 	bsddialog_end();
 
 	if (output == BSDDIALOG_ERROR) {

@@ -546,7 +546,7 @@ print_form_items(int output, int nitems, struct bsddialog_formitem *items,
 
 int form_builder(BUILDER_ARGS)
 {
-	int output, fieldlen, valuelen;
+	int output, fieldlen, valuelen, focusitem;
 	unsigned int i, j, flags, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
@@ -584,8 +584,9 @@ int form_builder(BUILDER_ARGS)
 		items[i].bottomdesc = opt->item_bottomdesc ? argv[j++] : "";
 	}
 
+	focusitem = -1;
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
-	    items);
+	    items, &focusitem);
 	print_form_items(output, nitems, items, opt);
 	free(items);
 
@@ -616,7 +617,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
-	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item, NULL);
 	print_form_items(output, 1, &item, opt);
 
 	return (output);
@@ -624,7 +625,7 @@ int inputbox_builder(BUILDER_ARGS)
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int output;
+	int output, focusitem;
 	unsigned int i, j, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
@@ -655,8 +656,9 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].bottomdesc  = opt->item_bottomdesc ? argv[j++] : "";
 	}
 
+	focusitem = -1;
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
-	    items);
+	    items, &focusitem);
 	print_form_items(output, nitems, items, opt);
 	free(items);
 
@@ -688,7 +690,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.flags      |= BSDDIALOG_FIELDEXTEND;
 	item.bottomdesc  = "";
 
-	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item);
+	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item, NULL);
 	print_form_items(output, 1, &item, opt);
 
 	return (output);
@@ -696,7 +698,7 @@ int passwordbox_builder(BUILDER_ARGS)
 
 int passwordform_builder(BUILDER_ARGS)
 {
-	int output, fieldlen, valuelen;
+	int output, fieldlen, valuelen, focusitem;
 	unsigned int i, j, flags, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
@@ -735,8 +737,9 @@ int passwordform_builder(BUILDER_ARGS)
 		items[i].bottomdesc  = opt->item_bottomdesc ? argv[j++] : "";
 	}
 
+	focusitem = -1;
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
-	    items);
+	    items, &focusitem);
 	print_form_items(output, nitems, items, opt);
 	free(items);
 
