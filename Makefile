@@ -14,7 +14,7 @@ RM= rm -f
 LN = ln -s -f
 
 ### cli options ###
-# ports/pkg Makefile: MAKE_ARGS NORPATH=1
+# port/pkg Makefile: MAKE_ARGS NORPATH=1
 NORPATH ?= 0
 # `make -DDEBUG`
 # `gmake DEBUG=1`
@@ -23,11 +23,9 @@ export DEBUG=${ARGDEBUG}
 
 all : ${OUTPUT}
 
-
-${OUTPUT}: ${LIBBSDDIALOG} ${OBJECTS}
+${OUTPUT}: ${LIBBSDDIALOG}
 	${MAKE} -C ${UTILITYPATH} LIBPATH=${LIBPATH} NORPATH=${NORPATH}
 	${LN} ${UTILITYPATH}/${OUTPUT} ${.CURDIR}/${OUTPUT}
-
 
 ${LIBBSDDIALOG}:
 	${MAKE} -C ${LIBPATH}
