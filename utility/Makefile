@@ -6,8 +6,6 @@
 OUTPUT=  bsddialog
 SOURCES= bsddialog.c util_builders.c util_cli.c util_theme.c
 OBJECTS= ${SOURCES:.c=.o}
-LIBPATH= ${.CURDIR}/lib
-LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
 
 CFLAGS+= -I${LIBPATH} -std=gnu99 -Wall -Wextra -Werror
 # `make -DDEBUG`
@@ -27,11 +25,8 @@ RM= rm -f
 
 all : ${OUTPUT}
 
-${OUTPUT}: ${LIBBSDDIALOG} ${OBJECTS}
+${OUTPUT}: ${OBJECTS}
 	${CC} ${LDFLAGS} ${OBJECTS} -o ${.PREFIX}
-
-${LIBBSDDIALOG}:
-	make -C ${LIBPATH} ${LIBDEBUG}
 
 .c.o:
 	${CC} ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
@@ -46,5 +41,4 @@ unistall:
 	${RM} ${MANDIR}/${MAN}.gz
 
 clean:
-	make -C ${LIBPATH} clean
 	${RM} ${OUTPUT} *.o *~ *.core ${MAN}.gz

@@ -3,24 +3,28 @@
 #
 # Written in 2023 by Alfonso Sabato Siciliano
 
-OUTPUT=  bsddialog
-LIBPATH= ${PWD}/lib
-LIBBSDDIALOG= ${LIBPATH}/libbsddialog.so
-UTILITYPATH= ${PWD}/utility
+OUTPUT =  bsddialog
+.CURDIR ?= ${CURDIR}
+LIBPATH = ${.CURDIR}/lib
+LIBBSDDIALOG = ${LIBPATH}/libbsddialog.so
+UTILITYPATH = ${.CURDIR}/utility
 
 RM= rm -f
 LN = ln -s -f
 
-export DEBUG
-PARENTDIR= ${PWD}
-export PARENTDIR
+# ports/pkg Makefile: MAKE_ARGS NORPATH=1
+NORPATH ?= 0
+# `make -DDEBUG`
+# `gmake DEBUG=1`
+ARGDEBUG ?= 0
+export DEBUG=${ARGDEBUG}
 
 all : ${OUTPUT}
 
 
 ${OUTPUT}: ${LIBBSDDIALOG} ${OBJECTS}
-	${MAKE} -C ${UTILITYPATH}
-	${LN} ${UTILITYPATH}/${OUTPUT} ${PWD}/${OUTPUT}
+	${MAKE} -C ${UTILITYPATH} LIBPATH=${LIBPATH} NORPATH=${NORPATH}
+	${LN} ${UTILITYPATH}/${OUTPUT} ${.CURDIR}/${OUTPUT}
 
 
 ${LIBBSDDIALOG}:
@@ -30,3 +34,4 @@ clean:
 	${MAKE} -C ${LIBPATH} clean
 	${MAKE} -C ${UTILITYPATH} clean
 	${RM} ${OUTPUT} *.core
+
