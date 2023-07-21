@@ -655,7 +655,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 	}
 	nodelay(stdscr, FALSE);
 
-	*seconds = tout;
+	*seconds = MAX(tout, 0);
 	
 	delwin(b.win);
 	end_dialog(&d);
