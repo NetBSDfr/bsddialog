@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 20, 2023
+.Dd July 22, 2023
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -86,14 +86,15 @@ Dialog horizontal position, 0 is the left screen side, -1 center.
 Dialog vertical position, 0 is the top screen side, -1 center.
 .It Fl Fl bikeshed
 Random settings.
-Colors.
-Delimiter and margins around the title.
+Colors, delimiter and margins around the title, button delimiter; see theme
+features and
+.Fl Fl title .
 Buttons always active or TAB to switch focus with input components, see
 .Fl Fl switch-buttons .
-Zero padding with time or date output.
-Button delimiter.
-Date format for
-.Fl Fl datebox ,
+Zero padding with time or date output; see
+.Fl Fl date-format.
+User Interface date format for
+.Fl Fl datebox ;
 see
 .Fl Fl datebox-format .
 .It Fl Fl cancel-exit-code Ar retval
