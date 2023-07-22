@@ -648,7 +648,7 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 		f->xe = f->xs + d->w - 5;
 	}
 
-	if (f->sel != -1) {
+	if (f->sel != -1) { /* at least 1 writable item */
 		redrawbuttons(d,
 		    d->conf->button.always_active || !focusinform,
 		    !focusinform);
@@ -657,7 +657,13 @@ form_redraw(struct dialog *d, struct privateform *f, bool focusinform)
 		update_formbox(d->conf, f);
 		wnoutrefresh(f->box);
 		DRAWITEM_TRICK(f, f->sel, focusinform);
-	} else {
+	} else if (f->sel == -1 && f->nitems > 0) { /* all read only */
+		redrawbuttons(d, true, true);
+		wnoutrefresh(d->widget);
+		update_formbox(d->conf, f);
+		wnoutrefresh(f->box);
+		DRAWITEM_TRICK(f, 0, false); /* to refresh pad*/
+	} else { /* no item */
 		wnoutrefresh(f->box);
 	}
 
