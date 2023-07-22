@@ -368,7 +368,7 @@ return_values(struct bsddialog_conf *conf, struct privateform *f,
 		}
 		if (items[i].value == NULL)
 			RETURN_FMTERROR(
-			    "Cannot allocate memory form item[%d].value", i);
+			    "Cannot allocate memory for item[%d].value", i);
 	}
 
 	return (0);
