@@ -263,7 +263,7 @@ int timebox_builder(BUILDER_ARGS)
 	}
 
 	output = bsddialog_timebox(conf, text, rows, cols, &hh, &mm, &ss);
-	if (output != BSDDIALOG_OK)
+	if (NO_PRINT_VALUES(output))
 		return (output);
 
 	if (opt->time_fmt != NULL) {
