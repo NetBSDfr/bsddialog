@@ -593,7 +593,7 @@ static int form_size_position(struct dialog *d, struct privateform *f)
 		RETURN_FMTERROR("formheight, current: %u needed at least %u",
 		    f->viewrows, f->minviewrows);
 	if (widget_checksize(d->h, d->w, &d->bs,
-	    2 /* borders */ + f->minviewrows, f->w + 6) != 0)
+	    2 /* borders */ + f->minviewrows, f->w + 4) != 0)
 		return (BSDDIALOG_ERROR);
 
 	if (set_widget_position(d->conf, &d->y, &d->x, d->h, d->w) != 0)
