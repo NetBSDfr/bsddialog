@@ -361,11 +361,11 @@ return_values(struct bsddialog_conf *conf, struct privateform *f,
 	unsigned int i;
 
 	for (i = 0; i < f->nitems; i++) {
-		if (conf->form.value_wchar) {
+		if (conf->form.value_wchar)
 			items[i].value = (char*)wcsdup(f->pritems[i].privwbuf);
-		} else {
+		else
 			items[i].value = alloc_wstomb(f->pritems[i].privwbuf);
-		}
+
 		if (items[i].value == NULL)
 			RETURN_FMTERROR(
 			    "Cannot allocate memory for item[%d].value", i);
