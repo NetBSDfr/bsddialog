@@ -163,7 +163,8 @@ int rangebox_builder(BUILDER_ARGS)
 		value = min;
 
 	output = bsddialog_rangebox(conf, text, rows, cols, min, max, &value);
-	dprintf(opt->output_fd, "%d", value);
+	if (NO_PRINT_VALUES(output) == false)
+		dprintf(opt->output_fd, "%d", value);
 
 	return (output);
 }
