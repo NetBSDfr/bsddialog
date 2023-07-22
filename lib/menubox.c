@@ -177,7 +177,7 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 	return (0);
 }
 
-static void 
+static void
 set_return_on(struct privatemenu *m, struct bsddialog_menugroup *groups)
 {
 	int i;

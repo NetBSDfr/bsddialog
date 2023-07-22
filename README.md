@@ -113,7 +113,7 @@ in the _Public Domain_ to build new projects:
 
 
 ## TODO and Ideas
- 
+
  - menubar feature
  - key callback
  - Right-To-Left text
