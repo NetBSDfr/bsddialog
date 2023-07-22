@@ -33,6 +33,6 @@ case $? in
 		echo "[Cancel]"
 	;;
 	$BSDDIALOG_OK )
-		echo "[OK] Selected: $ITEMS"
+		echo "[OK] $ITEMS"
 	;;
 esac
