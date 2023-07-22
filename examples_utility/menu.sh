@@ -19,6 +19,7 @@ ITEM=$(./bsddialog --title " menu " --menu "Hello World!" 15 30 5 \
 	"2 Name"  "DESC  2  xyz" \
 	"3 Name"  "DESC  3  xyz" \
 	"4 Name"  "DESC  4  xyz" \
+	"5 Name"  "DESC  4  xyz" \
 3>&1 1>&2 2>&3 3>&-)
 
 case $? in
@@ -26,12 +27,12 @@ case $? in
 		exit 1
 	;;
 	$BSDDIALOG_ESC )
-		echo "[ESC] $ITEM"
+		echo "[ESC]"
 	;;
 	$BSDDIALOG_CANCEL )
-		echo "[Cancel] $ITEM"
+		echo "[Cancel]"
 	;;
 	$BSDDIALOG_OK )
-		echo "[OK] $ITEM"
+		echo "[OK] Selected: $ITEM"
 	;;
 esac

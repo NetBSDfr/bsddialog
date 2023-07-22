@@ -28,9 +28,6 @@ case $? in
 		echo "[Cancel]"
 	;;
 	$BSDDIALOG_OK )
-		echo "[OK]"
+		echo "[OK] Value: $VALUE"
 	;;
 esac
-
-echo "$VALUE"
-

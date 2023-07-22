@@ -27,10 +27,10 @@ case $? in
 		exit 1
 	;;
 	$BSDDIALOG_ESC )
-		echo "[ESC] focus: $ITEMS"
+		echo "[ESC]"
 	;;
 	$BSDDIALOG_CANCEL )
-		echo "[Cancel] focus: $ITEMS"
+		echo "[Cancel]"
 	;;
 	$BSDDIALOG_OK )
 		echo "[OK] Selected: $ITEMS"
