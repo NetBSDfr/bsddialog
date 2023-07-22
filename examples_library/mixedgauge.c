@@ -62,7 +62,6 @@ int main()
 
 	if (bsddialog_init() == BSDDIALOG_ERROR)
 		exit_error();
-
 	bsddialog_initconf(&conf);
 	conf.title = "mixedgauge";
 	for (i = 0; i <= 10; i++) {
@@ -74,7 +73,6 @@ int main()
 			exit_error();
 		sleep(1);
 	}
-
 	bsddialog_end();
 
 	return (0);

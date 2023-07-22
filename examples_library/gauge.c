@@ -30,7 +30,7 @@ static void sender(int fd)
 
 int main()
 {
-	int retval, fd[2];
+	int rv, fd[2];
 	struct bsddialog_conf conf;
 
 	/* add checks and sync */
@@ -48,11 +48,9 @@ int main()
 	}
 	bsddialog_initconf(&conf);
 	conf.title = "gauge";
-	retval = bsddialog_gauge(&conf, "Example", 7, 30, 0, fd[0], "SEP",
-	    "EOF");
+	rv = bsddialog_gauge(&conf, "Example", 7, 30, 0, fd[0], "SEP", "EOF");
 	bsddialog_end();
-
-	if(retval == BSDDIALOG_ERROR)
+	if(rv == BSDDIALOG_ERROR)
 		printf("Error: %s\n", bsddialog_geterror());
 
 	return (0);

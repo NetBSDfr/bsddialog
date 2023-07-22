@@ -24,18 +24,18 @@ int main()
 		    "enum bsddialog_default_theme BSDDIALOG_THEME_3D" },
 		{"", false, 0, "BlackWhite","black and white theme",
 		    "enum bsddialog_default_theme BSDDIALOG_THEME_BLACKWHITE" },
-		{"", false, 0, "Quit", "Exit", "Quit or Cancel to exit" }
+		{"", false, 0, "Quit", "Exit", "Quit, Cancel or ESC to exit" }
 	};
 
 	if (bsddialog_init() == BSDDIALOG_ERROR) {
 		printf("Error: %s\n", bsddialog_geterror());
 		return (1);
 	}
-
 	bsddialog_initconf(&conf);
-
+	conf.ascii_lines = true;
 	bsddialog_backtitle(&conf, "Theme Example");
-
+	bsddialog_initconf(&conf);
+	conf.key.enable_esc = true;
 	conf.title = " Theme ";
 	focusitem = -1;
 	while (true) {
@@ -60,5 +60,5 @@ int main()
 
 	bsddialog_end();
 
-	return (output);
+	return (0);
 }
