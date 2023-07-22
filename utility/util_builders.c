@@ -171,7 +171,7 @@ int rangebox_builder(BUILDER_ARGS)
 /* date and time */
 static int date(BUILDER_ARGS)
 {
-	int ret;
+	int rv;
 	unsigned int yy, mm, dd;
 	time_t cal;
 	struct tm *localtm;
@@ -186,18 +186,18 @@ static int date(BUILDER_ARGS)
 	if (argc > 3) {
 		error_args(opt->name, argc - 3, argv + 3);
 	} else if (argc == 3) {
+		/* lib checks/sets max and min */
 		dd = (u_int)strtoul(argv[0], NULL, 10);
 		mm = (u_int)strtoul(argv[1], NULL, 10);
 		yy = (u_int)strtoul(argv[2], NULL, 10);
-		/* yy check/set in lib */
 	}
 
 	if (strcmp(opt->name, "--datebox") == 0)
-		ret = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
+		rv = bsddialog_datebox(conf, text, rows, cols, &yy, &mm, &dd);
 	else
-		ret = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
-	if (ret != BSDDIALOG_OK)
-		return (ret);
+		rv = bsddialog_calendar(conf, text, rows, cols, &yy, &mm, &dd);
+	if (NO_PRINT_VALUES(rv))
+		return (rv);
 
 	if (opt->date_fmt != NULL) {
 		time(&cal);
@@ -213,7 +213,7 @@ static int date(BUILDER_ARGS)
 		dprintf(opt->output_fd, "%02u/%02u/%u", dd, mm, yy);
 	}
 
-	return (ret);
+	return (rv);
 }
 
 int calendar_builder(BUILDER_ARGS)
