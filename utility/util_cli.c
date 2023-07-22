@@ -490,10 +490,10 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			conf->button.help_label = optarg;
 			break;
 		case HELP_PRINT_NAME:
-			opt->item_help_print_name = true;
+			opt->help_print_item_name = true;
 			break;
 		case HELP_STATUS:
-			opt->list_items_on = true;
+			opt->help_list_items = true;
 			break;
 		case HFILE:
 			conf->key.f1_file = optarg;

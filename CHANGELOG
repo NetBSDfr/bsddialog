@@ -41,12 +41,16 @@ WIP Next Version
 	* change: rename themes --theme 3d|blackwhite|flat.
 	* change: --no-names and --no-descriptions mutually exclusive.
 	* change: quote only checklist output items if necessary.
+	* change: dialogs with user input print always values except with ERROR,
+	    ESC, Cancel. Previously the situation was quite heterogeneous.
 	* rename: --colors -> --text-escape (--colors available as alias).
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: disable theme setting (opt/env) with no color terminals.
 	* improve: menus on|off: strcasecmp, diagnostic, real off check.
 	* improve: --bikeshed with button delimiter and --date-format.
 	* improve: --textbox accepts buttons options.
+	* improve: Forms with Help button, print "HELP" (like menus),
+	    accept --help-status and --help-print-name.
 	* fix: --load-theme attributes.
 	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: --theme bsddialog (partially implemented).

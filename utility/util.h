@@ -43,20 +43,21 @@ void error_args(const char *dialog, int argc, char **argv);
 struct options {
 	/* Menus options */
 	bool item_always_quote;
-	bool item_bottomdesc;
 	char *item_default;
 	bool item_depth;
-	bool item_help_print_name;
 	char *item_output_sep;
 	bool item_output_sepnl;
 	bool item_prefix;
 	bool item_singlequote;
-	bool list_items_on;
+	/* Menus and Forms options */
+	bool help_print_item_name;
+	bool help_list_items;
+	bool item_bottomdesc;
+	/* Forms options */
+	int unsigned max_input_form;
 	/* Date and Time options */
 	char *date_fmt;
 	char *time_fmt;
-	/* Forms options */
-	int unsigned max_input_form;
 	/* General options */
 	int getH;
 	int getW;

@@ -360,7 +360,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 		if (focusitem >= 0) {
 			focusname = items[focusitem].name;
 			if (opt->item_bottomdesc &&
-			    opt->item_help_print_name == false)
+			    opt->help_print_item_name == false)
 				focusname = items[focusitem].bottomdesc;
 
 			toquote = false;
@@ -377,7 +377,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 				dprintf(opt->output_fd, "%s", focusname);
 		}
 
-		if (ismenu || opt->list_items_on == false)
+		if (ismenu || opt->help_list_items == false)
 			return;
 		sep = true;
 	}
@@ -534,12 +534,27 @@ int treeview_builder(BUILDER_ARGS)
 /* form */
 static void
 print_form_items(int output, int nitems, struct bsddialog_formitem *items,
-    struct options *opt)
+    int focusitem, struct options *opt)
 {
 	int i;
+	const char *helpname;
 
-	if (output == BSDDIALOG_ERROR)
+	if (NO_PRINT_VALUES(output))
 		return;
+
+	if (output == BSDDIALOG_HELP) {
+		dprintf(opt->output_fd, "HELP");
+		if (focusitem >= 0) {
+			helpname = items[focusitem].label;
+			if (opt->item_bottomdesc &&
+			    opt->help_print_item_name == false)
+				helpname = items[focusitem].bottomdesc;
+			dprintf(opt->output_fd, " %s", helpname);
+		}
+		if(opt->help_list_items == false)
+			return;
+		dprintf(opt->output_fd, "\n");
+	}
 
 	for (i = 0; i < nitems; i++) {
 		dprintf(opt->output_fd, "%s\n", items[i].value);
@@ -590,7 +605,7 @@ int form_builder(BUILDER_ARGS)
 	focusitem = -1;
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items, &focusitem);
-	print_form_items(output, nitems, items, opt);
+	print_form_items(output, nitems, items, focusitem, opt);
 	free(items);
 
 	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
@@ -621,7 +636,7 @@ int inputbox_builder(BUILDER_ARGS)
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item, NULL);
-	print_form_items(output, 1, &item, opt);
+	print_form_items(output, 1, &item, -1, opt);
 
 	return (output);
 }
@@ -662,7 +677,7 @@ int mixedform_builder(BUILDER_ARGS)
 	focusitem = -1;
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items, &focusitem);
-	print_form_items(output, nitems, items, opt);
+	print_form_items(output, nitems, items, focusitem, opt);
 	free(items);
 
 	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
@@ -694,7 +709,7 @@ int passwordbox_builder(BUILDER_ARGS)
 	item.bottomdesc  = "";
 
 	output = bsddialog_form(conf, text, rows, cols, 1, 1, &item, NULL);
-	print_form_items(output, 1, &item, opt);
+	print_form_items(output, 1, &item, -1, opt);
 
 	return (output);
 }
@@ -743,7 +758,7 @@ int passwordform_builder(BUILDER_ARGS)
 	focusitem = -1;
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items, &focusitem);
-	print_form_items(output, nitems, items, opt);
+	print_form_items(output, nitems, items, focusitem, opt);
 	free(items);
 
 	if (output == BSDDIALOG_HELP && opt->item_bottomdesc)
