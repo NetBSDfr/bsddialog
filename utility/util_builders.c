@@ -36,6 +36,9 @@
 
 #include "util.h"
 
+#define NO_PRINT_VALUES(rv)                                                    \
+(rv == BSDDIALOG_ERROR || rv == BSDDIALOG_CANCEL || rv == BSDDIALOG_ESC)
+
 /* message */
 int infobox_builder(BUILDER_ARGS)
 {
@@ -347,8 +350,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 	sep = false;
 	quotech = opt->item_singlequote ? '\'' : '"';
 
-	if (output == BSDDIALOG_ERROR || output == BSDDIALOG_CANCEL ||
-	    output == BSDDIALOG_ESC)
+	if (NO_PRINT_VALUES(output))
 		return;
 
 	if (output == BSDDIALOG_HELP) {
