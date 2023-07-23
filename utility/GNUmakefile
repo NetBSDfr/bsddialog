@@ -11,7 +11,13 @@ ifneq ($(ENABLEDEBUG),)
 CFLAGS += -g
 endif
 CFLAGS += -D_GNU_SOURCE -Wall -Wextra -I$(LIBPATH)
+
+ifneq ($(DISABLERPATH),)
+LDFLAGS += -ltinfo -L$(LIBPATH) -lbsddialog
+else
 LDFLAGS += -ltinfo -Wl,-rpath=$(LIBPATH) -L$(LIBPATH) -lbsddialog
+endif
+
 RM = rm -f
 
 all : $(OUTPUT)
