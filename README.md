@@ -122,11 +122,13 @@ in the _Public Domain_ to build new projects:
  - Multi-line backtitle.
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
  - add bool conf.menu.depthlines or char conf.menu.depthch (default ' ').
- - implement custom getopt_long().
+ - implement custom getopt\_long().
  - refactor gauge().
  - refactor backtitle and bottom desc using a WINDOW or pad.
  - fix bottomdesc expanding terminal.
  - add conf.backtitle (specific backtitle for dialog).
- - improve grey lines expanding terminal (maybe redrawwin() in hide_dialog()).
+ - improve grey lines expanding terminal (maybe redrawwin() in hide\_dialog()).
  - more restrictive strtol() and strtoul().
  - implement a global buttons handler.
+ - add History.
+
