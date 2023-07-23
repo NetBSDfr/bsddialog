@@ -73,19 +73,17 @@ WIP Next Version 1.0
 	* add: 'const char *end' to bsddialog_gauge().
 	* add: draw focus on the shortcut-key-selected button at exit.
 	* add: escapes for conf.text.highlight \Zd, \Zk, \Zs, \ZD, \ZK, \ZS.
-	* add: BSDDIALOG_BLINK, BSDDIALOG_HALFBRIGHT, BSDDIALOG_HIGHLIGHT.
-	* add: conf.button.left1_label.
-	* add: BSDDIALOG_LEFT1 return value.
-	* add: conf.button.left2_label.
-	* add: BSDDIALOG_LEFT2 return value.
-	* add: conf.button.left3_label.
-	* add: BSDDIALOG_LEFT3 return value.
-	* add: conf.button.right1.label.
-	* add: BSDDIALOG_RIGHT1 return value.
-	* add: conf.button.right2.label.
-	* add: BSDDIALOG_RIGHT2 return value.
-	* add: conf.button.right3.label.
-	* add: BSDDIALOG_RIGHT3 return value.
+	* add: flags for theme features.
+	    - BSDDIALOG_BLINK.
+	    - BSDDIALOG_HALFBRIGHT.
+	    - BSDDIALOG_HIGHLIGHT.
+	* add: generic buttons.
+	    - conf.button.left1_label, BSDDIALOG_LEFT1 return value.
+	    - conf.button.left2_label, BSDDIALOG_LEFT2 return value.
+	    - conf.button.left3_label, BSDDIALOG_LEFT3 return value.
+	    - conf.button.right1.label, BSDDIALOG_RIGHT1 return value.
+	    - conf.button.right2.label, BSDDIALOG_RIGHT2 return value.
+	    - conf.button.right3.label, BSDDIALOG_RIGHT3 return value.
 	* improve: check (when possible) API pointers.
 	* improve: circolar buttons with left and right keys for msgbox, yesno,
 	    menus, rangebox and pause.
