@@ -15,7 +15,8 @@ LN = ln -s -f
 
 ### cli options ###
 # port/pkg Makefile: MAKE_ARGS NORPATH=1
-NORPATH ?= 0
+NORPATH ?=
+export DISABLERPATH=${NORPATH}
 # `make -DDEBUG`
 # `gmake DEBUG=1`
 DEBUG ?=
@@ -24,7 +25,7 @@ export ENABLEDEBUG=${DEBUG}
 all : ${OUTPUT}
 
 ${OUTPUT}: ${LIBBSDDIALOG}
-	${MAKE} -C ${UTILITYPATH} LIBPATH=${LIBPATH} NORPATH=${NORPATH}
+	${MAKE} -C ${UTILITYPATH} LIBPATH=${LIBPATH}
 	${LN} ${UTILITYPATH}/${OUTPUT} ${.CURDIR}/${OUTPUT}
 
 ${LIBBSDDIALOG}:
