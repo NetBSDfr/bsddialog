@@ -96,11 +96,11 @@
  *          prepare_dialog(struct dialog);
  */
 
-#define ERRBUFLEN    1024
-
 /*
  * -1- Error and diagnostic
  */
+#define ERRBUFLEN    1024
+
 static char errorbuffer[ERRBUFLEN];
 
 const char *get_error_string(void)
