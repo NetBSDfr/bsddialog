@@ -3,11 +3,20 @@ WIP Next Version 1.0
 	Utility:
 	* add: comments to -save-theme output file.
 	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
-	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for <text>.
-	* add: --datebox-format d/m/y|m/d/y|y/m/d to set --datebox UI.
-	* add: env NO_COLOR, to set blackwhte theme.
+	* add: --datebox-format <d/m/y|m/d/y|y/m/d> to set --datebox UI.
+	* add: --help-print-items (--help-status becames its alias).
+	* add: --help-print-items (--help-status becamesits alias).
+	* add: --text-escape (--colors becames its alias).
+	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --text-escape.
+	* add: env NO_COLOR, to set blackwhite (high contrast) theme.
 	* add: $HOME/.bsddialog.conf to load a startup file theme.
 	* add: env BSDDIALOG_THEMEFILE to set a startup theme file.
+	* add: --left1-button <label>.
+	* add: --left2-button <label>.
+	* add: --left3-button <label>.
+	* add: --right1-button <label>.
+	* add: --right2-button <label>.
+	* add: --right3-button <label>.
 	* add: dynamic exit codes.
 	    - add: --error-exit-code.
 	    - add: --ok-exit-code.
@@ -43,17 +52,14 @@ WIP Next Version 1.0
 	* change: quote only checklist output items if necessary.
 	* change: dialogs with user input print always values except with ERROR,
 	    ESC, Cancel. Previously the situation was quite heterogeneous.
-	* rename: --colors -> --text-escape (--colors available as alias).
-	* rename: --help-status -> help-print-items (--help-status alias).
 	* improve: DIAGNOSTIC messages adding fmt string errors.
-	* improve: disable theme setting (opt/env) with no color terminals.
-	* improve: menus on|off: strcasecmp, diagnostic, real off check.
+	* improve: disable theme setting (opt and env) with no color terminals.
+	* improve: menus on|off status: strcasecmp, diagnostic, real off check.
 	* improve: --bikeshed with button delimiter and --date-format.
-	* improve: --textbox accepts buttons options.
+	* improve: --textbox accepts button options.
 	* improve: Forms with Help button, print "HELP" (like menus),
-	    accept --help-status and --help-print-name.
+	    accept --help-list-items and --help-print-name.
 	* fix: --load-theme attributes.
-	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: --theme bsddialog (partially implemented).
 	* delete: --esc-return-cancel (replaced by new env and option).
 	* delete: --generic-button1 (replaced by --right1-button).
@@ -62,22 +68,31 @@ WIP Next Version 1.0
 
 	Library:
 	* add: bsddialog_inmode().
-	* add: conf.date.format="d/m/y"|"m/d/y"|"y/m/d" to customize the date
-	    format (boxes) shown by bsddialog_datebox().
-	* add: "const char *end" to bsddialog_gauge().
-	* add: bsddialog_datebox() changing one box affects the others as well.
-	* add: focus on the shortcut-key-selected button at exit.
+	* add: conf.date.format="d/m/y"|"m/d/y"|"y/m/d" to customize
+	    bsddialog_datebox() UI (boxes) with a date format.
+	* add: 'const char *end' to bsddialog_gauge().
+	* add: draw focus on the shortcut-key-selected button at exit.
 	* add: escapes for conf.text.highlight \Zd, \Zk, \Zs, \ZD, \ZK, \ZS.
 	* add: BSDDIALOG_BLINK, BSDDIALOG_HALFBRIGHT, BSDDIALOG_HIGHLIGHT.
-	* add/improve: bsddialog_geterror() with fmt strings.
-	* add: 3 generic buttons to left conf.button.left[1-3]_label.
-	* add: 3 generic buttons to right conf.button.right[1-3].label.
-	* add: BSDDIALOG_LEFT[1-3], BSDDIALOG_RIGHT[1-3] return values.
+	* add: conf.button.left1_label.
+	* add: BSDDIALOG_LEFT1 return value.
+	* add: conf.button.left2_label.
+	* add: BSDDIALOG_LEFT2 return value.
+	* add: conf.button.left3_label.
+	* add: BSDDIALOG_LEFT3 return value.
+	* add: conf.button.right1.label.
+	* add: BSDDIALOG_RIGHT1 return value.
+	* add: conf.button.right2.label.
+	* add: BSDDIALOG_RIGHT2 return value.
+	* add: conf.button.right3.label.
+	* add: BSDDIALOG_RIGHT3 return value.
 	* improve: check (when possible) API pointers.
-	* improve: left and right keys move circolar buttons for msgbox, yesno,
+	* improve: circolar buttons with left and right keys for msgbox, yesno,
 	    menus, rangebox and pause.
 	* improve: bsddialog_textbox() manages conf.buttons.
-	* change: API strings like "" if NULL, except gauge *sep and *end.
+	* improve: bsddialog_datebox() a box change affects the others as well.
+	* improve: bsddialog_geterror() with fmt strings.
+	* change: API NULL strings handled like "", except gauge *sep and *end.
 	* change: menus and form less restrictive with text, hide text with
 	    little screens (same behavior as other dialogs).
 	* change: mixedgauge BSDDIALOG_MG_BLANK does not draw minibar but prints
@@ -93,15 +108,18 @@ WIP Next Version 1.0
 	    - delete conf.menu.on_without_ok.
 	    - delete conf.form.value_without_ok.
 	* rename: conf.text.highlight -> conf.text.escape.
-	* fix: extend menurows after shrinking.
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
 	* fix: timebox.c checksize (boxes width).
+	* fix: extend menurows after shrinking.
 	* fix: menu pad and form pad "re-expansion" after shrink and enlarge.
 	* fix: shadow top-left corner (trick wresize() before wmove()).
+	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
-	* delete: conf.button.generic1_label and conf.button.generic1_label.
-	* delete: BSDDIALOG_GENERIC[1-2] return values.
+	* delete: conf.button.generic1_label (for new conf.button.right1_label).
+	* delete: BSDDIALOG_GENERIC1 return value (new BSDDIALOG_RIGHT1).
+	* delete: conf.button.generic2_label (for new conf.button.right2_label).
+	* delete: BSDDIALOG_GENERIC2 return value (new BSDDIALOG_RIGHT2).
 	* refactor: internal implementation.
 	    - add: internal structures to represent components.
 	    - merge: (when possible) dialogs autosize.
@@ -110,7 +128,7 @@ WIP Next Version 1.0
 	    - merge: new_dialog() with update_dialog() -> draw_dialog().
 	    - merge: infobox.c with messagebox.c (delete infobox.c)
 	    - merge: bsddialog_datebox() + bsddialog_calendar() -> datebox.c
-	    - change: flat and blackwhite real themes.
+	    - change: flat and blackwhite real themes, 3d adapted from flat.
 	    - improve: replace wrefresh() -> wnoutrefresh()/doupdate().
 	    - improve: replace prefresh() -> pnoutrefresh()/doupdate().
 	    - delete: -Wno-implicit-fallthrough.
