@@ -377,7 +377,7 @@ print_menu_items(int output, int nitems, struct bsddialog_menuitem *items,
 				dprintf(opt->output_fd, "%s", focusname);
 		}
 
-		if (ismenu || opt->help_list_items == false)
+		if (ismenu || opt->help_print_items == false)
 			return;
 		sep = true;
 	}
@@ -551,7 +551,7 @@ print_form_items(int output, int nitems, struct bsddialog_formitem *items,
 				helpname = items[focusitem].bottomdesc;
 			dprintf(opt->output_fd, " %s", helpname);
 		}
-		if(opt->help_list_items == false)
+		if(opt->help_print_items == false)
 			return;
 		dprintf(opt->output_fd, "\n");
 	}

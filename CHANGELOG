@@ -44,6 +44,7 @@ WIP Next Version 1.0
 	* change: dialogs with user input print always values except with ERROR,
 	    ESC, Cancel. Previously the situation was quite heterogeneous.
 	* rename: --colors -> --text-escape (--colors available as alias).
+	* rename: --help-status -> help-print-items (--help-status alias).
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: disable theme setting (opt/env) with no color terminals.
 	* improve: menus on|off: strcasecmp, diagnostic, real off check.

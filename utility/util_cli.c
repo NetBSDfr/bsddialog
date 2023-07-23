@@ -68,8 +68,8 @@ enum OPTS {
 	HELP_BUTTON,
 	HELP_EXIT_CODE,
 	HELP_LABEL,
+	HELP_PRINT_ITEMS,
 	HELP_PRINT_NAME,
-	HELP_STATUS,
 	HFILE,
 	HLINE,
 	HMSG,
@@ -181,8 +181,9 @@ static struct option longopts[] = {
 	{"help-button",       no_argument,       NULL, HELP_BUTTON},
 	{"help-exit-code",    required_argument, NULL, HELP_EXIT_CODE},
 	{"help-label",        required_argument, NULL, HELP_LABEL},
+	{"help-print-items",  no_argument,       NULL, HELP_PRINT_ITEMS},
 	{"help-print-name",   no_argument,       NULL, HELP_PRINT_NAME},
-	{"help-status",       no_argument,       NULL, HELP_STATUS},
+	{"help-status",       no_argument,       NULL, HELP_PRINT_ITEMS},
 	{"help-tags",         no_argument,       NULL, HELP_PRINT_NAME},
 	{"hfile",             required_argument, NULL, HFILE},
 	{"hline",             required_argument, NULL, HLINE},
@@ -295,7 +296,7 @@ void usage(void)
 	    " --left2-button <label>,\n --left2-exit-code <retval>,"
 	    " --left3-button <label>, --left3-exit-code <retval>,\n"
 	    " --help-button, --help-exit-code <retval>, --help-label <label>,\n"
-	    " --help-print-name, --help-status, --hfile <file>,"
+	    " --help-print-items, --help-print-name, --hfile <file>,"
 	    " --hline <string>,\n --hmsg <string>, --ignore, --insecure,"
 	    " --item-bottom-desc, --item-depth,\n --item-prefix,"
 	    " --load-theme <file>, --max-input <size>, --no-cancel,\n"
@@ -489,11 +490,11 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 		case HELP_LABEL:
 			conf->button.help_label = optarg;
 			break;
+		case HELP_PRINT_ITEMS:
+			opt->help_print_items = true;
+			break;
 		case HELP_PRINT_NAME:
 			opt->help_print_item_name = true;
-			break;
-		case HELP_STATUS:
-			opt->help_list_items = true;
 			break;
 		case HFILE:
 			conf->key.f1_file = optarg;

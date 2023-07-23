@@ -51,7 +51,7 @@ struct options {
 	bool item_singlequote;
 	/* Menus and Forms options */
 	bool help_print_item_name;
-	bool help_list_items;
+	bool help_print_items;
 	bool item_bottomdesc;
 	/* Forms options */
 	int unsigned max_input_form;
