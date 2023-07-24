@@ -153,7 +153,7 @@ build_privatemenu(struct bsddialog_conf *conf, struct privatemenu *m,
 		    m->pritems[i].type == CHECKLISTMODE)
 			selectorlen = 4;
 
-		if (groups[i].type == BSDDIALOG_SEPARATOR) {
+		if (m->pritems[i].type == SEPARATORMODE) {
 			maxsepstr = MAX(maxsepstr,
 			    strcols(m->pritems[i].name) +
 			    strcols(m->pritems[i].desc));
