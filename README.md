@@ -131,3 +131,4 @@ in the _Public Domain_ to build new projects:
  - more restrictive strtol() and strtoul().
  - implement a global buttons handler.
  - add History, FreeBSD 8.0 dialog manual features.
+ - add menutype BSDDIALOG_CHECKLIST_MANDATORY BSDDIALOG_RADIOLIST_MANDATORY.
