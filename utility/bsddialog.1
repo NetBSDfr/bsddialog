@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 23, 2023
+.Dd July 24, 2023
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -50,25 +50,32 @@
 .Sh DESCRIPTION
 The
 .Nm bsddialog
-utility builds Text User Interface dialogs and widgets: to display messages,
-to get input and to inform about a computation status.
+utility builds Text User Interface dialogs and widgets.
 .Pp
-The options
+The option
 .Fl Fl help
-and
+prints a brief list of features and exits.
+The option
 .Fl Fl version
-print the list of options and the version, respectively, then exit.
+prints the version and exits.
+The option
 .Fl Fl and-dialog
-builds another dialog unless the previous one returns Error, ESC or Cancel.
+allows to build another dialog unless the previous one returns Error, ESC or
+Cancel.
 .Pp
+Each dialog accepts
 .Ar text
-is a message printed inside the dialog.
+to print a message inside,
 .Ar rows
 and
 .Ar cols
-are the height and width, 0 for autosize and -1 for fullscreen.
+to set height and width,
+.Dv 0
+for autosize and
+.Dv -1
+for fullscreen.
 .Pp
-The possible input got from the user interface is printed to standard error.
+The possible input from the user interface is printed to standard error at exit.
 .Ss Options
 The following options can change the default behavior of the utility and are
 common to some dialog.
@@ -79,20 +86,28 @@ If available set alternate screen mode, see
 .It Fl Fl ascii-lines
 Ascii characters to draw lines.
 .It Fl Fl backtitle Ar backtitle
-Title on the top side of the screen.
+Screen title.
 .It Fl Fl begin-x Ar x
-Dialog horizontal position, 0 is the left screen side, -1 center.
+Set dialog horizontal position,
+.Dv -1
+center,
+.Dv 0
+left screen side.
 .It Fl Fl begin-y Ar y
-Dialog vertical position, 0 is the top screen side, -1 center.
+Set dialog vertical position,
+.Dv -1
+center,
+.Dv 0
+top screen.
 .It Fl Fl bikeshed
 Random settings.
 Colors, title delimiter, button delimiter; see theme features.
-Title margins.
+Title margin.
 Buttons always active or TAB to switch focus with other components, see
 .Fl Fl switch-buttons .
-Zero padding with time or date output; see
-.Fl Fl time-format
-and
+Zero padding with time output; see
+.Fl Fl time-format .
+Zero padding with date output; see
 .Fl Fl date-format .
 User Interface date format for
 .Fl Fl datebox ;
@@ -133,7 +148,7 @@ String accepted by
 to customize the output of
 .Fl Fl datebox
 and
-.Fl Fl calendar
+.Fl Fl calendar .
 .It Fl Fl default-button Ar label
 Focus on the button with
 .Ar label
@@ -209,13 +224,15 @@ Print also the selected items or form values if the
 .Dq Help
 button is pressed.
 .It Fl Fl help-print-name
-Print the name of the focused item if the Help button is pressed also
+Print the name of the focused item if the
+.Dq Help
+button is pressed also
 with
 .Fl Fl item-bottom-desc .
 .It Fl Fl hfile Ar filename
 Open
 .Ar filename
-in a Textbox if F1 key is pressed,
+in a Textbox if F1 key is pressed.
 .It Fl Fl hline Ar string
 Dialog subtitle.
 .It Fl Fl hmsg Ar string
@@ -227,7 +244,7 @@ Do not exit with unknown options.
 .It Fl Fl insecure
 Print
 .Sq *
-to hide passwords while typing; whitespace otherwise.
+to hide passwords while typing, white space otherwise.
 .It Fl Fl item-bottom-desc
 Set a help string for each item of a Checklist, Form, Menu, Mixedform,
 Passwordform, Radiolist and Treeview to display at the bottom screen side.
@@ -241,7 +258,7 @@ Load theme from
 .It Fl Fl max-input Ar size
 Maximum length of the input for
 .Fl Fl inputbox
-ans
+and
 .Fl Fl passwordbox ,
 default 2048.
 .It Fl Fl no-cancel
@@ -280,12 +297,12 @@ If available set normal screen mode, see
 .It Fl Fl output-fd Ar fd
 Print input from user interface to the specified file descriptor.
 .It Fl Fl output-separator Ar sep
-Set a sepator for the items in output, default whitespace.
+Set a sepator for the items in output, default white space.
 .It Fl Fl print-maxsize
 Screen size.
 This option can be used without a dialog.
 .It Fl Fl print-size
-Print Dialog height and widget at exit.
+Print dialog height and width at exit.
 .It Fl Fl print-version
 Print version.
 This option can be used without a dialog.
@@ -313,9 +330,9 @@ Set an exit code for
 Save the current theme.
 This option can be used without a dialog.
 .It Fl Fl separate-output
-Separate selected items with a new line and avoid to quote.
+Print selected items separated by a new line and avoid to quote.
 .It Fl Fl shadow
-Show a pseudo shadow for the dialog, enabled by default.
+Show a shadow for the dialog, enabled by default.
 .It Fl Fl single-quoted
 Use single quote for items in output.
 .It Fl Fl sleep Ar secs
@@ -327,7 +344,7 @@ Print input from user interface to standand error, default.
 .It Fl Fl stdout
 Print input from user interface to standard output.
 .It Fl Fl switch-buttons
-enables focus switching between buttons and input components pressing TAB,
+Enable focus switching between buttons and input components pressing TAB,
 otherwise buttons are always active and ENTER key closes the dialog.
 Suitable for:
 .Fl Fl form ,
@@ -395,18 +412,21 @@ disable underline.
 disable each customization.
 .El
 .It Fl Fl text-unchanged
-By default the
+Disable
 .Ar text
-is changed before to be printed.
+modification.
+By default
+.Ar text
+is changed before to be printed in the dialog.
 If it contains at least a
 .Dq \en
 each new line and TAB is converted to a space, subsequent spaces are merged.
 Otherwise new line characters are preserved and a TAB becomes a space.
-This option disable the
-.Ar text
-modification.
 .It Fl Fl theme Ar theme
-Set a graphical style: 3d, blackwhite or flat.
+Set theme, possible values:
+.Dq 3d ,
+.Dq blackwhite ,
+.Dq flat .
 .It Fl Fl time-format Ar format
 String accepted by
 .Xr strftime 3
@@ -528,11 +548,12 @@ for autosize.
 Ar miniperc Oc ...
 Dialog to show a main bar to represent
 .Ar mainperc
-from 0 to 100 and some mini bar with a
+from 0 to 100.
+Some mini bar with a
 .Ar minilabel
 string and a
 .Ar miniperc
-with value from 0 and 100 or negative to print a descriptive string: -1
+with a value from 0 and 100 or negative to print a descriptive string: -1
 .Dq Succeeded ,
 -2
 .Dq Failed ,
@@ -573,9 +594,9 @@ Dialog to get a list of passwords, equivalent to
 .Fl Fl form
 except typed characters are hidden.
 .It Fl Fl pause Ar text Ar rows Ar cols Ar seconds
-Dialog runs until the timeout in
+Dialog runs until
 .Ar seconds
-expires or a button is pressed.
+timeout expires or a button is pressed.
 .It Fl Fl radiolist Ar text Ar rows Ar cols Ar menurows Oo Ar name Ar desc \
 Ar status Oc ...
 Radiolist to select at most an item from a list via the SPACE key.
@@ -627,35 +648,26 @@ and
 UP, DOWN, HOME, END, PAGEUP and PAGEDOWN keys are availble to scroll the text.
 .El
 .Sh ENVIRONMENT
-The environment variables take effect only at startup, other options can
-override their setting.
-.Pp
-.Ev NO_COLOR
-equivalent to
+The following environment variables take effect only on startup, other options
+can override their setting.
+.Bl -tag -width indent
+.It Ev NO_COLOR
+If present and not an empty string (regardless of its value) equivalent to
 .Fl Fl theme Ar blackwhite .
-.Pp
-The following environment variables can set the exit codes:
-.Ev BSDDIALOG_ERROR ,
-.Ev BSDDIALOG_OK ,
-.Ev BSDDIALOG_CANCEL ,
-.Ev BSDDIALOG_HELP ,
-.Ev BSDDIALOG_EXTRA ,
-.Ev BSDDIALOG_TIMEOUT ,
-.Ev BSDDIALOG_ESC ,
-.Ev BSDDIALOG_LEFT1 ,
-.Ev BSDDIALOG_LEFT2 ,
-.Ev BSDDIALOG_LEFT3 ,
-.Ev BSDDIALOG_RIGHT1 ,
-.Ev BSDDIALOG_RIGHT2 ,
-.Ev BSDDIALOG_RIGHT3 .
-.Pp
-.Ev BSDDIALOG_THEMEFILE Ar file
-equivalent to
+.It Ev BSDDIALOG_ERROR , Ev BSDDIALOG_OK , Ev BSDDIALOG_CANCEL , \
+Ev BSDDIALOG_HELP , Ev BSDDIALOG_EXTRA , Ev BSDDIALOG_TIMEOUT , \
+Ev BSDDIALOG_ESC , Ev BSDDIALOG_LEFT1 , Ev BSDDIALOG_LEFT2 , \
+Ev BSDDIALOG_LEFT3 , Ev BSDDIALOG_RIGHT1 , Ev BSDDIALOG_RIGHT2 , \
+Ev BSDDIALOG_RIGHT3
+Set exit codes.
+.It Ev BSDDIALOG_THEMEFILE Ar file
+Equivalent to
 .Fl Fl load-theme Ar file .
+.El
 .Sh FILES
 The theme file
 .Pa $HOME/.bsddialog.conf
-is read at startup if exists.
+is read on startup if exists.
 .Sh EXIT STATUS
 The
 .Nm
@@ -721,6 +733,7 @@ Multi-dialog:
 .Pp
 Bikeshed:
 .Dl bsddialog --bikeshed --inputbox Example 0 0
+.Dl bsddialog --bikeshed --datebox Example 0 0
 .Pp
 Mixedgauge:
 .Dl bsddialog --sleep 3 --mixedgauge Example 10 30 60 L1 \*q -1\*q L2 30
