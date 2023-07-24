@@ -298,8 +298,7 @@ getnextshortcut(int npritems, struct privateitem *pritems, int abs, wint_t key)
 
 static void drawseparators(struct bsddialog_conf *conf, struct privatemenu *m)
 {
-	int i, linech;
-	unsigned int labellen;
+	int i, linech, realw, labellen;
 	const char *desc, *name;
 
 	for (i = 0; i < m->nitems; i++) {
@@ -313,9 +312,9 @@ static void drawseparators(struct bsddialog_conf *conf, struct privatemenu *m)
 		}
 		name = m->pritems[i].name;
 		desc = m->pritems[i].desc;
+		realw = m->xe - m->xs;
 		labellen = strcols(name) + strcols(desc) + 1;
-		wmove(m->pad, i,
-		    labellen < m->line ? m->line/2 - labellen/2 : 0);
+		wmove(m->pad, i, (labellen < realw) ? realw/2 - labellen/2 : 0);
 		wattron(m->pad, t.menu.namesepcolor);
 		waddstr(m->pad, name);
 		wattroff(m->pad, t.menu.namesepcolor);
@@ -482,7 +481,6 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 	update_menubox(d->conf, m);
 	wnoutrefresh(m->box);
 
-	drawseparators(d->conf, m);
 	m->ys = d->y + d->h - 5 - m->menurows + 1;
 	m->ye = d->y + d->h - 5 ;
 	if (d->conf->menu.align_left || (int)m->line > d->w - 6) {
@@ -492,6 +490,7 @@ static int mixedlist_redraw(struct dialog *d, struct privatemenu *m)
 		m->xs = d->x + 3 + (d->w-6)/2 - m->line/2;
 		m->xe = m->xs + d->w - 5;
 	}
+	drawseparators(d->conf, m); /* uses xe - xs */
 	pnoutrefresh(m->pad, m->ypad, 0, m->ys, m->xs, m->ye, m->xe);
 
 	return (0);
