@@ -14,7 +14,7 @@ RM= rm -f
 LN = ln -s -f
 
 ### cli options ###
-# port/pkg Makefile: MAKE_ARGS NORPATH=1
+# port/pkg Makefile: 'MAKE_ARGS = -DNORPATH'
 NORPATH ?=
 export DISABLERPATH=${NORPATH}
 # `make -DDEBUG`
