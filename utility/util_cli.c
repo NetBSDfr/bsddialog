@@ -309,10 +309,10 @@ void usage(void)
 	    " --right3-button <label>,\n --right3-exit-code <retval>,"
 	    " --save-theme <file>, --separate-output,\n --separator <sep>,"
 	    " --shadow, --single-quoted, --sleep <secs>, --stderr,\n --stdout,"
-	    " --tab-escape, --tab-len <spaces>, --text-escape,"
-	    " --text-unchanged,\n --timeout-exit-code <retval>,"
-	    " --switch-buttons, --theme 3d|blackwhite|flat,\n"
-	    " --time-format <format>, --title <title>, --yes-label <label>.");
+	    " --switch-buttons, --tab-escape, --tab-len <spaces>,"
+	    " --text-escape,\n --text-unchanged, --theme 3d|blackwhite|flat,"
+	    " --timeout-exit-code <retval>,\n --time-format <format>,"
+	    " --title <title>, --yes-label <label>.");
 	printf("\n\n");
 
 	printf("Dialogs:\n");
