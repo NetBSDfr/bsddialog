@@ -190,8 +190,11 @@ int main(int argc, char *argv[argc])
 
 		/* --print-maxsize or --print-version */
 		if (mandatory_dialog == false && opt.savethemefile == NULL &&
-		    opt.clearscreen == false && opt.dialogbuilder == NULL)
+		    opt.clearscreen == false && opt.dialogbuilder == NULL) {
+			if (bsddialog_inmode())
+				bsddialog_end();
 			return (BSDDIALOG_OK);
+		}
 
 		/* --<dialog>, --save-theme or clear-screen */
 		if (opt.dialogbuilder != NULL) {
