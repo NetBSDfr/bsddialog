@@ -246,7 +246,10 @@ void loadtheme(const char *file, bool compatibility)
 		if (i >= NPROPERTY) {
 			if (strcmp(name, "version") == 0)
 				continue; /* nothing for now */
-			PROP_ERROR(name, "Unknown theme property name");
+			if (compatibility)
+				continue;
+			else
+				PROP_ERROR(name, "Unknown theme property name");
 		}
 		switch (p[i].type) {
 		case CHAR:
@@ -297,8 +300,6 @@ void loadtheme(const char *file, bool compatibility)
 			*((int*)p[i].value) = bsddialog_color(fg, bg, flags);
 			break;
 		case COMPAT:
-			if (compatibility == false)
-				PROP_ERROR(name, "Unknown theme property name");
 			/*
 			 * usr.sbin/bsdconfig/share/dialog.subr:2255
 			 * uses this parameter to set NO_SHADOW.
