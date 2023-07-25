@@ -5,7 +5,6 @@ WIP Next Version 1.0
 	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
 	* add: --datebox-format <d/m/y|m/d/y|y/m/d> to set --datebox UI.
 	* add: --help-print-items (--help-status becames its alias).
-	* add: --help-print-items (--help-status becamesits alias).
 	* add: --text-escape (--colors becames its alias).
 	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --text-escape.
 	* add: env NO_COLOR, to set blackwhite (high contrast) theme.
