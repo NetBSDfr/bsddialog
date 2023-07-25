@@ -76,6 +76,7 @@ struct options {
 	char *savethemefile;
 	const char *screen_mode;
 	/* Dialog */
+	bool mandatory_dialog;
 	const char *name;
 	int (*dialogbuilder)(struct bsddialog_conf *conf, char* text, int rows,
 	    int cols, int argc, char **argv, struct options *opt);
@@ -84,7 +85,7 @@ struct options {
 void usage(void);
 int
 parseargs(int argc, char **argv, struct bsddialog_conf *conf,
-    struct options *opt, bool *mandatory_dialog);
+    struct options *opt);
 
 /*
  * Dialogs builders, util_builders.c

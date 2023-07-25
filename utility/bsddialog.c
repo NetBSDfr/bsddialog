@@ -150,7 +150,7 @@ static void getenv_exitcodes(void)
  */
 int main(int argc, char *argv[argc])
 {
-	bool mandatory_dialog, startup;
+	bool startup;
 	int i, rows, cols, retval, parsed, nargc, firstoptind;
 	char *text, **nargv, *pn;
 	struct bsddialog_conf conf;
@@ -158,7 +158,6 @@ int main(int argc, char *argv[argc])
 
 	setlocale(LC_ALL, "");
 	getenv_exitcodes();
-	mandatory_dialog = true;
 	firstoptind = optind;
 	pn = argv[0];
 	retval = BSDDIALOG_OK;
@@ -176,21 +175,21 @@ int main(int argc, char *argv[argc])
 
 	startup = true;
 	while (true) {
-		parsed = parseargs(argc, argv, &conf, &opt, &mandatory_dialog);
+		parsed = parseargs(argc, argv, &conf, &opt);
 		nargc = argc - parsed;
 		nargv = argv + parsed;
 		argc = parsed - optind;
 		argv += optind;
 
-		if (mandatory_dialog && opt.dialogbuilder == NULL)
+		if (opt.mandatory_dialog && opt.dialogbuilder == NULL)
 			exit_error(true, "expected a --<dialog>");
 
 		if (opt.dialogbuilder == NULL && argc > 0)
 			error_args("(no --<dialog>)", argc, argv);
 
 		/* --print-maxsize or --print-version */
-		if (mandatory_dialog == false && opt.savethemefile == NULL &&
-		    opt.clearscreen == false && opt.dialogbuilder == NULL) {
+		if (opt.mandatory_dialog == false && opt.clearscreen == false &&
+		    opt.savethemefile == NULL && opt.dialogbuilder == NULL) {
 			retval = BSDDIALOG_OK;
 			break;
 		}

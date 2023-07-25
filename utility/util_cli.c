@@ -353,7 +353,7 @@ void usage(void)
 
 int
 parseargs(int argc, char **argv, struct bsddialog_conf *conf,
-    struct options *opt, bool *mandatory_dialog)
+    struct options *opt)
 {
 	int arg, parsed, i;
 	struct winsize ws;
@@ -366,6 +366,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 	opt->theme = -1;
 	opt->output_fd = STDERR_FILENO;
 	opt->max_input_form = 2048;
+	opt->mandatory_dialog = true;
 
 	for (i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "--and-dialog") == 0 ||
@@ -421,7 +422,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			conf->clear = true;
 			break;
 		case CLEAR_SCREEN:
-			*mandatory_dialog = false;
+			opt->mandatory_dialog = false;
 			opt->clearscreen = true;
 			break;
 		case COLUMNS_PER_ROW:
@@ -586,7 +587,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			opt->item_always_quote = true;
 			break;
 		case PRINT_MAXSIZE:
-			*mandatory_dialog = false;
+			opt->mandatory_dialog = false;
 			ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws);
 			dprintf(opt->output_fd, "MaxSize: %d, %d\n",
 			    ws.ws_row, ws.ws_col);
@@ -596,7 +597,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			conf->get_width = &opt->getW;
 			break;
 		case PRINT_VERSION:
-			*mandatory_dialog = false;
+			opt->mandatory_dialog = false;
 			dprintf(opt->output_fd, "Version: %s\n",
 			    LIBBSDDIALOG_VERSION);
 			break;
@@ -622,7 +623,7 @@ parseargs(int argc, char **argv, struct bsddialog_conf *conf,
 			    (int)strtol(optarg, NULL, 10));
 			break;
 		case SAVE_THEME:
-			*mandatory_dialog = false;
+			opt->mandatory_dialog = false;
 			opt->savethemefile = optarg;
 			break;
 		case SEPARATE_OUTPUT:
