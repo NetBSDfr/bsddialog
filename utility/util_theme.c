@@ -244,10 +244,11 @@ void loadtheme(const char *file, bool compatibility)
 			}
 		}
 		if (i >= NPROPERTY) {
+			/* unknown property name in property p[] */
 			if (strcmp(name, "version") == 0)
 				continue; /* nothing for now */
-			if (compatibility)
-				continue;
+			else if (compatibility)
+				continue; /* just ignore */
 			else
 				PROP_ERROR(name, "Unknown theme property name");
 		}
