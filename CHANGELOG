@@ -60,6 +60,7 @@ WIP Next Version 1.0
 	* improve: Forms with Help button, print "HELP" (like menus),
 	    accept --help-list-items and --help-print-name.
 	* fix: --load-theme attributes.
+	* fix: --clear-screen with --and-dialog.
 	* delete: --theme bsddialog (partially implemented).
 	* delete: --esc-return-cancel (replaced by new env and option).
 	* delete: --generic-button1 (replaced by --right1-button).
