@@ -244,7 +244,7 @@ void loadtheme(const char *file, bool compatibility)
 			}
 		}
 		if (i >= NPROPERTY) {
-			/* unknown property name in property p[] */
+			/* unknown name in property p[] */
 			if (strcmp(name, "version") == 0)
 				continue; /* nothing for now */
 			else if (compatibility)
