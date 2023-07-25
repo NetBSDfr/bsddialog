@@ -179,8 +179,8 @@ bool bsddialog_inmode(void);
 int bsddialog_end(void);
 int bsddialog_backtitle(struct bsddialog_conf *conf, const char *backtitle);
 int bsddialog_initconf(struct bsddialog_conf *conf);
-int bsddialog_clear(unsigned int y);
-int bsddialog_refresh(void);
+void bsddialog_clear(unsigned int y);
+void bsddialog_refresh(void);
 const char *bsddialog_geterror(void);
 
 /* Dialogs */

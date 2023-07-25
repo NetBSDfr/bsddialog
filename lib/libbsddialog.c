@@ -140,18 +140,14 @@ int bsddialog_initconf(struct bsddialog_conf *conf)
 	return (BSDDIALOG_OK);
 }
 
-int bsddialog_refresh(void)
+void bsddialog_refresh(void)
 {
 	refresh();
-
-	return (BSDDIALOG_OK);
 }
 
-int bsddialog_clear(unsigned int y)
+void bsddialog_clear(unsigned int y)
 {
 	move(y, 0);
 	clrtobot();
 	refresh();
-
-	return (BSDDIALOG_OK);
 }
