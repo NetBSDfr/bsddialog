@@ -178,6 +178,8 @@ void savetheme(const char *file)
 	fprintf(fp, "version %s\n", LIBBSDDIALOG_VERSION);
 
 	for (i = 0; i < NPROPERTY; i++) {
+		if (p[i].type == COMPAT)
+			continue;
 		fprintf(fp, "%s%s", p[i].comment, p[i].name);
 		switch (p[i].type) {
 		case CHAR:
