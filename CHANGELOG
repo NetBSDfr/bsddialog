@@ -132,6 +132,8 @@ WIP Next Version 1.0
 	    - change: flat and blackwhite real themes, 3d adapted from flat.
 	    - improve: replace wrefresh() -> wnoutrefresh()/doupdate().
 	    - improve: replace prefresh() -> pnoutrefresh()/doupdate().
+	    - improve: menu split code to build private items.
+	    - improve: form split code to build private items.
 	    - delete: -Wno-implicit-fallthrough.
 
 
