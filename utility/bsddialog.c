@@ -227,6 +227,7 @@ int main(int argc, char *argv[argc])
 		/* theme */
 		if (startup)
 			startuptheme();
+		startup = false;
 		if ((int)opt.theme >= 0)
 			setdeftheme(opt.theme);
 		if (opt.loadthemefile != NULL)
@@ -260,7 +261,6 @@ int main(int argc, char *argv[argc])
 		argv = nargv;
 		if (argc <= 0)
 			break;
-		startup = false;
 		/* prepare next parseargs() call */
 		argc++;
 		argv--;
