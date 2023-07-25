@@ -191,7 +191,7 @@ int main(int argc, char *argv[argc])
 		/* --print-maxsize or --print-version */
 		if (mandatory_dialog == false && opt.savethemefile == NULL &&
 		    opt.clearscreen == false && opt.dialogbuilder == NULL) {
-			if (bsddialog_inmode())
+			if (bsddialog_inmode()) /* after first iteration */
 				bsddialog_end();
 			return (BSDDIALOG_OK);
 		}
