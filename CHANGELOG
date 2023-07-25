@@ -68,6 +68,8 @@ WIP Next Version 1.0
 
 	Library:
 	* add: bsddialog_inmode().
+	* add: bsddialog_clear(y) for utility --clear-screen.
+	* add: bsddialog_refresh() for utility terminal mode switch options.
 	* add: conf.date.format="d/m/y"|"m/d/y"|"y/m/d" to customize
 	    bsddialog_datebox() UI (boxes) with a date format.
 	* add: 'const char *end' to bsddialog_gauge().
@@ -118,6 +120,7 @@ WIP Next Version 1.0
 	* delete: BSDDIALOG_GENERIC1 return value (new BSDDIALOG_RIGHT1).
 	* delete: conf.button.generic2_label (for new conf.button.right2_label).
 	* delete: BSDDIALOG_GENERIC2 return value (new BSDDIALOG_RIGHT2).
+	* delete: bsddialog_clearterminal().
 	* refactor: internal implementation.
 	    - add: internal structures to represent components.
 	    - merge: (when possible) dialogs autosize.

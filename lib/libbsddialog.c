@@ -140,10 +140,17 @@ int bsddialog_initconf(struct bsddialog_conf *conf)
 	return (BSDDIALOG_OK);
 }
 
-int bsddialog_clearterminal(void)
+int bsddialog_refresh(void)
 {
-	if (clear() != OK)
-		RETURN_ERROR("Cannot clear the terminal");
+	refresh();
+
+	return (BSDDIALOG_OK);
+}
+
+int bsddialog_clear(unsigned int y)
+{
+	move(y, 0);
+	clrtobot();
 	refresh();
 
 	return (BSDDIALOG_OK);

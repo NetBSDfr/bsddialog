@@ -28,7 +28,7 @@
 .Sh NAME
 .Nm bsddialog_backtitle ,
 .Nm bsddialog_calendar ,
-.Nm bsddialog_clearterminal ,
+.Nm bsddialog_clear ,
 .Nm bsddialog_color ,
 .Nm bsddialog_color_attrs ,
 .Nm bsddialog_checklist ,
@@ -51,6 +51,7 @@
 .Nm bsddialog_pause ,
 .Nm bsddialog_radiolist ,
 .Nm bsddialog_rangebox ,
+.Nm bsddialog_refresh ,
 .Nm bsddialog_set_theme ,
 .Nm bsddialog_set_default_theme ,
 .Nm bsddialog_textbox ,
@@ -85,7 +86,7 @@
 .Fa "int *focusitem"
 .Fc
 .Ft int
-.Fn bsddialog_clearterminal "void"
+.Fn bsddialog_clear "unsigned int y"
 .Ft int
 .Fo bsddialog_datebox
 .Fa "struct bsddialog_conf *conf"
@@ -207,6 +208,8 @@
 .Fa "int max"
 .Fa "int *value"
 .Fc
+.Ft void
+.Fn bsddialog_refresh "void"
 .Ft int
 .Fo bsddialog_textbox
 .Fa "struct bsddialog_conf *conf"
@@ -304,8 +307,13 @@ returns a string to describe the last error, it should be called after a
 .Dv BSDDIALOG_ERROR
 returned value.
 .Pp
-.Fn bsddialog_clearterminal
-clears the screen.
+.Fn bsddialog_clear
+clears the screen from
+.Fa y .
+.Pp
+.Fn bsddialog_refresh
+useful to refresh the screen after a terminal mode change, see
+.Xr terminfo 5 .
 .Ss Dialogs
 The dialogs have common arguments.
 .Fa text

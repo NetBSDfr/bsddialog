@@ -190,7 +190,7 @@ int main(int argc, char *argv[argc])
 
 		/* --print-maxsize or --print-version */
 		if (mandatory_dialog == false && opt.savethemefile == NULL &&
-		    opt.clearscreen == false)
+		    opt.clearscreen == false && opt.dialogbuilder == NULL)
 			return (BSDDIALOG_OK);
 
 		/* --<dialog>, --save-theme or clear-screen */
@@ -217,8 +217,7 @@ int main(int argc, char *argv[argc])
 			    opt.screen_mode != (char*)-1) {
 				tputs(opt.screen_mode, 1, putchar);
 				fflush(stdout);
-				/* only to refresh, useless in the library */
-				bsddialog_clearterminal();
+				bsddialog_refresh();
 			}
 		}
 
@@ -249,7 +248,7 @@ int main(int argc, char *argv[argc])
 			dprintf(opt.output_fd, "DialogSize: %d, %d\n",
 			    *conf.get_height, *conf.get_width);
 		if (opt.clearscreen)
-			bsddialog_clearterminal();
+			bsddialog_clear(0);
 		opt.clearscreen = false;
 		/* --and-dialog ends loop with Cancel or ESC */
 		if (retval == BSDDIALOG_CANCEL || retval == BSDDIALOG_ESC)
@@ -269,7 +268,7 @@ int main(int argc, char *argv[argc])
 	if (bsddialog_inmode()) {
 		/* --clear-screen can be a single option */
 		if (opt.clearscreen)
-			bsddialog_clearterminal();
+			bsddialog_clear(0);
 		bsddialog_end();
 	}
 	/* end bsddialog terminal mode */

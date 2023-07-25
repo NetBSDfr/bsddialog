@@ -117,8 +117,6 @@ in the _Public Domain_ to build new projects:
  - menubar feature
  - key callback
  - Right-To-Left text
- - --clear-screen like single option or fix with --and-dialog, --and-dialog
-   should use --clear-dialog.
  - Some terminal does not hide the cursor, move it bottom-right before to getch.
  - Multi-line backtitle.
  - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
