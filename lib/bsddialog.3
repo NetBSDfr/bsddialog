@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 25, 2023
+.Dd July 26, 2023
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -277,8 +277,8 @@ subsection to set a theme explicitly.
 .Pp
 .Fn bsddialog_end
 restores the screen like before
-.Fn bsddialog_init ,
-after it is not possible to use the library functions.
+.Fn bsddialog_init .
+After the call is not possible to use the library functions.
 .Pp
 .Fn bsddialog_inmode
 returns
@@ -295,15 +295,16 @@ otherwise.
 .Fn bsddialog_backtitle
 prints
 .Fa backtitle
-on the top of the screen, it is possible to set
+on the top of the screen.
+The function handles
 .Fa conf.ascii_lines
 and
-.Fa conf.no_lines ;
-.Fa conf
-is described later.
+.Fa conf.no_lines
+described later.
 .Pp
 .Fn bsddialog_error
-returns a string to describe the last error, it should be called after a
+returns a string to describe the last error.
+The function should be called after a
 .Dv BSDDIALOG_ERROR
 returned value.
 .Pp
@@ -317,14 +318,15 @@ useful to refresh the screen after a terminal mode change, see
 .Ss Dialogs
 The dialogs have common arguments.
 .Fa text
-is a string printed inside the dialog, each
+is a string printed inside the dialog.
+Each
 .Fa char*
 parameter can be a multibyte character string depending on current locale, see
 .Xr setlocale 3 .
 .Fa rows
 and
 .Fa cols
-are height and width, their value can be between 2 and the screen size,
+are height and width, their value can be a fixed size,
 .Dv BSDDIALOG_AUTOSIZE
 or
 .Dv BSDDIALOG_FULLSCREEN .
@@ -426,7 +428,7 @@ is
 or
 .Dv BSDDIALOG_FULLSCREEN .
 .It Fa conf.bottomtitle
-subtitle at the dialog bottom side.
+dialog subtitle.
 .It Fa conf.clear
 hide the dialog at exit.
 .It Fa conf.get_height
@@ -444,36 +446,35 @@ draw shadow.
 .It Fa conf.sleep
 wait before to return, the value is in seconds.
 .It Fa conf.title
-title at the top dialog side.
+dialog title.
 .It Fa conf.y
-vertical position, 0 is top screen size, can be
+dialog vertical position, 0 is top screen, can be
 .Dv BSDDIALOG_CENTER .
 .It Fa conf.x
-horizontal position, 0 is left screen side, can be
+dialog horizontal position, 0 is left screen, can be
 .Dv BSDDIALOG_CENTER .
 .El
 .Pp
 .Bl -column -compact
 .It Fa conf.key.enable_esc
-enables
+enable
 .Dv ESC
 key to close the dialog.
 .It Fa conf.key.f1_file
-file to open if F1 is pressed.
+open a file in a textbox if F1 is pressed.
 .It Fa conf.key.f1_message
-message to display if F1 is pressed.
+build a msgbox with message if F1 is pressed.
 .El
 .Pp
 .Bl -column -compact
 .It Fa conf.text.cols_per_row
 Try to set the number of columns for a row of
 .Fa text
-with autosizing; default
+with autosizing, default
 .Dv 10 .
 .It Fa conf.text.escape
-enables escapes for
-.Fa text ,
-properly the following sequences are considered escapes:
+enable escapes in
+.Fa text :
 .It Dq \eZ0
 black.
 .It Dq \eZ1
@@ -584,20 +585,14 @@ to
 .Pp
 .Fn bsddialog_infobox
 builds a dialog without buttons and returns instantly.
+.Pp
 .Fn bsddialog_msgbox
 builds a dialog with OK button.
+.Pp
 .Fn bsddialog_yesno
 provides a dialog for a
 .Dq Yes-No Question ,
 the labels on buttons are Yes and No.
-.Pp
-.Fn bsddialog_pause
-builds a dialog waiting until the timeout in
-.Fa seconds
-expires or a button is pressed.
-At exit
-.Fa seconds
-is set like remaining time.
 .Pp
 .Fn bsddialog_calendar
 and
@@ -861,6 +856,14 @@ to hide
 to print a descriptive string, otherwise
 .Dq "UNKNOWN"
 is printed.
+.Pp
+.Fn bsddialog_pause
+builds a dialog waiting until the timeout in
+.Fa seconds
+expires or a button is pressed.
+At exit
+.Fa seconds
+is set like remaining time.
 .Pp
 .Fn bsddialog_rangebox
 to select a value between
