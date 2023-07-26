@@ -901,7 +901,7 @@ provides a dialog for a
 .Dq Yes-No Question ,
 the labels on buttons are Yes and No.
 .Ss Theme
-The graphical properties are global to the library, they are represented by
+The graphical properties are global to the library. They are represented by
 .Fa struct bsddialog_theme
 and can be customized at runtime via the
 .In bsddialog_theme.h
@@ -968,18 +968,13 @@ A member with the
 .Dq f_
 prefix refers to an element with focus.
 .Pp
-.Fn bsddialog_get_theme
-sets
-.Fa theme
-like the current theme.
-.Pp
-A color can be set by the value returned by
-.Fn bsddialog_color ,
-Possible values for
-.Fa background
-and
-.Fa foreground
-are:
+.Fn bsddialog_color
+generates and returns a color to set a
+.Fa struct bsddialog_theme
+color member.
+An
+.Fa enum bsddialog_color
+can be:
 .Dv BSDDIALOG_BLACK ,
 .Dv BSDDIALOG_RED ,
 .Dv BSDDIALOG_GREEN ,
@@ -987,33 +982,30 @@ are:
 .Dv BSDDIALOG_BLUE ,
 .Dv BSDDIALOG_MAGENTA ,
 .Dv BSDDIALOG_CYAN ,
-and
-.Dv BSDDIALOG_WHITE ,
+.Dv BSDDIALOG_WHITE .
 .Fa flags
-specifies OR-flags, possible values:
+is an OR value:
 .Dv BSDDIALOG_BLINK ,
 .Dv BSDDIALOG_BOLD ,
 .Dv BSDDIALOG_HALFBRIGHT ,
-.Dv BSDDIALOG_ HIGHLIGHT ,
-.Dv BSDDIALOG_REVERSE
-and
+.Dv BSDDIALOG_HIGHLIGHT ,
+.Dv BSDDIALOG_REVERSE ,
 .Dv BSDDIALOG_UNDERLINE .
-.Fn bsddialog_color_attrs
-gets the properties of a color.
 .Pp
-.Fn bsddialog_set_theme
+.Fn bsddialog_color_attrs
+sets, if not NULL,
+.Fa foreground ,
+.Fa background ,
+.Fa flags,
+like the properties of
+.Fa color ,
+see
+.Fn bsddialog_color .
+.Pp
+.Fn bsddialog_get_theme
 sets
 .Fa theme
-like current theme, the changes takes effect only for dialogs built after the
-call.
-.Pp
-The library provides predefined themes:
-.Dv BSDDIALOG_THEME_BLACKWHITE ,
-.Dv BSDDIALOG_THEME_FLAT
-and
-.Dv BSDDIALOG_THEME_3D ,
-they can be set via
-.Fn bsddialog_set_default_theme .
+like the current runtime theme.
 .Pp
 .Fn bsddialog_hascolors
 returns
@@ -1021,6 +1013,19 @@ returns
 if the terminal provides colors,
 .Dv false
 otherwise.
+.Pp
+.Fn bsddialog_set_theme
+sets
+.Fa theme
+like current runtime theme. Changes take effect only for dialogs built after
+the call.
+.Pp
+.Fn bsddialog_set_default_theme
+sets a library default theme like current theme, possible values:
+.Dv BSDDIALOG_THEME_BLACKWHITE ,
+.Dv BSDDIALOG_THEME_FLAT ,
+.Dv BSDDIALOG_THEME_3D .
+Changes take effect only for dialogs built after the call.
 .Sh RETURN VALUES
 The functions return the value
 .Dv BSDDIALOG_ERROR
