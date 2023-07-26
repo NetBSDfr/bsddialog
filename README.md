@@ -117,17 +117,15 @@ in the _Public Domain_ to build new projects:
  - menubar feature
  - key callback
  - Right-To-Left text
- - Some terminal does not hide the cursor, move it bottom-right before to getch.
- - Multi-line backtitle.
- - Accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
- - add bool conf.menu.depthlines or char conf.menu.depthch (default ' ').
+ - some terminal does not hide the cursor, move it bottom-right before to getch.
+ - refactor backtitle: multiline, conf.backtile, WINDOW \*dialog.backtitle.
+ - refactor bottomdesc: WINDOW \*dialog.bottomdesc -> fix expandig screen.
+ - accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
+ - add bool conf.menu.depthlines.
  - implement custom getopt\_long().
- - refactor gauge().
- - refactor backtitle and bottom desc using a WINDOW or pad.
- - fix bottomdesc expanding terminal.
- - add conf.backtitle (specific backtitle for dialog).
+ - refactor/redesign gauge().
  - improve grey lines expanding terminal (maybe redrawwin() in hide\_dialog()).
  - more restrictive strtol() and strtoul().
- - implement a global buttons handler.
+ - implement global buttons handler.
  - add History, FreeBSD 8.0 dialog manual features.
- - add menutype BSDDIALOG_CHECKLIST_MANDATORY BSDDIALOG_RADIOLIST_MANDATORY.
+ - add BSDDIALOG_CHECKLIST_MANDATORY, BSDDIALOG_RADIOLIST_MANDATORY.
