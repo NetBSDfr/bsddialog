@@ -1,15 +1,15 @@
 WIP Next Version 1.0
 
 	Utility:
-	* add: comments to -save-theme output file.
+	* add: comments to --save-theme output file.
 	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
 	* add: --datebox-format <d/m/y|m/d/y|y/m/d> to set --datebox UI.
 	* add: --help-print-items (--help-status becomes alias).
 	* add: --text-escape (--colors becomes alias).
 	* add: escapes \Zd, \Zk, \Zs, \ZD, \ZK, \ZS, for --text-escape.
 	* add: env NO_COLOR, to set blackwhite theme.
-	* add: $HOME/.bsddialog.conf to load a startup file theme.
-	* add: env BSDDIALOG_THEMEFILE to set a startup theme file.
+	* add: $HOME/.bsddialog.conf startup theme file.
+	* add: env BSDDIALOG_THEMEFILE startup theme file.
 	* add: --left1-button <label>.
 	* add: --left2-button <label>.
 	* add: --left3-button <label>.
@@ -46,13 +46,14 @@ WIP Next Version 1.0
 	* add: undocumented envs for bsdconfig(8) compatibility.
 	    - env BSDDIALOG_COMPATRC for use_shadow setting.
 	    - env BSDDIALOG_ITEM_HELP to add/set exit code.
-	* change: rename themes --theme 3d|blackwhite|flat.
+	* change: rename themes --theme <3d|blackwhite|flat>.
 	* change: --no-names and --no-descriptions mutually exclusive.
-	* change: quote only checklist output items if necessary.
+	* change: quote only checklist output items if necessary. Previously
+	    also radiolist item.
 	* change: dialogs with user input print always values except with ERROR,
 	    ESC, Cancel. Previously the situation was quite heterogeneous.
 	* improve: DIAGNOSTIC messages adding fmt string errors.
-	* improve: disable theme setting (opt and env) with no color terminals.
+	* improve: disable theme setting (opt and env) with no-color terminals.
 	* improve: menus on|off status: strcasecmp, diagnostic, real off check.
 	* improve: --bikeshed with button delimiter and --date-format.
 	* improve: --textbox accepts button options.
@@ -60,7 +61,7 @@ WIP Next Version 1.0
 	    accept --help-list-items and --help-print-name.
 	* fix: --load-theme attributes.
 	* fix: --clear-screen with --and-dialog.
-	* delete: --theme bsddialog (partially implemented).
+	* delete: --theme <bsddialog> (partially implemented).
 	* delete: --esc-return-cancel (replaced by new env and option).
 	* delete: --generic-button1 (replaced by --right1-button).
 	* delete: --generic-button2 (replaced by --right2-button).
@@ -69,7 +70,7 @@ WIP Next Version 1.0
 	Library:
 	* add: bsddialog_inmode().
 	* add: bsddialog_clear(y) for utility --clear-screen.
-	* add: bsddialog_refresh() for utility terminal mode switch options.
+	* add: bsddialog_refresh() for utility terminal mode options.
 	* add: conf.date.format="d/m/y"|"m/d/y"|"y/m/d" to customize
 	    bsddialog_datebox() UI (boxes) with a date format.
 	* add: 'const char *end' to bsddialog_gauge().
@@ -89,7 +90,7 @@ WIP Next Version 1.0
 	* improve: check (when possible) API pointers.
 	* improve: circolar buttons with left and right keys for msgbox, yesno,
 	    menus, rangebox and pause.
-	* improve: bsddialog_textbox() manages conf.buttons.
+	* improve: bsddialog_textbox() handles conf.buttons.
 	* improve: bsddialog_datebox() a box change affects the others as well.
 	* improve: bsddialog_geterror() with fmt strings.
 	* change: API NULL strings handled like "", except gauge *sep and *end.
@@ -113,14 +114,14 @@ WIP Next Version 1.0
 	* fix: timebox.c checksize (boxes width).
 	* fix: extend menurows after shrinking.
 	* fix: menu pad and form pad "re-expansion" after shrink and enlarge.
-	* fix: shadow top-left corner (trick wresize() before wmove()).
+	* fix: shadow top-left corner (trick: wresize() before wmove()).
 	* fix: increment bsddialog_total_progview for i386 and more general use.
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
 	* delete: conf.button.generic1_label (for new conf.button.right1_label).
 	* delete: BSDDIALOG_GENERIC1 return value (new BSDDIALOG_RIGHT1).
 	* delete: conf.button.generic2_label (for new conf.button.right2_label).
 	* delete: BSDDIALOG_GENERIC2 return value (new BSDDIALOG_RIGHT2).
-	* delete: bsddialog_clearterminal().
+	* delete: bsddialog_clearterminal(), replaced by bsddialog_clear(y).
 	* refactor: internal implementation.
 	    - add: internal structures to represent components.
 	    - merge: (when possible) dialogs autosize.
