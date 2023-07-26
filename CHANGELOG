@@ -112,7 +112,7 @@ WIP Next Version 1.0
 	* fix: bsddialog_pause() elevation bar after resize.
 	* fix: bsddialog_textbox() key '0'.
 	* fix: timebox.c checksize (boxes width).
-	* fix: extend menurows after shrinking.
+	* fix: extend menurows after shrink and enlarge.
 	* fix: menu pad and form pad "re-expansion" after shrink and enlarge.
 	* fix: shadow top-left corner (trick: wresize() before wmove()).
 	* fix: increment bsddialog_total_progview for i386 and more general use.
