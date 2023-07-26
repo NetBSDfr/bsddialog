@@ -173,7 +173,7 @@ static struct option longopts[] = {
 	{"default-no",        no_argument,       NULL, DEFAULT_NO},
 	{"disable-esc",       no_argument,       NULL, DISABLE_ESC},
 	{"error-exit-code",   required_argument, NULL, ERROR_EXIT_CODE},
-	{"esc_exit-code",     required_argument, NULL, ESC_EXIT_CODE},
+	{"esc-exit-code",     required_argument, NULL, ESC_EXIT_CODE},
 	{"exit-label",        required_argument, NULL, EXIT_LABEL},
 	{"extra-button",      no_argument,       NULL, EXTRA_BUTTON},
 	{"extra-exit-code",   required_argument, NULL, EXTRA_EXIT_CODE},
@@ -211,7 +211,7 @@ static struct option longopts[] = {
 	{"no-lines",          no_argument,       NULL, NO_LINES},
 	{"no-names",          no_argument,       NULL, NO_NAMES},
 	{"no-ok",             no_argument,       NULL, NO_OK},
-	{"nook ",             no_argument,       NULL, NO_OK},
+	{"nook",              no_argument,       NULL, NO_OK},
 	{"no-shadow",         no_argument,       NULL, NO_SHADOW},
 	{"no-tags",           no_argument,       NULL, NO_NAMES},
 	{"normal-screen",     no_argument,       NULL, NORMAL_SCREEN},
@@ -289,7 +289,7 @@ void usage(void)
 	    " --cr-wrap,\n --datebox-format d/m/y|m/d/y|y/m/d,"
 	    " --date-format <format>,\n --default-button <label>,"
 	    " --default-item <name>, --default-no, --disable-esc,\n"
-	    " --error-exit-code <retval>, --esc_exit-code <retval>,"
+	    " --error-exit-code <retval>, --esc-exit-code <retval>,"
 	    " --exit-label <label>,\n --extra-button,"
 	    " --extra-exit-code <retval>, --extra-label <label>,\n"
 	    " --left1-button <label>, --left1-exit-code <retval>,"
