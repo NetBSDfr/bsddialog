@@ -846,7 +846,8 @@ If not
 and
 .Fa focusitem
 specify the default item on startup and the last focused item at exit, could be
-a negative value if no item is focused. The dialog can be customized by
+a negative value if no item is focused.
+The dialog can be customized by
 .Fa conf.menu.* ,
 see
 .Fn bsddialog_menu .
@@ -901,7 +902,8 @@ provides a dialog for a
 .Dq Yes-No Question ,
 the labels on buttons are Yes and No.
 .Ss Theme
-The graphical properties are global to the library. They are represented by
+The graphical properties are global to the library.
+They are represented by
 .Fa struct bsddialog_theme
 and can be customized at runtime via the
 .In bsddialog_theme.h
@@ -996,7 +998,7 @@ is an OR value:
 sets, if not NULL,
 .Fa foreground ,
 .Fa background ,
-.Fa flags,
+.Fa flags ,
 like the properties of
 .Fa color ,
 see
@@ -1017,7 +1019,8 @@ otherwise.
 .Fn bsddialog_set_theme
 sets
 .Fa theme
-like current runtime theme. Changes take effect only for dialogs built after
+like current runtime theme.
+Changes take effect only for dialogs built after
 the call.
 .Pp
 .Fn bsddialog_set_default_theme
