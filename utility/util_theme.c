@@ -118,11 +118,12 @@ static struct property p[NPROPERTY] = {
 	{"", "theme.menu.namecolor", COLOR, &t.menu.namecolor},
 	{"", "theme.menu.f_desccolor", COLOR, &t.menu.f_desccolor},
 	{"", "theme.menu.desccolor", COLOR, &t.menu.desccolor},
-	{"", "theme.menu.namesepcolor", COLOR, &t.menu.namesepcolor},
-	{"", "theme.menu.descsepcolor", COLOR, &t.menu.descsepcolor},
 	{"", "theme.menu.f_shortcutcolor", COLOR, &t.menu.f_shortcutcolor},
 	{"", "theme.menu.shortcutcolor", COLOR, &t.menu.shortcutcolor},
 	{"", "theme.menu.bottomdesccolor", COLOR, &t.menu.bottomdesccolor},
+	{"# bsddialog_menutype BSDDIALOG_SEPARATOR\n",
+	    "theme.menu.sepnamecolor", COLOR, &t.menu.sepnamecolor},
+	{"", "theme.menu.sepdesccolor", COLOR, &t.menu.sepdesccolor},
 
 	{"\n# Forms\n",
 	    "theme.form.f_fieldcolor", COLOR, &t.form.f_fieldcolor},
@@ -395,11 +396,11 @@ void bikeshed(struct bsddialog_conf *conf)
 	t.menu.desccolor       = bsddialog_color(col[0], col[5], 0);
 	t.menu.f_namecolor     = bsddialog_color(col[5], col[3], 0);
 	t.menu.namecolor       = bsddialog_color(col[3], col[5], 0);
-	t.menu.namesepcolor    = bsddialog_color(col[1], col[5], 0);
-	t.menu.descsepcolor    = bsddialog_color(col[1], col[5], 0);
 	t.menu.f_shortcutcolor = bsddialog_color(col[1], col[3], 0);
 	t.menu.shortcutcolor   = bsddialog_color(col[1], col[5], 0);
 	t.menu.bottomdesccolor = bsddialog_color(col[4], col[3], 0);
+	t.menu.sepnamecolor    = bsddialog_color(col[1], col[5], 0);
+	t.menu.sepdesccolor    = bsddialog_color(col[1], col[5], 0);
 
 	t.form.f_fieldcolor    = bsddialog_color(col[5], col[3], 0);
 	t.form.fieldcolor      = bsddialog_color(col[5], col[4], 0);

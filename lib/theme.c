@@ -74,11 +74,11 @@ static struct bsddialog_theme blackwhite = {
 	.menu.desccolor       = WHITE,
 	.menu.f_namecolor     = BLACK,
 	.menu.namecolor       = WHITE,
-	.menu.namesepcolor    = WHITE,
-	.menu.descsepcolor    = WHITE,
 	.menu.f_shortcutcolor = BLACK | A_UNDERLINE,
 	.menu.shortcutcolor   = WHITE | A_UNDERLINE,
 	.menu.bottomdesccolor = WHITE,
+	.menu.sepnamecolor    = WHITE,
+	.menu.sepdesccolor    = WHITE,
 
 	.form.f_fieldcolor    = BLACK,
 	.form.fieldcolor      = WHITE,
@@ -121,11 +121,11 @@ static struct bsddialog_theme flat = {
 	.menu.desccolor       = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 	.menu.f_namecolor     = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
 	.menu.namecolor       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
-	.menu.namesepcolor    = GET_COLOR(COLOR_RED,   COLOR_WHITE),
-	.menu.descsepcolor    = GET_COLOR(COLOR_RED,   COLOR_WHITE),
 	.menu.f_shortcutcolor = GET_COLOR(COLOR_RED,   COLOR_BLUE),
 	.menu.shortcutcolor   = GET_COLOR(COLOR_RED,   COLOR_WHITE),
 	.menu.bottomdesccolor = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
+	.menu.sepnamecolor    = GET_COLOR(COLOR_RED,   COLOR_WHITE),
+	.menu.sepdesccolor    = GET_COLOR(COLOR_RED,   COLOR_WHITE),
 
 	.form.f_fieldcolor    = GET_COLOR(COLOR_WHITE, COLOR_BLUE) | A_BOLD,
 	.form.fieldcolor      = GET_COLOR(COLOR_WHITE, COLOR_CYAN) | A_BOLD,
@@ -170,11 +170,11 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->menu.desccolor       = src->menu.desccolor;
 	dst->menu.f_namecolor     = src->menu.f_namecolor;
 	dst->menu.namecolor       = src->menu.namecolor;
-	dst->menu.namesepcolor    = src->menu.namesepcolor;
-	dst->menu.descsepcolor    = src->menu.descsepcolor;
 	dst->menu.f_shortcutcolor = src->menu.f_shortcutcolor;
 	dst->menu.shortcutcolor   = src->menu.shortcutcolor;
 	dst->menu.bottomdesccolor = src->menu.bottomdesccolor;
+	dst->menu.sepnamecolor    = src->menu.sepnamecolor;
+	dst->menu.sepdesccolor    = src->menu.sepdesccolor;
 
 	dst->form.f_fieldcolor    = src->form.f_fieldcolor;
 	dst->form.fieldcolor      = src->form.fieldcolor;

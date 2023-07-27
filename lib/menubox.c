@@ -315,14 +315,14 @@ static void drawseparators(struct bsddialog_conf *conf, struct privatemenu *m)
 		realw = m->xe - m->xs;
 		labellen = strcols(name) + strcols(desc) + 1;
 		wmove(m->pad, i, (labellen < realw) ? realw/2 - labellen/2 : 0);
-		wattron(m->pad, t.menu.namesepcolor);
+		wattron(m->pad, t.menu.sepnamecolor);
 		waddstr(m->pad, name);
-		wattroff(m->pad, t.menu.namesepcolor);
+		wattroff(m->pad, t.menu.sepnamecolor);
 		if (strcols(name) > 0 && strcols(desc) > 0)
 			waddch(m->pad, ' ');
-		wattron(m->pad, t.menu.descsepcolor);
+		wattron(m->pad, t.menu.sepdesccolor);
 		waddstr(m->pad, desc);
-		wattroff(m->pad, t.menu.descsepcolor);
+		wattroff(m->pad, t.menu.sepdesccolor);
 	}
 }
 
