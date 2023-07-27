@@ -87,6 +87,7 @@ WIP Next Version 1.0
 	    - conf.button.right1.label, BSDDIALOG_RIGHT1 return value.
 	    - conf.button.right2.label, BSDDIALOG_RIGHT2 return value.
 	    - conf.button.right3.label, BSDDIALOG_RIGHT3 return value.
+	* add: unused struct bsddialog_menugroup.min_on future feature.
 	* improve: check (when possible) API pointers.
 	* improve: circolar buttons with left and right keys for msgbox, yesno,
 	    menus, rangebox and pause.

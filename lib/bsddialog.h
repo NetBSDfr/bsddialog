@@ -155,6 +155,7 @@ struct bsddialog_menugroup {
 	enum bsddialog_menutype type;
 	unsigned int nitems;
 	struct bsddialog_menuitem *items;
+	unsigned int min_on; /* unused for now */
 };
 
 struct bsddialog_formitem {
