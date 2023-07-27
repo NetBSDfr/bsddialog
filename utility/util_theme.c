@@ -139,12 +139,12 @@ static struct property p[NPROPERTY] = {
 	{"", "theme.button.maxmargin", UINT, &t.button.maxmargin},
 	{"", "theme.button.leftdelim", CHAR, &t.button.leftdelim},
 	{"", "theme.button.rightdelim", CHAR, &t.button.rightdelim},
-	{"", "theme.button.delimcolor", COLOR, &t.button.delimcolor},
 	{"", "theme.button.f_delimcolor", COLOR, &t.button.f_delimcolor},
-	{"", "theme.button.color", COLOR, &t.button.color},
+	{"", "theme.button.delimcolor", COLOR, &t.button.delimcolor},
 	{"", "theme.button.f_color", COLOR, &t.button.f_color},
-	{"", "theme.button.shortcutcolor", COLOR, &t.button.shortcutcolor},
+	{"", "theme.button.color", COLOR, &t.button.color},
 	{"", "theme.button.f_shortcutcolor", COLOR, &t.button.f_shortcutcolor},
+	{"", "theme.button.shortcutcolor", COLOR, &t.button.shortcutcolor},
 
 	{"\n#Compatibility. Do not use, can be deleted\n",
 	    "use_shadow", COMPAT, NULL}

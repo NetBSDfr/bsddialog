@@ -82,12 +82,12 @@ struct bsddialog_theme {
 		unsigned int maxmargin;
 		char leftdelim;
 		char rightdelim;
-		int delimcolor;
 		int f_delimcolor;
-		int color;
+		int delimcolor;
 		int f_color;
-		int shortcutcolor;
+		int color;
 		int f_shortcutcolor;
+		int shortcutcolor;
 	} button;
 };
 
