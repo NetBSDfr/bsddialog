@@ -118,7 +118,7 @@ in the _Public Domain_ to build new projects:
  - key callback
  - Right-To-Left text
  - some terminal does not hide the cursor, move it bottom-right before to getch.
- - refactor backtitle: multiline, conf.backtile, WINDOW \*dialog.backtitle.
+ - refactor backtitle: multiline, conf.backtitle, WINDOW \*dialog.backtitle.
  - refactor bottomdesc: WINDOW \*dialog.bottomdesc -> fix expandig screen.
  - accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
  - add bool conf.menu.depthlines.
