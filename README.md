@@ -127,5 +127,6 @@ in the _Public Domain_ to build new projects:
  - improve grey lines expanding terminal (maybe redrawwin() in hide\_dialog()).
  - more restrictive strtol() and strtoul().
  - implement global buttons handler.
- - add History, FreeBSD 8.0 dialog manual features.
+ - add History FreeBSD 8.0 dialog manual features.
+ - external tutorial.
  - implement menutype.min_on.
