@@ -42,7 +42,7 @@
 static struct bsddialog_theme t;
 static char title[1024];
 
-#define NPROPERTY  39
+#define NPROPERTY  41
 #define NCOLOR      8
 #define NATTR       6
 
@@ -111,8 +111,11 @@ static struct property p[NPROPERTY] = {
 	    &t.dialog.bottomtitlecolor},
 	{"", "theme.dialog.arrowcolor", COLOR, &t.dialog.arrowcolor},
 
-	{"\n# --checklist, --menu, --radiolist, --treeview\n",
-	    "theme.menu.f_selectorcolor", COLOR, &t.menu.f_selectorcolor},
+	{"\n# Menus: --checklist, --menu, --radiolist, --treeview\n"
+	    "# prefix [selector] shortcut name desc bottomdesc\n",
+	    "theme.menu.f_prefixcolor", COLOR, &t.menu.f_prefixcolor},
+	{"", "theme.menu.prefixcolor", COLOR, &t.menu.prefixcolor},
+	{"", "theme.menu.f_selectorcolor", COLOR, &t.menu.f_selectorcolor},
 	{"", "theme.menu.selectorcolor", COLOR, &t.menu.selectorcolor},
 	{"", "theme.menu.f_namecolor", COLOR, &t.menu.f_namecolor},
 	{"", "theme.menu.namecolor", COLOR, &t.menu.namecolor},

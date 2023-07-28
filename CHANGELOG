@@ -3,6 +3,7 @@ WIP Next Version 1.0
 	Utility:
 	* add: comments to --save-theme output file.
 	* add: blink, halfbright, highlight, for --save-theme and --load-theme.
+	* add: theme.menu.[f_]prefixcolor to --save-theme and --load-theme.
 	* add: --datebox-format <d/m/y|m/d/y|y/m/d> to set --datebox UI.
 	* add: --help-print-items (--help-status becomes alias).
 	* add: --text-escape (--colors becomes alias).
@@ -87,6 +88,8 @@ WIP Next Version 1.0
 	    - conf.button.right1.label, BSDDIALOG_RIGHT1 return value.
 	    - conf.button.right2.label, BSDDIALOG_RIGHT2 return value.
 	    - conf.button.right3.label, BSDDIALOG_RIGHT3 return value.
+	* add: unused struct bsddialog_menugroup.min_on for future feature.
+	* add: theme.menu.f_prefixcolor and theme.menu.prefixcolor.
 	* add: unused struct bsddialog_menugroup.min_on for future feature.
 	* improve: check (when possible) API pointers.
 	* improve: circolar buttons with left and right keys for msgbox, yesno,

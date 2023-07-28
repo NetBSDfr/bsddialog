@@ -335,7 +335,9 @@ drawitem(struct bsddialog_conf *conf, struct privatemenu *m, int y, bool focus)
 	pritem = &m->pritems[y];
 
 	/* prefix */
+	wattron(m->pad, focus ? t.menu.f_prefixcolor : t.menu.prefixcolor);
 	mvwaddstr(m->pad, y, 0, pritem->prefix);
+	wattroff(m->pad, focus ? t.menu.f_prefixcolor : t.menu.prefixcolor);
 
 	/* selector */
 	wmove(m->pad, y, m->xselector);

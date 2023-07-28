@@ -68,6 +68,8 @@ static struct bsddialog_theme blackwhite = {
 	.dialog.bottomtitlecolor = WHITE,
 	.dialog.arrowcolor       = WHITE,
 
+	.menu.f_prefixcolor   = WHITE,
+	.menu.prefixcolor     = WHITE,
 	.menu.f_selectorcolor = BLACK,
 	.menu.selectorcolor   = WHITE,
 	.menu.f_desccolor     = BLACK,
@@ -115,6 +117,8 @@ static struct bsddialog_theme flat = {
 	.dialog.bottomtitlecolor = GET_COLOR(COLOR_BLACK, COLOR_WHITE) | A_BOLD,
 	.dialog.arrowcolor       = GET_COLOR(COLOR_BLUE,  COLOR_WHITE),
 
+	.menu.f_prefixcolor   = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
+	.menu.prefixcolor     = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 	.menu.f_selectorcolor = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
 	.menu.selectorcolor   = GET_COLOR(COLOR_BLACK, COLOR_WHITE),
 	.menu.f_desccolor     = GET_COLOR(COLOR_WHITE, COLOR_BLUE),
@@ -164,6 +168,8 @@ set_theme(struct bsddialog_theme *dst, struct bsddialog_theme *src)
 	dst->dialog.bottomtitlecolor = src->dialog.bottomtitlecolor;
 	dst->dialog.arrowcolor       = src->dialog.arrowcolor;
 
+	dst->menu.f_prefixcolor   = src->menu.f_prefixcolor;
+	dst->menu.prefixcolor     = src->menu.prefixcolor;
 	dst->menu.f_selectorcolor = src->menu.f_selectorcolor;
 	dst->menu.selectorcolor   = src->menu.selectorcolor;
 	dst->menu.f_desccolor     = src->menu.f_desccolor;
