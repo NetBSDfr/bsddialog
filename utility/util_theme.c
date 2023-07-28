@@ -111,7 +111,7 @@ static struct property p[NPROPERTY] = {
 	    &t.dialog.bottomtitlecolor},
 	{"", "theme.dialog.arrowcolor", COLOR, &t.dialog.arrowcolor},
 
-	{"\n# Menus: --checklist, --menu, --radiolist, --treeview\n"
+	{"\n# Menus: --checklist, --menu, --radiolist\n"
 	    "# prefix [selector] shortcut name desc bottomdesc\n",
 	    "theme.menu.f_prefixcolor", COLOR, &t.menu.f_prefixcolor},
 	{"", "theme.menu.prefixcolor", COLOR, &t.menu.prefixcolor},
