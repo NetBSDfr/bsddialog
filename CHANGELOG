@@ -133,7 +133,7 @@ WIP Next Version 1.0
 	    - add: internal structures to represent components.
 	    - merge: (when possible) dialogs autosize.
 	    - merge: (when possible) dialogs checksize.
-	    - merge: for each dialog "build" with "resize" -> <dialog>_redraw().
+	    - merge: for each dialog "build" with "update" -> <dialog>_redraw().
 	    - merge: new_dialog() with update_dialog() -> draw_dialog().
 	    - merge: infobox.c with messagebox.c (delete infobox.c)
 	    - merge: bsddialog_datebox() + bsddialog_calendar() -> datebox.c
