@@ -32,7 +32,6 @@ int main()
 	}
 	bsddialog_initconf(&conf);
 	conf.title = "datebox";
-	conf.date.format = "m/d/y"; /* d/m/y | m/d/y | y/m/d */
 	output = bsddialog_datebox(&conf, "Example", 9, 35, &yy, &mm, &dd);
 	bsddialog_end();
 	if (output == BSDDIALOG_ERROR) {
