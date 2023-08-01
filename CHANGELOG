@@ -55,7 +55,7 @@ WIP Next Version 1.0
 	    ESC, Cancel. Previously the situation was quite heterogeneous.
 	* improve: DIAGNOSTIC messages adding fmt string errors.
 	* improve: disable theme setting (opt and env) with no-color terminals.
-	* improve: menus on|off status: strcasecmp, diagnostic, real off check.
+	* improve: menus on|off status (strcasecmp, diagnostic, real off check).
 	* improve: --bikeshed with button delimiter and --date-format.
 	* improve: --textbox accepts button options.
 	* improve: Forms with Help button.
