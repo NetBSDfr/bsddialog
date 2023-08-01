@@ -121,7 +121,7 @@ WIP Next Version 1.0
 	* fix: timebox.c checksize (boxes width).
 	* fix: extend menurows after shrink and enlarge.
 	* fix: menu pad and form pad "re-expansion" after shrink and enlarge.
-	* fix: shadow top-left corner (trick: wresize() before wmove()).
+	* fix: shadow top-left corner (trick wresize() before wmove()).
 	* fix: increment bsddialog_total_progview size for more general use.
 	* delete: BSDDIALOG_THEME_BSDDIALOG (partially implemented).
 	* delete: conf.button.generic1_label (for new conf.button.right1_label).
