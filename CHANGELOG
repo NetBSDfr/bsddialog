@@ -79,10 +79,10 @@ WIP Next Version 1.0
 	* add: 'const char *end' to bsddialog_gauge().
 	* add: draw focus on the shortcut-key-selected button at exit.
 	* add: escapes for conf.text.highlight \Zd, \Zk, \Zs, \ZD, \ZK, \ZS.
-	* add: theme flags features:
-	    - BSDDIALOG_BLINK,
-	    - BSDDIALOG_HALFBRIGHT
-	    - BSDDIALOG_HIGHLIGHT
+	* add: other theme flags.
+	    - BSDDIALOG_BLINK.
+	    - BSDDIALOG_HALFBRIGHT.
+	    - BSDDIALOG_HIGHLIGHT.
 	* add: generic buttons.
 	    - conf.button.left1_label, BSDDIALOG_LEFT1 return value.
 	    - conf.button.left2_label, BSDDIALOG_LEFT2 return value.
