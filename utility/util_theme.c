@@ -310,7 +310,7 @@ void loadtheme(const char *file, bool compatibility)
 			/*
 			 * usr.sbin/bsdconfig/share/dialog.subr:2255
 			 * uses this parameter to set NO_SHADOW.
-			 * Set t.shadow.y|x for compatibilty.
+			 * Set t.shadow.[y|x] for compatibilty.
 			 */
 			if (strcmp(name, "use_shadow") == 0) {
 				 if (strcasestr(value, "off") != NULL)
