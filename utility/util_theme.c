@@ -397,7 +397,7 @@ void bikeshed(struct bsddialog_conf *conf)
 	t.dialog.color            = bsddialog_color(col[0], col[5], 0);
 	t.dialog.bottomtitlecolor = bsddialog_color(col[0], col[5], 0);
 	t.dialog.arrowcolor       = bsddialog_color(col[3], col[5], 0);
-	
+
 	t.menu.f_prefixcolor   = bsddialog_color(col[5], col[3], 0);
 	t.menu.prefixcolor     = bsddialog_color(col[0], col[5], 0);
 	t.menu.f_selectorcolor = bsddialog_color(col[5], col[3], 0);
