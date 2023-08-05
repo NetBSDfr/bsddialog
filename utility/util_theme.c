@@ -177,8 +177,8 @@ void savetheme(const char *file)
 	fputs("black red green yellow blue magenta cyan white.\n", fp);
 	fputs("# Attributes: ", fp);
 	fputs("bold reverse underline blink halfbright highlight.\n", fp);
-	fputs("# f_* refers to focus when an element can be in selected ", fp);
-	fputs("or unselected state.\n\n", fp);
+	fputs("# f_* refers to focus for an element with selected or ", fp);
+	fputs("unselected state.\n\n", fp);
 
 	fprintf(fp, "version %s\n", LIBBSDDIALOG_VERSION);
 
