@@ -333,29 +333,34 @@ void setdeftheme(enum bsddialog_default_theme theme)
 		exit_error(false, bsddialog_geterror());
 }
 
-static void startup_file(char *home, char *sep, char *file, bool compat)
-{
-	char path[PATH_MAX];
-
-	if (home == NULL || file == NULL || file[0] == '\0')
-		return;
-	snprintf(path, PATH_MAX, "%s%s%s", home, sep, file);
-	if (access(path, F_OK) == 0)
-		loadtheme(path, compat);
-}
-
 void startuptheme(void)
 {
-	char *env;
+	bool sep;
+	char *env, *file, *home, path[PATH_MAX];
 
 	env = getenv("NO_COLOR");
 	if (env != NULL && env[0] != '\0')
 		setdeftheme(BSDDIALOG_THEME_BLACKWHITE);
 
-	env = getenv("HOME");
-	startup_file(env, "/", ".bsddialog.conf", false);
-	startup_file(env, "/", getenv("BSDDIALOG_COMPATRC"), true);
-	startup_file("", "", getenv("BSDDIALOG_THEMEFILE"), false);
+	if ((home = getenv("HOME")) != NULL) {
+		sep = (strcmp(home, "/") == 0) ? false : true;
+
+		snprintf(path, PATH_MAX, "%s%s.bsddialog.conf",
+		    home, sep ? "/" : "");
+		if (access(path, F_OK) == 0)
+			loadtheme(path, false);
+
+		if ((file = getenv("BSDDIALOG_COMPATRC")) != NULL) {
+			snprintf(path, PATH_MAX, "%s%s%s",
+			    home, sep ? "/" : "", file);
+			if (access(path, F_OK) == 0)
+				loadtheme(path, true);
+		}
+	}
+	if ((file = getenv("BSDDIALOG_THEMEFILE")) != NULL) {
+		if (access(file, F_OK) == 0)
+			loadtheme(file, false);
+	}
 }
 
 void bikeshed(struct bsddialog_conf *conf)
