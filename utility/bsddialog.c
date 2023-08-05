@@ -195,6 +195,9 @@ int main(int argc, char *argv[argc])
 		}
 
 		/* --<dialog>, --save-theme or clear-screen */
+		text = NULL; /* useless inits, fix compiler warnings */
+		rows = BSDDIALOG_AUTOSIZE;
+		cols = BSDDIALOG_AUTOSIZE;
 		if (opt.dialogbuilder != NULL) {
 			if (argc < 3)
 				exit_error(true,

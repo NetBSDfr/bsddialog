@@ -242,6 +242,7 @@ void loadtheme(const char *file, bool compatibility)
 		if(line[0] == '#' || line[0] == '\n')
 			continue;  /* superfluous, only for efficiency */
 		sscanf(line, "%s", name);
+		value = NULL; /* useless init, fix compiler warning */
 		for (i = 0; i < NPROPERTY; i++) {
 			if (strcmp(name, p[i].name) == 0) {
 				value = &line[strlen(name)];
