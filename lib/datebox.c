@@ -48,7 +48,7 @@
 static int minyear;
 static int maxyear;
 
-const char *m[12] = {
+static const char *m[12] = {
 	"January",
 	"February",
 	"March",
