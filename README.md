@@ -118,8 +118,8 @@ in the _Public Domain_ to build new projects:
  - key callback
  - Right-To-Left text
  - some terminal does not hide the cursor, move it bottom-right before to getch.
- - refactor backtitle: multiline, conf.backtitle, WINDOW \*dialog.backtitle.
- - refactor bottomdesc: WINDOW \*dialog.bottomdesc -> fix expandig screen.
+ - refactor backtitle: add WINDOW \*dialog.backtitle for multiline and fix expanding screen
+ - refactor bottomdesc: add WINDOW \*dialog.bottomdesc to fix expandig screen.
  - accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
  - add bool conf.menu.depthlines.
  - implement custom getopt\_long().
@@ -127,5 +127,7 @@ in the _Public Domain_ to build new projects:
  - improve grey lines expanding terminal (maybe redrawwin() in hide\_dialog()).
  - more restrictive strtol() and strtoul().
  - implement global buttons handler.
- - add/move external tutorial.
+ - doc: external tutorial, theming guide.
  - implement menutype.min\_on.
+ - improve refresh at startup, avoid dialog refresh before drawing text
+
