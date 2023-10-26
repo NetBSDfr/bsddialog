@@ -128,4 +128,4 @@ in the _Public Domain_ to build new projects:
  - more restrictive strtol() and strtoul().
  - implement global buttons handler.
  - add/move external tutorial.
- - implement menutype.min_on.
+ - implement menutype.min\_on.
