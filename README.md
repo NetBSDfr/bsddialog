@@ -130,4 +130,4 @@ in the _Public Domain_ to build new projects:
  - doc: external tutorial, theming guide.
  - implement menutype.min\_on.
  - improve refresh at startup, avoid dialog refresh before drawing text
-
+ - add debug API: bsddialog\_debug(y,x,refresh,"fmt",...)
