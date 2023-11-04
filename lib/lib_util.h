@@ -70,6 +70,10 @@ extern bool hastermcolors;
 #define SCREENLINES (getmaxy(stdscr))
 #define SCREENCOLS  (getmaxx(stdscr))
 #define CHECK_STR(s) (s == NULL ? "" : s)
+#define UARROW(c) (c->ascii_lines ? '^' : ACS_UARROW)
+#define DARROW(c) (c->ascii_lines ? 'v' : ACS_DARROW)
+#define LARROW(c) (c->ascii_lines ? '<' : ACS_LARROW)
+#define RARROW(c) (c->ascii_lines ? '>' : ACS_RARROW)
 #define DRAW_BUTTONS(d) do {                                                   \
 	draw_buttons(&d);                                                      \
 	wnoutrefresh(d.widget);                                                \

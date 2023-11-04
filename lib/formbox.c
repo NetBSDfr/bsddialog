@@ -535,12 +535,10 @@ static void update_formbox(struct bsddialog_conf *conf, struct privateform *f)
 	if (f->viewrows < f->h) {
 		wattron(f->box, t.dialog.arrowcolor);
 		if (f->y > 0)
-			mvwhline(f->box, 0, (w / 2) - 2,
-			    conf->ascii_lines ? '^' : ACS_UARROW, 5);
+			mvwhline(f->box, 0, (w / 2) - 2, UARROW(conf), 5);
 
 		if (f->y + f->viewrows < f->h)
-			mvwhline(f->box, h-1, (w / 2) - 2,
-			    conf->ascii_lines ? 'v' : ACS_DARROW, 5);
+			mvwhline(f->box, h-1, (w / 2) - 2, DARROW(conf), 5);
 		wattroff(f->box, t.dialog.arrowcolor);
 	}
 }

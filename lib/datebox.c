@@ -237,10 +237,8 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev,
 	if (focus) {
 		l = 2 + w%2;
 		wattron(win, t.dialog.arrowcolor);
-		mvwhline(win, 0, w/2 - l/2,
-		    conf->ascii_lines ? '^' : ACS_UARROW, l);
-		mvwhline(win, h-1, w/2 - l/2,
-		    conf->ascii_lines ? 'v' : ACS_DARROW, l);
+		mvwhline(win, 0, w/2 - l/2, UARROW(conf), l);
+		mvwhline(win, h-1, w/2 - l/2, DARROW(conf), l);
 		wattroff(win, t.dialog.arrowcolor);
 	}
 
@@ -267,10 +265,10 @@ print_calendar(struct bsddialog_conf *conf, WINDOW *win, int yy, int mm, int dd,
 	draw_borders(conf, win, RAISED);
 	if (active) {
 		wattron(win, t.dialog.arrowcolor);
-		mvwhline(win, 0, 15, conf->ascii_lines ? '^' : ACS_UARROW, 4);
-		mvwhline(win, h-1, 15, conf->ascii_lines ? 'v' : ACS_DARROW, 4);
-		mvwvline(win, 3, 0, conf->ascii_lines ? '<' : ACS_LARROW, 3);
-		mvwvline(win, 3, w-1, conf->ascii_lines ? '>' : ACS_RARROW, 3);
+		mvwhline(win, 0, 15, UARROW(conf), 4);
+		mvwhline(win, h-1, 15, DARROW(conf), 4);
+		mvwvline(win, 3, 0, LARROW(conf), 3);
+		mvwvline(win, 3, w-1, RARROW(conf), 3);
 		wattroff(win, t.dialog.arrowcolor);
 	}
 

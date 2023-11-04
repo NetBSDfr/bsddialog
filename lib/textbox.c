@@ -57,7 +57,7 @@ static void updateborders(struct dialog *d, struct scrolltext *st)
 		borderch = ACS_VLINE;
 
 	if (st->xpad > 0) {
-		arrowch = d->conf->ascii_lines ? '<' : ACS_LARROW;
+		arrowch = LARROW(d->conf);
 		arrowch |= t.dialog.arrowcolor;
 	} else {
 		arrowch = borderch;
@@ -66,7 +66,7 @@ static void updateborders(struct dialog *d, struct scrolltext *st)
 	mvwvline(d->widget, (d->h / 2) - 2, 0, arrowch, 4);
 
 	if (st->xpad + d->w - 2 - st->margin < st->wpad) {
-		arrowch = d->conf->ascii_lines ? '>' : ACS_RARROW;
+		arrowch = RARROW(d->conf);
 		arrowch |= t.dialog.arrowcolor;
 	} else {
 		arrowch = borderch;

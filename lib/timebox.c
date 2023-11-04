@@ -48,8 +48,8 @@ drawsquare(struct bsddialog_conf *conf, WINDOW *win, unsigned int value,
 	draw_borders(conf, win, LOWERED);
 	if (focus) {
 		wattron(win, t.dialog.arrowcolor);
-		mvwhline(win, 0, 1, conf->ascii_lines ? '^' : ACS_UARROW, 2);
-		mvwhline(win, 2, 1, conf->ascii_lines ? 'v' : ACS_DARROW, 2);
+		mvwhline(win, 0, 1, UARROW(conf), 2);
+		mvwhline(win, 2, 1, DARROW(conf), 2);
 		wattroff(win, t.dialog.arrowcolor);
 	}
 

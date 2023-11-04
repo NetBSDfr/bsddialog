@@ -404,12 +404,10 @@ static void update_menubox(struct bsddialog_conf *conf, struct privatemenu *m)
 	if (m->nitems > (int)m->menurows) {
 		wattron(m->box, t.dialog.arrowcolor);
 		if (m->ypad > 0)
-			mvwhline(m->box, 0, 2,
-			    conf->ascii_lines ? '^' : ACS_UARROW, 3);
+			mvwhline(m->box, 0, 2, UARROW(conf), 3);
 
 		if ((m->ypad + (int)m->menurows) < m->nitems)
-			mvwhline(m->box, h-1, 2,
-			    conf->ascii_lines ? 'v' : ACS_DARROW, 3);
+			mvwhline(m->box, h-1, 2, DARROW(conf), 3);
 
 		mvwprintw(m->box, h-1, w-6, "%3d%%",
 		    100 * (m->ypad + m->menurows) / m->nitems);
