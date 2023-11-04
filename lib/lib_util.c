@@ -983,7 +983,7 @@ void draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 {
 	int h, w;
 	int leftcolor, rightcolor;
-	int ls, rs, ts, bs, tl, tr, bl, br, ltee, rtee;
+	int ls, rs, ts, bs, tl, tr, bl, br;
 
 	if (conf->no_lines)
 		return;
@@ -991,7 +991,7 @@ void draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 	if (conf->ascii_lines) {
 		ls = rs = '|';
 		ts = bs = '-';
-		tl = tr = bl = br = ltee = rtee = '+';
+		tl = tr = bl = br = '+';
 	} else {
 		ls = rs = ACS_VLINE;
 		ts = bs = ACS_HLINE;
@@ -999,8 +999,6 @@ void draw_borders(struct bsddialog_conf *conf, WINDOW *win, enum elevation elev)
 		tr = ACS_URCORNER;
 		bl = ACS_LLCORNER;
 		br = ACS_LRCORNER;
-		ltee = ACS_LTEE;
-		rtee = ACS_RTEE;
 	}
 
 	getmaxyx(win, h, w);
