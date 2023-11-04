@@ -181,7 +181,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
 	while (loop) {
 		updateborders(&d, &st);
 		/*
-		 * Overflow multicolumn charchter right border:
+		 * Trick, overflow multicolumn charchter right border:
 		 * wnoutrefresh(widget);
 		 * pnoutrefresh(pad, ypad, xpad, ys, xs, ye, xe);
 		 * doupdate();
