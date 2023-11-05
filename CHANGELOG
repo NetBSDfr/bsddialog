@@ -1,7 +1,10 @@
-Next
+Next Version 1.0.1
 
 	Library Internal Refactoring:
 	* add: arrow macro handlers.
+	* change: Box-drawing characters. Wide chars instead of utf8,
+	    https://bugs.freebsd.org/274472,
+	    https://reviews.freebsd.org/D42380.
 
 2023-08-01 Version 1.0
 

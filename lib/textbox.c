@@ -47,32 +47,33 @@ struct scrolltext {
 
 static void updateborders(struct dialog *d, struct scrolltext *st)
 {
-	chtype arrowch, borderch;
+	chtype arrowch;
+	cchar_t borderch;
 
 	if (d->conf->no_lines)
-		borderch = ' ';
+		setcchar(&borderch, L" ", 0, 0, NULL);
 	else if (d->conf->ascii_lines)
-		borderch = '|';
+		setcchar(&borderch, L"|", 0, 0, NULL);
 	else
-		borderch = ACS_VLINE;
+		borderch = *WACS_VLINE;
 
 	if (st->xpad > 0) {
-		arrowch = LARROW(d->conf);
-		arrowch |= t.dialog.arrowcolor;
+		arrowch = LARROW(d->conf) | t.dialog.arrowcolor;
+		mvwvline(d->widget, (d->h / 2) - 2, 0, arrowch, 4);
 	} else {
-		arrowch = borderch;
-		arrowch |= t.dialog.lineraisecolor;
+		wattron(d->widget, t.dialog.lineraisecolor);
+		mvwvline_set(d->widget, (d->h / 2) - 2, 0, &borderch, 4);
+		wattroff(d->widget, t.dialog.lineraisecolor);
 	}
-	mvwvline(d->widget, (d->h / 2) - 2, 0, arrowch, 4);
 
 	if (st->xpad + d->w - 2 - st->margin < st->wpad) {
-		arrowch = RARROW(d->conf);
-		arrowch |= t.dialog.arrowcolor;
+		arrowch = RARROW(d->conf) | t.dialog.arrowcolor;
+		mvwvline(d->widget, (d->h / 2) - 2, d->w - 1, arrowch, 4);
 	} else {
-		arrowch = borderch;
-		arrowch |= t.dialog.linelowercolor;
+		wattron(d->widget, t.dialog.linelowercolor);
+		mvwvline_set(d->widget, (d->h / 2) - 2, d->w - 1, &borderch, 4);
+		wattroff(d->widget, t.dialog.linelowercolor);
 	}
-	mvwvline(d->widget, (d->h / 2) - 2, d->w - 1, arrowch, 4);
 
 	if (st->hpad > d->h - 4) {
 		wattron(d->widget, t.dialog.arrowcolor);

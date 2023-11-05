@@ -298,7 +298,7 @@ getnextshortcut(int npritems, struct privateitem *pritems, int abs, wint_t key)
 
 static void drawseparators(struct bsddialog_conf *conf, struct privatemenu *m)
 {
-	int i, linech, realw, labellen;
+	int i, realw, labellen;
 	const char *desc, *name;
 
 	for (i = 0; i < m->nitems; i++) {
@@ -306,8 +306,10 @@ static void drawseparators(struct bsddialog_conf *conf, struct privatemenu *m)
 			continue;
 		if (conf->no_lines == false) {
 			wattron(m->pad, t.menu.desccolor);
-			linech = conf->ascii_lines ? '-' : ACS_HLINE;
-			mvwhline(m->pad, i, 0, linech, m->line);
+			if (conf->ascii_lines)
+				mvwhline(m->pad, i, 0, '-', m->line);
+			else
+				mvwhline_set(m->pad, i, 0, WACS_HLINE, m->line);
 			wattroff(m->pad, t.menu.desccolor);
 		}
 		name = m->pritems[i].name;
