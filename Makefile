@@ -13,7 +13,7 @@ UTILITYPATH = ${.CURDIR}/utility
 RM= rm -f
 LN = ln -s -f
 
-### cli options ###
+### command-line options ###
 # FreeBSD port Makefile: 'MAKE_ARGS = -DNORPATH'
 NORPATH ?=
 export DISABLERPATH=${NORPATH}
