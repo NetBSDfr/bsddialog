@@ -3,7 +3,7 @@
 #
 # Written in 2023 by Alfonso Sabato Siciliano
 
-OUTPUT =  bsddialog
+OUTPUT = bsddialog
 export VERSION=1.0
 .CURDIR ?= ${CURDIR}
 LIBPATH = ${.CURDIR}/lib
