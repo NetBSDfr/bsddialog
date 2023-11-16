@@ -14,13 +14,13 @@ RM= rm -f
 LN = ln -s -f
 
 ### cli options ###
-# port/pkg Makefile: 'MAKE_ARGS = -DNORPATH'
+# FreeBSD port Makefile: 'MAKE_ARGS = -DNORPATH'
 NORPATH ?=
 export DISABLERPATH=${NORPATH}
-# `make -DDEBUG`
-# `gmake DEBUG=1`
+# Debug: `make -DDEBUG` or `gmake DEBUG=1`
 DEBUG ?=
 export ENABLEDEBUG=${DEBUG}
+###################
 
 all : ${OUTPUT}
 
