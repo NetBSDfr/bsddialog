@@ -131,3 +131,7 @@ in the _Public Domain_ to build new projects:
  - implement menutype.min\_on.
  - improve refresh at startup, avoid dialog refresh before drawing text
  - add debug API: bsddialog\_debug(y,x,refresh,"fmt",...)
+ - add Ctrl-L to redraw the screen.
+ - add mouse support.
+
+
