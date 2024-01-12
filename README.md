@@ -114,7 +114,7 @@ in the _Public Domain_ to build new projects:
 
 ## TODO and Ideas
 
- - menubar feature,
+ - menubar feature.
  - key callback.
  - Right-To-Left text.
  - some terminal does not hide the cursor, move it bottom-right before to getch.
