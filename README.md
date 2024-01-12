@@ -114,13 +114,13 @@ in the _Public Domain_ to build new projects:
 
 ## TODO and Ideas
 
- - menubar feature
- - key callback
- - Right-To-Left text
+ - menubar feature,
+ - key callback.
+ - Right-To-Left text.
  - some terminal does not hide the cursor, move it bottom-right before to getch.
- - refactor backtitle: add WINDOW \*dialog.backtitle for multiline and fix expanding screen
+ - refactor backtitle: add WINDOW \*dialog.backtitle for multiline and fix expanding screen.
  - refactor bottomdesc: add WINDOW \*dialog.bottomdesc to fix expandig screen.
- - accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base
+ - accessibility https://wiki.freebsd.org/Accessibility/Wishlist/Base.
  - add bool conf.menu.depthlines.
  - implement custom getopt\_long().
  - refactor/redesign gauge().
@@ -129,8 +129,8 @@ in the _Public Domain_ to build new projects:
  - implement global buttons handler.
  - doc: external tutorial, theming guide.
  - implement menutype.min\_on.
- - improve refresh at startup, avoid dialog refresh before drawing text
- - add debug API: bsddialog\_debug(y,x,refresh,"fmt",...)
+ - improve refresh at startup, avoid dialog refresh before drawing text.
+ - add debug API: bsddialog\_debug(y,x,refresh,"fmt",...).
  - add Ctrl-L to redraw the screen.
  - add mouse support.
 
