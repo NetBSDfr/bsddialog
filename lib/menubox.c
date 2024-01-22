@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2024 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -183,7 +183,7 @@ set_return_on(struct privatemenu *m, struct bsddialog_menugroup *groups)
 	int i;
 	struct privateitem *pritem;
 
-	for(i = 0; i < m->nitems; i++) {
+	for (i = 0; i < m->nitems; i++) {
 		if (m->pritems[i].type == SEPARATORMODE)
 			continue;
 		pritem = &m->pritems[i];
@@ -665,7 +665,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			pnoutrefresh(m.pad, m.ypad, 0, m.ys, m.xs, m.ye, m.xe);
 			changeitem = false;
 		}
-	} /* end while(loop) */
+	} /* end while (loop) */
 
 	set_return_on(&m, groups);
 

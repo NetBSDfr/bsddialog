@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2024 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -551,7 +551,7 @@ print_form_items(int output, int nitems, struct bsddialog_formitem *items,
 				helpname = items[focusitem].bottomdesc;
 			dprintf(opt->output_fd, " %s", helpname);
 		}
-		if(opt->help_print_items == false)
+		if (opt->help_print_items == false)
 			return;
 		dprintf(opt->output_fd, "\n");
 	}

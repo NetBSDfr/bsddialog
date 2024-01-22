@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2024 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -106,7 +106,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 		return (BSDDIALOG_ERROR);
 	set_buttons(&d, true, oklabel, cancellabel);
 	s.htext = -1;
-	if(message_draw(&d, &s) != 0)
+	if (message_draw(&d, &s) != 0)
 		return (BSDDIALOG_ERROR);
 
 	loop = true;
@@ -166,11 +166,11 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				break;
 			if (f1help_dialog(d.conf) != 0)
 				return (BSDDIALOG_ERROR);
-			if(message_draw(&d, &s) != 0)
+			if (message_draw(&d, &s) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		case KEY_RESIZE:
-			if(message_draw(&d, &s) != 0)
+			if (message_draw(&d, &s) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
 		default:

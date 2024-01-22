@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2024 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -114,7 +114,7 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 	insecurecursor = false;
 	if (conf->form.securembch != NULL) {
 		mbchsize = mblen(conf->form.securembch, MB_LEN_MAX);
-		if(mbtowc(&f->securewch, conf->form.securembch, mbchsize) < 0)
+		if (mbtowc(&f->securewch, conf->form.securembch, mbchsize) < 0)
 			RETURN_ERROR("Cannot convert securembch to wchar_t");
 		insecurecursor = true;
 	} else if (conf->form.securech != '\0') {
@@ -346,7 +346,7 @@ static char* alloc_wstomb(wchar_t *wstr)
 		wctomb(mbch, wstr[i]);
 		nbytes += mblen(mbch, MB_LEN_MAX);
 	}
-	if((mbstr = malloc(nbytes)) == NULL)
+	if ((mbstr = malloc(nbytes)) == NULL)
 		return (NULL);
 
 	wcstombs(mbstr,	wstr, nbytes);
@@ -379,7 +379,7 @@ static void set_first_with_default(struct privateform *f, int *focusitem)
 	unsigned int i;
 
 	f->sel = -1;
-	if(focusitem != NULL && *focusitem >=0 && *focusitem < (int)f->nitems)
+	if (focusitem != NULL && *focusitem >=0 && *focusitem < (int)f->nitems)
 		if (f->pritems[*focusitem].readonly == false) {
 			f->sel = *focusitem;
 			return;
@@ -748,7 +748,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case KEY_LEFT:
 			if (focusinform) {
-				if(fieldctl(item, MOVE_CURSOR_LEFT))
+				if (fieldctl(item, MOVE_CURSOR_LEFT))
 					DRAWITEM_TRICK(&form, form.sel, true);
 			} else if (d.bs.curr > 0) {
 				d.bs.curr--;
@@ -760,7 +760,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			break;
 		case KEY_RIGHT:
 			if (focusinform) {
-				if(fieldctl(item, MOVE_CURSOR_RIGHT))
+				if (fieldctl(item, MOVE_CURSOR_RIGHT))
 					DRAWITEM_TRICK(&form, form.sel, true);
 			} else if (d.bs.curr < (int) d.bs.nbuttons - 1) {
 				d.bs.curr++;
@@ -806,20 +806,20 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 		case 127: /* Backspace */
 			if (focusinform == false)
 				break;
-			if(fieldctl(item, MOVE_CURSOR_LEFT))
-				if(fieldctl(item, DEL_LETTER))
+			if (fieldctl(item, MOVE_CURSOR_LEFT))
+				if (fieldctl(item, DEL_LETTER))
 					DRAWITEM_TRICK(&form, form.sel, true);
 			break;
 		case KEY_DC:
 			if (focusinform == false)
 				break;
-			if(fieldctl(item, DEL_LETTER))
+			if (fieldctl(item, DEL_LETTER))
 				DRAWITEM_TRICK(&form, form.sel, true);
 			break;
 		case KEY_HOME:
 			if (focusinform == false)
 				break;
-			if(fieldctl(item, MOVE_CURSOR_BEGIN))
+			if (fieldctl(item, MOVE_CURSOR_BEGIN))
 				DRAWITEM_TRICK(&form, form.sel, true);
 			break;
 		case KEY_END:
@@ -855,10 +855,10 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				 * because the cursor remains on the new letter,
 				 * "if" and "while" update the positions.
 				 */
-				if(insertch(item, input, form.securewch)) {
+				if (insertch(item, input, form.securewch)) {
 					fieldctl(item, MOVE_CURSOR_RIGHT);
 					/*
-					 * no if(fieldctl), update always
+					 * no if (fieldctl), update always
 					 * because it fails with maxletters.
 					 */
 					DRAWITEM_TRICK(&form, form.sel, true);
@@ -895,7 +895,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			DRAWITEM_TRICK(&form, form.sel, true);
 			changeitem = false;
 		}
-	} /* end while(loop) */
+	} /* end while (loop) */
 
 	curs_set(0);
 
