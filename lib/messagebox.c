@@ -87,7 +87,7 @@ static int message_draw(struct dialog *d, struct scroll *s)
 	s->printrows = d->h - BORDER - HBUTTONS - BORDER;
 	s->ypad = 0;
 	getmaxyx(d->textpad, s->htextpad, unused);
-	unused++; /* fix unused error */
+	(void)unused; /* fix unused error */
 
 	return (0);
 }
