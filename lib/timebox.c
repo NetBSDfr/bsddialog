@@ -1,7 +1,7 @@
 /*-
  * SPDX-License-Identifier: BSD-2-Clause
  *
- * Copyright (c) 2021-2023 Alfonso Sabato Siciliano
+ * Copyright (c) 2021-2024 Alfonso Sabato Siciliano
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -205,6 +205,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			if (timebox_redraw(&d, c) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (timebox_redraw(&d, c) != 0)
 				return (BSDDIALOG_ERROR);

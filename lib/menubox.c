@@ -578,6 +578,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if (mixedlist_redraw(&d, &m) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (mixedlist_redraw(&d, &m) != 0)
 				return (BSDDIALOG_ERROR);

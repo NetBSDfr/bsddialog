@@ -482,6 +482,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			if (calendar_redraw(&d, yy_win, mm_win, dd_win) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (calendar_redraw(&d, yy_win, mm_win, dd_win) != 0)
 				return (BSDDIALOG_ERROR);
@@ -687,6 +688,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (datebox_redraw(&d, di) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (datebox_redraw(&d, di) != 0)
 				return (BSDDIALOG_ERROR);

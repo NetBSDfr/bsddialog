@@ -1,3 +1,9 @@
+Next Version
+
+	Library and implicitly utility:
+	* add: Ctrl-l to redraw dialog.
+
+
 2023-11-16 Version 1.0.1
 
 	Library Internal Refactoring:

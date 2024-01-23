@@ -169,6 +169,7 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			if (message_draw(&d, &s) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (message_draw(&d, &s) != 0)
 				return (BSDDIALOG_ERROR);

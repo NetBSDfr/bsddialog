@@ -840,6 +840,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 			if (form_redraw(&d, &form, focusinform) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (form_redraw(&d, &form, focusinform) != 0)
 				return (BSDDIALOG_ERROR);

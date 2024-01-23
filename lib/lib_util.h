@@ -66,6 +66,7 @@ extern bool hastermcolors;
 		RETURN_FMTERROR(#nitem " is %d but *" #a " is NULL", nitem);   \
 } while (0)
 /* widget utils */
+#define KEY_CTRL(c) (c & 037)
 #define TEXTPAD(d, downnotext) rtextpad(d, 0, 0, 0, downnotext)
 #define SCREENLINES (getmaxy(stdscr))
 #define SCREENCOLS  (getmaxx(stdscr))

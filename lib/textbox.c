@@ -257,6 +257,7 @@ bsddialog_textbox(struct bsddialog_conf *conf, const char *file, int rows,
 			if (textbox_draw(&d, &st) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (textbox_draw(&d, &st) != 0)
 				return (BSDDIALOG_ERROR);

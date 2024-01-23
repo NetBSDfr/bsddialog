@@ -523,6 +523,7 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			if (rangebox_redraw(&d, &b, &bigchange) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (rangebox_redraw(&d, &b, &bigchange) != 0)
 				return (BSDDIALOG_ERROR);
@@ -641,6 +642,7 @@ bsddialog_pause(struct bsddialog_conf *conf, const char *text, int rows,
 			if (pause_redraw(&d, &b) != 0)
 				return (BSDDIALOG_ERROR);
 			break;
+		case KEY_CTRL('l'):
 		case KEY_RESIZE:
 			if (pause_redraw(&d, &b) != 0)
 				return (BSDDIALOG_ERROR);
