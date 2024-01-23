@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2021-2023 Alfonso Sabato Siciliano
+.\" Copyright (c) 2021-2024 Alfonso Sabato Siciliano
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd July 25, 2023
+.Dd January 23, 2024
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -437,6 +437,15 @@ Set an exit code value for the
 timeout.
 .It Fl Fl title Ar title
 Dialog title.
+.El
+.Ss Keys
+The following key is available at runtime:
+.Bl -tag -width Ds
+.It F1
+See
+.Fl Fl hfile
+and
+.Fl Fl hmsg .
 .El
 .Ss Dialogs
 The following dialogs are available:
@@ -871,6 +880,8 @@ Options:
 .Fl Fl title ,
 .Fl Fl version ,
 .Fl Fl yes-label .
+.Pp
+Keys: F1.
 .Pp
 Dialogs:
 .Fl Fl calendar ,
