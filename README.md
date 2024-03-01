@@ -132,5 +132,6 @@ in the _Public Domain_ to build new projects:
  - improve refresh at startup, avoid dialog refresh before drawing text.
  - add debug API: bsddialog\_debug(y,x,refresh,"fmt",...).
  - add mouse support.
+ - add Ctrl-P and Ctrl-N.
 
 
