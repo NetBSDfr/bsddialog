@@ -134,5 +134,5 @@ in the _Public Domain_ to build new projects:
  - add mouse support.
  - change: mixedform less restrictive with label, hide text with little screens.
  - add Ctrl-P and Ctrl-N.
-
+ - use alarm(2) for bsddialog\_pause.
 
