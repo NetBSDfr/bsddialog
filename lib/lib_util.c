@@ -1126,7 +1126,7 @@ static void
 print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
     bool color)
 {
-	int i, j, strlen, strwidth, wc;
+	int charwidth, i, j, strlen, strwidth;
 	wchar_t ws[2];
 
 	ws[1] = L'\0';
@@ -1166,9 +1166,9 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 				/* inline mvwaddwch() for efficiency */
 				ws[0] = str[i];
 				mvwaddwstr(win, *y, j, ws);
-				wc = wcwidth(str[i]);
-				strwidth -= wc;
-				j += wc;
+				charwidth = wcwidth(str[i]);
+				strwidth -= charwidth;
+				j += charwidth;
 				i++;
 				*x = j;
 			}
