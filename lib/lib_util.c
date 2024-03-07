@@ -1163,18 +1163,19 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 		while (i < strlen) {
 			if (color && check_set_wtext_attr(win, str+i)) {
 				i += 3;
-			} else if (j + wcwidth(str[i]) > cols) {
-				break;
-			} else {
-				/* inline mvwaddwch() for efficiency */
-				ws[0] = str[i];
-				mvwaddwstr(win, *y, j, ws);
-				charwidth = wcwidth(str[i]);
-				strwidth -= charwidth;
-				j += charwidth;
-				i++;
-				*x = j;
+				continue;
 			}
+
+			charwidth = wcwidth(str[i]);
+			if (j + wcwidth(str[i]) > cols)
+				break;
+			/* inline mvwaddwch() for efficiency */
+			ws[0] = str[i];
+			mvwaddwstr(win, *y, j, ws);
+			strwidth -= charwidth;
+			j += charwidth;
+			*x = j;
+			i++;
 		}
 	}
 }
