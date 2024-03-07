@@ -1151,7 +1151,8 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 	i = 0;
 	while (i < strlen) {
 		if (*x + strwidth > cols) {
-			*y = (*x != 0 ? *y+1 : *y);
+			if (*x != 0)
+				*y = *y + 1;
 			if (*y >= *rows) {
 				*rows = *y + 1;
 				wresize(win, *rows, cols);
