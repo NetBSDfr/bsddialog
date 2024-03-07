@@ -1140,7 +1140,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 				reallen += wcwidth(str[i]);
 				i++;
 			} else {
-				i +=3 ;
+				i += 3;
 			}
 		}
 	} else
