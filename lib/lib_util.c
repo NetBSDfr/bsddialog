@@ -1160,7 +1160,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 			*x = 0;
 		}
 		j = *x;
-		while (j < cols && i < strlen) {
+		while (i < strlen) {
 			if (color && check_set_wtext_attr(win, str+i)) {
 				i += 3;
 			} else if (j + wcwidth(str[i]) > cols) {
