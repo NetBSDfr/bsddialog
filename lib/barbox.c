@@ -36,11 +36,11 @@
 #include "bsddialog_theme.h"
 #include "lib_util.h"
 
-#define BARPADDING   2  /* widget border | BARPADDING | box bar */
+#define BARPADDING   2  /* Dialog border | BARPADDING | box bar */
 #define BOXBORDERS   2
 #define MIN_WBAR     15
 #define MIN_WBOX     (BARPADDING + BOXBORDERS + MIN_WBAR + BARPADDING)
-#define MIN_WMGBAR   18
+#define MIN_WMGBAR   18 /* Mixedgauge main bar */
 #define MIN_WMGBOX   (BARPADDING + BOXBORDERS + MIN_WMGBAR + BARPADDING)
 #define HBOX         3
 #define WBOX(d)      ((d)->w - BORDERS - BARPADDING - BARPADDING)
