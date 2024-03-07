@@ -1128,29 +1128,29 @@ static void
 print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
     bool color)
 {
-	int i, j, strlen, reallen, wc;
+	int i, j, strlen, strwidth, wc;
 	wchar_t ws[2];
 
 	ws[1] = L'\0';
 
 	strlen = wcslen(str);
 	if (color) {
-		reallen = 0;
+		strwidth = 0;
 		i=0;
 		while (i < strlen) {
 			if (is_wtext_attr(str+i) == false) {
-				reallen += wcwidth(str[i]);
+				strwidth += wcwidth(str[i]);
 				i++;
 			} else {
 				i += 3;
 			}
 		}
 	} else
-		reallen = wcswidth(str, strlen);
+		strwidth = wcswidth(str, strlen);
 
 	i = 0;
 	while (i < strlen) {
-		if (*x + reallen > cols) {
+		if (*x + strwidth > cols) {
 			*y = (*x != 0 ? *y+1 : *y);
 			if (*y >= *rows) {
 				*rows = *y + 1;
@@ -1169,7 +1169,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 				ws[0] = str[i];
 				mvwaddwstr(win, *y, j, ws);
 				wc = wcwidth(str[i]);
-				reallen -= wc;
+				strwidth -= wc;
 				j += wc;
 				i++;
 				*x = j;
