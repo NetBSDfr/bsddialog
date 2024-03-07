@@ -1166,7 +1166,7 @@ print_string(WINDOW *win, int *rows, int cols, int *y, int *x, wchar_t *str,
 				/* inline mvwaddwch() for efficiency */
 				ws[0] = str[i];
 				mvwaddwstr(win, *y, j, ws);
-				wc = wcwidth(str[i]);;
+				wc = wcwidth(str[i]);
 				reallen -= wc;
 				j += wc;
 				i++;
