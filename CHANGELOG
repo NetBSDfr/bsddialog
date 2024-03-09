@@ -3,6 +3,9 @@ Next Version
 	Library and implicitly utility:
 	* add: Ctrl-l to redraw dialog.
 	* fix: escaped text ending with an escape symbol.
+	* change: Truncate mixedgauge long (over the screen/minibars)
+	    minilabels adding "...". As a result, avoid check-size error.
+	    https://gitlab.com/alfix/bsddialog/-/issues/6.
 
 
 2023-11-16 Version 1.0.1
