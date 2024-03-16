@@ -627,8 +627,9 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				loop = false;
 			}
 			break;
-		case KEY_RIGHT:
 		case '\t': /* TAB */
+		case KEY_CTRL('n'):
+		case KEY_RIGHT:
 			if (focusbuttons) {
 				d.bs.curr++;
 				focusbuttons = d.bs.curr < (int)d.bs.nbuttons ?
@@ -647,6 +648,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 			DRAW_BUTTONS(d);
 			break;
+		case KEY_CTRL('p'):
 		case KEY_LEFT:
 			if (focusbuttons) {
 				d.bs.curr--;
@@ -664,6 +666,10 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 			DRAW_BUTTONS(d);
 			break;
+		case '-':
+			if (focusbuttons == false)
+				datectl(di[sel].up, &yy, &mm, &dd);
+			break;
 		case KEY_UP:
 			if (focusbuttons) {
 				sel = 0;
@@ -674,6 +680,7 @@ bsddialog_datebox(struct bsddialog_conf *conf, const char *text, int rows,
 				datectl(di[sel].up, &yy, &mm, &dd);
 			}
 			break;
+		case '+':
 		case KEY_DOWN:
 			if (focusbuttons)
 				break;

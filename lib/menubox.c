@@ -593,6 +593,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			changeitem = next != m.sel;
 			break;
 		case '-':
+		case KEY_CTRL('p'):
 		case KEY_UP:
 			next = getprev(m.pritems, m.sel);
 			changeitem = next != m.sel;
@@ -606,6 +607,7 @@ do_mixedlist(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 			changeitem = next != m.sel;
 			break;
 		case '+':
+		case KEY_CTRL('n'):
 		case KEY_DOWN:
 			next = getnext(m.nitems, m.pritems, m.sel);
 			changeitem = next != m.sel;

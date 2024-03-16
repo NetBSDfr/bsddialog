@@ -142,8 +142,9 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				loop = false;
 			}
 			break;
-		case KEY_RIGHT:
 		case '\t': /* TAB */
+		case KEY_CTRL('n'):
+		case KEY_RIGHT:
 			if (focusbuttons) {
 				d.bs.curr++;
 				focusbuttons = d.bs.curr < (int)d.bs.nbuttons ?
@@ -162,6 +163,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			}
 			DRAW_BUTTONS(d);
 			break;
+		case KEY_CTRL('p'):
 		case KEY_LEFT:
 			if (focusbuttons) {
 				d.bs.curr--;
@@ -179,6 +181,11 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 			}
 			DRAW_BUTTONS(d);
 			break;
+		case '-':
+			if (focusbuttons == false)
+				c[sel].value = c[sel].value > 0 ?
+				    c[sel].value - 1 : c[sel].max;
+			break;
 		case KEY_UP:
 			if (focusbuttons) {
 				sel = 0;
@@ -190,6 +197,7 @@ bsddialog_timebox(struct bsddialog_conf *conf, const char* text, int rows,
 				    c[sel].value - 1 : c[sel].max;
 			}
 			break;
+		case '+':
 		case KEY_DOWN:
 			if (focusbuttons)
 				break;

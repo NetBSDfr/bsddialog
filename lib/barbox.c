@@ -516,10 +516,12 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 			break;
 		case '\t': /* TAB */
+		case KEY_CTRL('n'):
 		case KEY_RIGHT:
 			d.bs.curr = (d.bs.curr + 1) % d.bs.nbuttons;
 			DRAW_BUTTONS(d);
 			break;
+		case KEY_CTRL('p'):
 		case KEY_LEFT:
 			d.bs.curr--;
 			if (d.bs.curr < 0)
@@ -546,12 +548,14 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 				currvalue = max;
 			b.toupdate = true;
 			break;
+		case '+':
 		case KEY_UP:
 			if (currvalue < max) {
 				currvalue++;
 				b.toupdate = true;
 			}
 			break;
+		case '-':
 		case KEY_DOWN:
 			if (currvalue > min) {
 				currvalue--;

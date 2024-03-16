@@ -770,6 +770,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				switchfocus = true;
 			}
 			break;
+		case KEY_CTRL('p'):
 		case KEY_UP:
 			if (focusinform) {
 				next = previtem(form.nitems, form.pritems,
@@ -779,6 +780,7 @@ bsddialog_form(struct bsddialog_conf *conf, const char *text, int rows,
 				switchfocus = true;
 			}
 			break;
+		case KEY_CTRL('n'):
 		case KEY_DOWN:
 			if (focusinform == false)
 				break;

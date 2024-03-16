@@ -138,10 +138,14 @@ do_message(struct bsddialog_conf *conf, const char *text, int rows, int cols,
 				 d.bs.curr = d.bs.nbuttons - 1;
 			DRAW_BUTTONS(d);
 			break;
+		case '-':
+		case KEY_CTRL('p'):
 		case KEY_UP:
 			if (s.ypad > 0)
 				s.ypad--;
 			break;
+		case '+':
+		case KEY_CTRL('n'):
 		case KEY_DOWN:
 			if (s.ypad + s.printrows < s.htextpad)
 				s.ypad++;
