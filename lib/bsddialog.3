@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd January 23, 2024
+.Dd March 16, 2024
 .Dt BSDDIALOG 3
 .Os
 .Sh NAME
@@ -719,7 +719,8 @@ the loop ends reading
 builds a dialog without buttons and returns instantly.
 .Pp
 .Fn bsddialog_menu
-builds a dialog to select an item from a list via SPACE or ENTER.
+builds a dialog to select an item from a list via arrow UP, '-', arrow DOWN,
+'+', SPACE and ENTER.
 An item is
 defined like:
 .Pp
