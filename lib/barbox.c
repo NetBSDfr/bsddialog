@@ -548,17 +548,17 @@ bsddialog_rangebox(struct bsddialog_conf *conf, const char *text, int rows,
 				currvalue = max;
 			b.toupdate = true;
 			break;
-		case '+':
+		case '-':
 		case KEY_UP:
-			if (currvalue < max) {
-				currvalue++;
+			if (currvalue > min) {
+				currvalue--;
 				b.toupdate = true;
 			}
 			break;
-		case '-':
+		case '+':
 		case KEY_DOWN:
-			if (currvalue > min) {
-				currvalue--;
+			if (currvalue < max) {
+				currvalue++;
 				b.toupdate = true;
 			}
 			break;

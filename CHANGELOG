@@ -10,6 +10,7 @@ Next Version
 	* change: truncate mixedgauge long (over the screen/minibars)
 	    minilabels adding "...". As a result, avoid check-size error.
 	    https://gitlab.com/alfix/bsddialog/-/issues/6.
+	* change: invert UP/DOWN keys to set a rangebox value.
 
 
 2023-11-16 Version 1.0.1
