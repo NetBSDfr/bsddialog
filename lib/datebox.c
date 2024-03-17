@@ -400,6 +400,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 			DRAW_BUTTONS(d);
 			break;
+		case KEY_CTRL('n'):
 		case KEY_RIGHT:
 			if (focusbuttons) {
 				d.bs.curr++;
@@ -416,6 +417,7 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 			}
 			DRAW_BUTTONS(d);
 			break;
+		case KEY_CTRL('p'):
 		case KEY_LEFT:
 			if (focusbuttons) {
 				d.bs.curr--;
@@ -459,6 +461,28 @@ bsddialog_calendar(struct bsddialog_conf *conf, const char *text, int rows,
 				datectl(DOWN_YEAR, &yy, &mm, &dd);
 			} else { /* sel = 2 */
 				datectl(DOWN_DAY, &yy, &mm, &dd);
+			}
+			break;
+		case '-':
+			if (focusbuttons) {
+				break;
+			} else if (sel == 0) {
+				datectl(UP_MONTH, &yy, &mm, &dd);
+			} else if (sel == 1) {
+				datectl(UP_YEAR, &yy, &mm, &dd);
+			} else { /* sel = 2 */
+				datectl(LEFT_DAY, &yy, &mm, &dd);
+			}
+			break;
+		case '+':
+			if (focusbuttons) {
+				break;
+			} else if (sel == 0) {
+				datectl(DOWN_MONTH, &yy, &mm, &dd);
+			} else if (sel == 1) {
+				datectl(DOWN_YEAR, &yy, &mm, &dd);
+			} else { /* sel = 2 */
+				datectl(RIGHT_DAY, &yy, &mm, &dd);
 			}
 			break;
 		case KEY_HOME:
