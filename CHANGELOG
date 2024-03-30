@@ -4,8 +4,8 @@ Next Version
 	* add: Ctrl-l to redraw dialog.
 	    Request stable@freebsd.org January 2024.
 	* add: -, +, Ctrl-p, Ctrl-n for several dialogs.
-	    - for menus private feature request.
-	    Ctrl-p, Ctrl-n for menu request hackers@freebsd.org February 2024.
+	    +, - request for menus, private feature request.
+	    Ctrl-p, Ctrl-n for menu, request hackers@freebsd.org February 2024.
 	* fix: escaped text ending with an escape symbol.
 	* change: truncate mixedgauge long (over the screen/minibars)
 	    minilabels adding "...". As a result, avoid check-size error.
