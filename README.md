@@ -133,5 +133,6 @@ in the _Public Domain_ to build new projects:
  - add debug API: bsddialog\_debug(y,x,refresh,"fmt",...).
  - add mouse support.
  - use alarm(2) for bsddialog\_pause.
-
+ - delete form fieldlen constraint, hide or truncate long field in little screens.
+ - improve --inputbox autosizing, consider also input length.
 
