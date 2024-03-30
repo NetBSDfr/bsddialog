@@ -30,6 +30,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <wchar.h>
 
 #include <bsddialog.h>
 #include <bsddialog_theme.h>
@@ -532,6 +533,29 @@ int treeview_builder(BUILDER_ARGS)
 }
 
 /* form */
+static unsigned int strcols(const char *string)
+{
+	int w;
+	unsigned int ncol;
+	size_t charlen, mb_cur_max;
+	wchar_t wch;
+	mbstate_t mbs;
+
+	mb_cur_max = MB_CUR_MAX;
+	ncol = 0;
+	memset(&mbs, 0, sizeof(mbs));
+	while ((charlen = mbrlen(string, mb_cur_max, &mbs)) != 0 &&
+	    charlen != (size_t)-1 && charlen != (size_t)-2) {
+		if (mbtowc(&wch, string, mb_cur_max) < 0)
+			return (0);
+		if ((w = wcwidth(wch)) > 0)
+			ncol += w;
+		string += charlen;
+	}
+
+	return (ncol);
+}
+
 static void
 print_form_items(int output, int nitems, struct bsddialog_formitem *items,
     int focusitem, struct options *opt)
@@ -564,7 +588,7 @@ print_form_items(int output, int nitems, struct bsddialog_formitem *items,
 
 int form_builder(BUILDER_ARGS)
 {
-	int output, fieldlen, valuelen, focusitem;
+	int output, fieldlen, focusitem;
 	unsigned int i, j, flags, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
@@ -591,12 +615,16 @@ int form_builder(BUILDER_ARGS)
 		items[i].xfield	= (u_int)strtoul(argv[j++], NULL, 10);
 
 		fieldlen = (int)strtol(argv[j++], NULL, 10);
-		items[i].fieldlen = abs(fieldlen);
+		if (fieldlen == 0)
+			items[i].fieldlen = strcols(items[i].init);
+		else
+			items[i].fieldlen = abs(fieldlen);
 
-		valuelen = (int)strtol(argv[j++], NULL, 10);
-		items[i].maxvaluelen = valuelen == 0 ? abs(fieldlen) : valuelen;
+		items[i].maxvaluelen = (int)strtol(argv[j++], NULL, 10);
+		if (items[i].maxvaluelen == 0)
+			items[i].maxvaluelen = items[i].fieldlen;
 
-		flags = (fieldlen < 0 ? BSDDIALOG_FIELDREADONLY : 0);
+		flags = (fieldlen <= 0) ? BSDDIALOG_FIELDREADONLY : 0;
 		items[i].flags = flags;
 
 		items[i].bottomdesc = opt->item_bottomdesc ? argv[j++] : "";

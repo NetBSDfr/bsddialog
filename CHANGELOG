@@ -1,5 +1,10 @@
 Next Version
 
+	Utility:
+	--form changes and improvements:
+	    * add: `--maxletters 0` sets maxletters like fieldlen.
+	    * add: `--fieldlen 0` sets fieldlen like <init> width and readonly.
+
 	Library and implicitly utility:
 	* add: Ctrl-l to redraw dialog.
 	    Request stable@freebsd.org January 2024.
