@@ -22,9 +22,10 @@ Next Version
 
 	Library Internal Refactoring:
 	* add: arrow macro handlers.
-	* change: Box-drawing characters. Wide chars instead of utf8,
-	    https://bugs.freebsd.org/274472,
-	    https://reviews.freebsd.org/D42380.
+	* change: Box-drawing characters, from utf8 to wide chars to avoid to
+	    handle "env NCURSES_NO_UTF8_ACS=1".
+	    Request https://bugs.freebsd.org/274472,
+	    Rationale https://reviews.freebsd.org/D42380.
 
 2023-08-01 Version 1.0
 
