@@ -101,11 +101,11 @@ build_privateform(struct bsddialog_conf*conf, unsigned int nitems,
 	/* checks */
 	CHECK_ARRAY(nitems, items);
 	for (i = 0; i < nitems; i++) {
-		if (items[i].maxvaluelen == 0)
-			RETURN_FMTERROR("item %u [0-%u] maxvaluelen = 0",
-			    i, nitems);
 		if (items[i].fieldlen == 0)
 			RETURN_FMTERROR("item %u [0-%u] fieldlen = 0",
+			    i, nitems);
+		if (items[i].maxvaluelen == 0)
+			RETURN_FMTERROR("item %u [0-%u] maxvaluelen = 0",
 			    i, nitems);
 	}
 	f->nitems = nitems;
