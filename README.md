@@ -135,5 +135,5 @@ in the _Public Domain_ to build new projects:
  - use alarm(2) for bsddialog\_pause.
  - delete form fieldlen constraint, hide or truncate long field in little screens.
  - improve --inputbox autosizing, consider also input length.
- - fix --form "" 0 0 0 Label 1 0 Init 1 12 0 0 (without editable field).
- - fix --mixedform "" 0 0 0 Label 1 0 Init 1 12 0 0 2 (without editable field).
+ - fix --form "" 0 0 0 Label 1 0 Init 1 12 0 0 (with 0 editable field).
+ - fix --mixedform "" 0 0 0 Label 1 0 Init 1 12 0 0 2 (with 0 editable field).
