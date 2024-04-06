@@ -690,13 +690,13 @@ int mixedform_builder(BUILDER_ARGS)
 		exit_error(false, "cannot allocate memory for form items");
 	j = 0;
 	for (i = 0; i < nitems; i++) {
-		items[i].label	     = argv[j++];
-		items[i].ylabel      = (u_int)strtoul(argv[j++], NULL, 10);
-		items[i].xlabel      = (u_int)strtoul(argv[j++], NULL, 10);
-		items[i].init	     = argv[j++];
-		items[i].yfield	     = (u_int)strtoul(argv[j++], NULL, 10);
-		items[i].xfield	     = (u_int)strtoul(argv[j++], NULL, 10);
-		fieldlen             = (int)strtol(argv[j++], NULL, 10);
+		items[i].label	= argv[j++];
+		items[i].ylabel = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xlabel = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].init	= argv[j++];
+		items[i].yfield	= (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].xfield	= (u_int)strtoul(argv[j++], NULL, 10);
+		fieldlen        = (int)strtol(argv[j++], NULL, 10);
 		if (fieldlen == 0)
 			items[i].fieldlen = strcols(items[i].init);
 		else
@@ -705,11 +705,11 @@ int mixedform_builder(BUILDER_ARGS)
 		if (items[i].maxvaluelen == 0)
 			items[i].maxvaluelen = items[i].fieldlen;
 
-		items[i].flags       = (u_int)strtoul(argv[j++], NULL, 10);
+		items[i].flags = (u_int)strtoul(argv[j++], NULL, 10);
 		if (fieldlen <= 0)
 			items[i].flags |= BSDDIALOG_FIELDREADONLY;
 
-		items[i].bottomdesc  = opt->item_bottomdesc ? argv[j++] : "";
+		items[i].bottomdesc = opt->item_bottomdesc ? argv[j++] : "";
 	}
 
 	focusitem = -1;
