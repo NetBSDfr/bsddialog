@@ -620,7 +620,7 @@ int form_builder(BUILDER_ARGS)
 		else
 			items[i].fieldlen = abs(fieldlen);
 
-		items[i].maxvaluelen = (int)strtol(argv[j++], NULL, 10);
+		items[i].maxvaluelen = (u_int)strtoul(argv[j++], NULL, 10);
 		if (items[i].maxvaluelen == 0)
 			items[i].maxvaluelen = items[i].fieldlen;
 
