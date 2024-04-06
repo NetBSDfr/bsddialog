@@ -671,7 +671,7 @@ int inputbox_builder(BUILDER_ARGS)
 
 int mixedform_builder(BUILDER_ARGS)
 {
-	int output, focusitem;
+	int output, fieldlen, focusitem;
 	unsigned int i, j, formheight, nitems, sizeitem;
 	struct bsddialog_formitem *items;
 
@@ -696,9 +696,19 @@ int mixedform_builder(BUILDER_ARGS)
 		items[i].init	     = argv[j++];
 		items[i].yfield	     = (u_int)strtoul(argv[j++], NULL, 10);
 		items[i].xfield	     = (u_int)strtoul(argv[j++], NULL, 10);
-		items[i].fieldlen    = (u_int)strtoul(argv[j++], NULL, 10);
+		fieldlen             = (int)strtol(argv[j++], NULL, 10);
+		if (fieldlen == 0)
+			items[i].fieldlen = strcols(items[i].init);
+		else
+			items[i].fieldlen = abs(fieldlen);
 		items[i].maxvaluelen = (u_int)strtoul(argv[j++], NULL, 10);
+		if (items[i].maxvaluelen == 0)
+			items[i].maxvaluelen = items[i].fieldlen;
+
 		items[i].flags       = (u_int)strtoul(argv[j++], NULL, 10);
+		if (fieldlen <= 0)
+			items[i].flags |= BSDDIALOG_FIELDREADONLY;
+
 		items[i].bottomdesc  = opt->item_bottomdesc ? argv[j++] : "";
 	}
 

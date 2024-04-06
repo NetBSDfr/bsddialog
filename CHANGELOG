@@ -1,9 +1,12 @@
 Next Version
 
 	Utility:
-	--form changes and improvements:
-	    * add: `--maxletters 0` sets maxletters like fieldlen.
-	    * add: `--fieldlen 0` sets fieldlen like <init> width and readonly.
+	improvements and changes for --form and --mixedform:
+	    * add: <maxletters> 0 sets <maxletters> like <fieldlen>.
+	    * add: <fieldlen> 0 sets <fieldlen> like <init> width and readonly.
+	    * change: <maxletters> 0 was an error (remains error in lib).
+	    * change: <fieldlen> 0 was an error (remains error in lib)
+	      (<fieldlen> 0 and <init> "" is still an error.).
 
 	Library and implicitly utility:
 	* add: Ctrl-l to redraw dialog.

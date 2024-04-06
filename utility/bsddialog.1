@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd March 31, 2024
+.Dd April 7, 2024
 .Dt BSDDIALOG 1
 .Os
 .Sh NAME
@@ -542,19 +542,33 @@ at the position
 .Ar ylabel
 and
 .Ar xlabel ,
-a field to get the input with graphical length
-.Ar fieldlen
-at the position
+a field to get the input at the position
 .Ar yfield
 and
-.Ar xfield ,
-.Ar maxletters
-is the maximum input length,
+.Ar xfield .
+.Ar fieldlen
+is the field width, if negative is readonly and the width is the absolute value,
+if
+.Dv 0
+the field becomes readonly and its value is the
 .Ar init
-is a default value,
+width.
+.Ar maxletters
+is the maximum input length, if is
+.Dv 0
+its value is
+.Ar fieldlen .
+.Ar init
+is the default value in the field.
 .Ar flag
-can be 0 for normal field, 1 to hide the typed characters and 2 to set the
-field read only.
+can customize
+.Ar field :
+.Dv 0
+normal,
+.Dv 1
+hide typed characters,
+.Dv 2
+readonly.
 .Ar formrows
 is the graphical height of the list,
 .Dv 0
