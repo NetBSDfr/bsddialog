@@ -1,4 +1,4 @@
-Next Version 1.0.3
+2024-05-27 1.0.3
 
 	Utility:
 	change: --form and --mixedform do not print field value to output fd if
