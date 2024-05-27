@@ -717,7 +717,7 @@ int mixedform_builder(BUILDER_ARGS)
 	output = bsddialog_form(conf, text, rows, cols, formheight, nitems,
 	    items, &focusitem);
 	for (i = 0; i < nitems; i++) {
-		if ((int)strtol(argv[(i * 9) + 6], NULL, 10) > 0)
+		if ((int)strtol(argv[i * sizeitem + 6], NULL, 10) > 0)
 			items[i].flags &= ~ BSDDIALOG_FIELDREADONLY;
 	}
 	print_form_items(output, nitems, items, focusitem, opt);
