@@ -371,7 +371,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 	unsigned int i, mainperc, totaltodo;
 	float readforsec;
 	const char **minilabels;
-	time_t tstart, told, tnew, refresh;
+	time_t tstart, told, tnew, trefresh;
 
 	if ((minilabels = calloc(nminibar, sizeof(char*))) == NULL)
 		RETURN_ERROR("Cannot allocate memory for minilabels");
@@ -385,7 +385,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 		minipercs[i] = minibar[i].status;
 	}
 
-	refresh = pvconf->refresh == 0 ? 0 : pvconf->refresh - 1;
+	trefresh = pvconf->refresh == 0 ? 0 : pvconf->refresh - 1;
 	retval = BSDDIALOG_OK;
 	i = 0;
 	update = true;
@@ -398,7 +398,7 @@ bsddialog_progressview (struct bsddialog_conf *conf, const char *text, int rows,
 			mainperc = (bsddialog_total_progview * 100) / totaltodo;
 
 		time(&tnew);
-		if (update || tnew > told + refresh) {
+		if (update || tnew > told + trefresh) {
 			retval = do_mixedgauge(conf, text, rows, cols, mainperc,
 			    nminibar, minilabels, minipercs, true);
 			if (retval == BSDDIALOG_ERROR)
