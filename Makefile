@@ -22,7 +22,15 @@ DEBUG ?=
 export ENABLEDEBUG=${DEBUG}
 ###################
 
-all : ${OUTPUT}
+all: ${OUTPUT}
+
+install: all
+	${MAKE} -C ${LIBPATH} install
+	${MAKE} -C ${UTILITYPATH} install
+
+uninstall:
+	${MAKE} -C ${UTILITYPATH} uninstall
+	${MAKE} -C ${LIBPATH} uninstall
 
 ${OUTPUT}: ${LIBBSDDIALOG}
 	${MAKE} -C ${UTILITYPATH} LIBPATH=${LIBPATH}
@@ -36,3 +44,4 @@ clean:
 	${MAKE} -C ${UTILITYPATH} clean
 	${RM} ${OUTPUT} *.core
 
+.PHONY: all install uninstall clean
