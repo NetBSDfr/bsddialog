@@ -25,6 +25,7 @@
  * SUCH DAMAGE.
  */
 
+#include <stdarg.h>
 #include <curses.h>
 #include <stdlib.h>
 #include <string.h>
